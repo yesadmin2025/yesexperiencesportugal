@@ -157,6 +157,7 @@ import { Route as ToursTourIdTailorRouteImport } from './routes/tours_.$tourId.t
 import { Route as StudioV2ITokenRouteImport } from './routes/studio-v2.i.$token'
 import { Route as LovableEmailSuppressionRouteImport } from './routes/lovable/email/suppression'
 import { Route as FunctionsV1StripeWebhookRouteImport } from './routes/functions.v1.stripe-webhook'
+import { Route as ApiPublicProposalRequestRouteImport } from './routes/api/public/proposal-request'
 import { Route as ApiPublicPricingSsotRouteImport } from './routes/api/public/pricing-ssot'
 import { Route as ApiPublicContactRouteImport } from './routes/api/public/contact'
 import { Route as ApiPublicBookingRequestRouteImport } from './routes/api/public/booking-request'
@@ -935,6 +936,12 @@ const FunctionsV1StripeWebhookRoute =
     path: '/functions/v1/stripe-webhook',
     getParentRoute: () => rootRouteImport,
   } as any)
+const ApiPublicProposalRequestRoute =
+  ApiPublicProposalRequestRouteImport.update({
+    id: '/api/public/proposal-request',
+    path: '/api/public/proposal-request',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const ApiPublicPricingSsotRoute = ApiPublicPricingSsotRouteImport.update({
   id: '/api/public/pricing-ssot',
   path: '/api/public/pricing-ssot',
@@ -1200,6 +1207,7 @@ export interface FileRoutesByFullPath {
   '/api/public/booking-request': typeof ApiPublicBookingRequestRoute
   '/api/public/contact': typeof ApiPublicContactRoute
   '/api/public/pricing-ssot': typeof ApiPublicPricingSsotRoute
+  '/api/public/proposal-request': typeof ApiPublicProposalRequestRoute
   '/functions/v1/stripe-webhook': typeof FunctionsV1StripeWebhookRoute
   '/lovable/email/suppression': typeof LovableEmailSuppressionRoute
   '/studio-v2/i/$token': typeof StudioV2ITokenRoute
@@ -1368,6 +1376,7 @@ export interface FileRoutesByTo {
   '/api/public/booking-request': typeof ApiPublicBookingRequestRoute
   '/api/public/contact': typeof ApiPublicContactRoute
   '/api/public/pricing-ssot': typeof ApiPublicPricingSsotRoute
+  '/api/public/proposal-request': typeof ApiPublicProposalRequestRoute
   '/functions/v1/stripe-webhook': typeof FunctionsV1StripeWebhookRoute
   '/lovable/email/suppression': typeof LovableEmailSuppressionRoute
   '/studio-v2/i/$token': typeof StudioV2ITokenRoute
@@ -1539,6 +1548,7 @@ export interface FileRoutesById {
   '/api/public/booking-request': typeof ApiPublicBookingRequestRoute
   '/api/public/contact': typeof ApiPublicContactRoute
   '/api/public/pricing-ssot': typeof ApiPublicPricingSsotRoute
+  '/api/public/proposal-request': typeof ApiPublicProposalRequestRoute
   '/functions/v1/stripe-webhook': typeof FunctionsV1StripeWebhookRoute
   '/lovable/email/suppression': typeof LovableEmailSuppressionRoute
   '/studio-v2/i/$token': typeof StudioV2ITokenRoute
@@ -1711,6 +1721,7 @@ export interface FileRouteTypes {
     | '/api/public/booking-request'
     | '/api/public/contact'
     | '/api/public/pricing-ssot'
+    | '/api/public/proposal-request'
     | '/functions/v1/stripe-webhook'
     | '/lovable/email/suppression'
     | '/studio-v2/i/$token'
@@ -1879,6 +1890,7 @@ export interface FileRouteTypes {
     | '/api/public/booking-request'
     | '/api/public/contact'
     | '/api/public/pricing-ssot'
+    | '/api/public/proposal-request'
     | '/functions/v1/stripe-webhook'
     | '/lovable/email/suppression'
     | '/studio-v2/i/$token'
@@ -2049,6 +2061,7 @@ export interface FileRouteTypes {
     | '/api/public/booking-request'
     | '/api/public/contact'
     | '/api/public/pricing-ssot'
+    | '/api/public/proposal-request'
     | '/functions/v1/stripe-webhook'
     | '/lovable/email/suppression'
     | '/studio-v2/i/$token'
@@ -2203,6 +2216,7 @@ export interface RootRouteChildren {
   ApiPublicBookingRequestRoute: typeof ApiPublicBookingRequestRoute
   ApiPublicContactRoute: typeof ApiPublicContactRoute
   ApiPublicPricingSsotRoute: typeof ApiPublicPricingSsotRoute
+  ApiPublicProposalRequestRoute: typeof ApiPublicProposalRequestRoute
   FunctionsV1StripeWebhookRoute: typeof FunctionsV1StripeWebhookRoute
   LovableEmailSuppressionRoute: typeof LovableEmailSuppressionRoute
   ToursTourIdTailorRoute: typeof ToursTourIdTailorRoute
@@ -3259,6 +3273,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof FunctionsV1StripeWebhookRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/proposal-request': {
+      id: '/api/public/proposal-request'
+      path: '/api/public/proposal-request'
+      fullPath: '/api/public/proposal-request'
+      preLoaderRoute: typeof ApiPublicProposalRequestRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/public/pricing-ssot': {
       id: '/api/public/pricing-ssot'
       path: '/api/public/pricing-ssot'
@@ -3613,6 +3634,7 @@ const rootRouteChildren: RootRouteChildren = {
   ApiPublicBookingRequestRoute: ApiPublicBookingRequestRoute,
   ApiPublicContactRoute: ApiPublicContactRoute,
   ApiPublicPricingSsotRoute: ApiPublicPricingSsotRoute,
+  ApiPublicProposalRequestRoute: ApiPublicProposalRequestRoute,
   FunctionsV1StripeWebhookRoute: FunctionsV1StripeWebhookRoute,
   LovableEmailSuppressionRoute: LovableEmailSuppressionRoute,
   ToursTourIdTailorRoute: ToursTourIdTailorRoute,

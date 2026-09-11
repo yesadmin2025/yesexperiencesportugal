@@ -48,6 +48,20 @@ import { getViatorMeta } from "@/data/signatureToursViator";
 import { getTourContent, signatureDurationLabel } from "@/lib/tourContent";
 import { LOCAL_STORIES_ARTICLES } from "@/content/local-stories-articles";
 import { PortugalPlannerMap } from "@/components/home/PortugalPlannerMap";
+import { LiveReviews } from "@/components/reviews/LiveReviews";
+import { ProposalRequestForm } from "@/components/home/ProposalRequestForm";
+
+/**
+ * Tours whose already-published verified quotes fill the homepage review
+ * block until the database returns featured rows. Real tours only.
+ */
+const LIVE_REVIEW_FALLBACK_TOURS = [
+  "arrabida-wine-allinclusive",
+  "sintra-cascais",
+  "troia-comporta",
+  "arrabida-boat",
+] as const;
+
 
 /** Homepage Journal row — three evergreen Local Stories guides.
  *  `imgTourId` pins each card to a distinct real operation photo so two
@@ -926,10 +940,21 @@ function HomePage() {
           Travel Designer journeys. */}
         <RecentJourney />
 
-        {/* 5c — Removed: the mid-page "Real reviews" strip duplicated the
-          hero-adjacent GuestQuotes carousel. Social proof lives in ONE
-          place near the top of the page (see <GuestQuotes />) so the
-          middle of the homepage stays focused on inventory + bespoke. */}
+        {/* 6 — LIVE GUEST REVIEWS
+          Real published quotes from `tour_reviews`, with the verified
+          platform quotes already shown on the tour pages as the fallback,
+          beside the public 4.9 rating. */}
+        <LiveReviews
+          id="live-reviews"
+          ariaLabelledBy="live-reviews-title"
+          tourIds={undefined}
+          fallbackTourIds={LIVE_REVIEW_FALLBACK_TOURS}
+          titleLead="In the words of"
+          titleEm="recent guests"
+          standfirst="Every quote below comes from a guest who travelled with us — nothing is written by us."
+          className="bg-[color:var(--ivory)]"
+        />
+
 
         {/* 7 — PROPOSALS & CELEBRATIONS
           A dedicated commercial path for private milestones. */}
@@ -974,8 +999,19 @@ function HomePage() {
                   />
                 ))}
             </div>
+
+            {/* Real request form — proposals, celebrations, corporate days
+              and private groups all land in the same enquiries inbox and
+              trigger a confirmation email to the sender and to the team. */}
+            <div className="mt-12 md:mt-14">
+              <p className="mx-auto mb-6 max-w-2xl text-center font-sans text-[11.5px] uppercase tracking-[0.2em] text-[color:var(--charcoal-soft)]">
+                Tell us the occasion — we reply personally
+              </p>
+              <ProposalRequestForm />
+            </div>
           </div>
         </section>
+
 
         {/* 8 — CORPORATE & PRIVATE GROUPS
           A separate B2B path with its own promise and direct action. */}

@@ -6,10 +6,15 @@ import { SiteBreadcrumbs } from "@/components/SiteBreadcrumbs";
 import { Eyebrow } from "@/components/ui/Eyebrow";
 import { SectionTitle } from "@/components/ui/SectionTitle";
 import { CtaButton } from "@/components/ui/CtaButton";
-import { RealReviewsStrip } from "@/components/home/RealReviewsStrip";
+import { LiveReviews } from "@/components/reviews/LiveReviews";
 import { signatureTours } from "@/data/signatureTours";
 import { REVIEW_CERTIFICATE } from "@/config/trust-certificate";
-import { regionFaq, SERVICE_AREA_LINKS, type LisbonRegion } from "@/content/lisbon-regions";
+import {
+  areaProfilesFor,
+  regionFaq,
+  SERVICE_AREA_LINKS,
+  type LisbonRegion,
+} from "@/content/lisbon-regions";
 import {
   BASED_IN,
   EMAIL,
@@ -133,7 +138,59 @@ export function RegionListingPage({ region }: { region: LisbonRegion }) {
         </div>
       </section>
 
-      <RealReviewsStrip />
+      {/* Live guest reviews, restricted to the days that genuinely run here. */}
+      <LiveReviews
+        id="region-reviews"
+        ariaLabelledBy="region-reviews-title"
+        tourIds={region.tourIds}
+        fallbackTourIds={region.tourIds}
+        titleLead="What guests say about"
+        titleEm={region.name}
+        limit={3}
+        className="bg-[color:var(--sand)]"
+      />
+
+      {/* Local orientation for each service area this page covers. */}
+      {areaProfilesFor(region.path).length > 0 ? (
+        <section
+          className="border-t border-[color:var(--border)] py-14 md:py-20"
+          aria-labelledby="region-areas-title"
+        >
+          <div className="container-x max-w-4xl">
+            <Eyebrow>Local areas</Eyebrow>
+            <SectionTitle as="h2" id="region-areas-title" spacing="tight">
+              Where these days <SectionTitle.Em>begin</SectionTitle.Em>.
+            </SectionTitle>
+            <div className="mt-9 grid gap-8 md:gap-10">
+              {areaProfilesFor(region.path).map((a) => (
+                <article key={a.anchor} id={a.anchor} className="scroll-mt-24 md:scroll-mt-28">
+                  <h3 className="serif text-[1.4rem] leading-snug text-[color:var(--charcoal)] md:text-[1.7rem]">
+                    {a.heading}
+                  </h3>
+                  <p className="mt-3 text-[15px] leading-[1.75] text-[color:var(--charcoal-soft)]">
+                    {a.body}
+                  </p>
+                  <dl className="mt-4 grid gap-2 text-[14px] leading-[1.65] text-[color:var(--charcoal-soft)] sm:grid-cols-2">
+                    <div>
+                      <dt className="font-sans text-[10.5px] font-bold uppercase tracking-[0.2em] text-[color:var(--charcoal)]">
+                        Pickup
+                      </dt>
+                      <dd className="mt-1">{a.pickup}</dd>
+                    </div>
+                    <div>
+                      <dt className="font-sans text-[10.5px] font-bold uppercase tracking-[0.2em] text-[color:var(--charcoal)]">
+                        Driving time
+                      </dt>
+                      <dd className="mt-1">{a.drive}</dd>
+                    </div>
+                  </dl>
+                </article>
+              ))}
+            </div>
+          </div>
+        </section>
+      ) : null}
+
 
       <section className="py-14 md:py-20">
         <div className="container-x max-w-4xl">
@@ -259,6 +316,7 @@ export function RegionListingPage({ region }: { region: LisbonRegion }) {
                   ) : (
                     <Link
                       to={entry.path}
+                      hash={entry.anchor}
                       className="flex min-h-[64px] flex-col justify-center rounded-[6px] border border-[color:var(--border)] bg-[color:var(--card)] px-4 py-3 no-underline transition-colors duration-200 hover:border-[color:var(--gold)]/60"
                     >
                       <span className="font-sans text-[12px] uppercase tracking-[0.18em] font-semibold text-[color:var(--teal)]">

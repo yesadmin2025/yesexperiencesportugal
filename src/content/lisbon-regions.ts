@@ -309,15 +309,127 @@ export function regionFaq(region: LisbonRegion) {
 export const SERVICE_AREA_LINKS: readonly {
   area: string;
   path: string;
+  /** Anchor of that area's local section on the host page. */
+  anchor: string;
   note: string;
 }[] = [
-  { area: "Lisbon", path: "/lisbon-private-tours", note: "Hotel, apartment or cruise terminal" },
-  { area: "Cascais", path: "/private-tours-sintra-cascais", note: "Cascais & Estoril pickups" },
-  { area: "Sintra", path: "/private-tours-sintra-cascais", note: "Sintra village and hotels" },
-  { area: "Sesimbra", path: "/private-tours-arrabida-sesimbra", note: "Our home base" },
-  { area: "Setúbal", path: "/private-tours-azeitao-setubal", note: "Setúbal city and marina" },
-  { area: "Azeitão", path: "/private-tours-azeitao-setubal", note: "Wine and cheese country" },
-  { area: "Évora", path: "/private-tours-alentejo-evora", note: "Alentejo departures" },
-  { area: "Comporta", path: "/private-tours-comporta-troia", note: "Comporta houses and hotels" },
-  { area: "Tróia", path: "/private-tours-comporta-troia", note: "Tróia peninsula and ferry" },
+  { area: "Lisbon", anchor: "lisbon", path: "/lisbon-private-tours", note: "Hotel, apartment or cruise terminal" },
+  { area: "Cascais", anchor: "cascais", path: "/private-tours-sintra-cascais", note: "Cascais & Estoril pickups" },
+  { area: "Sintra", anchor: "sintra", path: "/private-tours-sintra-cascais", note: "Sintra village and hotels" },
+  { area: "Sesimbra", anchor: "sesimbra", path: "/private-tours-arrabida-sesimbra", note: "Our home base" },
+  { area: "Setúbal", anchor: "setubal", path: "/private-tours-azeitao-setubal", note: "Setúbal city and marina" },
+  { area: "Azeitão", anchor: "azeitao", path: "/private-tours-azeitao-setubal", note: "Wine and cheese country" },
+  { area: "Évora", anchor: "evora", path: "/private-tours-alentejo-evora", note: "Alentejo departures" },
+  { area: "Comporta", anchor: "comporta", path: "/private-tours-comporta-troia", note: "Comporta houses and hotels" },
+  { area: "Tróia", anchor: "troia", path: "/private-tours-comporta-troia", note: "Tróia peninsula and ferry" },
 ] as const;
+
+/**
+ * Local copy for each of the nine published service areas.
+ *
+ * Each area lives on the page that actually covers its pickups (see
+ * SERVICE_AREA_LINKS) and gets its own anchor, heading and factual
+ * orientation copy — what the area is, why guests stay there, how the
+ * pickup works and which of our real days run from it. No new thin
+ * pages, no invented stops, partners or prices.
+ */
+export interface ServiceAreaProfile {
+  area: string;
+  /** Anchor id on the host page, e.g. `#sintra`. */
+  anchor: string;
+  /** Page that owns this area's copy. */
+  path: string;
+  heading: string;
+  body: string;
+  pickup: string;
+  drive: string;
+}
+
+export const AREA_PROFILES: readonly ServiceAreaProfile[] = [
+  {
+    area: "Lisbon",
+    anchor: "lisbon",
+    path: "/lisbon-private-tours",
+    heading: "Day trips from Lisbon",
+    body: "Almost every day we run starts in Lisbon, because that is where our guests sleep. Baixa, Chiado, Príncipe Real, Alfama, Belém, Parque das Nações and the cruise terminal are all inside our standard pickup area, and the bridge puts real wine country forty minutes away.",
+    pickup: "Your own hotel lobby, apartment door, villa or the cruise terminal — no meeting point to find, and no charge for pickup inside Lisbon.",
+    drive: "40 minutes to Arrábida and Sintra; about 1h to Comporta; about 1h30 to Évora.",
+  },
+  {
+    area: "Sintra",
+    anchor: "sintra",
+    path: "/private-tours-sintra-cascais",
+    heading: "Private tours in Sintra",
+    body: "Sintra is a hill town of estates and cool, wooded gardens where timing decides everything. We shape the day around when each place empties rather than around a fixed list, and we drive between the hilltop stops so nobody spends the afternoon queueing for a shuttle.",
+    pickup: "Sintra village hotels and guest houses, plus any Lisbon or Cascais address on the way.",
+    drive: "About 40 minutes from central Lisbon.",
+  },
+  {
+    area: "Cascais",
+    anchor: "cascais",
+    path: "/private-tours-sintra-cascais",
+    heading: "Private tours from Cascais & Estoril",
+    body: "Cascais and Estoril sit on the same coast road as Cabo da Roca and Guincho, so a day that starts here can take the ocean first and the Sintra hills afterwards. Staying on this coast usually means a calmer, later start than the same day from the city.",
+    pickup: "Cascais, Estoril and Carcavelos hotels, apartments and villas.",
+    drive: "About 30 minutes from Lisbon; 20 minutes to Sintra over the Malveira road.",
+  },
+  {
+    area: "Sesimbra",
+    anchor: "sesimbra",
+    path: "/private-tours-arrabida-sesimbra",
+    heading: "Private tours from Sesimbra",
+    body: "Sesimbra is our home base — a working fishing town under the Arrábida ridge where the boats still land the fish each morning. It is also the shortest possible start to an Arrábida day: the park road, the coves and the Azeitão cellars are all within a few minutes.",
+    pickup: "Sesimbra town, Santana and the Meco side of the cape.",
+    drive: "About 40 minutes from central Lisbon over the 25 de Abril bridge.",
+  },
+  {
+    area: "Setúbal",
+    anchor: "setubal",
+    path: "/private-tours-azeitao-setubal",
+    heading: "Private tours from Setúbal",
+    body: "Setúbal is the estuary city between the Arrábida hills and the Sado — a serious fish market, dolphins in the channel and the Tróia ferry leaving from the docks. Days that begin here reach both the Azeitão cellars and the Comporta side of the water quickly.",
+    pickup: "Setúbal city, the marina and the ferry terminal area.",
+    drive: "About 45 minutes from central Lisbon; 15 minutes to Azeitão.",
+  },
+  {
+    area: "Azeitão",
+    anchor: "azeitao",
+    path: "/private-tours-azeitao-setubal",
+    heading: "Private wine tours in Azeitão",
+    body: "Azeitão is the wine and cheese village closest to Lisbon: Moscatel cellars, sheep's cheese made by hand, and tile workshops still painting by eye. It is small enough to walk and close enough that the day belongs to the tastings rather than the motorway.",
+    pickup: "Vila Nogueira and Vila Fresca de Azeitão, plus the surrounding quintas.",
+    drive: "About 40 minutes from central Lisbon.",
+  },
+  {
+    area: "Évora",
+    anchor: "evora",
+    path: "/private-tours-alentejo-evora",
+    heading: "Private tours from Évora",
+    body: "Évora is a walled Alentejo city with a Roman temple in the middle of it and cork country all around. Ninety minutes inland, it rewards an early start and a private vehicle: the wine here is still made in clay, and the villages between are worth stopping in.",
+    pickup: "Évora hotels inside and outside the walls, and nearby Alentejo estates.",
+    drive: "About 1h30 from central Lisbon — these days start earlier.",
+  },
+  {
+    area: "Comporta",
+    anchor: "comporta",
+    path: "/private-tours-comporta-troia",
+    heading: "Private tours from Comporta",
+    body: "Comporta is rice fields, pine, sand tracks and low white houses behind miles of open Atlantic beach. It stays quiet even in August, and a day from here can take the dunes in the morning and the Alentejo coast or the estuary in the afternoon.",
+    pickup: "Comporta, Carvalhal and Muda houses, hotels and villas.",
+    drive: "About 1h from central Lisbon, or minutes from the Tróia ferry.",
+  },
+  {
+    area: "Tróia",
+    anchor: "troia",
+    path: "/private-tours-comporta-troia",
+    heading: "Private tours from Tróia",
+    body: "Tróia sits on the sandspit across the Sado from Setúbal, with Roman fish-salting ruins on the beach side and the estuary channel on the other. Arriving or leaving by ferry is part of the day rather than a transfer.",
+    pickup: "Tróia resort, the marina and the ferry terminal.",
+    drive: "About 1h from central Lisbon including the Sado crossing.",
+  },
+] as const;
+
+/** Area profiles owned by a given page path. */
+export function areaProfilesFor(path: string): readonly ServiceAreaProfile[] {
+  return AREA_PROFILES.filter((a) => a.path === path);
+}
