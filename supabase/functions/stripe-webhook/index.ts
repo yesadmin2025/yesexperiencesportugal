@@ -228,7 +228,72 @@ Deno.serve(async (req) => {
     metadata: sessionPreview?.metadata ?? null,
   };
 
-  // Idempotency: ignore non-checkout events quickly.
+  // Refunds can begin in this app or directly in Stripe. The signed webhook
+  // remains the reconciliation path so the admin dashboard cannot drift.
+  if (event.type === "charge.refunded") {
+    const charge = event.data.object as Stripe.Charge;
+    const paymentIntentId =
+      typeof charge.payment_intent === "string" ? charge.payment_intent : charge.payment_intent?.id;
+    await logEvent({
+      ...baseLog,
+      session_id: null,
+      payment_status: "refunded",
+      amount_total: charge.amount_refunded,
+      currency: charge.currency,
+      customer_email: charge.billing_details?.email ?? null,
+      metadata: charge.metadata ?? null,
+      status_code: 200,
+    });
+    if (!paymentIntentId) {
+      return Response.json({ received: true, ignored: "refund_without_payment_intent" }, { status: 200, headers: corsHeaders });
+    }
+    const { data: refundedBooking, error: refundLookupError } = await admin
+      .from("bookings")
+      .select("id, customer_email, customer_name, source_tour_id, preferred_date, amount_total, currency, stripe_session_id, booking_details")
+      .eq("stripe_payment_intent_id", paymentIntentId)
+      .maybeSingle();
+    if (refundLookupError || !refundedBooking) {
+      console.error("Refunded booking lookup failed:", refundLookupError?.message ?? paymentIntentId);
+      return Response.json({ received: true, bookingUpdated: false }, { status: 200, headers: corsHeaders });
+    }
+    const status = charge.refunded ? "refunded" : "paid";
+    await admin.from("bookings").update({ status }).eq("id", refundedBooking.id);
+
+    if (charge.refunded && refundedBooking.customer_email) {
+      const details =
+        refundedBooking.booking_details && typeof refundedBooking.booking_details === "object"
+          ? (refundedBooking.booking_details as Record<string, unknown>)
+          : {};
+      const snapshot = details.snapshot && typeof details.snapshot === "object"
+        ? (details.snapshot as Record<string, unknown>)
+        : {};
+      const siteUrl = Deno.env.get("SITE_URL") ?? "https://yesexperiencesportugal.com";
+      const internalSecret = Deno.env.get("EMAIL_INTERNAL_SECRET");
+      if (internalSecret && refundedBooking.stripe_session_id) {
+        const amountFormatted = new Intl.NumberFormat("en-GB", {
+          style: "currency",
+          currency: String(refundedBooking.currency || "EUR").toUpperCase(),
+        }).format((refundedBooking.amount_total || 0) / 100);
+        await fetch(`${siteUrl}/api/public/hooks/booking-cancelled-email`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json", Authorization: `Bearer ${internalSecret}` },
+          body: JSON.stringify({
+            bookingId: refundedBooking.id,
+            recipientEmail: refundedBooking.customer_email,
+            customerName: refundedBooking.customer_name,
+            experienceName: snapshot.experienceName ?? refundedBooking.source_tour_id,
+            dateExact: refundedBooking.preferred_date,
+            amountFormatted,
+            bookingRef: refundedBooking.stripe_session_id,
+            refundStatus: "confirmed",
+          }),
+        });
+      }
+    }
+    return Response.json({ received: true, bookingUpdated: true, status }, { status: 200, headers: corsHeaders });
+  }
+
+  // Idempotency: ignore other non-checkout events quickly.
   if (
     event.type !== "checkout.session.completed" &&
     event.type !== "checkout.session.async_payment_succeeded"

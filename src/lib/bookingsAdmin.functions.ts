@@ -200,19 +200,31 @@ export const cancelAndRefundBooking = createServerFn({ method: "POST" })
     }).format((booking.amount_total || 0) / 100);
     if (booking.customer_email) {
       const { sendTransactionalInternal } = await import("@/lib/email/send-internal.server");
+      const templateData = {
+        customerName: booking.customer_name,
+        experienceName: snapshot.experienceName ?? booking.source_tour_id,
+        dateExact: booking.preferred_date,
+        amountFormatted,
+        bookingRef: booking.stripe_session_id,
+        refundStatus: refund.status ?? "submitted",
+      };
       await sendTransactionalInternal({
         templateName: "booking-cancelled",
         recipientEmail: booking.customer_email,
         idempotencyKey: `booking-cancelled-${booking.id}`,
-        templateData: {
-          customerName: booking.customer_name,
-          experienceName: snapshot.experienceName ?? booking.source_tour_id,
-          dateExact: booking.preferred_date,
-          amountFormatted,
-          bookingRef: booking.stripe_session_id,
-          refundStatus: refund.status ?? "submitted",
-        },
+        templateData,
       });
+      const { TEAM_NOTIFICATION_RECIPIENTS } = await import("@/lib/email/team-recipients");
+      await Promise.all(
+        TEAM_NOTIFICATION_RECIPIENTS.map((recipientEmail) =>
+          sendTransactionalInternal({
+            templateName: "booking-cancelled",
+            recipientEmail,
+            idempotencyKey: `booking-cancelled-team-${booking.id}-${recipientEmail}`,
+            templateData,
+          }),
+        ),
+      );
     }
 
     return { ok: true, status: "refunded" as const, refundStatus: refund.status ?? "submitted" };
