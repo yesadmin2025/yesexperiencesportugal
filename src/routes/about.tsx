@@ -19,6 +19,7 @@ import {
   EMAIL_HREF,
   LICENSE_LABEL,
   PHONE_DISPLAY,
+  SERVICE_AREAS_LABEL,
   whatsappUrl,
 } from "@/config/business-nap";
 
@@ -371,14 +372,14 @@ function Page() {
               </li>
               <li>
                 <strong className="text-[color:var(--charcoal)]">Hotel pickup included.</strong>{" "}
-                Available from Lisbon, Cascais, Estoril, Sintra, Sesimbra, Setúbal and other
-                locations depending on the experience.
+                Door-to-door pickups from {SERVICE_AREAS_LABEL} and other locations depending on the
+                experience.
               </li>
               <li>
                 <strong className="text-[color:var(--charcoal)]">Legal base, wider reach.</strong>{" "}
-                Registered in Sesimbra, with most pickups from the Lisbon area, and operating
-                private experiences across Portugal — Sintra, Arrábida, Alentejo, the Vicentine
-                Coast, central Portugal and beyond.
+                Registered in Sesimbra ({LICENSE_LABEL}) and operating private experiences across
+                Portugal, with most pickups from the Lisbon area and the surrounding coast and
+                countryside.
               </li>
               <li>
                 <strong className="text-[color:var(--charcoal)]">Local replies, fast.</strong>{" "}

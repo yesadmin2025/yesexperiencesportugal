@@ -11,7 +11,7 @@ Use this to claim, verify, and complete the Google Business Profile listing.
 | Primary category | Tour operator |
 | Additional categories | Travel agency, Tour guide, Wine tour operator, Private driver, Sightseeing tour agency |
 | Address | Sesimbra, Portugal (use only if you want a public storefront address) |
-| Service areas | Lisbon, Cascais, Sintra, Sesimbra, Setúbal, Azeitão, Évora, Comporta, Tróia, Arrábida, Alentejo |
+| Service areas | Lisbon, Cascais, Sintra, Sesimbra, Setúbal, Azeitão, Évora, Comporta, Tróia |
 | Phone | +351 911 889 992 |
 | Website | https://yesexperiencesportugal.com |
 | Email | info@yesexperiencesportugal.com |
@@ -20,7 +20,7 @@ Use this to claim, verify, and complete the Google Business Profile listing.
 
 ## Business description (750 characters max)
 
-YES Experiences Portugal designs private, emotionally memorable day trips and multi-day journeys across Portugal. Based in Sesimbra and operating nationwide, we specialize in wine tours, coastal escapes, cultural deep-dives, and fully custom itineraries for couples, families, and premium private groups. Every experience is built around real local knowledge, flexible pickup from Lisbon, Cascais, Sintra, Setúbal, and the Alentejo, and seamless booking with instant confirmation. Licensed tour operator RNAAT nº 31/2023.
+YES Experiences Portugal designs private, emotionally memorable day trips and multi-day journeys across Portugal. Based in Sesimbra, we operate as a licensed Portuguese tour operator (RNAAT nº 31/2023) and offer flexible door-to-door pickup from Lisbon, Cascais, Sintra, Sesimbra, Setúbal, Azeitão, Évora, Comporta and Tróia. Every experience is built around real local knowledge, private guiding and vehicles, and seamless booking with instant confirmation. Specialties include wine tours in Arrábida and Alentejo, coastal escapes, cultural deep-dives, and fully custom itineraries for couples, families and premium private groups.
 
 ## Services (add as many as apply)
 

@@ -58,7 +58,7 @@ const SECTIONS: { heading: string; body: string[] }[] = [
     heading: "You almost certainly do not need a rental car",
     body: [
       "Portugal drives on the right, so that part is familiar. What is not familiar is the parking: historic town centres were built for carts, garages are small, and most rental cars here are manual unless you pay extra and book early.",
-      "Distances are also small. Sintra, Arrábida, the Setúbal wine country and the Atlantic beaches are all inside forty minutes of Lisbon; Évora and the Alentejo are ninety. For a week-long trip based in Lisbon, private day trips cost less stress than a rental, and considerably less than a rental plus tolls plus parking plus the day you write off looking for it.",
+      "Distances are also small. Sintra, Arrábida, the Setúbal wine country and the Atlantic beaches are all inside forty minutes of Lisbon; Évora and the Alentejo are ninety. For guests spending the week in Lisbon, private day trips cost less stress than a rental, and considerably less than a rental plus tolls plus parking plus the day you write off looking for it.",
     ],
   },
   {

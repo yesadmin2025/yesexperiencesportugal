@@ -26,6 +26,25 @@ export const BASED_IN_SHORT =
 export const BASED_IN_LONG =
   "Based in Sesimbra, designing private journeys across Portugal, with pickups from Lisbon, Cascais, Sintra, Sesimbra and Setúbal." as const;
 
+/**
+ * Service areas published on the Google Business Profile and echoed
+ * sitewide. Keep this list in sync with GBP; order is alphabetical.
+ */
+export const SERVICE_AREAS = [
+  "Azeitão",
+  "Cascais",
+  "Comporta",
+  "Évora",
+  "Lisbon",
+  "Sesimbra",
+  "Setúbal",
+  "Sintra",
+  "Tróia",
+] as const;
+
+export const SERVICE_AREAS_LABEL =
+  "Lisbon, Cascais, Sintra, Sesimbra, Setúbal, Azeitão, Évora, Comporta, Tróia" as const;
+
 export const EMAIL = "info@yesexperiencesportugal.com" as const;
 export const EMAIL_HREF = `mailto:${EMAIL}` as const;
 

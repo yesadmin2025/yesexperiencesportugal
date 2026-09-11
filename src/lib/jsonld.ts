@@ -10,7 +10,13 @@
  * `<script type="application/ld+json">` per node.
  */
 
-import { EMAIL, PHONE_TEL, SOCIAL, WEBSITE_URL } from "@/config/business-nap";
+import {
+  EMAIL,
+  PHONE_TEL,
+  SERVICE_AREAS,
+  SOCIAL,
+  WEBSITE_URL,
+} from "@/config/business-nap";
 import { REVIEW_CERTIFICATE } from "@/config/trust-certificate";
 
 export const SITE_URL = WEBSITE_URL;
@@ -212,14 +218,7 @@ export function organizationLd() {
     ],
     areaServed: [
       { "@type": "Country", name: "Portugal" },
-      { "@type": "AdministrativeArea", name: "Lisbon" },
-      { "@type": "AdministrativeArea", name: "Sintra" },
-      { "@type": "AdministrativeArea", name: "Arrábida" },
-      { "@type": "AdministrativeArea", name: "Sesimbra" },
-      { "@type": "AdministrativeArea", name: "Alentejo" },
-      { "@type": "AdministrativeArea", name: "Costa Vicentina" },
-      { "@type": "AdministrativeArea", name: "Comporta" },
-      { "@type": "AdministrativeArea", name: "Tróia" },
+      ...SERVICE_AREAS.map((name) => ({ "@type": "AdministrativeArea", name })),
     ],
     telephone: PHONE_TEL,
     contactPoint: {
