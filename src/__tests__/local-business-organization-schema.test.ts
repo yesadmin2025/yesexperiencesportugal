@@ -32,7 +32,7 @@ describe("Organization / LocalBusiness structured data", () => {
   });
 
   it("Organization lists all nine GBP service areas plus Portugal", () => {
-    const served = (org.areaServed as { name: string }[]).map((a) => a.name);
+    const served = (org.areaServed as readonly { name: string }[]).map((a) => a.name);
     expect(served).toContain("Portugal");
     [
       "Lisbon",
