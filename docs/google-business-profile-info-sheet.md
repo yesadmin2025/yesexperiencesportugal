@@ -11,7 +11,7 @@ Use this to claim, verify, and complete the Google Business Profile listing.
 | Primary category | Tour operator |
 | Additional categories | Travel agency, Tour guide, Wine tour operator, Private driver, Sightseeing tour agency |
 | Address | Sesimbra, Portugal (use only if you want a public storefront address) |
-| Service areas | Lisbon, Cascais, Sintra, Sesimbra, Setúbal, Azeitão, Évora, Comporta, Tróia, Arrábida, Alentejo |
+| Service areas | Lisbon, Cascais, Sintra, Sesimbra, Setúbal, Azeitão, Évora, Comporta, Tróia |
 | Phone | +351 911 889 992 |
 | Website | https://yesexperiencesportugal.com |
 | Email | info@yesexperiencesportugal.com |
