@@ -45,6 +45,6 @@
 - [x] Strengthen Arrábida, Azeitão, and Alentejo wine-tour SEO
 - [x] Add Portugal travel stories and link them from the American traveler guide
 - [x] Verify booking, SEO, runtime, and publish
-- [ ] Add booking link + booking CTA on each region page to reach real booking pages
-- [ ] Implement/validate LocalBusiness/Organization structured data including licence and service areas, and run Google Rich Results Test
+- [x] Add booking link + booking CTA on each region page to reach real booking pages
+- [x] Implement/validate LocalBusiness/Organization structured data including licence and service areas, and run Google Rich Results Test
 - [ ] Claim and verify the YES Experiences Portugal Google Business Profile (owner action required in Google)
