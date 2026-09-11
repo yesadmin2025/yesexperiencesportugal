@@ -44,4 +44,5 @@
 - [x] Complete booking cancellation/refund workflow and confirmation communication
 - [x] Strengthen Arrábida, Azeitão, and Alentejo wine-tour SEO
 - [x] Add Portugal travel stories and link them from the American traveler guide
-- [ ] Verify booking, SEO, runtime, and publish
+- [x] Verify booking, SEO, runtime, and publish
+- [ ] Claim and verify the YES Experiences Portugal Google Business Profile (owner action required in Google)
