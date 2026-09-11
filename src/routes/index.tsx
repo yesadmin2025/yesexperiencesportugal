@@ -931,37 +931,31 @@ function HomePage() {
           place near the top of the page (see <GuestQuotes />) so the
           middle of the homepage stays focused on inventory + bespoke. */}
 
-        {/* 6 — PROPOSALS / CELEBRATIONS / CORPORATE / MULTI-DAY
-          One combined editorial band — Proposals, Celebrations,
-          Corporate & Groups, and Multi-Day routes — so every "bigger
-          occasion" path lives together with clear hierarchy. */}
+        {/* 7 — PROPOSALS & CELEBRATIONS
+          A dedicated commercial path for private milestones. */}
         <section
-          id="occasions"
+          id="proposals"
           className="he-section-rule section-enter py-16 md:py-20 bg-[color:var(--sand)] border-b border-[color:var(--border)] scroll-mt-24 md:scroll-mt-28"
-          aria-labelledby="groups-title"
+          aria-labelledby="proposals-title"
         >
           <div className="container-x">
             <div className="reveal text-center max-w-2xl mx-auto mb-7 md:mb-10">
-              <Eyebrow className="mb-5">Occasions</Eyebrow>
+              <Eyebrow className="mb-5">Proposals & celebrations</Eyebrow>
 
               <h2
-                id="groups-title"
+                id="proposals-title"
                 className="serif mt-3 text-[1.8rem] sm:text-[2.1rem] lg:text-[2.95rem] leading-[1.12] lg:leading-[1.02] tracking-[-0.014em] text-[color:var(--charcoal)] font-medium"
               >
-                Moments that{" "}
+                Private moments,{" "}
                 <span className="italic font-normal text-[color:var(--teal)]">
-                  deserve a setting.
+                  planned discreetly.
                 </span>
               </h2>
+              <p className="mx-auto mt-5 max-w-xl text-[15px] leading-[1.7] text-[color:var(--charcoal-soft)]">
+                From the first idea to the right setting and timing, one local team keeps the moment personal.
+              </p>
             </div>
 
-            {/* Each block uses the shared EditorialCard primitive so
-              eyebrow / title / body / detail / CTA / trust share one
-              typographic rhythm across the homepage.
-              Split into two intents: private occasions (proposals,
-              celebrations) first, then the quieter "bigger plans" row
-              (corporate & groups) so romance and business no longer read
-              as one blurred category. */}
             <div className="max-w-6xl mx-auto flex flex-col gap-7 md:gap-10">
               {groupsAndCelebrations
                 .filter((m) => m.id !== "corporate")
@@ -980,35 +974,49 @@ function HomePage() {
                   />
                 ))}
             </div>
+          </div>
+        </section>
 
-            <div className="reveal max-w-6xl mx-auto mt-14 md:mt-20 border-t border-[color:var(--border)] pt-10 md:pt-14">
-              <div className="text-center max-w-2xl mx-auto mb-7 md:mb-10">
-                <Eyebrow className="mb-5">Bigger plans</Eyebrow>
-                <h3 className="serif mt-3 text-[1.55rem] sm:text-[1.8rem] lg:text-[2.2rem] leading-[1.15] tracking-[-0.012em] text-[color:var(--charcoal)] font-medium">
-                  Teams and groups,{" "}
-                  <span className="italic font-normal text-[color:var(--teal)]">
-                    handled end to end.
-                  </span>
-                </h3>
-              </div>
+        {/* 8 — CORPORATE & PRIVATE GROUPS
+          A separate B2B path with its own promise and direct action. */}
+        <section
+          id="corporate-groups"
+          className="he-section-rule section-enter py-16 md:py-20 bg-[color:var(--ivory)] border-b border-[color:var(--border)] scroll-mt-24 md:scroll-mt-28"
+          aria-labelledby="corporate-title"
+        >
+          <div className="container-x">
+            <div className="reveal text-center max-w-2xl mx-auto mb-7 md:mb-10">
+              <Eyebrow className="mb-5">Corporate & private groups</Eyebrow>
+              <h2
+                id="corporate-title"
+                className="serif mt-3 text-[1.8rem] sm:text-[2.1rem] lg:text-[2.95rem] leading-[1.12] lg:leading-[1.02] tracking-[-0.014em] text-[color:var(--charcoal)] font-medium"
+              >
+                Bring people together.{" "}
+                <span className="italic font-normal text-[color:var(--teal)]">
+                  We handle the day.
+                </span>
+              </h2>
+              <p className="mx-auto mt-5 max-w-xl text-[15px] leading-[1.7] text-[color:var(--charcoal-soft)]">
+                Off-sites, incentives, client hospitality and private groups—with transport, timing, venues and invoicing coordinated together.
+              </p>
+            </div>
 
-              <div className="flex flex-col gap-7 md:gap-10">
-                {groupsAndCelebrations
-                  .filter((m) => m.id === "corporate")
-                  .map((m) => (
-                    <EditorialCard
-                      key={m.eyebrow}
-                      id={m.id}
-                      eyebrow={m.eyebrow}
-                      accent="var(--teal)"
-                      title={m.title}
-                      body={m.line}
-                      detail={m.detail}
-                      cta={{ label: m.cta, to: m.to, ariaLabel: m.cta }}
-                      image={{ src: m.img, to: m.to }}
-                    />
-                  ))}
-              </div>
+            <div className="max-w-6xl mx-auto flex flex-col gap-7 md:gap-10">
+              {groupsAndCelebrations
+                .filter((m) => m.id === "corporate")
+                .map((m) => (
+                  <EditorialCard
+                    key={m.eyebrow}
+                    id={m.id}
+                    eyebrow={m.eyebrow}
+                    accent="var(--teal)"
+                    title={m.title}
+                    body={m.line}
+                    detail={m.detail}
+                    cta={{ label: m.cta, to: m.to, ariaLabel: m.cta }}
+                    image={{ src: m.img, to: m.to }}
+                  />
+                ))}
             </div>
           </div>
         </section>
