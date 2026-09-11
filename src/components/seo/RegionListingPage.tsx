@@ -37,6 +37,9 @@ export function regionTours(region: LisbonRegion) {
  */
 export function RegionListingPage({ region }: { region: LisbonRegion }) {
   const tours = regionTours(region);
+  // Region CTAs open the booking page already set to this region's first day,
+  // so the real price, dates and pickup fields are visible immediately.
+  const bookSearch = tours[0] ? { tour: tours[0].id } : {};
   const crumbs = [
     { name: "Home", path: "/" },
     { name: "Day trips from Lisbon", path: "/day-trips-from-lisbon" },
@@ -58,7 +61,9 @@ export function RegionListingPage({ region }: { region: LisbonRegion }) {
             {region.standfirst}
           </p>
           <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-            <CtaButton to="/book">Book &amp; pay online</CtaButton>
+            <CtaButton to="/book" search={bookSearch}>
+              Book &amp; pay online
+            </CtaButton>
             <CtaButton to="/contact" variant="ghost">
               Ask a local
             </CtaButton>
