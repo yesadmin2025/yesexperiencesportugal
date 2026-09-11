@@ -24,7 +24,7 @@ import {
   type PublicReview,
 } from "@/lib/reviews.functions";
 
-type Quote = {
+type Testimonial = {
   key: string;
   title: string | null;
   body: string;
@@ -46,7 +46,7 @@ function trim(text: string, max = 220) {
   return clean.length > max ? `${clean.slice(0, max - 1)}…` : clean;
 }
 
-function fromDb(rows: PublicReview[]): Quote[] {
+function fromDb(rows: PublicReview[]): Testimonial[] {
   return rows
     .filter((r) => r.body?.trim() && Number(r.rating) >= 4)
     .map((r) => ({
@@ -60,8 +60,8 @@ function fromDb(rows: PublicReview[]): Quote[] {
 }
 
 /** Verified platform quotes already published on the tour pages. */
-function fromTourPages(tourIds: readonly string[], limit: number): Quote[] {
-  const out: Quote[] = [];
+function fromTourPages(tourIds: readonly string[], limit: number): Testimonial[] {
+  const out: Testimonial[] = [];
   for (const id of tourIds) {
     const meta = getViatorMeta(id);
     if (!meta) continue;
@@ -113,7 +113,7 @@ export function LiveReviews({
   const curated = useServerFn(getCuratedHomepageReviews);
   const perTour = useServerFn(getReviewsForTours);
   const fallbackIds = fallbackTourIds ?? tourIds ?? [];
-  const [quotes, setQuotes] = useState<Quote[]>(() => fromTourPages(fallbackIds, limit));
+  const [quotes, setQuotes] = useState<Testimonial[]>(() => fromTourPages(fallbackIds, limit));
 
   useEffect(() => {
     let cancelled = false;
