@@ -689,10 +689,11 @@ function HomePage() {
                 </h2>
 
                 <p className="mt-4 text-[14.5px] md:text-[16px] text-[color:var(--charcoal-soft)] leading-[1.7] max-w-md font-normal">
-                  Choose mood, group and rhythm. The Studio draws a{" "}
-                  <strong className="font-medium text-[color:var(--charcoal)]">real route</strong>,
-                  real timings and a live price — then reserve when the route is ready — final price
-                  shown before payment.
+                  The Studio draws the day as you shape it: a{" "}
+                  <strong className="font-medium text-[color:var(--charcoal)]">real route</strong> on
+                  the map, honest driving times, and the price updating as it goes. The final price is
+                  on screen before you pay, confirmation lands in minutes, and a local stays reachable
+                  after that.
                 </p>
 
                 {/* Three differentiators — tied to the product, not a floating manifesto. */}
