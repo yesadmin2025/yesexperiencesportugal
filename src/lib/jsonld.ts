@@ -1265,9 +1265,14 @@ export function localBusinessLd(args: {
     "@context": "https://schema.org",
     "@type": ["TravelAgency", "LocalBusiness"],
     "@id": `${url}#localbusiness`,
-    name: args.name,
+    // Google requires the business name on every LocalBusiness node to match
+    // the verified Google Business Profile exactly. The regional label is kept
+    // as an alternateName so the page still reads as area-specific.
+    name: BUSINESS_LEGAL_NAME,
+    alternateName: args.name,
     description: args.description,
     url,
+    branchOf: { "@id": `${SITE_URL}/#organization` },
     parentOrganization: { "@id": `${SITE_URL}/#organization` },
     telephone: PHONE_TEL,
     email: EMAIL,
