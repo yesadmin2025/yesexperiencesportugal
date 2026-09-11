@@ -10,7 +10,7 @@
  * `<script type="application/ld+json">` per node.
  */
 
-import { EMAIL, PHONE_DISPLAY, PHONE_TEL, SOCIAL, WEBSITE_URL } from "@/config/business-nap";
+import { EMAIL, PHONE_TEL, SOCIAL, WEBSITE_URL } from "@/config/business-nap";
 import { REVIEW_CERTIFICATE } from "@/config/trust-certificate";
 
 export const SITE_URL = WEBSITE_URL;
