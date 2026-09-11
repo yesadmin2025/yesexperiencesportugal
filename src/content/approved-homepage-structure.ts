@@ -123,50 +123,58 @@ export const APPROVED_HOMEPAGE_SECTIONS: readonly ApprovedSection[] = [
   },
   {
     order: 6,
+    name: "Live guest reviews",
+    componentTag: "LiveReviews",
+    inComponent: true,
+    requiredSpacing: { kind: "py", minScale: 16 },
+  },
+  {
+    order: 7,
     name: "Travel Designer — multi-day, written around you",
     componentTag: "RecentJourney",
     inComponent: true,
     requiredSpacing: { kind: "py", minScale: 14 },
   },
   {
-    order: 7,
+    order: 8,
     name: "Proposals & Celebrations",
     ariaLabelledBy: "proposals-title",
     requiredSpacing: { kind: "py", minScale: 16 },
   },
   {
-    order: 8,
+    order: 9,
     name: "Corporate & Private Groups",
     ariaLabelledBy: "corporate-title",
     requiredSpacing: { kind: "py", minScale: 16 },
   },
   {
-    order: 9,
+    order: 10,
     name: "Plan your Portugal — interactive region map",
     ariaLabelledBy: "plan-map-title",
     requiredSpacing: { kind: "py", minScale: 16 },
   },
   {
-    order: 10,
+    order: 11,
     name: "Journal — local guides",
     ariaLabelledBy: "journal-title",
     requiredSpacing: { kind: "py", minScale: 16 },
   },
   {
-    order: 11,
+    order: 12,
     name: "FAQ — visible helpful answers",
     componentTag: "FAQ",
     inComponent: true,
     requiredSpacing: { kind: "py", minScale: 16 },
   },
   {
-    order: 12,
+    order: 13,
     name: "Final CTA — talk to a local",
     ariaLabelledBy: "final-cta-title",
     requiredSpacing: { kind: "py", minScale: 16 },
   },
 
 ] as const;
+
 
 /** Total number of approved blocks (including componentized rows). */
 export const APPROVED_SECTION_COUNT = APPROVED_HOMEPAGE_SECTIONS.length;
