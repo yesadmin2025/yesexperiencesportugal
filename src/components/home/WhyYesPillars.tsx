@@ -25,7 +25,7 @@ const PILLARS: Pillar[] = [
         Your rhythm, <span className="italic font-normal text-[color:var(--teal)]">your day.</span>
       </>
     ),
-    body: "Choose the pace, the stops and the feeling. Nothing locked, nothing templated — every Signature can be tailored, every Studio day designed from scratch.",
+    body: "The pace, the stops and the feeling stay yours. Nothing locked, nothing templated — every Signature can be tailored, every Studio day designed from scratch.",
   },
   {
     num: "02",
