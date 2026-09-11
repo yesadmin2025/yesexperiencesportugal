@@ -31,8 +31,8 @@ const PATHS: ReadonlyArray<Path> = [
     id: "signature",
     Icon: BookOpen,
     eyebrow: "Ready to book",
-    title: "Choose a private day",
-    body: "Start with a proven YES route, then tailor only the details that matter to you.",
+    title: "A private day, ready to go",
+    body: "Start from a route we drive every week, then tailor only the details that matter to you.",
     cta: "Browse private days",
     href: "/experiences",
     analyticsEvent: "home_path_signature_click",
@@ -41,9 +41,9 @@ const PATHS: ReadonlyArray<Path> = [
     id: "studio",
     Icon: Wand2,
     eyebrow: "One custom day",
-    title: "Design it in the Studio",
-    body: "Choose your mood, group and rhythm. See a real route and live price before you reserve.",
-    cta: "Open the Studio",
+    title: "Shape a day around you",
+    body: "Mood, pace and people — see the real route and the live price before you reserve.",
+    cta: "Design your day",
     href: "/studio-v3",
     analyticsEvent: "home_path_studio_click",
   },
@@ -51,7 +51,7 @@ const PATHS: ReadonlyArray<Path> = [
     id: "designer",
     Icon: Compass,
     eyebrow: "Several days",
-    title: "Plan a Portugal journey",
+    title: "Plan a whole Portugal journey",
     body: "A local Travel Designer shapes the route, pace, stays and logistics around the way you travel.",
     cta: "Start with a designer",
     href: "/multi-day",
@@ -137,10 +137,10 @@ export function FourWaysIn() {
             id="choose-path-title"
             className="serif text-[2rem] sm:text-[2.4rem] md:text-[3.25rem] leading-[1.08] md:leading-[1.02] tracking-[-0.018em] text-[color:var(--charcoal)] font-medium text-balance"
           >
-            Choose how you <span className="italic font-normal text-[color:var(--teal)]">want to travel.</span>
+            Three ways <span className="italic font-normal text-[color:var(--teal)]">into Portugal.</span>
           </h2>
           <p className="mx-auto mt-5 max-w-xl text-[16px] md:text-[17px] leading-[1.7] text-[color:var(--charcoal-soft)]">
-            One private day ready to book, one built around you, or several days planned with a local designer.
+            A private day ready to book, a day shaped around you, or a whole journey planned with a local designer.
           </p>
         </div>
 

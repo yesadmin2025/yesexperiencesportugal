@@ -48,15 +48,30 @@ function shouldSkipIntro(): boolean {
   }
 }
 
-function revealStyle(on: boolean, ms: number): React.CSSProperties {
+function revealStyle(on: boolean, ms: number, delayMs = 0, risePx = 22): React.CSSProperties {
+  // `delayMs` staggers the composed block so the closing elements arrive
+  // one after another (eyebrow → subheadline → CTAs → quiet links) rather
+  // than snapping in together. Delay only applies on the way in.
+  const delay = on ? delayMs : 0;
   return {
     opacity: on ? 1 : 0,
-    transform: on ? "translateY(0)" : "translateY(22px)",
+    transform: on ? "translateY(0)" : `translateY(${risePx}px)`,
     filter: on ? "blur(0px)" : "blur(5px)",
     willChange: "opacity, transform, filter",
-    transition: `opacity ${ms}ms ${EASE}, transform ${ms}ms ${EASE}, filter ${ms}ms ${EASE}`,
+    transition:
+      `opacity ${ms}ms ${EASE} ${delay}ms, ` +
+      `transform ${ms}ms ${EASE} ${delay}ms, ` +
+      `filter ${ms}ms ${EASE} ${delay}ms`,
   };
 }
+
+/** Sequenced arrival offsets for the composed (post-stanza) block. */
+const COMPOSE_STAGGER = {
+  eyebrow: 0,
+  subheadline: 180,
+  ctas: 360,
+  links: 540,
+} as const;
 
 const ARROW = (
   <svg
@@ -170,10 +185,10 @@ export function CinematicHero() {
             rest over ~9s — a cinematic "exhale", not a Ken Burns drift. */}
         <style>{`
           @keyframes heroFilmSettle {
-            from { transform: scale(1.06); }
+            from { transform: scale(1.075); }
             to { transform: scale(1); }
           }
-          .hero-film-settle { animation: heroFilmSettle 9000ms cubic-bezier(0.22,1,0.36,1) both; }
+          .hero-film-settle { animation: heroFilmSettle 12000ms cubic-bezier(0.22,1,0.36,1) both; }
           @media (prefers-reduced-motion: reduce) {
             .hero-film-settle { animation: none; }
           }
@@ -241,7 +256,7 @@ export function CinematicHero() {
                   className="absolute inset-x-0 top-0 md:mx-auto"
                   style={{
                     opacity: activeChapter === chapter.id ? 1 : 0,
-                    transition: `opacity 900ms ${EASE}`,
+                    transition: `opacity 1200ms ${EASE}`,
                     pointerEvents: "none",
                   }}
                 >
@@ -262,7 +277,7 @@ export function CinematicHero() {
             <p
               data-hero-field="eyebrow"
               className="hero-promise flex items-center gap-3.5 text-[11px] font-medium uppercase tracking-[0.32em] text-[#F2DDAE] [text-shadow:0_1px_10px_rgba(0,0,0,0.55)] sm:text-[11.5px] md:justify-center"
-              style={revealStyle(composed, COMPOSE_FADE_MS)}
+              style={revealStyle(composed, COMPOSE_FADE_MS, COMPOSE_STAGGER.eyebrow, 14)}
             >
               <span aria-hidden="true" className="hidden h-px w-7 shrink-0 bg-[color:var(--gold)]/70 md:block" />
               {HERO_COPY.eyebrow}
@@ -293,7 +308,7 @@ export function CinematicHero() {
             <p
               data-hero-field="subheadline"
               className="mt-9 max-w-[34rem] font-serif text-[18px] font-light leading-[1.6] text-[color:var(--ivory)]/95 [text-shadow:0_1px_14px_rgba(0,0,0,0.5)] sm:text-[20px] md:mx-auto"
-              style={revealStyle(composed, COMPOSE_FADE_MS)}
+              style={revealStyle(composed, COMPOSE_FADE_MS, COMPOSE_STAGGER.subheadline, 18)}
             >
               {HERO_COPY.subheadline}
             </p>
@@ -302,7 +317,7 @@ export function CinematicHero() {
               className="hero-cta-group mt-11 flex flex-col items-start gap-4 sm:flex-row sm:items-center md:justify-center"
               data-hero-composed={composed ? "true" : "false"}
               style={{
-                ...revealStyle(composed, COMPOSE_FADE_MS),
+                ...revealStyle(composed, COMPOSE_FADE_MS, COMPOSE_STAGGER.ctas, 16),
                 filter: undefined,
                 pointerEvents: composed ? "auto" : "none",
               }}
@@ -337,7 +352,7 @@ export function CinematicHero() {
 
             <div
               className="mt-9 flex items-center text-[12px] leading-[1.55] md:justify-center"
-              style={revealStyle(composed, COMPOSE_FADE_MS)}
+              style={revealStyle(composed, COMPOSE_FADE_MS, COMPOSE_STAGGER.links, 12)}
             >
               <Link
                 to="/multi-day"

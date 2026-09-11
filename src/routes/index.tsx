@@ -689,10 +689,11 @@ function HomePage() {
                 </h2>
 
                 <p className="mt-4 text-[14.5px] md:text-[16px] text-[color:var(--charcoal-soft)] leading-[1.7] max-w-md font-normal">
-                  Choose mood, group and rhythm. The Studio draws a{" "}
-                  <strong className="font-medium text-[color:var(--charcoal)]">real route</strong>,
-                  real timings and a live price — then reserve when the route is ready — final price
-                  shown before payment.
+                  The Studio draws the day as you shape it: a{" "}
+                  <strong className="font-medium text-[color:var(--charcoal)]">real route</strong> on
+                  the map, honest driving times, and the price updating as it goes. The final price is
+                  on screen before you pay, confirmation lands in minutes, and a local stays reachable
+                  after that.
                 </p>
 
                 {/* Three differentiators — tied to the product, not a floating manifesto. */}
@@ -956,23 +957,20 @@ function HomePage() {
 
             {/* Each block uses the shared EditorialCard primitive so
               eyebrow / title / body / detail / CTA / trust share one
-              typographic rhythm across the homepage. */}
+              typographic rhythm across the homepage.
+              Split into two intents: private occasions (proposals,
+              celebrations) first, then the quieter "bigger plans" row
+              (corporate & groups) so romance and business no longer read
+              as one blurred category. */}
             <div className="max-w-6xl mx-auto flex flex-col gap-7 md:gap-10">
-              {groupsAndCelebrations.map((m, i) => {
-                const accent =
-                  m.id === "proposals"
-                    ? "var(--gold)"
-                    : m.id === "celebrations"
-                      ? "var(--teal-2)"
-                      : m.id === "corporate"
-                        ? "var(--teal)"
-                        : "var(--charcoal)";
-                return (
+              {groupsAndCelebrations
+                .filter((m) => m.id !== "corporate")
+                .map((m, i) => (
                   <EditorialCard
                     key={m.eyebrow}
                     id={m.id}
                     eyebrow={m.eyebrow}
-                    accent={accent}
+                    accent={m.id === "proposals" ? "var(--gold)" : "var(--teal-2)"}
                     title={m.title}
                     body={m.line}
                     detail={m.detail}
@@ -980,8 +978,37 @@ function HomePage() {
                     image={{ src: m.img, to: m.to }}
                     reverse={i % 2 === 1}
                   />
-                );
-              })}
+                ))}
+            </div>
+
+            <div className="reveal max-w-6xl mx-auto mt-14 md:mt-20 border-t border-[color:var(--border)] pt-10 md:pt-14">
+              <div className="text-center max-w-2xl mx-auto mb-7 md:mb-10">
+                <Eyebrow className="mb-5">Bigger plans</Eyebrow>
+                <h3 className="serif mt-3 text-[1.55rem] sm:text-[1.8rem] lg:text-[2.2rem] leading-[1.15] tracking-[-0.012em] text-[color:var(--charcoal)] font-medium">
+                  Teams and groups,{" "}
+                  <span className="italic font-normal text-[color:var(--teal)]">
+                    handled end to end.
+                  </span>
+                </h3>
+              </div>
+
+              <div className="flex flex-col gap-7 md:gap-10">
+                {groupsAndCelebrations
+                  .filter((m) => m.id === "corporate")
+                  .map((m) => (
+                    <EditorialCard
+                      key={m.eyebrow}
+                      id={m.id}
+                      eyebrow={m.eyebrow}
+                      accent="var(--teal)"
+                      title={m.title}
+                      body={m.line}
+                      detail={m.detail}
+                      cta={{ label: m.cta, to: m.to, ariaLabel: m.cta }}
+                      image={{ src: m.img, to: m.to }}
+                    />
+                  ))}
+              </div>
             </div>
           </div>
         </section>
