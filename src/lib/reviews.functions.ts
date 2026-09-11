@@ -328,3 +328,29 @@ export const getReviewsPageData = createServerFn({ method: "GET" }).handler(
     return { global, tours };
   },
 );
+
+/**
+ * Published reviews for a specific set of tours — used by the region
+ * pages so the testimonials shown always belong to days that actually
+ * run in that region. Real rows only; no invented quotes.
+ */
+export const getReviewsForTours = createServerFn({ method: "GET" })
+  .inputValidator((d: { tourIds: string[]; limit?: number }) => d)
+  .handler(async ({ data }): Promise<PublicReview[]> => {
+    const ids = (data.tourIds ?? []).filter((id) => typeof id === "string" && id.length > 0);
+    if (ids.length === 0) return [];
+    const sb = publicClient();
+    const { data: rows, error } = await sb
+      .from("tour_reviews")
+      .select(
+        "id, tour_id, source, rating, title, body, reviewer_name, reviewer_country, source_url, is_first_party, verified, published_at",
+      )
+      .in("tour_id", ids.slice(0, 24))
+      .eq("is_published", true)
+      .gte("rating", 4)
+      .order("is_featured", { ascending: false })
+      .order("published_at", { ascending: false })
+      .limit(Math.min(data.limit ?? 6, 24));
+    if (error) return [];
+    return (rows ?? []) as PublicReview[];
+  });
