@@ -1,12 +1,9 @@
 /**
  * Homepage decision block.
  *
- * Conversion rule: three primary choices only.
- *   1. Signature = choose a ready private day
- *   2. Studio = build one private day around you
- *   3. Travel Designer = plan several days with a local designer
- *
- * Moments and Corporate remain available, but deliberately secondary.
+ * Conversion rule: five first-class services, each with a clear intent.
+ * Signature and Studio lead the commercial paths; Travel Designer,
+ * Proposals and Corporate remain equally discoverable.
  * No pricing, inventory, routing or checkout truth lives here.
  */
 
@@ -16,7 +13,7 @@ import { BookOpen, Wand2, Compass, Sparkles, Users, ArrowRight, type LucideIcon 
 import { Eyebrow } from "@/components/ui/Eyebrow";
 
 type Path = {
-  id: "signature" | "studio" | "designer";
+  id: "signature" | "studio" | "designer" | "proposals" | "corporate";
   Icon: LucideIcon;
   eyebrow: string;
   title: string;
@@ -33,7 +30,7 @@ const PATHS: ReadonlyArray<Path> = [
     eyebrow: "Ready to book",
     title: "A private day, ready to go",
     body: "Start from a route we drive every week, then tailor only the details that matter to you.",
-    cta: "Browse private days",
+    cta: "Explore private days",
     href: "/experiences",
     analyticsEvent: "home_path_signature_click",
   },
@@ -53,9 +50,29 @@ const PATHS: ReadonlyArray<Path> = [
     eyebrow: "Several days",
     title: "Plan a whole Portugal journey",
     body: "A local Travel Designer shapes the route, pace, stays and logistics around the way you travel.",
-    cta: "Start with a designer",
+    cta: "Plan your Portugal journey",
     href: "/multi-day",
     analyticsEvent: "home_path_designer_click",
+  },
+  {
+    id: "proposals",
+    Icon: Sparkles,
+    eyebrow: "Proposals & celebrations",
+    title: "A private moment, planned discreetly",
+    body: "Proposals, anniversaries and milestone days shaped around the people and setting that matter.",
+    cta: "Plan your proposal",
+    href: "/proposal-in-portugal",
+    analyticsEvent: "home_secondary_moments_click",
+  },
+  {
+    id: "corporate",
+    Icon: Users,
+    eyebrow: "Corporate & private groups",
+    title: "Bring people together in Portugal",
+    body: "Off-sites, incentives, client hosting and private group days with the practical details handled.",
+    cta: "Plan a private group day",
+    href: "/corporate",
+    analyticsEvent: "home_secondary_corporate_click",
   },
 ] as const;
 
@@ -137,19 +154,19 @@ export function FourWaysIn() {
             id="choose-path-title"
             className="serif text-[2rem] sm:text-[2.4rem] md:text-[3.25rem] leading-[1.08] md:leading-[1.02] tracking-[-0.018em] text-[color:var(--charcoal)] font-medium text-balance"
           >
-            Three ways <span className="italic font-normal text-[color:var(--teal)]">into Portugal.</span>
+            Five ways <span className="italic font-normal text-[color:var(--teal)]">into Portugal.</span>
           </h2>
           <p className="mx-auto mt-5 max-w-xl text-[16px] md:text-[17px] leading-[1.7] text-[color:var(--charcoal-soft)]">
-            A private day ready to book, a day shaped around you, or a whole journey planned with a local designer.
+            Begin with a private day, design your own, plan a full journey, or bring us a moment that matters.
           </p>
         </div>
 
         <div
           data-testid="home-smart-start"
-          className="reveal mx-auto mt-10 grid max-w-6xl grid-cols-1 gap-4 md:mt-12 md:grid-cols-3 md:gap-5"
+          className="reveal mx-auto mt-10 grid max-w-6xl grid-cols-1 gap-4 sm:grid-cols-2 md:mt-12 md:gap-5 lg:grid-cols-6"
         >
-          {PATHS.map((path) => (
-            <PathCard key={path.id} path={path} />
+          {PATHS.map((path, index) => (
+            <PathCard key={path.id} path={path} featured={index < 3} />
           ))}
         </div>
 
@@ -176,45 +193,19 @@ export function FourWaysIn() {
           </div>
         )}
 
-        <div className="reveal mx-auto mt-10 max-w-6xl border-t border-[color:var(--border)] pt-7 md:mt-12 md:flex md:items-center md:justify-between md:gap-8">
-          <div>
-            <p className="serif text-[1.2rem] md:text-[1.35rem] font-medium text-[color:var(--charcoal)]">
-              Planning something special or a group?
-            </p>
-            <p className="mt-1 text-[14px] leading-[1.6] text-[color:var(--charcoal-soft)]">
-              Mark a milestone beautifully, or let us shape a private day for your team.
-            </p>
-          </div>
-          <div className="mt-5 flex flex-wrap gap-x-6 gap-y-3 md:mt-0">
-            <Link
-              to="/proposal-in-portugal"
-              data-analytics="home_secondary_moments_click"
-              className="inline-flex min-h-[44px] items-center gap-2 text-[12px] uppercase tracking-[0.15em] font-semibold text-[color:var(--teal)] hover:text-[color:var(--charcoal)]"
-            >
-              <Sparkles size={15} aria-hidden="true" /> Plan a private moment <ArrowRight size={13} aria-hidden="true" />
-            </Link>
-            <Link
-              to="/corporate"
-              data-analytics="home_secondary_corporate_click"
-              className="inline-flex min-h-[44px] items-center gap-2 text-[12px] uppercase tracking-[0.15em] font-semibold text-[color:var(--teal)] hover:text-[color:var(--charcoal)]"
-            >
-              <Users size={15} aria-hidden="true" /> Design a team day <ArrowRight size={13} aria-hidden="true" />
-            </Link>
-          </div>
-        </div>
       </div>
     </section>
   );
 }
 
-function PathCard({ path }: { path: Path }) {
+function PathCard({ path, featured }: { path: Path; featured: boolean }) {
   const Icon = path.Icon;
   return (
     <Link
       to={path.href}
       data-home-primary-path={path.id}
       data-analytics={path.analyticsEvent}
-      className="group flex min-h-[255px] flex-col rounded-[6px] border border-[color:var(--border)] bg-[color:var(--sand)] p-6 no-underline transition-all duration-200 hover:-translate-y-0.5 hover:border-[color:var(--gold)]/70 hover:shadow-[0_18px_40px_-30px_rgba(46,46,46,0.35)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--teal)] focus-visible:ring-offset-2 md:p-7"
+      className={`${featured ? "lg:col-span-2" : "lg:col-span-3"} group flex min-h-[238px] flex-col rounded-[6px] border border-[color:var(--border)] bg-[color:var(--sand)] p-6 no-underline transition-all duration-200 hover:-translate-y-0.5 hover:border-[color:var(--gold)]/70 hover:shadow-[0_18px_40px_-30px_rgba(46,46,46,0.35)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--teal)] focus-visible:ring-offset-2 md:p-7`}
     >
       <div className="flex items-center justify-between gap-4">
         <span className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-[color:var(--gold)]/45 bg-[color:var(--ivory)] text-[color:var(--teal)]">
