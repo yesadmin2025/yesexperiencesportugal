@@ -926,10 +926,21 @@ function HomePage() {
           Travel Designer journeys. */}
         <RecentJourney />
 
-        {/* 5c — Removed: the mid-page "Real reviews" strip duplicated the
-          hero-adjacent GuestQuotes carousel. Social proof lives in ONE
-          place near the top of the page (see <GuestQuotes />) so the
-          middle of the homepage stays focused on inventory + bespoke. */}
+        {/* 6 — LIVE GUEST REVIEWS
+          Real published quotes from `tour_reviews`, with the verified
+          platform quotes already shown on the tour pages as the fallback,
+          beside the public 4.9 rating. */}
+        <LiveReviews
+          id="live-reviews"
+          ariaLabelledBy="live-reviews-title"
+          tourIds={undefined}
+          fallbackTourIds={LIVE_REVIEW_FALLBACK_TOURS}
+          titleLead="In the words of"
+          titleEm="recent guests"
+          standfirst="Every quote below comes from a guest who travelled with us — nothing is written by us."
+          className="bg-[color:var(--ivory)]"
+        />
+
 
         {/* 7 — PROPOSALS & CELEBRATIONS
           A dedicated commercial path for private milestones. */}
