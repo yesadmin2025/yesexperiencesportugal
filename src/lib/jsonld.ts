@@ -10,7 +10,7 @@
  * `<script type="application/ld+json">` per node.
  */
 
-import { PHONE_TEL, SOCIAL, WEBSITE_URL } from "@/config/business-nap";
+import { EMAIL, PHONE_TEL, SOCIAL, WEBSITE_URL } from "@/config/business-nap";
 import { REVIEW_CERTIFICATE } from "@/config/trust-certificate";
 
 export const SITE_URL = WEBSITE_URL;
@@ -1246,6 +1246,8 @@ export function localBusinessLd(args: {
   name: string;
   description: string;
   areaServed: readonly string[];
+  /** Factual pickup areas published on the page (door-to-door, no meeting point). */
+  pickup?: readonly string[];
 }) {
   const url = `${SITE_URL}${args.path}`;
   return {
@@ -1257,7 +1259,27 @@ export function localBusinessLd(args: {
     url,
     parentOrganization: { "@id": `${SITE_URL}/#organization` },
     telephone: PHONE_TEL,
+    email: EMAIL,
     priceRange: "€€€",
+    contactPoint: [
+      {
+        "@type": "ContactPoint",
+        contactType: "reservations",
+        telephone: PHONE_TEL,
+        email: EMAIL,
+        availableLanguage: ["English", "Portuguese"],
+        areaServed: "PT",
+      },
+    ],
+    ...(args.pickup && args.pickup.length
+      ? {
+          additionalProperty: args.pickup.map((value) => ({
+            "@type": "PropertyValue",
+            name: "Pickup location",
+            value,
+          })),
+        }
+      : {}),
     address: {
       "@type": "PostalAddress",
       addressLocality: "Sesimbra",

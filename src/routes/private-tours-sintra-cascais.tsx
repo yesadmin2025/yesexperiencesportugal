@@ -40,6 +40,7 @@ export const Route = createFileRoute("/private-tours-sintra-cascais")({
           name: `YES Experiences Portugal — ${REGION.name}`,
           description: REGION.description,
           areaServed: REGION.areaServed,
+          pickup: REGION.pickup,
         }),
       ),
       jsonLdScript(

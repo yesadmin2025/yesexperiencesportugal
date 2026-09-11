@@ -37,6 +37,9 @@ export function regionTours(region: LisbonRegion) {
  */
 export function RegionListingPage({ region }: { region: LisbonRegion }) {
   const tours = regionTours(region);
+  // Region CTAs open the booking page already set to this region's first day,
+  // so the real price, dates and pickup fields are visible immediately.
+  const bookSearch = tours[0] ? { tour: tours[0].id } : {};
   const crumbs = [
     { name: "Home", path: "/" },
     { name: "Day trips from Lisbon", path: "/day-trips-from-lisbon" },
@@ -58,7 +61,9 @@ export function RegionListingPage({ region }: { region: LisbonRegion }) {
             {region.standfirst}
           </p>
           <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-            <CtaButton to="/book">Book &amp; pay online</CtaButton>
+            <CtaButton to="/book" search={bookSearch}>
+              Book &amp; pay online
+            </CtaButton>
             <CtaButton to="/contact" variant="ghost">
               Ask a local
             </CtaButton>
@@ -100,16 +105,28 @@ export function RegionListingPage({ region }: { region: LisbonRegion }) {
                 <p className="mt-4 font-sans text-[11.5px] uppercase tracking-[0.16em] text-[color:var(--charcoal-soft)]">
                   {tour.durationHours} · from €{tour.priceFrom} per person
                 </p>
-                <Link
-                  to="/tours/$tourId"
-                  params={{ tourId: tour.id }}
-                  className="mt-5 inline-flex min-h-[44px] items-center gap-2 font-sans text-[12px] uppercase tracking-[0.18em] font-semibold text-[color:var(--teal)] no-underline hover:text-[color:var(--charcoal)]"
-                >
-                  Dates &amp; prices
-                  <span aria-hidden className="text-[color:var(--gold)]">
-                    →
-                  </span>
-                </Link>
+                <div className="mt-5 flex flex-col gap-2">
+                  <Link
+                    to="/book"
+                    search={{ tour: tour.id }}
+                    className="inline-flex min-h-[44px] items-center gap-2 font-sans text-[12px] uppercase tracking-[0.18em] font-semibold text-[color:var(--teal)] no-underline hover:text-[color:var(--charcoal)]"
+                  >
+                    Book this day · from €{tour.priceFrom}
+                    <span aria-hidden className="text-[color:var(--gold)]">
+                      →
+                    </span>
+                  </Link>
+                  <Link
+                    to="/tours/$tourId"
+                    params={{ tourId: tour.id }}
+                    className="inline-flex min-h-[44px] items-center gap-2 font-sans text-[11.5px] uppercase tracking-[0.18em] text-[color:var(--charcoal-soft)] no-underline hover:text-[color:var(--charcoal)]"
+                  >
+                    Full itinerary
+                    <span aria-hidden className="text-[color:var(--gold)]">
+                      →
+                    </span>
+                  </Link>
+                </div>
               </li>
             ))}
           </ul>
@@ -198,11 +215,14 @@ export function RegionListingPage({ region }: { region: LisbonRegion }) {
                 Reserve your day
               </h3>
               <p className="mt-3 text-[15px] leading-[1.75] text-[color:var(--charcoal-soft)]">
-                Pick a date and pay online in minutes, or send your dates and a local replies
-                personally.
+                Choose your day, your date and your pickup address, see the final price for your
+                party, and confirm by card — you get the confirmation on screen and by email.
+                {tours[0] ? ` ${tours[0].title.split(" — ")[0]} starts from €${tours[0].priceFrom} per person.` : ""}
               </p>
               <div className="mt-5 flex flex-col gap-3">
-                <CtaButton to="/book">Book &amp; pay online</CtaButton>
+                <CtaButton to="/book" search={bookSearch}>
+                  Book &amp; pay online
+                </CtaButton>
                 <CtaButton to="/studio-v3" variant="ghost">
                   Design your own day
                 </CtaButton>
