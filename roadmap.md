@@ -41,3 +41,7 @@
 ## 8. Booking page + Signature editorial pages
 - [x] Real booking page /book: name, date, party size, preferences; linked from hero + local stories
 - [x] Signature day pages verified as editorial pages with real booking CTAs (already shipped)
+- [ ] Complete booking cancellation/refund workflow and confirmation communication
+- [ ] Strengthen Arrábida, Azeitão, and Alentejo wine-tour SEO
+- [ ] Add Portugal travel stories and link them from the American traveler guide
+- [ ] Verify booking, SEO, runtime, and publish
