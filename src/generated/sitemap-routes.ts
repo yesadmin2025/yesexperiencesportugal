@@ -37,6 +37,7 @@ export const SITEMAP_STATIC_ROUTES: SitemapRoute[] = [
   { path: "/private-tours-comporta", changefreq: "monthly", priority: "0.7" },
   { path: "/private-tours-comporta-troia", changefreq: "monthly", priority: "0.7" },
   { path: "/private-tours-evora", changefreq: "monthly", priority: "0.7" },
+  { path: "/private-tours-lisbon", changefreq: "monthly", priority: "0.7" },
   { path: "/private-tours-portugal", changefreq: "monthly", priority: "0.85" },
   { path: "/private-tours-sesimbra", changefreq: "monthly", priority: "0.7" },
   { path: "/private-tours-setubal", changefreq: "monthly", priority: "0.7" },

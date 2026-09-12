@@ -134,13 +134,15 @@ function DayToursPage() {
                   <p className="text-xs uppercase tracking-[0.3em] text-[color:var(--charcoal)]">
                     {t.region}
                   </p>
-                  <Link
-                    to="/tours/$tourId"
-                    params={{ tourId: t.id }}
-                    className="serif text-2xl mt-2 text-[color:var(--charcoal)] hover:text-[color:var(--teal)] transition-colors focus-visible:outline-none focus-visible:underline"
-                  >
-                    {t.title}
-                  </Link>
+                  <h3 className="mt-2">
+                    <Link
+                      to="/tours/$tourId"
+                      params={{ tourId: t.id }}
+                      className="serif text-2xl text-[color:var(--charcoal)] hover:text-[color:var(--teal)] transition-colors focus-visible:outline-none focus-visible:underline"
+                    >
+                      {t.title}
+                    </Link>
+                  </h3>
 
                   <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-2 text-xs uppercase tracking-[0.2em] text-[color:var(--charcoal-soft)]">
                     <span className="flex items-center gap-1.5">

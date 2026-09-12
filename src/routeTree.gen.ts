@@ -34,6 +34,7 @@ import { Route as PrivateToursSintraRouteImport } from './routes/private-tours-s
 import { Route as PrivateToursSetubalRouteImport } from './routes/private-tours-setubal'
 import { Route as PrivateToursSesimbraRouteImport } from './routes/private-tours-sesimbra'
 import { Route as PrivateToursPortugalRouteImport } from './routes/private-tours-portugal'
+import { Route as PrivateToursLisbonRouteImport } from './routes/private-tours-lisbon'
 import { Route as PrivateToursFromLisbonRouteImport } from './routes/private-tours-from-lisbon'
 import { Route as PrivateToursEvoraRouteImport } from './routes/private-tours-evora'
 import { Route as PrivateToursComportaTroiaRouteImport } from './routes/private-tours-comporta-troia'
@@ -313,6 +314,11 @@ const PrivateToursSesimbraRoute = PrivateToursSesimbraRouteImport.update({
 const PrivateToursPortugalRoute = PrivateToursPortugalRouteImport.update({
   id: '/private-tours-portugal',
   path: '/private-tours-portugal',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PrivateToursLisbonRoute = PrivateToursLisbonRouteImport.update({
+  id: '/private-tours-lisbon',
+  path: '/private-tours-lisbon',
   getParentRoute: () => rootRouteImport,
 } as any)
 const PrivateToursFromLisbonRoute = PrivateToursFromLisbonRouteImport.update({
@@ -1164,6 +1170,7 @@ export interface FileRoutesByFullPath {
   '/private-tours-comporta-troia': typeof PrivateToursComportaTroiaRoute
   '/private-tours-evora': typeof PrivateToursEvoraRoute
   '/private-tours-from-lisbon': typeof PrivateToursFromLisbonRoute
+  '/private-tours-lisbon': typeof PrivateToursLisbonRoute
   '/private-tours-portugal': typeof PrivateToursPortugalRoute
   '/private-tours-sesimbra': typeof PrivateToursSesimbraRoute
   '/private-tours-setubal': typeof PrivateToursSetubalRoute
@@ -1343,6 +1350,7 @@ export interface FileRoutesByTo {
   '/private-tours-comporta-troia': typeof PrivateToursComportaTroiaRoute
   '/private-tours-evora': typeof PrivateToursEvoraRoute
   '/private-tours-from-lisbon': typeof PrivateToursFromLisbonRoute
+  '/private-tours-lisbon': typeof PrivateToursLisbonRoute
   '/private-tours-portugal': typeof PrivateToursPortugalRoute
   '/private-tours-sesimbra': typeof PrivateToursSesimbraRoute
   '/private-tours-setubal': typeof PrivateToursSetubalRoute
@@ -1523,6 +1531,7 @@ export interface FileRoutesById {
   '/private-tours-comporta-troia': typeof PrivateToursComportaTroiaRoute
   '/private-tours-evora': typeof PrivateToursEvoraRoute
   '/private-tours-from-lisbon': typeof PrivateToursFromLisbonRoute
+  '/private-tours-lisbon': typeof PrivateToursLisbonRoute
   '/private-tours-portugal': typeof PrivateToursPortugalRoute
   '/private-tours-sesimbra': typeof PrivateToursSesimbraRoute
   '/private-tours-setubal': typeof PrivateToursSetubalRoute
@@ -1705,6 +1714,7 @@ export interface FileRouteTypes {
     | '/private-tours-comporta-troia'
     | '/private-tours-evora'
     | '/private-tours-from-lisbon'
+    | '/private-tours-lisbon'
     | '/private-tours-portugal'
     | '/private-tours-sesimbra'
     | '/private-tours-setubal'
@@ -1884,6 +1894,7 @@ export interface FileRouteTypes {
     | '/private-tours-comporta-troia'
     | '/private-tours-evora'
     | '/private-tours-from-lisbon'
+    | '/private-tours-lisbon'
     | '/private-tours-portugal'
     | '/private-tours-sesimbra'
     | '/private-tours-setubal'
@@ -2063,6 +2074,7 @@ export interface FileRouteTypes {
     | '/private-tours-comporta-troia'
     | '/private-tours-evora'
     | '/private-tours-from-lisbon'
+    | '/private-tours-lisbon'
     | '/private-tours-portugal'
     | '/private-tours-sesimbra'
     | '/private-tours-setubal'
@@ -2244,6 +2256,7 @@ export interface RootRouteChildren {
   PrivateToursComportaTroiaRoute: typeof PrivateToursComportaTroiaRoute
   PrivateToursEvoraRoute: typeof PrivateToursEvoraRoute
   PrivateToursFromLisbonRoute: typeof PrivateToursFromLisbonRoute
+  PrivateToursLisbonRoute: typeof PrivateToursLisbonRoute
   PrivateToursPortugalRoute: typeof PrivateToursPortugalRoute
   PrivateToursSesimbraRoute: typeof PrivateToursSesimbraRoute
   PrivateToursSetubalRoute: typeof PrivateToursSetubalRoute
@@ -2528,6 +2541,13 @@ declare module '@tanstack/react-router' {
       path: '/private-tours-portugal'
       fullPath: '/private-tours-portugal'
       preLoaderRoute: typeof PrivateToursPortugalRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/private-tours-lisbon': {
+      id: '/private-tours-lisbon'
+      path: '/private-tours-lisbon'
+      fullPath: '/private-tours-lisbon'
+      preLoaderRoute: typeof PrivateToursLisbonRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/private-tours-from-lisbon': {
@@ -3732,6 +3752,7 @@ const rootRouteChildren: RootRouteChildren = {
   PrivateToursComportaTroiaRoute: PrivateToursComportaTroiaRoute,
   PrivateToursEvoraRoute: PrivateToursEvoraRoute,
   PrivateToursFromLisbonRoute: PrivateToursFromLisbonRoute,
+  PrivateToursLisbonRoute: PrivateToursLisbonRoute,
   PrivateToursPortugalRoute: PrivateToursPortugalRoute,
   PrivateToursSesimbraRoute: PrivateToursSesimbraRoute,
   PrivateToursSetubalRoute: PrivateToursSetubalRoute,

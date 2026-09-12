@@ -313,7 +313,7 @@ export const SERVICE_AREA_LINKS: readonly {
   anchor: string;
   note: string;
 }[] = [
-  { area: "Lisbon", anchor: "lisbon", path: "/lisbon-private-tours", note: "Hotel, apartment or cruise terminal" },
+  { area: "Lisbon", anchor: "lisbon", path: "/private-tours-lisbon", note: "Hotel, apartment or cruise terminal" },
   { area: "Cascais", anchor: "cascais", path: "/private-tours-cascais", note: "Cascais & Estoril pickups" },
   { area: "Sintra", anchor: "sintra", path: "/private-tours-sintra", note: "Sintra village and hotels" },
   { area: "Sesimbra", anchor: "sesimbra", path: "/private-tours-sesimbra", note: "Our home base" },

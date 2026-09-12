@@ -37,6 +37,49 @@ export interface ServiceAreaPage {
 
 export const SERVICE_AREA_PAGES: readonly ServiceAreaPage[] = [
   {
+    path: "/private-tours-lisbon",
+    area: "Lisbon",
+    title: "Private Tours in Lisbon — Hotel Pickup, One Group Per Car",
+    description:
+      "Private tours in Lisbon with door-to-door pickup from any hotel, apartment or the cruise terminal: wine country, Sintra, the Atlantic coast and Alentejo. Your group only.",
+    eyebrow: "Lisbon · where every day begins",
+    h1Lead: "Private tours in Lisbon,",
+    h1Em: "collected at your own door.",
+    standfirst:
+      "Lisbon is where almost every day we run starts and ends. This page covers the practical side of that: where we collect you in the city, how long each direction takes, and which private day suits the time you have.",
+    paragraphs: [
+      "The city sits between the Tejo and the hills, which is why the same morning can end up in three completely different landscapes. South across the bridge is the Setúbal peninsula — Arrábida's limestone coast, the Azeitão wine estates and Sesimbra's fishing harbour. West is Sintra's wooded hill and the Atlantic cliffs at Cabo da Roca. Inland to the southeast, the Alentejo plain and Évora's Roman centre. All of it is a day trip, and all of it returns to your Lisbon address the same evening.",
+      "Pickup is door to door: hotels in Baixa, Chiado, Avenida, Príncipe Real, Alfama and Belém, short-let apartments and villas anywhere in the municipality, and the Santa Apolónia cruise terminal for days that have to fit a ship's schedule. Central Lisbon traffic decides the departure time more than the distance does, so your host confirms a time that gets you out of the city before it thickens.",
+      "One group per car, one licensed local host, and no shared seats — the difference in Lisbon is less about the sights than about not spending the day waiting for other people. If you would rather see the featured days, prices and the full Lisbon overview together, the private Lisbon hub lists them side by side.",
+    ],
+    tourIds: ["arrabida-wine-allinclusive", "sintra-cascais", "azeitao-cheese", "evora-alentejo"],
+    pickup: [
+      "Any Lisbon hotel, apartment or villa — Baixa, Chiado, Avenida, Alfama, Belém and beyond",
+      "Santa Apolónia cruise terminal, timed to your ship",
+      "Lisbon airport and Parque das Nações addresses",
+    ],
+    driveTime:
+      "Arrábida and Azeitão about 45 minutes; Sintra about 40; Évora about 1h20 — all door to door",
+    bestSeason: "Year-round. Spring and autumn give the best light and the quietest roads.",
+    areaServed: ["Lisbon", "Cascais", "Sintra", "Setúbal", "Azeitão", "Sesimbra"],
+    hubPath: "/lisbon-private-tours",
+    hubName: "Private Lisbon tours",
+    faq: [
+      {
+        q: "Do you pick up at Lisbon hotels?",
+        a: "Yes — anywhere in the city, including short-let apartments, villas and the Santa Apolónia cruise terminal. Give us the address when you book and your host confirms the pickup time.",
+      },
+      {
+        q: "What is the best private day trip from Lisbon?",
+        a: "For wine and coast in one day, Arrábida and Azeitão. For palaces and the Atlantic edge, Sintra and Cascais. For Roman history and big Alentejo reds, Évora. Each day's route, length and price for your party is shown on its own page before you pay.",
+      },
+      {
+        q: "Can a private tour fit a cruise stop?",
+        a: "Yes. Tell us the ship and the times when you book and the day is built to be back at the terminal with margin — that is the only reason we shorten a route.",
+      },
+    ],
+  },
+  {
     path: "/private-tours-sintra",
     area: "Sintra",
     title: "Private Tours in Sintra From Lisbon — Palaces, No Queues",
