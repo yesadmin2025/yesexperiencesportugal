@@ -4,6 +4,7 @@ import { Car, Clock, Mail, MapPin, Phone, Star } from "lucide-react";
 import { SiteLayout } from "@/components/SiteLayout";
 import { SiteBreadcrumbs } from "@/components/SiteBreadcrumbs";
 import { Eyebrow } from "@/components/ui/Eyebrow";
+import { trackEvent } from "@/lib/analytics-events";
 import { SectionTitle } from "@/components/ui/SectionTitle";
 import { CtaButton } from "@/components/ui/CtaButton";
 import { LiveReviews } from "@/components/reviews/LiveReviews";
@@ -67,7 +68,17 @@ export function AreaLandingPage({ page }: { page: ServiceAreaPage }) {
             {page.standfirst}
           </p>
           <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-            <CtaButton to="/book" search={bookSearch}>
+            <CtaButton
+              to="/book"
+              search={bookSearch}
+              onClick={() =>
+                trackEvent("booking_cta_click", {
+                  placement: `area:${page.area}:hero`,
+                  experience_id: tours[0]?.id ?? null,
+                  experience_type: "signature",
+                })
+              }
+            >
               Book &amp; pay online
             </CtaButton>
             <CtaButton to="/contact" variant="ghost">
@@ -137,6 +148,13 @@ export function AreaLandingPage({ page }: { page: ServiceAreaPage }) {
                   <Link
                     to="/book"
                     search={{ tour: tour.id }}
+                    onClick={() =>
+                      trackEvent("booking_cta_click", {
+                        placement: `area:${page.area}:card`,
+                        experience_id: tour.id,
+                        experience_type: "signature",
+                      })
+                    }
                     className="inline-flex min-h-[44px] items-center gap-2 font-sans text-[12px] uppercase tracking-[0.18em] font-semibold text-[color:var(--teal)] no-underline hover:text-[color:var(--charcoal)]"
                   >
                     Book this day · from €{tour.priceFrom}
