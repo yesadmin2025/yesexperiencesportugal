@@ -498,10 +498,10 @@ function PressPage() {
             </a>
             <a
               className="text-[color:var(--teal)] underline underline-offset-4"
-              href="/favicon.svg"
+              href="/favicon.png"
               download
             >
-              Favicon (SVG)
+              Favicon (PNG)
             </a>
           </div>
         </section>
