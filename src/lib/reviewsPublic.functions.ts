@@ -83,6 +83,7 @@ export const submitPublicReview = createServerFn({ method: "POST" })
       language: data.language === "pt" ? "pt" : "en",
     });
     if (error) throw new Error(error.message);
+    const { notifyTeamOfReview } = await import("@/lib/reviews-notify.server");
     await notifyTeamOfReview({
       tourId: data.tourId,
       rating: Math.round(data.rating),
