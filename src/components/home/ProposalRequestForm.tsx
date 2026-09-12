@@ -67,6 +67,11 @@ export function ProposalRequestForm({ id = "proposal-request" }: { id?: string }
       const body = (await res.json()) as { ok?: boolean };
       if (!res.ok || !body.ok) throw new Error("request_failed");
       setState("sent");
+      trackEvent("proposal_form_submitted", {
+        placement: "home:proposals",
+        group_size: payload.groupSize,
+        content_id: payload.occasion,
+      });
     } catch {
       setState("idle");
       setError("Something went wrong. Please email info@yesexperiencesportugal.com and we'll pick it up.");
@@ -98,6 +103,8 @@ export function ProposalRequestForm({ id = "proposal-request" }: { id?: string }
     <form
       id={id}
       onSubmit={onSubmit}
+      onFocusCapture={onFirstInteraction}
+      onChangeCapture={onFirstInteraction}
       className="mx-auto max-w-2xl rounded-[6px] border border-[color:var(--border)] bg-[color:var(--card)] p-6 md:p-8"
       noValidate
     >
