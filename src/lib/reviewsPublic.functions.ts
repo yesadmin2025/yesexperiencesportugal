@@ -30,6 +30,19 @@ export const submitFirstPartyReview = createServerFn({ method: "POST" })
       _reviewer_country: data.reviewer_country ?? "",
     });
     if (error) throw new Error(error.message);
+
+    const { notifyTeamOfReview } = await import("@/lib/reviews-notify.server");
+    await notifyTeamOfReview({
+      tourId: null,
+      rating: data.rating,
+      title: (data.title ?? "").trim() || null,
+      body: data.body,
+      reviewerName: (data.reviewer_name ?? "").trim() || null,
+      reviewerCountry: (data.reviewer_country ?? "").trim() || null,
+      language: "en",
+      channel: "post-trip-link",
+    });
+
     return { ok: true, id: rev as unknown as string };
   });
 
