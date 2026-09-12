@@ -83,3 +83,30 @@ Each page emits `Organization` + `LocalBusiness` + `TravelAgency` JSON-LD contai
 1. “Private day trips from Lisbon — pickup included. Explore Arrábida, Sintra, or Évora with a licensed local operator.”
 2. “New for 2026: fully tailored Portugal itineraries, designed around your dates and pace.”
 3. “Licensed tour operator RNAAT nº 31/2023. Based in Sesimbra, designing journeys across Portugal.”
+
+## Local copy per service area (copy-paste into GBP)
+
+Google Business Profile has **one** name and **one** description per profile —
+it does not accept a title/description per area. So use these two ways:
+
+- **Services** (Edit profile → Services → Add service): paste the *service name*
+  and its 300-character description below. One service per area.
+- **Posts / Updates**: use the same text as a short post per area, one per week,
+  each linking to the matching page.
+
+Never change the profile name away from `YES Experiences Portugal` — Google
+penalises keyword-stuffed names.
+
+| Area | Service name (GBP) | Description | Link |
+|---|---|---|---|
+| Sintra | Private tours in Sintra from Lisbon | Private tour of Sintra with hotel pickup in Lisbon — palaces, the Cabo da Roca cliffs and Cascais at your own pace, with a licensed local guide-driver. About 40 minutes from Lisbon. Full day. | /private-tours-sintra-cascais |
+| Cascais | Private Cascais and coast tour | Cascais, Guincho and the Sintra hills in one private day from Lisbon, with pickup at your hotel and time to stop where you like. Licensed local operator, RNAAT nº 31/2023. | /private-tours-sintra-cascais |
+| Lisbon | Private tours and day trips from Lisbon | Private day trips from Lisbon designed around you: wine and cheese in Azeitão, Arrábida's beaches, Sintra's palaces or Évora. Hotel pickup, English-speaking local driver-guide, instant online booking. | /day-trips-from-lisbon |
+| Sesimbra | Private Arrábida and Sesimbra day trip | Arrábida Natural Park, the fishing town of Sesimbra and its clear-water beaches, about 40 minutes from Lisbon. Private vehicle, hotel pickup, wine and lunch options included. | /private-tours-arrabida-sesimbra |
+| Setúbal | Private Setúbal wine and coast day | Setúbal's Moscatel cellars, the Sado estuary and Arrábida's ridge road in one private day from Lisbon. Tastings with the producers, pickup included. | /private-tours-azeitao-setubal |
+| Azeitão | Private wine tour to Azeitão from Lisbon | Azeitão wine estates, the sheep's-cheese makers and hand-painted tiles, 40 minutes from Lisbon. Private day with tastings, lunch and hotel pickup. | /private-tours-azeitao-setubal |
+| Évora | Private day trip to Évora and the Alentejo | UNESCO Évora, Roman temple, marble villages and Alentejo wine estates — about 1h30 from Lisbon. Private car, local guide, tastings and lunch. | /private-tours-alentejo-evora |
+| Comporta | Private Comporta day trip from Lisbon | Rice fields, pine forest and the long white beaches of Comporta, about an hour from Lisbon including the ferry. Private, unhurried, with lunch by the sea. | /private-tours-comporta-troia |
+| Tróia | Private Tróia and Comporta beaches day | Cross the Sado by ferry to Tróia's dunes and Comporta's beaches on a private day from Lisbon, with dolphin-watching season options and lunch. | /private-tours-comporta-troia |
+
+All links are relative to https://yesexperiencesportugal.com
