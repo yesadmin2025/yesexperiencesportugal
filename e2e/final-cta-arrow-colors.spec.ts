@@ -3,14 +3,14 @@ import { test, expect, type Locator, type Page } from "@playwright/test";
 /**
  * Final CTA arrow color contract — visual regression via computed style.
  *
- * The homepage final-CTA card lives on an ivory surface (re-aligned to
- * the page's editorial system). Two buttons:
+ * The homepage final decision area lives on a sand surface. Its first two
+ * paths preserve the canonical primary / ghost arrow-color contract:
  *
- *   • Primary  ("Design your day")  — teal background
+ *   • Primary  ("Reserve a Signature day")  — teal background
  *       arrow color : --gold-soft (#E1CFA6) at rest
  *       arrow color : --gold      (#C9A96A) on hover
  *
- *   • Ghost    ("Talk to a Local")    — ivory background, teal border
+ *   • Ghost    ("Design one private day") — sand background, teal border
  *       arrow color : --gold      (#C9A96A) at rest
  *       arrow color : --gold-deep (#B89452) on hover
  *
@@ -61,8 +61,8 @@ test.describe("Final CTA arrow colors — primary vs ghost", () => {
   }) => {
     await gotoFinalCta(page);
 
-    const primary = page.locator("#final-cta a", { hasText: "Open the Studio" });
-    const ghost = page.locator("#final-cta a", { hasText: "Talk on WhatsApp" });
+    const primary = page.locator("#final-cta a", { hasText: "Reserve a Signature day" });
+    const ghost = page.locator("#final-cta a", { hasText: "Design one private day" });
 
     await page.mouse.move(0, 0);
 
@@ -80,8 +80,8 @@ test.describe("Final CTA arrow colors — primary vs ghost", () => {
   test("hover state — primary brightens to gold, ghost deepens to gold-deep", async ({ page }) => {
     await gotoFinalCta(page);
 
-    const primary = page.locator("#final-cta a", { hasText: "Open the Studio" });
-    const ghost = page.locator("#final-cta a", { hasText: "Talk on WhatsApp" });
+    const primary = page.locator("#final-cta a", { hasText: "Reserve a Signature day" });
+    const ghost = page.locator("#final-cta a", { hasText: "Design one private day" });
 
     // PRIMARY HOVER (teal bg → arrow lifts gold-soft → gold)
     await primary.hover();
@@ -102,8 +102,8 @@ test.describe("Final CTA arrow colors — primary vs ghost", () => {
   test("focus state — arrow color stays at rest value, focus ring is --gold", async ({ page }) => {
     await gotoFinalCta(page);
 
-    const primary = page.locator("#final-cta a", { hasText: "Open the Studio" });
-    const ghost = page.locator("#final-cta a", { hasText: "Talk on WhatsApp" });
+    const primary = page.locator("#final-cta a", { hasText: "Reserve a Signature day" });
+    const ghost = page.locator("#final-cta a", { hasText: "Design one private day" });
 
     await primary.focus();
     const primaryFocus = await readColor(arrowOf(primary));
@@ -133,8 +133,8 @@ test.describe("Final CTA arrow colors — primary vs ghost", () => {
   }) => {
     await gotoFinalCta(page);
 
-    const primary = page.locator("#final-cta a", { hasText: "Open the Studio" });
-    const ghost = page.locator("#final-cta a", { hasText: "Talk on WhatsApp" });
+    const primary = page.locator("#final-cta a", { hasText: "Reserve a Signature day" });
+    const ghost = page.locator("#final-cta a", { hasText: "Design one private day" });
 
     // Sample all three states for both buttons; flag any that resolve
     // outside the approved gold ramp (gold | gold-soft | gold-deep).
@@ -196,8 +196,8 @@ test.describe("Final CTA arrow colors — primary vs ghost", () => {
   }) => {
     await gotoFinalCta(page);
 
-    const primary = page.locator("#final-cta a", { hasText: "Open the Studio" });
-    const ghost = page.locator("#final-cta a", { hasText: "Talk on WhatsApp" });
+    const primary = page.locator("#final-cta a", { hasText: "Reserve a Signature day" });
+    const ghost = page.locator("#final-cta a", { hasText: "Design one private day" });
 
     /**
      * For a given CTA link, returns:

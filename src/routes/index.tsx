@@ -980,6 +980,7 @@ function HomePage() {
                     detail={m.detail}
                     cta={{ label: m.cta, to: m.to, ariaLabel: m.cta }}
                     image={{ src: m.img, to: m.to }}
+                    className="[&>*]:!opacity-100 [&>*]:!translate-y-0"
                   />
                 ))}
             </div>
@@ -1025,6 +1026,7 @@ function HomePage() {
                     detail={m.detail}
                     cta={{ label: m.cta, to: m.to, ariaLabel: m.cta }}
                     image={{ src: m.img, to: m.to }}
+                    className="[&>*]:!opacity-100 [&>*]:!translate-y-0"
                   />
                 ))}
             </div>
