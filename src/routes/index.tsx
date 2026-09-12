@@ -972,7 +972,7 @@ function HomePage() {
                 .map((m) => (
                   <EditorialCard
                     key={m.eyebrow}
-                    id={m.id}
+                    id={`${m.id}-feature`}
                     eyebrow={m.eyebrow}
                     accent={m.id === "proposals" ? "var(--gold)" : "var(--teal-2)"}
                     title={m.title}
