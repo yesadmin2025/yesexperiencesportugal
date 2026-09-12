@@ -195,6 +195,18 @@ export function LiveReviews({
             </li>
           ))}
         </ul>
+
+        <p className="reveal mt-8 text-center md:mt-10">
+          <a
+            href="/reviews#leave-a-review"
+            className="inline-flex min-h-[44px] items-center justify-center gap-2 font-sans text-[11px] uppercase tracking-[0.22em] text-[color:var(--charcoal-soft)] underline decoration-[color:var(--gold)] decoration-1 underline-offset-[6px] transition-colors hover:text-[color:var(--charcoal)]"
+          >
+            Travelled with us? Share your experience
+            <span aria-hidden className="text-[color:var(--gold)]">
+              →
+            </span>
+          </a>
+        </p>
       </div>
     </section>
   );
