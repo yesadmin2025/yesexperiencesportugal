@@ -9,6 +9,7 @@ import { SectionTitle } from "@/components/ui/SectionTitle";
 import { CtaButton } from "@/components/ui/CtaButton";
 import { CinematicEditorialImage } from "@/components/ui/ResponsiveEditorialImage";
 import { ParallaxLayer } from "@/components/motion/ParallaxLayer";
+import { ProposalRequestForm } from "@/components/home/ProposalRequestForm";
 
 import { PROPOSAL_SERVICE_IMAGES } from "@/content/editorial-service-images";
 import { useEditorialOverrides } from "@/lib/editorial-overrides";
@@ -117,7 +118,7 @@ export function ProposalInPortugalPage() {
             surprise handled quietly on your behalf.
           </p>
           <div className="mt-8 flex justify-center">
-            <CtaButton to="/contact" variant="primary">
+            <CtaButton href="#proposal-request" variant="primary">
               Plan a Proposal
             </CtaButton>
           </div>
@@ -178,6 +179,24 @@ export function ProposalInPortugalPage() {
               </article>
             );
           })}
+        </div>
+      </section>
+
+      <section
+        className="py-16 md:py-24 bg-[color:var(--sand)]"
+        aria-labelledby="proposal-request-title"
+      >
+        <div className="container-x max-w-3xl">
+          <div className="text-center max-w-2xl mx-auto mb-8 md:mb-10">
+            <Eyebrow flank>Begin privately</Eyebrow>
+            <SectionTitle id="proposal-request-title" size="compact" spacing="loose">
+              Tell us about <SectionTitle.Em>the moment.</SectionTitle.Em>
+            </SectionTitle>
+            <p className="mt-5 text-[color:var(--charcoal-soft)] leading-relaxed">
+              Share what you know so far. Our local team will reply personally and keep every detail discreet.
+            </p>
+          </div>
+          <ProposalRequestForm id="proposal-request" />
         </div>
       </section>
 
