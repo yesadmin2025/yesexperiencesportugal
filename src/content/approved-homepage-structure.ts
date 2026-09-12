@@ -152,13 +152,13 @@ export const APPROVED_HOMEPAGE_SECTIONS: readonly ApprovedSection[] = [
     order: 10,
     name: "Explore Portugal — interactive region map",
     ariaLabelledBy: "plan-map-title",
-    requiredSpacing: { kind: "py", minScale: 16 },
+    requiredSpacing: { kind: "pb", minScale: 10 },
   },
   {
     order: 11,
     name: "Local Stories — selected guides",
     ariaLabelledBy: "journal-title",
-    requiredSpacing: { kind: "py", minScale: 16 },
+    requiredSpacing: { kind: "pb", minScale: 16 },
   },
   {
     order: 12,

@@ -12,7 +12,7 @@
  *     → text-[2.1rem] sm:text-[2.5rem] lg:text-[3.8rem]
  *       leading-[1.05] lg:leading-[0.96], tracking-[-0.02em]
  *
- *   · EDITORIAL tier — Signatures + Groups
+ *   · EDITORIAL tier — Signatures + specialist services
  *     Discovery / browsing sections. Mid scale, calmer leading.
  *     → text-[1.8rem] sm:text-[2.1rem] lg:text-[2.95rem]
  *       leading-[1.12] lg:leading-[1.02], tracking-[-0.014em]
@@ -62,8 +62,8 @@ describe("Homepage H2 — conversion tier (Studio, Final CTA)", () => {
   }
 });
 
-describe("Homepage H2 — editorial tier (Signatures, Groups)", () => {
-  const EDITORIAL_IDS = ["signatures-title", "groups-title"];
+describe("Homepage H2 — editorial tier (Signatures, Proposals, Corporate)", () => {
+  const EDITORIAL_IDS = ["signatures-title", "proposals-title", "corporate-title"];
 
   for (const id of EDITORIAL_IDS) {
     it(`#${id} uses 1.8rem → 2.1rem → 2.95rem ramp`, () => {
