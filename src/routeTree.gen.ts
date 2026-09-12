@@ -28,12 +28,20 @@ import { Route as PtRouteImport } from './routes/pt'
 import { Route as ProposalsRouteImport } from './routes/proposals'
 import { Route as ProposalInPortugalRouteImport } from './routes/proposal-in-portugal'
 import { Route as PrivateWineTourLisbonRouteImport } from './routes/private-wine-tour-lisbon'
+import { Route as PrivateToursTroiaRouteImport } from './routes/private-tours-troia'
 import { Route as PrivateToursSintraCascaisRouteImport } from './routes/private-tours-sintra-cascais'
+import { Route as PrivateToursSintraRouteImport } from './routes/private-tours-sintra'
+import { Route as PrivateToursSetubalRouteImport } from './routes/private-tours-setubal'
+import { Route as PrivateToursSesimbraRouteImport } from './routes/private-tours-sesimbra'
 import { Route as PrivateToursPortugalRouteImport } from './routes/private-tours-portugal'
 import { Route as PrivateToursFromLisbonRouteImport } from './routes/private-tours-from-lisbon'
+import { Route as PrivateToursEvoraRouteImport } from './routes/private-tours-evora'
 import { Route as PrivateToursComportaTroiaRouteImport } from './routes/private-tours-comporta-troia'
+import { Route as PrivateToursComportaRouteImport } from './routes/private-tours-comporta'
 import { Route as PrivateToursCentroSilverCoastRouteImport } from './routes/private-tours-centro-silver-coast'
+import { Route as PrivateToursCascaisRouteImport } from './routes/private-tours-cascais'
 import { Route as PrivateToursAzeitaoSetubalRouteImport } from './routes/private-tours-azeitao-setubal'
+import { Route as PrivateToursAzeitaoRouteImport } from './routes/private-tours-azeitao'
 import { Route as PrivateToursArrabidaSesimbraRouteImport } from './routes/private-tours-arrabida-sesimbra'
 import { Route as PrivateToursAlentejoEvoraRouteImport } from './routes/private-tours-alentejo-evora'
 import { Route as PrivacyRouteImport } from './routes/privacy'
@@ -275,12 +283,32 @@ const PrivateWineTourLisbonRoute = PrivateWineTourLisbonRouteImport.update({
   path: '/private-wine-tour-lisbon',
   getParentRoute: () => rootRouteImport,
 } as any)
+const PrivateToursTroiaRoute = PrivateToursTroiaRouteImport.update({
+  id: '/private-tours-troia',
+  path: '/private-tours-troia',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const PrivateToursSintraCascaisRoute =
   PrivateToursSintraCascaisRouteImport.update({
     id: '/private-tours-sintra-cascais',
     path: '/private-tours-sintra-cascais',
     getParentRoute: () => rootRouteImport,
   } as any)
+const PrivateToursSintraRoute = PrivateToursSintraRouteImport.update({
+  id: '/private-tours-sintra',
+  path: '/private-tours-sintra',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PrivateToursSetubalRoute = PrivateToursSetubalRouteImport.update({
+  id: '/private-tours-setubal',
+  path: '/private-tours-setubal',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PrivateToursSesimbraRoute = PrivateToursSesimbraRouteImport.update({
+  id: '/private-tours-sesimbra',
+  path: '/private-tours-sesimbra',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const PrivateToursPortugalRoute = PrivateToursPortugalRouteImport.update({
   id: '/private-tours-portugal',
   path: '/private-tours-portugal',
@@ -291,24 +319,44 @@ const PrivateToursFromLisbonRoute = PrivateToursFromLisbonRouteImport.update({
   path: '/private-tours-from-lisbon',
   getParentRoute: () => rootRouteImport,
 } as any)
+const PrivateToursEvoraRoute = PrivateToursEvoraRouteImport.update({
+  id: '/private-tours-evora',
+  path: '/private-tours-evora',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const PrivateToursComportaTroiaRoute =
   PrivateToursComportaTroiaRouteImport.update({
     id: '/private-tours-comporta-troia',
     path: '/private-tours-comporta-troia',
     getParentRoute: () => rootRouteImport,
   } as any)
+const PrivateToursComportaRoute = PrivateToursComportaRouteImport.update({
+  id: '/private-tours-comporta',
+  path: '/private-tours-comporta',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const PrivateToursCentroSilverCoastRoute =
   PrivateToursCentroSilverCoastRouteImport.update({
     id: '/private-tours-centro-silver-coast',
     path: '/private-tours-centro-silver-coast',
     getParentRoute: () => rootRouteImport,
   } as any)
+const PrivateToursCascaisRoute = PrivateToursCascaisRouteImport.update({
+  id: '/private-tours-cascais',
+  path: '/private-tours-cascais',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const PrivateToursAzeitaoSetubalRoute =
   PrivateToursAzeitaoSetubalRouteImport.update({
     id: '/private-tours-azeitao-setubal',
     path: '/private-tours-azeitao-setubal',
     getParentRoute: () => rootRouteImport,
   } as any)
+const PrivateToursAzeitaoRoute = PrivateToursAzeitaoRouteImport.update({
+  id: '/private-tours-azeitao',
+  path: '/private-tours-azeitao',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const PrivateToursArrabidaSesimbraRoute =
   PrivateToursArrabidaSesimbraRouteImport.update({
     id: '/private-tours-arrabida-sesimbra',
@@ -1101,12 +1149,20 @@ export interface FileRoutesByFullPath {
   '/privacy': typeof PrivacyRoute
   '/private-tours-alentejo-evora': typeof PrivateToursAlentejoEvoraRoute
   '/private-tours-arrabida-sesimbra': typeof PrivateToursArrabidaSesimbraRoute
+  '/private-tours-azeitao': typeof PrivateToursAzeitaoRoute
   '/private-tours-azeitao-setubal': typeof PrivateToursAzeitaoSetubalRoute
+  '/private-tours-cascais': typeof PrivateToursCascaisRoute
   '/private-tours-centro-silver-coast': typeof PrivateToursCentroSilverCoastRoute
+  '/private-tours-comporta': typeof PrivateToursComportaRoute
   '/private-tours-comporta-troia': typeof PrivateToursComportaTroiaRoute
+  '/private-tours-evora': typeof PrivateToursEvoraRoute
   '/private-tours-from-lisbon': typeof PrivateToursFromLisbonRoute
   '/private-tours-portugal': typeof PrivateToursPortugalRoute
+  '/private-tours-sesimbra': typeof PrivateToursSesimbraRoute
+  '/private-tours-setubal': typeof PrivateToursSetubalRoute
+  '/private-tours-sintra': typeof PrivateToursSintraRoute
   '/private-tours-sintra-cascais': typeof PrivateToursSintraCascaisRoute
+  '/private-tours-troia': typeof PrivateToursTroiaRoute
   '/private-wine-tour-lisbon': typeof PrivateWineTourLisbonRoute
   '/proposal-in-portugal': typeof ProposalInPortugalRoute
   '/proposals': typeof ProposalsRoute
@@ -1271,12 +1327,20 @@ export interface FileRoutesByTo {
   '/privacy': typeof PrivacyRoute
   '/private-tours-alentejo-evora': typeof PrivateToursAlentejoEvoraRoute
   '/private-tours-arrabida-sesimbra': typeof PrivateToursArrabidaSesimbraRoute
+  '/private-tours-azeitao': typeof PrivateToursAzeitaoRoute
   '/private-tours-azeitao-setubal': typeof PrivateToursAzeitaoSetubalRoute
+  '/private-tours-cascais': typeof PrivateToursCascaisRoute
   '/private-tours-centro-silver-coast': typeof PrivateToursCentroSilverCoastRoute
+  '/private-tours-comporta': typeof PrivateToursComportaRoute
   '/private-tours-comporta-troia': typeof PrivateToursComportaTroiaRoute
+  '/private-tours-evora': typeof PrivateToursEvoraRoute
   '/private-tours-from-lisbon': typeof PrivateToursFromLisbonRoute
   '/private-tours-portugal': typeof PrivateToursPortugalRoute
+  '/private-tours-sesimbra': typeof PrivateToursSesimbraRoute
+  '/private-tours-setubal': typeof PrivateToursSetubalRoute
+  '/private-tours-sintra': typeof PrivateToursSintraRoute
   '/private-tours-sintra-cascais': typeof PrivateToursSintraCascaisRoute
+  '/private-tours-troia': typeof PrivateToursTroiaRoute
   '/private-wine-tour-lisbon': typeof PrivateWineTourLisbonRoute
   '/proposal-in-portugal': typeof ProposalInPortugalRoute
   '/proposals': typeof ProposalsRoute
@@ -1442,12 +1506,20 @@ export interface FileRoutesById {
   '/privacy': typeof PrivacyRoute
   '/private-tours-alentejo-evora': typeof PrivateToursAlentejoEvoraRoute
   '/private-tours-arrabida-sesimbra': typeof PrivateToursArrabidaSesimbraRoute
+  '/private-tours-azeitao': typeof PrivateToursAzeitaoRoute
   '/private-tours-azeitao-setubal': typeof PrivateToursAzeitaoSetubalRoute
+  '/private-tours-cascais': typeof PrivateToursCascaisRoute
   '/private-tours-centro-silver-coast': typeof PrivateToursCentroSilverCoastRoute
+  '/private-tours-comporta': typeof PrivateToursComportaRoute
   '/private-tours-comporta-troia': typeof PrivateToursComportaTroiaRoute
+  '/private-tours-evora': typeof PrivateToursEvoraRoute
   '/private-tours-from-lisbon': typeof PrivateToursFromLisbonRoute
   '/private-tours-portugal': typeof PrivateToursPortugalRoute
+  '/private-tours-sesimbra': typeof PrivateToursSesimbraRoute
+  '/private-tours-setubal': typeof PrivateToursSetubalRoute
+  '/private-tours-sintra': typeof PrivateToursSintraRoute
   '/private-tours-sintra-cascais': typeof PrivateToursSintraCascaisRoute
+  '/private-tours-troia': typeof PrivateToursTroiaRoute
   '/private-wine-tour-lisbon': typeof PrivateWineTourLisbonRoute
   '/proposal-in-portugal': typeof ProposalInPortugalRoute
   '/proposals': typeof ProposalsRoute
@@ -1615,12 +1687,20 @@ export interface FileRouteTypes {
     | '/privacy'
     | '/private-tours-alentejo-evora'
     | '/private-tours-arrabida-sesimbra'
+    | '/private-tours-azeitao'
     | '/private-tours-azeitao-setubal'
+    | '/private-tours-cascais'
     | '/private-tours-centro-silver-coast'
+    | '/private-tours-comporta'
     | '/private-tours-comporta-troia'
+    | '/private-tours-evora'
     | '/private-tours-from-lisbon'
     | '/private-tours-portugal'
+    | '/private-tours-sesimbra'
+    | '/private-tours-setubal'
+    | '/private-tours-sintra'
     | '/private-tours-sintra-cascais'
+    | '/private-tours-troia'
     | '/private-wine-tour-lisbon'
     | '/proposal-in-portugal'
     | '/proposals'
@@ -1785,12 +1865,20 @@ export interface FileRouteTypes {
     | '/privacy'
     | '/private-tours-alentejo-evora'
     | '/private-tours-arrabida-sesimbra'
+    | '/private-tours-azeitao'
     | '/private-tours-azeitao-setubal'
+    | '/private-tours-cascais'
     | '/private-tours-centro-silver-coast'
+    | '/private-tours-comporta'
     | '/private-tours-comporta-troia'
+    | '/private-tours-evora'
     | '/private-tours-from-lisbon'
     | '/private-tours-portugal'
+    | '/private-tours-sesimbra'
+    | '/private-tours-setubal'
+    | '/private-tours-sintra'
     | '/private-tours-sintra-cascais'
+    | '/private-tours-troia'
     | '/private-wine-tour-lisbon'
     | '/proposal-in-portugal'
     | '/proposals'
@@ -1955,12 +2043,20 @@ export interface FileRouteTypes {
     | '/privacy'
     | '/private-tours-alentejo-evora'
     | '/private-tours-arrabida-sesimbra'
+    | '/private-tours-azeitao'
     | '/private-tours-azeitao-setubal'
+    | '/private-tours-cascais'
     | '/private-tours-centro-silver-coast'
+    | '/private-tours-comporta'
     | '/private-tours-comporta-troia'
+    | '/private-tours-evora'
     | '/private-tours-from-lisbon'
     | '/private-tours-portugal'
+    | '/private-tours-sesimbra'
+    | '/private-tours-setubal'
+    | '/private-tours-sintra'
     | '/private-tours-sintra-cascais'
+    | '/private-tours-troia'
     | '/private-wine-tour-lisbon'
     | '/proposal-in-portugal'
     | '/proposals'
@@ -2127,12 +2223,20 @@ export interface RootRouteChildren {
   PrivacyRoute: typeof PrivacyRoute
   PrivateToursAlentejoEvoraRoute: typeof PrivateToursAlentejoEvoraRoute
   PrivateToursArrabidaSesimbraRoute: typeof PrivateToursArrabidaSesimbraRoute
+  PrivateToursAzeitaoRoute: typeof PrivateToursAzeitaoRoute
   PrivateToursAzeitaoSetubalRoute: typeof PrivateToursAzeitaoSetubalRoute
+  PrivateToursCascaisRoute: typeof PrivateToursCascaisRoute
   PrivateToursCentroSilverCoastRoute: typeof PrivateToursCentroSilverCoastRoute
+  PrivateToursComportaRoute: typeof PrivateToursComportaRoute
   PrivateToursComportaTroiaRoute: typeof PrivateToursComportaTroiaRoute
+  PrivateToursEvoraRoute: typeof PrivateToursEvoraRoute
   PrivateToursFromLisbonRoute: typeof PrivateToursFromLisbonRoute
   PrivateToursPortugalRoute: typeof PrivateToursPortugalRoute
+  PrivateToursSesimbraRoute: typeof PrivateToursSesimbraRoute
+  PrivateToursSetubalRoute: typeof PrivateToursSetubalRoute
+  PrivateToursSintraRoute: typeof PrivateToursSintraRoute
   PrivateToursSintraCascaisRoute: typeof PrivateToursSintraCascaisRoute
+  PrivateToursTroiaRoute: typeof PrivateToursTroiaRoute
   PrivateWineTourLisbonRoute: typeof PrivateWineTourLisbonRoute
   ProposalInPortugalRoute: typeof ProposalInPortugalRoute
   ProposalsRoute: typeof ProposalsRoute
@@ -2370,11 +2474,39 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PrivateWineTourLisbonRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/private-tours-troia': {
+      id: '/private-tours-troia'
+      path: '/private-tours-troia'
+      fullPath: '/private-tours-troia'
+      preLoaderRoute: typeof PrivateToursTroiaRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/private-tours-sintra-cascais': {
       id: '/private-tours-sintra-cascais'
       path: '/private-tours-sintra-cascais'
       fullPath: '/private-tours-sintra-cascais'
       preLoaderRoute: typeof PrivateToursSintraCascaisRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/private-tours-sintra': {
+      id: '/private-tours-sintra'
+      path: '/private-tours-sintra'
+      fullPath: '/private-tours-sintra'
+      preLoaderRoute: typeof PrivateToursSintraRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/private-tours-setubal': {
+      id: '/private-tours-setubal'
+      path: '/private-tours-setubal'
+      fullPath: '/private-tours-setubal'
+      preLoaderRoute: typeof PrivateToursSetubalRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/private-tours-sesimbra': {
+      id: '/private-tours-sesimbra'
+      path: '/private-tours-sesimbra'
+      fullPath: '/private-tours-sesimbra'
+      preLoaderRoute: typeof PrivateToursSesimbraRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/private-tours-portugal': {
@@ -2391,11 +2523,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PrivateToursFromLisbonRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/private-tours-evora': {
+      id: '/private-tours-evora'
+      path: '/private-tours-evora'
+      fullPath: '/private-tours-evora'
+      preLoaderRoute: typeof PrivateToursEvoraRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/private-tours-comporta-troia': {
       id: '/private-tours-comporta-troia'
       path: '/private-tours-comporta-troia'
       fullPath: '/private-tours-comporta-troia'
       preLoaderRoute: typeof PrivateToursComportaTroiaRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/private-tours-comporta': {
+      id: '/private-tours-comporta'
+      path: '/private-tours-comporta'
+      fullPath: '/private-tours-comporta'
+      preLoaderRoute: typeof PrivateToursComportaRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/private-tours-centro-silver-coast': {
@@ -2405,11 +2551,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PrivateToursCentroSilverCoastRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/private-tours-cascais': {
+      id: '/private-tours-cascais'
+      path: '/private-tours-cascais'
+      fullPath: '/private-tours-cascais'
+      preLoaderRoute: typeof PrivateToursCascaisRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/private-tours-azeitao-setubal': {
       id: '/private-tours-azeitao-setubal'
       path: '/private-tours-azeitao-setubal'
       fullPath: '/private-tours-azeitao-setubal'
       preLoaderRoute: typeof PrivateToursAzeitaoSetubalRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/private-tours-azeitao': {
+      id: '/private-tours-azeitao'
+      path: '/private-tours-azeitao'
+      fullPath: '/private-tours-azeitao'
+      preLoaderRoute: typeof PrivateToursAzeitaoRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/private-tours-arrabida-sesimbra': {
@@ -3543,12 +3703,20 @@ const rootRouteChildren: RootRouteChildren = {
   PrivacyRoute: PrivacyRoute,
   PrivateToursAlentejoEvoraRoute: PrivateToursAlentejoEvoraRoute,
   PrivateToursArrabidaSesimbraRoute: PrivateToursArrabidaSesimbraRoute,
+  PrivateToursAzeitaoRoute: PrivateToursAzeitaoRoute,
   PrivateToursAzeitaoSetubalRoute: PrivateToursAzeitaoSetubalRoute,
+  PrivateToursCascaisRoute: PrivateToursCascaisRoute,
   PrivateToursCentroSilverCoastRoute: PrivateToursCentroSilverCoastRoute,
+  PrivateToursComportaRoute: PrivateToursComportaRoute,
   PrivateToursComportaTroiaRoute: PrivateToursComportaTroiaRoute,
+  PrivateToursEvoraRoute: PrivateToursEvoraRoute,
   PrivateToursFromLisbonRoute: PrivateToursFromLisbonRoute,
   PrivateToursPortugalRoute: PrivateToursPortugalRoute,
+  PrivateToursSesimbraRoute: PrivateToursSesimbraRoute,
+  PrivateToursSetubalRoute: PrivateToursSetubalRoute,
+  PrivateToursSintraRoute: PrivateToursSintraRoute,
   PrivateToursSintraCascaisRoute: PrivateToursSintraCascaisRoute,
+  PrivateToursTroiaRoute: PrivateToursTroiaRoute,
   PrivateWineTourLisbonRoute: PrivateWineTourLisbonRoute,
   ProposalInPortugalRoute: ProposalInPortugalRoute,
   ProposalsRoute: ProposalsRoute,

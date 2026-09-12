@@ -314,14 +314,14 @@ export const SERVICE_AREA_LINKS: readonly {
   note: string;
 }[] = [
   { area: "Lisbon", anchor: "lisbon", path: "/lisbon-private-tours", note: "Hotel, apartment or cruise terminal" },
-  { area: "Cascais", anchor: "cascais", path: "/private-tours-sintra-cascais", note: "Cascais & Estoril pickups" },
-  { area: "Sintra", anchor: "sintra", path: "/private-tours-sintra-cascais", note: "Sintra village and hotels" },
-  { area: "Sesimbra", anchor: "sesimbra", path: "/private-tours-arrabida-sesimbra", note: "Our home base" },
-  { area: "Setúbal", anchor: "setubal", path: "/private-tours-azeitao-setubal", note: "Setúbal city and marina" },
-  { area: "Azeitão", anchor: "azeitao", path: "/private-tours-azeitao-setubal", note: "Wine and cheese country" },
-  { area: "Évora", anchor: "evora", path: "/private-tours-alentejo-evora", note: "Alentejo departures" },
-  { area: "Comporta", anchor: "comporta", path: "/private-tours-comporta-troia", note: "Comporta houses and hotels" },
-  { area: "Tróia", anchor: "troia", path: "/private-tours-comporta-troia", note: "Tróia peninsula and ferry" },
+  { area: "Cascais", anchor: "cascais", path: "/private-tours-cascais", note: "Cascais & Estoril pickups" },
+  { area: "Sintra", anchor: "sintra", path: "/private-tours-sintra", note: "Sintra village and hotels" },
+  { area: "Sesimbra", anchor: "sesimbra", path: "/private-tours-sesimbra", note: "Our home base" },
+  { area: "Setúbal", anchor: "setubal", path: "/private-tours-setubal", note: "Setúbal city and marina" },
+  { area: "Azeitão", anchor: "azeitao", path: "/private-tours-azeitao", note: "Wine and cheese country" },
+  { area: "Évora", anchor: "evora", path: "/private-tours-evora", note: "Alentejo departures" },
+  { area: "Comporta", anchor: "comporta", path: "/private-tours-comporta", note: "Comporta houses and hotels" },
+  { area: "Tróia", anchor: "troia", path: "/private-tours-troia", note: "Tróia peninsula and ferry" },
 ] as const;
 
 /**

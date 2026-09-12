@@ -110,3 +110,59 @@ penalises keyword-stuffed names.
 | Tróia | Private Tróia and Comporta beaches day | Cross the Sado by ferry to Tróia's dunes and Comporta's beaches on a private day from Lisbon, with dolphin-watching season options and lunch. | /private-tours-comporta-troia |
 
 All links are relative to https://yesexperiencesportugal.com
+
+## Profile description (paste into GBP → Edit profile → Description, 750 char max)
+
+Private day trips from Lisbon and tailored journeys across Portugal, run by a
+small local team based in Sesimbra. We design private tours in Sintra, Cascais,
+Arrábida, Sesimbra, Azeitão, Setúbal, Évora, Comporta and Tróia — palaces and
+coast, family wine cellars and Moscatel, hand-made cheese, tile workshops and
+Atlantic beaches. Every day is private: one group, one host, one vehicle, with
+door-to-door pickup at your hotel, apartment, villa or the Lisbon cruise
+terminal, and no fixed group departures. Dates, pace and stops are shaped
+around you, and you can book and pay online with instant confirmation.
+Licensed tour operator, RNAAT nº 31/2023. Rated 4.9 out of 5 by our guests.
+
+## Meta titles for the two target searches
+
+| Search | Page | Meta title live on the page |
+|---|---|---|
+| private tours in Sintra | /private-tours-sintra | Private Tours in Sintra From Lisbon — Palaces, No Queues |
+| day trips from Lisbon | /day-trips-from-lisbon | Best Day Trips from Lisbon (2026) — Compared by Locals |
+
+GBP itself has no meta title — the profile name is the equivalent, and it must
+stay exactly `YES Experiences Portugal`. Use the phrases inside the description
+and Services instead.
+
+## Review request message (send after a trip)
+
+Short version, for WhatsApp or SMS:
+
+> Hi [name], it was a pleasure showing you [Arrábida / Sintra / Évora] last
+> [day]. If you enjoyed the day, would you mind leaving us a short Google
+> review? It genuinely helps a small local team like ours: [Google review link]
+> Thank you — Nídia, YES Experiences Portugal
+
+Longer version, for email:
+
+> Dear [name],
+>
+> Thank you for spending your day in Portugal with us. It was a real pleasure
+> to share [region] with you, and we hope the [wine tasting / the coves / Évora]
+> stayed with you on the way home.
+>
+> If you have two minutes, a short Google review would mean a lot to us. We are
+> a small local team and guests find us mostly through what other guests write:
+>
+> [Google review link]
+>
+> If anything could have been better, please reply to this email instead — we
+> would rather hear it from you directly.
+>
+> Warm regards,
+> Nídia de Almeida
+> YES Experiences Portugal · RNAAT nº 31/2023
+
+Get the review link from your profile: Google Business Profile → Read reviews →
+Get more reviews → copy link. Never offer anything in exchange for a review —
+Google removes those and can suspend the profile.
