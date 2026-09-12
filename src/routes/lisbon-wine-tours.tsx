@@ -277,6 +277,20 @@ function LisbonWineTours() {
           </dl>
           <p className="mt-8 text-[14px] text-[color:var(--charcoal-soft)]">
             More:{" "}
+            <Link
+              to="/lisbon-wine-tour-pickup-and-wineries"
+              className="underline underline-offset-4"
+            >
+              Lisbon wine tour pickup and wineries
+            </Link>{" "}
+            ·{" "}
+            <Link
+              to="/lisbon-wine-tour-prices-and-inclusions"
+              className="underline underline-offset-4"
+            >
+              wine tour from Lisbon prices and inclusions
+            </Link>{" "}
+            ·{" "}
             <Link to="/lisbon-private-tours" className="underline underline-offset-4">
               private Lisbon tours
             </Link>{" "}

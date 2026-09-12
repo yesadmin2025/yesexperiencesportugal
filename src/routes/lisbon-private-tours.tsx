@@ -342,7 +342,14 @@ function LisbonPrivateTours() {
             </Link>
             ,{" "}
             <Link to="/lisbon-wine-tours" className="underline underline-offset-4">
-              Lisbon wine tours
+              private wine tours from Lisbon
+            </Link>
+            ,{" "}
+            <Link
+              to="/lisbon-wine-tour-pickup-and-wineries"
+              className="underline underline-offset-4"
+            >
+              Lisbon wine tour pickup and wineries
             </Link>{" "}
             and our{" "}
             <Link to="/portugal-itinerary" className="underline underline-offset-4">

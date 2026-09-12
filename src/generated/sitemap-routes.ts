@@ -19,6 +19,8 @@ export const SITEMAP_STATIC_ROUTES: SitemapRoute[] = [
   { path: "/how-many-days-in-portugal", changefreq: "monthly", priority: "0.7" },
   { path: "/itineraries/10-day-private-portugal-tour", changefreq: "monthly", priority: "0.8" },
   { path: "/lisbon-private-tours", changefreq: "monthly", priority: "0.7" },
+  { path: "/lisbon-wine-tour-pickup-and-wineries", changefreq: "monthly", priority: "0.7" },
+  { path: "/lisbon-wine-tour-prices-and-inclusions", changefreq: "monthly", priority: "0.7" },
   { path: "/lisbon-wine-tours", changefreq: "monthly", priority: "0.7" },
   { path: "/local-stories", changefreq: "weekly", priority: "0.7" },
   { path: "/luxury-tours-portugal", changefreq: "monthly", priority: "0.85" },

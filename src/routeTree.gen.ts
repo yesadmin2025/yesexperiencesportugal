@@ -61,6 +61,8 @@ import { Route as McpRouteImport } from './routes/mcp'
 import { Route as LuxuryToursPortugalRouteImport } from './routes/luxury-tours-portugal'
 import { Route as LocalStoriesRouteImport } from './routes/local-stories'
 import { Route as LisbonWineToursRouteImport } from './routes/lisbon-wine-tours'
+import { Route as LisbonWineTourPricesAndInclusionsRouteImport } from './routes/lisbon-wine-tour-prices-and-inclusions'
+import { Route as LisbonWineTourPickupAndWineriesRouteImport } from './routes/lisbon-wine-tour-pickup-and-wineries'
 import { Route as LisbonPrivateToursRouteImport } from './routes/lisbon-private-tours'
 import { Route as ItineraryRouteImport } from './routes/itinerary'
 import { Route as HowManyDaysInPortugalRouteImport } from './routes/how-many-days-in-portugal'
@@ -457,6 +459,18 @@ const LisbonWineToursRoute = LisbonWineToursRouteImport.update({
   path: '/lisbon-wine-tours',
   getParentRoute: () => rootRouteImport,
 } as any)
+const LisbonWineTourPricesAndInclusionsRoute =
+  LisbonWineTourPricesAndInclusionsRouteImport.update({
+    id: '/lisbon-wine-tour-prices-and-inclusions',
+    path: '/lisbon-wine-tour-prices-and-inclusions',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const LisbonWineTourPickupAndWineriesRoute =
+  LisbonWineTourPickupAndWineriesRouteImport.update({
+    id: '/lisbon-wine-tour-pickup-and-wineries',
+    path: '/lisbon-wine-tour-pickup-and-wineries',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const LisbonPrivateToursRoute = LisbonPrivateToursRouteImport.update({
   id: '/lisbon-private-tours',
   path: '/lisbon-private-tours',
@@ -1144,6 +1158,8 @@ export interface FileRoutesByFullPath {
   '/how-many-days-in-portugal': typeof HowManyDaysInPortugalRoute
   '/itinerary': typeof ItineraryRoute
   '/lisbon-private-tours': typeof LisbonPrivateToursRoute
+  '/lisbon-wine-tour-pickup-and-wineries': typeof LisbonWineTourPickupAndWineriesRoute
+  '/lisbon-wine-tour-prices-and-inclusions': typeof LisbonWineTourPricesAndInclusionsRoute
   '/lisbon-wine-tours': typeof LisbonWineToursRoute
   '/local-stories': typeof LocalStoriesRouteWithChildren
   '/luxury-tours-portugal': typeof LuxuryToursPortugalRoute
@@ -1325,6 +1341,8 @@ export interface FileRoutesByTo {
   '/how-many-days-in-portugal': typeof HowManyDaysInPortugalRoute
   '/itinerary': typeof ItineraryRoute
   '/lisbon-private-tours': typeof LisbonPrivateToursRoute
+  '/lisbon-wine-tour-pickup-and-wineries': typeof LisbonWineTourPickupAndWineriesRoute
+  '/lisbon-wine-tour-prices-and-inclusions': typeof LisbonWineTourPricesAndInclusionsRoute
   '/lisbon-wine-tours': typeof LisbonWineToursRoute
   '/luxury-tours-portugal': typeof LuxuryToursPortugalRoute
   '/mcp': typeof McpRoute
@@ -1505,6 +1523,8 @@ export interface FileRoutesById {
   '/how-many-days-in-portugal': typeof HowManyDaysInPortugalRoute
   '/itinerary': typeof ItineraryRoute
   '/lisbon-private-tours': typeof LisbonPrivateToursRoute
+  '/lisbon-wine-tour-pickup-and-wineries': typeof LisbonWineTourPickupAndWineriesRoute
+  '/lisbon-wine-tour-prices-and-inclusions': typeof LisbonWineTourPricesAndInclusionsRoute
   '/lisbon-wine-tours': typeof LisbonWineToursRoute
   '/local-stories': typeof LocalStoriesRouteWithChildren
   '/luxury-tours-portugal': typeof LuxuryToursPortugalRoute
@@ -1688,6 +1708,8 @@ export interface FileRouteTypes {
     | '/how-many-days-in-portugal'
     | '/itinerary'
     | '/lisbon-private-tours'
+    | '/lisbon-wine-tour-pickup-and-wineries'
+    | '/lisbon-wine-tour-prices-and-inclusions'
     | '/lisbon-wine-tours'
     | '/local-stories'
     | '/luxury-tours-portugal'
@@ -1869,6 +1891,8 @@ export interface FileRouteTypes {
     | '/how-many-days-in-portugal'
     | '/itinerary'
     | '/lisbon-private-tours'
+    | '/lisbon-wine-tour-pickup-and-wineries'
+    | '/lisbon-wine-tour-prices-and-inclusions'
     | '/lisbon-wine-tours'
     | '/luxury-tours-portugal'
     | '/mcp'
@@ -2048,6 +2072,8 @@ export interface FileRouteTypes {
     | '/how-many-days-in-portugal'
     | '/itinerary'
     | '/lisbon-private-tours'
+    | '/lisbon-wine-tour-pickup-and-wineries'
+    | '/lisbon-wine-tour-prices-and-inclusions'
     | '/lisbon-wine-tours'
     | '/local-stories'
     | '/luxury-tours-portugal'
@@ -2230,6 +2256,8 @@ export interface RootRouteChildren {
   HowManyDaysInPortugalRoute: typeof HowManyDaysInPortugalRoute
   ItineraryRoute: typeof ItineraryRoute
   LisbonPrivateToursRoute: typeof LisbonPrivateToursRoute
+  LisbonWineTourPickupAndWineriesRoute: typeof LisbonWineTourPickupAndWineriesRoute
+  LisbonWineTourPricesAndInclusionsRoute: typeof LisbonWineTourPricesAndInclusionsRoute
   LisbonWineToursRoute: typeof LisbonWineToursRoute
   LocalStoriesRoute: typeof LocalStoriesRouteWithChildren
   LuxuryToursPortugalRoute: typeof LuxuryToursPortugalRoute
@@ -2730,6 +2758,20 @@ declare module '@tanstack/react-router' {
       path: '/lisbon-wine-tours'
       fullPath: '/lisbon-wine-tours'
       preLoaderRoute: typeof LisbonWineToursRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/lisbon-wine-tour-prices-and-inclusions': {
+      id: '/lisbon-wine-tour-prices-and-inclusions'
+      path: '/lisbon-wine-tour-prices-and-inclusions'
+      fullPath: '/lisbon-wine-tour-prices-and-inclusions'
+      preLoaderRoute: typeof LisbonWineTourPricesAndInclusionsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/lisbon-wine-tour-pickup-and-wineries': {
+      id: '/lisbon-wine-tour-pickup-and-wineries'
+      path: '/lisbon-wine-tour-pickup-and-wineries'
+      fullPath: '/lisbon-wine-tour-pickup-and-wineries'
+      preLoaderRoute: typeof LisbonWineTourPickupAndWineriesRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/lisbon-private-tours': {
@@ -3726,6 +3768,9 @@ const rootRouteChildren: RootRouteChildren = {
   HowManyDaysInPortugalRoute: HowManyDaysInPortugalRoute,
   ItineraryRoute: ItineraryRoute,
   LisbonPrivateToursRoute: LisbonPrivateToursRoute,
+  LisbonWineTourPickupAndWineriesRoute: LisbonWineTourPickupAndWineriesRoute,
+  LisbonWineTourPricesAndInclusionsRoute:
+    LisbonWineTourPricesAndInclusionsRoute,
   LisbonWineToursRoute: LisbonWineToursRoute,
   LocalStoriesRoute: LocalStoriesRouteWithChildren,
   LuxuryToursPortugalRoute: LuxuryToursPortugalRoute,

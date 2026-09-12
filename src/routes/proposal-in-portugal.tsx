@@ -294,6 +294,24 @@ export function ProposalInPortugalPage() {
             label: "Company celebrations and client hosting",
             description: "Private celebrations for teams and clients, coordinated across Portugal.",
           },
+          {
+            to: "/lisbon-wine-tours",
+            label: "Private wine tour from Lisbon for the day around the proposal",
+            description:
+              "Family cellars in Azeitão and Arrábida, Moscatel tastings and a long lunch — the most-chosen day to build a celebration around.",
+          },
+          {
+            to: "/lisbon-wine-tour-prices-and-inclusions",
+            label: "Lisbon wine tour prices and what is included",
+            description:
+              "Per-person prices, tastings, lunch and transport spelled out, so a celebration day can be budgeted before you write to us.",
+          },
+          {
+            to: "/lisbon-wine-tour-pickup-and-wineries",
+            label: "Lisbon wine tour pickup points and wineries",
+            description:
+              "Where we collect you in Lisbon, the timings, and the cellars you actually sit in.",
+          },
         ]}
       />
     </SiteLayout>
