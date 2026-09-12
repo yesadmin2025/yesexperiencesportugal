@@ -9,6 +9,7 @@ import { useState } from "react";
 import { useServerFn } from "@tanstack/react-start";
 import { Star } from "lucide-react";
 import { submitPublicReview } from "@/lib/reviewsPublic.functions";
+import { trackEvent } from "@/lib/analytics-events";
 
 type TourOption = { tour_id: string; title: string };
 

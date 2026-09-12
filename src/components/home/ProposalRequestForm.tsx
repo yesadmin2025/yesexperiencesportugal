@@ -7,8 +7,9 @@
  * to the YES team. Mobile-first, validated on the client and again on the
  * server, with an inline success state (no page jump).
  */
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { Check, Loader2 } from "lucide-react";
+import { trackEvent } from "@/lib/analytics-events";
 
 const OCCASIONS = [
   { value: "proposal", label: "Marriage proposal" },
