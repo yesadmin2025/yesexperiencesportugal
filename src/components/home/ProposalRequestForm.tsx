@@ -26,6 +26,14 @@ const labelClass =
 export function ProposalRequestForm({ id = "proposal-request" }: { id?: string }) {
   const [state, setState] = useState<"idle" | "sending" | "sent">("idle");
   const [error, setError] = useState<string | null>(null);
+  const startedRef = useRef(false);
+
+  /** Fires once, the first time a visitor engages with any field. */
+  function onFirstInteraction() {
+    if (startedRef.current) return;
+    startedRef.current = true;
+    trackEvent("proposal_form_started", { placement: "home:proposals" });
+  }
 
   async function onSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
