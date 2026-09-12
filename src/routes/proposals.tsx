@@ -10,9 +10,9 @@ import ogSocialImg from "@/assets/cat-proposals.jpg";
  * points there so search engines consolidate signals on the keyword URL.
  */
 const CANONICAL = "https://yesexperiencesportugal.com/proposal-in-portugal";
-const TITLE = "Proposal in Portugal — Private Moments, Planned Discreetly";
+const TITLE = "Proposal in Portugal — Private Sintra, Arrábida & Lisbon Moments";
 const DESCRIPTION =
-  "Plan a proposal in Portugal — Sintra cliffs, Arrábida coves, Lisbon rooftops. A private moment shaped end to end by a local team.";
+  "Plan a proposal in Portugal with a licensed local team: private Sintra viewpoints, Arrábida coves and Lisbon rooftops, arranged discreetly around your date.";
 
 export const Route = createFileRoute("/proposals")({
   head: () => ({

@@ -21,9 +21,12 @@ const BASE_URL = "https://yesexperiencesportugal.com";
 const PAGE_PATH = "/proposal-in-portugal";
 const PAGE_URL = `${BASE_URL}${PAGE_PATH}`;
 
-const TITLE = "Proposal & Celebration Experiences in Portugal | YES";
+// Local intent: proposal + the places guests actually name (Sintra, Arrábida,
+// Lisbon). The head-on "private tours in Sintra" query stays with
+// /private-tours-sintra so the two pages never compete for the same result.
+const TITLE = "Proposal in Portugal — Private Sintra, Arrábida & Lisbon Moments";
 const DESCRIPTION =
-  "Private proposals, anniversaries and celebrations across Portugal, discreetly designed by a local team with venues, timing and details coordinated.";
+  "Plan a proposal in Portugal with a licensed local team: private Sintra viewpoints, Arrábida coves and Lisbon rooftops, arranged discreetly around your date.";
 
 export const Route = createFileRoute("/proposal-in-portugal")({
   head: () => ({
