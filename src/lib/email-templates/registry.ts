@@ -6,6 +6,7 @@ import { template as checkoutReceipt } from "./checkout-receipt";
 import { template as stripeWebhookAlert } from "./stripe-webhook-alert";
 import { template as contactReceived } from "./contact-received";
 import { template as internalLead } from "./internal-lead";
+import { template as reviewRequest } from "./review-request";
 import { template as internalBooking } from "./internal-booking";
 import { template as welcome } from "./welcome";
 import { template as legacyDomainReady } from "./legacy-domain-ready";
@@ -32,6 +33,7 @@ export const TEMPLATES: Record<string, TemplateEntry> = {
   "stripe-webhook-alert": stripeWebhookAlert,
   "contact-received": contactReceived,
   "internal-lead": internalLead,
+  "review-request": reviewRequest,
   "internal-booking": internalBooking,
   welcome: welcome,
   "legacy-domain-ready": legacyDomainReady,
