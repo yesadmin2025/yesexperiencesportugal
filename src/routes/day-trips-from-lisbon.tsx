@@ -568,7 +568,14 @@ function DayTripsFromLisbon() {
             </Link>{" "}
             ·{" "}
             <Link to="/lisbon-wine-tours" className="underline underline-offset-4">
-              Lisbon wine tours
+              private wine tours from Lisbon
+            </Link>{" "}
+            ·{" "}
+            <Link
+              to="/lisbon-wine-tour-prices-and-inclusions"
+              className="underline underline-offset-4"
+            >
+              Lisbon wine tour prices
             </Link>{" "}
             ·{" "}
             <Link to="/portugal-itinerary" className="underline underline-offset-4">
