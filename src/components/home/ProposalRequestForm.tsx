@@ -94,7 +94,7 @@ export function ProposalRequestForm({ id = "proposal-request" }: { id?: string }
         </h3>
         <p className="mt-3 text-[15px] leading-[1.75] text-[color:var(--charcoal-soft)]">
           A confirmation is on its way to your inbox, and a local designer replies personally —
-          usually within one working day. If it is time-sensitive, call us on +351 911 889 992.
+          usually within one working day. If it is time-sensitive, call us on {PHONE_DISPLAY}.
         </p>
       </div>
     );
