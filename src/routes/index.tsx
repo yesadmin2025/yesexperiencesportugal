@@ -5,10 +5,8 @@ import { useEffect, useRef, useState } from "react";
 import { SiteLayout } from "@/components/SiteLayout";
 import { FAQ } from "@/components/FAQ";
 import { CtaButton } from "@/components/ui/CtaButton";
-import { CtaPair } from "@/components/ui/CtaPair";
 import { EditorialCard } from "@/components/ui/EditorialCard";
 import { Eyebrow } from "@/components/ui/Eyebrow";
-import { whatsappUrl } from "@/config/business-nap";
 import { buildResponsiveSrc } from "@/lib/responsive-image";
 
 import heroImg from "@/assets/hero-coast.jpg";
@@ -49,7 +47,6 @@ import { getTourContent, signatureDurationLabel } from "@/lib/tourContent";
 import { LOCAL_STORIES_ARTICLES } from "@/content/local-stories-articles";
 import { PortugalPlannerMap } from "@/components/home/PortugalPlannerMap";
 import { LiveReviews } from "@/components/reviews/LiveReviews";
-import { ProposalRequestForm } from "@/components/home/ProposalRequestForm";
 
 /**
  * Tours whose already-published verified quotes fill the homepage review
@@ -424,16 +421,20 @@ export const Route = createFileRoute("/")({
 });
 
 /* ════════════════════════════════════════════════════════════════
- * HOMEPAGE — 9 sections (structural pass: dedup + reorder)
+ * HOMEPAGE — 13 sections (calm, conversion-led sequence)
  * 1. Hero
- * 2. Social proof — trust strip
- * 3. Why YES — editorial manifesto (5 blocks)
- * 4. Experience Studio preview (Builder)
- * 5. Real Signature Experiences preview
- * 6. Proposals / Celebrations / Corporate / Multi-Day (combined band)
- * 7. FAQ
- * 8. Recognised by travel guides — editorial trust strip (after content)
- * 9. Final CTA — Talk to a local
+ * 2. Trust strip
+ * 3. Five ways into YES
+ * 4. Experience Studio
+ * 5. Signature Experiences
+ * 6. Travel Designer
+ * 7. Proposals & Celebrations
+ * 8. Corporate & Private Groups
+ * 9. Guest reviews
+ * 10. Explore Portugal map
+ * 11. Local Stories
+ * 12. FAQ
+ * 13. Final decision
  * ════════════════════════════════════════════════════════════ */
 function HomePage() {
   const scrollDebug = useScrollDebugFlags();
@@ -940,22 +941,6 @@ function HomePage() {
           Travel Designer journeys. */}
         <RecentJourney />
 
-        {/* 6 — LIVE GUEST REVIEWS
-          Real published quotes from `tour_reviews`, with the verified
-          platform quotes already shown on the tour pages as the fallback,
-          beside the public 4.9 rating. */}
-        <LiveReviews
-          id="live-reviews"
-          ariaLabelledBy="live-reviews-title"
-          tourIds={undefined}
-          fallbackTourIds={LIVE_REVIEW_FALLBACK_TOURS}
-          titleLead="In the words of"
-          titleEm="recent guests"
-          standfirst="Every quote below comes from a guest who travelled with us — nothing is written by us."
-          className="bg-[color:var(--ivory)]"
-        />
-
-
         {/* 7 — PROPOSALS & CELEBRATIONS
           A dedicated commercial path for private milestones. */}
         <section
@@ -981,10 +966,10 @@ function HomePage() {
               </p>
             </div>
 
-            <div className="max-w-6xl mx-auto flex flex-col gap-7 md:gap-10">
+            <div className="max-w-5xl mx-auto">
               {groupsAndCelebrations
-                .filter((m) => m.id !== "corporate")
-                .map((m, i) => (
+                .filter((m) => m.id === "proposals")
+                .map((m) => (
                   <EditorialCard
                     key={m.eyebrow}
                     id={m.id}
@@ -995,19 +980,8 @@ function HomePage() {
                     detail={m.detail}
                     cta={{ label: m.cta, to: m.to, ariaLabel: m.cta }}
                     image={{ src: m.img, to: m.to }}
-                    reverse={i % 2 === 1}
                   />
                 ))}
-            </div>
-
-            {/* Real request form — proposals, celebrations, corporate days
-              and private groups all land in the same enquiries inbox and
-              trigger a confirmation email to the sender and to the team. */}
-            <div className="mt-12 md:mt-14">
-              <p className="mx-auto mb-6 max-w-2xl text-center font-sans text-[11.5px] uppercase tracking-[0.2em] text-[color:var(--charcoal-soft)]">
-                Tell us the occasion — we reply personally
-              </p>
-              <ProposalRequestForm />
             </div>
           </div>
         </section>
@@ -1037,7 +1011,7 @@ function HomePage() {
               </p>
             </div>
 
-            <div className="max-w-6xl mx-auto flex flex-col gap-7 md:gap-10">
+            <div className="max-w-5xl mx-auto">
               {groupsAndCelebrations
                 .filter((m) => m.id === "corporate")
                 .map((m) => (
@@ -1057,18 +1031,31 @@ function HomePage() {
           </div>
         </section>
 
-        {/* 8 — Plan your Portugal: interactive map
+        {/* 9 — LIVE GUEST REVIEWS
+          Reassurance follows the service choices, just before discovery. */}
+        <LiveReviews
+          id="live-reviews"
+          ariaLabelledBy="live-reviews-title"
+          tourIds={undefined}
+          fallbackTourIds={LIVE_REVIEW_FALLBACK_TOURS}
+          titleLead="In the words of"
+          titleEm="recent guests"
+          standfirst="Every quote below comes from a guest who travelled with us — nothing is written by us."
+          className="bg-[color:var(--ivory)]"
+        />
+
+        {/* 10 — EXPLORE PORTUGAL: interactive map
           Region pins link the real Signature days and the real Local
           Stories guides for that part of the country. Data derives from
           `signatureTours` + `LOCAL_STORIES_ARTICLES` — nothing invented. */}
         <section
           id="plan-map"
-          className="he-section-rule section-enter py-16 md:py-20 scroll-mt-24 md:scroll-mt-28"
+          className="he-section-rule section-enter pt-16 pb-10 md:pt-20 md:pb-12 bg-[color:var(--sand)] scroll-mt-24 md:scroll-mt-28"
           aria-labelledby="plan-map-title"
         >
           <div className="container-x">
             <div className="reveal text-center max-w-2xl mx-auto mb-8 md:mb-12">
-              <Eyebrow className="mb-5">Plan your Portugal</Eyebrow>
+              <Eyebrow className="mb-5">Explore Portugal</Eyebrow>
               <h2
                 id="plan-map-title"
                 className="serif mt-3 text-[1.8rem] sm:text-[2.1rem] lg:text-[2.95rem] leading-[1.12] lg:leading-[1.02] tracking-[-0.014em] text-[color:var(--charcoal)] font-medium"
@@ -1093,19 +1080,19 @@ function HomePage() {
           </div>
         </section>
 
-        {/* 9 — Journal: local guides
+        {/* 11 — LOCAL STORIES: the editorial half of Explore Portugal
           Editorial entry point into Local Stories. Three evergreen guides
           (wine, coast, heritage) so the homepage links the guide library
           instead of leaving it to nav + footer only. */}
 
         <section
           id="journal"
-          className="he-section-rule section-enter py-16 md:py-20 scroll-mt-24 md:scroll-mt-28"
+          className="section-enter pt-10 pb-16 md:pt-12 md:pb-20 bg-[color:var(--sand)] scroll-mt-24 md:scroll-mt-28"
           aria-labelledby="journal-title"
         >
           <div className="container-x">
             <div className="reveal text-center max-w-2xl mx-auto mb-7 md:mb-10">
-              <Eyebrow className="mb-5">Journal</Eyebrow>
+              <Eyebrow className="mb-5">Local stories</Eyebrow>
               <h2
                 id="journal-title"
                 className="serif mt-3 text-[1.8rem] sm:text-[2.1rem] lg:text-[2.95rem] leading-[1.12] lg:leading-[1.02] tracking-[-0.014em] text-[color:var(--charcoal)] font-medium"
@@ -1192,7 +1179,7 @@ function HomePage() {
           </div>
         </section>
 
-        {/* 9 — FAQ
+        {/* 12 — FAQ
           Reuses the shared FAQ component, which renders its own
           labelled section landmark (aria-labelledby="faq-title") with
           visible expandable answers. The wrapper here is a plain div on
@@ -1210,109 +1197,56 @@ function HomePage() {
           surface area survives. RecognisedByGuides removed from the
           homepage; still rendered on About. */}
 
-        {/* 9 — FINAL CTA — Talk to a local
-          Distinct from the hero CTAs (Explore Signatures / Build) — this
-          is the human escape hatch. No duplicate CTA band; one purpose,
-          one button. */}
+        {/* 13 — FINAL DECISION
+          Three intent-matched paths, followed by a quiet human option. */}
         <section
           id="final-cta"
           className="section-y relative overflow-hidden bg-[color:var(--sand)] text-[color:var(--charcoal)] scroll-mt-24 md:scroll-mt-28"
           aria-labelledby="final-cta-title"
         >
-          {/* Warm ivory→sand wash so the section reads as a chapter, not a
-            block. Decorative + aria-hidden. No animation. */}
-          <div
-            aria-hidden="true"
-            className="pointer-events-none absolute inset-0"
-            style={{
-              background:
-                "radial-gradient(80% 60% at 50% 0%, color-mix(in oklab, var(--ivory) 92%, transparent), transparent 70%)",
-            }}
-          />
-
           <div className="container-x relative">
-            {/* Chapter divider above the card — gold dot + flanking rules */}
-            <div className="reveal max-w-md mx-auto mb-10 md:mb-14" aria-hidden="true">
+            <div className="reveal max-w-md mx-auto mb-8 md:mb-10" aria-hidden="true">
               <div className="chapter-divider">
                 <span className="dot" />
               </div>
             </div>
 
-            <div className="reveal max-w-md mx-auto mb-10 md:mb-14" aria-hidden="true">
-              <div className="chapter-divider">
-                <span className="dot" />
-              </div>
-            </div>
-
-            {/* Final CTA card — deep teal with champagne-gold hairline,
-              gold top rule and a soft warm shadow. Editorial radius. */}
             <div className="reveal mx-auto max-w-2xl">
-              <div
-                className="relative overflow-hidden rounded-[6px] bg-[color:var(--ivory)] text-[color:var(--charcoal)] px-6 py-10 sm:px-10 sm:py-12 md:px-14 md:py-14 text-center"
-                style={{
-                  border: "1px solid color-mix(in oklab, var(--gold-deep) 55%, transparent)",
-                  boxShadow:
-                    "0 1px 0 0 color-mix(in oklab, var(--gold) 22%, transparent) inset, " +
-                    "0 24px 60px -28px color-mix(in oklab, var(--charcoal) 18%, transparent), " +
-                    "0 12px 28px -18px color-mix(in oklab, var(--charcoal-deep) 14%, transparent)",
-                }}
-              >
-                {/* Soft warm wash — ivory to sand for editorial depth */}
-                <div
-                  aria-hidden="true"
-                  className="pointer-events-none absolute inset-0"
-                  style={{
-                    background:
-                      "radial-gradient(70% 90% at 90% 0%, color-mix(in oklab, var(--sand) 55%, transparent), transparent 60%), " +
-                      "radial-gradient(60% 80% at 5% 100%, color-mix(in oklab, var(--sand) 40%, transparent), transparent 65%)",
-                  }}
-                />
-                {/* Gold top rule — short, centered, the editorial signature */}
-                <div
-                  aria-hidden="true"
-                  className="absolute top-0 left-1/2 -translate-x-1/2 h-px w-24 md:w-32"
-                  style={{
-                    background:
-                      "linear-gradient(90deg, transparent, var(--gold-warm) 50%, transparent)",
-                    opacity: 0.9,
-                  }}
-                />
-
-                <div className="relative">
+              <div className="text-center">
+                <div>
                   <Eyebrow icon={<MessageCircle aria-hidden="true" />} className="mb-5">
-                    The stage is set
+                    Your next step
                   </Eyebrow>
 
                   <h2
                     id="final-cta-title"
                     className="serif mt-3 text-[2.1rem] sm:text-[2.5rem] lg:text-[3.8rem] leading-[1.05] lg:leading-[0.96] tracking-[-0.02em] text-[color:var(--charcoal)] font-medium"
                   >
-                    Portugal is waiting.{" "}
+                    Begin with the way{` `}
                     <span className="italic font-normal text-[color:var(--teal)]">
-                      Begin your story.
+                      that feels right.
                     </span>
                   </h2>
                   <p className="mt-5 text-[14.5px] md:text-[16px] text-[color:var(--charcoal-soft)] leading-[1.7] max-w-md mx-auto">
-                    Every journey begins with a conversation. Tell us what matters to you and we’ll
-                    shape the rest.
+                    Reserve a proven day, shape one in the Studio, or ask us to compose a longer Portugal journey.
                   </p>
-                  <CtaPair className="mt-9" justify="center">
-                    <CtaButton to="/studio-v3" variant="primary">
-                      Open the Studio
+                  <div className="mt-9 grid gap-3 sm:grid-cols-3">
+                    <CtaButton to="/experiences" variant="primary" size="sm">
+                      Reserve a Signature day
                     </CtaButton>
-                    <CtaButton
-                      href={whatsappUrl("Hi YES — I'd like a hand planning my day in Portugal.")}
-                      variant="hairline"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      iconLeading={<MessageCircle size={14} aria-hidden="true" />}
-                    >
-                      Talk on WhatsApp
+                    <CtaButton to="/studio-v3" variant="ghost" size="sm">
+                      Design one private day
                     </CtaButton>
-                  </CtaPair>
-                  <p className="mt-6 text-center text-[12.5px] leading-[1.6] text-[color:var(--charcoal-soft)]">
-                    A local usually replies within a few hours.
-                  </p>
+                    <CtaButton to="/portugal-travel-designer" variant="ghost" size="sm">
+                      Plan a Portugal journey
+                    </CtaButton>
+                  </div>
+                  <Link
+                    to="/contact"
+                    className="mt-7 inline-flex min-h-11 items-center text-sm text-[color:var(--charcoal)] underline decoration-[color:var(--gold)] underline-offset-4 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)]"
+                  >
+                    Not sure where to begin? Talk to a local
+                  </Link>
                 </div>
               </div>
             </div>
