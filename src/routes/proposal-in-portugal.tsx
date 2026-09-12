@@ -21,12 +21,12 @@ const BASE_URL = "https://yesexperiencesportugal.com";
 const PAGE_PATH = "/proposal-in-portugal";
 const PAGE_URL = `${BASE_URL}${PAGE_PATH}`;
 
-// Local intent: proposal + the places guests actually name (Sintra, Arrábida,
-// Lisbon). The head-on "private tours in Sintra" query stays with
-// /private-tours-sintra so the two pages never compete for the same result.
-const TITLE = "Proposal in Portugal — Private Sintra, Arrábida & Lisbon Moments";
+// National intent: proposals and celebrations designed anywhere in Portugal.
+// The head-on "private tours in <city>" queries stay with the area pages so
+// this page never competes with them for the same result.
+const TITLE = "Proposal in Portugal — Private Moments Designed Anywhere";
 const DESCRIPTION =
-  "Plan a proposal in Portugal with a licensed local team: private Sintra viewpoints, Arrábida coves and Lisbon rooftops, arranged discreetly around your date.";
+  "Plan a proposal anywhere in Portugal with a licensed local team: coastline, vineyards, palaces or a quiet city terrace — setting, timing and surprise handled discreetly.";
 
 export const Route = createFileRoute("/proposal-in-portugal")({
   head: () => ({
@@ -117,8 +117,9 @@ export function ProposalInPortugalPage() {
           </SectionTitle>
           <span className="gold-rule mt-6 mx-auto max-w-[80px]" aria-hidden="true" />
           <p className="mt-6 text-[1rem] md:text-[1.1rem] text-[color:var(--charcoal-soft)] leading-relaxed">
-            A private moment, shaped end to end by a local team — with the setting, timing and
-            surprise handled quietly on your behalf.
+            Anywhere in Portugal — coastline, vineyard, palace garden or a quiet city terrace. A
+            private moment shaped end to end by a local team, with the setting, timing and surprise
+            handled quietly on your behalf.
           </p>
           <div className="mt-8 flex justify-center">
             <CtaButton href="#proposal-request" variant="primary">
@@ -182,6 +183,27 @@ export function ProposalInPortugalPage() {
               </article>
             );
           })}
+        </div>
+      </section>
+
+      {/* Where — national scope */}
+      <section className="py-16 md:py-20 bg-[color:var(--ivory)] reveal" aria-labelledby="proposal-where-title">
+        <div className="container-x max-w-3xl">
+          <Eyebrow flank>Anywhere in Portugal</Eyebrow>
+          <SectionTitle id="proposal-where-title" size="compact" spacing="loose">
+            The country is the <SectionTitle.Em>setting.</SectionTitle.Em>
+          </SectionTitle>
+          <p className="mt-5 text-[color:var(--charcoal-soft)] leading-relaxed">
+            We are not limited to one region. Proposals and celebrations are designed wherever the
+            moment belongs — the Atlantic cliffs and Sintra's gardens west of Lisbon, Arrábida's
+            coves and the Azeitão wine estates to the south, Comporta's dunes and the Alentejo
+            plains, the Silver Coast and Centro, or further north and south when your story points
+            there. Tell us where it should happen and we build the day around it.
+          </p>
+          <p className="mt-4 text-sm text-[color:var(--charcoal-soft)] leading-relaxed">
+            Locations, permissions and timings are always confirmed with you before the date — we
+            never promise a place we cannot arrange.
+          </p>
         </div>
       </section>
 

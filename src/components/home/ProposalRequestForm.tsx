@@ -10,6 +10,7 @@
 import { useRef, useState } from "react";
 import { Check, Loader2 } from "lucide-react";
 import { trackEvent } from "@/lib/analytics-events";
+import { PHONE_DISPLAY } from "@/config/business-nap";
 
 const OCCASIONS = [
   { value: "proposal", label: "Marriage proposal" },
@@ -93,7 +94,7 @@ export function ProposalRequestForm({ id = "proposal-request" }: { id?: string }
         </h3>
         <p className="mt-3 text-[15px] leading-[1.75] text-[color:var(--charcoal-soft)]">
           A confirmation is on its way to your inbox, and a local designer replies personally —
-          usually within one working day. If it is time-sensitive, call us on +351 911 889 992.
+          usually within one working day. If it is time-sensitive, call us on {PHONE_DISPLAY}.
         </p>
       </div>
     );
