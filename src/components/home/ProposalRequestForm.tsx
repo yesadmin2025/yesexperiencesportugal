@@ -10,6 +10,7 @@
 import { useRef, useState } from "react";
 import { Check, Loader2 } from "lucide-react";
 import { trackEvent } from "@/lib/analytics-events";
+import { PHONE_DISPLAY } from "@/config/business-nap";
 
 const OCCASIONS = [
   { value: "proposal", label: "Marriage proposal" },
