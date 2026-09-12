@@ -295,7 +295,17 @@ export function RegionListingPage({ region }: { region: LisbonRegion }) {
                 {tours[0] ? ` ${tours[0].title.split(" — ")[0]} starts from €${tours[0].priceFrom} per person.` : ""}
               </p>
               <div className="mt-5 flex flex-col gap-3">
-                <CtaButton to="/book" search={bookSearch}>
+                <CtaButton
+                  to="/book"
+                  search={bookSearch}
+                  onClick={() =>
+                    trackEvent("booking_cta_click", {
+                      placement: `region:${region.path}:reserve-panel`,
+                      experience_id: tours[0]?.id ?? null,
+                      experience_type: "signature",
+                    })
+                  }
+                >
                   Book &amp; pay online
                 </CtaButton>
                 <CtaButton to="/studio-v3" variant="ghost">
