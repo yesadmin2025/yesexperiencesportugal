@@ -1699,7 +1699,7 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
     signatureSlug: "arrabida-wine-allinclusive",
     relatedReads: [
       { path: "/portugal-for-american-travelers", label: "Portugal for American travelers" },
-      { path: "/local-stories/portugal-food-wine-guide", label: "Portugal food and wine guide" },
+      { path: "/local-stories/portugal-wine-tours", label: "Portugal wine tours guide" },
     ],
     datePublished: "2026-09-11",
   },
