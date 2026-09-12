@@ -83,5 +83,16 @@ export const submitPublicReview = createServerFn({ method: "POST" })
       language: data.language === "pt" ? "pt" : "en",
     });
     if (error) throw new Error(error.message);
+    await notifyTeamOfReview({
+      tourId: data.tourId,
+      rating: Math.round(data.rating),
+      title: (data.title ?? "").trim() || null,
+      body,
+      reviewerName: (data.reviewer_name ?? "").trim() || null,
+      reviewerCountry: (data.reviewer_country ?? "").trim() || null,
+      language: data.language === "pt" ? "pt" : "en",
+      channel: "public-reviews-page",
+    });
+
     return { ok: true, moderated: true };
   });
