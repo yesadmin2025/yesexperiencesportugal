@@ -365,6 +365,9 @@ export function CinematicHero() {
               <Link
                 to="/book"
                 data-testid="hero-book-direct"
+                onClick={() =>
+                  trackEvent("booking_cta_click", { placement: "home:hero-direct-book" })
+                }
                 className="hidden md:inline-flex min-h-[44px] items-center text-[12px] text-[color:var(--ivory)]/65 transition-colors duration-500 hover:text-white"
               >
                 Know your dates? Book a day directly →
