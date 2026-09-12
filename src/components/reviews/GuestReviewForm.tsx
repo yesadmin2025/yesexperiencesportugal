@@ -97,6 +97,10 @@ export function GuestReviewForm({
         },
       });
       setDone(true);
+      trackEvent("review_form_submitted", {
+        experience_id: tourId ?? null,
+        placement: tourId ? "review-form:tour" : "review-form:general",
+      });
     } catch (err) {
       setError(err instanceof Error ? err.message : t.genericError);
     } finally {
