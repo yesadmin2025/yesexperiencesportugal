@@ -201,6 +201,7 @@ export type Database = {
           children: number
           created_at: string
           email: string
+          followup_sent_at: string | null
           id: string
           name: string
           preferences: string | null
@@ -215,6 +216,7 @@ export type Database = {
           children?: number
           created_at?: string
           email: string
+          followup_sent_at?: string | null
           id?: string
           name: string
           preferences?: string | null
@@ -229,6 +231,7 @@ export type Database = {
           children?: number
           created_at?: string
           email?: string
+          followup_sent_at?: string | null
           id?: string
           name?: string
           preferences?: string | null

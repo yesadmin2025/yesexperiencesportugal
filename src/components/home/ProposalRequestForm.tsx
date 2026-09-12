@@ -7,8 +7,9 @@
  * to the YES team. Mobile-first, validated on the client and again on the
  * server, with an inline success state (no page jump).
  */
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { Check, Loader2 } from "lucide-react";
+import { trackEvent } from "@/lib/analytics-events";
 
 const OCCASIONS = [
   { value: "proposal", label: "Marriage proposal" },
@@ -25,6 +26,14 @@ const labelClass =
 export function ProposalRequestForm({ id = "proposal-request" }: { id?: string }) {
   const [state, setState] = useState<"idle" | "sending" | "sent">("idle");
   const [error, setError] = useState<string | null>(null);
+  const startedRef = useRef(false);
+
+  /** Fires once, the first time a visitor engages with any field. */
+  function onFirstInteraction() {
+    if (startedRef.current) return;
+    startedRef.current = true;
+    trackEvent("proposal_form_started", { placement: "home:proposals" });
+  }
 
   async function onSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -58,6 +67,11 @@ export function ProposalRequestForm({ id = "proposal-request" }: { id?: string }
       const body = (await res.json()) as { ok?: boolean };
       if (!res.ok || !body.ok) throw new Error("request_failed");
       setState("sent");
+      trackEvent("proposal_form_submitted", {
+        placement: "home:proposals",
+        group_size: payload.groupSize,
+        content_id: payload.occasion,
+      });
     } catch {
       setState("idle");
       setError("Something went wrong. Please email info@yesexperiencesportugal.com and we'll pick it up.");
@@ -89,6 +103,8 @@ export function ProposalRequestForm({ id = "proposal-request" }: { id?: string }
     <form
       id={id}
       onSubmit={onSubmit}
+      onFocusCapture={onFirstInteraction}
+      onChangeCapture={onFirstInteraction}
       className="mx-auto max-w-2xl rounded-[6px] border border-[color:var(--border)] bg-[color:var(--card)] p-6 md:p-8"
       noValidate
     >

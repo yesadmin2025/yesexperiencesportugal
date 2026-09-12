@@ -92,6 +92,14 @@ export type YesAnalyticsEvent =
   | "corporate_form_error"
   | "corporate_signature_click"
   | "corporate_travel_designer_click"
+  // Local SEO / region + homepage booking conversion path
+  | "booking_cta_click"
+  // Guest reviews
+  | "review_cta_click"
+  | "review_form_submitted"
+  // Proposals & private groups (homepage form)
+  | "proposal_form_started"
+  | "proposal_form_submitted"
   // Other
   | "language_changed"
   | "currency_changed"

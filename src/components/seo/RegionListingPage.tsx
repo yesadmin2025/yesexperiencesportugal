@@ -4,6 +4,7 @@ import { Clock, MapPin, Phone, Mail, Star, Car } from "lucide-react";
 import { SiteLayout } from "@/components/SiteLayout";
 import { SiteBreadcrumbs } from "@/components/SiteBreadcrumbs";
 import { Eyebrow } from "@/components/ui/Eyebrow";
+import { trackEvent } from "@/lib/analytics-events";
 import { SectionTitle } from "@/components/ui/SectionTitle";
 import { CtaButton } from "@/components/ui/CtaButton";
 import { LiveReviews } from "@/components/reviews/LiveReviews";
@@ -66,7 +67,17 @@ export function RegionListingPage({ region }: { region: LisbonRegion }) {
             {region.standfirst}
           </p>
           <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-            <CtaButton to="/book" search={bookSearch}>
+            <CtaButton
+              to="/book"
+              search={bookSearch}
+              onClick={() =>
+                trackEvent("booking_cta_click", {
+                  placement: `region:${region.path}:hero`,
+                  experience_id: tours[0]?.id ?? null,
+                  experience_type: "signature",
+                })
+              }
+            >
               Book &amp; pay online
             </CtaButton>
             <CtaButton to="/contact" variant="ghost">
@@ -114,6 +125,13 @@ export function RegionListingPage({ region }: { region: LisbonRegion }) {
                   <Link
                     to="/book"
                     search={{ tour: tour.id }}
+                    onClick={() =>
+                      trackEvent("booking_cta_click", {
+                        placement: `region:${region.path}:card`,
+                        experience_id: tour.id,
+                        experience_type: "signature",
+                      })
+                    }
                     className="inline-flex min-h-[44px] items-center gap-2 font-sans text-[12px] uppercase tracking-[0.18em] font-semibold text-[color:var(--teal)] no-underline hover:text-[color:var(--charcoal)]"
                   >
                     Book this day · from €{tour.priceFrom}
@@ -277,7 +295,17 @@ export function RegionListingPage({ region }: { region: LisbonRegion }) {
                 {tours[0] ? ` ${tours[0].title.split(" — ")[0]} starts from €${tours[0].priceFrom} per person.` : ""}
               </p>
               <div className="mt-5 flex flex-col gap-3">
-                <CtaButton to="/book" search={bookSearch}>
+                <CtaButton
+                  to="/book"
+                  search={bookSearch}
+                  onClick={() =>
+                    trackEvent("booking_cta_click", {
+                      placement: `region:${region.path}:reserve-panel`,
+                      experience_id: tours[0]?.id ?? null,
+                      experience_type: "signature",
+                    })
+                  }
+                >
                   Book &amp; pay online
                 </CtaButton>
                 <CtaButton to="/studio-v3" variant="ghost">

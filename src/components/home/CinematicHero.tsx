@@ -14,6 +14,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { Link } from "@tanstack/react-router";
+import { trackEvent } from "@/lib/analytics-events";
 import { HERO_COPY, HERO_COPY_VERSION, HERO_PHRASES } from "@/content/hero-copy";
 import { HERO_FILM, HERO_SCENES, scaleHeroTimeline } from "@/content/hero-scenes-manifest";
 
@@ -365,6 +366,9 @@ export function CinematicHero() {
               <Link
                 to="/book"
                 data-testid="hero-book-direct"
+                onClick={() =>
+                  trackEvent("booking_cta_click", { placement: "home:hero-direct-book" })
+                }
                 className="hidden md:inline-flex min-h-[44px] items-center text-[12px] text-[color:var(--ivory)]/65 transition-colors duration-500 hover:text-white"
               >
                 Know your dates? Book a day directly →
