@@ -15,7 +15,7 @@ export function CalendarSubscribePanel() {
   const reveal = async () => {
     setState("loading");
     try {
-      const result = (await fetchUrl({ data: {} })) as { url: string | null };
+      const result = (await fetchUrl()) as { url: string | null };
       setUrl(result.url);
       setState("idle");
     } catch {
