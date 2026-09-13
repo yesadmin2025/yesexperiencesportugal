@@ -191,6 +191,8 @@ function AdminBookingsPage() {
 
       <BookingsAvailabilityCalendar />
 
+      <CalendarSubscribePanel />
+
       <input
         type="search"
         value={search}
