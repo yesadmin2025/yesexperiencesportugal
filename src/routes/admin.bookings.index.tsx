@@ -12,6 +12,7 @@ import { useServerFn } from "@tanstack/react-start";
 import { listAdminBookings } from "@/lib/bookingsAdmin.functions";
 import { formatGuestComposition } from "@/components/studio-v3/formatGuests";
 import { BookingsAvailabilityCalendar } from "@/components/admin/BookingsAvailabilityCalendar";
+import { CalendarSubscribePanel } from "@/components/admin/CalendarSubscribePanel";
 import { PHONE_DISPLAY, WHATSAPP_NUMBER } from "@/config/business-nap";
 
 export const Route = createFileRoute("/admin/bookings/")({
@@ -190,6 +191,8 @@ function AdminBookingsPage() {
       </p>
 
       <BookingsAvailabilityCalendar />
+
+      <CalendarSubscribePanel />
 
       <input
         type="search"

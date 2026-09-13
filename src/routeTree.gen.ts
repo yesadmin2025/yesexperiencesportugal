@@ -174,6 +174,7 @@ import { Route as ApiPublicContactRouteImport } from './routes/api/public/contac
 import { Route as ApiPublicBookingRequestRouteImport } from './routes/api/public/booking-request'
 import { Route as ApiPublicBookingItineraryDataRouteImport } from './routes/api/public/booking-itinerary-data'
 import { Route as ApiPublicBookingItineraryRouteImport } from './routes/api/public/booking-itinerary'
+import { Route as ApiPublicBookingCalendarRouteImport } from './routes/api/public/booking-calendar'
 import { Route as AdminBookingsIdRouteImport } from './routes/admin.bookings.$id'
 import { Route as Char91DotmcpChar93InvokeToolToolRouteImport } from './routes/[.mcp]/invoke-tool/$tool'
 import { Route as DotlovableOauthConsentRouteImport } from './routes/[.]lovable.oauth.consent'
@@ -1038,6 +1039,12 @@ const ApiPublicBookingItineraryRoute =
     path: '/api/public/booking-itinerary',
     getParentRoute: () => rootRouteImport,
   } as any)
+const ApiPublicBookingCalendarRoute =
+  ApiPublicBookingCalendarRouteImport.update({
+    id: '/api/public/booking-calendar',
+    path: '/api/public/booking-calendar',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const AdminBookingsIdRoute = AdminBookingsIdRouteImport.update({
   id: '/admin/bookings/$id',
   path: '/admin/bookings/$id',
@@ -1288,6 +1295,7 @@ export interface FileRoutesByFullPath {
   '/.lovable/oauth/consent': typeof DotlovableOauthConsentRoute
   '/.mcp/invoke-tool/$tool': typeof Char91DotmcpChar93InvokeToolToolRoute
   '/admin/bookings/$id': typeof AdminBookingsIdRoute
+  '/api/public/booking-calendar': typeof ApiPublicBookingCalendarRoute
   '/api/public/booking-itinerary': typeof ApiPublicBookingItineraryRoute
   '/api/public/booking-itinerary-data': typeof ApiPublicBookingItineraryDataRoute
   '/api/public/booking-request': typeof ApiPublicBookingRequestRoute
@@ -1469,6 +1477,7 @@ export interface FileRoutesByTo {
   '/.lovable/oauth/consent': typeof DotlovableOauthConsentRoute
   '/.mcp/invoke-tool/$tool': typeof Char91DotmcpChar93InvokeToolToolRoute
   '/admin/bookings/$id': typeof AdminBookingsIdRoute
+  '/api/public/booking-calendar': typeof ApiPublicBookingCalendarRoute
   '/api/public/booking-itinerary': typeof ApiPublicBookingItineraryRoute
   '/api/public/booking-itinerary-data': typeof ApiPublicBookingItineraryDataRoute
   '/api/public/booking-request': typeof ApiPublicBookingRequestRoute
@@ -1653,6 +1662,7 @@ export interface FileRoutesById {
   '/.lovable/oauth/consent': typeof DotlovableOauthConsentRoute
   '/.mcp/invoke-tool/$tool': typeof Char91DotmcpChar93InvokeToolToolRoute
   '/admin/bookings/$id': typeof AdminBookingsIdRoute
+  '/api/public/booking-calendar': typeof ApiPublicBookingCalendarRoute
   '/api/public/booking-itinerary': typeof ApiPublicBookingItineraryRoute
   '/api/public/booking-itinerary-data': typeof ApiPublicBookingItineraryDataRoute
   '/api/public/booking-request': typeof ApiPublicBookingRequestRoute
@@ -1838,6 +1848,7 @@ export interface FileRouteTypes {
     | '/.lovable/oauth/consent'
     | '/.mcp/invoke-tool/$tool'
     | '/admin/bookings/$id'
+    | '/api/public/booking-calendar'
     | '/api/public/booking-itinerary'
     | '/api/public/booking-itinerary-data'
     | '/api/public/booking-request'
@@ -2019,6 +2030,7 @@ export interface FileRouteTypes {
     | '/.lovable/oauth/consent'
     | '/.mcp/invoke-tool/$tool'
     | '/admin/bookings/$id'
+    | '/api/public/booking-calendar'
     | '/api/public/booking-itinerary'
     | '/api/public/booking-itinerary-data'
     | '/api/public/booking-request'
@@ -2202,6 +2214,7 @@ export interface FileRouteTypes {
     | '/.lovable/oauth/consent'
     | '/.mcp/invoke-tool/$tool'
     | '/admin/bookings/$id'
+    | '/api/public/booking-calendar'
     | '/api/public/booking-itinerary'
     | '/api/public/booking-itinerary-data'
     | '/api/public/booking-request'
@@ -2369,6 +2382,7 @@ export interface RootRouteChildren {
   DotlovableOauthConsentRoute: typeof DotlovableOauthConsentRoute
   Char91DotmcpChar93InvokeToolToolRoute: typeof Char91DotmcpChar93InvokeToolToolRoute
   AdminBookingsIdRoute: typeof AdminBookingsIdRoute
+  ApiPublicBookingCalendarRoute: typeof ApiPublicBookingCalendarRoute
   ApiPublicBookingItineraryRoute: typeof ApiPublicBookingItineraryRoute
   ApiPublicBookingItineraryDataRoute: typeof ApiPublicBookingItineraryDataRoute
   ApiPublicBookingRequestRoute: typeof ApiPublicBookingRequestRoute
@@ -3551,6 +3565,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicBookingItineraryRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/booking-calendar': {
+      id: '/api/public/booking-calendar'
+      path: '/api/public/booking-calendar'
+      fullPath: '/api/public/booking-calendar'
+      preLoaderRoute: typeof ApiPublicBookingCalendarRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/admin/bookings/$id': {
       id: '/admin/bookings/$id'
       path: '/admin/bookings/$id'
@@ -3884,6 +3905,7 @@ const rootRouteChildren: RootRouteChildren = {
   DotlovableOauthConsentRoute: DotlovableOauthConsentRoute,
   Char91DotmcpChar93InvokeToolToolRoute: Char91DotmcpChar93InvokeToolToolRoute,
   AdminBookingsIdRoute: AdminBookingsIdRoute,
+  ApiPublicBookingCalendarRoute: ApiPublicBookingCalendarRoute,
   ApiPublicBookingItineraryRoute: ApiPublicBookingItineraryRoute,
   ApiPublicBookingItineraryDataRoute: ApiPublicBookingItineraryDataRoute,
   ApiPublicBookingRequestRoute: ApiPublicBookingRequestRoute,
