@@ -89,8 +89,14 @@ export const SOCIAL = {
   facebook: "https://www.facebook.com/yesexperiencesportugal",
   tripadvisor:
     "https://www.tripadvisor.com/Attraction_Review-g227946-d34430097-Reviews-Yes_Experiences_Portugal-Sesimbra_Setubal_District_Alentejo.html",
-  google:
-    "https://www.google.com/search?q=Yes+Experiences+Portugal&stick=H4sIAAAAAAAA_-NgU1I1qLAwNkpMtjRKTjIytDA3NDO1MqhISzJNMTVONTFMMTZOSzZLXMQqEZlarOBaUZBalJmalwxkB-QXlZSmJ-YAALUyfiJEAAAA",
+  /**
+   * Google Business Profile. Intentionally EMPTY: the old knowledge-panel
+   * entity (stale `stick=` search link and the `maps.app.goo.gl/hbVa3Yw...`
+   * short link) is NOT ours and must never be published as sameAs. Only fill
+   * this in with the canonical Lisbon profile (establishment code
+   * 02179561410319006295) once it is verified and live on Maps.
+   */
+  google: "" as string,
   viator: "" as string,
 } as const;
 

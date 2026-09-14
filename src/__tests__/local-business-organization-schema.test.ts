@@ -61,11 +61,11 @@ describe("Organization / LocalBusiness structured data", () => {
     });
   });
 
-  it("Organization publishes phone and daily 08:00-20:00 opening hours", () => {
+  it("Organization publishes phone and daily 09:00-20:00 opening hours", () => {
     expect(org.telephone).toBe("+351911889992");
     expect(org.openingHoursSpecification).toHaveLength(1);
     const spec = org.openingHoursSpecification[0];
-    expect(spec.opens).toBe("08:00");
+    expect(spec.opens).toBe("09:00");
     expect(spec.closes).toBe("20:00");
     expect(spec.dayOfWeek).toContain("Monday");
     expect(spec.dayOfWeek).toContain("Sunday");
