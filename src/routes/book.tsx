@@ -10,7 +10,17 @@ import { SectionTitle } from "@/components/ui/SectionTitle";
 import { signatureTours, findTour } from "@/data/signatureTours";
 import { SimpleBookingForm } from "@/components/SimpleBookingForm";
 import { guideAttributionMetadata } from "@/lib/guide-attribution";
-import { breadcrumbLd, jsonLdScript } from "@/lib/jsonld";
+import { breadcrumbLd, jsonLdScript, localBusinessLd, itemListLd } from "@/lib/jsonld";
+import {
+  BASED_IN,
+  EMAIL,
+  EMAIL_HREF,
+  LICENSE_LABEL,
+  PHONE_DISPLAY,
+  PHONE_HREF,
+  SERVICE_AREAS,
+  SERVICE_AREAS_LABEL,
+} from "@/config/business-nap";
 import { toast } from "sonner";
 
 const PAGE_URL = "https://yesexperiencesportugal.com/book";
