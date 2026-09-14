@@ -18,16 +18,16 @@ const DeferredJournalPosts = lazy(() => import("@/components/journal/DeferredJou
 export const Route = createFileRoute("/local-stories/")({
   head: () => ({
     meta: [
-      { title: "Local Stories — YES Experiences Portugal" },
+      { title: "Portugal Travel Guides & Local Stories — Written in Portugal" },
       {
         name: "description",
         content:
           "Local guides to Portugal’s wine regions, private day trips, hidden places and travel planning, written by the team who designs the experiences.",
       },
-      { property: "og:title", content: "Local Stories — YES Experiences Portugal" },
+      { property: "og:title", content: "Portugal Travel Guides & Local Stories — Written in Portugal" },
       {
         property: "og:description",
-        content: "Notes from the road, written by the locals who design our experiences.",
+        content: "Guides to Portugal’s wine regions, day trips and hidden places, written by the locals who design our private experiences.",
       },
       { property: "og:url", content: "https://yesexperiencesportugal.com/local-stories" },
       { property: "og:image", content: `https://yesexperiencesportugal.com${ogImg}` },
@@ -50,7 +50,7 @@ export const Route = createFileRoute("/local-stories/")({
         "@type": "Blog",
         "@id": "https://yesexperiencesportugal.com/local-stories#blog",
         url: "https://yesexperiencesportugal.com/local-stories",
-        name: "Local Stories — YES Experiences Portugal",
+        name: "Portugal Travel Guides & Local Stories — Written in Portugal",
         description:
           "Notes from the road, written by the locals who design our private Portugal experiences.",
         inLanguage: "en",

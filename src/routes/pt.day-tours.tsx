@@ -17,9 +17,9 @@ import { PriceCurrencyChip } from "@/components/PriceCurrencyChip";
 import { PriceEur } from "@/components/ui/PriceEur";
 import { signatureDurationLabel } from "@/lib/tourContent";
 
-const TITLE = "Experiências de um Dia — YES Experiences Portugal";
+const TITLE = "Tours Privados de Um Dia em Portugal — Recolha no Hotel";
 const DESCRIPTION =
-  "Experiências privadas de um dia por Portugal — Arrábida, Setúbal, Sintra, Évora, Douro e outras. Reserva com confirmação em tempo real.";
+  "Dias privados por Portugal — Arrábida, Setúbal, Sintra, Évora e Douro. Só o seu grupo, recolha no hotel e confirmação imediata.";
 
 export const Route = createFileRoute("/pt/day-tours")({
   head: () => ({
