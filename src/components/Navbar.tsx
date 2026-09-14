@@ -37,58 +37,19 @@ const mobileSocialLinks = [
 
 export function Navbar() {
   const [open, setOpen] = useState(false);
-  const [scrolled, setScrolled] = useState(false);
   const pathname = useRouterState({ select: (s) => s.location.pathname });
-  const isHome = pathname === "/";
   const primaryLinks = usePrimaryLinks();
   const secondaryLinks = useSecondaryLinks();
 
-  useEffect(() => {
-    if (!isHome) {
-      setScrolled(true);
-      return;
-    }
-    const onScroll = () => setScrolled(window.scrollY > 24);
-    onScroll();
-    window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
-  }, [isHome]);
-
   useEffect(() => setOpen(false), [pathname]);
 
-  // On the homepage, before any scroll, the header floats over the film so
-  // the cinematic hero starts at the very top of the viewport instead of
-  // below an opaque cream band. Once scrolled (or on any other route) the
-  // ivory header returns unchanged.
-  const overHero = isHome && !scrolled && !open;
-  const showMarkOnly = false;
-  const linkClass = overHero
-    ? "link-hairline tap inline-flex min-h-[44px] items-center text-[color:var(--ivory)] hover:text-white transition-colors duration-[var(--dur-quick)] rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)] focus-visible:ring-offset-4 focus-visible:ring-offset-transparent"
-    : "link-hairline tap inline-flex min-h-[44px] items-center text-[color:var(--charcoal)] hover:text-[color:var(--teal)] transition-colors duration-[var(--dur-quick)] rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--teal)] focus-visible:ring-offset-4 focus-visible:ring-offset-[color:var(--ivory,#FAF8F3)]";
-  const utilityClass = overHero
-    ? "text-[color:var(--ivory)]/85"
-    : "text-[color:var(--charcoal-soft)]";
+  const linkClass =
+    "link-hairline tap inline-flex min-h-[44px] items-center text-[color:var(--charcoal)] hover:text-[color:var(--teal)] transition-colors duration-[var(--dur-quick)] rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--teal)] focus-visible:ring-offset-4 focus-visible:ring-offset-[color:var(--ivory,#FAF8F3)]";
 
   return (
     <header
-      className="fixed top-0 inset-x-0 z-50 opacity-0 animate-[headerFade_900ms_ease-out_forwards]"
-      style={{
-        background: overHero ? "transparent" : "rgb(247, 243, 236)",
-        transition: "background 400ms ease-out",
-      }}
+      className="fixed top-0 inset-x-0 z-50 border-b border-[color:var(--charcoal)]/[0.06] bg-[rgb(247,243,236)] opacity-0 animate-[headerFade_900ms_ease-out_forwards]"
     >
-      <div
-        aria-hidden="true"
-        className="pointer-events-none absolute left-0 right-0 top-0 h-[168px] md:h-[196px] lg:h-[212px]"
-        style={{
-          background: overHero
-            ? "linear-gradient(to bottom, rgba(22,20,18,0.55) 0%, rgba(22,20,18,0.28) 45%, rgba(22,20,18,0) 100%)"
-            : "linear-gradient(to bottom, rgba(248,242,232,0.92) 0%, rgba(248,242,232,0.68) 28%, rgba(248,242,232,0.26) 62%, rgba(248,242,232,0) 100%)",
-          top: overHero ? 0 : "100%",
-          transition: "opacity 400ms ease-out",
-        }}
-      />
-
       <div className="container-x relative">
         <div className="flex h-[64px] items-center justify-between md:h-[84px] lg:h-[96px]">
           <Link
@@ -98,17 +59,10 @@ export function Navbar() {
           >
             <span className="relative inline-flex h-[45px] w-[72px] items-start translate-y-[4px] overflow-hidden md:h-[50px] md:w-[80px] md:translate-y-[6px] lg:h-[56px] lg:w-[90px] lg:translate-y-[7px]">
               <Logo
-                theme={overHero ? "gold-on-charcoal" : "teal-on-ivory"}
+                theme="teal-on-ivory"
                 fetchPriority="high"
                 className="absolute left-0 top-0 block h-full w-auto select-none"
               />
-              {showMarkOnly ? (
-                <span
-                  aria-hidden="true"
-                  className="pointer-events-none absolute inset-x-0 bottom-0 bg-[rgb(247,243,236)]"
-                  style={{ top: "67%" }}
-                />
-              ) : null}
             </span>
           </Link>
 
@@ -122,16 +76,16 @@ export function Navbar() {
                 key={item.to}
                 to={item.to}
                 className={linkClass}
-                activeProps={{ className: overHero ? "text-white" : "text-[color:var(--teal)]" }}
+                activeProps={{ className: "text-[color:var(--teal)]" }}
               >
                 {item.label}
               </Link>
             ))}
             <span
               aria-hidden
-              className={`mx-1 h-3 w-px ${overHero ? "bg-[color:var(--ivory)]/25" : "bg-[color:var(--charcoal)]/15"}`}
+              className="mx-1 h-3 w-px bg-[color:var(--charcoal)]/15"
             />
-            <span className={`inline-flex min-h-[44px] items-center gap-1.5 ${utilityClass}`}>
+            <span className="inline-flex min-h-[44px] items-center gap-1.5 text-[color:var(--charcoal-soft)]">
               <Globe size={13} strokeWidth={1.6} aria-hidden />
               <LanguageSwitcher variant="header" />
             </span>
@@ -141,17 +95,13 @@ export function Navbar() {
           </nav>
 
           <div className="inline-flex h-full items-center gap-2 lg:hidden">
-            <span className={`inline-flex min-h-[44px] items-center gap-1 ${utilityClass}`}>
+            <span className="inline-flex min-h-[44px] items-center gap-1 text-[color:var(--charcoal-soft)]">
               <Globe size={12} strokeWidth={1.6} aria-hidden />
               <LanguageSwitcher variant="header" />
             </span>
             <button
               type="button"
-              className={`tap inline-flex h-11 w-11 items-center justify-center rounded-full transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 ${
-                overHero
-                  ? "text-[color:var(--ivory)] hover:text-white focus-visible:ring-[color:var(--gold)]"
-                  : "text-[color:var(--charcoal)] hover:text-[color:var(--teal)] focus-visible:ring-[color:var(--teal)]"
-              }`}
+              className="tap inline-flex h-11 w-11 items-center justify-center rounded-full text-[color:var(--charcoal)] transition-colors hover:text-[color:var(--teal)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--teal)]"
               onClick={() => setOpen((value) => !value)}
               aria-label={open ? "Close menu" : "Open menu"}
               aria-expanded={open}
