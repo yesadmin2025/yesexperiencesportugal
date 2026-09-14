@@ -21,17 +21,17 @@ import { PriceEur } from "@/components/ui/PriceEur";
 export const Route = createFileRoute("/experiences")({
   head: () => ({
     meta: [
-      { title: "Signature Private Experiences in Portugal | YES" },
+      { title: "Signature Private Tours in Portugal — Designed by Locals" },
       {
         name: "description",
         content:
-          "A curated collection of private Portugal days — Sintra, Arrábida, Évora and beyond. Book as designed, or quietly tailor a few details.",
+          "Signature private days in Portugal — Sintra, Arrábida, Évora and the Atlantic coast. Book as designed or tailor the details. Hotel pickup, instant confirmation.",
       },
-      { property: "og:title", content: "Signature Private Experiences in Portugal | YES" },
+      { property: "og:title", content: "Signature Private Tours in Portugal — Designed by Locals" },
       {
         property: "og:description",
         content:
-          "A curated collection of private Portugal days — Sintra, Arrábida, Évora and beyond. Book as designed, or quietly tailor a few details.",
+          "Signature private days in Portugal — Sintra, Arrábida, Évora and the Atlantic coast. Book as designed or tailor the details. Hotel pickup, instant confirmation.",
       },
       { property: "og:url", content: "https://yesexperiencesportugal.com/experiences" },
       { property: "og:image", content: `https://yesexperiencesportugal.com${ogImg}` },

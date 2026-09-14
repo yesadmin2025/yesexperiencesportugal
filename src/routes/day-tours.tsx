@@ -22,17 +22,17 @@ import ogSocialImg from "@/assets/hero-coast.jpg";
 export const Route = createFileRoute("/day-tours")({
   head: () => ({
     meta: [
-      { title: "Day Tours — YES Experiences Portugal" },
+      { title: "Private Day Tours in Portugal — Hotel Pickup, Book Online" },
       {
         name: "description",
         content:
-          "Private day experiences across Portugal — Arrábida, Setúbal, Sintra, Évora, Douro and more. Reserve instantly, with real-time confirmation.",
+          "Private day tours from Lisbon and beyond — Arrábida wine country, Setúbal, Sintra, Évora and the Douro. Your group only, hotel pickup, instant confirmation.",
       },
-      { property: "og:title", content: "Day Tours — YES Experiences Portugal" },
+      { property: "og:title", content: "Private Day Tours in Portugal — Hotel Pickup, Book Online" },
       {
         property: "og:description",
         content:
-          "Private day experiences across Portugal — Arrábida, Setúbal, Sintra, Évora, Douro and more.",
+          "Private day tours across Portugal — Arrábida, Setúbal, Sintra, Évora and the Douro. Your group only, hotel pickup.",
       },
       { property: "og:url", content: "https://yesexperiencesportugal.com/day-tours" },
       { property: "og:type", content: "website" },

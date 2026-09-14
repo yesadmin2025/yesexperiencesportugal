@@ -9,9 +9,9 @@ import { ServiceCrossLinks } from "@/components/entity/ServiceCrossLinks";
 import ogImg from "@/assets/hero-coast.jpg";
 
 const CANONICAL = "https://yesexperiencesportugal.com/portugal-travel-designer";
-const TITLE = "Portugal Travel Designer | Custom Private Journeys";
+const TITLE = "Portugal Travel Designer — Plan a Private Trip With a Local";
 const DESC =
-  "Design a private Portugal journey with local experts, from tailored day experiences and wine tours to custom multi-day itineraries across the country.";
+  "Work one-to-one with a travel designer who lives in Portugal: private day experiences, wine days and multi-day routes, shaped around how you like to travel.";
 const OG_IMAGE = `https://yesexperiencesportugal.com${ogImg}`;
 
 export const Route = createFileRoute("/portugal-travel-designer")({
