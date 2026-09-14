@@ -8,8 +8,8 @@
  */
 export const HERO_COPY_SPEC = {
   eyebrow: "DESIGNED BY YOU · CONFIRMED INSTANTLY",
-  headlineLine1: "Portugal is the stage.",
-  headlineLine2: "You write the story.",
+  headlineLine1: "Private day trips from Lisbon,",
+  headlineLine2: "tailored Portugal tours.",
   subheadline:
     "Private Portugal tours and bespoke journeys, thoughtfully composed and booked directly.",
   primaryCta: "Design your day",

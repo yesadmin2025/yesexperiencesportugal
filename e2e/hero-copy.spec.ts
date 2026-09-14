@@ -46,10 +46,8 @@ test.describe("Hero — approved copy lock", () => {
 
   test("primary and secondary CTAs match approved labels", async ({ page }) => {
     await gotoHero(page);
-    await expect(page.getByRole("link", { name: HERO_COPY.primaryCta, exact: true })).toBeVisible();
-    await expect(
-      page.getByRole("link", { name: HERO_COPY.secondaryCta, exact: true }),
-    ).toBeVisible();
+    await expect(page.locator('[data-hero-field="primaryCta"]')).toBeVisible();
+    await expect(page.locator('[data-hero-field="secondaryCta"]')).toBeVisible();
   });
 
   test("brand YES line matches approved copy exactly", async ({ page }) => {

@@ -3,12 +3,12 @@
  * The brand line stays editorial; the supporting copy is deliberately concrete
  * so a first-time visitor understands what YES sells within seconds.
  */
-export const HERO_PHRASES = ["Portugal is the stage.", "You write the story."] as const;
+export const HERO_PHRASES = ["Private day trips from Lisbon,", "tailored Portugal tours."] as const;
 
 export const HERO_COPY = {
   eyebrow: "DESIGNED BY YOU · CONFIRMED INSTANTLY",
-  headlineLine1: "Portugal is the stage.",
-  headlineLine2: "You write the story.",
+  headlineLine1: "Private day trips from Lisbon,",
+  headlineLine2: "tailored Portugal tours.",
   subheadline:
     "Private Portugal tours and bespoke journeys, thoughtfully composed and booked directly.",
   primaryCta: "Design your day",
