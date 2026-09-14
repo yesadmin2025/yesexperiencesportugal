@@ -47,7 +47,6 @@
   --font-display: "Fraunces", serif;
   --font-serif: "Fraunces", serif;
   --font-sans: "Inter", system-ui, sans-serif;
-  --font-script: "Kaushan Script", cursive;
   /* Canonical two-family system: Fraunces for editorial titles and Inter
      for body copy and interface text. */
   --font-editorial: "Fraunces", serif;
@@ -476,8 +475,7 @@
     letter-spacing: -0.008em;
     line-height: 1.35;
   }
-  /* Italic emphasis inside display headings keeps the Georgia serif —
-     creates the editorial Montserrat-Bold + Georgia-italic pairing. */
+  /* Italic emphasis inside display headings uses the canonical Fraunces editorial voice. */
   h1 em,
   h2 em,
   h3 em,
@@ -779,9 +777,6 @@
   .serif {
     font-family: var(--font-serif);
   }
-  .script {
-    font-family: var(--font-script);
-  }
 
   /* Homepage editorial title contract.
      Fraunces is the single display voice for every visible H1–H3. Major
@@ -815,9 +810,9 @@
      pin the sans family + readable line-height. Use mt-* for vertical
      spacing — the scale never bakes in margins.
      ───────────────────────────────────────────────────────────── */
-  /* Typography v3 — all headlines use Montserrat (--font-display).
-     Georgia (--font-serif) appears ONLY for inline italic emphasis
-     inside headlines, handled by the base h1/h2/h3 em rules above.
+  /* Typography v3 — all headlines use Fraunces (--font-display).
+     Fraunces italic appears only for intentional emphasis inside headings,
+     handled by the base h1/h2/h3 em rules above.
      Mobile sizes are tuned by the proportional refinement pass:
        .t-display 36px (32–36 hero band)
        .t-h1      32px (Builder / anchor — 30–34 band)
@@ -2058,7 +2053,7 @@
 }
 
 .hero-cinematic .hero-title-line {
-  font-family: "Fraunces", Georgia, serif;
+  font-family: var(--font-editorial);
 }
 
 /* The query/reduced-motion final state is applied during HTML parsing so
@@ -3839,14 +3834,10 @@ html.motion-ready[data-motion-scope="marketing"] [data-motion="fade-up-sm"] {
     color: var(--charcoal);
   }
 
-  /* Bridge whisper — the canonical lead-in voice between homepage
-     sections. Georgia italic, small, charcoal-soft, centred, with
-     consistent rhythm. Locked here so the 6 inter-section bridges on
-     the homepage (and the matching closing lines) stay in one voice
-     and can be tuned globally. Body copy must NEVER use this — Georgia
-     italic on the homepage is reserved for H2 emphasis and bridges. */
+  /* Legacy bridge whisper retained for non-homepage routes. It uses the
+     canonical Fraunces italic voice; homepage transitions no longer use it. */
   .bridge-whisper {
-    font-family: var(--font-serif, Georgia), Georgia, serif;
+    font-family: var(--font-editorial);
     font-style: italic;
     font-weight: 400;
     font-size: 13px;
@@ -4935,8 +4926,8 @@ html.motion-ready[data-motion-scope="marketing"] [data-motion="fade-up-sm"] {
     }
   }
 
-  /* Stronger serif/display section headlines — Montserrat already
-     handles weight; this just deepens colour and balances tracking
+  /* Stronger editorial section headlines — Fraunces handles the voice;
+     this deepens colour and balances tracking
      for h2 specifically (the most-used section headline). */
   section h2 {
     color: var(--charcoal-deep);

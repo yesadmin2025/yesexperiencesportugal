@@ -6,7 +6,7 @@ import type { StudioDict } from "@/hooks/useStudioLocale";
  * The single conversational input. Lives at the bottom of the scene as a
  * floating ivory translúcid sheet that expands when focused.
  *
- * No labels, no fields — just a Georgia italic textarea with a rotating
+ * No labels, no fields — just a Fraunces italic textarea with a rotating
  * placeholder. Optional voice input via Web Speech API (silent fallback).
  */
 
@@ -134,7 +134,7 @@ export function NarrativeComposer({ busy, collapsed, seed, t, onExpand, onSubmit
           rows={2}
           maxLength={500}
           className="w-full resize-none bg-transparent border-0 outline-none text-[16px] sm:text-[17px] leading-[1.45] text-[color:var(--charcoal)] placeholder:text-[color:var(--text-icon)] placeholder:italic font-serif italic"
-          style={{ fontFamily: "Georgia, 'Times New Roman', serif" }}
+          style={{ fontFamily: "var(--font-editorial)" }}
           aria-label={t.composerExpand}
           disabled={busy}
         />

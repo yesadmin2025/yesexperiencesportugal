@@ -9,7 +9,7 @@ interface StepHeadProps {
   onBack?: () => void;
   /** Optional total step count — renders editorial chapter marker "01 / 06". */
   totalChapters?: number;
-  /** Optional Georgia italic sub-line under the title — emotional framing. */
+  /** Optional Fraunces italic sub-line under the title — emotional framing. */
   italicSub?: string;
 }
 
@@ -51,7 +51,7 @@ export function StepHead({ num, eyebrow, title, onBack, totalChapters, italicSub
       {italicSub && (
         <p
           className="-mt-1 max-w-[34ch] font-serif italic text-[15px] sm:text-[16px] leading-[1.45] text-[color:var(--charcoal)]/65"
-          style={{ fontFamily: "var(--font-serif, Georgia, serif)" }}
+          style={{ fontFamily: "var(--font-editorial)" }}
         >
           {italicSub}
         </p>

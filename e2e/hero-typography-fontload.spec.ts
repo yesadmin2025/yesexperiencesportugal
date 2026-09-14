@@ -6,8 +6,8 @@
  * drift away from canon:
  *
  *   • eyebrow        → Inter,      tracked, uppercase via tracking
- *   • headline L1    → Montserrat, weight 400, font-style: normal
- *   • headline L2    → Georgia,    weight 400, font-style: italic, gold
+ *   • headline L1    → Fraunces, weight 400, font-style: italic
+ *   • headline L2    → Fraunces, weight 400, font-style: italic, gold
  *   • subheadline    → Inter,      generous leading (≥ 1.6)
  *   • microcopy      → Inter,      tracked
  *
@@ -36,7 +36,7 @@ async function waitForFontsAndHero(page: Page) {
   await page.locator('[data-hero-cinematic="true"]').waitFor({ state: "visible" });
   await page.locator('[data-hero-field="headlineLine1"]:not(h1)').waitFor({ state: "visible" });
 
-  // Block until web fonts (Montserrat / Georgia / Inter) actually
+  // Block until web fonts (Fraunces / Inter) actually
   // finish loading — otherwise computed font-size/line-height reflect
   // the fallback metric and the assertions below are meaningless.
   await page.evaluate(async () => {
@@ -53,21 +53,14 @@ async function waitForFontsAndHero(page: Page) {
   const fontStatus = await page.evaluate(() => {
     type FontFaceSetLike = { check?: (font: string) => boolean };
     const fonts = (document as unknown as { fonts?: FontFaceSetLike }).fonts;
-    if (!fonts?.check) return { montserrat: true, inter: true, georgia: true };
+    if (!fonts?.check) return { fraunces: true, inter: true };
     return {
-      montserrat: fonts.check('400 16px "Montserrat"'),
+      fraunces: fonts.check('italic 400 16px "Fraunces"'),
       inter: fonts.check('400 16px "Inter"'),
-      georgia: fonts.check("italic 400 16px Georgia"),
     };
   });
-  expect(fontStatus.montserrat, "Montserrat 400 not loaded").toBe(true);
+  expect(fontStatus.fraunces, "Fraunces italic 400 not loaded").toBe(true);
   expect(fontStatus.inter, "Inter 400 not loaded").toBe(true);
-  // Georgia ships with the OS — `check()` should always be true; we
-  // don't fail the run if a headless image lacks it, only log.
-  if (!fontStatus.georgia)
-    console.warn(
-      "[hero-typography-fontload] Georgia not reported by document.fonts — italic line will use serif fallback",
-    );
 }
 
 async function readComputed(page: Page, selector: string): Promise<Computed> {
@@ -118,12 +111,12 @@ test.describe("Hero typography — font families & scale (post font load)", () =
       contentType: "application/json",
     });
 
-    // ── Stanza — Georgia italic 400, gold-soft, tight editorial leading ──
+    // ── Stanza — Fraunces italic 400, gold-soft, tight editorial leading ──
     for (const [label, line] of [
       ["stanza L1", line1],
       ["stanza L2", line2],
     ] as const) {
-      expect(line.primaryFamily, `${label} font-family`).toBe("georgia");
+      expect(line.primaryFamily, `${label} font-family`).toBe("fraunces");
       expect(line.fontStyle, `${label} must be italic`).toBe("italic");
       expect(line.fontWeight, `${label} weight`).toBe("400");
       expect(line.lineHeightRatio, `${label} leading`).toBeGreaterThanOrEqual(1.15);

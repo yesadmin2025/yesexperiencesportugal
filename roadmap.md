@@ -51,7 +51,7 @@
 - [ ] Claim and verify the YES Experiences Portugal Google Business Profile (owner action required in Google)
 
 ## 9. Internal design-debt cleanup
-- [ ] Remove retired font references from active website and internal screens
-- [ ] Align typography audit and visual regression checks with Fraunces + Inter
-- [ ] Remove stale homepage-questionnaire labels while preserving the dedicated Proposals form and enquiry workflow
-- [ ] Verify typography, homepage structure, Proposals submission path, and mobile rendering
+- [x] Remove retired font references from active website and internal screens
+- [x] Align typography audit and visual regression checks with Fraunces + Inter
+- [x] Remove stale homepage-questionnaire labels while preserving the dedicated Proposals form and enquiry workflow
+- [x] Verify typography, homepage structure, Proposals submission path, and mobile rendering

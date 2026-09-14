@@ -36,7 +36,7 @@ interface Props {
   onContinue: () => void;
   /** Hero atmosphere image — real photography from INTENT_IMAGE. */
   hero?: { src: string; alt: string };
-  /** Eyebrow + sequenced lines + closer (italic Georgia). */
+  /** Eyebrow + sequenced lines + closer (Fraunces italic). */
   eyebrow?: string;
   headlineOwner?: string; // "Your" | "Maria's"
   headlineWhisper: string; // "Arrábida, the Atlantic close enough to taste"
@@ -229,7 +229,7 @@ export function Postcard({
         <h2
           className="mt-6 text-center text-[1.85rem] leading-[1.08] tracking-[-0.01em] sm:text-[2.15rem]"
           style={{
-            fontFamily: "Georgia, 'Times New Roman', serif",
+            fontFamily: "var(--font-editorial)",
             color: "var(--charcoal)",
           }}
         >
@@ -255,7 +255,7 @@ export function Postcard({
                 key={`${i}-${line}`}
                 className="text-[15px] leading-[1.45] sm:text-[16px]"
                 style={{
-                  fontFamily: "Georgia, 'Times New Roman', serif",
+                  fontFamily: "var(--font-editorial)",
                   fontStyle: "italic",
                   color: "color-mix(in oklab, var(--charcoal) 78%, transparent)",
                   opacity: shown ? 1 : 0,

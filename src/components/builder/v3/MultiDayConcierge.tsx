@@ -212,7 +212,7 @@ export function MultiDayConcierge({ t, mood, who, intention, travellerName, onBa
           type="button"
           onClick={onBack}
           className="self-start inline-flex items-center gap-1.5 text-[10.5px] uppercase tracking-[0.24em] font-semibold text-[color:var(--text-on-dark-muted)] hover:text-[color:var(--ivory)]/85 transition-colors"
-          style={{ fontFamily: "Montserrat, system-ui, sans-serif" }}
+          style={{ fontFamily: "var(--font-sans)" }}
         >
           <ArrowLeft size={11} />
           {t.conciergeBack}
@@ -224,7 +224,7 @@ export function MultiDayConcierge({ t, mood, who, intention, travellerName, onBa
             <span aria-hidden="true" className="block h-px w-10 bg-[color:var(--gold)]/70" />
             <p
               className="text-[10px] uppercase tracking-[0.36em] font-bold text-[color:var(--charcoal)]"
-              style={{ fontFamily: "Montserrat, system-ui, sans-serif" }}
+              style={{ fontFamily: "var(--font-sans)" }}
             >
               {invitationLabel(locale)}
             </p>
@@ -232,7 +232,7 @@ export function MultiDayConcierge({ t, mood, who, intention, travellerName, onBa
             <h2
               className="text-[26px] sm:text-[32px] font-semibold leading-[1.1] tracking-[-0.012em] text-[color:var(--ivory)] text-balance"
               style={{
-                fontFamily: "Montserrat, system-ui, sans-serif",
+                fontFamily: "var(--font-sans)",
                 textShadow: "0 1px 22px rgba(0,0,0,0.55)",
               }}
             >
@@ -242,7 +242,7 @@ export function MultiDayConcierge({ t, mood, who, intention, travellerName, onBa
             <p
               className="italic text-[15.5px] sm:text-[17px] leading-[1.55] text-[color:var(--ivory)]/82 max-w-[32ch] text-balance"
               style={{
-                fontFamily: "Georgia, 'Times New Roman', serif",
+                fontFamily: "var(--font-editorial)",
                 textShadow: "0 1px 18px rgba(0,0,0,0.5)",
               }}
             >
@@ -261,7 +261,7 @@ export function MultiDayConcierge({ t, mood, who, intention, travellerName, onBa
             {handoff && (
               <p
                 className="italic text-[15px] sm:text-[16.5px] leading-[1.55] text-[color:var(--ivory)]/88 max-w-[30ch] text-balance"
-                style={{ fontFamily: "Georgia, 'Times New Roman', serif" }}
+                style={{ fontFamily: "var(--font-editorial)" }}
               >
                 {handoff}
               </p>
@@ -269,7 +269,7 @@ export function MultiDayConcierge({ t, mood, who, intention, travellerName, onBa
             {editorLine && (
               <p
                 className="italic text-[13.5px] sm:text-[14.5px] leading-[1.55] text-[color:var(--ivory)]/62 max-w-[32ch] text-balance"
-                style={{ fontFamily: "Georgia, 'Times New Roman', serif" }}
+                style={{ fontFamily: "var(--font-editorial)" }}
               >
                 {editorLine}
               </p>
@@ -295,7 +295,7 @@ export function MultiDayConcierge({ t, mood, who, intention, travellerName, onBa
                 type="button"
                 onClick={() => setNoteOpen(true)}
                 className="mx-auto inline-flex items-center justify-center min-h-[54px] rounded-[2px] bg-[color:var(--ivory)] hover:bg-[color:var(--gold-soft)] text-[color:var(--charcoal)] px-8 py-3 text-[12px] uppercase tracking-[0.28em] font-bold transition-colors shadow-[0_14px_38px_rgba(0,0,0,0.4)]"
-                style={{ fontFamily: "Montserrat, system-ui, sans-serif" }}
+                style={{ fontFamily: "var(--font-sans)" }}
               >
                 {t.conciergeBegin}
               </button>
@@ -306,7 +306,7 @@ export function MultiDayConcierge({ t, mood, who, intention, travellerName, onBa
                 <label className="flex flex-col gap-2">
                   <span
                     className="text-[12.5px] italic text-[color:var(--ivory)]/80 text-center"
-                    style={{ fontFamily: "Georgia, 'Times New Roman', serif" }}
+                    style={{ fontFamily: "var(--font-editorial)" }}
                   >
                     {notePrompt(locale)}
                   </span>
@@ -317,7 +317,7 @@ export function MultiDayConcierge({ t, mood, who, intention, travellerName, onBa
                     rows={3}
                     placeholder={notePlaceholder(locale)}
                     className="w-full bg-transparent text-[color:var(--ivory)] placeholder:text-[color:var(--ivory)]/35 italic text-[15.5px] leading-[1.6] py-2 px-0 resize-none border-0 border-b border-[color:var(--ivory)]/25 focus:border-[color:var(--gold)]/70 focus:outline-none focus:ring-0 transition-colors"
-                    style={{ fontFamily: "Georgia, 'Times New Roman', serif" }}
+                    style={{ fontFamily: "var(--font-editorial)" }}
                   />
                 </label>
 
@@ -342,7 +342,7 @@ export function MultiDayConcierge({ t, mood, who, intention, travellerName, onBa
                   onClick={handleSend}
                   disabled={!canSend}
                   className="mx-auto mt-1 inline-flex items-center justify-center min-h-[52px] rounded-[2px] bg-[color:var(--ivory)] hover:bg-[color:var(--gold-soft)] disabled:bg-[color:var(--ivory)]/35 disabled:cursor-not-allowed text-[color:var(--charcoal)] px-7 py-3 text-[12px] uppercase tracking-[0.28em] font-bold transition-colors shadow-[0_14px_38px_rgba(0,0,0,0.4)]"
-                  style={{ fontFamily: "Montserrat, system-ui, sans-serif" }}
+                  style={{ fontFamily: "var(--font-sans)" }}
                 >
                   {sendLabel(locale)}
                 </button>

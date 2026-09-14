@@ -47,21 +47,21 @@ const TOKENS: Token[] = [
     key: "h1",
     label: "H1 — display",
     selector: "h1",
-    expectedFamily: "Cormorant Garamond",
+    expectedFamily: "Fraunces",
     thresholds: { minPx: 24, minLh: 1.0, minContrast: 3.0 /* large text */ },
   },
   {
     key: "h2",
     label: "H2 — section",
     selector: "h2",
-    expectedFamily: "Cormorant Garamond",
+    expectedFamily: "Fraunces",
     thresholds: { minPx: 20, minLh: 1.0, minContrast: 3.0 },
   },
   {
     key: "h3",
     label: "H3 — sub-section",
     selector: "h3",
-    expectedFamily: "Cormorant Garamond",
+    expectedFamily: "Fraunces",
     thresholds: { minPx: 18, minLh: 1.0, minContrast: 4.5 },
   },
   {
@@ -84,13 +84,6 @@ const TOKENS: Token[] = [
     selector: ".eyebrow",
     expectedFamily: "Inter",
     thresholds: { minPx: 11, minLh: 1.2, minContrast: 4.5 },
-  },
-  {
-    key: "script",
-    label: "Script accent",
-    selector: ".script",
-    expectedFamily: "Kaushan Script",
-    thresholds: { minPx: 12, minLh: 1.0, minContrast: 4.5 },
   },
 ];
 

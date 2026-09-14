@@ -3,7 +3,7 @@
 // Cinematic micro-reveal that fires the moment the traveller picks a
 // destinationIntent. Shows:
 //   • a teal eyebrow with the region name
-//   • 2–3 ghost stop names (50% opacity, Georgia italic) drawn ONLY from
+//   • 2–3 ghost stop names (50% opacity, Fraunces italic) drawn ONLY from
 //     REGION_STOP_POOL (zero invention — every label is source-verified)
 //   • a short italic bridging line
 //

@@ -5182,7 +5182,7 @@ export function StoryboardHandoff({
 
   // ---------- Cinematic 3-beat composing reveal (Fase 4) ----------
   // Beat 1 (0–900ms):   hero photo of the resolved Signature fades in over ivory.
-  // Beat 2 (900–1800ms): Georgia italic "why it fits" line lands under the photo.
+  // Beat 2 (900–1800ms): Fraunces italic "why it fits" line lands under the photo.
   // Beat 3 (1800–2600ms): trust whisper appears, then overlay dismisses and the
   //                      route map pins draw in sequence.
   // Respects prefers-reduced-motion (collapses to beat 3 instantly).

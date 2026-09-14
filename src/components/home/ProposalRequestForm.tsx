@@ -1,5 +1,5 @@
 /**
- * ProposalRequestForm — homepage request form for proposals, celebrations,
+ * ProposalRequestForm — dedicated request form for proposals, celebrations,
  * corporate days and private groups.
  *
  * Posts to `/api/public/proposal-request`, which stores the request in the
@@ -33,7 +33,7 @@ export function ProposalRequestForm({ id = "proposal-request" }: { id?: string }
   function onFirstInteraction() {
     if (startedRef.current) return;
     startedRef.current = true;
-    trackEvent("proposal_form_started", { placement: "home:proposals" });
+    trackEvent("proposal_form_started", { placement: "proposal-page" });
   }
 
   async function onSubmit(event: React.FormEvent<HTMLFormElement>) {
@@ -69,7 +69,7 @@ export function ProposalRequestForm({ id = "proposal-request" }: { id?: string }
       if (!res.ok || !body.ok) throw new Error("request_failed");
       setState("sent");
       trackEvent("proposal_form_submitted", {
-        placement: "home:proposals",
+        placement: "proposal-page",
         group_size: payload.groupSize,
         content_id: payload.occasion,
       });

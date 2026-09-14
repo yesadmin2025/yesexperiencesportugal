@@ -4,7 +4,7 @@
  * Anonymous (no JWT) — safe because it:
  *   1. Validates every field server-side with Zod
  *   2. Persists to public.booking_requests through the admin client,
- *      tagged `source: "homepage-proposals"` so the enquiries inbox can
+ *      tagged `source: "proposal-page"` so the enquiries inbox can
  *      filter these apart from ordinary day bookings
  *   3. Confirms to the sender and notifies every YES team recipient
  *
@@ -99,7 +99,7 @@ export const Route = createFileRoute("/api/public/proposal-request")({
             adults: Math.min(data.groupSize, 20),
             children: 0,
             preferences: detailLines,
-            source: `homepage-proposals:${data.occasion}`,
+            source: `proposal-page:${data.occasion}`,
           })
           .select("id")
           .maybeSingle();
@@ -116,7 +116,7 @@ export const Route = createFileRoute("/api/public/proposal-request")({
           lastName: restName.join(" "),
           email: data.email,
           message: detailLines,
-          source: `homepage-proposals:${data.occasion}`,
+          source: `proposal-page:${data.occasion}`,
           locale: null,
           userAgent: data.userAgent ?? null,
           requestType: data.occasion,

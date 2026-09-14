@@ -31,7 +31,6 @@ const DESIGNER_RAMP: Ramp = { mobile: 32, tablet: 38.4, desktop: 54.4 }; // 2 / 
 
 const HEADINGS: Array<{ id: string; label: string; ramp: Ramp }> = [
   { id: "signatures-title", label: "Signatures (editorial)", ramp: EDITORIAL_RAMP },
-  { id: "groups-title", label: "Groups (editorial)", ramp: EDITORIAL_RAMP },
   { id: "studio-title", label: "Studio (conversion)", ramp: CONVERSION_RAMP },
   { id: "final-cta-title", label: "Final CTA (conversion)", ramp: CONVERSION_RAMP },
   { id: "bespoke-designer-title", label: "Travel Designer", ramp: DESIGNER_RAMP },
@@ -85,8 +84,8 @@ test.describe("Homepage typography — locked H2 ramp", () => {
       await page.locator(`#${h.id}`).scrollIntoViewIfNeeded();
       const m = await readComputed(page, `#${h.id}`);
       expect(m, `#${h.id} must exist`).not.toBeNull();
-      expect(m!.fontFamily, "H2 uses Georgia italic emphasis stack").toMatch(
-        /Georgia|Cormorant|serif/i,
+      expect(m!.fontFamily, "H2 uses Fraunces italic emphasis stack").toMatch(
+        /Fraunces|serif/i,
       );
       // Homepage exception: H2s stay at font-medium (500).
       expect(Number(m!.fontWeight)).toBe(500);

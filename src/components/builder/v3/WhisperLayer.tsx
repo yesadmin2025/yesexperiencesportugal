@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 
 /**
- * Transient AI whisper — a single Georgia italic line that fades in/out
+ * Transient AI whisper — a single Fraunces italic line that fades in/out
  * above the itinerary. Used for pacing advisor sussurros. Non-blocking,
  * non-modal, never demands a click.
  */
@@ -53,7 +53,7 @@ export function WhisperLayer({ text, ttl = 5200, onDismiss }: Props) {
       />
       <p
         className="font-serif italic text-[12.5px] text-[color:var(--ivory)] leading-tight max-w-[42ch]"
-        style={{ fontFamily: "Georgia, 'Times New Roman', serif" }}
+        style={{ fontFamily: "var(--font-editorial)" }}
       >
         {shown}
       </p>

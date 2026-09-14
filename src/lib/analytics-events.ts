@@ -97,7 +97,7 @@ export type YesAnalyticsEvent =
   // Guest reviews
   | "review_cta_click"
   | "review_form_submitted"
-  // Proposals & private groups (homepage form)
+  // Proposals & private groups (dedicated proposal page)
   | "proposal_form_started"
   | "proposal_form_submitted"
   // Other
