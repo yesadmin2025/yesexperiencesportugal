@@ -21,7 +21,7 @@ Use this to claim, verify, and complete the Google Business Profile listing.
 | Phone | +351 911 889 992 |
 | Website | https://yesexperiencesportugal.com |
 | Email | info@yesexperiencesportugal.com |
-| Hours | Monday–Sunday, 08:00–20:00 |
+| Hours | Monday–Sunday, 09:00–20:00 |
 | License | RNAAT nº 31/2023 — Registered Portuguese tourism operator |
 | Booking link | https://yesexperiencesportugal.com/book |
 
@@ -43,13 +43,13 @@ YES Experiences Portugal designs private, emotionally memorable day trips and mu
 ## Opening hours (copy-paste)
 
 ```
-Monday: 08:00–20:00
-Tuesday: 08:00–20:00
-Wednesday: 08:00–20:00
-Thursday: 08:00–20:00
-Friday: 08:00–20:00
-Saturday: 08:00–20:00
-Sunday: 08:00–20:00
+Monday: 09:00–20:00
+Tuesday: 09:00–20:00
+Wednesday: 09:00–20:00
+Thursday: 09:00–20:00
+Friday: 09:00–20:00
+Saturday: 09:00–20:00
+Sunday: 09:00–20:00
 ```
 
 ## Important notes
