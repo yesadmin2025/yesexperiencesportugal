@@ -2,6 +2,12 @@
 
 Use this to claim, verify, and complete the Google Business Profile listing.
 
+## Correct profile identifier
+
+> The profile in the owner’s Google account is the one located in **Lisbon, Portugal**, with establishment code **`02179561410319006295`**. That is the correct GBP to complete and publish.
+>
+> Do **not** use the old short link `https://maps.app.goo.gl/hbVa3Yw2mDV2DZHt8?g_st=ic` — it points to a stale/unwanted profile.
+
 ## Basic information
 
 | Field | Value |
