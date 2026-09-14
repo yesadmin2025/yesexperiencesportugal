@@ -183,7 +183,7 @@ export function CookieConsent() {
             </div>
           )}
 
-          <div className="mt-5 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-end">
+          <div className="mt-3 flex flex-row flex-wrap items-center justify-end gap-2 sm:mt-5">
             {!customize ? (
               <>
                 <button
