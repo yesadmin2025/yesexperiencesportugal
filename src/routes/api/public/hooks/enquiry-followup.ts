@@ -128,7 +128,7 @@ export const Route = createFileRoute("/api/public/hooks/enquiry-followup")({
           }
         }
 
-        return Response.json({ ok: true, considered: rows?.length ?? 0, sent, failed });
+        return Response.json({ ok: true, considered: rows?.length ?? 0, sent, skipped, failed });
       },
     },
   },
