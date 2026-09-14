@@ -47,13 +47,13 @@ export const Route = createFileRoute("/book")({
   validateSearch: searchSchema,
   head: () => ({
     meta: [
-      { title: "Book a Private Day in Portugal | YES Portugal" },
+      { title: "Book a Private Day Trip in Portugal — Prices & Contact" },
       {
         name: "description",
         content:
-          "Book a private day in Portugal: pay by card and confirm instantly, or send your dates in three short steps and a local replies personally within 24 hours.",
+          "Book a private day trip from Lisbon: real prices from €101 per person, hotel pickup, licensed local team. Pay by card and confirm instantly, or call +351 911 889 992.",
       },
-      { property: "og:title", content: "Book a Private Day in Portugal | YES Portugal" },
+      { property: "og:title", content: "Book a Private Day Trip in Portugal — Prices & Contact" },
       {
         property: "og:description",
         content:
