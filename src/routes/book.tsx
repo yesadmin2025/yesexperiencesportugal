@@ -64,7 +64,30 @@ export const Route = createFileRoute("/book")({
       { name: "twitter:card", content: "summary" },
     ],
     links: [{ rel: "canonical", href: PAGE_URL }],
-    scripts: [jsonLdScript(breadcrumbLd(crumbs))],
+    scripts: [
+      jsonLdScript(breadcrumbLd(crumbs)),
+      jsonLdScript(
+        localBusinessLd({
+          path: "/book",
+          name: "YES experiences Portugal — bookings & reservations",
+          description:
+            "Book a private day trip in Portugal directly with a licensed local tour operator: real prices per person, hotel pickup across Lisbon, Cascais, Sintra, Sesimbra and Setúbal, and instant card confirmation.",
+          areaServed: SERVICE_AREAS,
+        }),
+      ),
+      jsonLdScript(
+        itemListLd({
+          name: "Private day trips available to book",
+          path: "/book",
+          items: signatureTours.map((t) => ({
+            id: t.id,
+            name: t.title,
+            description: t.blurb,
+            image: t.img,
+          })),
+        }),
+      ),
+    ],
   }),
   component: BookPage,
 });
