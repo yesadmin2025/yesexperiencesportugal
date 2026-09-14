@@ -72,11 +72,37 @@ export const Route = createFileRoute("/api/public/hooks/enquiry-followup")({
           return Response.json({ ok: false, error: "query_failed" }, { status: 500 });
         }
 
+        const today = new Date().toISOString().slice(0, 10);
+
         let sent = 0;
         let failed = 0;
+        let skipped = 0;
         for (const row of rows ?? []) {
           const occasion = (row.source ?? "").split(":")[1] ?? "";
           const [firstName] = (row.name ?? "").split(" ");
+
+          // Only guests who actually travelled get a review request. An enquiry
+          // alone is never enough: there must be a paid booking on this email
+          // whose date has already passed.
+          const { data: travelled, error: bookingError } = await supabaseAdmin
+            .from("bookings")
+            .select("id")
+            .eq("customer_email", row.email)
+            .eq("status", "paid")
+            .not("preferred_date", "is", null)
+            .lt("preferred_date", today)
+            .limit(1);
+
+          if (bookingError) {
+            failed += 1;
+            console.error("[enquiry-followup] booking lookup failed", { id: row.id });
+            continue;
+          }
+          if (!travelled || travelled.length === 0) {
+            skipped += 1;
+            continue;
+          }
+
           try {
             await sendTransactionalInternal({
               templateName: "review-request",
@@ -102,7 +128,7 @@ export const Route = createFileRoute("/api/public/hooks/enquiry-followup")({
           }
         }
 
-        return Response.json({ ok: true, considered: rows?.length ?? 0, sent, failed });
+        return Response.json({ ok: true, considered: rows?.length ?? 0, sent, skipped, failed });
       },
     },
   },
