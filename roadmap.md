@@ -49,3 +49,9 @@
 - [x] Add booking link + booking CTA on each region page to reach real booking pages
 - [x] Implement/validate LocalBusiness/Organization structured data including licence and service areas, and run Google Rich Results Test
 - [ ] Claim and verify the YES Experiences Portugal Google Business Profile (owner action required in Google)
+
+## 9. Internal design-debt cleanup
+- [ ] Remove retired font references from active website and internal screens
+- [ ] Align typography audit and visual regression checks with Fraunces + Inter
+- [ ] Remove stale homepage-questionnaire labels while preserving the dedicated Proposals form and enquiry workflow
+- [ ] Verify typography, homepage structure, Proposals submission path, and mobile rendering
