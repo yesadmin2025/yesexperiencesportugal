@@ -174,7 +174,7 @@ export function LiveReviews({
           {quotes.map((q) => (
             <li
               key={q.key}
-              className="reveal-stagger he-card-lift flex flex-col rounded-[6px] border border-[color:var(--border)] bg-[color:var(--card)] p-5 md:p-6"
+              className={`reveal-stagger${swapped ? " is-visible" : ""} he-card-lift flex flex-col rounded-[6px] border border-[color:var(--border)] bg-[color:var(--card)] p-5 md:p-6`}
             >
               <div
                 className="inline-flex items-center gap-0.5 text-[color:var(--gold)]"

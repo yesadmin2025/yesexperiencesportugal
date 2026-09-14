@@ -130,24 +130,29 @@ export function CookieConsent() {
           }
         `}</style>
 
-        <div data-cookie-card className="p-5 sm:p-6">
+        <div data-cookie-card className="p-4 sm:p-6">
           <div className="flex items-start gap-3">
             <div className="flex-1">
               <p
                 id="cookie-consent-title"
-                className="font-[family-name:var(--font-display)] text-[15px] leading-[1.35] text-[color:var(--charcoal)]"
+                className="font-[family-name:var(--font-display)] text-[14px] leading-[1.35] text-[color:var(--charcoal)] sm:text-[15px]"
                 style={{ fontWeight: 500 }}
               >
                 We use cookies to shape your journey
               </p>
-              <p className="mt-1.5 text-[13px] leading-[1.55] text-[color:var(--charcoal-soft)] font-[family-name:var(--font-sans)]">
-                Essential cookies keep the site running. Analytics help us understand which
-                experiences resonate. You can change your choice anytime from the footer.{" "}
+              <p className="mt-1.5 text-[12.5px] leading-[1.5] text-[color:var(--charcoal-soft)] font-[family-name:var(--font-sans)] sm:text-[13px] sm:leading-[1.55]">
+                <span className="hidden sm:inline">
+                  Essential cookies keep the site running. Analytics help us understand which
+                  experiences resonate. You can change your choice anytime from the footer.{" "}
+                </span>
+                <span className="sm:hidden">
+                  Essential cookies keep the site running. Analytics help us improve it.{" "}
+                </span>
                 <a
                   href="/cookies"
                   className="underline decoration-[color:var(--gold-warm)]/60 underline-offset-[3px] hover:text-[color:var(--charcoal)]"
                 >
-                  Read our cookie policy
+                  Cookie policy
                 </a>
                 .
               </p>
