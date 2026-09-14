@@ -213,7 +213,7 @@ export function organizationLd() {
       {
         "@type": "OpeningHoursSpecification",
         dayOfWeek: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"],
-        opens: "08:00",
+        opens: "09:00",
         closes: "20:00",
       },
     ],
@@ -1315,7 +1315,7 @@ export function localBusinessLd(args: {
           "Saturday",
           "Sunday",
         ],
-        opens: "08:00",
+        opens: "09:00",
         closes: "20:00",
       },
     ],
