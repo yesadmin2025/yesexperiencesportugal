@@ -62,7 +62,7 @@ export const Route = createFileRoute("/api/public/hooks/enquiry-followup")({
           .from("booking_requests")
           .select("id, name, email, source, created_at")
           .is("followup_sent_at", null)
-          .like("source", "homepage-proposals%")
+          .or("source.like.homepage-proposals%,source.like.proposal-page%")
           .lte("created_at", cutoff)
           .order("created_at", { ascending: true })
           .limit(limit);

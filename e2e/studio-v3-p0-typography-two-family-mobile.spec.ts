@@ -27,7 +27,7 @@ async function assertNoHardcodedFallbacks(page: import("@playwright/test").Page,
     nodes.forEach((el) => {
       const inline = el.getAttribute("style") ?? "";
       // Only inspect inline font-family declarations — computed values may
-      // legitimately resolve to Montserrat today (token layer swap pending).
+      // must resolve through the canonical Fraunces and Inter tokens.
       const match = inline.match(/font-family:\s*([^;]+)/i);
       if (!match) return;
       const family = match[1];

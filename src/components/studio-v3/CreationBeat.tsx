@@ -29,7 +29,7 @@ interface AtmosphereBeatProps {
   videoSrc?: string;
   /** Uppercase gold eyebrow label. */
   eyebrow: string;
-  /** One short Georgia italic line. Sentence case, no superlatives. */
+  /** One short Fraunces italic line. Sentence case, no superlatives. */
   line: string;
 }
 
@@ -160,7 +160,7 @@ interface MapBeatProps {
   rhythm?: "slow" | "balanced" | "full" | "immersive" | null;
   /** Uppercase gold eyebrow. */
   eyebrow: string;
-  /** One Georgia italic line. */
+  /** One Fraunces italic line. */
   line: string;
 }
 

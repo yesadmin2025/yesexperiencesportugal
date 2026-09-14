@@ -1307,7 +1307,7 @@ export function StudioDrift({ onExit }: Props) {
           aria-label={tt("ui.back", locale) || "Back"}
           className="absolute bottom-[100px] left-3 z-[46] inline-flex items-center gap-1.5 px-2 py-1.5 italic transition-opacity hover:opacity-100 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[color:var(--ivory)]/60"
           style={{
-            fontFamily: "Georgia, 'Times New Roman', serif",
+            fontFamily: "var(--font-editorial)",
             fontSize: "13px",
             fontWeight: 400,
             color: "color-mix(in oklab, var(--ivory) 78%, transparent)",
@@ -1331,7 +1331,7 @@ export function StudioDrift({ onExit }: Props) {
           <p
             className="text-center italic"
             style={{
-              fontFamily: "Georgia, 'Times New Roman', serif",
+              fontFamily: "var(--font-editorial)",
               fontSize: "23px",
               lineHeight: 1.42,
               color: "var(--ivory)",
@@ -1459,7 +1459,7 @@ function TextPhase({
         <label
           className="text-[color:var(--ivory)] text-center mb-8"
           style={{
-            fontFamily: "'Montserrat', system-ui, sans-serif",
+            fontFamily: "var(--font-sans)",
             fontSize: "25px",
             fontWeight: 700,
             lineHeight: 1.16,
@@ -1476,7 +1476,7 @@ function TextPhase({
                 <em
                   key={i}
                   style={{
-                    fontFamily: "Georgia, 'Times New Roman', serif",
+                    fontFamily: "var(--font-editorial)",
                     fontStyle: "italic",
                     fontWeight: 400,
                   }}
@@ -1500,7 +1500,7 @@ function TextPhase({
           maxLength={chapter.inputType === "number" ? 3 : 32}
           className="w-full max-w-[18ch] bg-transparent text-center text-[color:var(--ivory)] outline-none border-0 border-b py-3 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-inner-spin-button]:m-0"
           style={{
-            fontFamily: "'Montserrat', system-ui, sans-serif",
+            fontFamily: "var(--font-sans)",
             fontSize: "21px",
             fontWeight: 600,
             letterSpacing: "0",
@@ -1739,7 +1739,7 @@ function ChoicePhase({
               <span
                 className="absolute inset-x-0 bottom-5 z-10 block px-5 text-center text-[color:var(--ivory)] transition-all duration-[1500ms]"
                 style={{
-                  fontFamily: "'Montserrat', system-ui, sans-serif",
+                  fontFamily: "var(--font-sans)",
                   fontSize: "16px",
                   fontWeight: 700,
                   lineHeight: 1.18,
@@ -1754,7 +1754,7 @@ function ChoicePhase({
                     <em
                       key={i}
                       style={{
-                        fontFamily: "Georgia, 'Times New Roman', serif",
+                        fontFamily: "var(--font-editorial)",
                         fontStyle: "italic",
                         fontWeight: 400,
                       }}
@@ -1868,7 +1868,7 @@ function ProgressiveBuildPreview({
               <p
                 className="truncate"
                 style={{
-                  fontFamily: "'Montserrat', system-ui, sans-serif",
+                  fontFamily: "var(--font-sans)",
                   fontSize: "12.5px",
                   fontWeight: 700,
                   lineHeight: 1.2,
@@ -2143,7 +2143,7 @@ function ConvergencePhase({
           <h2
             className="mx-auto max-w-[15ch] text-center text-[color:var(--ivory)]"
             style={{
-              fontFamily: "'Montserrat', system-ui, sans-serif",
+              fontFamily: "var(--font-sans)",
               fontSize: "30px",
               fontWeight: 700,
               lineHeight: 1.08,
@@ -2198,7 +2198,7 @@ function ConvergencePhase({
         <p
           className="mx-auto mb-4 max-w-[34ch] text-center italic"
           style={{
-            fontFamily: "Georgia, serif",
+            fontFamily: "var(--font-editorial)",
             fontSize: "17px",
             lineHeight: 1.55,
             color: "color-mix(in oklab, var(--charcoal) 78%, transparent)",
@@ -2251,7 +2251,7 @@ function ConvergencePhase({
                   className="motion-safe:animate-[fade-in_0.9s_ease-out_both]"
                   style={{
                     fontFamily: isPull
-                      ? "Georgia, 'Times New Roman', serif"
+                      ? "var(--font-editorial)"
                       : "'Inter', system-ui, sans-serif",
                     fontStyle: isPull ? "italic" : "normal",
                     fontSize: isPull ? "25px" : "15px",
@@ -2276,7 +2276,7 @@ function ConvergencePhase({
           <p
             className="text-center italic"
             style={{
-              fontFamily: "Georgia, serif",
+              fontFamily: "var(--font-editorial)",
               fontSize: "14px",
               color: "color-mix(in oklab, var(--charcoal) 70%, transparent)",
             }}
@@ -2317,7 +2317,7 @@ function ConvergencePhase({
                     <p
                       className="mb-1 italic"
                       style={{
-                        fontFamily: "Georgia, serif",
+                        fontFamily: "var(--font-editorial)",
                         fontSize: "11px",
                         color: "color-mix(in oklab, var(--charcoal) 50%, transparent)",
                       }}
@@ -2329,7 +2329,7 @@ function ConvergencePhase({
                   )}
                   <p
                     style={{
-                      fontFamily: "'Montserrat', system-ui, sans-serif",
+                      fontFamily: "var(--font-sans)",
                       fontWeight: 600,
                       fontSize: "14.5px",
                       color: "var(--charcoal)",
@@ -2371,7 +2371,7 @@ function ConvergencePhase({
                 key={w}
                 className="text-center italic"
                 style={{
-                  fontFamily: "Georgia, serif",
+                  fontFamily: "var(--font-editorial)",
                   fontSize: "12px",
                   color: "color-mix(in oklab, var(--charcoal) 55%, transparent)",
                 }}
@@ -2463,7 +2463,7 @@ function ConvergencePhase({
               onClick={() => void recordDriftEvent("cta_save")}
               className="min-h-[44px] italic transition-opacity duration-200 hover:opacity-100 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[color:var(--gold)]/60 focus-visible:rounded-[2px]"
               style={{
-                fontFamily: "Georgia, 'Times New Roman', serif",
+                fontFamily: "var(--font-editorial)",
                 fontWeight: 400,
                 fontSize: "14px",
                 lineHeight: 1.4,
@@ -2480,7 +2480,7 @@ function ConvergencePhase({
               onClick={() => void recordDriftEvent("cta_whatsapp", { meta: { stage: "reveal" } })}
               className="inline-flex min-h-[44px] items-center gap-1.5 italic transition-opacity duration-200 hover:opacity-100 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[color:var(--gold)]/60 focus-visible:rounded-[2px]"
               style={{
-                fontFamily: "Georgia, 'Times New Roman', serif",
+                fontFamily: "var(--font-editorial)",
                 fontWeight: 400,
                 fontSize: "14px",
                 lineHeight: 1.4,
@@ -2495,7 +2495,7 @@ function ConvergencePhase({
               to="/experiences"
               className="min-h-[44px] inline-flex items-center italic transition-opacity duration-200 hover:opacity-100 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[color:var(--gold)]/60 focus-visible:rounded-[2px]"
               style={{
-                fontFamily: "Georgia, 'Times New Roman', serif",
+                fontFamily: "var(--font-editorial)",
                 fontWeight: 400,
                 fontSize: "14px",
                 lineHeight: 1.4,
@@ -2591,8 +2591,8 @@ function Whisper({
         className="text-center"
         style={{
           fontFamily: isOpening
-            ? "Georgia, 'Times New Roman', serif"
-            : "'Montserrat', system-ui, sans-serif",
+            ? "var(--font-editorial)"
+            : "var(--font-sans)",
           fontStyle: isOpening ? "italic" : "normal",
           fontSize: isChoice ? "27px" : isOpening ? "21px" : "25px",
           fontWeight: isOpening ? 400 : 700,
@@ -2611,7 +2611,7 @@ function Whisper({
                 <em
                   key={i}
                   style={{
-                    fontFamily: "Georgia, 'Times New Roman', serif",
+                    fontFamily: "var(--font-editorial)",
                     fontStyle: "italic",
                     fontWeight: 400,
                   }}
@@ -2715,7 +2715,7 @@ function AiWhisper({ text, locale }: { text: string; locale?: DriftLocale }) {
         />
         <span
           style={{
-            fontFamily: "Georgia, 'Times New Roman', serif",
+            fontFamily: "var(--font-editorial)",
             fontStyle: "italic",
             fontSize: "11.5px",
             fontWeight: 400,
@@ -2732,7 +2732,7 @@ function AiWhisper({ text, locale }: { text: string; locale?: DriftLocale }) {
       <p
         className="text-center italic"
         style={{
-          fontFamily: "Georgia, 'Times New Roman', serif",
+          fontFamily: "var(--font-editorial)",
           fontSize: "13.5px",
           lineHeight: 1.5,
           letterSpacing: "0",

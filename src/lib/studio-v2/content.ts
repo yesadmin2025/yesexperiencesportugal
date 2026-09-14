@@ -144,7 +144,7 @@ export const INTENT_ATMOSPHERE: Record<
 };
 
 /**
- * Reveal framing — a single Georgia-italic phrase shown above the itinerary.
+ * Reveal framing — a single Fraunces-italic phrase shown above the itinerary.
  * Tone-only, deterministic, no facts invented. Keyed by intent; region-aware
  * variants stay rare so we don't drift toward marketing copy.
  */

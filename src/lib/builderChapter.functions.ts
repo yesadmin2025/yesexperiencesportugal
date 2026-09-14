@@ -6,7 +6,7 @@ import { rateLimit } from "./rateLimit.server";
 /**
  * Tone-only chapter generator for the Living Atmosphere Studio.
  *
- * Returns ONE editorial line (Georgia italic, ≤80 chars, PT-PT) describing
+ * Returns ONE editorial line (Fraunces italic, ≤80 chars, PT-PT) describing
  * the emerging chapter of the journey. Never invents stops or regions —
  * pure narrative voice over the real selections the user has made.
  */

@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 
 /**
  * Editorial chapter line that fades in at the top of the scene.
- * Georgia italic, ivory on charcoal veil.
+ * Fraunces italic, ivory on charcoal veil.
  */
 interface Props {
   text: string | null;
@@ -37,7 +37,7 @@ export function ChapterLine({ text }: Props) {
     >
       <p
         className="font-serif italic text-[color:var(--ivory)] text-[18px] sm:text-[22px] leading-[1.35] tracking-[-0.005em] max-w-[28ch] drop-shadow-[0_1px_8px_rgba(0,0,0,0.45)]"
-        style={{ fontFamily: "Georgia, 'Times New Roman', serif" }}
+        style={{ fontFamily: "var(--font-editorial)" }}
       >
         {shown}
       </p>

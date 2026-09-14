@@ -85,7 +85,7 @@ export function PriceWhisper({ revealConfidence, locale, rangeFrom = 145, rangeT
             fontSize: "10px",
             fontStyle: "italic",
             color: "color-mix(in oklab, var(--ivory) 70%, transparent)",
-            fontFamily: "Georgia, 'Times New Roman', serif",
+            fontFamily: "var(--font-editorial)",
           }}
         >
           {PER_GUEST[locale]}

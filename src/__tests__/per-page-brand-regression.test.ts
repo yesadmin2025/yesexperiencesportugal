@@ -7,7 +7,7 @@
  * imports) for the brand-critical signals that a human reviewer
  * would otherwise eyeball:
  *
- *   · Typography v3 — Montserrat headlines, Georgia italic emphasis,
+ *   · Typography v3 — Fraunces headlines, Fraunces italic emphasis,
  *     Inter body. We assert no blacklisted fonts (Poppins, Roboto…)
  *     leaked into core route files.
  *   · Approved palette only — every colour is referenced via a
@@ -73,8 +73,8 @@ function readAll(files: string[]): string {
 // ─── Typography v3 ─────────────────────────────────────────────────────
 describe("Per-page brand regression — typography", () => {
   // Generic font names that are not exhaustive — we're catching the
-  // "AI default" giveaways. Real headline/body fonts (Montserrat,
-  // Georgia, Inter) live in styles.css and are enforced elsewhere.
+  // "AI default" giveaways. Real headline/body fonts (Fraunces,
+  // Fraunces, Inter) live in styles.css and are enforced elsewhere.
   const FORBIDDEN_FONTS = [
     /font-\['?Poppins/i,
     /font-\['?Roboto/i,
