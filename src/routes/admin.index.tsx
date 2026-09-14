@@ -322,6 +322,8 @@ function AdminOverviewPage() {
               {(
                 [
                   { to: "/admin/bookings", label: "Viagens dos hóspedes" },
+                  { to: "/admin/reviews", label: "Avaliações (aprovar)" },
+                  { to: "/admin/enquiries", label: "Pedidos e mensagens" },
                   { to: "/admin/availability", label: "Calendário de disponibilidade" },
                   { to: "/admin/pricing", label: "Preços das experiências" },
                   { to: "/admin/composable-stops", label: "Momentos compostos (preços)" },

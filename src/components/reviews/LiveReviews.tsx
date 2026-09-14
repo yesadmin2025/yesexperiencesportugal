@@ -115,6 +115,10 @@ export function LiveReviews({
   const perTour = useServerFn(getReviewsForTours);
   const fallbackIds = fallbackTourIds ?? tourIds ?? [];
   const [quotes, setQuotes] = useState<Testimonial[]>(() => fromTourPages(fallbackIds, limit));
+  // Cards swapped in after the live fetch mount *after* the scroll-reveal
+  // observer has already run, so they would never receive `.is-visible` and
+  // the whole band would look empty. Mark those cards visible on arrival.
+  const [swapped, setSwapped] = useState(false);
 
   useEffect(() => {
     let cancelled = false;
@@ -126,7 +130,10 @@ export function LiveReviews({
       .then((rows) => {
         if (cancelled) return;
         const live = fromDb(rows).slice(0, limit);
-        if (live.length > 0) setQuotes(live);
+        if (live.length > 0) {
+          setQuotes(live);
+          setSwapped(true);
+        }
       })
       .catch(() => undefined);
     return () => {
