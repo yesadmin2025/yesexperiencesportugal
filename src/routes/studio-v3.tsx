@@ -23,7 +23,7 @@ export const Route = createFileRoute("/studio-v3")({
       {
         name: "description",
         content:
-          "Design your own private day in Portugal, hour by hour — choose the region, wine, coast, food and heritage you want, watch the route take shape, then book it.",
+          "Design your own private day in Portugal, hour by hour — choose the region, wine, coast, food and heritage, watch the route take shape, then book it.",
       },
 
       { property: "og:title", content: "Design your Portugal day." },

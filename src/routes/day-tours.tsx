@@ -26,7 +26,7 @@ export const Route = createFileRoute("/day-tours")({
       {
         name: "description",
         content:
-          "Private day tours from Lisbon and beyond — Arrábida wine country, Setúbal, Sintra, Évora and the Douro. Your group only, hotel pickup, instant confirmation.",
+          "Private day tours from Lisbon — Arrábida wine country, Setúbal, Sintra, Évora and the Douro. Your group only, hotel pickup, instant confirmation.",
       },
       { property: "og:title", content: "Private Day Tours in Portugal — Hotel Pickup, Book Online" },
       {

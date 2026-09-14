@@ -25,13 +25,13 @@ export const Route = createFileRoute("/experiences")({
       {
         name: "description",
         content:
-          "Signature private days in Portugal — Sintra, Arrábida, Évora and the Atlantic coast. Book as designed or tailor the details. Hotel pickup, instant confirmation.",
+          "Signature private days in Portugal — Sintra, Arrábida, Évora and the coast. Book as designed or tailor the details. Hotel pickup, instant confirmation.",
       },
       { property: "og:title", content: "Signature Private Tours in Portugal — Designed by Locals" },
       {
         property: "og:description",
         content:
-          "Signature private days in Portugal — Sintra, Arrábida, Évora and the Atlantic coast. Book as designed or tailor the details. Hotel pickup, instant confirmation.",
+          "Signature private days in Portugal — Sintra, Arrábida, Évora and the coast. Book as designed or tailor the details. Hotel pickup, instant confirmation.",
       },
       { property: "og:url", content: "https://yesexperiencesportugal.com/experiences" },
       { property: "og:image", content: `https://yesexperiencesportugal.com${ogImg}` },

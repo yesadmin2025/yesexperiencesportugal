@@ -349,7 +349,7 @@ export const Route = createFileRoute("/")({
       {
         name: "description",
         content:
-          "Private day trips from Lisbon to Sintra, Arrábida, Azeitão and Évora — or design your own day. One group per car, hotel pickup, licensed local team, instant booking.",
+          "Private day trips from Lisbon to Sintra, Arrábida and Évora — or design your own day. One group per car, hotel pickup, licensed local team, instant booking.",
       },
       {
         property: "og:title",
@@ -358,7 +358,7 @@ export const Route = createFileRoute("/")({
       {
         property: "og:description",
         content:
-          "Private day trips from Lisbon to Sintra, Arrábida, Azeitão and Évora — or design your own day. One group per car, hotel pickup, licensed local team, instant booking.",
+          "Private day trips from Lisbon to Sintra, Arrábida and Évora — or design your own day. One group per car, hotel pickup, licensed local team, instant booking.",
       },
       {
         property: "twitter:title",
@@ -367,7 +367,7 @@ export const Route = createFileRoute("/")({
       {
         property: "twitter:description",
         content:
-          "Private day trips from Lisbon to Sintra, Arrábida, Azeitão and Évora — or design your own day. One group per car, hotel pickup, licensed local team, instant booking.",
+          "Private day trips from Lisbon to Sintra, Arrábida and Évora — or design your own day. One group per car, hotel pickup, licensed local team, instant booking.",
       },
       { property: "og:image", content: `https://yesexperiencesportugal.com${heroImg}` },
       { property: "twitter:image", content: `https://yesexperiencesportugal.com${heroImg}` },
