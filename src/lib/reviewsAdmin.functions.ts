@@ -189,11 +189,13 @@ export const listPendingReviews = createServerFn({ method: "GET" })
   .handler(async ({ context, data }) => {
     await assertAdmin(context);
     const status = data.status ?? "pending";
+    // Guest reviews submitted on /reviews land with is_first_party = true.
+    // They MUST appear in this queue too — filtering them out was hiding real
+    // guest submissions from moderation entirely.
     let q = context.supabase
       .from("tour_reviews")
       .select("*")
       .eq("moderation_status", status)
-      .eq("is_first_party", false)
       .order("created_at", { ascending: false })
       .limit(200);
     if (data.tourId) q = q.eq("tour_id", data.tourId);

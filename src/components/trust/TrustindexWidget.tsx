@@ -62,8 +62,34 @@ function monitor(
   });
 }
 
+/**
+ * The vendor loader keeps a reference to the node it injected. After a
+ * client-side route change that node is gone, so its own `show()` throws
+ * `Cannot read properties of null (reading 'remove')` — an uncaught error on
+ * every subsequent page, from third-party code we cannot patch. We contain it
+ * here: swallow errors whose stack belongs to the Trustindex loader, log once,
+ * and let nothing surface to the guest or to our error reporting noise.
+ */
+let vendorErrorLogged = false;
+
 export function TrustindexWidget() {
   const anchorRef = React.useRef<HTMLDivElement | null>(null);
+
+  React.useEffect(() => {
+    const isVendorError = (event: ErrorEvent) => {
+      const where = `${event.filename ?? ""} ${event.error?.stack ?? ""}`;
+      return where.includes("trustindex.io");
+    };
+    const onError = (event: ErrorEvent) => {
+      if (!isVendorError(event)) return;
+      event.preventDefault();
+      if (vendorErrorLogged) return;
+      vendorErrorLogged = true;
+      monitor("failed", { reason: "vendor-runtime-error", message: event.message?.slice(0, 200) });
+    };
+    window.addEventListener("error", onError);
+    return () => window.removeEventListener("error", onError);
+  }, []);
 
   React.useEffect(() => {
     const el = anchorRef.current;
