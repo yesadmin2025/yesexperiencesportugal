@@ -8,6 +8,8 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { RefreshCw, Mail, Sparkles, CalendarCheck2 } from "lucide-react";
 import { toast } from "sonner";
 import { SiteLayout } from "@/components/SiteLayout";
+import { AdminNavIndex } from "@/components/admin/AdminNavIndex";
+import { listPendingReviews } from "@/lib/reviewsAdmin.functions";
 import { supabase } from "@/integrations/supabase/client";
 import { recoverPaidBooking } from "@/lib/booking-recovery.functions";
 
@@ -150,6 +152,8 @@ function AdminOverviewPage() {
   const [emailLog, setEmailLog] = useState<EmailLogRow[] | null>(null);
   const [loading, setLoading] = useState(false);
   const [lastRefresh, setLastRefresh] = useState<Date | null>(null);
+  const [pendingReviews, setPendingReviews] = useState<number | null>(null);
+  const pendingReviewsFn = useServerFn(listPendingReviews);
 
   useEffect(() => {
     let cancelled = false;
@@ -225,9 +229,17 @@ function AdminOverviewPage() {
     setLeads((l.data ?? []) as LeadRow[]);
     setStripeEvents((sw.data ?? []) as StripeEventRow[]);
     setEmailLog((em.data ?? []) as EmailLogRow[]);
+    // Reviews waiting for approval — surfaced on the overview so a guest
+    // review can never sit unpublished without the operator noticing.
+    try {
+      const pending = await pendingReviewsFn({ data: { status: "pending" } });
+      setPendingReviews(Array.isArray(pending) ? pending.length : 0);
+    } catch {
+      setPendingReviews(null);
+    }
     setLastRefresh(new Date());
     setLoading(false);
-  }, []);
+  }, [pendingReviewsFn]);
 
   useEffect(() => {
     if (!isAdmin) return;
@@ -264,14 +276,14 @@ function AdminOverviewPage() {
     if (!authChecked || redirectedRef.current) return;
     if (!session) {
       redirectedRef.current = true;
-      toast.error("Precisas de iniciar sessão com uma conta admin.");
+      toast.error("Please sign in with an admin account.");
       navigate({ to: "/auth" });
       return;
     }
     if (isAdmin === false) {
       redirectedRef.current = true;
       toast.error(
-        `A conta ${session.email ?? "atual"} não tem o papel de admin. Contacta o administrador.`,
+        `The account ${session.email ?? "in use"} is not an admin. Contact the administrator.`,
       );
       supabase.auth.signOut().finally(() => navigate({ to: "/auth" }));
     }
@@ -284,21 +296,21 @@ function AdminOverviewPage() {
           <p className="text-[11px] uppercase tracking-[0.22em] text-[color:var(--gold)]">Admin</p>
           <h1 className="mt-1 text-3xl">
             {!authChecked
-              ? "A verificar sessão…"
+              ? "Checking your session…"
               : !session
-                ? "A redirecionar…"
-                : "Sem autorização"}
+                ? "Redirecting…"
+                : "Not authorised"}
           </h1>
           <p className="mt-3 text-sm text-[color:var(--charcoal-soft)]">
             {!session
-              ? "Redireciona-te para a página de login."
-              : "Esta conta não tem o papel de admin. A voltar para a página de login…"}
+              ? "Taking you to the sign-in page."
+              : "This account is not an admin. Returning to the sign-in page…"}
           </p>
           <Link
             to="/auth"
             className="mt-6 inline-flex items-center gap-2 bg-[color:var(--charcoal)] text-[color:var(--ivory)] px-5 py-2.5 text-sm hover:bg-black"
           >
-            Ir para o login
+            Go to sign in
           </Link>
         </section>
       </SiteLayout>
@@ -313,42 +325,25 @@ function AdminOverviewPage() {
             <p className="text-[11px] uppercase tracking-[0.22em] text-[color:var(--gold)]">
               Admin
             </p>
-            <h1 className="mt-1 text-3xl">Painel de atividade</h1>
+            <h1 className="mt-1 text-3xl">Activity dashboard</h1>
             <p className="mt-2 text-sm text-[color:var(--charcoal-soft)] max-w-2xl">
-              Reservas, mensagens de contacto e pedidos do Studio em tempo real. Atualiza
-              automaticamente a cada 30 s e a cada nova entrada.
+              Bookings, guest messages and Studio requests in real time. Refreshes automatically
+              every 30 seconds and on every new entry.
             </p>
-            <div className="mt-3 flex flex-wrap gap-x-5 gap-y-2">
-              {(
-                [
-                  { to: "/admin/bookings", label: "Viagens dos hóspedes" },
-                  { to: "/admin/reviews", label: "Avaliações (aprovar)" },
-                  { to: "/admin/enquiries", label: "Pedidos e mensagens" },
-                  { to: "/admin/availability", label: "Calendário de disponibilidade" },
-                  { to: "/admin/pricing", label: "Preços das experiências" },
-                  { to: "/admin/composable-stops", label: "Momentos compostos (preços)" },
-                  { to: "/admin/price-map", label: "Mapa de preços (tudo de uma vez)" },
-                  { to: "/admin/pricing-tool", label: "Ferramenta rápida de preços" },
-                  { to: "/admin/experiences", label: "Experiências & operações" },
-                  { to: "/admin/emails", label: "Entrega de emails" },
-                ] as const
-              ).map((l) => (
-                <Link
-                  key={l.to}
-                  to={l.to}
-                  className="inline-flex min-h-11 items-center gap-2 text-[11px] uppercase tracking-[0.18em] text-[color:var(--teal)] underline underline-offset-4"
-                >
-                  {l.label}
-                </Link>
-              ))}
-            </div>
-
-
+            {(pendingReviews ?? 0) > 0 && (
+              <Link
+                to="/admin/reviews"
+                className="mt-3 inline-flex min-h-11 items-center gap-2 bg-[color:var(--teal)] px-4 text-[12px] uppercase tracking-[0.18em] text-[color:var(--ivory)]"
+              >
+                {pendingReviews} guest {pendingReviews === 1 ? "review" : "reviews"} waiting for
+                approval
+              </Link>
+            )}
           </div>
           <div className="flex items-center gap-3">
             {lastRefresh && (
               <span className="text-xs text-[color:var(--charcoal-soft)]">
-                Atualizado {formatDate(lastRefresh.toISOString())}
+                Updated {formatDate(lastRefresh.toISOString())}
               </span>
             )}
             <button
@@ -357,26 +352,29 @@ function AdminOverviewPage() {
               disabled={loading}
               className="inline-flex items-center gap-2 border border-[color:var(--border)] px-3 py-1.5 text-xs hover:border-[color:var(--gold)] disabled:opacity-50"
             >
-              <RefreshCw size={12} className={loading ? "animate-spin" : ""} /> Atualizar
+              <RefreshCw size={12} className={loading ? "animate-spin" : ""} /> Refresh
             </button>
           </div>
         </header>
+
+        {/* Complete index of every admin screen */}
+        <AdminNavIndex pendingReviews={pendingReviews} />
 
         {/* Summary tiles */}
         <div className="mt-8 grid grid-cols-1 sm:grid-cols-3 gap-4">
           <SummaryTile
             icon={<CalendarCheck2 size={16} />}
-            label="Reservas (últimas 20)"
+            label="Bookings (latest 20)"
             value={bookings?.length ?? 0}
           />
           <SummaryTile
             icon={<Mail size={16} />}
-            label="Mensagens de contacto"
+            label="Guest messages"
             value={contacts?.length ?? 0}
           />
           <SummaryTile
             icon={<Sparkles size={16} />}
-            label="Pedidos do Studio"
+            label="Studio requests"
             value={leads?.length ?? 0}
           />
         </div>
@@ -385,20 +383,20 @@ function AdminOverviewPage() {
         <WebhookHealthWidget bookings={bookings} emailLog={emailLog} onRecovered={fetchAll} />
 
         {/* Bookings */}
-        <Panel title="Últimas reservas" hint="Cada linha é um pagamento/pedido em bookings.">
+        <Panel title="Latest bookings" hint="One row per payment or request.">
           {bookings && bookings.length > 0 ? (
             <div className="overflow-x-auto">
               <table className="w-full text-sm">
                 <thead className="text-[11px] uppercase tracking-wider text-[color:var(--charcoal-soft)]">
                   <tr className="border-b border-[color:var(--border)]">
-                    <Th>Data</Th>
-                    <Th>Cliente</Th>
-                    <Th>Contacto</Th>
+                    <Th>Date</Th>
+                    <Th>Guest</Th>
+                    <Th>Contact</Th>
                     <Th>Tour</Th>
-                    <Th>Data pretendida</Th>
+                    <Th>Requested date</Th>
                     <Th>Pax</Th>
-                    <Th>Valor</Th>
-                    <Th>Estado</Th>
+                    <Th>Amount</Th>
+                    <Th>Status</Th>
                   </tr>
                 </thead>
                 <tbody>
@@ -433,7 +431,7 @@ function AdminOverviewPage() {
 
         {/* Contact messages */}
         <Panel
-          title="Últimas mensagens de contacto"
+          title="Latest guest messages"
           hint="Formulário /contact. Enquanto os emails automáticos não estão ativos, responde daqui manualmente."
         >
           {contacts && contacts.length > 0 ? (
@@ -529,13 +527,13 @@ function AdminOverviewPage() {
               <table className="w-full text-sm">
                 <thead className="text-[11px] uppercase tracking-wider text-[color:var(--charcoal-soft)]">
                   <tr className="border-b border-[color:var(--border)]">
-                    <Th>Data</Th>
+                    <Th>Date</Th>
                     <Th>Evento</Th>
                     <Th>Env</Th>
                     <Th>Verif.</Th>
                     <Th>Status</Th>
                     <Th>Email</Th>
-                    <Th>Valor</Th>
+                    <Th>Amount</Th>
                     <Th>Erro</Th>
                   </tr>
                 </thead>
@@ -578,10 +576,10 @@ function AdminOverviewPage() {
               <table className="w-full text-sm">
                 <thead className="text-[11px] uppercase tracking-wider text-[color:var(--charcoal-soft)]">
                   <tr className="border-b border-[color:var(--border)]">
-                    <Th>Data</Th>
+                    <Th>Date</Th>
                     <Th>Template</Th>
                     <Th>Destinatário</Th>
-                    <Th>Estado</Th>
+                    <Th>Status</Th>
                     <Th>Erro</Th>
                   </tr>
                 </thead>
@@ -883,7 +881,7 @@ function WebhookHealthWidget({
           <p className="text-[11px] uppercase tracking-[0.22em] text-[color:var(--gold)]">
             Stripe webhook health
           </p>
-          <h2 className="mt-1 text-lg">Estado do endpoint em tempo real</h2>
+          <h2 className="mt-1 text-lg">Live endpoint status</h2>
         </div>
         <div className="flex flex-wrap items-center gap-2">
           <div
@@ -968,11 +966,11 @@ function WebhookHealthWidget({
         <HealthTile
           label="Último evento verificado"
           status={lastVerified ? "ok" : "unknown"}
-          primary={lastVerified?.event_type ?? "Nenhum ainda"}
+          primary={lastVerified?.event_type ?? "None yet"}
           detail={
             lastVerified
               ? `${relativeTime(lastVerified.received_at)} · ${lastVerified.stripe_env ?? "—"}`
-              : "Nenhum webhook verificado registado."
+              : "No verified payment event recorded yet."
           }
           note={
             lastVerified?.customer_email
