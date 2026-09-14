@@ -179,7 +179,7 @@ export function CinematicHero() {
       data-hero-cinematic="true"
       data-hero-ready="false"
       aria-label="YES Experiences Portugal"
-      className="hero-cinematic relative min-h-[100svh] w-full overflow-hidden bg-[color:var(--charcoal-deep,#1a1816)]"
+      className="hero-cinematic relative mt-[64px] min-h-[calc(100svh-64px)] w-full overflow-hidden bg-[color:var(--charcoal-deep,#1a1816)] md:mt-[84px] md:min-h-[calc(100svh-84px)] lg:mt-[96px] lg:min-h-[calc(100svh-96px)]"
     >
       <div className="hero-story-stage absolute inset-0 z-0">
         {/* Slow settle: the film opens at a whisper of zoom and exhales to
