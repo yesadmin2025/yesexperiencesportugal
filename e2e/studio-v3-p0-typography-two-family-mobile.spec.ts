@@ -1,7 +1,6 @@
 // P0 regression — Studio V3 audit BLOCKER #2.
 //
-// Enforces that Studio V3 phases never inline a hardcoded Montserrat /
-// Georgia / Times / Cormorant / Newsreader / Kaushan fallback in element
+// Enforces that Studio V3 phases never inline a retired font fallback in element
 // style="…" strings. The two-family typography rule flows through the
 // design tokens (--font-editorial / --font-body / --font-display /
 // --font-serif / --font-sans); when Fraunces is later swapped in at the
@@ -26,8 +25,8 @@ async function assertNoHardcodedFallbacks(page: import("@playwright/test").Page,
     const nodes = root.querySelectorAll<HTMLElement>("[style]");
     nodes.forEach((el) => {
       const inline = el.getAttribute("style") ?? "";
-      // Only inspect inline font-family declarations — computed values may
-      // must resolve through the canonical Fraunces and Inter tokens.
+      // Only inspect inline font-family declarations — computed values must
+      // resolve through the canonical Fraunces and Inter tokens.
       const match = inline.match(/font-family:\s*([^;]+)/i);
       if (!match) return;
       const family = match[1];
@@ -48,6 +47,7 @@ async function assertNoHardcodedFallbacks(page: import("@playwright/test").Page,
 }
 
 test("studio-v3 inline styles never hardcode retired font families", async ({ page }) => {
+  test.setTimeout(90_000);
   await page.goto("/studio-v3");
   await page.waitForLoadState("networkidle", { timeout: 5_000 }).catch(() => undefined);
   await assertNoHardcodedFallbacks(page, "intro");

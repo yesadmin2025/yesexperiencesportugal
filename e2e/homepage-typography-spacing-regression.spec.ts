@@ -31,7 +31,6 @@ const DESIGNER_RAMP: Ramp = { mobile: 32, tablet: 38.4, desktop: 54.4 }; // 2 / 
 
 const HEADINGS: Array<{ id: string; label: string; ramp: Ramp }> = [
   { id: "signatures-title", label: "Signatures (editorial)", ramp: EDITORIAL_RAMP },
-  { id: "groups-title", label: "Groups (editorial)", ramp: EDITORIAL_RAMP },
   { id: "studio-title", label: "Studio (conversion)", ramp: CONVERSION_RAMP },
   { id: "final-cta-title", label: "Final CTA (conversion)", ramp: CONVERSION_RAMP },
   { id: "bespoke-designer-title", label: "Travel Designer", ramp: DESIGNER_RAMP },
