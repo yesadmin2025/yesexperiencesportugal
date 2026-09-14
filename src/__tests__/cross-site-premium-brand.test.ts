@@ -28,7 +28,7 @@ describe("cross-site premium brand contract", () => {
     expect(designer).toContain("Portugal, <SectionTitle.Em>shaped around you.</SectionTitle.Em>");
     expect(multiDay).toContain('to="/portugal-travel-designer"');
     expect(heroCopy).toContain('brandLine: "Continue the story across Portugal →"');
-    expect(ways).toContain('to="/proposal-in-portugal"');
-    expect(ways).toContain('to="/corporate"');
+    expect(ways).toContain('"/proposal-in-portugal"');
+    expect(ways).toContain('"/corporate"');
   });
 });

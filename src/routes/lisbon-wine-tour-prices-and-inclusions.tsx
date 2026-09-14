@@ -8,6 +8,7 @@ import { SectionTitle } from "@/components/ui/SectionTitle";
 import { CtaButton } from "@/components/ui/CtaButton";
 import { HubBookingPicker } from "@/components/booking/HubBookingPicker";
 import { signatureTours } from "@/data/signatureTours";
+import { getTourContent } from "@/lib/tourContent";
 import { breadcrumbLd, faqPageLd, jsonLdScript, localBusinessLd } from "@/lib/jsonld";
 import { CANCELLATION, LICENSE_LABEL, WEBSITE_URL } from "@/config/business-nap";
 
@@ -31,9 +32,13 @@ const crumbs = [
 
 const PRICED_IDS = ["azeitao-cheese", "arrabida-wine-allinclusive", "evora-alentejo"] as const;
 
-const DAYS = PRICED_IDS.map((id) => signatureTours.find((t) => t.id === id)).filter(
-  (t): t is (typeof signatureTours)[number] => Boolean(t),
-);
+/**
+ * Inclusions come from getTourContent() (source of truth), never from the
+ * legacy `tour.included` field — enforced by tour-content-direct-reads.test.ts.
+ */
+const DAYS = PRICED_IDS.map((id) => signatureTours.find((t) => t.id === id))
+  .filter((t): t is (typeof signatureTours)[number] => Boolean(t))
+  .map((tour) => ({ ...tour, includedLines: getTourContent(tour.id).included }));
 
 const BOOKABLE_IDS = PRICED_IDS;
 
@@ -151,7 +156,7 @@ function PricesAndInclusions() {
                   {tour.durationHours} · from €{tour.priceFrom} per person
                 </p>
                 <ul className="mt-4 flex-1 space-y-2 list-none p-0 text-[14px] leading-[1.7] text-[color:var(--charcoal-soft)]">
-                  {tour.included.slice(0, 6).map((line) => (
+                  {tour.includedLines.slice(0, 6).map((line) => (
                     <li key={line} className="flex gap-2">
                       <span aria-hidden className="text-[color:var(--gold)]">
                         ·
