@@ -10,7 +10,17 @@ import { SectionTitle } from "@/components/ui/SectionTitle";
 import { signatureTours, findTour } from "@/data/signatureTours";
 import { SimpleBookingForm } from "@/components/SimpleBookingForm";
 import { guideAttributionMetadata } from "@/lib/guide-attribution";
-import { breadcrumbLd, jsonLdScript } from "@/lib/jsonld";
+import { breadcrumbLd, jsonLdScript, localBusinessLd, itemListLd } from "@/lib/jsonld";
+import {
+  BASED_IN,
+  EMAIL,
+  EMAIL_HREF,
+  LICENSE_LABEL,
+  PHONE_DISPLAY,
+  PHONE_HREF,
+  SERVICE_AREAS,
+  SERVICE_AREAS_LABEL,
+} from "@/config/business-nap";
 import { toast } from "sonner";
 
 const PAGE_URL = "https://yesexperiencesportugal.com/book";
@@ -37,13 +47,13 @@ export const Route = createFileRoute("/book")({
   validateSearch: searchSchema,
   head: () => ({
     meta: [
-      { title: "Book a Private Day in Portugal | YES Portugal" },
+      { title: "Book a Private Day Trip in Portugal — Prices & Contact" },
       {
         name: "description",
         content:
-          "Book a private day in Portugal: pay by card and confirm instantly, or send your dates in three short steps and a local replies personally within 24 hours.",
+          "Book a private day trip from Lisbon: real prices from €101 per person, hotel pickup, licensed local team. Pay by card and confirm instantly, or call +351 911 889 992.",
       },
-      { property: "og:title", content: "Book a Private Day in Portugal | YES Portugal" },
+      { property: "og:title", content: "Book a Private Day Trip in Portugal — Prices & Contact" },
       {
         property: "og:description",
         content:
@@ -54,7 +64,30 @@ export const Route = createFileRoute("/book")({
       { name: "twitter:card", content: "summary" },
     ],
     links: [{ rel: "canonical", href: PAGE_URL }],
-    scripts: [jsonLdScript(breadcrumbLd(crumbs))],
+    scripts: [
+      jsonLdScript(breadcrumbLd(crumbs)),
+      jsonLdScript(
+        localBusinessLd({
+          path: "/book",
+          name: "YES experiences Portugal — bookings & reservations",
+          description:
+            "Book a private day trip in Portugal directly with a licensed local tour operator: real prices per person, hotel pickup across Lisbon, Cascais, Sintra, Sesimbra and Setúbal, and instant card confirmation.",
+          areaServed: SERVICE_AREAS,
+        }),
+      ),
+      jsonLdScript(
+        itemListLd({
+          name: "Private day trips available to book",
+          path: "/book",
+          items: signatureTours.map((t) => ({
+            id: t.id,
+            name: t.title,
+            description: t.blurb,
+            image: t.img,
+          })),
+        }),
+      ),
+    ],
   }),
   component: BookPage,
 });
@@ -526,6 +559,90 @@ function BookPage() {
               Book instantly →
             </Link>
           </div>
+        </div>
+      </section>
+
+      <section
+        id="prices"
+        className="border-t border-[color:var(--border)] bg-[color:var(--sand)] py-14 md:py-16"
+      >
+        <div className="container-x max-w-4xl">
+          <Eyebrow>Prices</Eyebrow>
+          <SectionTitle as="h2" spacing="tight">
+            Every private day, <SectionTitle.Em>with its price</SectionTitle.Em>.
+          </SectionTitle>
+          <p className="mt-5 max-w-2xl text-[15px] leading-[1.75] text-[color:var(--charcoal-soft)]">
+            Prices are per person, private for your group only, and include hotel or apartment
+            pickup. The exact total for your dates and party size is shown before you pay.
+          </p>
+          <ul className="mt-8 grid gap-3" data-testid="booking-price-list">
+            {signatureTours.map((t) => (
+              <li
+                key={t.id}
+                className="flex flex-col gap-3 rounded-[6px] border border-[color:var(--border)] bg-[color:var(--card)] p-5 sm:flex-row sm:items-center sm:justify-between"
+              >
+                <div>
+                  <h3 className="font-display text-[1.05rem] leading-snug text-[color:var(--charcoal)]">
+                    {t.title}
+                  </h3>
+                  <p className="mt-1 font-sans text-[11px] uppercase tracking-[0.18em] text-[color:var(--charcoal-soft)]">
+                    {t.region} · {t.durationHours}
+                  </p>
+                </div>
+                <div className="flex items-center gap-4">
+                  <span className="whitespace-nowrap text-[15px] font-medium text-[color:var(--charcoal)]">
+                    From €{t.priceFrom}
+                    <span className="text-[12px] text-[color:var(--charcoal-soft)]"> / person</span>
+                  </span>
+                  <Link
+                    to="/book"
+                    search={{ tour: t.id }}
+                    className="inline-flex min-h-[44px] shrink-0 items-center justify-center rounded-[4px] border border-[color:var(--charcoal)]/20 px-5 font-sans text-[11px] uppercase tracking-[0.18em] font-semibold text-[color:var(--charcoal)] no-underline hover:border-[color:var(--gold)]"
+                  >
+                    Book →
+                  </Link>
+                </div>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </section>
+
+      <section className="py-14 md:py-16" id="contact">
+        <div className="container-x max-w-4xl">
+          <Eyebrow>Talk to us</Eyebrow>
+          <SectionTitle as="h2" spacing="tight">
+            A local team, <SectionTitle.Em>reachable directly</SectionTitle.Em>.
+          </SectionTitle>
+          <dl className="mt-8 grid gap-4 sm:grid-cols-2">
+            <div className="rounded-[6px] border border-[color:var(--border)] bg-[color:var(--card)] p-5">
+              <dt className={labelClass}>Phone &amp; WhatsApp</dt>
+              <dd className="text-[15px] text-[color:var(--charcoal)]">
+                <a href={PHONE_HREF} className="no-underline hover:text-[color:var(--teal)]">
+                  {PHONE_DISPLAY}
+                </a>
+              </dd>
+            </div>
+            <div className="rounded-[6px] border border-[color:var(--border)] bg-[color:var(--card)] p-5">
+              <dt className={labelClass}>Email</dt>
+              <dd className="text-[15px] break-words text-[color:var(--charcoal)]">
+                <a href={EMAIL_HREF} className="no-underline hover:text-[color:var(--teal)]">
+                  {EMAIL}
+                </a>
+              </dd>
+            </div>
+            <div className="rounded-[6px] border border-[color:var(--border)] bg-[color:var(--card)] p-5">
+              <dt className={labelClass}>Based in</dt>
+              <dd className="text-[15px] text-[color:var(--charcoal)]">{BASED_IN}</dd>
+            </div>
+            <div className="rounded-[6px] border border-[color:var(--border)] bg-[color:var(--card)] p-5">
+              <dt className={labelClass}>Licence</dt>
+              <dd className="text-[15px] text-[color:var(--charcoal)]">{LICENSE_LABEL}</dd>
+            </div>
+          </dl>
+          <p className="mt-5 text-[14px] leading-[1.7] text-[color:var(--charcoal-soft)]">
+            Pickups across {SERVICE_AREAS_LABEL}.
+          </p>
         </div>
       </section>
     </SiteLayout>
