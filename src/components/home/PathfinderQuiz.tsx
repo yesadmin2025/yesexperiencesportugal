@@ -491,13 +491,13 @@ function buildResultContent(s: QuizState, r: ResultKey): ResultContent {
       pills: ["Wine", "Coast", "Private", "From €138"],
       ctas: [
         {
-          label: CTA_LABELS.signatureReserve,
+          label: CTA_LABELS.signatureBooking,
           to: "/tours/$tourId",
           params: { tourId: "arrabida-wine-allinclusive" },
           variant: "primary",
         },
         {
-          label: CTA_LABELS.signatureTailor,
+          label: CTA_LABELS.tailor,
           to: "/tours/$tourId/tailor",
           params: { tourId: "arrabida-wine-allinclusive" },
           variant: "outline",

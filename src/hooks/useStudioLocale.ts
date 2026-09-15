@@ -328,7 +328,7 @@ const DICTS: Record<StudioLocale, StudioDict> = {
       growing: "This feels right next",
       settled: "This follows naturally",
     },
-    reserveCta: CTA_LABELS.signatureReserve,
+    reserveCta: CTA_LABELS.signatureBooking,
     viewRoute: "View route on map",
     hideRoute: "Hide map",
     talkConcierge: "Talk to concierge",
