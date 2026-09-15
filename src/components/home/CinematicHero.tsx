@@ -101,8 +101,6 @@ export function CinematicHero() {
   const [secondaryCta, setSecondaryCta] = useState(false);
   const videoRef = useRef<HTMLVideoElement | null>(null);
 
-
-
   useEffect(() => {
     const v = videoRef.current;
     if (!v) return;
@@ -155,7 +153,7 @@ export function CinematicHero() {
       data-section="hero"
       data-hero-cinematic="true"
       aria-label="YES Experiences Portugal"
-      className="hero-cinematic relative mt-[64px] min-h-[calc(100svh-64px)] w-full overflow-hidden bg-[color:var(--charcoal-deep,#1a1816)] md:mt-[84px] md:min-h-[calc(100svh-84px)] lg:mt-[96px] lg:min-h-[calc(100svh-96px)]"
+      className="hero-cinematic relative mb-6 mt-[64px] min-h-[calc(100svh-64px)] w-full overflow-hidden bg-[color:var(--charcoal-deep,#1a1816)] md:mb-10 md:mt-[84px] md:min-h-[calc(100svh-84px)] lg:mt-[96px] lg:min-h-[calc(100svh-96px)]"
     >
       <div className="hero-story-stage absolute inset-0 z-0">
         {/* The film opens at a whisper of zoom and exhales to rest. */}

@@ -1,11 +1,11 @@
 /**
  * TourImage — unified 3:2 frame for every Signature tour image.
  *
- * One consistent aspect ratio + object-cover + subtle blur-up placeholder
+ * One consistent aspect ratio + object-cover + subtle editorial placeholder
  * so today's Viator (media.tacdn.com) URLs and tomorrow's locally-uploaded
  * `public/tours/<id>/*.webp` photos render inside the exact same frame.
  *
- * Uses brand tokens only (--sand, --charcoal). No color choices here.
+ * Uses brand tokens only (--sand, --ivory, --teal). No color choices here.
  * Motion respects the site contract: ≤220ms fade + soft blur out on load.
  */
 import { useEffect, useState } from "react";
@@ -60,15 +60,15 @@ export function TourImage({
       className={[
         "relative overflow-hidden",
         ratioClass[ratio],
-        // Sand → soft charcoal placeholder gradient (brand tokens only)
-        "bg-[linear-gradient(135deg,color-mix(in_oklab,var(--sand)_88%,transparent)_0%,color-mix(in_oklab,var(--charcoal)_10%,transparent)_100%)]",
+        // Intentional editorial placeholder so lazy-loading never reads as a blank ivory hole.
+        "bg-[linear-gradient(135deg,var(--sand)_0%,var(--ivory)_52%,color-mix(in_oklab,var(--teal)_12%,var(--sand))_100%)]",
         className,
       ].join(" ")}
     >
       {!loaded && !errored && (
         <span
           aria-hidden="true"
-          className="absolute inset-0 animate-pulse bg-[color:var(--sand)]/50"
+          className="absolute inset-0 bg-[radial-gradient(circle_at_32%_28%,color-mix(in_oklab,var(--ivory)_78%,transparent)_0%,transparent_62%)]"
         />
       )}
 
