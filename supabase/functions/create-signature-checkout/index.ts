@@ -3,6 +3,10 @@
 // source the admin editor writes to). The client cannot influence price.
 
 import { type StripeEnv, createStripeClient } from "../_shared/stripe.ts";
+import {
+  isReturnOriginAllowed,
+  resolveServerPaymentsEnv,
+} from "../_shared/payments-environment.ts";
 import { isStudioCheckoutDateAllowed } from "../_shared/studio-booking-date.ts";
 import { checkTourOperatingRule } from "../_shared/tour-operating-rules.ts";
 
@@ -182,8 +186,19 @@ Deno.serve(async (req) => {
       return jsonError("Guests must be between 1 and 12", 400);
     if (!Number.isFinite(body.priceFromEur) || body.priceFromEur < 50 || body.priceFromEur > 5000)
       return jsonError("Invalid price anchor", 400);
-    if (body.environment !== "sandbox" && body.environment !== "live")
-      return jsonError("Invalid environment", 400);
+    // P0: the payment environment is derived SERVER-SIDE from the request
+    // origin. A client may only ask for test mode; live mode is unreachable
+    // from previews, localhost, CI or automated sessions.
+    const { environment: resolvedEnv, downgraded } = resolveServerPaymentsEnv({
+      requestOrigin: req.headers.get("origin") ?? req.headers.get("referer"),
+      returnUrl: body.returnUrl,
+      claimed: body.environment,
+    });
+    if (downgraded) {
+      console.warn(
+        "[create-signature-checkout] live payment mode requested from a non-canonical origin — forced to test mode",
+      );
+    }
 
     const flowError = validateFlow(body);
     if (flowError) return jsonError(flowError, 400);
@@ -196,8 +211,9 @@ Deno.serve(async (req) => {
     const uiMode: "hosted" | "embedded" = body.uiMode === "embedded" ? "embedded" : "hosted";
 
     const allowOrigin =
-      validateReturnOrigin(body.returnUrl) &&
-      (uiMode === "embedded" || (body.cancelUrl ? validateReturnOrigin(body.cancelUrl) : true));
+      validateReturnOrigin(body.returnUrl, resolvedEnv) &&
+      (uiMode === "embedded" ||
+        (body.cancelUrl ? validateReturnOrigin(body.cancelUrl, resolvedEnv) : true));
     if (!allowOrigin) return jsonError("Return URL not allowed", 400);
 
     // Resolve per-pax EUR server-side from tour_price_tiers.
@@ -396,7 +412,7 @@ Deno.serve(async (req) => {
     const tourSubtotalCents = priceLines.reduce((s, l) => s + Math.round(l.unitEur * 100), 0);
     if (tourSubtotalCents < 5000) return jsonError("Computed amount below minimum", 400);
 
-    const stripe = createStripeClient(body.environment);
+    const stripe = createStripeClient(resolvedEnv);
 
     const flow = checkoutFlow;
     const copy = FLOW_COPY[flow];
@@ -909,7 +925,7 @@ Deno.serve(async (req) => {
     }
 
     const rawPublishable =
-      body.environment === "live"
+      resolvedEnv === "live"
         ? (Deno.env.get("STRIPE_LIVE_PUBLISHABLE_KEY") ?? "")
         : (Deno.env.get("STRIPE_SANDBOX_PUBLISHABLE_KEY") ?? "");
     // Defensive: NEVER echo a secret key back to the client. If the env var
@@ -917,8 +933,8 @@ Deno.serve(async (req) => {
     const publishableKey = rawPublishable.startsWith("pk_") ? rawPublishable : "";
     if (rawPublishable && !rawPublishable.startsWith("pk_")) {
       console.error(
-        `[create-signature-checkout] Refusing to return non-publishable key for env=${body.environment}. ` +
-          `Set STRIPE_${body.environment === "live" ? "LIVE" : "SANDBOX"}_PUBLISHABLE_KEY to a pk_… value.`,
+        `[create-signature-checkout] Refusing to return non-publishable key for env=${resolvedEnv}. ` +
+          `Set STRIPE_${resolvedEnv === "live" ? "LIVE" : "SANDBOX"}_PUBLISHABLE_KEY to a pk_… value.`,
       );
     }
 
@@ -945,29 +961,16 @@ Deno.serve(async (req) => {
   }
 });
 
-function validateReturnOrigin(url: string): boolean {
+function validateReturnOrigin(url: string, environment: StripeEnv): boolean {
   try {
     const u = new URL(url);
     if (u.protocol !== "https:" && u.protocol !== "http:") return false;
     const envAllow = (Deno.env.get("RETURN_URL_ORIGIN") ?? "")
       .split(",")
-      .map((s) => s.trim())
+      .map((s) => s.trim().toLowerCase())
       .filter(Boolean);
-    const staticAllow = new Set<string>([
-      "https://yesexperiences.pt",
-      "https://www.yesexperiences.pt",
-      "https://yesexperiencesportugal.com",
-      "https://www.yesexperiencesportugal.com",
-      "https://dreamscape-builder-co.lovable.app",
-      ...envAllow,
-    ]);
-    const origin = u.origin;
-    if (staticAllow.has(origin)) return true;
-    if (/^https:\/\/[a-z0-9-]+\.lovable\.app$/.test(origin)) return true;
-    if (/^https:\/\/[a-z0-9-]+\.lovableproject\.com$/.test(origin)) return true;
-    if (/^https:\/\/[a-z0-9-]+\.lovable\.dev$/.test(origin)) return true;
-    if (/^http:\/\/localhost(:\d+)?$/.test(origin)) return true;
-    return false;
+    // Live sessions may only ever return to the canonical production origins.
+    return isReturnOriginAllowed(u.origin.toLowerCase(), environment, envAllow);
   } catch {
     return false;
   }

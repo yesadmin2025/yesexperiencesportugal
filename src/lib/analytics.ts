@@ -19,7 +19,11 @@
  * a client-only effect in the root route).
  */
 
-import { isTrackingDisabled } from "@/lib/analytics-exclusions";
+import {
+  analyticsEnvironment,
+  analyticsTrafficType,
+  isTrackingDisabled,
+} from "@/lib/analytics-exclusions";
 
 export type AnalyticsEvent =
   | "hero_open_studio_click"
@@ -89,6 +93,9 @@ export function track(event: AnalyticsEvent | string, params: AnalyticsParams = 
     event,
     device: params.device ?? inferDevice(),
     page_type: params.page_type,
+    // P0 reporting dimensions — additive, existing reports keep working.
+    environment: analyticsEnvironment(),
+    traffic_type: analyticsTrafficType(),
     ...params,
     _ts: Date.now(),
   };

@@ -122,7 +122,7 @@ import {
 import { addOnPartyAmount, addOnsPartyTotal } from "@/lib/checkout/studio-charge";
 
 import { useTourPriceTiers } from "@/hooks/use-tour-price-tiers";
-import { getStripeEnvironment } from "@/lib/stripe";
+import { invokeSignatureCheckout } from "@/lib/checkout/session-request";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 
@@ -1638,8 +1638,7 @@ export function StudioV3() {
         // for the invoke would let Stripe re-price against a composition the
         // traveller never saw, producing the "summary €X ≠ Stripe €Y" bug.
         const compositionSupplied = typeof composedAdults === "number" && composedAdults >= 1;
-        const { data, error } = await supabase.functions.invoke("create-signature-checkout", {
-          body: {
+        const { data, error } = await invokeSignatureCheckout({
             tourId: tour.id,
             tourTitle: tour.title ?? tour.id,
             guests: details.guests,
@@ -1662,7 +1661,6 @@ export function StudioV3() {
             journeyTitle: currentState.journeyTitle ?? null,
             priceFromEur: tour.priceFrom ?? 180,
             returnUrl: `${origin}/booking-confirmed?tour=${tour.id}`,
-            environment: getStripeEnvironment(),
             flow: "studio",
             uiMode: "embedded",
             // COMPOSED-DAY COMMERCIAL TRUTH: a bespoke Studio day may hold
@@ -1679,7 +1677,6 @@ export function StudioV3() {
             customerEmail: details.email ?? undefined,
             guestDetails: { ...details, hotelPickupIncluded: true },
             addOns: addOnsForCheckout,
-          },
         });
 
         if (error) throw error;

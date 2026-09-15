@@ -1,4 +1,8 @@
 import { type StripeEnv, createStripeClient } from "../_shared/stripe.ts";
+import {
+  isReturnOriginAllowed,
+  resolveServerPaymentsEnv,
+} from "../_shared/payments-environment.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.0";
 
 const corsHeaders = {
@@ -57,25 +61,22 @@ Deno.serve(async (req) => {
     }
     const envAllow = (Deno.env.get("RETURN_URL_ORIGIN") ?? "")
       .split(",")
-      .map((s) => s.trim())
+      .map((s) => s.trim().toLowerCase())
       .filter(Boolean);
-    const staticAllow = new Set<string>([
-      "https://yesexperiencesportugal.com",
-      "https://www.yesexperiencesportugal.com",
-      "https://yesexperiences.pt",
-      "https://www.yesexperiences.pt",
-      "https://dreamscape-builder-co.lovable.app",
-      ...envAllow,
-    ]);
-    const isLovableHost =
-      /^https:\/\/[a-z0-9-]+\.lovable\.app$/.test(returnOrigin) ||
-      /^https:\/\/[a-z0-9-]+\.lovableproject\.com$/.test(returnOrigin) ||
-      /^https:\/\/[a-z0-9-]+\.lovable\.dev$/.test(returnOrigin);
-    const isLocalhost = /^http:\/\/localhost(:\d+)?$/.test(returnOrigin);
-    if (!staticAllow.has(returnOrigin) && !isLovableHost && !isLocalhost)
+    // P0: payment environment derived SERVER-SIDE from the request origin.
+    // The client can only downgrade to test mode, never reach live mode.
+    const { environment: resolvedEnv, downgraded } = resolveServerPaymentsEnv({
+      requestOrigin: req.headers.get("origin") ?? req.headers.get("referer"),
+      returnUrl: body.returnUrl,
+      claimed: body.environment,
+    });
+    if (downgraded) {
+      console.warn(
+        "[create-builder-checkout] live payment mode requested from a non-canonical origin — forced to test mode",
+      );
+    }
+    if (!isReturnOriginAllowed(returnOrigin.toLowerCase(), resolvedEnv, envAllow))
       return jsonError("Return URL not allowed", 400);
-    if (body.environment !== "sandbox" && body.environment !== "live")
-      return jsonError("Invalid environment", 400);
     if (!["relaxed", "balanced", "full"].includes(body.pace)) return jsonError("Invalid pace", 400);
 
     const elements = Array.isArray(body.elements)
@@ -115,7 +116,7 @@ Deno.serve(async (req) => {
     const amountInCents = pricePerPersonEur * body.guests * 100;
     if (amountInCents < 5000) return jsonError("Computed amount below minimum", 400);
 
-    const stripe = createStripeClient(body.environment);
+    const stripe = createStripeClient(resolvedEnv);
 
     const stopsSummary = body.stopLabels.slice(0, 6).join(" · ");
     const elementsSummary = elements.length > 0 ? ` · concierge: ${elements.join(", ")}` : "";

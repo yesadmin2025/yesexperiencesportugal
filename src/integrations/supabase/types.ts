@@ -837,10 +837,12 @@ export type Database = {
       }
       client_error_logs: {
         Row: {
+          category: string | null
           created_at: string
           id: string
           message: string
           metadata: Json
+          query: Json
           route: string | null
           session_id: string | null
           severity: string
@@ -852,10 +854,12 @@ export type Database = {
           viewport_width: number | null
         }
         Insert: {
+          category?: string | null
           created_at?: string
           id?: string
           message: string
           metadata?: Json
+          query?: Json
           route?: string | null
           session_id?: string | null
           severity?: string
@@ -867,10 +871,12 @@ export type Database = {
           viewport_width?: number | null
         }
         Update: {
+          category?: string | null
           created_at?: string
           id?: string
           message?: string
           metadata?: Json
+          query?: Json
           route?: string | null
           session_id?: string | null
           severity?: string
