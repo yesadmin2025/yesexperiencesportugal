@@ -67,18 +67,15 @@ export function sanitizeLocation(href: string | null | undefined): SanitizedLoca
     return { path: p ?? "", query: {} };
   }
 
+  // Genuinely allowlist-only: unknown keys and sensitive keys are dropped
+  // entirely — we never even record that they were present.
   const query: Record<string, string> = {};
   for (const [rawKey, value] of params.entries()) {
     const key = rawKey.toLowerCase();
-    if (REDACT_KEYS.includes(key)) {
-      query[key] = "[redacted]";
-      continue;
-    }
-    if (!ALLOWED_QUERY_KEYS.has(rawKey) && !ALLOWED_QUERY_KEYS.has(key)) {
-      query[key] = "[redacted]";
-      continue;
-    }
-    query[key] = SAFE_VALUE.test(value) ? value : "[redacted]";
+    if (REDACT_KEYS.includes(key)) continue;
+    if (!ALLOWED_QUERY_KEYS.has(rawKey) && !ALLOWED_QUERY_KEYS.has(key)) continue;
+    if (!SAFE_VALUE.test(value)) continue;
+    query[key] = value;
   }
   return { path, query };
 }
