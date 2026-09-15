@@ -23,7 +23,7 @@ async function gotoHero(page: Page) {
   const stanza = page.locator('[data-hero-stanza="true"]');
   await expect(stanza).toBeVisible();
   // …then the delayed CTA group fades in.
-  const primary = page.getByRole("link", { name: "Design your day", exact: true });
+  const primary = page.getByRole("link", { name: "CREATE YOUR DAY", exact: true });
   await expect(primary).toBeVisible({ timeout: 30_000 });
   await page.waitForFunction(
     () => {
@@ -38,7 +38,7 @@ async function gotoHero(page: Page) {
 
 function ctas(page: Page) {
   return {
-    primary: page.getByRole("link", { name: "Design your day", exact: true }),
+    primary: page.getByRole("link", { name: "CREATE YOUR DAY", exact: true }),
     secondary: page.getByRole("link", { name: "Explore Signature Experiences", exact: true }),
   };
 }

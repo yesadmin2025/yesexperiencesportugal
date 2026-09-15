@@ -2056,6 +2056,29 @@
   font-family: var(--font-editorial);
 }
 
+.hero-cinematic .hero-title-mask {
+  overflow: hidden;
+  overflow: clip;
+  padding-bottom: 0.08em;
+}
+
+.hero-cinematic .hero-cinematic-scrim {
+  background:
+    radial-gradient(circle at 50% 48%, transparent 0%, color-mix(in oklab, var(--charcoal-deep) 14%, transparent) 72%),
+    linear-gradient(180deg, color-mix(in oklab, var(--charcoal-deep) 35%, transparent) 0%, transparent 30%, color-mix(in oklab, var(--charcoal-deep) 26%, transparent) 58%, color-mix(in oklab, var(--charcoal-deep) 68%, transparent) 100%);
+}
+
+@keyframes heroFilmSettle {
+  from { transform: scale(1.03); }
+  to { transform: scale(1); }
+}
+
+.hero-cinematic .hero-film-settle {
+  animation: heroFilmSettle 6s var(--ease-scene) both;
+  transform-origin: center center;
+  will-change: transform;
+}
+
 /* The query/reduced-motion final state is applied during HTML parsing so
    conversion actions never wait for a delayed hydration on slower devices. */
 .hero-cinematic[data-hero-ready="true"] .hero-title-line,
@@ -5891,6 +5914,11 @@ html {
 }
 
 @media (prefers-reduced-motion: reduce) {
+  .hero-cinematic .hero-film-settle {
+    animation: none !important;
+    transform: none !important;
+  }
+
   .hero-cta,
   .hero-cta__sheen,
   .hero-cta__arrow {

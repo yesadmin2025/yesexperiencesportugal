@@ -6,12 +6,12 @@
 export const HERO_PHRASES = ["Portugal is the stage.", "You write the story."] as const;
 
 export const HERO_COPY = {
-  eyebrow: "DESIGNED BY YOU · CONFIRMED INSTANTLY",
+  eyebrow: "DESIGNED BY YOU · AND AROUND YOU",
   headlineLine1: "Portugal is the stage.",
   headlineLine2: "You write the story.",
   subheadline:
-    "Private day trips from Lisbon and tailored Portugal tours — designed around you and confirmed instantly.",
-  primaryCta: "Design your day",
+    "Design your private day and confirm instantly. Choose a Signature experience, or let a local Travel Designer create your journey or special moment.",
+  primaryCta: "CREATE YOUR DAY",
   secondaryCta: "Explore Signature Experiences",
   microcopy: "700+ five-star reviews · Private · Local support · Secure checkout",
   brandLine: "Continue the story across Portugal →",
