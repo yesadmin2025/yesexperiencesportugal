@@ -27,6 +27,9 @@ describe("exact Director obligations", () => {
     expect(exactDirectorObligations(workshopAnswer("hands-paint-tile"))).toEqual({
       preferredSignatureId: "tiles-workshop",
       principalStopIds: ["azulejos-painting-workshop"],
+      // The cheese moment was offered in the same question and declined, so it
+      // is never re-added to this day.
+      rejectedStopIds: ["quinta-velha-cheese-workshop"],
     });
   });
 
