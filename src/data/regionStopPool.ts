@@ -1003,7 +1003,7 @@ export const REGION_STOP_POOL: OptionalStop[] = [
     // CHOICE FIDELITY: the traveller chose "making Azeitão cheese by hand", so
     // the moment must read as that. Wording comes from this stop's own
     // source-verified truth (`Quinta Velha`, private cheese-making workshop).
-    name: "Quinta Velha cheese workshop",
+    name: "Quinta Velha",
     type: "workshop",
     suitsInterests: ["gastronomy", "local-life", "heritage"],
     suitsRhythm: ["slow", "balanced"],
