@@ -27,7 +27,7 @@ import {
   type OperatingRule,
 } from "@/lib/availability";
 
-import { getStripeEnvironment } from "@/lib/stripe";
+import { invokeSignatureCheckout } from "@/lib/checkout/session-request";
 import { getViatorMeta } from "@/data/signatureToursViator";
 import { useTourPriceTiers } from "@/hooks/use-tour-price-tiers";
 import { resolvePerPaxEur, resolveJourneyPricing } from "@/data/signatureTourPricing";
@@ -232,8 +232,7 @@ export function SimpleBookingForm({ tour }: { tour: SignatureTour }) {
       const origin = typeof window !== "undefined" ? window.location.origin : "";
       const stopLabels = (tour.stops ?? []).slice(0, 6).map((s) => s.label);
       const includedItems = resolveClientIncludedItems(meta, tour);
-      const { data, error } = await supabase.functions.invoke("create-signature-checkout", {
-        body: {
+      const { data, error } = await invokeSignatureCheckout({
           attribution: guideAttributionMetadata(),
           tourId: tour.id,
           tourTitle: tour.title,
@@ -247,12 +246,10 @@ export function SimpleBookingForm({ tour }: { tour: SignatureTour }) {
           journeyTitle: tour.title.split("—")[0].trim(),
           priceFromEur: tour.priceFrom,
           returnUrl: `${origin}/booking-confirmed?tour=${tour.id}`,
-          environment: getStripeEnvironment(),
           tailored: false,
           flow: "signature",
           uiMode: "embedded",
           guestDetails: { ...details, hotelPickupIncluded: true },
-        },
       });
       if (error) throw error;
 

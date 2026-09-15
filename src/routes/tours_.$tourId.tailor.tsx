@@ -27,7 +27,7 @@ import { PriceEur } from "@/components/ui/PriceEur";
 import { PriceCurrencyChip } from "@/components/PriceCurrencyChip";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
-import { getStripeEnvironment } from "@/lib/stripe";
+import { invokeSignatureCheckout } from "@/lib/checkout/session-request";
 import { FinalDetailsDialog, type GuestDetails } from "@/components/checkout/FinalDetailsDialog";
 import {
   ChargeSummaryLine,
@@ -943,8 +943,7 @@ function TailorPage() {
     }
     try {
       const origin = typeof window !== "undefined" ? window.location.origin : "";
-      const { data, error } = await supabase.functions.invoke("create-signature-checkout", {
-        body: {
+      const { data, error } = await invokeSignatureCheckout({
           attribution: guideAttributionMetadata(),
           tourId: tour.id,
           tourTitle: tour.title,
@@ -981,7 +980,6 @@ function TailorPage() {
           tailorLunchRemoved: rules.allowRemoveLunch === true && lunchRemoved,
 
           returnUrl: `${origin}/booking-confirmed?tour=${tour.id}`,
-          environment: getStripeEnvironment(),
           tailored: true,
           flow: "tailor",
           uiMode: "embedded",
@@ -993,7 +991,6 @@ function TailorPage() {
             pace,
             skippedCoreStops: skippedPublicLabels,
           },
-        },
       });
       if (error) throw error;
       const resp = (data ?? {}) as { clientSecret?: string; publishableKey?: string };

@@ -6,6 +6,8 @@
  * sandbox. Safe to install once at the app root; pure no-op on the server.
  */
 import { supabase } from "@/integrations/supabase/client";
+import { sanitizeLocation } from "@/lib/url-sanitize";
+import { classifyClientError } from "@/lib/error-classification";
 
 type Severity = "error" | "warning" | "info" | "unhandled_rejection" | "resource";
 
@@ -64,18 +66,31 @@ export async function reportClientError(input: ReportInput): Promise<void> {
 
   sentCount += 1;
 
+  // P0 privacy: never persist the raw href or raw query string. Path plus a
+  // value-redacted, allowlisted query object only.
+  const { path, query } = sanitizeLocation(window.location.href);
+  const category = classifyClientError({
+    message,
+    source: input.source ?? null,
+    severity: input.severity ?? "error",
+    route: path,
+    hostname: window.location.hostname,
+  });
+
   try {
     await supabase.from("client_error_logs").insert({
       message,
       stack: trim(input.stack ?? null, 8000),
       source: trim(input.source ?? null, 500),
-      url: trim(window.location.href, 1000),
+      url: trim(path, 1000),
       user_agent: trim(navigator.userAgent, 500),
       viewport_width: window.innerWidth,
       viewport_height: window.innerHeight,
-      route: trim(window.location.pathname + window.location.search, 500),
+      route: trim(path, 500),
       session_id: getSessionId(),
       severity: input.severity ?? "error",
+      category,
+      query: query as never,
       metadata: (input.metadata ?? {}) as never,
     });
   } catch {

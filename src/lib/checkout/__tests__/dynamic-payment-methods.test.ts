@@ -70,7 +70,8 @@ describe("dynamic payment methods", () => {
     ];
     for (const file of callers) {
       const code = readFileSync(resolve(process.cwd(), file), "utf8");
-      expect(code).toContain('invoke("create-signature-checkout"');
+      // Every surface goes through the single guarded entry point.
+      expect(code).toContain("invokeSignatureCheckout(");
       expect(code).not.toMatch(/payment_method_types/);
       expect(code).not.toMatch(/wallet_options/);
       // No client-side card-restricted Elements integration.

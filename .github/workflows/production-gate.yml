@@ -1,0 +1,48 @@
+name: Production gate
+
+# One composite gate that must pass before production is trusted:
+# build + typecheck + critical unit tests + prebuild route/meta/sitemap checks
+# + mobile / Studio / Stripe-test / confirmation smoke against the built app.
+on:
+  pull_request:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: production-gate-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  gate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      # Automated runs must never touch Stripe live mode.
+      VITE_PAYMENTS_ENVIRONMENT: sandbox
+    steps:
+      - uses: actions/checkout@v4
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+
+      - name: Install
+        run: bun install --frozen-lockfile
+
+      - name: Typecheck
+        run: bunx tsgo --noEmit
+
+      - name: Prebuild checks (routes, metadata, sitemap, brand, contrast)
+        run: bun run prebuild
+
+      - name: Critical unit tests
+        run: bunx vitest run
+
+      - name: Production build
+        run: bun run build
+
+      - name: Install Playwright browser
+        run: bunx playwright install --with-deps chromium
+
+      - name: Smoke — mobile, Studio, checkout (test mode), confirmation
+        run: bun run test:e2e

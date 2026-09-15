@@ -17,7 +17,7 @@ import { resolveJourneyPricing } from "@/data/signatureTourPricing";
 import { useTourPriceTiers } from "@/hooks/use-tour-price-tiers";
 import { supabase } from "@/integrations/supabase/client";
 import { trackEvent } from "@/lib/analytics-events";
-import { getStripeEnvironment } from "@/lib/stripe";
+import { invokeSignatureCheckout } from "@/lib/checkout/session-request";
 import { getTourContent } from "@/lib/tourContent";
 import { guideAttributionMetadata } from "@/lib/guide-attribution";
 
@@ -103,8 +103,7 @@ export function LivingAtlasBookingStep({
             ? viator.included
             : [];
       const origin = typeof window !== "undefined" ? window.location.origin : "";
-      const { data, error } = await supabase.functions.invoke("create-signature-checkout", {
-        body: {
+      const { data, error } = await invokeSignatureCheckout({
           attribution: guideAttributionMetadata(),
           tourId: tour.id,
           tourTitle: tour.title ?? tour.id,
@@ -124,13 +123,11 @@ export function LivingAtlasBookingStep({
           customerEmail: guestDetails.email,
           priceFromEur: tour.priceFrom ?? 180,
           returnUrl: `${origin}/booking-confirmed?tour=${tour.id}`,
-          environment: getStripeEnvironment(),
           flow: "studio",
           uiMode: "embedded",
           durationLabel: `${Math.round((handoff.durationMinutes / 60) * 10) / 10} hours of selected moments`,
           guestDetails: { ...guestDetails, hotelPickupIncluded: true },
           addOns: [],
-        },
       });
 
       if (error) throw error;
