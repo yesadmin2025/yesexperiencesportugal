@@ -78,10 +78,10 @@ describe("StudioV3ProgressStepper · accessibility", () => {
   it("clicking a completed chapter invokes onJumpToBeat with its entry phase", () => {
     const onJump = vi.fn();
     render(<StudioV3ProgressStepper phase="guestDetails" onJumpToBeat={onJump} />);
-    fireEvent.click(screen.getByRole("button", { name: /return to you/i }));
+    fireEvent.click(screen.getByRole("button", { name: "Return to You" }));
     expect(onJump).toHaveBeenCalledWith("region", "feeling");
 
-    fireEvent.click(screen.getByRole("button", { name: /return to your day/i }));
+    fireEvent.click(screen.getByRole("button", { name: "Return to Your day" }));
     expect(onJump).toHaveBeenCalledWith("rhythm", "refinement");
   });
 
