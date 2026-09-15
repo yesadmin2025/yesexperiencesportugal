@@ -6,7 +6,15 @@ import {
 } from "@/components/studio-v3/livingAtlasTaxonomy";
 import { REGION_STOP_POOL } from "@/data/regionStopPool";
 import { deriveDirectorAnswerProjection } from "@/lib/studio-v3/directorAnswerProjection";
-import type { QuestionAnswerEvent } from "@/lib/studio-v3/questionHistory";
+import {
+  DIRECTOR_OPTION_CATALOG,
+  isDirectorOptionId,
+} from "@/lib/studio-v3/questionOptionCatalog";
+import {
+  authoritativeSelectedOptionIds,
+  hasQuestionSemanticProgress,
+  type QuestionAnswerEvent,
+} from "@/lib/studio-v3/questionHistory";
 
 const EXACT_STOP_BY_SIGNAL: Partial<Record<LivingAtlasDiscoverySignal, string>> = {
   "make-azeitao-cheese": "quinta-velha-cheese-workshop",
