@@ -100,7 +100,7 @@ describe("StudioV3Intro — P2 opening", () => {
     expect(stepper).toContain("Now, what draws you");
     expect(stepper).toContain("Now, make it real");
     expect(stepper).toContain("Your day is taking shape");
-    for (const label of ["Feel", "Taste", "Shape", "Your day"]) {
+    for (const label of ["You", "Your day", "Make it yours"]) {
       expect(stepper).toContain(`label: "${label}"`);
     }
   });

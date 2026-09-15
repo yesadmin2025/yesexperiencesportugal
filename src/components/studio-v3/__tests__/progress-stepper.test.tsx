@@ -25,18 +25,18 @@ const PHASE_TO_BEAT: Record<StudioV3Phase, number | null> = {
   pickup: 2,
   guests: 2,
   interests: 1,
-  rhythm: 2,
+  rhythm: 1,
   logistics: 2,
   refinement: 1,
   considerations: 1,
   language: 1,
   investment: 1,
   date: 2,
-  map: 3,
-  storyboard: 3,
-  confirmation: 3,
-  guestDetails: 3,
-  checkoutSummary: 3,
+  map: 1,
+  storyboard: 1,
+  confirmation: 1,
+  guestDetails: 2,
+  checkoutSummary: 2,
 };
 
 describe("StudioV3ProgressStepper", () => {
@@ -65,15 +65,15 @@ describe("StudioV3ProgressStepper", () => {
     });
   }
 
-  it("transitions through Region → Rhythm → Dates → Compose in order", async () => {
+  it("presents You → Your day → Make it yours without changing phases", async () => {
     const sequence: StudioV3Phase[] = [
       "feeling",
       "destination",
       "interests",
       "rhythm",
-      "date",
       "map",
       "storyboard",
+      "guestDetails",
     ];
     const expectedBeats = sequence.map((p) => STUDIO_V3_BEATS[PHASE_TO_BEAT[p]!].id);
 
@@ -105,7 +105,6 @@ describe("StudioV3ProgressStepper", () => {
     const beats = calls.map((c) => c.step);
     expect(beats).toContain("region");
     expect(beats).toContain("rhythm");
-    expect(beats).toContain("dates");
     expect(beats).toContain("compose");
 
     for (const call of calls) {

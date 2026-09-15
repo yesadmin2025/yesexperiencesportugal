@@ -19,6 +19,10 @@ export const LEGACY_CTAS = [
   "Tailor this Signature",
   "Continue draft",
   "Design & Book",
+  "Check availability & reserve",
+  "Open the Studio",
+  "Design a Portugal journey",
+  "Plan a corporate experience",
 ] as const;
 
 
