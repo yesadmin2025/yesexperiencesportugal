@@ -44,10 +44,9 @@ export function isAutomatedContext(nav?: {
 /**
  * Resolve the environment for a given host + publishable key.
  *
- * Rules, in order:
- *   1. A test publishable key can only ever mean `sandbox`.
- *   2. Automated/headless contexts are forced to `sandbox`.
- *   3. Live is allowed only on a canonical production host.
+ * Live requires BOTH a canonical production host AND a `pk_live_` key.
+ * Anything else — missing key, test key, unknown key shape, automated
+ * session, non-canonical host — resolves to `sandbox`.
  */
 export function resolvePaymentsEnvironment(input: {
   hostname: string | null | undefined;
@@ -55,8 +54,8 @@ export function resolvePaymentsEnvironment(input: {
   automated?: boolean;
 }): PaymentsEnvironment {
   const key = input.publishableKey ?? "";
-  if (key.startsWith("pk_test_")) return "sandbox";
   if (input.automated) return "sandbox";
+  if (!key.startsWith("pk_live_")) return "sandbox";
   return isCanonicalPaymentHost(input.hostname) ? "live" : "sandbox";
 }
 
