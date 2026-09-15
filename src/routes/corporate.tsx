@@ -32,6 +32,7 @@ import { useEditorialOverrides } from "@/lib/editorial-overrides";
 
 import { CORPORATE_FAQ } from "@/content/seo-faq";
 import imgFatimaNazare from "@/assets/tours/fatima-nazare-obidos/nazare.jpg";
+import { CTA_LABELS } from "@/content/cta-vocabulary";
 
 const TITLE = "Corporate Events & Team Building in Portugal | YES";
 const DESCRIPTION =
@@ -254,7 +255,7 @@ function CorporatePage() {
                 })
               }
             >
-              Plan a corporate experience
+              {CTA_LABELS.corporate}
             </CtaButton>
             <CtaButton
               to="/contact"
@@ -494,7 +495,7 @@ function CorporatePage() {
                   })
                 }
               >
-                Request a corporate proposal
+                {CTA_LABELS.corporate}
               </CtaButton>
               <CtaButton
                 to="/contact"

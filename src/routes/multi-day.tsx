@@ -29,6 +29,7 @@ import imgSintraEstates from "@/assets/tours/sintra-cascais/estates.jpg";
 // All 23 pages of the anonymised private travel file live in public/ so
 // they can be shown inline — no external PDF. Shared with /trade.
 import { SAMPLE_PAGES, TOTAL_SAMPLE_PAGES } from "@/components/travel-designer/TravelFilePreview";
+import { CTA_LABELS } from "@/content/cta-vocabulary";
 
 export const Route = createFileRoute("/multi-day")({
   head: () => ({
@@ -192,7 +193,7 @@ function MultiDayPage() {
 
           <div className="mt-8 flex flex-col sm:flex-row gap-3 justify-center">
             <CtaButton to="/portugal-travel-designer" variant="primary">
-              Meet your Travel Designer
+              {CTA_LABELS.travelDesigner}
             </CtaButton>
             <CtaButton href="#sample-file" variant="ghost">
               See Sample Travel File

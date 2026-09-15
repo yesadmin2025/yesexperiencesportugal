@@ -7,6 +7,7 @@ import { CtaButton } from "@/components/ui/CtaButton";
 import { breadcrumbLd, jsonLdScript, travelDesignerServiceLd } from "@/lib/jsonld";
 import { ServiceCrossLinks } from "@/components/entity/ServiceCrossLinks";
 import ogImg from "@/assets/hero-coast.jpg";
+import { CTA_LABELS } from "@/content/cta-vocabulary";
 
 const CANONICAL = "https://yesexperiencesportugal.com/portugal-travel-designer";
 const TITLE = "Portugal Travel Designer — Plan a Private Trip With a Local";
@@ -98,10 +99,10 @@ function PortugalTravelDesignerPage() {
           </p>
           <div className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
             <CtaButton to="/multi-day" variant="primary">
-              Design a Portugal journey
+              {CTA_LABELS.travelDesigner}
             </CtaButton>
             <CtaButton to="/experiences" variant="ghost">
-              Explore private days
+              {CTA_LABELS.signatureDiscovery}
             </CtaButton>
           </div>
         </div>
@@ -266,10 +267,10 @@ function PortugalTravelDesignerPage() {
         <div className="container-x max-w-2xl text-center">
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
             <CtaButton to="/studio-v3" variant="primary">
-              Open the Studio
+              {CTA_LABELS.studio}
             </CtaButton>
             <CtaButton to="/experiences" variant="ghost">
-              Explore our Signatures
+              {CTA_LABELS.signatureDiscovery}
             </CtaButton>
           </div>
           <p className="mt-6 text-[13px] tracking-[0.02em] text-[color:var(--charcoal-soft)]">

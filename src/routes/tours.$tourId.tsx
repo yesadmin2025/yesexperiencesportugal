@@ -455,7 +455,7 @@ function TourHero({
               data-analytics-experience-id={tour.id}
               data-analytics-experience-type="signature"
             >
-              Check availability &amp; reserve
+              Reserve this day
             </CtaButton>
             <CtaButton
               to="/tours/$tourId/tailor"
@@ -851,7 +851,7 @@ function FinalCta({ tour }: { tour: SignatureTour }) {
             variant="primary"
             iconLeading={<Sparkles size={14} aria-hidden="true" />}
           >
-            Check availability & reserve
+             Reserve this day
           </CtaButton>
           <Link
             to="/tours/$tourId/tailor"

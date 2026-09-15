@@ -47,6 +47,7 @@ import { getTourContent, signatureDurationLabel } from "@/lib/tourContent";
 import { LOCAL_STORIES_ARTICLES } from "@/content/local-stories-articles";
 import { PortugalPlannerMap } from "@/components/home/PortugalPlannerMap";
 import { LiveReviews } from "@/components/reviews/LiveReviews";
+import { CTA_LABELS } from "@/content/cta-vocabulary";
 
 /**
  * Tours whose already-published verified quotes fill the homepage review
@@ -729,7 +730,7 @@ function HomePage() {
 
                 <div className="mt-8 flex flex-wrap gap-x-5 gap-y-4">
                   <CtaButton to="/studio-v3" variant="primary">
-                    Open the Studio
+                    {CTA_LABELS.studio}
                   </CtaButton>
                 </div>
                 <p className="mt-4 text-[13px] text-[color:var(--charcoal-soft)]">
@@ -907,9 +908,9 @@ function HomePage() {
                             params={{ tourId: t.id }}
                             variant="primary"
                             size="sm"
-                            aria-label={`Check availability & reserve — ${t.title}`}
+                            aria-label={`${CTA_LABELS.signatureBooking} — ${t.title}`}
                           >
-                            Check availability & reserve
+                            {CTA_LABELS.signatureBooking}
                           </CtaButton>
                           <CtaButton
                             to="/tours/$tourId/tailor"
@@ -917,7 +918,7 @@ function HomePage() {
                             variant="hairline"
                             aria-label={`Tailor this day — ${t.title}`}
                           >
-                            Tailor this day
+                            {CTA_LABELS.tailor}
                           </CtaButton>
                         </div>
                       </div>
@@ -929,7 +930,7 @@ function HomePage() {
 
             <div className="mt-12 md:mt-14 text-center">
               <CtaButton to="/experiences" variant="hairline">
-                See every Signature
+                {CTA_LABELS.signatureDiscovery}
               </CtaButton>
             </div>
           </div>

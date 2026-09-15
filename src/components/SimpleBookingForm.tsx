@@ -155,6 +155,8 @@ export function SimpleBookingForm({ tour }: { tour: SignatureTour }) {
   const [clientSecret, setClientSecret] = useState<string | null>(null);
   const [publishableKey, setPublishableKey] = useState<string | null>(null);
   const [checkoutSummary, setCheckoutSummary] = useState<CheckoutSummary | null>(null);
+  const [checkoutError, setCheckoutError] = useState<string | null>(null);
+  const [lastDetails, setLastDetails] = useState<GuestDetails | null>(null);
 
   const handleReserve = async (details: GuestDetails) => {
     if (pending) return;
@@ -166,6 +168,8 @@ export function SimpleBookingForm({ tour }: { tour: SignatureTour }) {
       return;
     }
     setPending(true);
+    setCheckoutError(null);
+    setLastDetails(details);
     // Open the drawer immediately so the user sees a branded skeleton
     // while the edge function is in flight (saves the "blank" feeling).
     const meta = getViatorMeta(tour.id);
@@ -292,8 +296,9 @@ export function SimpleBookingForm({ tour }: { tour: SignatureTour }) {
         experience_type: "signature",
         group_size: details.guests,
       });
-      toast.error("Checkout unavailable right now. Please try again in a moment.");
-      setCheckoutOpen(false);
+      const message = "Secure checkout couldn’t open. Your details are saved — please try again.";
+      setCheckoutError(message);
+      toast.error(message);
     } finally {
       setPending(false);
     }
@@ -585,10 +590,14 @@ export function SimpleBookingForm({ tour }: { tour: SignatureTour }) {
           setCheckoutOpen(o);
           if (!o) {
             setClientSecret(null);
+            setCheckoutError(null);
           }
         }}
         clientSecret={clientSecret}
         publishableKey={publishableKey}
+        loading={pending}
+        errorMessage={checkoutError}
+        onRetry={lastDetails ? () => void handleReserve(lastDetails) : undefined}
         summary={
           checkoutSummary ?? {
             tourTitle: tour.title,
