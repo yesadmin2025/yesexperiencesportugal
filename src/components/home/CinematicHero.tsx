@@ -8,7 +8,7 @@
  * the film advances.
  *
  * Conversion never waits for the film: the brand stanza, proposition and
- * both CTAs compose in well under 2s. Reduced motion and `?hero=last`
+ * both CTAs compose in about 1.5s. Reduced motion and `?hero=last`
  * render the final actionable state immediately.
  */
 
@@ -19,15 +19,18 @@ import { HERO_COPY, HERO_COPY_VERSION, HERO_PHRASES } from "@/content/hero-copy"
 import { HERO_FILM } from "@/content/hero-scenes-manifest";
 
 /**
- * Cinematic pace: the stanza breathes in slowly, one line at a time, and
- * the full actionable state settles by ~3s. Longer, softer eases read as
- * premium; nothing springs or snaps.
+ * Cinematic pace: the eyebrow opens, the stanza follows one line at a time,
+ * and the full actionable state settles in roughly 1.5s. Nothing springs.
  */
-const LINE1_DELAY_MS = 620;
-const LINE2_DELAY_MS = 1560;
-const COMPOSE_DELAY_MS = 2500;
-const FADE_MS = 1420;
-const COMPOSE_FADE_MS = 1150;
+const EYEBROW_DELAY_MS = 80;
+const LINE1_DELAY_MS = 260;
+const LINE2_DELAY_MS = 390;
+const SUPPORT_DELAY_MS = 620;
+const CTA_DELAY_MS = 820;
+const LINKS_DELAY_MS = 970;
+const HEADLINE_FADE_MS = 650;
+const SUPPORT_FADE_MS = 620;
+const CTA_FADE_MS = 580;
 
 const EASE = "var(--ease-scene)";
 
@@ -62,13 +65,18 @@ function revealStyle(on: boolean, ms: number, delayMs = 0, risePx = 22): React.C
   };
 }
 
-/** Sequenced arrival offsets for the composed (post-stanza) block. */
-const COMPOSE_STAGGER = {
-  eyebrow: 0,
-  subheadline: 180,
-  ctas: 360,
-  links: 540,
-} as const;
+function headlineRevealStyle(on: boolean): React.CSSProperties {
+  return {
+    opacity: on ? 1 : 0,
+    transform: on ? "translate3d(0, 0, 0)" : "translate3d(0, 38%, 0)",
+    filter: on ? "blur(0px)" : "blur(2px)",
+    willChange: "opacity, transform, filter",
+    transition:
+      `opacity ${HEADLINE_FADE_MS}ms ${EASE}, ` +
+      `transform ${HEADLINE_FADE_MS}ms ${EASE}, ` +
+      `filter ${HEADLINE_FADE_MS}ms ${EASE}`,
+  };
+}
 
 const ARROW = (
   <svg
@@ -90,9 +98,12 @@ const ARROW = (
 );
 
 export function CinematicHero() {
+  const [eyebrow, setEyebrow] = useState(false);
   const [line1, setLine1] = useState(false);
   const [line2, setLine2] = useState(false);
-  const [composed, setComposed] = useState(false);
+  const [support, setSupport] = useState(false);
+  const [cta, setCta] = useState(false);
+  const [links, setLinks] = useState(false);
   const videoRef = useRef<HTMLVideoElement | null>(null);
 
 
@@ -120,18 +131,27 @@ export function CinematicHero() {
 
   useEffect(() => {
     if (shouldSkipIntro()) {
+      setEyebrow(true);
       setLine1(true);
       setLine2(true);
-      setComposed(true);
+      setSupport(true);
+      setCta(true);
+      setLinks(true);
       return;
     }
+    const te = window.setTimeout(() => setEyebrow(true), EYEBROW_DELAY_MS);
     const t1 = window.setTimeout(() => setLine1(true), LINE1_DELAY_MS);
     const t2 = window.setTimeout(() => setLine2(true), LINE2_DELAY_MS);
-    const t3 = window.setTimeout(() => setComposed(true), COMPOSE_DELAY_MS);
+    const ts = window.setTimeout(() => setSupport(true), SUPPORT_DELAY_MS);
+    const tc = window.setTimeout(() => setCta(true), CTA_DELAY_MS);
+    const tl = window.setTimeout(() => setLinks(true), LINKS_DELAY_MS);
     return () => {
+      window.clearTimeout(te);
       window.clearTimeout(t1);
       window.clearTimeout(t2);
-      window.clearTimeout(t3);
+      window.clearTimeout(ts);
+      window.clearTimeout(tc);
+      window.clearTimeout(tl);
     };
   }, []);
 
@@ -187,7 +207,7 @@ export function CinematicHero() {
         {/* Restrained grading so copy is AA readable without crushing the film. */}
         <div
           aria-hidden="true"
-          className="absolute inset-0 bg-[linear-gradient(180deg,rgba(16,18,16,0.42)_0%,rgba(16,18,16,0.22)_30%,rgba(16,18,16,0.34)_56%,rgba(16,18,16,0.66)_82%,rgba(16,18,16,0.80)_100%)]"
+          className="hero-cinematic-scrim absolute inset-0"
         />
       </div>
 
@@ -197,7 +217,7 @@ export function CinematicHero() {
             <p
               data-hero-field="eyebrow"
               className="hero-promise flex items-center gap-3.5 text-[11px] font-medium uppercase tracking-[0.32em] text-[#F2DDAE] [text-shadow:0_1px_10px_rgba(0,0,0,0.55)] sm:text-[11.5px] md:justify-center"
-              style={revealStyle(composed, COMPOSE_FADE_MS, COMPOSE_STAGGER.eyebrow, 14)}
+              style={revealStyle(eyebrow, 520, 0, 10)}
             >
               <span aria-hidden="true" className="hidden h-px w-7 shrink-0 bg-[color:var(--gold)]/70 md:block" />
               {HERO_COPY.eyebrow}
@@ -209,37 +229,41 @@ export function CinematicHero() {
               data-mixed-emphasis="exempt"
               className="hero-h1 mt-7 font-serif text-[clamp(2.65rem,7vw,5.75rem)] font-medium leading-[1.02] tracking-normal text-[color:var(--ivory)] [text-shadow:0_2px_18px_color-mix(in_oklab,var(--charcoal-deep)_55%,transparent)]"
             >
-              <span
-                className="hero-title-line block font-serif font-medium not-italic m-0"
-                data-hero-field="headlineLine1"
-                style={revealStyle(line1, FADE_MS)}
-              >
-                {HERO_PHRASES[0]}
+              <span className="hero-title-mask block">
+                <span
+                  className="hero-title-line block font-serif font-medium not-italic m-0"
+                  data-hero-field="headlineLine1"
+                  style={headlineRevealStyle(line1)}
+                >
+                  {HERO_PHRASES[0]}
+                </span>
               </span>
-              <span
-                className="hero-title-line block font-serif italic font-normal mt-2 sm:mt-3 text-[color:var(--gold-soft)]"
-                data-hero-field="headlineLine2"
-                style={revealStyle(line2, FADE_MS)}
-              >
-                {HERO_PHRASES[1]}
+              <span className="hero-title-mask mt-2 block sm:mt-3">
+                <span
+                  className="hero-title-line block font-serif italic font-normal text-[color:var(--gold-soft)]"
+                  data-hero-field="headlineLine2"
+                  style={headlineRevealStyle(line2)}
+                >
+                  {HERO_PHRASES[1]}
+                </span>
               </span>
             </h1>
 
             <p
               data-hero-field="subheadline"
-              className="mt-8 max-w-[38rem] font-sans text-[16px] font-normal leading-[1.7] text-[color:var(--ivory)]/95 [text-shadow:0_1px_14px_rgba(0,0,0,0.5)] sm:text-[18px] md:mx-auto"
-              style={revealStyle(composed, COMPOSE_FADE_MS, COMPOSE_STAGGER.subheadline, 18)}
+              className="mt-7 max-w-[38rem] font-sans text-[15px] font-normal leading-[1.65] text-[color:var(--ivory)]/95 [text-shadow:0_1px_14px_rgba(0,0,0,0.5)] sm:text-[17px] md:mx-auto"
+              style={revealStyle(support, SUPPORT_FADE_MS, 0, 13)}
             >
               {HERO_COPY.subheadline}
             </p>
 
             <div
-              className="hero-cta-group mt-11 flex flex-col items-start gap-4 sm:flex-row sm:items-center md:justify-center"
-              data-hero-composed={composed ? "true" : "false"}
+              className="hero-cta-group mt-9 flex flex-col items-start gap-3 md:items-center md:justify-center"
+              data-hero-composed={cta ? "true" : "false"}
               style={{
-                ...revealStyle(composed, COMPOSE_FADE_MS, COMPOSE_STAGGER.ctas, 16),
+                ...revealStyle(cta, CTA_FADE_MS, 0, 12),
                 filter: undefined,
-                pointerEvents: composed ? "auto" : "none",
+                pointerEvents: cta ? "auto" : "none",
               }}
             >
               <Link
@@ -260,7 +284,7 @@ export function CinematicHero() {
                 data-hero-field="secondaryCta"
                 data-analytics="hero_choose_experience"
                 data-analytics-placement="hero"
-                className="hero-cta group inline-flex min-h-[48px] w-full max-w-[340px] items-center justify-center whitespace-nowrap px-1 py-3 text-[10.5px] uppercase tracking-[0.14em] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)] focus-visible:ring-offset-4 focus-visible:ring-offset-transparent sm:max-w-[340px] sm:px-1 sm:text-[11px] hero-cta--ghost"
+                className="hero-cta group inline-flex min-h-[44px] w-full max-w-[340px] items-center justify-center whitespace-nowrap px-1 py-2.5 text-[10.5px] uppercase tracking-[0.14em] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)] focus-visible:ring-offset-4 focus-visible:ring-offset-transparent sm:max-w-[340px] sm:px-1 sm:text-[11px] hero-cta--ghost"
               >
                 <span className="hero-cta__sheen" aria-hidden="true" />
                 <span className="relative z-10 inline-flex items-center gap-2.5">
@@ -272,7 +296,7 @@ export function CinematicHero() {
 
             <div
               className="mt-9 flex items-center text-[12px] leading-[1.55] md:justify-center"
-              style={revealStyle(composed, COMPOSE_FADE_MS, COMPOSE_STAGGER.links, 12)}
+              style={revealStyle(links, 480, 0, 10)}
             >
               <Link
                 to="/multi-day"
