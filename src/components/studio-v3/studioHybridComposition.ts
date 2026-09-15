@@ -76,6 +76,8 @@ export interface HybridCompositionInput {
   maxPoints?: number;
   /** Explicit traveller-chosen defining experiences — protected obligations. */
   principalStopIds?: ReadonlyArray<string>;
+  /** Exact moments offered in a fork and declined — never re-added. */
+  rejectedStopIds?: ReadonlyArray<string>;
   /** Explicit traveller-required activity types — protected obligations. */
   requiredTypes?: ReadonlyArray<OptionalStopType>;
   /**

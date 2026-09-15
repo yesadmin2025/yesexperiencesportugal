@@ -343,6 +343,10 @@ function candidatePool(request: LivingAtlasCompositionRequest): {
     // product-defining locked core moment of the anchor Signature).
     if ((request.excludedTypes ?? []).includes(stop.type) && !mustIncludeIds.has(stop.id))
       return false;
+    // A moment the traveller explicitly declined in a fork never re-enters the
+    // day, unless it is also an explicit obligation elsewhere.
+    if ((request.excludedStopIds ?? []).includes(stop.id) && !mustIncludeIds.has(stop.id))
+      return false;
     if (!anchorRegions.has(stop.region)) return false;
 
 
