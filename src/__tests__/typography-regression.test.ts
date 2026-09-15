@@ -396,7 +396,7 @@ const HEADLINES: HeadlineSpec[] = [
     role: "hero stanza line 2",
     file: "src/components/home/CinematicHero.tsx",
     pattern:
-      /<span\s+className="(hero-title-line block font-serif italic font-normal mt-2 sm:mt-3 text-\[color:var\(--gold-soft\)\])"[^>]*>\s*\n[\s\S]*?HERO_PHRASES\[1\]/,
+      /<span\s+className="(hero-title-line block font-serif italic font-normal text-\[color:var\(--gold-soft\)\])"[^>]*>\s*\n[\s\S]*?HERO_PHRASES\[1\]/,
   },
   {
     page: "home",
