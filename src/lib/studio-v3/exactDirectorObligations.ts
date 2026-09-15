@@ -11,11 +11,24 @@ import type { QuestionAnswerEvent } from "@/lib/studio-v3/questionHistory";
 const EXACT_STOP_BY_SIGNAL: Partial<Record<LivingAtlasDiscoverySignal, string>> = {
   "make-azeitao-cheese": "quinta-velha-cheese-workshop",
   "paint-azulejo": "azulejos-painting-workshop",
+  // CHOICE FIDELITY: "the coast seen from the water" is a concrete verified
+  // moment (the real private Arrábida bay boat), not a mood. Without this
+  // obligation the answer only nudged a score and could be silently outranked
+  // by a later, broader direction answer — the traveller then received a day
+  // with no time on the water at all.
+  "arrabida-from-water": "arrabida-bay-boat",
 };
 
 export type ExactDirectorObligations = {
   preferredSignatureId: LivingAtlasSignatureId | null;
   principalStopIds: readonly string[];
+  /**
+   * Exact moments the traveller was OFFERED in a fork and did NOT choose.
+   * They stay real inventory — they are simply never added back into the day
+   * that the rejected answer already spoke about (no tile workshop on a day
+   * where cheese was chosen over tile).
+   */
+  rejectedStopIds: readonly string[];
 };
 
 function isLivingAtlasSignature(id: string | null | undefined): id is LivingAtlasSignatureId {
