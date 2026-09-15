@@ -55,3 +55,8 @@
 - [x] Align typography audit and visual regression checks with Fraunces + Inter
 - [x] Remove stale homepage-questionnaire labels while preserving the dedicated Proposals form and enquiry workflow
 - [x] Verify typography, homepage structure, Proposals submission path, and mobile rendering
+
+## 10. Homepage opening polish
+- [x] Refine the cinematic phrase sequence, supporting typography, and editorial CTA
+- [x] Rebuild the mobile cookie notice without clipping or overflow
+- [x] Remove the Hero instant-reveal hydration mismatch

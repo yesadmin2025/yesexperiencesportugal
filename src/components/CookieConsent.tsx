@@ -13,6 +13,7 @@
 import * as React from "react";
 import { useHydrated } from "@/hooks/use-hydrated";
 import { trackEvent, setAnalyticsConsent } from "@/lib/analytics-events";
+import { Button } from "@/components/ui/button";
 
 const STORAGE_KEY = "yes.cookieConsent.v1";
 const OPEN_EVENT = "yes:open-cookie-consent";
@@ -114,38 +115,23 @@ export function CookieConsent() {
       role="dialog"
       aria-modal="false"
       aria-labelledby="cookie-consent-title"
-      className="fixed inset-x-0 bottom-0 z-[70] pointer-events-none px-3 pb-3 sm:px-6 sm:pb-6"
+      className="fixed inset-x-0 bottom-0 z-[70] pointer-events-none px-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] sm:px-6 sm:pb-6"
     >
       <div
-        className="pointer-events-auto mx-auto max-w-[640px] rounded-[14px] border border-[color:var(--charcoal)]/[0.08] bg-[color:var(--ivory,#FAF8F3)] shadow-[0_18px_48px_-18px_rgba(30,22,14,0.28)] backdrop-blur-sm"
-        style={{ animation: "cookieFadeUp 320ms ease-out both" }}
+        className="cookie-consent-card pointer-events-auto mx-auto max-w-[620px] overflow-hidden rounded-[8px] border border-[color:var(--charcoal)]/[0.1] bg-[color:var(--ivory)] shadow-[var(--shadow-elevated)]"
       >
-        <style>{`
-          @keyframes cookieFadeUp {
-            from { opacity: 0; transform: translateY(12px); }
-            to   { opacity: 1; transform: translateY(0); }
-          }
-          @media (prefers-reduced-motion: reduce) {
-            [data-cookie-card] { animation: none !important; }
-          }
-        `}</style>
-
-        <div data-cookie-card className="p-3.5 sm:p-6">
+        <div data-cookie-card className="p-4 sm:p-6">
           <div className="flex items-start gap-3">
             <div className="flex-1">
               <p
                 id="cookie-consent-title"
-                className="hidden font-[family-name:var(--font-display)] text-[14px] leading-[1.35] text-[color:var(--charcoal)] sm:block sm:text-[15px]"
+                className="font-[family-name:var(--font-display)] text-[16px] leading-[1.3] text-[color:var(--charcoal)] sm:text-[17px]"
                 style={{ fontWeight: 500 }}
               >
                 We use cookies to shape your journey
               </p>
-              <p className="text-[12px] leading-[1.45] text-[color:var(--charcoal-soft)] font-[family-name:var(--font-sans)] sm:mt-1.5 sm:text-[13px] sm:leading-[1.55]">
-                <span className="hidden sm:inline">
-                  Essential cookies keep the site running. Analytics help us understand which
-                  experiences resonate. You can change your choice anytime from the footer.{" "}
-                </span>
-                <span className="sm:hidden">Analytics cookies help us improve the site. </span>
+              <p className="mt-1.5 max-w-[52ch] font-[family-name:var(--font-sans)] text-[12px] leading-[1.55] text-[color:var(--charcoal-soft)] sm:text-[13px]">
+                Essential cookies keep the site working. Analytics help us improve your experience.{" "}
                 <a
                   href="/cookies"
                   className="underline decoration-[color:var(--gold-warm)]/60 underline-offset-[3px] hover:text-[color:var(--charcoal)]"
@@ -181,41 +167,44 @@ export function CookieConsent() {
             </div>
           )}
 
-          <div className="mt-2.5 flex flex-row flex-nowrap items-center justify-end gap-1.5 sm:mt-5 sm:flex-wrap sm:gap-2">
+          <div className="mt-4 grid grid-cols-2 gap-2 sm:flex sm:flex-wrap sm:justify-end">
             {!customize ? (
               <>
-                <button
+                <Button
                   type="button"
+                  variant="ghost"
                   onClick={() => setCustomize(true)}
-                  className="tap inline-flex min-h-11 items-center justify-center whitespace-nowrap text-[10px] uppercase tracking-[0.14em] text-[color:var(--charcoal-soft)] hover:text-[color:var(--charcoal)] transition-colors py-2 px-2 rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--teal)] sm:text-[11px] sm:tracking-[0.22em] sm:px-3"
+                  className="tap order-3 col-span-2 min-h-11 rounded-sm px-3 text-[10px] uppercase tracking-[0.18em] text-[color:var(--charcoal-soft)] hover:bg-transparent hover:text-[color:var(--teal)] sm:order-1 sm:col-auto sm:text-[11px]"
                 >
                   Customise
-                </button>
-                <button
+                </Button>
+                <Button
                   type="button"
+                  variant="outline"
                   onClick={() => commit({ analytics: "denied", ads: "denied" }, "essential_only")}
-                  className="tap inline-flex min-h-11 items-center justify-center whitespace-nowrap text-[10px] uppercase tracking-[0.14em] text-[color:var(--charcoal)] hover:text-[color:var(--teal)] transition-colors py-2.5 px-3 border border-[color:var(--charcoal)]/[0.14] rounded-full focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--teal)] sm:text-[11px] sm:tracking-[0.22em] sm:px-4"
+                  className="tap order-1 min-h-11 rounded-sm border-[color:var(--charcoal)]/[0.18] bg-transparent px-3 text-[10px] uppercase tracking-[0.12em] text-[color:var(--charcoal)] shadow-none hover:border-[color:var(--teal)] hover:bg-transparent hover:text-[color:var(--teal)] sm:order-2 sm:text-[11px] sm:tracking-[0.16em]"
                 >
                   Essential only
-                </button>
-                <button
+                </Button>
+                <Button
                   type="button"
                   onClick={() => commit({ analytics: "granted", ads: "granted" }, "accept_all")}
-                  className="tap inline-flex min-h-11 items-center justify-center whitespace-nowrap text-[10px] uppercase tracking-[0.14em] text-[color:var(--ivory)] bg-[color:var(--teal)] hover:bg-[color:var(--teal-2,#1e4a4f)] transition-colors py-2.5 px-3 rounded-full focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)] focus-visible:ring-offset-2 focus-visible:ring-offset-[color:var(--ivory,#FAF8F3)] sm:text-[11px] sm:tracking-[0.22em] sm:px-4"
+                  className="tap order-2 min-h-11 rounded-sm bg-[color:var(--teal)] px-3 text-[10px] uppercase tracking-[0.14em] text-[color:var(--ivory)] shadow-none hover:bg-[color:var(--teal-2)] sm:order-3 sm:text-[11px] sm:tracking-[0.18em]"
                 >
                   Accept all
-                </button>
+                </Button>
               </>
             ) : (
               <>
-                <button
+                <Button
                   type="button"
+                  variant="ghost"
                   onClick={() => setCustomize(false)}
-                  className="tap inline-flex min-h-11 items-center justify-center text-[11px] uppercase tracking-[0.22em] text-[color:var(--charcoal-soft)] hover:text-[color:var(--charcoal)] transition-colors py-2 px-3 rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--teal)]"
+                  className="tap min-h-11 rounded-sm text-[10px] uppercase tracking-[0.18em] text-[color:var(--charcoal-soft)]"
                 >
                   Back
-                </button>
-                <button
+                </Button>
+                <Button
                   type="button"
                   onClick={() =>
                     commit(
@@ -226,10 +215,10 @@ export function CookieConsent() {
                       "customise_save",
                     )
                   }
-                  className="tap inline-flex min-h-11 items-center justify-center text-[11px] uppercase tracking-[0.22em] text-[color:var(--ivory)] bg-[color:var(--teal)] hover:bg-[color:var(--teal-2,#1e4a4f)] transition-colors py-2.5 px-4 rounded-full focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)] focus-visible:ring-offset-2 focus-visible:ring-offset-[color:var(--ivory,#FAF8F3)]"
+                  className="tap min-h-11 rounded-sm bg-[color:var(--teal)] px-4 text-[10px] uppercase tracking-[0.14em] text-[color:var(--ivory)] shadow-none hover:bg-[color:var(--teal-2)]"
                 >
                   Save preferences
-                </button>
+                </Button>
               </>
             )}
           </div>
