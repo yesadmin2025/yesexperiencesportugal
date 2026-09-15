@@ -341,11 +341,6 @@ export function CinematicHero() {
           }),
         }}
       />
-      <script
-        dangerouslySetInnerHTML={{
-          __html: `(function(){try{var s=document.currentScript&&document.currentScript.closest('[data-hero-cinematic]');if(!s)return;var q=new URLSearchParams(location.search);var reduced=matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches;if(q.get('hero')==='last'||reduced)s.setAttribute('data-hero-ready','true')}catch(e){}})();`,
-        }}
-      />
     </section>
   );
 }
