@@ -31,8 +31,10 @@ function originOf(value: string | null | undefined): string | null {
 /**
  * Resolve the authoritative environment for a checkout request.
  *
- * `requestOrigin` — the `Origin` (or `Referer`) header.
- * `returnUrl` — fallback when no Origin header is present (server-to-server).
+ * `requestOrigin` — the `Origin` (or `Referer`) header. This is the ONLY
+ * signal that can authorize LIVE. A missing or non-canonical request origin
+ * always resolves to sandbox; `returnUrl` is never used to authorize live
+ * (it is client-supplied and only used for redirect validation).
  * `claimed` — what the client asked for; only ever used to DOWNGRADE to sandbox.
  */
 export function resolveServerPaymentsEnv(input: {
@@ -40,7 +42,7 @@ export function resolveServerPaymentsEnv(input: {
   returnUrl?: string | null;
   claimed?: string | null;
 }): { environment: PaymentsEnv; origin: string | null; downgraded: boolean } {
-  const origin = originOf(input.requestOrigin) ?? originOf(input.returnUrl);
+  const origin = originOf(input.requestOrigin);
   const allowed: PaymentsEnv = isCanonicalPaymentOrigin(origin) ? "live" : "sandbox";
   // The client may only ask for less (test mode), never for more.
   const environment: PaymentsEnv = input.claimed === "sandbox" ? "sandbox" : allowed;
@@ -49,7 +51,8 @@ export function resolveServerPaymentsEnv(input: {
 
 /**
  * Return-URL allowlist, scoped by environment.
- * Live sessions may only return to the canonical production origins.
+ * Live sessions may only return to the canonical production origins —
+ * `extraAllow` can never widen LIVE.
  */
 export function isReturnOriginAllowed(
   origin: string | null,
@@ -58,7 +61,7 @@ export function isReturnOriginAllowed(
 ): boolean {
   if (!origin) return false;
   const o = origin.toLowerCase();
-  if (environment === "live") return isCanonicalPaymentOrigin(o) || extraAllow.includes(o);
+  if (environment === "live") return isCanonicalPaymentOrigin(o);
   if (isCanonicalPaymentOrigin(o) || extraAllow.includes(o)) return true;
   if (
     o === "https://yesexperiences.pt" ||
