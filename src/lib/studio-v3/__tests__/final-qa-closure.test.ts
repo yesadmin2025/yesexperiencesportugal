@@ -21,7 +21,7 @@ describe("1 — the final reveal is YOUR DAY with one dominant reserve action", 
   });
 
   it("renders exactly one primary CTA, and it is Make it real", () => {
-    expect(CTA_MAKE_IT_REAL).toBe("Make it real");
+    expect(CTA_MAKE_IT_REAL).toBe("LOVE THIS DAY · RESERVE IT");
     expect(STUDIO.split('data-testid="studio-v3-handoff-primary"').length - 1).toBe(1);
     expect(STUDIO).toContain("{CTA_MAKE_IT_REAL}");
     expect(STUDIO).toContain('data-testid="studio-v3-handoff-primary"');
@@ -29,7 +29,7 @@ describe("1 — the final reveal is YOUR DAY with one dominant reserve action", 
 
   it("keeps the edit affordance visually subordinate, never a second primary", () => {
     expect(STUDIO).toContain('data-testid="studio-v3-your-day-edit"');
-    expect(STUDIO).toContain("Edit your day");
+    expect(STUDIO).toContain("Refine one detail");
   });
 
   it("never uses recommendation, AI, match or confidence framing in the reveal", () => {

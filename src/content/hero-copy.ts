@@ -10,8 +10,8 @@ export const HERO_COPY = {
   headlineLine1: "Portugal is the stage.",
   headlineLine2: "You write the story.",
   subheadline:
-    "Design your private day and confirm instantly. Choose a Signature experience, or let a local Travel Designer create your journey or special moment.",
-  primaryCta: "CREATE YOUR DAY",
+    "Design and book a private day instantly. Choose a Signature experience, or let a local expert shape a full journey or special moment around you.",
+  primaryCta: "DESIGN YOUR DAY",
   secondaryCta: "Explore Signature Experiences",
   microcopy: "700+ five-star reviews · Private · Local support · Secure checkout",
   brandLine: "Continue the story across Portugal →",

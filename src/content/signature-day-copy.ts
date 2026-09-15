@@ -74,7 +74,7 @@ export const CTA_RESERVE_YOUR_DAY = "Reserve your day" as const;
  * (when, pickup, party) are collected next. It is deliberately NOT a booking
  * verb: nothing is reserved until the final seam.
  */
-export const CTA_MAKE_IT_REAL = "Make it real" as const;
+export const CTA_MAKE_IT_REAL = "LOVE THIS DAY · RESERVE IT" as const;
 export const INSTANT_CONFIRMATION =
   "Instant confirmation. Your date is held the moment you reserve." as const;
 

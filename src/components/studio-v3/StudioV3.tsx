@@ -6520,7 +6520,7 @@ export function StoryboardHandoff({
             className="min-h-[44px] px-3 text-[11px] font-semibold uppercase tracking-[0.22em] focus:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)]"
             style={{ color: "color-mix(in oklab, var(--charcoal) 62%, transparent)" }}
           >
-            Edit your day
+            Refine one detail
           </button>
         ) : null}
 
