@@ -1,6 +1,4 @@
-// Studio V3 — 4-beat progression stepper.
-//
-// Region → Rhythm → Dates → Compose
+// Studio V3 — three-chapter progression over the existing phase model.
 //
 // Visible from the first answered phase onward; hidden on intro.
 // Interactive: completed beats are keyboard-focusable buttons that
@@ -11,15 +9,14 @@ import { useCallback, useEffect, useMemo, useRef } from "react";
 import type { StudioV3Phase } from "./types";
 import { recordStudioV3BuilderStep } from "@/lib/studio-v3-telemetry";
 
-// Studio reform (2026-08): the beats now map 1:1 onto the real phase groups
-// in STUDIO_V3_PHASE_ORDER — FEEL → TASTE → SHAPE → YOUR DAY. Progress that
+// Premium System Lock: three visible chapters sit over the existing phase groups
+// in STUDIO_V3_PHASE_ORDER — YOU → YOUR DAY → MAKE IT YOURS. Progress that
 // lies about how much is left costs more completions than a longer honest
 // one. IDs are kept for telemetry/back-compat; only labels + grouping moved.
 export const STUDIO_V3_BEATS = [
-  { id: "region", label: "Feel" },
-  { id: "rhythm", label: "Taste" },
-  { id: "dates", label: "Shape" },
-  { id: "compose", label: "Your day" },
+  { id: "region", label: "You" },
+  { id: "rhythm", label: "Your day" },
+  { id: "compose", label: "Make it yours" },
 ] as const;
 
 export type StudioV3BeatId = (typeof STUDIO_V3_BEATS)[number]["id"];
@@ -27,32 +24,31 @@ export type StudioV3BeatId = (typeof STUDIO_V3_BEATS)[number]["id"];
 /** Quiet reassurance line under the stepper — editorial, never a progress
  *  counter. Desktop keeps the same line for parity. */
 const BEAT_REASSURANCE: Record<StudioV3BeatId, string> = {
-  region: "Start with the feeling",
-  rhythm: "Now, what draws you",
-  dates: "Now, make it real",
-  compose: "Your day is taking shape",
+  region: "Start with what feels like you",
+  rhythm: "Your private day is taking shape",
+  compose: "Make the practical details yours",
 };
 
 /** First phase associated with each beat — used as jump-back target. */
 const BEAT_ENTRY_PHASE: Record<StudioV3BeatId, StudioV3Phase> = {
   region: "feeling",
   rhythm: "interests",
-  dates: "logistics",
-  compose: "map",
+  compose: "logistics",
 };
 
-/** Phase → beat index (0..3) or null when no beat should be highlighted. */
+/** Phase → chapter index (0..2) or null when no chapter should be highlighted. */
 // eslint-disable-next-line react-refresh/only-export-components
 export function beatIndexForPhase(phase: StudioV3Phase): number | null {
   switch (phase) {
     case "intro":
       return null;
-    // Beat 1 — FEEL: emotion + place + who.
+    // Chapter 1 — YOU: feeling, company and practical starting context.
     case "feeling":
     case "destination":
     case "who":
+    case "logistics":
       return 0;
-    // Beat 2 — TASTE: what the day is made of.
+    // Chapter 2 — YOUR DAY: what the day is made of.
     case "interests":
     case "refinement":
     case "investment":
@@ -60,20 +56,19 @@ export function beatIndexForPhase(phase: StudioV3Phase): number | null {
     case "considerations":
     case "language":
       return 1;
-    // Beat 3 — SHAPE: rhythm + the logistics that make it real.
+    // Chapter 2 — YOUR DAY: taste, rhythm and composition.
     case "rhythm":
-    case "logistics":
-    case "date":
-    case "pickup":
-    case "guests":
-      return 2;
-    // Beat 4 — YOUR DAY: composition, story, close.
     case "map":
     case "storyboard":
     case "confirmation":
+      return 1;
+    // Chapter 3 — MAKE IT YOURS: confirmation details and payment.
+    case "date":
+    case "pickup":
+    case "guests":
     case "guestDetails":
     case "checkoutSummary":
-      return 3;
+      return 2;
     default:
       return null;
   }
@@ -185,9 +180,8 @@ export function StudioV3ProgressStepper({
           );
           const label = (
             <span
-              className="text-[10px] uppercase tracking-[0.16em] font-semibold whitespace-nowrap"
+              className="t-eyebrow whitespace-nowrap text-[9px] sm:text-[10px]"
               style={{
-                fontFamily: "var(--font-editorial)",
                 color: isReachable
                   ? "var(--charcoal)"
                   : "color-mix(in oklab, var(--charcoal) 55%, transparent)",

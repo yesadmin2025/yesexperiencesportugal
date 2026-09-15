@@ -129,7 +129,7 @@ export const Route = createFileRoute("/tours_/$tourId/tailor")({
           name: "description",
           content: `Adjust selected details inside the ${t.title} Signature — pace, timing, group needs and small additions, without redesigning the day.`,
         },
-        { property: "og:title", content: `Tailor this Signature — ${t.title}` },
+        { property: "og:title", content: `Tailor this day — ${t.title}` },
         {
           property: "og:description",
           content: "Keep the heart of this journey, adjust selected details to match your rhythm.",
@@ -868,6 +868,8 @@ function TailorPage() {
   const [clientSecret, setClientSecret] = useState<string | null>(null);
   const [publishableKey, setPublishableKey] = useState<string | null>(null);
   const [checkoutSummary, setCheckoutSummary] = useState<CheckoutSummary | null>(null);
+  const [checkoutError, setCheckoutError] = useState<string | null>(null);
+  const [lastCheckoutDetails, setLastCheckoutDetails] = useState<GuestDetails | null>(null);
   const navigate = useNavigate();
 
   const handleReserve = async (details: GuestDetails) => {
@@ -881,6 +883,8 @@ function TailorPage() {
       return;
     }
     setCheckoutPending(true);
+    setCheckoutError(null);
+    setLastCheckoutDetails(details);
 
     // Open the drawer immediately so a branded skeleton appears while
     // the edge function is in flight — avoids "blank screen" feel.
@@ -1029,8 +1033,9 @@ function TailorPage() {
         experience_type: "tailor",
         group_size: details.guests,
       });
-      toast.error("Checkout unavailable right now. Please try again in a moment.");
-      setCheckoutOpen(false);
+      const message = "Secure checkout couldn’t open. Your tailored day is saved — please try again.";
+      setCheckoutError(message);
+      toast.error(message);
     } finally {
       setCheckoutPending(false);
     }
@@ -1066,7 +1071,7 @@ function TailorPage() {
         <div className="container-x max-w-6xl">
           <div className="grid gap-5 lg:grid-cols-[1fr_1.1fr] lg:items-end lg:gap-10">
             <div>
-              <Eyebrow>Tailor this Signature</Eyebrow>
+              <Eyebrow>Tailor this day</Eyebrow>
               <SectionTitle as="h1" size="default" spacing="tight">
                 {tour.title.split("—")[0].trim()},{" "}
                 <SectionTitle.Em>your version</SectionTitle.Em>
@@ -1599,7 +1604,7 @@ function TailorPage() {
                     </>
                   ) : (
                     <>
-                      <Sparkles size={15} /> Reserve this version
+                      <Sparkles size={15} /> Reserve this day
                     </>
                   )}
                 </button>
@@ -1665,10 +1670,16 @@ function TailorPage() {
         open={checkoutOpen}
         onOpenChange={(o) => {
           setCheckoutOpen(o);
-          if (!o) setClientSecret(null);
+          if (!o) {
+            setClientSecret(null);
+            setCheckoutError(null);
+          }
         }}
         clientSecret={clientSecret}
         publishableKey={publishableKey}
+        loading={checkoutPending}
+        errorMessage={checkoutError}
+        onRetry={lastCheckoutDetails ? () => void handleReserve(lastCheckoutDetails) : undefined}
         summary={
           checkoutSummary ?? {
             tourTitle: `Tailored — ${tour.title.split("—")[0].trim()}`,

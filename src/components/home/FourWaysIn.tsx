@@ -11,6 +11,7 @@ import { useEffect, useState } from "react";
 import { Link } from "@tanstack/react-router";
 import { BookOpen, Wand2, Compass, Sparkles, Users, ArrowRight, type LucideIcon } from "lucide-react";
 import { Eyebrow } from "@/components/ui/Eyebrow";
+import { CTA_LABELS } from "@/content/cta-vocabulary";
 
 type Path = {
   id: "signature" | "studio" | "designer" | "proposals" | "corporate";
@@ -25,24 +26,24 @@ type Path = {
 
 const PATHS: ReadonlyArray<Path> = [
   {
-    id: "signature",
-    Icon: BookOpen,
-    eyebrow: "Ready to book",
-    title: "A private day, ready to go",
-    body: "Reserve a proven private day as it is or tailor the details — with the real price and instant confirmation.",
-    cta: "Explore private days",
-    href: "/experiences",
-    analyticsEvent: "home_path_signature_click",
-  },
-  {
     id: "studio",
     Icon: Wand2,
     eyebrow: "One custom day",
     title: "Shape a day around you",
     body: "Mood, pace and people — see the real route and live price, then confirm your private day instantly.",
-    cta: "Design your day",
+    cta: CTA_LABELS.studio,
     href: "/studio-v3",
     analyticsEvent: "home_path_studio_click",
+  },
+  {
+    id: "signature",
+    Icon: BookOpen,
+    eyebrow: "Ready to book",
+    title: "A private day, ready to go",
+    body: "Reserve a proven private day as it is or tailor the details — with the real price and instant confirmation.",
+    cta: CTA_LABELS.signatureDiscovery,
+    href: "/experiences",
+    analyticsEvent: "home_path_signature_click",
   },
   {
     id: "designer",
@@ -50,7 +51,7 @@ const PATHS: ReadonlyArray<Path> = [
     eyebrow: "Several days",
     title: "Plan a whole Portugal journey",
     body: "A local Travel Designer shapes the route, pace, stays and logistics around the way you travel.",
-    cta: "Plan your Portugal journey",
+    cta: CTA_LABELS.travelDesigner,
     href: "/multi-day",
     analyticsEvent: "home_path_designer_click",
   },
@@ -60,7 +61,7 @@ const PATHS: ReadonlyArray<Path> = [
     eyebrow: "Proposals & celebrations",
     title: "A private moment, planned discreetly",
     body: "Proposals, anniversaries and milestone days shaped around the people and setting that matter.",
-    cta: "Plan your proposal",
+    cta: CTA_LABELS.moments,
     href: "/proposal-in-portugal",
     analyticsEvent: "home_secondary_moments_click",
   },
@@ -70,7 +71,7 @@ const PATHS: ReadonlyArray<Path> = [
     eyebrow: "Corporate & private groups",
     title: "Bring people together in Portugal",
     body: "Off-sites, incentives, client hosting and private group days with the practical details handled.",
-    cta: "Plan a private group day",
+    cta: CTA_LABELS.corporate,
     href: "/corporate",
     analyticsEvent: "home_secondary_corporate_click",
   },
@@ -205,7 +206,7 @@ function PathCard({ path, featured }: { path: Path; featured: boolean }) {
       to={path.href}
       data-home-primary-path={path.id}
       data-analytics={path.analyticsEvent}
-      className={`${featured ? "lg:col-span-2" : "lg:col-span-3"} group flex min-h-[238px] flex-col rounded-[6px] border border-[color:var(--border)] bg-[color:var(--sand)] p-6 no-underline transition-[transform,border-color,box-shadow] duration-[var(--dur-base)] ease-[var(--ease-scene)] hover:-translate-y-0.5 hover:border-[color:var(--gold)]/70 hover:shadow-[0_18px_40px_-30px_rgba(46,46,46,0.35)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--teal)] focus-visible:ring-offset-2 md:p-7`}
+      className={`${featured ? "lg:col-span-2 bg-[color:var(--sand)]" : "lg:col-span-3 bg-[color:var(--ivory)]"} group flex min-h-[238px] flex-col rounded-[6px] border border-[color:var(--border)] p-6 no-underline transition-[transform,border-color,box-shadow] duration-[var(--dur-base)] ease-[var(--ease-scene)] hover:-translate-y-0.5 hover:border-[color:var(--gold)]/70 hover:shadow-[0_18px_40px_-30px_rgba(46,46,46,0.35)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--teal)] focus-visible:ring-offset-2 md:p-7`}
     >
       <div className="flex items-center justify-between gap-4">
         <span className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-[color:var(--gold)]/45 bg-[color:var(--ivory)] text-[color:var(--teal)]">

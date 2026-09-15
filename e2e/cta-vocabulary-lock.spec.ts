@@ -7,12 +7,13 @@
  * fails so we catch the regression before ship.
  *
  * Locked strings:
- *   - "Check availability & reserve"   (Signature marketing entry)
- *   - "Reserve this day"                (Signature booking card primary)
- *   - "Tailor this day"                 (Signature secondary)
- *   - "Review route & price"            (Studio V3 step 1 — future)
- *   - "Reserve securely"                (Studio V3 / bespoke final)
- *   - "Resume your draft"               (Studio draft return)
+ *   - "Design your day"                  (Studio)
+ *   - "Explore Signature Experiences"   (Signature discovery)
+ *   - "Reserve this day"                 (Signature booking primary)
+ *   - "Tailor this day"                  (Signature secondary)
+ *   - "Design my journey"                (Travel Designer)
+ *   - "Plan a special moment"            (Moments)
+ *   - "Plan a private group experience"  (Corporate)
  */
 
 import { test, expect, type Page } from "@playwright/test";
@@ -49,7 +50,7 @@ test.describe("CTA vocabulary lock", () => {
   test("home surfaces the new Signature primary", async ({ page }) => {
     await page.goto("/");
     await expect(
-      page.getByRole("link", { name: /check availability & reserve/i }).first(),
+      page.getByRole("link", { name: /reserve this day/i }).first(),
     ).toBeVisible();
     await expect(page.getByRole("link", { name: /tailor this day/i }).first()).toBeVisible();
   });

@@ -17,7 +17,7 @@ base: animation: heroEnterFadeOnly 0.4s ease-out 0.6s both !important;"
 `;
 
 exports[`Typography regression — token rules from styles.css > token .t-display 1`] = `
-"base: font-family: var(--font-display); font-weight: 700; font-size: 2.25rem; line-height: 1.06; letter-spacing: -0.022em;
+"base: font-family: var(--font-display); font-weight: 600; font-size: 2.25rem; line-height: 1.06; letter-spacing: -0.022em;
 base: font-size: 4rem;
 base: font-size: 4.75rem; line-height: 0.98;"
 `;
@@ -25,12 +25,12 @@ base: font-size: 4.75rem; line-height: 0.98;"
 exports[`Typography regression — token rules from styles.css > token .t-eyebrow 1`] = `"base: font-family: var(--font-sans); font-size: 11px; line-height: 1; letter-spacing: 0.28em; text-transform: uppercase; color: var(--charcoal-soft);"`;
 
 exports[`Typography regression — token rules from styles.css > token .t-h1 1`] = `
-"base: font-family: var(--font-display); font-weight: 700; font-size: 2rem; line-height: 1.1; letter-spacing: -0.018em;
+"base: font-family: var(--font-display); font-weight: 600; font-size: 2rem; line-height: 1.1; letter-spacing: -0.018em;
 base: font-size: 3.75rem; line-height: 1.04;"
 `;
 
 exports[`Typography regression — token rules from styles.css > token .t-h2 1`] = `
-"base: font-family: var(--font-display); font-weight: 700; font-size: 1.78rem; line-height: 1.18; letter-spacing: -0.014em;
+"base: font-family: var(--font-display); font-weight: 600; font-size: 1.78rem; line-height: 1.18; letter-spacing: -0.014em;
 base: font-size: 2.25rem; line-height: 1.1;"
 `;
 

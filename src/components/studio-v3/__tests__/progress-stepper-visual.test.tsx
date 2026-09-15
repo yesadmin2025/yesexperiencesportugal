@@ -20,7 +20,7 @@ vi.mock("@/lib/studio-v3-telemetry", () => ({
 
 afterEach(() => cleanup());
 
-const PHASES_PER_BEAT: StudioV3Phase[] = ["feeling", "rhythm", "date", "map"];
+const PHASES_PER_BEAT: StudioV3Phase[] = ["feeling", "rhythm", "guestDetails"];
 
 describe("StudioV3ProgressStepper — visual contract", () => {
   it("locks container spacing + layout classes", () => {
@@ -32,7 +32,7 @@ describe("StudioV3ProgressStepper — visual contract", () => {
     expect(nav.getAttribute("aria-label")).toBe("Studio progress");
   });
 
-  it("renders the four canonical labels in order, regardless of active beat", () => {
+  it("renders the three canonical chapter labels in order, regardless of active chapter", () => {
     for (const phase of PHASES_PER_BEAT) {
       const { getByTestId, unmount } = render(<StudioV3ProgressStepper phase={phase} />);
       const nav = getByTestId("studio-v3-progress-stepper");
@@ -45,42 +45,38 @@ describe("StudioV3ProgressStepper — visual contract", () => {
   });
 
   it("applies the correct color tokens to active / done / upcoming steps", () => {
-    // Phase "date" → beat 2 active; beats 0,1 done; beat 3 upcoming.
-    const { getByTestId } = render(<StudioV3ProgressStepper phase="date" />);
+    // Phase "rhythm" → chapter 1 active; chapter 0 done; chapter 2 upcoming.
+    const { getByTestId } = render(<StudioV3ProgressStepper phase="rhythm" />);
     const nav = getByTestId("studio-v3-progress-stepper");
     const bars = nav.querySelectorAll<HTMLSpanElement>("span[aria-hidden]");
-    expect(bars.length).toBe(4);
+    expect(bars.length).toBe(3);
 
     // Done steps use a transparent gold mix.
     expect(bars[0].style.background).toContain("var(--gold)");
     expect(bars[0].style.background).toContain("55%");
-    expect(bars[1].style.background).toContain("var(--gold)");
-
     // Active step uses pure gold.
-    expect(bars[2].style.background).toBe("var(--gold)");
+    expect(bars[1].style.background).toBe("var(--gold)");
 
     // Upcoming step uses charcoal mix.
-    expect(bars[3].style.background).toContain("var(--charcoal)");
-    expect(bars[3].style.background).toContain("12%");
+    expect(bars[2].style.background).toContain("var(--charcoal)");
+    expect(bars[2].style.background).toContain("12%");
 
     // Only one aria-current="step".
     expect(nav.querySelectorAll('[aria-current="step"]').length).toBe(1);
   });
 
-  it("keeps label typography stable (editorial font, uppercase, tracking)", () => {
+  it("keeps label typography on the semantic eyebrow token", () => {
     const { getByTestId } = render(<StudioV3ProgressStepper phase="rhythm" />);
     const nav = getByTestId("studio-v3-progress-stepper");
     const labelNodes = nav.querySelectorAll<HTMLSpanElement>("span:not([aria-hidden])");
     for (const node of Array.from(labelNodes)) {
-      expect(node.className).toContain("uppercase");
-      expect(node.className).toContain("tracking-[0.16em]");
-      expect(node.className).toContain("font-semibold");
-      expect(node.style.fontFamily).toBe("var(--font-editorial)");
+      expect(node.className).toContain("t-eyebrow");
+      expect(node.style.fontFamily).toBe("");
     }
   });
 
-  it("snapshot: active-beat=dates DOM shape stays locked", () => {
-    const { getByTestId } = render(<StudioV3ProgressStepper phase="date" />);
+  it("snapshot: active chapter DOM shape stays locked", () => {
+    const { getByTestId } = render(<StudioV3ProgressStepper phase="rhythm" />);
     const nav = getByTestId("studio-v3-progress-stepper");
     // Normalize so the snapshot is structural, not whitespace-sensitive.
     expect(nav.outerHTML.replace(/\s+/g, " ")).toMatchSnapshot();

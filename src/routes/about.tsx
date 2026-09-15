@@ -456,7 +456,7 @@ function Page() {
               Start Your Private Experience
             </CtaButton>
             <CtaButton to="/studio-v3" variant="ghost">
-              Open the Studio
+              Design your day
             </CtaButton>
           </div>
           <p className="mt-6 text-[14px] text-[color:var(--charcoal-soft)]">

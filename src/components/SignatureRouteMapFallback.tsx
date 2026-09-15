@@ -84,7 +84,7 @@ export function SignatureRouteMapFallback({ tour, reason }: Props) {
               fontSize="2"
               fontWeight="600"
               fill="var(--teal)"
-              fontFamily="ui-sans-serif,system-ui"
+              fontFamily="Inter,system-ui,sans-serif"
             >
               {i + 1}
             </text>

@@ -5,6 +5,7 @@ import { EmbeddedCheckoutProvider, EmbeddedCheckout } from "@stripe/react-stripe
 import { X, ChevronDown } from "lucide-react";
 import { Sheet, SheetContent, SheetTitle, SheetDescription } from "@/components/ui/sheet";
 import { Eyebrow } from "@/components/ui/Eyebrow";
+import { CtaButton } from "@/components/ui/CtaButton";
 
 import { CANCELLATION } from "@/config/business-nap";
 import {
@@ -89,6 +90,9 @@ interface Props {
   summary: CheckoutSummary;
   /** Called when Stripe reports the session as complete. */
   onComplete?: (sessionId: string | null) => void;
+  loading?: boolean;
+  errorMessage?: string | null;
+  onRetry?: () => void;
 }
 
 // One Stripe instance per publishable key (memoized across drawer opens).
@@ -132,6 +136,9 @@ export function BrandedCheckoutDrawer({
   publishableKey,
   summary,
   onComplete,
+  loading = false,
+  errorMessage = null,
+  onRetry,
 }: Props) {
   const stripePromise = useMemo(
     () => (publishableKey ? getStripePromise(publishableKey) : null),
@@ -228,7 +235,16 @@ export function BrandedCheckoutDrawer({
 
           {/* Stripe Embedded Checkout */}
           <div className="px-2 sm:px-3 pb-6">
-            {clientSecret && publishableKey && stripePromise && options ? (
+            {errorMessage ? (
+              <div className="px-5 py-8 text-center" role="alert" data-testid="checkout-drawer-error">
+                <p className="t-body text-[color:var(--charcoal)]">{errorMessage}</p>
+                {onRetry ? (
+                  <CtaButton type="button" className="mt-5 w-full" onClick={onRetry} loading={loading} loadingLabel="Opening secure checkout…">
+                    Try secure checkout again
+                  </CtaButton>
+                ) : null}
+              </div>
+            ) : clientSecret && publishableKey && stripePromise && options ? (
               <div className="relative bg-white">
                 <EmbeddedCheckoutProvider stripe={stripePromise} options={options}>
                   <EmbeddedCheckout />

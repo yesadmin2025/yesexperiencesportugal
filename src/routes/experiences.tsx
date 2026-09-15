@@ -17,6 +17,7 @@ import { CtaButton } from "@/components/ui/CtaButton";
 import { useMarketingMotion } from "@/hooks/use-marketing-motion";
 import { PriceCurrencyChip } from "@/components/PriceCurrencyChip";
 import { PriceEur } from "@/components/ui/PriceEur";
+import { CTA_LABELS } from "@/content/cta-vocabulary";
 
 export const Route = createFileRoute("/experiences")({
   head: () => ({
@@ -212,7 +213,7 @@ function TourCard({ tour, resolveImg, featured = false }: { tour: SignatureTour;
             className="w-full"
             aria-label={`Reserve ${tour.title}`}
           >
-            Check availability &amp; reserve
+            {CTA_LABELS.signatureBooking}
           </CtaButton>
           <Link
             to="/tours/$tourId/tailor"
@@ -220,7 +221,7 @@ function TourCard({ tour, resolveImg, featured = false }: { tour: SignatureTour;
             className="mt-3 inline-flex min-h-[44px] w-full items-center justify-center text-[12px] uppercase tracking-[0.14em] font-medium text-[color:var(--teal)] underline decoration-[color:var(--gold)]/60 underline-offset-4"
             aria-label={`Tailor ${tour.title}`}
           >
-            Tailor this day
+            {CTA_LABELS.tailor}
           </Link>
         </div>
       </div>
@@ -242,7 +243,7 @@ function CtaStrip() {
             </p>
           </div>
           <CtaButton to="/studio-v3" variant="ghostDark" className="flex-shrink-0">
-            Design a day in the Studio
+            {CTA_LABELS.studio}
           </CtaButton>
         </div>
       </div>

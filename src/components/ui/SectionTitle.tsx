@@ -16,7 +16,7 @@ import { cn } from "@/lib/utils";
  * `italic font-normal text-[color:var(--teal)]`, the locked emphasis token.
  */
 
-const baseClasses = "font-serif text-[color:var(--charcoal)] font-medium tracking-normal";
+const baseClasses = "font-serif text-[color:var(--charcoal)] font-semibold tracking-normal";
 
 const sizeClasses = {
   default:

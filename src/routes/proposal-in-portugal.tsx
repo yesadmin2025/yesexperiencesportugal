@@ -16,6 +16,7 @@ import { useEditorialOverrides } from "@/lib/editorial-overrides";
 
 import { PROPOSAL_FAQ } from "@/content/seo-faq";
 import imgRomantic from "@/assets/exp-romantic.jpg";
+import { CTA_LABELS } from "@/content/cta-vocabulary";
 
 const BASE_URL = "https://yesexperiencesportugal.com";
 const PAGE_PATH = "/proposal-in-portugal";
@@ -73,7 +74,7 @@ const BLOCKS = [
     local: "Planned end to end with our local team — every detail confirmed before the day.",
     image: PROPOSAL_SERVICE_IMAGES[0],
     icon: Heart,
-    cta: "Plan a Proposal",
+    cta: CTA_LABELS.moments,
   },
   {
     eyebrow: "Celebrations",
@@ -84,7 +85,7 @@ const BLOCKS = [
     local: "Coordinated by a local host who knows how each piece of the day connects.",
     image: PROPOSAL_SERVICE_IMAGES[1],
     icon: Sparkles,
-    cta: "Plan a Celebration",
+    cta: CTA_LABELS.moments,
   },
   {
     eyebrow: "Family & Friends",
@@ -96,7 +97,7 @@ const BLOCKS = [
       "We work with people we trust on the ground — places that welcome you as guests, not bookings.",
     image: PROPOSAL_SERVICE_IMAGES[2],
     icon: Users,
-    cta: "Plan a Private Day",
+    cta: CTA_LABELS.moments,
   },
 ];
 
@@ -123,7 +124,7 @@ export function ProposalInPortugalPage() {
           </p>
           <div className="mt-8 flex justify-center">
             <CtaButton href="#proposal-request" variant="primary">
-              Plan a Proposal
+              {CTA_LABELS.moments}
             </CtaButton>
           </div>
         </div>

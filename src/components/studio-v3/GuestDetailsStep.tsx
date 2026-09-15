@@ -282,7 +282,7 @@ export function GuestDetailsStep({
       </button>
 
       <header className="mt-2 text-center">
-        <Eyebrow>Almost there</Eyebrow>
+        <Eyebrow>Make it yours</Eyebrow>
         <h2
           id="studio-v3-guest-details-title"
           className="mt-3 text-[22px] leading-[1.25] [text-wrap:balance]"
@@ -292,7 +292,7 @@ export function GuestDetailsStep({
             fontWeight: 500,
           }}
         >
-          A few details so your host is ready.
+          A few essential details, then secure checkout.
         </h2>
         {journeyTitle ? (
           <p

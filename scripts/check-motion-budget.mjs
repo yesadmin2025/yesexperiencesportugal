@@ -19,6 +19,15 @@ const ROOTS = ["src"];
 const CSS_EXT = new Set([".css"]);
 const TSX_EXT = new Set([".tsx", ".ts"]);
 const NON_COMPOSITED = /\b(top|left|right|bottom|width|height|margin|padding)\b/;
+const MOTION_TOKEN_RANGES = {
+  "--dur-tap": [140, 200],
+  "--dur-quick": [140, 200],
+  "--dur-base": [300, 450],
+  "--dur-slow": [300, 450],
+  "--dur-image": [700, 1000],
+  "--dur-scene": [700, 1000],
+  "--dur-cinematic": [700, 1000],
+};
 
 const violations = [];
 
@@ -72,6 +81,20 @@ function scanTsx(path) {
 }
 
 for (const r of ROOTS) walk(r);
+
+const globalCss = readFileSync("src/styles.css", "utf8");
+for (const [token, [min, max]] of Object.entries(MOTION_TOKEN_RANGES)) {
+  const match = globalCss.match(new RegExp(`${token}:\\s*(\\d+)ms`));
+  const value = match ? Number(match[1]) : NaN;
+  if (!Number.isFinite(value) || value < min || value > max) {
+    violations.push({
+      file: "src/styles.css",
+      line: match ? globalCss.slice(0, match.index).split("\n").length : 1,
+      rule: "motion tier",
+      text: `${token} must be ${min}–${max}ms (found ${match?.[1] ?? "missing"})`,
+    });
+  }
+}
 
 if (violations.length) {
   console.error(`\n✖ Motion budget: ${violations.length} violation(s)\n`);
