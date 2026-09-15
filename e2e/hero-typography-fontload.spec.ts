@@ -101,8 +101,8 @@ test.describe("Hero typography — font families & scale (post font load)", () =
 
     const isMobile = testInfo.project.name === "mobile-chromium";
 
-    const line1 = await readComputed(page, '[data-hero-stanza="true"] > p:nth-child(1)');
-    const line2 = await readComputed(page, '[data-hero-stanza="true"] > p:nth-child(2)');
+    const line1 = await readComputed(page, '[data-hero-field="headlineLine1"]');
+    const line2 = await readComputed(page, '[data-hero-field="headlineLine2"]');
     const primaryCta = await readComputed(page, 'a[data-hero-field="primaryCta"]');
     const secondaryCta = await readComputed(page, 'a[data-hero-field="secondaryCta"]');
 
@@ -112,27 +112,33 @@ test.describe("Hero typography — font families & scale (post font load)", () =
     });
 
     // ── Stanza — Fraunces italic 400, gold-soft, tight editorial leading ──
+    // Both stanza lines are Fraunces. L1 is upright medium in ivory
+    // (the statement); L2 is the gold-soft italic answer (the promise).
     for (const [label, line] of [
       ["stanza L1", line1],
       ["stanza L2", line2],
     ] as const) {
       expect(line.primaryFamily, `${label} font-family`).toBe("fraunces");
-      expect(line.fontStyle, `${label} must be italic`).toBe("italic");
-      expect(line.fontWeight, `${label} weight`).toBe("400");
-      expect(line.lineHeightRatio, `${label} leading`).toBeGreaterThanOrEqual(1.15);
+      expect(line.lineHeightRatio, `${label} leading`).toBeGreaterThanOrEqual(0.95);
       expect(line.lineHeightRatio, `${label} leading`).toBeLessThanOrEqual(1.4);
-      // Gold-soft ≈ #F1D8AB → R > G > B, clearly not ivory/white.
-      const m = line.color.match(/\d+/g)?.map(Number) ?? [];
-      expect(m.length, `${label} color parseable`).toBeGreaterThanOrEqual(3);
-      expect(m[0], `${label} gold R > G`).toBeGreaterThan(m[1]);
-      expect(m[1], `${label} gold G > B`).toBeGreaterThan(m[2]);
     }
 
-    // clamp(28px, 4.6vw, 50px) — mobile lands at the floor, desktop higher.
-    expect(line1.fontSizePx, "stanza size floor").toBeGreaterThanOrEqual(27.5);
-    expect(line1.fontSizePx, "stanza size ceiling").toBeLessThanOrEqual(50.5);
+    expect(line1.fontStyle, "stanza L1 stays upright").toBe("normal");
+    expect(line1.fontWeight, "stanza L1 weight").toBe("500");
+
+    expect(line2.fontStyle, "stanza L2 must be italic").toBe("italic");
+    expect(line2.fontWeight, "stanza L2 weight").toBe("400");
+    // Gold-soft ≈ #F1D8AB → R > G > B, clearly not ivory/white.
+    const gold = line2.color.match(/\d+/g)?.map(Number) ?? [];
+    expect(gold.length, "stanza L2 color parseable").toBeGreaterThanOrEqual(3);
+    expect(gold[0], "stanza L2 gold R > G").toBeGreaterThan(gold[1]);
+    expect(gold[1], "stanza L2 gold G > B").toBeGreaterThan(gold[2]);
+
+    // clamp(2.65rem, 7vw, 5.75rem) — mobile lands at the floor, desktop higher.
+    expect(line1.fontSizePx, "stanza size floor").toBeGreaterThanOrEqual(42);
+    expect(line1.fontSizePx, "stanza size ceiling").toBeLessThanOrEqual(92.5);
     if (!isMobile) {
-      expect(line1.fontSizePx, "stanza scales up beyond mobile").toBeGreaterThanOrEqual(30);
+      expect(line1.fontSizePx, "stanza scales up beyond mobile").toBeGreaterThanOrEqual(48);
     }
     expect(
       Math.abs(line2.fontSizePx - line1.fontSizePx),

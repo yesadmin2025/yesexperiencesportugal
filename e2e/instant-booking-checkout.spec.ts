@@ -55,9 +55,14 @@ const baseBody: Omit<CheckoutBody, "tailored" | "stopLabels" | "journeyTitle" | 
   environment: "sandbox",
 };
 
+/**
+ * Studio checkout enforces a minimum advance window
+ * (`STUDIO_CHECKOUT_MIN_ADVANCE_DAYS`), so the shared fixture date sits
+ * comfortably beyond it instead of using "tomorrow".
+ */
 function tomorrowISO() {
   const d = new Date();
-  d.setUTCDate(d.getUTCDate() + 1);
+  d.setUTCDate(d.getUTCDate() + 10);
   return d.toISOString().slice(0, 10);
 }
 
@@ -137,7 +142,10 @@ test.describe("instant booking checkout", () => {
     expect(json.url).toMatch(/^https:\/\/checkout\.stripe\.com\//);
     expect(json.flow).toBe("tailor");
     expect(json.productName).toMatch(/^YES Tailored — /);
-    expect(json.lineItemDescription).toContain("Tailored adjustments");
-    expect(json.submitMessage).toContain("within 2 hours");
+    // A Tailor configuration allowed into Stripe is instantly booked —
+    // no post-payment operator-review language.
+    expect(json.lineItemDescription).toContain("Hotel pickup included");
+    expect(json.lineItemDescription).toContain("Instant confirmation by email.");
+    expect(json.submitMessage).toBeTruthy();
   });
 });
