@@ -112,8 +112,7 @@ test.describe("Hero typography — font families & scale (post font load)", () =
     });
 
     // ── Stanza — Fraunces italic 400, gold-soft, tight editorial leading ──
-    // Both stanza lines are Fraunces. L1 is upright medium in ivory
-    // (the statement); L2 is the gold-soft italic answer (the promise).
+    // Both stanza lines form one continuous Fraunces italic statement in gold.
     for (const [label, line] of [
       ["stanza L1", line1],
       ["stanza L2", line2],
@@ -123,8 +122,8 @@ test.describe("Hero typography — font families & scale (post font load)", () =
       expect(line.lineHeightRatio, `${label} leading`).toBeLessThanOrEqual(1.4);
     }
 
-    expect(line1.fontStyle, "stanza L1 stays upright").toBe("normal");
-    expect(line1.fontWeight, "stanza L1 weight").toBe("500");
+    expect(line1.fontStyle, "stanza L1 must be italic").toBe("italic");
+    expect(line1.fontWeight, "stanza L1 weight").toBe("400");
 
     expect(line2.fontStyle, "stanza L2 must be italic").toBe("italic");
     expect(line2.fontWeight, "stanza L2 weight").toBe("400");
