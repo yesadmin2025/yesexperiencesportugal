@@ -96,10 +96,9 @@ describe("StudioV3Intro — P2 opening", () => {
       "utf8",
     );
     expect(stepper).not.toMatch(/Beat \d of \d/);
-    expect(stepper).toContain("Start with the feeling");
-    expect(stepper).toContain("Now, what draws you");
-    expect(stepper).toContain("Now, make it real");
-    expect(stepper).toContain("Your day is taking shape");
+    expect(stepper).toContain("Start with what feels like you");
+    expect(stepper).toContain("Your private day is taking shape");
+    expect(stepper).toContain("Make the practical details yours");
     for (const label of ["You", "Your day", "Make it yours"]) {
       expect(stepper).toContain(`label: "${label}"`);
     }

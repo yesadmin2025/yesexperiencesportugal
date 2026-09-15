@@ -15,6 +15,7 @@ import { useServerFn } from "@tanstack/react-start";
 
 import { loadStudioSession } from "@/lib/studio-v2/sessions.functions";
 import { trackBuilderEvent } from "@/lib/builder-analytics";
+import { CTA_LABELS } from "@/content/cta-vocabulary";
 
 export const Route = createFileRoute("/studio-v2/i/$token")({
   head: ({ params }) => ({
@@ -50,7 +51,7 @@ function Shell({ title }: { title: string }) {
           href="/studio-v3"
           className="mt-6 inline-block text-[12px] uppercase tracking-[0.22em] font-semibold underline underline-offset-4"
         >
-          Open the Studio
+          {CTA_LABELS.studio}
         </a>
       </div>
     </div>

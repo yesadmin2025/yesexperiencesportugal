@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
+import { CTA_LABELS } from "@/content/cta-vocabulary";
 
 /**
  * Studio locale — emotional localization for the Living Atmosphere Studio.
@@ -327,7 +328,7 @@ const DICTS: Record<StudioLocale, StudioDict> = {
       growing: "This feels right next",
       settled: "This follows naturally",
     },
-    reserveCta: "Check availability & reserve",
+    reserveCta: CTA_LABELS.signatureReserve,
     viewRoute: "View route on map",
     hideRoute: "Hide map",
     talkConcierge: "Talk to concierge",

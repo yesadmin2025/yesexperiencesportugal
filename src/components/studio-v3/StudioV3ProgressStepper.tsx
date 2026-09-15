@@ -9,8 +9,8 @@ import { useCallback, useEffect, useMemo, useRef } from "react";
 import type { StudioV3Phase } from "./types";
 import { recordStudioV3BuilderStep } from "@/lib/studio-v3-telemetry";
 
-// Studio reform (2026-08): the beats now map 1:1 onto the real phase groups
-// in STUDIO_V3_PHASE_ORDER — FEEL → TASTE → SHAPE → YOUR DAY. Progress that
+// Premium System Lock: three visible chapters sit over the existing phase groups
+// in STUDIO_V3_PHASE_ORDER — YOU → YOUR DAY → MAKE IT YOURS. Progress that
 // lies about how much is left costs more completions than a longer honest
 // one. IDs are kept for telemetry/back-compat; only labels + grouping moved.
 export const STUDIO_V3_BEATS = [
@@ -36,7 +36,7 @@ const BEAT_ENTRY_PHASE: Record<StudioV3BeatId, StudioV3Phase> = {
   compose: "logistics",
 };
 
-/** Phase → beat index (0..3) or null when no beat should be highlighted. */
+/** Phase → chapter index (0..2) or null when no chapter should be highlighted. */
 // eslint-disable-next-line react-refresh/only-export-components
 export function beatIndexForPhase(phase: StudioV3Phase): number | null {
   switch (phase) {
@@ -48,7 +48,7 @@ export function beatIndexForPhase(phase: StudioV3Phase): number | null {
     case "who":
     case "logistics":
       return 0;
-    // Beat 2 — TASTE: what the day is made of.
+    // Chapter 2 — YOUR DAY: what the day is made of.
     case "interests":
     case "refinement":
     case "investment":

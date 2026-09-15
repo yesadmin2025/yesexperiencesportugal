@@ -13,6 +13,7 @@
 
 import { useMemo, useState } from "react";
 import { Link } from "@tanstack/react-router";
+import { CTA_LABELS } from "@/content/cta-vocabulary";
 
 type Intent = "wine" | "coast" | "history" | "unique";
 type Travellers = "couple" | "group" | "journey";
@@ -490,13 +491,13 @@ function buildResultContent(s: QuizState, r: ResultKey): ResultContent {
       pills: ["Wine", "Coast", "Private", "From €138"],
       ctas: [
         {
-          label: "Check availability & reserve",
+          label: CTA_LABELS.signatureReserve,
           to: "/tours/$tourId",
           params: { tourId: "arrabida-wine-allinclusive" },
           variant: "primary",
         },
         {
-          label: "Tailor this day",
+          label: CTA_LABELS.signatureTailor,
           to: "/tours/$tourId/tailor",
           params: { tourId: "arrabida-wine-allinclusive" },
           variant: "outline",
@@ -508,9 +509,9 @@ function buildResultContent(s: QuizState, r: ResultKey): ResultContent {
     return {
       label: "Experience Studio",
       title: "No exact match — let's build it.",
-      subtitle: "Open the Studio and design your day in real time. Takes about 90 seconds.",
+      subtitle: "Design your day in real time. Takes about 90 seconds.",
       pills: ["Custom", "Any mood", "Instant price"],
-      ctas: [{ label: "Open Studio", to: "/studio-v3", variant: "gold" }],
+      ctas: [{ label: CTA_LABELS.studio, to: "/studio-v3", variant: "gold" }],
     };
   }
   return {
@@ -519,7 +520,7 @@ function buildResultContent(s: QuizState, r: ResultKey): ResultContent {
     subtitle:
       "Let's plan your Portugal properly — multi-day, fully designed, every night confirmed.",
     pills: ["Multi-day", "Private", "Curated"],
-    ctas: [{ label: "Start Planning", to: "/multi-day", variant: "ivory" }],
+    ctas: [{ label: CTA_LABELS.travelDesigner, to: "/multi-day", variant: "ivory" }],
   };
 }
 
