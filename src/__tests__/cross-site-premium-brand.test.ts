@@ -24,7 +24,7 @@ describe("cross-site premium brand contract", () => {
     const ways = read("src/components/home/FourWaysIn.tsx");
     const heroCopy = read("src/content/hero-copy.ts");
 
-    expect(experiences).toContain("Three easy places <SectionTitle.Em>to begin.</SectionTitle.Em>");
+    expect(experiences).toContain("Private days, <SectionTitle.Em>ready when you are.</SectionTitle.Em>");
     expect(designer).toContain("Portugal, <SectionTitle.Em>shaped around you.</SectionTitle.Em>");
     expect(multiDay).toContain('to="/portugal-travel-designer"');
     expect(heroCopy).toContain('brandLine: "Continue the story across Portugal →"');

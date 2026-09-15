@@ -69,3 +69,9 @@
 - [ ] Regression tests, documentation, mobile/desktop verification, typecheck and build
 - [ ] Keep production undeployed
 
+## 11. Focused Hero + Experiences editorial pass
+- [x] Sequence the homepage Hero and remove lower first-viewport micro-links
+- [x] Simplify `/experiences` into a two-column editorial collection with one card action
+- [x] Verify focused tests, mobile/desktop preview, typecheck, and production build
+- [x] Keep production undeployed
+

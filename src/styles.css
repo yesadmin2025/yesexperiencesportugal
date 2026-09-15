@@ -2132,6 +2132,21 @@
     linear-gradient(180deg, color-mix(in oklab, var(--charcoal-deep) 35%, transparent) 0%, transparent 30%, color-mix(in oklab, var(--charcoal-deep) 26%, transparent) 58%, color-mix(in oklab, var(--charcoal-deep) 68%, transparent) 100%);
 }
 
+.hero-cinematic .hero-editorial-handoff {
+  background: linear-gradient(
+    180deg,
+    transparent 0%,
+    color-mix(in oklab, var(--charcoal-deep) 28%, transparent) 48%,
+    color-mix(in oklab, var(--ivory) 34%, transparent) 82%,
+    var(--ivory) 100%
+  );
+  pointer-events: none;
+}
+
+.experiences-editorial-grid > .reveal-stagger:nth-child(2n) {
+  transition-delay: var(--stagger-sm);
+}
+
 @keyframes heroFilmSettle {
   from { transform: scale(1.03); }
   to { transform: scale(1); }
@@ -3624,6 +3639,9 @@ html.motion-ready[data-motion-scope="marketing"] [data-motion="fade-up-sm"] {
     opacity: 1 !important;
     transform: none !important;
     transition: none !important;
+  }
+  .experiences-editorial-grid > .reveal-stagger {
+    transition-delay: 0ms !important;
   }
 }
 
