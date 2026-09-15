@@ -346,6 +346,9 @@ export function composeHybridDay(
     timeBudget,
     requiredTypes: [...(input.requiredTypes ?? [])],
     excludedTypes: input.wineIntent ? [] : ["winery"],
+    excludedStopIds: [...new Set(input.rejectedStopIds ?? [])].filter(
+      (stopId) => !mustIncludeStopIds.includes(stopId),
+    ),
     mustIncludeStopIds,
     pickupCoord: input.pickupCoord ?? null,
     commercialContainment: input.commercialContainment === true,
