@@ -71,8 +71,28 @@ export function exactDirectorObligations(
 
   const lastDirection = projection.selectedDirectionIds.at(-1) ?? null;
 
+  // Offered-but-not-chosen exact moments. Only options the traveller really
+  // saw in that exact question count, and a moment chosen anywhere else always
+  // wins over a rejection.
+  const rejected = new Set<string>();
+  for (const event of history) {
+    if (!hasQuestionSemanticProgress(event)) continue;
+    const selected = new Set(authoritativeSelectedOptionIds(event));
+    if (selected.size === 0) continue;
+    for (const offered of event.offeredOptionIds) {
+      if (selected.has(offered)) continue;
+      if (!isDirectorOptionId(offered)) continue;
+      const option = DIRECTOR_OPTION_CATALOG[offered];
+      if (option.kind !== "discovery" || !option.discoverySignal) continue;
+      const stopId = EXACT_STOP_BY_SIGNAL[option.discoverySignal];
+      if (stopId) rejected.add(stopId);
+    }
+  }
+  const rejectedStopIds = [...rejected].filter((stopId) => !principalStopIds.includes(stopId));
+
   return {
     preferredSignatureId: obligationSignature ?? lastDirection,
     principalStopIds,
+    rejectedStopIds,
   };
 }
