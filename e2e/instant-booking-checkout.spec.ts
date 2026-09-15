@@ -142,7 +142,10 @@ test.describe("instant booking checkout", () => {
     expect(json.url).toMatch(/^https:\/\/checkout\.stripe\.com\//);
     expect(json.flow).toBe("tailor");
     expect(json.productName).toMatch(/^YES Tailored — /);
-    expect(json.lineItemDescription).toContain("Tailored adjustments");
-    expect(json.submitMessage).toContain("within 2 hours");
+    // A Tailor configuration allowed into Stripe is instantly booked —
+    // no post-payment operator-review language.
+    expect(json.lineItemDescription).toContain("Hotel pickup included");
+    expect(json.lineItemDescription).toContain("Instant confirmation by email.");
+    expect(json.submitMessage).toBeTruthy();
   });
 });
