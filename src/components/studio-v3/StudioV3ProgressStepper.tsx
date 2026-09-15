@@ -1,6 +1,4 @@
-// Studio V3 — 4-beat progression stepper.
-//
-// Region → Rhythm → Dates → Compose
+// Studio V3 — three-chapter progression over the existing phase model.
 //
 // Visible from the first answered phase onward; hidden on intro.
 // Interactive: completed beats are keyboard-focusable buttons that
@@ -16,10 +14,9 @@ import { recordStudioV3BuilderStep } from "@/lib/studio-v3-telemetry";
 // lies about how much is left costs more completions than a longer honest
 // one. IDs are kept for telemetry/back-compat; only labels + grouping moved.
 export const STUDIO_V3_BEATS = [
-  { id: "region", label: "Feel" },
-  { id: "rhythm", label: "Taste" },
-  { id: "dates", label: "Shape" },
-  { id: "compose", label: "Your day" },
+  { id: "region", label: "You" },
+  { id: "rhythm", label: "Your day" },
+  { id: "compose", label: "Make it yours" },
 ] as const;
 
 export type StudioV3BeatId = (typeof STUDIO_V3_BEATS)[number]["id"];
@@ -27,18 +24,16 @@ export type StudioV3BeatId = (typeof STUDIO_V3_BEATS)[number]["id"];
 /** Quiet reassurance line under the stepper — editorial, never a progress
  *  counter. Desktop keeps the same line for parity. */
 const BEAT_REASSURANCE: Record<StudioV3BeatId, string> = {
-  region: "Start with the feeling",
-  rhythm: "Now, what draws you",
-  dates: "Now, make it real",
-  compose: "Your day is taking shape",
+  region: "Start with what feels like you",
+  rhythm: "Your private day is taking shape",
+  compose: "Make the practical details yours",
 };
 
 /** First phase associated with each beat — used as jump-back target. */
 const BEAT_ENTRY_PHASE: Record<StudioV3BeatId, StudioV3Phase> = {
   region: "feeling",
   rhythm: "interests",
-  dates: "logistics",
-  compose: "map",
+  compose: "logistics",
 };
 
 /** Phase → beat index (0..3) or null when no beat should be highlighted. */
@@ -60,20 +55,20 @@ export function beatIndexForPhase(phase: StudioV3Phase): number | null {
     case "considerations":
     case "language":
       return 1;
-    // Beat 3 — SHAPE: rhythm + the logistics that make it real.
+    // Chapter 2 — YOUR DAY: taste, rhythm and composition.
     case "rhythm":
+    case "map":
+    case "storyboard":
+    case "confirmation":
+      return 1;
+    // Chapter 3 — MAKE IT YOURS: practical details and payment.
     case "logistics":
     case "date":
     case "pickup":
     case "guests":
-      return 2;
-    // Beat 4 — YOUR DAY: composition, story, close.
-    case "map":
-    case "storyboard":
-    case "confirmation":
     case "guestDetails":
     case "checkoutSummary":
-      return 3;
+      return 2;
     default:
       return null;
   }
@@ -185,9 +180,8 @@ export function StudioV3ProgressStepper({
           );
           const label = (
             <span
-              className="text-[10px] uppercase tracking-[0.16em] font-semibold whitespace-nowrap"
+              className="t-eyebrow whitespace-nowrap text-[9px] sm:text-[10px]"
               style={{
-                fontFamily: "var(--font-editorial)",
                 color: isReachable
                   ? "var(--charcoal)"
                   : "color-mix(in oklab, var(--charcoal) 55%, transparent)",

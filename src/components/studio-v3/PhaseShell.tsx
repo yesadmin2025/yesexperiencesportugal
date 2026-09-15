@@ -102,7 +102,7 @@ export function PhaseShell({
           data-testid="studio-v3-progress"
           className="hidden sm:block absolute left-1/2 top-4 -translate-x-1/2 w-[min(92vw,520px)] px-1 select-none"
           aria-label={progress.phrase}
-          style={{ animation: "studioV3RiseIn 520ms cubic-bezier(0.22, 0.61, 0.36, 1) both" }}
+          style={{ animation: "studioV3RiseIn var(--dur-slow) var(--ease-premium) both" }}
         >
           <p
             className="text-[12.5px] sm:text-[13.5px] leading-[1.35] truncate"

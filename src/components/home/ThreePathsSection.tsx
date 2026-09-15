@@ -46,7 +46,7 @@ const PATHS: Path[] = [
         hidden Alentejo.
       </>
     ),
-    cta: "Browse",
+    cta: "Explore Signature Experiences",
     href: "/experiences",
     anchor: `From €${SIGNATURE_FROM}`,
   },
@@ -62,7 +62,7 @@ const PATHS: Path[] = [
       </>
     ),
     body: <>Shape your day on a living canvas — route, price, confirm.</>,
-    cta: "Open the Studio",
+    cta: "Design your day",
     href: "/studio-v3",
     anchor: "Live price",
   },
@@ -78,7 +78,7 @@ const PATHS: Path[] = [
       </>
     ),
     body: <>A designer composes your multi-day Portugal, end to end.</>,
-    cta: "Begin a conversation",
+    cta: "Design my journey",
     href: "/multi-day",
     anchor: "To your budget",
   },
@@ -94,7 +94,7 @@ const PATHS: Path[] = [
       </>
     ),
     body: <>Proposals, celebrations and corporate days — staged with care.</>,
-    cta: "Tell us the occasion",
+    cta: "Plan a special moment",
     href: "/proposal-in-portugal",
     anchor: "On request",
   },

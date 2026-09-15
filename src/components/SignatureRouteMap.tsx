@@ -77,7 +77,7 @@ function makeGoldPin(L: typeof import("leaflet"), index: number) {
         border:2px solid var(--gold,#c9a96a);
         box-shadow:0 2px 8px rgba(0,0,0,0.28), 0 0 0 6px rgba(201,169,106,0.18);
         display:flex;align-items:center;justify-content:center;
-        font-family:ui-sans-serif,system-ui;font-weight:600;font-size:13px;
+        font-family:Inter,system-ui,sans-serif;font-weight:600;font-size:13px;
         color:var(--teal,#295b61);line-height:1;">${index + 1}</div>`,
     iconSize: [30, 30],
     iconAnchor: [15, 15],
