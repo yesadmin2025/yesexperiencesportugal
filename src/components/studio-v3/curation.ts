@@ -2697,6 +2697,8 @@ function resolveLivingAtlasLiveDay(input: {
   pickupCoord: { lat: number; lng: number } | null;
   /** Concrete moments explicitly selected in the Director fork. */
   principalStopIds: readonly string[];
+  /** Concrete moments offered in the same fork and declined. */
+  rejectedStopIds?: readonly string[];
 }): { block: LivingAtlasLiveBlock; publicPoints: ResolvedRoutePoint[] } {
   // RAW structural stops — the ONLY input to the membership authority.
   // No date-closure membership filter, no mobility rewrite, no wine swap, no
