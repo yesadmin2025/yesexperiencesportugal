@@ -5,8 +5,8 @@
  *
  * Travellers can step backward (edit a previous answer), deep-link into a
  * later phase, or trigger fast phase swaps mid-animation. The stepper must
- * always reflect the *current* phase's beat — never a stale one, never a
- * skipped one — and must always render the same four labels in the same
+ * always reflect the *current* phase's chapter — never a stale one, never a
+ * skipped one — and must always render the same three labels in the same
  * order.
  */
 import { act, cleanup, render, screen } from "@testing-library/react";
@@ -30,37 +30,36 @@ function activeBeat(): string | null {
 }
 
 describe("StudioV3ProgressStepper — out-of-order & rapid transitions", () => {
-  it("jumps backward without losing sync (compose → region)", () => {
-    const { rerender } = render(<StudioV3ProgressStepper phase="storyboard" />);
+  it("jumps backward without losing sync (make it yours → you)", () => {
+    const { rerender } = render(<StudioV3ProgressStepper phase="guestDetails" />);
     expect(activeBeat()).toBe("compose");
 
     rerender(<StudioV3ProgressStepper phase="feeling" />);
     expect(activeBeat()).toBe("region");
 
-    rerender(<StudioV3ProgressStepper phase="interests" />);
+    rerender(<StudioV3ProgressStepper phase="storyboard" />);
     expect(activeBeat()).toBe("rhythm");
   });
 
-  it("deep-link into Dates renders Dates active immediately (no replay)", () => {
-    render(<StudioV3ProgressStepper phase="date" />);
-    expect(activeBeat()).toBe("dates");
-    // Region + Rhythm are shown as 'done', Compose as upcoming.
+  it("deep-link into logistics renders Make it yours active immediately (no replay)", () => {
+    render(<StudioV3ProgressStepper phase="logistics" />);
+    expect(activeBeat()).toBe("compose");
     const nav = screen.getByTestId("studio-v3-progress-stepper");
     const current = nav.querySelectorAll('[aria-current="step"]');
     expect(current.length).toBe(1);
-    expect(current[0].textContent).toContain("Shape");
+    expect(current[0].textContent).toContain("Make it yours");
   });
 
   it("survives rapid synchronous phase swaps and lands on the final phase", () => {
     const burst: StudioV3Phase[] = [
       "feeling",
       "rhythm",
-      "date",
+      "refinement",
       "rhythm",
       "feeling",
       "map",
-      "date",
-      "storyboard",
+      "logistics",
+      "checkoutSummary",
     ];
     const { rerender } = render(<StudioV3ProgressStepper phase={burst[0]} />);
     act(() => {
@@ -68,7 +67,6 @@ describe("StudioV3ProgressStepper — out-of-order & rapid transitions", () => {
         rerender(<StudioV3ProgressStepper phase={p} />);
       }
     });
-    // Final phase is "storyboard" → compose.
     expect(activeBeat()).toBe("compose");
   });
 
@@ -79,12 +77,12 @@ describe("StudioV3ProgressStepper — out-of-order & rapid transitions", () => {
       "destination",
       "rhythm",
       "interests",
-      "date",
+      "logistics",
       "rhythm",
       "map",
       "feeling",
       "storyboard",
-      "date",
+      "guestDetails",
     ];
     const { rerender } = render(<StudioV3ProgressStepper phase={phases[0]} />);
     for (const p of phases) {
@@ -104,13 +102,13 @@ describe("StudioV3ProgressStepper — out-of-order & rapid transitions", () => {
     }
   });
 
-  it("re-entering the same beat from a different phase does not duplicate telemetry per render", async () => {
+  it("re-entering the same chapter from a different phase does not duplicate telemetry per render", async () => {
     const { recordStudioV3BuilderStep } = await import("@/lib/studio-v3-telemetry");
     const spy = recordStudioV3BuilderStep as unknown as ReturnType<typeof vi.fn>;
     spy.mockClear();
 
     const { rerender } = render(<StudioV3ProgressStepper phase="feeling" />);
-    // Same beat (region) via different phases — phase is part of the effect
+    // Same chapter (You) via different phases — phase is part of the effect
     // dep, so each unique phase fires once; a re-render with the same phase
     // must not double-fire.
     rerender(<StudioV3ProgressStepper phase="feeling" />);
@@ -119,10 +117,7 @@ describe("StudioV3ProgressStepper — out-of-order & rapid transitions", () => {
     rerender(<StudioV3ProgressStepper phase="who" />);
 
     const calls = spy.mock.calls.map((c) => c[0]);
-    // Every call resolves to the region beat.
     for (const c of calls) expect(c.step).toBe("region");
-    // One call per *unique* phase transition (feeling, destination, who) +
-    // the initial mount on "feeling" = 3 unique phases reached.
     const uniquePhases = new Set(calls.map((c) => c.phase));
     expect(uniquePhases.size).toBe(3);
   });

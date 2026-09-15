@@ -20,7 +20,7 @@ vi.mock("@/lib/studio-v3-telemetry", () => ({
 
 afterEach(() => cleanup());
 
-const PHASES_PER_BEAT: StudioV3Phase[] = ["feeling", "rhythm", "guestDetails"];
+const PHASES_PER_BEAT: StudioV3Phase[] = ["feeling", "refinement", "guestDetails"];
 
 describe("StudioV3ProgressStepper — visual contract", () => {
   it("locks container spacing + layout classes", () => {
@@ -45,8 +45,8 @@ describe("StudioV3ProgressStepper — visual contract", () => {
   });
 
   it("applies the correct color tokens to active / done / upcoming steps", () => {
-    // Phase "rhythm" → chapter 1 active; chapter 0 done; chapter 2 upcoming.
-    const { getByTestId } = render(<StudioV3ProgressStepper phase="rhythm" />);
+    // Phase "refinement" → chapter 1 active; chapter 0 done; chapter 2 upcoming.
+    const { getByTestId } = render(<StudioV3ProgressStepper phase="refinement" />);
     const nav = getByTestId("studio-v3-progress-stepper");
     const bars = nav.querySelectorAll<HTMLSpanElement>("span[aria-hidden]");
     expect(bars.length).toBe(3);
@@ -66,7 +66,7 @@ describe("StudioV3ProgressStepper — visual contract", () => {
   });
 
   it("keeps label typography on the semantic eyebrow token", () => {
-    const { getByTestId } = render(<StudioV3ProgressStepper phase="rhythm" />);
+    const { getByTestId } = render(<StudioV3ProgressStepper phase="refinement" />);
     const nav = getByTestId("studio-v3-progress-stepper");
     const labelNodes = nav.querySelectorAll<HTMLSpanElement>("span:not([aria-hidden])");
     for (const node of Array.from(labelNodes)) {
@@ -76,7 +76,7 @@ describe("StudioV3ProgressStepper — visual contract", () => {
   });
 
   it("snapshot: active chapter DOM shape stays locked", () => {
-    const { getByTestId } = render(<StudioV3ProgressStepper phase="rhythm" />);
+    const { getByTestId } = render(<StudioV3ProgressStepper phase="refinement" />);
     const nav = getByTestId("studio-v3-progress-stepper");
     // Normalize so the snapshot is structural, not whitespace-sensitive.
     expect(nav.outerHTML.replace(/\s+/g, " ")).toMatchSnapshot();

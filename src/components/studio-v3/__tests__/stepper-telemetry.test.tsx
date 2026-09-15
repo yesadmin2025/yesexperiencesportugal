@@ -2,15 +2,14 @@
 //
 // Verifies:
 //   1. recordStudioV3BuilderStep fires once per perceived phase change
-//      (mount + each phase update), with the correct beat id + index.
-//   2. Keyboard navigation between completed beats moves DOM focus
+//      (mount + each phase update), with the correct chapter id + index.
+//   2. Keyboard navigation between completed chapters moves DOM focus
 //      but does NOT emit additional telemetry (telemetry is keyed to
 //      phase changes, not focus changes).
-//   3. Clicking a completed beat fires `onJumpToBeat` but, on its own,
+//   3. Clicking a completed chapter fires `onJumpToBeat` but, on its own,
 //      does NOT emit telemetry — the parent's resulting phase change
 //      will (in real usage) drive the next telemetry event.
-//   4. Events outside the stepper (focus / click / keydown elsewhere)
-//      never produce stepper telemetry.
+//   4. Events outside the stepper never produce stepper telemetry.
 
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { fireEvent, render, screen } from "@testing-library/react";
@@ -26,7 +25,7 @@ const recordMock = vi.mocked(recordStudioV3BuilderStep);
 describe("StudioV3ProgressStepper · telemetry contract", () => {
   beforeEach(() => vi.clearAllMocks());
 
-  it("emits exactly one event on mount with the correct beat", () => {
+  it("emits exactly one event on mount with the correct chapter", () => {
     render(<StudioV3ProgressStepper phase="feeling" />);
     expect(recordMock).toHaveBeenCalledTimes(1);
     expect(recordMock).toHaveBeenCalledWith({
@@ -36,32 +35,32 @@ describe("StudioV3ProgressStepper · telemetry contract", () => {
     });
   });
 
-  it("emits one event per phase change, with correct beat mapping", () => {
+  it("emits one event per phase change, with correct chapter mapping", () => {
     const { rerender } = render(<StudioV3ProgressStepper phase="feeling" />);
     expect(recordMock).toHaveBeenCalledTimes(1);
 
     rerender(<StudioV3ProgressStepper phase="interests" />);
     expect(recordMock).toHaveBeenCalledTimes(2);
     expect(recordMock).toHaveBeenLastCalledWith({
-      step: "rhythm",
-      stepIndex: 1,
+      step: "region",
+      stepIndex: 0,
       phase: "interests",
     });
 
-    rerender(<StudioV3ProgressStepper phase="date" />);
+    rerender(<StudioV3ProgressStepper phase="storyboard" />);
     expect(recordMock).toHaveBeenCalledTimes(3);
     expect(recordMock).toHaveBeenLastCalledWith({
-      step: "dates",
-      stepIndex: 2,
-      phase: "date",
+      step: "rhythm",
+      stepIndex: 1,
+      phase: "storyboard",
     });
 
-    rerender(<StudioV3ProgressStepper phase="storyboard" />);
+    rerender(<StudioV3ProgressStepper phase="logistics" />);
     expect(recordMock).toHaveBeenCalledTimes(4);
     expect(recordMock).toHaveBeenLastCalledWith({
       step: "compose",
-      stepIndex: 3,
-      phase: "storyboard",
+      stepIndex: 2,
+      phase: "logistics",
     });
   });
 
@@ -71,17 +70,17 @@ describe("StudioV3ProgressStepper · telemetry contract", () => {
   });
 
   it("does NOT emit telemetry when the phase rerenders to the same value", () => {
-    const { rerender } = render(<StudioV3ProgressStepper phase="date" />);
+    const { rerender } = render(<StudioV3ProgressStepper phase="logistics" />);
     recordMock.mockClear();
-    rerender(<StudioV3ProgressStepper phase="date" />);
+    rerender(<StudioV3ProgressStepper phase="logistics" />);
     expect(recordMock).not.toHaveBeenCalled();
   });
 
-  it("keyboard focus traversal between done beats does NOT emit telemetry", () => {
-    render(<StudioV3ProgressStepper phase="storyboard" onJumpToBeat={() => {}} />);
+  it("keyboard focus traversal between done chapters does NOT emit telemetry", () => {
+    render(<StudioV3ProgressStepper phase="guestDetails" onJumpToBeat={() => {}} />);
     recordMock.mockClear();
 
-    const buttons = screen.getAllByRole("button"); // region, rhythm, dates
+    const buttons = screen.getAllByRole("button"); // You, Your day
     buttons[0].focus();
     fireEvent.keyDown(buttons[0], { key: "ArrowRight" });
     fireEvent.keyDown(document.activeElement!, { key: "ArrowRight" });
@@ -91,13 +90,13 @@ describe("StudioV3ProgressStepper · telemetry contract", () => {
     expect(recordMock).not.toHaveBeenCalled();
   });
 
-  it("clicking a completed beat fires onJumpToBeat but does NOT emit telemetry on its own", () => {
+  it("clicking a completed chapter fires onJumpToBeat but does NOT emit telemetry on its own", () => {
     const onJump = vi.fn();
-    render(<StudioV3ProgressStepper phase="storyboard" onJumpToBeat={onJump} />);
+    render(<StudioV3ProgressStepper phase="guestDetails" onJumpToBeat={onJump} />);
     recordMock.mockClear();
 
-    fireEvent.click(screen.getByRole("button", { name: /return to feel/i }));
-    fireEvent.click(screen.getByRole("button", { name: /return to shape/i }));
+    fireEvent.click(screen.getByRole("button", { name: "Return to You" }));
+    fireEvent.click(screen.getByRole("button", { name: "Return to Your day" }));
 
     expect(onJump).toHaveBeenCalledTimes(2);
     expect(recordMock).not.toHaveBeenCalled();
@@ -124,7 +123,7 @@ describe("StudioV3ProgressStepper · telemetry contract", () => {
     expect(recordMock).not.toHaveBeenCalled();
   });
 
-  it("onBeatAdvance fires only when the active beat advances forward, never on back-jumps", () => {
+  it("onBeatAdvance fires only when the active chapter advances forward, never on back-jumps", () => {
     const onBeatAdvance = vi.fn();
     const { rerender } = render(
       <StudioV3ProgressStepper
@@ -138,15 +137,15 @@ describe("StudioV3ProgressStepper · telemetry contract", () => {
 
     rerender(
       <StudioV3ProgressStepper
-        phase="date"
+        phase="logistics"
         onJumpToBeat={() => {}}
         onBeatAdvance={onBeatAdvance}
       />,
     );
     expect(onBeatAdvance).toHaveBeenCalledTimes(2);
-    expect(onBeatAdvance).toHaveBeenLastCalledWith("dates", 2);
+    expect(onBeatAdvance).toHaveBeenLastCalledWith("compose", 2);
 
-    // Jump back to a completed beat → no new advance event.
+    // Jump back to a completed chapter → no new advance event.
     rerender(
       <StudioV3ProgressStepper
         phase="feeling"

@@ -32,47 +32,59 @@ const BEAT_REASSURANCE: Record<StudioV3BeatId, string> = {
 /** First phase associated with each beat — used as jump-back target. */
 const BEAT_ENTRY_PHASE: Record<StudioV3BeatId, StudioV3Phase> = {
   region: "feeling",
-  rhythm: "interests",
+  rhythm: "refinement",
   compose: "logistics",
 };
 
-/** Phase → chapter index (0..2) or null when no chapter should be highlighted. */
+/**
+ * Phase → chapter index (0..2) or null when no chapter should be highlighted.
+ *
+ * The grouping mirrors the REAL live sequence
+ *   feeling → who → interests → rhythm → refinement → storyboard →
+ *   logistics → guestDetails → checkoutSummary
+ * so the visible progress can only hold or advance, never regress.
+ *
+ * Legacy/hydration-only ids are folded into the closest sensible chapter
+ * without touching their canonicalization in `studioPhaseCanonical.ts`.
+ */
 // eslint-disable-next-line react-refresh/only-export-components
 export function beatIndexForPhase(phase: StudioV3Phase): number | null {
   switch (phase) {
     case "intro":
       return null;
-    // Chapter 1 — YOU: feeling, company and practical starting context.
+    // Chapter 1 — YOU: who you are, how you want the day to feel.
     case "feeling":
-    case "destination":
     case "who":
-    case "logistics":
-      return 0;
-    // Chapter 2 — YOUR DAY: what the day is made of.
     case "interests":
-    case "refinement":
-    case "investment":
+    case "rhythm":
+    // Legacy/hydration-only context questions.
+    case "destination":
     case "occasion":
     case "considerations":
     case "language":
-      return 1;
-    // Chapter 2 — YOUR DAY: taste, rhythm and composition.
-    case "rhythm":
-    case "map":
+      return 0;
+    // Chapter 2 — YOUR DAY: the day being composed and refined.
+    case "refinement":
     case "storyboard":
+    // Legacy ids that canonicalize onto the unified "Your Day" surface.
+    case "map":
     case "confirmation":
+    case "investment":
       return 1;
-    // Chapter 3 — MAKE IT YOURS: confirmation details and payment.
+    // Chapter 3 — MAKE IT YOURS: practical facts, details and payment.
+    case "logistics":
+    case "guestDetails":
+    case "checkoutSummary":
+    // Legacy standalone logistics questions.
     case "date":
     case "pickup":
     case "guests":
-    case "guestDetails":
-    case "checkoutSummary":
       return 2;
     default:
       return null;
   }
 }
+
 
 export interface StudioV3ProgressStepperProps {
   phase: StudioV3Phase;
