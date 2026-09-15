@@ -707,7 +707,7 @@ function HomePage() {
                   The Studio draws the day as you shape it: a{" "}
                   <strong className="font-medium text-[color:var(--charcoal)]">real route</strong> on
                   the map, honest driving times, and the price updating as it goes. The final price is
-                  on screen before you pay, confirmation lands in minutes, and a local stays reachable
+                  on screen before you pay, confirmation is instant, and a local stays reachable
                   after that.
                 </p>
 
@@ -715,7 +715,7 @@ function HomePage() {
                 <ol className="mt-7 grid grid-cols-3 gap-1.5 max-w-md" aria-label="Why the Studio">
                   {[
                     { n: "01", label: "Real route" },
-                    { n: "02", label: "Instant confirm" },
+                    { n: "02", label: "Instant confirmation" },
                     { n: "03", label: "Local on WhatsApp" },
                   ].map((d) => (
                     <li key={d.n} className="flex flex-col gap-1.5">

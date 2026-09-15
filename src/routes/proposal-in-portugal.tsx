@@ -247,31 +247,6 @@ export function ProposalInPortugalPage() {
         </div>
       </section>
 
-      {/* Closing CTA */}
-      <section className="py-16 md:py-20 bg-[color:var(--sand)] reveal">
-        <div className="container-x max-w-2xl text-center">
-          <SectionTitle size="compact">
-            Tell us about <SectionTitle.Em>the moment.</SectionTitle.Em>
-          </SectionTitle>
-          <span className="gold-rule mt-5 mx-auto max-w-[64px]" aria-hidden="true" />
-          <p className="mt-5 text-[color:var(--charcoal-soft)] leading-relaxed">
-            We'll help you shape it — discreetly, with people who know the place. No pressure.
-          </p>
-          <div className="mt-7 flex flex-col sm:flex-row gap-3 justify-center">
-            <CtaButton to="/contact" variant="primary">
-              Plan with us
-            </CtaButton>
-            <CtaButton
-              to="/contact"
-              variant="ghost"
-              icon={null}
-              iconLeading={<MessageCircle size={14} aria-hidden="true" />}
-            >
-              Talk to a Local
-            </CtaButton>
-          </div>
-        </div>
-      </section>
       <ServiceCrossLinks
         tone="ivory"
         eyebrow="Related YES services"

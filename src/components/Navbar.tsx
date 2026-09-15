@@ -44,7 +44,7 @@ export function Navbar() {
   useEffect(() => setOpen(false), [pathname]);
 
   const linkClass =
-    "link-hairline tap inline-flex min-h-[44px] items-center text-[color:var(--charcoal)] hover:text-[color:var(--teal)] transition-colors duration-[var(--dur-quick)] rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--teal)] focus-visible:ring-offset-4 focus-visible:ring-offset-[color:var(--ivory,#FAF8F3)]";
+    "link-hairline tap inline-flex min-h-[44px] items-center font-sans font-semibold text-[color:var(--charcoal)] hover:text-[color:var(--teal)] transition-colors duration-[var(--dur-quick)] rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--teal)] focus-visible:ring-offset-4 focus-visible:ring-offset-[color:var(--ivory,#FAF8F3)]";
 
   return (
     <header
@@ -68,8 +68,7 @@ export function Navbar() {
 
           <nav
             aria-label="Primary"
-            className="hidden h-full items-center gap-7 text-[11px] uppercase tracking-[0.22em] leading-none lg:flex xl:gap-9"
-            style={{ fontWeight: 400 }}
+            className="hidden h-full items-center gap-7 text-[12px] uppercase tracking-[0.13em] leading-none lg:flex xl:gap-9"
           >
             {primaryLinks.map((item) => (
               <Link
@@ -134,7 +133,7 @@ export function Navbar() {
                   key={item.to}
                   to={item.to}
                   onClick={() => setOpen(false)}
-                  className="tap inline-flex min-h-[48px] items-center text-[14px] font-medium text-[color:var(--charcoal)] hover:text-[color:var(--teal)]"
+                  className="tap inline-flex min-h-[50px] items-center font-sans text-[15.5px] font-semibold text-[color:var(--charcoal)] hover:text-[color:var(--teal)]"
                   activeProps={{ className: "text-[color:var(--teal)]" }}
                 >
                   {item.label}
@@ -150,7 +149,7 @@ export function Navbar() {
                   key={item.to}
                   to={item.to}
                   onClick={() => setOpen(false)}
-                  className="tap inline-flex min-h-[44px] items-center text-[13px] text-[color:var(--charcoal)] hover:text-[color:var(--teal)]"
+                  className="tap inline-flex min-h-[46px] items-center font-sans text-[14.5px] font-medium text-[color:var(--charcoal)] hover:text-[color:var(--teal)]"
                   activeProps={{ className: "text-[color:var(--teal)]" }}
                 >
                   {item.label}

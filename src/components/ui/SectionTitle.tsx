@@ -16,15 +16,15 @@ import { cn } from "@/lib/utils";
  * `italic font-normal text-[color:var(--teal)]`, the locked emphasis token.
  */
 
-const baseClasses = "serif text-[color:var(--charcoal)] font-medium";
+const baseClasses = "font-serif text-[color:var(--charcoal)] font-medium tracking-normal";
 
 const sizeClasses = {
   default:
-    "text-[clamp(1.875rem,7vw,2.4rem)] md:text-[3.6rem] leading-[1.1] md:leading-[1.0] tracking-[-0.018em] text-balance",
+    "text-[clamp(1.875rem,7vw,2.4rem)] md:text-[3.6rem] leading-[1.1] md:leading-[1.0] text-balance",
   anchor:
-    "text-[clamp(2.125rem,7.5vw,2.8rem)] md:text-[4rem] leading-[1.05] md:leading-[0.98] tracking-[-0.02em] text-balance",
+    "text-[clamp(2.125rem,7.5vw,2.8rem)] md:text-[4rem] leading-[1.05] md:leading-[0.98] text-balance",
   compact:
-    "text-[clamp(1.6rem,5.5vw,1.95rem)] md:text-[2.4rem] leading-[1.18] md:leading-[1.1] tracking-[-0.012em] text-balance",
+    "text-[clamp(1.6rem,5.5vw,1.95rem)] md:text-[2.4rem] leading-[1.18] md:leading-[1.1] text-balance",
 } as const;
 
 export type SectionTitleSize = keyof typeof sizeClasses;

@@ -22,7 +22,9 @@ The film remains the first emotional signal; the supporting copy immediately exp
 ### 1. Restore the hero story
 
 - Restore the H1 exactly to “Portugal is the stage. You write the story.” across its source, frozen copy contract, and tests.
-- Keep the service proposition directly beneath it so visitors still understand “private day trips from Lisbon” and “tailored Portugal tours” immediately.
+
+&nbsp;
+
 - Preserve the current film, poster fallback, top bar, analytics fields, links, performance behavior, and mobile-first layout.
 - Update the homepage title, description, and structured supporting content only where needed to retain strong service relevance without forcing search keywords into the poetic H1.
 
@@ -83,3 +85,4 @@ The film remains the first emotional signal; the supporting copy immediately exp
 - Hero truth and tests: `src/content/hero-copy.ts`, its frozen spec/tests, and `src/components/home/CinematicHero.tsx`.
 - Shared presentation: `src/styles.css`, motion tokens/primitives, `CtaButton`, `SectionTitle`, and selected public-page consumers.
 - Verification includes focused type/tests plus Playwright at 393px, tablet, and desktop viewports.
+- Must be clear that studio is also instantly confirmed, signature as they are or tailored also instantly confirmed. On the experiences tab on the menu it must show all, not only first 3 and then the rest.  Typography on menu must be more readable 

@@ -16,7 +16,7 @@ import { useEffect, useRef, useState } from "react";
 import { Link } from "@tanstack/react-router";
 import { trackEvent } from "@/lib/analytics-events";
 import { HERO_COPY, HERO_COPY_VERSION, HERO_PHRASES } from "@/content/hero-copy";
-import { HERO_FILM, HERO_SCENES, scaleHeroTimeline } from "@/content/hero-scenes-manifest";
+import { HERO_FILM } from "@/content/hero-scenes-manifest";
 
 /**
  * Cinematic pace: the stanza breathes in slowly, one line at a time, and
@@ -29,11 +29,7 @@ const COMPOSE_DELAY_MS = 2500;
 const FADE_MS = 1420;
 const COMPOSE_FADE_MS = 1150;
 
-const EASE = "cubic-bezier(0.16,1,0.3,1)";
-
-/** Chapters that actually carry copy (the two silent frames stay silent). */
-const CHAPTERS = HERO_SCENES.filter((s) => s.main.length > 0 || !!s.support);
-const LAST_CHAPTER_ID = CHAPTERS[CHAPTERS.length - 1]?.id ?? "";
+const EASE = "var(--ease-scene)";
 
 function shouldSkipIntro(): boolean {
   if (typeof window === "undefined") return false;
@@ -93,44 +89,11 @@ const ARROW = (
   </svg>
 );
 
-/** Tracks which chapter of the continuous film is on screen. */
-function useHeroChapter(videoRef: React.RefObject<HTMLVideoElement | null>, enabled: boolean) {
-  const [activeId, setActiveId] = useState<string>(CHAPTERS[0]?.id ?? "");
-
-  useEffect(() => {
-    if (!enabled) {
-      setActiveId(LAST_CHAPTER_ID);
-      return;
-    }
-    let raf = 0;
-    const started = performance.now();
-    const tick = () => {
-      const v = videoRef.current;
-      const duration =
-        v && Number.isFinite(v.duration) && v.duration > 0 ? v.duration : HERO_FILM.durationSeconds;
-      const windows = scaleHeroTimeline(duration);
-      // If the film cannot play (codec refusal, data saver), the chapters
-      // still advance on an internal clock so the story never freezes.
-      const playing = !!v && !v.paused && v.currentTime > 0;
-      const t = playing ? v.currentTime : ((performance.now() - started) / 1000) % duration;
-      const win = windows.find((w) => t >= w.startTime && t < w.endTime);
-      if (win) setActiveId((prev) => (prev === win.id ? prev : win.id));
-      raf = window.requestAnimationFrame(tick);
-    };
-    raf = window.requestAnimationFrame(tick);
-    return () => window.cancelAnimationFrame(raf);
-  }, [enabled, videoRef]);
-
-  return activeId;
-}
-
 export function CinematicHero() {
   const [line1, setLine1] = useState(false);
   const [line2, setLine2] = useState(false);
   const [composed, setComposed] = useState(false);
-  const [cinematic, setCinematic] = useState(false);
   const videoRef = useRef<HTMLVideoElement | null>(null);
-  const activeChapter = useHeroChapter(videoRef, cinematic);
 
 
 
@@ -162,7 +125,6 @@ export function CinematicHero() {
       setComposed(true);
       return;
     }
-    setCinematic(true);
     const t1 = window.setTimeout(() => setLine1(true), LINE1_DELAY_MS);
     const t2 = window.setTimeout(() => setLine2(true), LINE2_DELAY_MS);
     const t3 = window.setTimeout(() => setComposed(true), COMPOSE_DELAY_MS);
@@ -182,18 +144,7 @@ export function CinematicHero() {
       className="hero-cinematic relative mt-[64px] min-h-[calc(100svh-64px)] w-full overflow-hidden bg-[color:var(--charcoal-deep,#1a1816)] md:mt-[84px] md:min-h-[calc(100svh-84px)] lg:mt-[96px] lg:min-h-[calc(100svh-96px)]"
     >
       <div className="hero-story-stage absolute inset-0 z-0">
-        {/* Slow settle: the film opens at a whisper of zoom and exhales to
-            rest over ~9s — a cinematic "exhale", not a Ken Burns drift. */}
-        <style>{`
-          @keyframes heroFilmSettle {
-            from { transform: scale(1.075); }
-            to { transform: scale(1); }
-          }
-          .hero-film-settle { animation: heroFilmSettle 12000ms cubic-bezier(0.22,1,0.36,1) both; }
-          @media (prefers-reduced-motion: reduce) {
-            .hero-film-settle { animation: none; }
-          }
-        `}</style>
+        {/* The film opens at a whisper of zoom and exhales to rest. */}
         <picture className="hero-film-settle absolute inset-0 block h-full w-full">
           <source
             media="(max-width: 767px)"
@@ -243,38 +194,6 @@ export function CinematicHero() {
       <div className="relative z-10 flex min-h-[calc(100svh-64px)] items-center px-6 pb-[max(5.5rem,calc(env(safe-area-inset-bottom)+4rem))] pt-10 sm:px-10 sm:items-end md:min-h-[calc(100svh-84px)] md:items-center md:pb-16 md:pt-12 lg:min-h-[calc(100svh-96px)] lg:px-12">
         <div className="mx-auto w-full max-w-6xl">
           <div className="max-w-3xl text-left md:mx-auto md:text-center">
-            {/* Chapter overlay — the film's story, cross-fading with restraint. */}
-            <div
-              data-hero-chapters
-              aria-hidden="true"
-              className="relative mb-6 hidden h-[54px] sm:block"
-            >
-              {CHAPTERS.map((chapter) => (
-                <div
-                  key={chapter.id}
-                  data-hero-chapter={chapter.id}
-                  data-hero-chapter-active={activeChapter === chapter.id ? "true" : "false"}
-                  className="absolute inset-x-0 top-0 md:mx-auto"
-                  style={{
-                    opacity: activeChapter === chapter.id ? 1 : 0,
-                    transition: `opacity 1200ms ${EASE}`,
-                    pointerEvents: "none",
-                  }}
-                >
-                  {chapter.main.length > 0 && (
-                    <p className="font-serif text-[17px] italic leading-[1.35] text-[#F7E6C8]/90 sm:text-[19px]">
-                      {chapter.main.join(" ")}
-                    </p>
-                  )}
-                  {chapter.support && (
-                    <p className="mt-1 text-[12px] leading-[1.4] text-white/70">
-                      {chapter.support}
-                    </p>
-                  )}
-                </div>
-              ))}
-            </div>
-
             <p
               data-hero-field="eyebrow"
               className="hero-promise flex items-center gap-3.5 text-[11px] font-medium uppercase tracking-[0.32em] text-[#F2DDAE] [text-shadow:0_1px_10px_rgba(0,0,0,0.55)] sm:text-[11.5px] md:justify-center"
@@ -288,17 +207,17 @@ export function CinematicHero() {
             <h1
               data-hero-stanza="true"
               data-mixed-emphasis="exempt"
-              className="hero-h1 mt-7 font-serif text-[clamp(2.4rem,6vw,5.2rem)] font-normal italic leading-[1.04] tracking-normal text-[color:var(--gold-soft)] [text-shadow:0_2px_18px_color-mix(in_oklab,var(--charcoal-deep)_55%,transparent)]"
+              className="hero-h1 mt-7 font-serif text-[clamp(2.65rem,7vw,5.75rem)] font-medium leading-[1.02] tracking-normal text-[color:var(--ivory)] [text-shadow:0_2px_18px_color-mix(in_oklab,var(--charcoal-deep)_55%,transparent)]"
             >
               <span
-                className="hero-title-line block font-serif italic font-normal m-0"
+                className="hero-title-line block font-serif font-medium not-italic m-0"
                 data-hero-field="headlineLine1"
                 style={revealStyle(line1, FADE_MS)}
               >
                 {HERO_PHRASES[0]}
               </span>
               <span
-                className="hero-title-line block font-serif italic font-normal mt-3 sm:mt-4"
+                className="hero-title-line block font-serif italic font-normal mt-2 sm:mt-3 text-[color:var(--gold-soft)]"
                 data-hero-field="headlineLine2"
                 style={revealStyle(line2, FADE_MS)}
               >
@@ -308,7 +227,7 @@ export function CinematicHero() {
 
             <p
               data-hero-field="subheadline"
-              className="mt-9 max-w-[34rem] font-serif text-[18px] font-light leading-[1.6] text-[color:var(--ivory)]/95 [text-shadow:0_1px_14px_rgba(0,0,0,0.5)] sm:text-[20px] md:mx-auto"
+              className="mt-8 max-w-[38rem] font-sans text-[16px] font-normal leading-[1.7] text-[color:var(--ivory)]/95 [text-shadow:0_1px_14px_rgba(0,0,0,0.5)] sm:text-[18px] md:mx-auto"
               style={revealStyle(composed, COMPOSE_FADE_MS, COMPOSE_STAGGER.subheadline, 18)}
             >
               {HERO_COPY.subheadline}
