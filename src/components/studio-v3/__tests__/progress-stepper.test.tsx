@@ -26,7 +26,7 @@ const PHASE_TO_BEAT: Record<StudioV3Phase, number | null> = {
   guests: 2,
   interests: 1,
   rhythm: 1,
-  logistics: 2,
+  logistics: 0,
   refinement: 1,
   considerations: 1,
   language: 1,

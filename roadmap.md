@@ -61,11 +61,11 @@
 - [x] Rebuild the mobile cookie notice without clipping or overflow
 - [x] Remove the Hero instant-reveal hydration mismatch
 ## 10. Premium System Lock hardening
-- [ ] Canonical Fraunces + Inter semantic typography across active public surfaces
-- [ ] Canonical CTA vocabulary and homepage three-primary-path hierarchy
-- [ ] Three-tier motion grammar with reduced-motion preservation
-- [ ] Studio three-chapter progress language without flow changes
-- [ ] Compact consent and quiet, resilient checkout states
+- [x] Canonical Fraunces + Inter semantic typography across active public surfaces
+- [x] Canonical CTA vocabulary and homepage three-primary-path hierarchy
+- [x] Three-tier motion grammar with reduced-motion preservation
+- [x] Studio three-chapter progress language without flow changes
+- [x] Compact consent and quiet, resilient checkout states
 - [ ] Regression tests, documentation, mobile/desktop verification, typecheck and build
 - [ ] Keep production undeployed
 

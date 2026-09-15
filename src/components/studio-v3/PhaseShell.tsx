@@ -3,8 +3,8 @@ import { type ReactNode, useEffect, useState } from "react";
 /**
  * PhaseShell — cinematic frame shared by every Studio V3 phase.
  *
- * Renders a full-viewport ivory stage with a quietly moving warm gradient
- * underneath and a slow ambient light wash. The whole thing fades in on
+ * Renders a full-viewport ivory stage with a quiet warm gradient
+ * underneath and a restrained ambient light wash. The whole thing fades in on
  * mount and crossfades out when `exiting` is true, so a parent orchestrator
  * can sequence phases without abrupt cuts. Respects prefers-reduced-motion.
  *

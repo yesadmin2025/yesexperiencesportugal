@@ -42,10 +42,11 @@ export function beatIndexForPhase(phase: StudioV3Phase): number | null {
   switch (phase) {
     case "intro":
       return null;
-    // Beat 1 — FEEL: emotion + place + who.
+    // Chapter 1 — YOU: feeling, company and practical starting context.
     case "feeling":
     case "destination":
     case "who":
+    case "logistics":
       return 0;
     // Beat 2 — TASTE: what the day is made of.
     case "interests":
@@ -61,8 +62,7 @@ export function beatIndexForPhase(phase: StudioV3Phase): number | null {
     case "storyboard":
     case "confirmation":
       return 1;
-    // Chapter 3 — MAKE IT YOURS: practical details and payment.
-    case "logistics":
+    // Chapter 3 — MAKE IT YOURS: confirmation details and payment.
     case "date":
     case "pickup":
     case "guests":
