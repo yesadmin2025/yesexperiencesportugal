@@ -55,9 +55,14 @@ const baseBody: Omit<CheckoutBody, "tailored" | "stopLabels" | "journeyTitle" | 
   environment: "sandbox",
 };
 
+/**
+ * Studio checkout enforces a minimum advance window
+ * (`STUDIO_CHECKOUT_MIN_ADVANCE_DAYS`), so the shared fixture date sits
+ * comfortably beyond it instead of using "tomorrow".
+ */
 function tomorrowISO() {
   const d = new Date();
-  d.setUTCDate(d.getUTCDate() + 1);
+  d.setUTCDate(d.getUTCDate() + 10);
   return d.toISOString().slice(0, 10);
 }
 
