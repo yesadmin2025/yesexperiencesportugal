@@ -29,7 +29,7 @@ const PATHS: ReadonlyArray<Path> = [
     Icon: BookOpen,
     eyebrow: "Ready to book",
     title: "A private day, ready to go",
-    body: "Start from a route we drive every week, then tailor only the details that matter to you.",
+    body: "Reserve a proven private day as it is or tailor the details — with the real price and instant confirmation.",
     cta: "Explore private days",
     href: "/experiences",
     analyticsEvent: "home_path_signature_click",
@@ -39,7 +39,7 @@ const PATHS: ReadonlyArray<Path> = [
     Icon: Wand2,
     eyebrow: "One custom day",
     title: "Shape a day around you",
-    body: "Mood, pace and people — see the real route and the live price before you reserve.",
+    body: "Mood, pace and people — see the real route and live price, then confirm your private day instantly.",
     cta: "Design your day",
     href: "/studio-v3",
     analyticsEvent: "home_path_studio_click",
@@ -205,7 +205,7 @@ function PathCard({ path, featured }: { path: Path; featured: boolean }) {
       to={path.href}
       data-home-primary-path={path.id}
       data-analytics={path.analyticsEvent}
-      className={`${featured ? "lg:col-span-2" : "lg:col-span-3"} group flex min-h-[238px] flex-col rounded-[6px] border border-[color:var(--border)] bg-[color:var(--sand)] p-6 no-underline transition-all duration-200 hover:-translate-y-0.5 hover:border-[color:var(--gold)]/70 hover:shadow-[0_18px_40px_-30px_rgba(46,46,46,0.35)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--teal)] focus-visible:ring-offset-2 md:p-7`}
+      className={`${featured ? "lg:col-span-2" : "lg:col-span-3"} group flex min-h-[238px] flex-col rounded-[6px] border border-[color:var(--border)] bg-[color:var(--sand)] p-6 no-underline transition-[transform,border-color,box-shadow] duration-[var(--dur-base)] ease-[var(--ease-scene)] hover:-translate-y-0.5 hover:border-[color:var(--gold)]/70 hover:shadow-[0_18px_40px_-30px_rgba(46,46,46,0.35)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--teal)] focus-visible:ring-offset-2 md:p-7`}
     >
       <div className="flex items-center justify-between gap-4">
         <span className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-[color:var(--gold)]/45 bg-[color:var(--ivory)] text-[color:var(--teal)]">

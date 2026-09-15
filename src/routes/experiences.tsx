@@ -69,15 +69,9 @@ export const Route = createFileRoute("/experiences")({
   component: ExperiencesPage,
 });
 
-const START_HERE_IDS = ["arrabida-wine-allinclusive", "sintra-cascais", "azeitao-cheese"] as const;
-
 function ExperiencesPage() {
   useMarketingMotion();
   const { resolveImg } = useImportedTourImages();
-  const startHere = START_HERE_IDS.map((id) => signatureTours.find((tour) => tour.id === id)).filter(
-    (tour): tour is SignatureTour => Boolean(tour),
-  );
-  const remaining = signatureTours.filter((tour) => !START_HERE_IDS.includes(tour.id as (typeof START_HERE_IDS)[number]));
 
   return (
     <SiteLayout>
@@ -96,52 +90,35 @@ function ExperiencesPage() {
             Private days, <SectionTitle.Em>ready when you are.</SectionTitle.Em>
           </SectionTitle>
           <p className="mt-5 max-w-2xl mx-auto text-[16px] md:text-[17px] leading-[1.7] text-[color:var(--charcoal-soft)]">
-            Pick a private day that already works beautifully. Reserve it as designed, or tailor a few details after you choose.
+            See every Signature day in one collection. Reserve it as designed or tailor the details — both paths show the real price and confirm instantly.
           </p>
           <div className="mt-7 flex flex-wrap justify-center gap-x-6 gap-y-2 text-[13px] text-[color:var(--charcoal)]">
             <span>Private guide &amp; vehicle</span>
             <span aria-hidden="true">·</span>
             <span>Door-to-door from Lisbon on listed days</span>
             <span aria-hidden="true">·</span>
-            <span>Secure checkout</span>
+            <span>Instant confirmation</span>
           </div>
         </div>
       </section>
 
-      <section className="reveal section-y-sm bg-[color:var(--ivory)] border-b border-[color:var(--border)]" aria-labelledby="start-here-title">
-        <div className="container-x">
-          <div className="max-w-2xl">
-            <Eyebrow>Start here</Eyebrow>
-            <SectionTitle id="start-here-title" size="compact">
-              Three easy places <SectionTitle.Em>to begin.</SectionTitle.Em>
-            </SectionTitle>
-            <p className="mt-4 text-[16px] leading-[1.7] text-[color:var(--charcoal-soft)]">
-              A wine-and-food favourite, the classic Sintra coast, or a hands-on local day in Azeitão.
-            </p>
-          </div>
-          <div className="mt-9 grid gap-7 md:grid-cols-3">
-            {startHere.map((tour) => (
-              <TourCard key={tour.id} tour={tour} resolveImg={resolveImg} featured />
-            ))}
-          </div>
-        </div>
-      </section>
-
-      <section className="reveal section-y bg-[color:var(--ivory)]" aria-labelledby="more-signatures-title">
+      <section className="reveal section-y bg-[color:var(--ivory)] border-b border-[color:var(--border)]" aria-labelledby="signature-collection-title">
         <div className="container-x">
           <div className="mb-8 flex flex-col gap-5 sm:flex-row sm:items-end sm:justify-between">
-            <div>
-              <Eyebrow>More private days</Eyebrow>
-              <SectionTitle id="more-signatures-title" size="compact">
-                Explore the rest <SectionTitle.Em>of the collection.</SectionTitle.Em>
-              </SectionTitle>
+            <div className="max-w-2xl">
+            <Eyebrow>The full collection</Eyebrow>
+            <SectionTitle id="signature-collection-title" size="compact">
+              Every Signature day, <SectionTitle.Em>in one place.</SectionTitle.Em>
+            </SectionTitle>
+            <p className="mt-4 text-[16px] leading-[1.7] text-[color:var(--charcoal-soft)]">
+              Compare every private day without opening a second list. Each one can be reserved as it is or tailored before instant confirmation.
+            </p>
             </div>
             <PriceCurrencyChip />
           </div>
-
           <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
-            {remaining.map((tour) => (
-              <TourCard key={tour.id} tour={tour} resolveImg={resolveImg} />
+            {signatureTours.map((tour, index) => (
+              <TourCard key={tour.id} tour={tour} resolveImg={resolveImg} featured={index < 3} />
             ))}
           </div>
         </div>
