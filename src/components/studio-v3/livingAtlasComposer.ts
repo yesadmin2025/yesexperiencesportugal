@@ -70,6 +70,12 @@ export type LivingAtlasCompositionRequest = {
   preferredTypes?: OptionalStopType[];
   /** Explicit exclusions, e.g. no boat or no winery. */
   excludedTypes?: OptionalStopType[];
+  /**
+   * Exact verified moments the traveller was offered and did NOT choose. They
+   * are never re-added to the day the rejected answer already spoke about. An
+   * explicit must-include always wins, so a moment can never be both.
+   */
+  excludedStopIds?: string[];
   /** Quantity controls, e.g. `{ winery: 1 }`. */
   maxByType?: Partial<Record<OptionalStopType, number>>;
   /** Exact verified moments that must remain in the draft. */
