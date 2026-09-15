@@ -2768,6 +2768,7 @@ function resolveLivingAtlasLiveDay(input: {
     mobilityConcern: input.mobilityConcern,
     pickupCoord: input.pickupCoord,
     principalStopIds: [...new Set([...input.principalStopIds, ...lockedCoreStopIds])],
+    rejectedStopIds: input.rejectedStopIds ?? [],
 
     // LIVE self-service branch: only moments an existing commercial authority
     // can already price may enter a day the traveller can book unattended.
