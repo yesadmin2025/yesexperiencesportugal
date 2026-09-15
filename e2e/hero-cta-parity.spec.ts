@@ -26,7 +26,7 @@ test.describe("Hero CTA — primary vs secondary parity (mobile)", () => {
     await gotoHero(page);
 
     const primary = page.getByRole("link", {
-      name: "CREATE YOUR DAY",
+      name: "DESIGN YOUR DAY",
       exact: true,
     });
     const secondary = page.getByRole("link", {
@@ -50,7 +50,7 @@ test.describe("Hero CTA — primary vs secondary parity (mobile)", () => {
     // Asserting on the class keeps the contract explicit: if someone
     // swaps the secondary CTA's arrow for a sparkle/diamond/etc, this
     // fails immediately.
-    for (const name of ["CREATE YOUR DAY", "Explore Signature Experiences"]) {
+    for (const name of ["DESIGN YOUR DAY", "Explore Signature Experiences"]) {
       const cta = page.getByRole("link", { name, exact: true });
       const svg = cta.locator("svg").first();
       await expect(svg).toBeVisible();

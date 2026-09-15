@@ -122,8 +122,7 @@ export function StudioV3Intro({ onComplete }: Props) {
                 fontFamily: "var(--font-body)",
               }}
             >
-              A few quiet choices, then we shape a private day around your pace, people and
-              interests.
+              A few quiet choices, and we shape a private day around you.
             </p>
 
             <CtaButton

@@ -305,6 +305,12 @@ export function GuestDetailsStep({
             {journeyTitle}
           </p>
         ) : null}
+        <p
+          className="mt-3 text-[12px]"
+          style={{ color: "color-mix(in oklab, var(--charcoal) 62%, transparent)" }}
+        >
+          Fields marked * are required. Everything else is optional.
+        </p>
       </header>
 
       <form onSubmit={handleSubmit} noValidate className="mt-8 space-y-7">

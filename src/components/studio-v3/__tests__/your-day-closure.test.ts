@@ -26,7 +26,7 @@ const blueprint = Object.values(
 
 describe("B — the final primary action is Make it real", () => {
   it("uses the canonical CTA string and the existing guest-details path", () => {
-    expect(CTA_MAKE_IT_REAL).toBe("Make it real");
+    expect(CTA_MAKE_IT_REAL).toBe("LOVE THIS DAY · RESERVE IT");
     expect(STUDIO_SOURCE).toContain("{CTA_MAKE_IT_REAL}");
     expect(STUDIO_SOURCE).not.toContain("Continue to guest details");
   });

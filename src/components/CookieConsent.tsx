@@ -115,36 +115,42 @@ export function CookieConsent() {
       role="dialog"
       aria-modal="false"
       aria-labelledby="cookie-consent-title"
-      className="fixed inset-x-0 bottom-0 z-[70] pointer-events-none px-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] sm:px-6 sm:pb-6"
+      className="fixed inset-x-0 bottom-0 z-[70] pointer-events-none px-0 pb-0 sm:px-6 sm:pb-5"
     >
       <div
-        className="cookie-consent-card pointer-events-auto mx-auto max-w-[620px] overflow-hidden rounded-[8px] border border-[color:var(--charcoal)]/[0.1] bg-[color:var(--ivory)] shadow-[var(--shadow-elevated)]"
+        className="cookie-consent-card pointer-events-auto mx-auto max-w-none overflow-hidden rounded-t-[10px] border-t border-[color:var(--charcoal)]/[0.1] bg-[color:var(--ivory)] shadow-[var(--shadow-elevated)] sm:max-w-[760px] sm:rounded-[8px] sm:border"
       >
-        <div data-cookie-card className="p-4 sm:p-6">
-          <div className="flex items-start gap-3">
-            <div className="flex-1">
-              <p
-                id="cookie-consent-title"
-                className="font-[family-name:var(--font-display)] text-[16px] leading-[1.3] text-[color:var(--charcoal)] sm:text-[17px]"
-                style={{ fontWeight: 500 }}
+        <div
+          data-cookie-card
+          className={
+            customize
+              ? "px-4 pt-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] sm:px-5 sm:py-4"
+              : "px-4 pt-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] sm:flex sm:items-center sm:gap-6 sm:px-5 sm:py-3.5"
+          }
+        >
+          <div className={customize ? undefined : "sm:flex-1"}>
+
+            <p
+              id="cookie-consent-title"
+              className="font-[family-name:var(--font-display)] text-[14px] leading-[1.25] text-[color:var(--charcoal)] sm:text-[15px]"
+              style={{ fontWeight: 500 }}
+            >
+              We use cookies
+            </p>
+            <p className="mt-1 max-w-[56ch] font-[family-name:var(--font-sans)] text-[11.5px] leading-[1.5] text-[color:var(--charcoal-soft)] sm:text-[12px]">
+              Essential cookies keep the site working. Analytics help us improve.{" "}
+              <a
+                href="/cookies"
+                className="underline decoration-[color:var(--gold-warm)]/60 underline-offset-[3px] hover:text-[color:var(--charcoal)]"
               >
-                We use cookies to shape your journey
-              </p>
-              <p className="mt-1.5 max-w-[52ch] font-[family-name:var(--font-sans)] text-[12px] leading-[1.55] text-[color:var(--charcoal-soft)] sm:text-[13px]">
-                Essential cookies keep the site working. Analytics help us improve your experience.{" "}
-                <a
-                  href="/cookies"
-                  className="underline decoration-[color:var(--gold-warm)]/60 underline-offset-[3px] hover:text-[color:var(--charcoal)]"
-                >
-                  Cookie policy
-                </a>
-                .
-              </p>
-            </div>
+                Cookie policy
+              </a>
+              .
+            </p>
           </div>
 
           {customize && (
-            <div className="mt-4 space-y-3 rounded-md bg-[color:var(--sand,rgba(201,169,106,0.06))] p-4">
+            <div className="mt-3 space-y-2.5 rounded-md bg-[color:var(--sand,rgba(201,169,106,0.06))] p-3">
               <ConsentRow
                 label="Essential"
                 hint="Required for the site to work. Always on."
@@ -167,14 +173,21 @@ export function CookieConsent() {
             </div>
           )}
 
-          <div className="mt-4 grid grid-cols-2 gap-2 sm:flex sm:flex-wrap sm:justify-end">
+          <div
+            className={
+              customize
+                ? "mt-3 flex items-center justify-end gap-2"
+                : "mt-3 flex items-center gap-2 sm:mt-0 sm:shrink-0"
+            }
+          >
+
             {!customize ? (
               <>
                 <Button
                   type="button"
                   variant="ghost"
                   onClick={() => setCustomize(true)}
-                  className="tap order-3 col-span-2 min-h-11 rounded-sm px-3 text-[10px] uppercase tracking-[0.18em] text-[color:var(--charcoal-soft)] hover:bg-transparent hover:text-[color:var(--teal)] sm:order-1 sm:col-auto sm:text-[11px]"
+                  className="tap min-h-11 shrink-0 rounded-sm px-2 text-[10px] uppercase tracking-[0.16em] text-[color:var(--charcoal-soft)] hover:bg-transparent hover:text-[color:var(--teal)] sm:px-3 sm:text-[10.5px]"
                 >
                   Customise
                 </Button>
@@ -182,19 +195,20 @@ export function CookieConsent() {
                   type="button"
                   variant="outline"
                   onClick={() => commit({ analytics: "denied", ads: "denied" }, "essential_only")}
-                  className="tap order-1 min-h-11 rounded-sm border-[color:var(--charcoal)]/[0.18] bg-transparent px-3 text-[10px] uppercase tracking-[0.12em] text-[color:var(--charcoal)] shadow-none hover:border-[color:var(--teal)] hover:bg-transparent hover:text-[color:var(--teal)] sm:order-2 sm:text-[11px] sm:tracking-[0.16em]"
+                  className="tap min-h-11 flex-1 rounded-sm border-[color:var(--charcoal)]/[0.18] bg-transparent px-2 text-[10px] uppercase tracking-[0.12em] text-[color:var(--charcoal)] shadow-none hover:border-[color:var(--teal)] hover:bg-transparent hover:text-[color:var(--teal)] sm:flex-none sm:px-3 sm:text-[10.5px] sm:tracking-[0.14em]"
                 >
                   Essential only
                 </Button>
                 <Button
                   type="button"
                   onClick={() => commit({ analytics: "granted", ads: "granted" }, "accept_all")}
-                  className="tap order-2 min-h-11 rounded-sm bg-[color:var(--teal)] px-3 text-[10px] uppercase tracking-[0.14em] text-[color:var(--ivory)] shadow-none hover:bg-[color:var(--teal-2)] sm:order-3 sm:text-[11px] sm:tracking-[0.18em]"
+                  className="tap min-h-11 flex-1 rounded-sm bg-[color:var(--teal)] px-2 text-[10px] uppercase tracking-[0.14em] text-[color:var(--ivory)] shadow-none hover:bg-[color:var(--teal-2)] sm:flex-none sm:px-4 sm:text-[10.5px] sm:tracking-[0.16em]"
                 >
                   Accept all
                 </Button>
               </>
             ) : (
+
               <>
                 <Button
                   type="button"
