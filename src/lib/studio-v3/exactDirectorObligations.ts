@@ -6,16 +6,37 @@ import {
 } from "@/components/studio-v3/livingAtlasTaxonomy";
 import { REGION_STOP_POOL } from "@/data/regionStopPool";
 import { deriveDirectorAnswerProjection } from "@/lib/studio-v3/directorAnswerProjection";
-import type { QuestionAnswerEvent } from "@/lib/studio-v3/questionHistory";
+import {
+  DIRECTOR_OPTION_CATALOG,
+  isDirectorOptionId,
+} from "@/lib/studio-v3/questionOptionCatalog";
+import {
+  authoritativeSelectedOptionIds,
+  hasQuestionSemanticProgress,
+  type QuestionAnswerEvent,
+} from "@/lib/studio-v3/questionHistory";
 
 const EXACT_STOP_BY_SIGNAL: Partial<Record<LivingAtlasDiscoverySignal, string>> = {
   "make-azeitao-cheese": "quinta-velha-cheese-workshop",
   "paint-azulejo": "azulejos-painting-workshop",
+  // CHOICE FIDELITY: "the coast seen from the water" is a concrete verified
+  // moment (the real private Arrábida bay boat), not a mood. Without this
+  // obligation the answer only nudged a score and could be silently outranked
+  // by a later, broader direction answer — the traveller then received a day
+  // with no time on the water at all.
+  "arrabida-from-water": "arrabida-bay-boat",
 };
 
 export type ExactDirectorObligations = {
   preferredSignatureId: LivingAtlasSignatureId | null;
   principalStopIds: readonly string[];
+  /**
+   * Exact moments the traveller was OFFERED in a fork and did NOT choose.
+   * They stay real inventory — they are simply never added back into the day
+   * that the rejected answer already spoke about (no tile workshop on a day
+   * where cheese was chosen over tile).
+   */
+  rejectedStopIds: readonly string[];
 };
 
 function isLivingAtlasSignature(id: string | null | undefined): id is LivingAtlasSignatureId {
@@ -58,8 +79,28 @@ export function exactDirectorObligations(
 
   const lastDirection = projection.selectedDirectionIds.at(-1) ?? null;
 
+  // Offered-but-not-chosen exact moments. Only options the traveller really
+  // saw in that exact question count, and a moment chosen anywhere else always
+  // wins over a rejection.
+  const rejected = new Set<string>();
+  for (const event of history) {
+    if (!hasQuestionSemanticProgress(event)) continue;
+    const selected = new Set(authoritativeSelectedOptionIds(event));
+    if (selected.size === 0) continue;
+    for (const offered of event.offeredOptionIds) {
+      if (selected.has(offered)) continue;
+      if (!isDirectorOptionId(offered)) continue;
+      const option = DIRECTOR_OPTION_CATALOG[offered];
+      if (option.kind !== "discovery" || !option.discoverySignal) continue;
+      const stopId = EXACT_STOP_BY_SIGNAL[option.discoverySignal];
+      if (stopId) rejected.add(stopId);
+    }
+  }
+  const rejectedStopIds = [...rejected].filter((stopId) => !principalStopIds.includes(stopId));
+
   return {
     preferredSignatureId: obligationSignature ?? lastDirection,
     principalStopIds,
+    rejectedStopIds,
   };
 }

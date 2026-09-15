@@ -2487,6 +2487,7 @@ export function resolveStudioV3Route(input: {
         dateExact,
         pickupCoord: pickupOriginCoord(input.pickup),
         principalStopIds: directorObligations.principalStopIds,
+        rejectedStopIds: directorObligations.rejectedStopIds,
       })
 
     : null;
@@ -2696,6 +2697,8 @@ function resolveLivingAtlasLiveDay(input: {
   pickupCoord: { lat: number; lng: number } | null;
   /** Concrete moments explicitly selected in the Director fork. */
   principalStopIds: readonly string[];
+  /** Concrete moments offered in the same fork and declined. */
+  rejectedStopIds?: readonly string[];
 }): { block: LivingAtlasLiveBlock; publicPoints: ResolvedRoutePoint[] } {
   // RAW structural stops — the ONLY input to the membership authority.
   // No date-closure membership filter, no mobility rewrite, no wine swap, no
@@ -2765,6 +2768,7 @@ function resolveLivingAtlasLiveDay(input: {
     mobilityConcern: input.mobilityConcern,
     pickupCoord: input.pickupCoord,
     principalStopIds: [...new Set([...input.principalStopIds, ...lockedCoreStopIds])],
+    rejectedStopIds: input.rejectedStopIds ?? [],
 
     // LIVE self-service branch: only moments an existing commercial authority
     // can already price may enter a day the traveller can book unattended.

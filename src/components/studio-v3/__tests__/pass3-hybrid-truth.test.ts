@@ -95,11 +95,11 @@ describe("Pass 3 · real inventory truth", () => {
  * ------------------------------------------------------------------ */
 
 describe("Pass 3 · capability semantics", () => {
-  it("derives hands-on for Quinta Velha although its name carries no craft keyword", () => {
+  it("derives hands-on for Quinta Velha from its capability, not its label", () => {
     const cheese = stop("quinta-velha-cheese-workshop");
-    expect(/workshop|paint|tile|cheese|pottery|artisan/i.test(cheese.name)).toBe(false);
     const dimensions = deriveLivingAtlasDimensions({
-      label: cheese.name,
+      // Label-free derivation: the capability alone must carry the meaning.
+      label: "Quinta Velha",
       intentionTags: cheese.suitsInterests,
       capabilities: cheese.capabilities ?? [],
     });
