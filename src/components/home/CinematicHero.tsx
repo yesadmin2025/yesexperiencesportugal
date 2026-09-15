@@ -14,7 +14,6 @@
 
 import { useEffect, useRef, useState } from "react";
 import { Link } from "@tanstack/react-router";
-import { trackEvent } from "@/lib/analytics-events";
 import { HERO_COPY, HERO_COPY_VERSION, HERO_PHRASES } from "@/content/hero-copy";
 import { HERO_FILM } from "@/content/hero-scenes-manifest";
 
@@ -22,15 +21,15 @@ import { HERO_FILM } from "@/content/hero-scenes-manifest";
  * Cinematic pace: the eyebrow opens, the stanza follows one line at a time,
  * and the full actionable state settles in roughly 1.5s. Nothing springs.
  */
-const EYEBROW_DELAY_MS = 60;
-const LINE1_DELAY_MS = 190;
-const LINE2_DELAY_MS = 310;
-const SUPPORT_DELAY_MS = 500;
-const CTA_DELAY_MS = 690;
-const LINKS_DELAY_MS = 820;
-const HEADLINE_FADE_MS = 720;
-const SUPPORT_FADE_MS = 680;
-const CTA_FADE_MS = 620;
+const EYEBROW_DELAY_MS = 80;
+const LINE1_DELAY_MS = 260;
+const LINE2_DELAY_MS = 500;
+const SUPPORT_DELAY_MS = 720;
+const PRIMARY_CTA_DELAY_MS = 900;
+const SECONDARY_CTA_DELAY_MS = 1020;
+const HEADLINE_FADE_MS = 900;
+const SUPPORT_FADE_MS = 780;
+const CTA_FADE_MS = 700;
 
 const EASE = "var(--ease-scene)";
 
@@ -98,8 +97,8 @@ export function CinematicHero() {
   const [line1, setLine1] = useState(false);
   const [line2, setLine2] = useState(false);
   const [support, setSupport] = useState(false);
-  const [cta, setCta] = useState(false);
-  const [links, setLinks] = useState(false);
+  const [primaryCta, setPrimaryCta] = useState(false);
+  const [secondaryCta, setSecondaryCta] = useState(false);
   const videoRef = useRef<HTMLVideoElement | null>(null);
 
 
@@ -131,23 +130,23 @@ export function CinematicHero() {
       setLine1(true);
       setLine2(true);
       setSupport(true);
-      setCta(true);
-      setLinks(true);
+      setPrimaryCta(true);
+      setSecondaryCta(true);
       return;
     }
     const te = window.setTimeout(() => setEyebrow(true), EYEBROW_DELAY_MS);
     const t1 = window.setTimeout(() => setLine1(true), LINE1_DELAY_MS);
     const t2 = window.setTimeout(() => setLine2(true), LINE2_DELAY_MS);
     const ts = window.setTimeout(() => setSupport(true), SUPPORT_DELAY_MS);
-    const tc = window.setTimeout(() => setCta(true), CTA_DELAY_MS);
-    const tl = window.setTimeout(() => setLinks(true), LINKS_DELAY_MS);
+    const tp = window.setTimeout(() => setPrimaryCta(true), PRIMARY_CTA_DELAY_MS);
+    const ts2 = window.setTimeout(() => setSecondaryCta(true), SECONDARY_CTA_DELAY_MS);
     return () => {
       window.clearTimeout(te);
       window.clearTimeout(t1);
       window.clearTimeout(t2);
       window.clearTimeout(ts);
-      window.clearTimeout(tc);
-      window.clearTimeout(tl);
+      window.clearTimeout(tp);
+      window.clearTimeout(ts2);
     };
   }, []);
 
@@ -206,9 +205,9 @@ export function CinematicHero() {
         />
       </div>
 
-      <div className="relative z-10 flex min-h-[calc(100svh-64px)] items-center px-6 pb-[max(5.5rem,calc(env(safe-area-inset-bottom)+4rem))] pt-10 sm:px-10 sm:items-end md:min-h-[calc(100svh-84px)] md:items-center md:pb-16 md:pt-12 lg:min-h-[calc(100svh-96px)] lg:px-12">
+      <div className="relative z-10 flex min-h-[calc(100svh-64px)] items-center px-6 pb-[max(6.5rem,calc(env(safe-area-inset-bottom)+5rem))] pt-10 sm:px-10 md:min-h-[calc(100svh-84px)] md:pb-24 md:pt-12 lg:min-h-[calc(100svh-96px)] lg:px-12">
         <div className="mx-auto w-full max-w-6xl">
-          <div className="max-w-[52rem] text-left md:mx-auto md:text-center">
+          <div className="max-w-[47rem] text-left md:mx-auto md:text-center">
             <p
               data-hero-field="eyebrow"
               className="hero-promise flex items-center gap-3.5 text-[10.5px] font-medium uppercase tracking-[0.3em] text-[color:var(--gold-soft)] [text-shadow:0_1px_10px_color-mix(in_oklab,var(--charcoal-deep)_55%,transparent)] sm:text-[11px] md:justify-center"
@@ -222,7 +221,7 @@ export function CinematicHero() {
             <h1
               data-hero-stanza="true"
               data-mixed-emphasis="exempt"
-              className="hero-h1 mt-8 font-serif text-[clamp(2.5rem,7vw,5.75rem)] font-normal italic leading-[1.08] tracking-normal text-[color:var(--gold-soft)] [text-shadow:0_2px_18px_color-mix(in_oklab,var(--charcoal-deep)_55%,transparent)]"
+              className="hero-h1 mt-8 font-serif text-[clamp(2.5rem,6.5vw,5.25rem)] font-normal italic leading-[1.08] tracking-normal text-[color:var(--gold-soft)] [text-shadow:0_2px_18px_color-mix(in_oklab,var(--charcoal-deep)_55%,transparent)]"
             >
               <span className="hero-title-mask block">
                 <span
@@ -254,12 +253,7 @@ export function CinematicHero() {
 
             <div
               className="hero-cta-group mt-8 flex w-full max-w-[28rem] flex-col items-start gap-3 md:mx-auto md:items-center md:justify-center"
-              data-hero-composed={cta ? "true" : "false"}
-              style={{
-                ...revealStyle(cta, CTA_FADE_MS, 0, 12),
-                filter: undefined,
-                pointerEvents: cta ? "auto" : "none",
-              }}
+              data-hero-composed={primaryCta && secondaryCta ? "true" : "false"}
             >
               <Link
                 to="/studio-v3"
@@ -267,6 +261,7 @@ export function CinematicHero() {
                 data-analytics="hero_open_studio"
                 data-analytics-placement="hero"
                 className="hero-cta group inline-flex min-h-[56px] w-full items-center justify-center whitespace-nowrap px-6 py-[15px] text-[11px] uppercase tracking-[0.2em] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)] focus-visible:ring-offset-4 focus-visible:ring-offset-transparent sm:px-7 sm:text-[11.5px] hero-cta--primary"
+                style={revealStyle(primaryCta, CTA_FADE_MS, 0, 12)}
               >
                 <span className="hero-cta__sheen" aria-hidden="true" />
                 <span className="relative z-10 inline-flex items-center gap-2.5">
@@ -280,6 +275,7 @@ export function CinematicHero() {
                 data-analytics="hero_choose_experience"
                 data-analytics-placement="hero"
                 className="hero-cta group inline-flex min-h-[48px] w-full items-center justify-center whitespace-nowrap px-1 py-2.5 text-[10px] uppercase tracking-[0.16em] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)] focus-visible:ring-offset-4 focus-visible:ring-offset-transparent sm:px-1 sm:text-[10.5px] hero-cta--ghost"
+                style={revealStyle(secondaryCta, CTA_FADE_MS, 0, 10)}
               >
                 <span className="hero-cta__sheen" aria-hidden="true" />
                 <span className="relative z-10 inline-flex items-center gap-2.5">
@@ -289,32 +285,11 @@ export function CinematicHero() {
               </Link>
             </div>
 
-            <div
-              className="mt-9 flex items-center text-[12px] leading-[1.55] md:justify-center"
-              style={revealStyle(links, 480, 0, 10)}
-            >
-              <Link
-                to="/multi-day"
-                data-hero-field="brandLine"
-                className="inline-flex min-h-[44px] items-center text-[#F1D8AB]/95 transition-colors duration-500 hover:text-white"
-              >
-                {HERO_COPY.brandLine}
-              </Link>
-              <span aria-hidden="true" className="hidden md:inline mx-5 text-[color:var(--gold)]/40">·</span>
-              <Link
-                to="/book"
-                data-testid="hero-book-direct"
-                onClick={() =>
-                  trackEvent("booking_cta_click", { placement: "home:hero-direct-book" })
-                }
-                className="hidden md:inline-flex min-h-[44px] items-center text-[12px] text-[color:var(--ivory)]/65 transition-colors duration-500 hover:text-white"
-              >
-                Know your dates? Book a day directly →
-              </Link>
-            </div>
           </div>
         </div>
       </div>
+
+      <div aria-hidden="true" className="hero-editorial-handoff absolute inset-x-0 bottom-0 z-[5] h-[18%]" />
 
       <div
         data-hero-copy-version={HERO_COPY_VERSION}

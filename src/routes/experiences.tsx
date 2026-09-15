@@ -3,11 +3,10 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { breadcrumbLd, itemListLd, jsonLdScript } from "@/lib/jsonld";
 import { SiteLayout } from "@/components/SiteLayout";
 import { SiteBreadcrumbs } from "@/components/SiteBreadcrumbs";
-import { Clock, MapPin, Star, UtensilsCrossed } from "lucide-react";
+import { Star } from "lucide-react";
 import { signatureTours, type SignatureTour } from "@/data/signatureTours";
 import { VIATOR_META } from "@/data/signatureToursViator";
-import { getTourContent, signatureDurationLabel, signatureIncludesLunch } from "@/lib/tourContent";
-import { getSignatureCardMoments } from "@/content/signature-card-moments";
+import { signatureDurationLabel, signatureIncludesLunch } from "@/lib/tourContent";
 import { useImportedTourImages } from "@/hooks/use-imported-tour-images";
 import { TourImage } from "@/components/tours/TourImage";
 import ogImg from "@/assets/hero-coast.jpg";
@@ -93,33 +92,18 @@ function ExperiencesPage() {
           <p className="mt-5 max-w-2xl mx-auto text-[16px] md:text-[17px] leading-[1.7] text-[color:var(--charcoal-soft)]">
             See every Signature day in one collection. Reserve it as designed or tailor the details — both paths show the real price and confirm instantly.
           </p>
-          <div className="mt-7 flex flex-wrap justify-center gap-x-6 gap-y-2 text-[13px] text-[color:var(--charcoal)]">
-            <span>Private guide &amp; vehicle</span>
-            <span aria-hidden="true">·</span>
-            <span>Door-to-door from Lisbon on listed days</span>
-            <span aria-hidden="true">·</span>
-            <span>Instant confirmation</span>
-          </div>
         </div>
       </section>
 
       <section className="reveal section-y bg-[color:var(--ivory)] border-b border-[color:var(--border)]" aria-labelledby="signature-collection-title">
         <div className="container-x">
-          <div className="mb-8 flex flex-col gap-5 sm:flex-row sm:items-end sm:justify-between">
-            <div className="max-w-2xl">
-            <Eyebrow>The full collection</Eyebrow>
-            <SectionTitle id="signature-collection-title" size="compact">
-              Every Signature day, <SectionTitle.Em>in one place.</SectionTitle.Em>
-            </SectionTitle>
-            <p className="mt-4 text-[16px] leading-[1.7] text-[color:var(--charcoal-soft)]">
-              Compare every private day without opening a second list. Each one can be reserved as it is or tailored before instant confirmation.
-            </p>
-            </div>
+          <div className="mb-10 flex items-end justify-between gap-5 border-b border-[color:var(--border)] pb-5 md:mb-12">
+            <h2 id="signature-collection-title" className="t-h3 text-[color:var(--charcoal)]">The full collection</h2>
             <PriceCurrencyChip />
           </div>
-          <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
+          <div className="experiences-editorial-grid grid gap-x-8 gap-y-12 md:grid-cols-2 lg:gap-x-12 lg:gap-y-16">
             {signatureTours.map((tour, index) => (
-              <TourCard key={tour.id} tour={tour} resolveImg={resolveImg} featured={index < 3} />
+              <TourCard key={tour.id} tour={tour} resolveImg={resolveImg} featured={index < 2} />
             ))}
           </div>
         </div>
@@ -134,11 +118,9 @@ type ResolveImg = ReturnType<typeof useImportedTourImages>["resolveImg"];
 
 function TourCard({ tour, resolveImg, featured = false }: { tour: SignatureTour; resolveImg: ResolveImg; featured?: boolean }) {
   const meta = VIATOR_META[tour.id];
-  const content = getTourContent(tour.id);
-  const highlights = (getSignatureCardMoments(tour.id) ?? content.highlights).slice(0, featured ? 3 : 2);
 
   return (
-    <article className="group flex h-full flex-col rounded-[6px] border border-[color:var(--border)] bg-[color:var(--ivory)] p-4 text-left transition-all hover:border-[color:var(--gold)]/65 hover:shadow-[0_20px_44px_-34px_rgba(46,46,46,0.4)]" aria-label={tour.title}>
+    <article className="reveal-stagger group flex min-w-0 flex-col border-b border-[color:var(--border)] pb-9 text-left transition-[border-color] duration-[var(--dur-quick)] hover:border-[color:var(--gold)]" aria-label={tour.title}>
       <Link
         to="/tours/$tourId"
         params={{ tourId: tour.id }}
@@ -150,16 +132,21 @@ function TourCard({ tour, resolveImg, featured = false }: { tour: SignatureTour;
           alt={`${tour.title} — private ${tour.theme.toLowerCase()} experience in ${tour.region}, Portugal`}
           ratio="3/2"
           focal={tour.focal ?? "50% 50%"}
-          imgClassName="transition-transform duration-500 group-hover:scale-[1.025]"
-        >
-          <span className="absolute top-3 left-3 bg-[color:var(--ivory)]/94 px-2.5 py-1.5 text-[11px] uppercase tracking-[0.14em] font-semibold text-[color:var(--teal)]">
-            {tour.theme}
-          </span>
-        </TourImage>
+          imgClassName="transition-transform duration-[var(--dur-slow)] ease-[var(--ease-premium)] group-hover:scale-[1.02]"
+        />
       </Link>
 
-      <div className="flex flex-1 flex-col px-1 pb-1 pt-5">
-        <h3 className={`serif font-medium tracking-[-0.012em] leading-[1.16] text-[color:var(--charcoal)] ${featured ? "text-[1.65rem]" : "text-[1.45rem]"}`}>
+      <div className="flex flex-1 flex-col pt-5">
+        <div className="flex flex-wrap items-center gap-x-2 gap-y-1 text-[10.5px] font-medium uppercase tracking-[0.18em] text-[color:var(--teal)]">
+          <span>{tour.region}</span>
+          <span aria-hidden="true" className="text-[color:var(--gold)]">·</span>
+          <span>{tour.theme}</span>
+          {signatureIncludesLunch(tour.id) && (
+            <span className="ml-auto normal-case tracking-normal text-[color:var(--charcoal-soft)]">Lunch included</span>
+          )}
+        </div>
+
+        <h3 className={`mt-3 font-serif font-medium leading-[1.16] tracking-normal text-[color:var(--charcoal)] ${featured ? "text-[1.75rem]" : "text-[1.55rem]"}`}>
           <Link
             to="/tours/$tourId"
             params={{ tourId: tour.id }}
@@ -171,57 +158,29 @@ function TourCard({ tour, resolveImg, featured = false }: { tour: SignatureTour;
 
         <p className="mt-3 text-[15px] leading-[1.65] text-[color:var(--charcoal-soft)]">{tour.blurb}</p>
 
-        {highlights.length > 0 && (
-          <ul className="mt-4 space-y-1.5 text-[13.5px] leading-[1.55] text-[color:var(--charcoal)]">
-            {highlights.map((highlight: string) => (
-              <li key={highlight} className="flex items-start gap-2">
-                <span aria-hidden="true" className="mt-[7px] h-1 w-1 shrink-0 rounded-full bg-[color:var(--gold)]" />
-                <span>{highlight}</span>
-              </li>
-            ))}
-          </ul>
-        )}
-
-        <div className="mt-5 grid gap-2 text-[12px] tracking-[0.08em] text-[color:var(--charcoal-soft)]">
-          <div className="flex flex-wrap items-center gap-x-3 gap-y-2">
-            {meta && meta.reviewCount > 0 && (
-              <span className="flex items-center gap-1.5 whitespace-nowrap text-[color:var(--charcoal)]">
-                <Star size={12} className="text-[color:var(--gold-ink)]" fill="currentColor" strokeWidth={0} aria-hidden="true" />
-                <strong className="font-medium text-[color:var(--gold-ink)]">{meta.rating.toFixed(1)}</strong>
-                <span>({meta.reviewCount})</span>
-              </span>
-            )}
-            <span className="flex items-center gap-1.5 whitespace-nowrap"><Clock size={12} /> {signatureDurationLabel(tour.id, tour.durationHours)}</span>
-            <span className="flex items-center gap-1.5"><MapPin size={12} /> {tour.region}</span>
-          </div>
-          <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-[color:var(--charcoal)]">
-            <span className="whitespace-nowrap">
-              From <PriceEur amountEur={tour.priceFrom} role="from" /> <span className="text-[color:var(--charcoal-soft)]">per person</span>
-            </span>
-            {signatureIncludesLunch(tour.id) && (
-              <span className="flex items-center gap-1.5 whitespace-nowrap"><UtensilsCrossed size={12} className="text-[color:var(--gold-ink)]" /> Lunch included</span>
-            )}
-          </div>
+        <div className="mt-5 flex flex-wrap items-center gap-x-2 gap-y-1 text-[12.5px] text-[color:var(--charcoal)]">
+          <span>{signatureDurationLabel(tour.id, tour.durationHours)}</span>
+          <span aria-hidden="true" className="text-[color:var(--gold-ink)]">·</span>
+          <span>Private</span>
+          <span aria-hidden="true" className="text-[color:var(--gold-ink)]">·</span>
+          <span className="whitespace-nowrap">From <PriceEur amountEur={tour.priceFrom} role="from" /> per person</span>
         </div>
 
+        {meta && meta.reviewCount > 0 && (
+          <div className="mt-3 flex items-center gap-1.5 text-[11.5px] text-[color:var(--charcoal-soft)]">
+            <Star size={11} className="text-[color:var(--gold-ink)]" fill="currentColor" strokeWidth={0} aria-hidden="true" />
+            <span>{meta.rating.toFixed(1)} from {meta.reviewCount} reviews</span>
+          </div>
+        )}
+
         <div className="mt-auto pt-6">
-          <CtaButton
+          <Link
             to="/tours/$tourId"
             params={{ tourId: tour.id }}
-            variant="primary"
-            size="sm"
-            className="w-full"
-            aria-label={`Reserve ${tour.title}`}
+            className="inline-flex min-h-[44px] items-center font-sans text-[11px] font-medium uppercase tracking-[0.18em] text-[color:var(--teal)] underline decoration-[color:var(--gold)]/60 underline-offset-4 transition-colors duration-[var(--dur-quick)] hover:text-[color:var(--charcoal)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)]"
+            aria-label={`View ${tour.title}`}
           >
-            {CTA_LABELS.signatureBooking}
-          </CtaButton>
-          <Link
-            to="/tours/$tourId/tailor"
-            params={{ tourId: tour.id }}
-            className="mt-3 inline-flex min-h-[44px] w-full items-center justify-center text-[12px] uppercase tracking-[0.14em] font-medium text-[color:var(--teal)] underline decoration-[color:var(--gold)]/60 underline-offset-4"
-            aria-label={`Tailor ${tour.title}`}
-          >
-            {CTA_LABELS.tailor}
+            View experience <span aria-hidden="true" className="ml-2">→</span>
           </Link>
         </div>
       </div>
