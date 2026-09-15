@@ -125,18 +125,17 @@ export function CookieConsent() {
           className={
             customize
               ? "px-4 pt-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] sm:px-5 sm:py-4"
-              : "px-4 pt-2.5 pb-[max(0.625rem,env(safe-area-inset-bottom))] sm:flex sm:items-center sm:gap-5 sm:px-5 sm:py-2.5"
+              : "px-3 pt-2 pb-[max(0.4rem,env(safe-area-inset-bottom))] sm:flex sm:items-center sm:gap-5 sm:px-5 sm:py-2.5"
           }
         >
           <div className={customize ? undefined : "sm:flex-1"}>
-
             <p
               id="cookie-consent-title"
-               className="t-h3 text-[14px] leading-[1.2] text-[color:var(--charcoal)] sm:text-[15px]"
+              className="t-h3 text-[12px] leading-[1.15] text-[color:var(--charcoal)] sm:text-[15px]"
             >
               We use cookies
             </p>
-             <p className="mt-0.5 max-w-[62ch] font-sans text-[11.5px] leading-[1.42] text-[color:var(--charcoal-soft)] sm:text-[12px]">
+            <p className="mt-0.5 max-w-[62ch] font-sans text-[10px] leading-[1.25] text-[color:var(--charcoal-soft)] sm:text-[12px] sm:leading-[1.42]">
               Essential cookies keep the site working. Analytics help us improve.{" "}
               <a
                 href="/cookies"
@@ -176,17 +175,16 @@ export function CookieConsent() {
             className={
               customize
                 ? "mt-3 flex items-center justify-end gap-2"
-                 : "mt-2 flex items-center gap-1.5 sm:mt-0 sm:shrink-0 sm:gap-2"
+                : "mt-1 flex items-center gap-1 sm:mt-0 sm:shrink-0 sm:gap-2"
             }
           >
-
             {!customize ? (
               <>
                 <Button
                   type="button"
                   variant="ghost"
                   onClick={() => setCustomize(true)}
-                  className="tap min-h-11 shrink-0 rounded-sm px-2 text-[10px] uppercase tracking-[0.16em] text-[color:var(--charcoal-soft)] hover:bg-transparent hover:text-[color:var(--teal)] sm:px-3 sm:text-[10.5px]"
+                  className="tap min-h-11 shrink-0 rounded-sm px-1.5 text-[9px] uppercase tracking-[0.12em] text-[color:var(--charcoal-soft)] hover:bg-transparent hover:text-[color:var(--teal)] sm:px-3 sm:text-[10.5px] sm:tracking-[0.16em]"
                 >
                   Customise
                 </Button>
@@ -194,20 +192,19 @@ export function CookieConsent() {
                   type="button"
                   variant="outline"
                   onClick={() => commit({ analytics: "denied", ads: "denied" }, "essential_only")}
-                  className="tap min-h-11 flex-1 rounded-sm border-[color:var(--charcoal)]/[0.18] bg-transparent px-2 text-[10px] uppercase tracking-[0.12em] text-[color:var(--charcoal)] shadow-none hover:border-[color:var(--teal)] hover:bg-transparent hover:text-[color:var(--teal)] sm:flex-none sm:px-3 sm:text-[10.5px] sm:tracking-[0.14em]"
+                  className="tap min-h-11 flex-1 rounded-sm border-[color:var(--charcoal)]/[0.18] bg-transparent px-1.5 text-[9px] uppercase tracking-[0.08em] text-[color:var(--charcoal)] shadow-none hover:border-[color:var(--teal)] hover:bg-transparent hover:text-[color:var(--teal)] sm:flex-none sm:px-3 sm:text-[10.5px] sm:tracking-[0.14em]"
                 >
                   Essential only
                 </Button>
                 <Button
                   type="button"
                   onClick={() => commit({ analytics: "granted", ads: "granted" }, "accept_all")}
-                  className="tap min-h-11 flex-1 rounded-sm bg-[color:var(--teal)] px-2 text-[10px] uppercase tracking-[0.14em] text-[color:var(--ivory)] shadow-none hover:bg-[color:var(--teal-2)] sm:flex-none sm:px-4 sm:text-[10.5px] sm:tracking-[0.16em]"
+                  className="tap min-h-11 flex-1 rounded-sm bg-[color:var(--teal)] px-1.5 text-[9px] uppercase tracking-[0.1em] text-[color:var(--ivory)] shadow-none hover:bg-[color:var(--teal-2)] sm:flex-none sm:px-4 sm:text-[10.5px] sm:tracking-[0.16em]"
                 >
                   Accept all
                 </Button>
               </>
             ) : (
-
               <>
                 <Button
                   type="button"
