@@ -1,44 +1,19 @@
-# Premium System Lock hardening
+# Focused Hero and Experiences editorial pass
 
-## Goal
-Unify the active public website around the existing YES premium system without redesigning pages or changing routes, content strategy, product facts, pricing, booking rules, Studio composition, or payment behavior.
+## Scope
+Refine only the homepage Hero and `/experiences` collection presentation. Preserve the existing film, approved copy, Premium System Lock, routes, tour data, prices, business logic, metadata, and reduced-motion behavior.
 
 ## Implementation
-1. **Canonical typography**
-   - Normalize the global semantic scale for Display XL, Display, H1, H2, H3, Body Large, Body, Small, Eyebrow, and Button using Fraunces and Inter only.
-   - Align the existing `SectionTitle`, `Eyebrow`, and `CtaButton` primitives to those tokens.
-   - Replace practical local type declarations on Home, Experiences, Studio V3, Travel Designer, Moments, Corporate, active tour details, consent, and checkout surfaces while preserving each page’s hierarchy and homepage H2 weight exception.
-   - Remove active public references to retired font families; leave admin and genuinely legacy-only surfaces untouched.
-
-2. **CTA vocabulary and purchase hierarchy**
-   - Introduce a small canonical CTA-label source and use it on the active public surfaces.
-   - Standardize Studio, Signature discovery/booking, Tailor/refine, Travel Designer, Moments, Corporate, and final Studio reveal labels without changing destinations or handlers.
-   - Keep the homepage Hero intact and make the existing path section visually prioritize Studio, Signature Experiences, and Travel Designer; Moments and Corporate remain quieter secondary paths.
-
-3. **Motion grammar**
-   - Retune shared duration tokens to micro 140–200ms, interface/editorial 300–450ms, and cinematic 700–1000ms.
-   - Preserve the cinematic Hero while removing general 1.5-second defaults and decorative idle movement from ordinary/transactional surfaces.
-   - Keep one restrained reveal idea per ordinary section and preserve all reduced-motion behavior.
-
-4. **Studio flow language**
-   - Map the existing Studio phases into three visible chapters: YOU, YOUR DAY, and MAKE IT YOURS.
-   - Update progress labels/grouping only; preserve phase order, captured state, eligibility, composition, pricing, and checkout handoff.
-
-5. **Consent and checkout polish**
-   - Refine the existing consent presentation into a lower desktop utility bar and compact mobile bottom sheet while preserving every choice, focus behavior, and 44px targets.
-   - Reuse current checkout locking/loading infrastructure; ensure active Signature, Tailor, and Studio entry points disable repeat submission, show immediate quiet progress, translate failures into human copy, and expose a retry path while keeping date, guests, price, inclusions, and trust visible.
-
-6. **Guardrails and documentation**
-   - Add `docs/premium-system-lock.md` covering typography, CTA vocabulary, motion tiers, flow grammar, and checkout rules.
-   - Strengthen focused regression coverage for the two-font contract, CTA vocabulary, motion tiers, reduced motion, checkout states, and 393px primary-action/overflow behavior.
-
-## Technical scope
-- Primary files: `src/styles.css`, shared UI primitives, homepage path/CTA surfaces, the named public route components, Studio progress/chrome, consent, and checkout presentation/state components.
-- Tests will extend existing Vitest and Playwright contracts rather than introduce new packages or broad suites.
-- Any noncanonical wording inside long-form editorial/SEO prose remains untouched unless it is an actual conversion control.
+- Re-sequence the Hero into five restrained cinematic beats using existing motion tokens: eyebrow, first headline line, second headline line, positioning sentence, primary action, then secondary action.
+- Keep both actions interactive throughout, remove the two lower micro-links from the first viewport, create more breathing room, and add a subtle bottom fade into the ivory page.
+- Simplify `/experiences` into a two-column desktop and one-column mobile editorial collection with consistent image ratios, one essence sentence, one compact metadata line, quiet ratings, and one detail-page action.
+- Remove collection-only highlight bullets and the competing Tailor action without changing underlying tour data or detail-page capabilities.
+- Add one restrained 300–450ms card reveal with light staggering and reduced-motion fallback; avoid continuous or theatrical effects.
+- Update only focused assertions affected by the intentional Hero/card DOM changes.
 
 ## Verification
-- Typecheck and production build.
-- Focused typography, CTA vocabulary, motion/reduced-motion, consent, Studio, and checkout tests.
-- Browser verification at 393px and one desktop viewport for Home, Studio, a Signature detail, Travel Designer, Moments, Corporate, and checkout states; confirm no horizontal overflow or hidden primary actions.
-- No production deployment or database changes.
+- Run focused Hero CTA, typography, reveal, and reduced-motion checks.
+- Run directly affected Experiences checks and the mobile overflow guard.
+- Run typecheck and production build.
+- Check the live preview at 393px and desktop for hierarchy, overflow, CTA access, and console errors.
+- Do not deploy.
