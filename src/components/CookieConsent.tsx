@@ -130,24 +130,22 @@ export function CookieConsent() {
           }
         `}</style>
 
-        <div data-cookie-card className="p-4 sm:p-6">
+        <div data-cookie-card className="p-3.5 sm:p-6">
           <div className="flex items-start gap-3">
             <div className="flex-1">
               <p
                 id="cookie-consent-title"
-                className="font-[family-name:var(--font-display)] text-[14px] leading-[1.35] text-[color:var(--charcoal)] sm:text-[15px]"
+                className="hidden font-[family-name:var(--font-display)] text-[14px] leading-[1.35] text-[color:var(--charcoal)] sm:block sm:text-[15px]"
                 style={{ fontWeight: 500 }}
               >
                 We use cookies to shape your journey
               </p>
-              <p className="mt-1.5 text-[12.5px] leading-[1.5] text-[color:var(--charcoal-soft)] font-[family-name:var(--font-sans)] sm:text-[13px] sm:leading-[1.55]">
+              <p className="text-[12px] leading-[1.45] text-[color:var(--charcoal-soft)] font-[family-name:var(--font-sans)] sm:mt-1.5 sm:text-[13px] sm:leading-[1.55]">
                 <span className="hidden sm:inline">
                   Essential cookies keep the site running. Analytics help us understand which
                   experiences resonate. You can change your choice anytime from the footer.{" "}
                 </span>
-                <span className="sm:hidden">
-                  Essential cookies keep the site running. Analytics help us improve it.{" "}
-                </span>
+                <span className="sm:hidden">Analytics cookies help us improve the site. </span>
                 <a
                   href="/cookies"
                   className="underline decoration-[color:var(--gold-warm)]/60 underline-offset-[3px] hover:text-[color:var(--charcoal)]"
@@ -183,27 +181,27 @@ export function CookieConsent() {
             </div>
           )}
 
-          <div className="mt-3 flex flex-row flex-wrap items-center justify-end gap-2 sm:mt-5">
+          <div className="mt-2.5 flex flex-row flex-nowrap items-center justify-end gap-1.5 sm:mt-5 sm:flex-wrap sm:gap-2">
             {!customize ? (
               <>
                 <button
                   type="button"
                   onClick={() => setCustomize(true)}
-                  className="tap inline-flex min-h-11 items-center justify-center text-[11px] uppercase tracking-[0.22em] text-[color:var(--charcoal-soft)] hover:text-[color:var(--charcoal)] transition-colors py-2 px-3 rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--teal)]"
+                  className="tap inline-flex min-h-11 items-center justify-center whitespace-nowrap text-[10px] uppercase tracking-[0.14em] text-[color:var(--charcoal-soft)] hover:text-[color:var(--charcoal)] transition-colors py-2 px-2 rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--teal)] sm:text-[11px] sm:tracking-[0.22em] sm:px-3"
                 >
                   Customise
                 </button>
                 <button
                   type="button"
                   onClick={() => commit({ analytics: "denied", ads: "denied" }, "essential_only")}
-                  className="tap inline-flex min-h-11 items-center justify-center text-[11px] uppercase tracking-[0.22em] text-[color:var(--charcoal)] hover:text-[color:var(--teal)] transition-colors py-2.5 px-4 border border-[color:var(--charcoal)]/[0.14] rounded-full focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--teal)]"
+                  className="tap inline-flex min-h-11 items-center justify-center whitespace-nowrap text-[10px] uppercase tracking-[0.14em] text-[color:var(--charcoal)] hover:text-[color:var(--teal)] transition-colors py-2.5 px-3 border border-[color:var(--charcoal)]/[0.14] rounded-full focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--teal)] sm:text-[11px] sm:tracking-[0.22em] sm:px-4"
                 >
                   Essential only
                 </button>
                 <button
                   type="button"
                   onClick={() => commit({ analytics: "granted", ads: "granted" }, "accept_all")}
-                  className="tap inline-flex min-h-11 items-center justify-center text-[11px] uppercase tracking-[0.22em] text-[color:var(--ivory)] bg-[color:var(--teal)] hover:bg-[color:var(--teal-2,#1e4a4f)] transition-colors py-2.5 px-4 rounded-full focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)] focus-visible:ring-offset-2 focus-visible:ring-offset-[color:var(--ivory,#FAF8F3)]"
+                  className="tap inline-flex min-h-11 items-center justify-center whitespace-nowrap text-[10px] uppercase tracking-[0.14em] text-[color:var(--ivory)] bg-[color:var(--teal)] hover:bg-[color:var(--teal-2,#1e4a4f)] transition-colors py-2.5 px-3 rounded-full focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)] focus-visible:ring-offset-2 focus-visible:ring-offset-[color:var(--ivory,#FAF8F3)] sm:text-[11px] sm:tracking-[0.22em] sm:px-4"
                 >
                   Accept all
                 </button>

@@ -736,7 +736,7 @@ function HomePage() {
                   Prefer a human hand?{" "}
                   <a
                     href="/portugal-travel-designer"
-                    className="text-[color:var(--teal)] underline underline-offset-4 decoration-[color:var(--gold)]/60 hover:decoration-[color:var(--gold)] transition-colors"
+                    className="inline-flex min-h-11 items-center text-[color:var(--teal)] underline underline-offset-4 decoration-[color:var(--gold)]/60 hover:decoration-[color:var(--gold)] transition-colors"
                   >
                     Portugal Travel Designer →
                   </a>
@@ -1167,13 +1167,13 @@ function HomePage() {
             <div className="mt-8 flex flex-wrap items-center justify-center gap-x-6 gap-y-3 text-center">
               <Link
                 to="/local-stories"
-                className="text-sm underline underline-offset-4 text-[color:var(--charcoal)]"
+                className="inline-flex min-h-11 items-center text-sm underline underline-offset-4 text-[color:var(--charcoal)]"
               >
                 All local stories and guides
               </Link>
               <Link
                 to="/day-trips-from-lisbon"
-                className="text-sm underline underline-offset-4 text-[color:var(--charcoal)]"
+                className="inline-flex min-h-11 items-center text-sm underline underline-offset-4 text-[color:var(--charcoal)]"
               >
                 Day trips from Lisbon
               </Link>
