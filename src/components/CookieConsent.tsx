@@ -115,29 +115,28 @@ export function CookieConsent() {
       role="dialog"
       aria-modal="false"
       aria-labelledby="cookie-consent-title"
-      className="fixed inset-x-0 bottom-0 z-[70] pointer-events-none px-0 pb-0 sm:px-6 sm:pb-5"
+      className="fixed inset-x-0 bottom-0 z-[70] pointer-events-none px-0 pb-0 sm:px-5 sm:pb-4"
     >
       <div
-        className="cookie-consent-card pointer-events-auto mx-auto max-w-none overflow-hidden rounded-t-[10px] border-t border-[color:var(--charcoal)]/[0.1] bg-[color:var(--ivory)] shadow-[var(--shadow-elevated)] sm:max-w-[760px] sm:rounded-[8px] sm:border"
+        className="cookie-consent-card pointer-events-auto mx-auto max-w-none overflow-hidden rounded-t-[8px] border-t border-[color:var(--charcoal)]/[0.1] bg-[color:var(--ivory)] shadow-[var(--shadow-elevated)] sm:max-w-[980px] sm:rounded-[6px] sm:border"
       >
         <div
           data-cookie-card
           className={
             customize
               ? "px-4 pt-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] sm:px-5 sm:py-4"
-              : "px-4 pt-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] sm:flex sm:items-center sm:gap-6 sm:px-5 sm:py-3.5"
+              : "px-4 pt-2.5 pb-[max(0.625rem,env(safe-area-inset-bottom))] sm:flex sm:items-center sm:gap-5 sm:px-5 sm:py-2.5"
           }
         >
           <div className={customize ? undefined : "sm:flex-1"}>
 
             <p
               id="cookie-consent-title"
-              className="font-[family-name:var(--font-display)] text-[14px] leading-[1.25] text-[color:var(--charcoal)] sm:text-[15px]"
-              style={{ fontWeight: 500 }}
+               className="t-h3 text-[14px] leading-[1.2] text-[color:var(--charcoal)] sm:text-[15px]"
             >
               We use cookies
             </p>
-            <p className="mt-1 max-w-[56ch] font-[family-name:var(--font-sans)] text-[11.5px] leading-[1.5] text-[color:var(--charcoal-soft)] sm:text-[12px]">
+             <p className="mt-0.5 max-w-[62ch] font-sans text-[11.5px] leading-[1.42] text-[color:var(--charcoal-soft)] sm:text-[12px]">
               Essential cookies keep the site working. Analytics help us improve.{" "}
               <a
                 href="/cookies"
@@ -177,7 +176,7 @@ export function CookieConsent() {
             className={
               customize
                 ? "mt-3 flex items-center justify-end gap-2"
-                : "mt-3 flex items-center gap-2 sm:mt-0 sm:shrink-0"
+                 : "mt-2 flex items-center gap-1.5 sm:mt-0 sm:shrink-0 sm:gap-2"
             }
           >
 
