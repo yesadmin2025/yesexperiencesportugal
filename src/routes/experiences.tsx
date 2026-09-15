@@ -101,7 +101,7 @@ function ExperiencesPage() {
             <h2 id="signature-collection-title" className="t-h3 text-[color:var(--charcoal)]">The full collection</h2>
             <PriceCurrencyChip />
           </div>
-          <div className="experiences-editorial-grid grid gap-x-8 gap-y-12 md:grid-cols-2 lg:gap-x-12 lg:gap-y-16">
+          <div className="experiences-editorial-grid grid gap-x-8 gap-y-10 md:grid-cols-2 md:gap-y-12 lg:gap-x-12 lg:gap-y-16">
             {signatureTours.map((tour, index) => (
               <TourCard key={tour.id} tour={tour} resolveImg={resolveImg} featured={index < 2} />
             ))}
@@ -120,7 +120,7 @@ function TourCard({ tour, resolveImg, featured = false }: { tour: SignatureTour;
   const meta = VIATOR_META[tour.id];
 
   return (
-    <article className="reveal-stagger group flex min-w-0 flex-col border-b border-[color:var(--border)] pb-9 text-left transition-[border-color] duration-[var(--dur-quick)] hover:border-[color:var(--gold)]" aria-label={tour.title}>
+    <article className="reveal-stagger group flex min-w-0 flex-col border-b border-[color:var(--border)] pb-7 text-left transition-[border-color] duration-[var(--dur-quick)] hover:border-[color:var(--gold)] md:pb-9" aria-label={tour.title}>
       <Link
         to="/tours/$tourId"
         params={{ tourId: tour.id }}
@@ -131,6 +131,7 @@ function TourCard({ tour, resolveImg, featured = false }: { tour: SignatureTour;
           {...resolveImg(tour, featured ? "lg" : "md")}
           alt={`${tour.title} — private ${tour.theme.toLowerCase()} experience in ${tour.region}, Portugal`}
           ratio="3/2"
+          priority={featured}
           focal={tour.focal ?? "50% 50%"}
           imgClassName="transition-transform duration-[var(--dur-slow)] ease-[var(--ease-premium)] group-hover:scale-[1.02]"
         />
@@ -146,7 +147,7 @@ function TourCard({ tour, resolveImg, featured = false }: { tour: SignatureTour;
           )}
         </div>
 
-        <h3 className={`mt-3 font-serif font-medium leading-[1.16] tracking-normal text-[color:var(--charcoal)] ${featured ? "text-[1.75rem]" : "text-[1.55rem]"}`}>
+        <h3 className={`mt-3 font-serif font-medium leading-[1.14] tracking-normal text-[color:var(--charcoal)] ${featured ? "text-[1.5rem] md:text-[1.75rem]" : "text-[1.45rem] md:text-[1.55rem]"}`}>
           <Link
             to="/tours/$tourId"
             params={{ tourId: tour.id }}
@@ -156,9 +157,9 @@ function TourCard({ tour, resolveImg, featured = false }: { tour: SignatureTour;
           </Link>
         </h3>
 
-        <p className="mt-3 text-[15px] leading-[1.65] text-[color:var(--charcoal-soft)]">{tour.blurb}</p>
+        <p className="mt-3 line-clamp-3 text-[14px] leading-[1.55] text-[color:var(--charcoal-soft)] md:line-clamp-none md:text-[15px] md:leading-[1.65]">{tour.blurb}</p>
 
-        <div className="mt-5 flex flex-wrap items-center gap-x-2 gap-y-1 text-[12.5px] text-[color:var(--charcoal)]">
+        <div className="mt-4 flex flex-wrap items-center gap-x-2 gap-y-1 text-[12.5px] text-[color:var(--charcoal)] md:mt-5">
           <span>{signatureDurationLabel(tour.id, tour.durationHours)}</span>
           <span aria-hidden="true" className="text-[color:var(--gold-ink)]">·</span>
           <span>Private</span>
@@ -167,13 +168,13 @@ function TourCard({ tour, resolveImg, featured = false }: { tour: SignatureTour;
         </div>
 
         {meta && meta.reviewCount > 0 && (
-          <div className="mt-3 flex items-center gap-1.5 text-[11.5px] text-[color:var(--charcoal-soft)]">
+          <div className="mt-2.5 flex items-center gap-1.5 text-[11.5px] text-[color:var(--charcoal-soft)] md:mt-3">
             <Star size={11} className="text-[color:var(--gold-ink)]" fill="currentColor" strokeWidth={0} aria-hidden="true" />
             <span>{meta.rating.toFixed(1)} from {meta.reviewCount} reviews</span>
           </div>
         )}
 
-        <div className="mt-auto pt-6">
+        <div className="mt-auto pt-5 md:pt-6">
           <Link
             to="/tours/$tourId"
             params={{ tourId: tour.id }}
