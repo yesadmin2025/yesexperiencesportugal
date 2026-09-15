@@ -50,8 +50,9 @@ test.describe("Hero — approved copy lock", () => {
     await expect(page.locator('[data-hero-field="secondaryCta"]')).toBeVisible();
   });
 
-  test("brand YES line matches approved copy exactly", async ({ page }) => {
+  test("lower navigation micro-links stay outside the Hero composition", async ({ page }) => {
     await gotoHero(page);
-    await expect(page.getByText(HERO_COPY.brandLine, { exact: true })).toBeVisible();
+    await expect(page.locator('[data-section="hero"] [data-hero-field="brandLine"]')).toHaveCount(0);
+    await expect(page.locator('[data-section="hero"] [data-testid="hero-book-direct"]')).toHaveCount(0);
   });
 });
