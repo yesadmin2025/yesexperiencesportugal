@@ -2487,6 +2487,7 @@ export function resolveStudioV3Route(input: {
         dateExact,
         pickupCoord: pickupOriginCoord(input.pickup),
         principalStopIds: directorObligations.principalStopIds,
+        rejectedStopIds: directorObligations.rejectedStopIds,
       })
 
     : null;
