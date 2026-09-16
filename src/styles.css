@@ -5896,8 +5896,8 @@ html {
 /* Hero support line: upright champagne-ivory editorial copy, deliberately
    separated from the headline and actions. */
 .hero-support {
-  color: color-mix(in oklab, var(--gold-soft) 54%, var(--ivory));
-  text-shadow: 0 1px 3px color-mix(in oklab, var(--charcoal-deep) 72%, transparent);
+  color: color-mix(in oklab, var(--gold-soft) 36%, var(--ivory));
+  text-shadow: 0 1px 2px color-mix(in oklab, var(--charcoal-deep) 62%, transparent);
 }
 
 .hero-cta {
@@ -5951,18 +5951,12 @@ html {
 /* Hero exception: a muted champagne material rather than the site-wide teal
    action fill. It echoes the film's sunset tones without reading yellow. */
 .hero-cta--primary {
-  background: linear-gradient(
-    180deg,
-    color-mix(in oklab, var(--gold-soft) 82%, var(--ivory)),
-    color-mix(in oklab, var(--gold) 88%, var(--gold-deep))
-  );
+  background: color-mix(in oklab, var(--gold) 76%, var(--gold-soft));
   color: var(--charcoal-deep);
-  border: 1px solid color-mix(in oklab, var(--gold-soft) 78%, var(--gold-deep));
+  border: 1px solid color-mix(in oklab, var(--gold-soft) 72%, var(--gold));
   box-shadow:
-    inset 0 1px 0 color-mix(in oklab, var(--ivory) 66%, transparent),
-    inset 0 -1px 0 color-mix(in oklab, var(--gold-deep) 44%, transparent),
-    0 16px 36px -24px color-mix(in oklab, var(--gold) 72%, transparent),
-    0 28px 58px -34px color-mix(in oklab, var(--charcoal-deep) 70%, transparent);
+    inset 0 1px 0 color-mix(in oklab, var(--ivory) 42%, transparent),
+    0 14px 34px -26px color-mix(in oklab, var(--charcoal-deep) 72%, transparent);
 }
 .hero-cta--primary .hero-cta__arrow {
   color: color-mix(in oklab, var(--charcoal) 72%, var(--gold-deep));
@@ -5971,16 +5965,10 @@ html {
 .hero-cta--primary:focus-visible {
   transform: translateY(-1px);
   border-color: var(--gold-soft);
-  background: linear-gradient(
-    180deg,
-    color-mix(in oklab, var(--gold-soft) 90%, var(--ivory)),
-    color-mix(in oklab, var(--gold) 92%, var(--gold-deep))
-  );
+  background: color-mix(in oklab, var(--gold) 68%, var(--gold-soft));
   box-shadow:
-    inset 0 1px 0 color-mix(in oklab, var(--gold-soft) 48%, transparent),
-    0 0 0 1px color-mix(in oklab, var(--gold) 16%, transparent),
-    0 20px 42px -20px color-mix(in oklab, var(--gold) 40%, transparent),
-    0 30px 60px -36px color-mix(in oklab, var(--charcoal-deep) 70%, transparent);
+    inset 0 1px 0 color-mix(in oklab, var(--ivory) 48%, transparent),
+    0 16px 36px -24px color-mix(in oklab, var(--charcoal-deep) 72%, transparent);
 }
 
 .hero-cta--primary:active {
@@ -5992,11 +5980,11 @@ html {
 
 /* Secondary: fine champagne hairline over barely-there smoked glass. */
 .hero-cta--ghost {
-  background: color-mix(in oklab, var(--charcoal-deep) 18%, transparent);
-  color: color-mix(in oklab, var(--gold-soft) 55%, var(--ivory));
-  border: 1px solid color-mix(in oklab, var(--gold-soft) 72%, transparent);
-  box-shadow: inset 0 1px 0 color-mix(in oklab, var(--ivory) 10%, transparent);
-  backdrop-filter: blur(4px);
+  background: color-mix(in oklab, var(--charcoal-deep) 12%, transparent);
+  color: color-mix(in oklab, var(--gold-soft) 42%, var(--ivory));
+  border: 1px solid color-mix(in oklab, var(--gold-soft) 62%, transparent);
+  box-shadow: inset 0 1px 0 color-mix(in oklab, var(--ivory) 8%, transparent);
+  backdrop-filter: blur(3px);
 }
 
 @keyframes cookieConsentEnter {
@@ -6032,7 +6020,7 @@ html {
 .hero-cinematic .hero-h1 {
   font-weight: 400;
   color: color-mix(in oklab, var(--gold-soft) 58%, var(--ivory));
-  text-shadow: 0 1px 3px color-mix(in oklab, var(--charcoal-deep) 70%, transparent);
+  text-shadow: 0 1px 2px color-mix(in oklab, var(--charcoal-deep) 56%, transparent);
 }
 .hero-cinematic .hero-cinematic-composition {
   transform: none;
@@ -6041,15 +6029,15 @@ html {
    overlays in the open space; the stanza and CTA block keep their
    original component-driven positions. */
 .hero-cinematic .hero-promise {
-  top: 15%;
+  top: 11%;
 }
 .hero-cinematic .hero-support {
-  top: 52%;
+  top: 50%;
 }
 .hero-cinematic .hero-promise {
   transform-origin: center center;
-  color: color-mix(in oklab, var(--gold-soft) 48%, var(--ivory));
-  text-shadow: 0 1px 2px color-mix(in oklab, var(--charcoal-deep) 72%, transparent);
+  color: color-mix(in oklab, var(--gold-soft) 42%, var(--ivory));
+  text-shadow: 0 1px 2px color-mix(in oklab, var(--charcoal-deep) 58%, transparent);
 }
 .hero-cinematic .hero-story-stage :is(img, video) {
   object-position: 57% center;
@@ -6074,10 +6062,10 @@ html {
     transform: none;
   }
   .hero-cinematic .hero-promise {
-    top: 16%;
+    top: 12%;
   }
   .hero-cinematic .hero-support {
-    top: 54%;
+    top: 51%;
   }
 }
 @media (min-width: 1024px) {
