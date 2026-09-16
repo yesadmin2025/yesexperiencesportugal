@@ -5961,6 +5961,9 @@ html {
 .hero-cta-group[data-hero-composed="true"] .hero-cta--primary .hero-cta__sheen {
   animation: heroCtaSheenOnce 1050ms var(--ease-scene) 520ms 1;
 }
+.hero-cta-group[data-hero-composed="true"] .hero-cta--ghost .hero-cta__sheen {
+  animation: heroCtaSheenOnce 1050ms var(--ease-scene) 760ms 1;
+}
 .hero-cta:hover .hero-cta__sheen,
 .hero-cta:focus-visible .hero-cta__sheen {
   transform: translateX(120%);
@@ -6093,6 +6096,21 @@ html {
 .hero-cinematic .hero-story-stage :is(img, video) {
   object-position: 57% center;
 }
+@media (max-width: 767px) {
+  .hero-cinematic {
+    height: calc(100svh - 64px);
+    min-height: calc(100svh - 64px);
+  }
+  .hero-cinematic .hero-story-stage,
+  .hero-cinematic .hero-story-stage picture,
+  .hero-cinematic .hero-story-stage :is(img, video) {
+    height: 100%;
+    width: 100%;
+  }
+  .hero-cinematic .hero-story-stage :is(img, video) {
+    object-fit: cover;
+  }
+}
 .hero-cinematic .hero-editorial-handoff {
   background: linear-gradient(
     180deg,
@@ -6115,7 +6133,7 @@ html {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .hero-cta-group[data-hero-composed="true"] .hero-cta--primary .hero-cta__sheen {
+  .hero-cta-group[data-hero-composed="true"] .hero-cta__sheen {
     animation: none;
   }
 }
