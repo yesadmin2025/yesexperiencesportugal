@@ -90,7 +90,7 @@ function ExperiencesPage() {
             Private days, <SectionTitle.Em>ready when you are.</SectionTitle.Em>
           </SectionTitle>
            <p className="mt-6 max-w-[58ch] mx-auto text-[16px] md:text-[17px] leading-[1.7] text-[color:var(--charcoal-soft)]">
-            See every Signature day in one collection. Reserve it as designed or tailor the details — both paths show the real price and confirm instantly.
+            Every Signature can be reserved as designed, or tailored around your pace, interests and group.
           </p>
            <div className="mt-7 flex justify-center"><PriceCurrencyChip /></div>
         </div>
