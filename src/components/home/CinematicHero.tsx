@@ -46,10 +46,9 @@ function shouldSkipIntro(): boolean {
 function revealStyle(on: boolean, ms: number): React.CSSProperties {
   return {
     opacity: on ? 1 : 0,
-    transform: on ? "translateY(0)" : "translateY(8px)",
-    filter: on ? "blur(0px)" : "blur(3px)",
-    willChange: "opacity, transform, filter",
-    transition: `opacity ${ms}ms ${EASE}, transform ${ms}ms ${EASE}, filter ${ms}ms ${EASE}`,
+    transform: on ? "translateY(0)" : "translateY(6px)",
+    willChange: "opacity, transform",
+    transition: `opacity ${ms}ms ${EASE}, transform ${ms}ms ${EASE}`,
   };
 }
 
@@ -244,7 +243,7 @@ export function CinematicHero() {
       {/* ── Support line — its own breathing room below the stanza ──── */}
       <p
         data-hero-field="subheadline"
-        className="hero-support absolute inset-x-0 top-[50%] z-10 mx-auto max-w-[22rem] px-6 text-center font-sans text-[16px] font-medium not-italic leading-[1.72] tracking-[0.035em] sm:max-w-[34rem] sm:text-[17px] sm:leading-[1.75]"
+        className="hero-support absolute inset-x-0 top-[50%] z-10 mx-auto max-w-[23rem] px-6 text-center font-serif text-[17px] font-normal not-italic leading-[1.68] tracking-[0.01em] sm:max-w-[36rem] sm:text-[18px] sm:leading-[1.7]"
         style={revealStyle(support, TEXT_FADE_MS)}
       >
         {HERO_COPY.subheadline}
@@ -266,7 +265,7 @@ export function CinematicHero() {
           data-hero-field="primaryCta"
           data-analytics="hero_open_studio"
           data-analytics-placement="hero"
-          className="hero-cta hero-cta--primary group inline-flex min-h-[44px] min-w-[196px] items-center justify-center whitespace-nowrap px-7 py-[10px] text-[11px] uppercase tracking-[0.14em] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)] focus-visible:ring-offset-4 focus-visible:ring-offset-transparent sm:min-w-[206px] sm:text-[11.5px]"
+        className="hero-cta hero-cta--primary group inline-flex min-h-[44px] min-w-[196px] items-center justify-center whitespace-nowrap px-7 text-[10.5px] uppercase tracking-[0.18em] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)] focus-visible:ring-offset-4 focus-visible:ring-offset-transparent sm:min-w-[206px] sm:text-[11px]"
         >
           <span className="hero-cta__sheen" aria-hidden="true" />
           <span className="relative z-10 inline-flex items-center gap-2.5">
@@ -279,7 +278,7 @@ export function CinematicHero() {
           data-hero-field="secondaryCta"
           data-analytics="hero_choose_experience"
           data-analytics-placement="hero"
-          className="hero-cta hero-cta--ghost group inline-flex min-h-[44px] min-w-[196px] items-center justify-center whitespace-nowrap px-7 py-[10px] text-[11px] uppercase tracking-[0.14em] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)] focus-visible:ring-offset-4 focus-visible:ring-offset-transparent sm:min-w-[206px] sm:text-[11.5px]"
+          className="hero-cta hero-cta--ghost group inline-flex min-h-[44px] min-w-[196px] items-center justify-center whitespace-nowrap px-7 text-[10.5px] uppercase tracking-[0.18em] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)] focus-visible:ring-offset-4 focus-visible:ring-offset-transparent sm:min-w-[206px] sm:text-[11px]"
         >
           <span className="hero-cta__sheen" aria-hidden="true" />
           <span className="relative z-10">{HERO_COPY.secondaryCta}</span>
