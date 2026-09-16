@@ -5904,8 +5904,8 @@ html {
   pointer-events: none;
   background: radial-gradient(
     76% 135% at 50% 50%,
-    color-mix(in oklab, var(--charcoal-deep) 52%, transparent) 0%,
-    color-mix(in oklab, var(--charcoal-deep) 28%, transparent) 54%,
+    color-mix(in oklab, var(--charcoal-deep) 42%, transparent) 0%,
+    color-mix(in oklab, var(--charcoal-deep) 22%, transparent) 54%,
     transparent 100%
   );
   filter: blur(9px);
@@ -6052,6 +6052,9 @@ html {
 .hero-cinematic .hero-h1 {
   font-weight: 400;
 }
+.hero-cinematic .hero-cinematic-composition {
+  transform: translateY(1.5vh);
+}
 .hero-cinematic .hero-story-stage :is(img, video) {
   object-position: 57% center;
 }
@@ -6069,6 +6072,9 @@ html {
   }
   .hero-cinematic .hero-story-stage :is(img, video) {
     object-position: center center;
+  }
+  .hero-cinematic .hero-cinematic-composition {
+    transform: translateY(2vh);
   }
 }
 @media (min-width: 1024px) {
