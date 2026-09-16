@@ -180,7 +180,7 @@ function TourCard({ tour, resolveImg, featured = false }: { tour: SignatureTour;
 
         <p className="mt-4 line-clamp-2 min-h-[3.2em] text-[14px] leading-[1.6] text-[color:var(--charcoal-soft)] md:text-[15px] md:leading-[1.65]">{teaser}</p>
 
-        <div className="mt-auto pt-5 md:pt-6">
+        <div className="mt-auto pt-5 md:pt-6 flex flex-wrap items-center gap-x-5 gap-y-2">
           <Link
             to="/tours/$tourId"
             params={{ tourId: tour.id }}
@@ -188,6 +188,14 @@ function TourCard({ tour, resolveImg, featured = false }: { tour: SignatureTour;
             aria-label={`View ${tour.title}`}
           >
              View experience <span aria-hidden="true" className="editorial-arrow text-[color:var(--gold)] transition-transform duration-[var(--dur-base)]">→</span>
+          </Link>
+          <Link
+            to="/tours/$tourId/tailor"
+            params={{ tourId: tour.id }}
+            className="inline-flex min-h-[44px] items-center gap-1.5 text-[13px] text-[color:var(--charcoal-soft)] underline decoration-[color:var(--gold)]/60 underline-offset-4 transition-colors hover:text-[color:var(--teal)] hover:decoration-[color:var(--gold)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)]"
+            aria-label={`Tailor ${tour.title}`}
+          >
+            Tailor this day <span aria-hidden="true" className="editorial-arrow transition-transform duration-[var(--dur-base)]">→</span>
           </Link>
         </div>
       </div>
