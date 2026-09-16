@@ -30,6 +30,7 @@ import { useEffect, useMemo, useState } from "react";
 import { HERO_COPY_VERSION } from "@/content/hero-copy";
 import { HERO_COPY_SPEC, type HeroSpecKey } from "@/content/hero-copy.spec";
 import { validateReportV3, formatIssues, type ValidationIssue } from "@/lib/hero-verify-schema";
+import { sanitizedPath } from "@/lib/url-sanitize";
 
 type FieldStatus = "match" | "loose" | "mismatch" | "missing";
 
@@ -650,7 +651,7 @@ export function HeroVerifyOverlay() {
     return {
       schema: "hero-verify-report/v3" as const,
       generatedAt: new Date().toISOString(),
-      url: window.location.href,
+      url: sanitizedPath(window.location.href),
       pathname: window.location.pathname,
       heroCopyVersion: HERO_COPY_VERSION,
       viewport: {
@@ -864,7 +865,7 @@ export function HeroVerifyOverlay() {
       `# hero-verify report`,
       `# schema=hero-verify-report/v3`,
       `# generated_at=${new Date().toISOString()}`,
-      `# url=${window.location.href}`,
+      `# url=${sanitizedPath(window.location.href)}`,
       `# hero_copy_version=${HERO_COPY_VERSION}`,
       `# self_check_outcome=${audit.selfCheck.outcome}`,
       `# self_check_ok=${audit.selfCheck.ok}`,

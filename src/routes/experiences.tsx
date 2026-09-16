@@ -3,10 +3,8 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { breadcrumbLd, itemListLd, jsonLdScript } from "@/lib/jsonld";
 import { SiteLayout } from "@/components/SiteLayout";
 import { SiteBreadcrumbs } from "@/components/SiteBreadcrumbs";
-import { Star } from "lucide-react";
 import { signatureTours, type SignatureTour } from "@/data/signatureTours";
-import { VIATOR_META } from "@/data/signatureToursViator";
-import { signatureDurationLabel, signatureIncludesLunch } from "@/lib/tourContent";
+import { signatureDurationLabel } from "@/lib/tourContent";
 import { useImportedTourImages } from "@/hooks/use-imported-tour-images";
 import { TourImage } from "@/components/tours/TourImage";
 import ogImg from "@/assets/hero-coast.jpg";
@@ -117,10 +115,8 @@ function ExperiencesPage() {
 type ResolveImg = ReturnType<typeof useImportedTourImages>["resolveImg"];
 
 function TourCard({ tour, resolveImg, featured = false }: { tour: SignatureTour; resolveImg: ResolveImg; featured?: boolean }) {
-  const meta = VIATOR_META[tour.id];
-
   return (
-    <article className="reveal-stagger group flex min-w-0 flex-col border-b border-[color:var(--border)] pb-7 text-left transition-[border-color] duration-[var(--dur-quick)] hover:border-[color:var(--gold)] md:pb-9" aria-label={tour.title}>
+    <article className="experience-editorial-card reveal-stagger group flex min-w-0 flex-col border-b border-[color:var(--border)] pb-8 text-left md:pb-10" aria-label={tour.title}>
       <Link
         to="/tours/$tourId"
         params={{ tourId: tour.id }}
@@ -142,9 +138,6 @@ function TourCard({ tour, resolveImg, featured = false }: { tour: SignatureTour;
           <span>{tour.region}</span>
           <span aria-hidden="true" className="text-[color:var(--gold)]">·</span>
           <span>{tour.theme}</span>
-          {signatureIncludesLunch(tour.id) && (
-            <span className="ml-auto normal-case tracking-normal text-[color:var(--charcoal-soft)]">Lunch included</span>
-          )}
         </div>
 
         <h3 className={`mt-3 font-serif font-medium leading-[1.14] tracking-normal text-[color:var(--charcoal)] ${featured ? "text-[1.5rem] md:text-[1.75rem]" : "text-[1.45rem] md:text-[1.55rem]"}`}>
@@ -157,22 +150,13 @@ function TourCard({ tour, resolveImg, featured = false }: { tour: SignatureTour;
           </Link>
         </h3>
 
-        <p className="mt-3 line-clamp-3 text-[14px] leading-[1.55] text-[color:var(--charcoal-soft)] md:line-clamp-none md:text-[15px] md:leading-[1.65]">{tour.blurb}</p>
+        <p className="mt-3 line-clamp-3 min-h-[4.65em] text-[14px] leading-[1.55] text-[color:var(--charcoal-soft)] md:text-[15px] md:leading-[1.65]">{tour.blurb}</p>
 
         <div className="mt-4 flex flex-wrap items-center gap-x-2 gap-y-1 text-[12.5px] text-[color:var(--charcoal)] md:mt-5">
           <span>{signatureDurationLabel(tour.id, tour.durationHours)}</span>
           <span aria-hidden="true" className="text-[color:var(--gold-ink)]">·</span>
-          <span>Private</span>
-          <span aria-hidden="true" className="text-[color:var(--gold-ink)]">·</span>
           <span className="whitespace-nowrap">From <PriceEur amountEur={tour.priceFrom} role="from" /> per person</span>
         </div>
-
-        {meta && meta.reviewCount > 0 && (
-          <div className="mt-2.5 flex items-center gap-1.5 text-[11.5px] text-[color:var(--charcoal-soft)] md:mt-3">
-            <Star size={11} className="text-[color:var(--gold-ink)]" fill="currentColor" strokeWidth={0} aria-hidden="true" />
-            <span>{meta.rating.toFixed(1)} from {meta.reviewCount} reviews</span>
-          </div>
-        )}
 
         <div className="mt-auto pt-5 md:pt-6">
           <Link

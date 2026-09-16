@@ -305,7 +305,7 @@ export function SimpleBookingForm({ tour }: { tour: SignatureTour }) {
   };
 
   return (
-    <div className="border border-[color:var(--border)] bg-[color:var(--card)] p-5 sm:p-7">
+    <div className="border-y border-[color:var(--border)] bg-[color:var(--ivory)] py-6 sm:border sm:bg-[color:var(--card)] sm:p-7">
       <Eyebrow>Availability</Eyebrow>
       <SectionTitle size="compact" spacing="tight">
         Book the Signature, <SectionTitle.Em>as designed</SectionTitle.Em>
@@ -497,7 +497,7 @@ export function SimpleBookingForm({ tour }: { tour: SignatureTour }) {
           <Sparkles size={15} /> Ask our curator for this party size
         </Link>
       ) : (
-        <button
+        <CtaButton
           type="button"
           data-testid="signature-reserve-cta"
           onClick={() => {
@@ -513,18 +513,13 @@ export function SimpleBookingForm({ tour }: { tour: SignatureTour }) {
           }}
           disabled={pending}
           aria-disabled={!canReserve}
-          className="mt-4 inline-flex w-full items-center justify-center gap-2 bg-[color:var(--teal)] hover:bg-[color:var(--teal-2)] disabled:opacity-60 disabled:cursor-not-allowed text-[color:var(--ivory)] px-5 py-3.5 text-sm tracking-wide transition-all min-h-[52px]"
+          loading={pending}
+          loadingLabel="Opening checkout…"
+          iconLeading={<Sparkles size={15} aria-hidden="true" />}
+          className="mt-4 w-full justify-center"
         >
-          {pending ? (
-            <>
-              <Loader2 size={15} className="animate-spin" /> Opening checkout…
-            </>
-          ) : (
-            <>
-              <Sparkles size={15} /> Reserve this day
-            </>
-          )}
-        </button>
+          Reserve this day
+        </CtaButton>
       )}
 
       <div className="mt-3 text-center">

@@ -430,7 +430,7 @@ function TourHero({
             </div>
           </div>
 
-          <div className="mt-6 flex flex-col items-start gap-4">
+          <div className="mt-6 flex flex-col items-start gap-3">
             {typeof (tour as { priceFrom?: number }).priceFrom === "number" ? (
               <div className="flex flex-wrap items-baseline gap-x-2.5 gap-y-1">
                 <span className="text-[12px] uppercase tracking-[0.12em] text-[color:var(--charcoal-soft)]">
@@ -457,17 +457,17 @@ function TourHero({
             >
               Reserve this day
             </CtaButton>
-            <CtaButton
+            <Link
               to="/tours/$tourId/tailor"
               params={{ tourId: tour.id }}
-              variant="hairline"
               data-analytics="signature_tailor_click"
               data-analytics-placement="hero"
               data-analytics-experience-id={tour.id}
               data-analytics-experience-type="signature"
+              className="inline-flex min-h-[44px] items-center gap-2 font-sans text-[11px] font-medium uppercase tracking-[0.16em] text-[color:var(--charcoal-soft)] underline decoration-[color:var(--gold)]/60 underline-offset-4 transition-colors duration-[var(--dur-quick)] hover:text-[color:var(--teal)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)]"
             >
-              Tailor this day
-            </CtaButton>
+              Prefer to adjust the day? Tailor this day <span aria-hidden="true">→</span>
+            </Link>
           </div>
         </div>
       </section>

@@ -7,8 +7,8 @@
  * chapter overlay timeline: restrained editorial lines that cross-fade as
  * the film advances.
  *
- * Conversion never waits for the film: the brand stanza, proposition and
- * both CTAs compose in about 1.5s. Reduced motion and `?hero=last`
+ * Conversion never waits for the film: every action exists and remains
+ * interactive while the visual sequence composes over about 4.5s. Reduced motion and `?hero=last`
  * render the final actionable state immediately.
  */
 
@@ -19,17 +19,17 @@ import { HERO_FILM } from "@/content/hero-scenes-manifest";
 
 /**
  * Cinematic pace: the eyebrow opens, the stanza follows one line at a time,
- * and the full actionable state settles in roughly 1.5s. Nothing springs.
+ * and the full actionable state settles in roughly 4.5s. Nothing springs.
  */
-const EYEBROW_DELAY_MS = 80;
-const LINE1_DELAY_MS = 260;
-const LINE2_DELAY_MS = 500;
-const SUPPORT_DELAY_MS = 720;
-const PRIMARY_CTA_DELAY_MS = 900;
-const SECONDARY_CTA_DELAY_MS = 1020;
+const EYEBROW_DELAY_MS = 120;
+const LINE1_DELAY_MS = 760;
+const LINE2_DELAY_MS = 1500;
+const SUPPORT_DELAY_MS = 2260;
+const PRIMARY_CTA_DELAY_MS = 3000;
+const SECONDARY_CTA_DELAY_MS = 3560;
 const HEADLINE_FADE_MS = 900;
-const SUPPORT_FADE_MS = 780;
-const CTA_FADE_MS = 700;
+const SUPPORT_FADE_MS = 820;
+const CTA_FADE_MS = 760;
 
 const EASE = "var(--ease-scene)";
 
@@ -55,21 +55,25 @@ function revealStyle(on: boolean, ms: number, delayMs = 0, risePx = 12): React.C
   return {
     opacity: on ? 1 : 0,
     transform: on ? "translateY(0)" : `translateY(${risePx}px)`,
-    willChange: "opacity, transform",
+    filter: on ? "blur(0)" : "blur(2px)",
+    willChange: "opacity, transform, filter",
     transition:
       `opacity ${ms}ms ${EASE} ${delay}ms, ` +
-      `transform ${ms}ms ${EASE} ${delay}ms`,
+      `transform ${ms}ms ${EASE} ${delay}ms, ` +
+      `filter ${ms}ms ${EASE} ${delay}ms`,
   };
 }
 
 function headlineRevealStyle(on: boolean): React.CSSProperties {
   return {
     opacity: on ? 1 : 0,
-    transform: on ? "translate3d(0, 0, 0)" : "translate3d(0, 22%, 0)",
-    willChange: "opacity, transform",
+    transform: on ? "translate3d(0, 0, 0)" : "translate3d(0, 16px, 0)",
+    filter: on ? "blur(0)" : "blur(2px)",
+    willChange: "opacity, transform, filter",
     transition:
       `opacity ${HEADLINE_FADE_MS}ms ${EASE}, ` +
-      `transform ${HEADLINE_FADE_MS}ms ${EASE}`,
+      `transform ${HEADLINE_FADE_MS}ms ${EASE}, ` +
+      `filter ${HEADLINE_FADE_MS}ms ${EASE}`,
   };
 }
 
@@ -153,7 +157,7 @@ export function CinematicHero() {
       data-section="hero"
       data-hero-cinematic="true"
       aria-label="YES Experiences Portugal"
-      className="hero-cinematic relative mb-6 mt-[64px] min-h-[calc(100svh-64px)] w-full overflow-hidden bg-[color:var(--charcoal-deep,#1a1816)] md:mb-10 md:mt-[84px] md:min-h-[calc(100svh-84px)] lg:mt-[96px] lg:min-h-[calc(100svh-96px)]"
+      className="hero-cinematic relative mt-[64px] min-h-[calc(100svh-64px)] w-full overflow-hidden bg-[color:var(--charcoal-deep,#1a1816)] md:mt-[84px] md:min-h-[calc(100svh-84px)] lg:mt-[96px] lg:min-h-[calc(100svh-96px)]"
     >
       <div className="hero-story-stage absolute inset-0 z-0">
         {/* The film opens at a whisper of zoom and exhales to rest. */}
@@ -203,7 +207,7 @@ export function CinematicHero() {
         />
       </div>
 
-      <div className="relative z-10 flex min-h-[calc(100svh-64px)] items-center px-6 pb-[max(6.5rem,calc(env(safe-area-inset-bottom)+5rem))] pt-10 sm:px-10 md:min-h-[calc(100svh-84px)] md:pb-24 md:pt-12 lg:min-h-[calc(100svh-96px)] lg:px-12">
+      <div className="hero-cinematic-content relative z-10 flex min-h-[calc(100svh-64px)] items-center px-6 pb-[max(4.5rem,calc(env(safe-area-inset-bottom)+3.5rem))] pt-[max(2.5rem,env(safe-area-inset-top))] sm:px-10 md:min-h-[calc(100svh-84px)] md:pb-20 md:pt-12 lg:min-h-[calc(100svh-96px)] lg:px-12">
         <div className="mx-auto w-full max-w-6xl">
           <div className="max-w-[47rem] text-left md:mx-auto md:text-center">
             <p
@@ -243,7 +247,7 @@ export function CinematicHero() {
 
             <p
               data-hero-field="subheadline"
-              className="hero-support mt-7 max-w-[35rem] font-sans text-[15px] font-normal leading-[1.62] text-[color:var(--ivory)]/95 [text-shadow:0_1px_12px_color-mix(in_oklab,var(--charcoal-deep)_62%,transparent)] sm:text-[16px] md:mx-auto"
+              className="hero-support mt-7 max-w-[34rem] font-serif text-[16px] font-normal not-italic leading-[1.55] text-[color:var(--ivory)]/95 [text-shadow:0_1px_12px_color-mix(in_oklab,var(--charcoal-deep)_62%,transparent)] sm:text-[17px] md:mx-auto"
               style={revealStyle(support, SUPPORT_FADE_MS, 0, 11)}
             >
               {HERO_COPY.subheadline}
@@ -272,7 +276,7 @@ export function CinematicHero() {
                 data-hero-field="secondaryCta"
                 data-analytics="hero_choose_experience"
                 data-analytics-placement="hero"
-                className="hero-cta group inline-flex min-h-[48px] w-full items-center justify-center whitespace-nowrap px-1 py-2.5 text-[10px] uppercase tracking-[0.16em] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)] focus-visible:ring-offset-4 focus-visible:ring-offset-transparent sm:px-1 sm:text-[10.5px] hero-cta--ghost"
+                className="hero-cta group inline-flex min-h-[52px] w-full items-center justify-center whitespace-nowrap px-6 py-3 text-[10px] uppercase tracking-[0.16em] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)] focus-visible:ring-offset-4 focus-visible:ring-offset-transparent sm:px-7 sm:text-[10.5px] hero-cta--ghost"
                 style={revealStyle(secondaryCta, CTA_FADE_MS, 0, 10)}
               >
                 <span className="hero-cta__sheen" aria-hidden="true" />
@@ -287,7 +291,7 @@ export function CinematicHero() {
         </div>
       </div>
 
-      <div aria-hidden="true" className="hero-editorial-handoff absolute inset-x-0 bottom-0 z-[5] h-[18%]" />
+      <div aria-hidden="true" className="hero-editorial-handoff absolute inset-x-0 bottom-0 z-[5] h-[10%]" />
 
       <div
         data-hero-copy-version={HERO_COPY_VERSION}
