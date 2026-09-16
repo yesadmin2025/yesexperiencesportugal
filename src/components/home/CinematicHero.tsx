@@ -288,6 +288,7 @@ export function CinematicHero() {
           <span className="hero-cta__sheen" aria-hidden="true" />
           <span className="relative z-10">{HERO_COPY.secondaryCta}</span>
         </Link>
+        </div>
       </div>
 
       <div
