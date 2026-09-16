@@ -85,11 +85,15 @@ const ARROW = (
 
 export function CinematicHero() {
   const skipIntro = useMemo(shouldSkipIntro, []);
-  const [eyebrow, setEyebrow] = useState(skipIntro);
-  const [line1, setLine1] = useState(skipIntro);
-  const [line2, setLine2] = useState(skipIntro);
-  const [support, setSupport] = useState(skipIntro);
-  const [composed, setComposed] = useState(skipIntro);
+  // Stages always start hidden so SSR and the client's first render agree;
+  // `mounted` flips after hydration and applies the final state (instantly
+  // for skip-intro visitors, staged otherwise).
+  const [mounted, setMounted] = useState(false);
+  const [eyebrow, setEyebrow] = useState(false);
+  const [line1, setLine1] = useState(false);
+  const [line2, setLine2] = useState(false);
+  const [support, setSupport] = useState(false);
+  const [composed, setComposed] = useState(false);
   const videoRef = useRef<HTMLVideoElement | null>(null);
 
   useEffect(() => {
@@ -114,7 +118,15 @@ export function CinematicHero() {
   }, []);
 
   useEffect(() => {
-    if (skipIntro) return;
+    setMounted(true);
+    if (skipIntro) {
+      setEyebrow(true);
+      setLine1(true);
+      setLine2(true);
+      setSupport(true);
+      setComposed(true);
+      return;
+    }
     const te = window.setTimeout(() => setEyebrow(true), EYEBROW_DELAY_MS);
     const t1 = window.setTimeout(() => setLine1(true), LINE1_DELAY_MS);
     const t2 = window.setTimeout(() => setLine2(true), LINE2_DELAY_MS);
