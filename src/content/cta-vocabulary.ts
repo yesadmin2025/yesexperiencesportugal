@@ -1,7 +1,12 @@
 /** Canonical public conversion language for the YES purchase paths. */
 export const CTA_LABELS = {
   studio: "Design your day",
+  /** Context-specific Studio invitation used when the Studio label already
+   *  appeared higher on the same page (avoids CTA repetition). */
+  studioSection: "Open the Studio",
   signatureDiscovery: "Explore Signature Experiences",
+  /** Compact collection entry used inside homepage discovery bands. */
+  signatureCollection: "Explore the collection",
   signatureDiscoveryCompact: "Explore Signature days",
   signatureBooking: "Reserve this day",
   tailor: "Tailor this day",

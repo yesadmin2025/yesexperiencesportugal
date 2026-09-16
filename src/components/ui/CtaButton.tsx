@@ -86,7 +86,7 @@ const hairlineBaseClasses =
 
 const variantClasses: Record<Variant, string> = {
   primary:
-    "premium-cta--primary bg-[color:var(--charcoal-deep)] text-[color:var(--gold-soft)]",
+    "premium-cta--primary bg-[color:var(--teal)] text-[color:var(--ivory)]",
   ghost:
     "premium-cta--ghost bg-transparent text-[color:var(--charcoal)]",
   ghostDark:
