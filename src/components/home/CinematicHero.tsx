@@ -203,23 +203,21 @@ export function CinematicHero() {
         />
       </div>
 
-      <div className="hero-cinematic-content relative z-10 flex min-h-[calc(100svh-64px)] items-center px-5 pb-[max(2.75rem,calc(env(safe-area-inset-bottom)+2rem))] pt-[max(2rem,env(safe-area-inset-top))] sm:px-10 md:min-h-[calc(100svh-84px)] md:pb-16 md:pt-12 lg:min-h-[calc(100svh-96px)] lg:px-12">
-        <div className="mx-auto w-full max-w-6xl">
-          <div className="hero-cinematic-composition mx-auto max-w-[47rem] text-center">
+      <div className="hero-cinematic-content relative z-10 min-h-[calc(100svh-64px)] px-5 sm:px-10 md:min-h-[calc(100svh-84px)] lg:min-h-[calc(100svh-96px)] lg:px-12">
+        <div className="mx-auto h-full w-full max-w-6xl">
+          <div className="hero-cinematic-composition relative mx-auto h-full max-w-[47rem] text-center">
             <p
               data-hero-field="eyebrow"
-              className="hero-promise flex items-center justify-center gap-2.5 text-[10.5px] font-semibold uppercase tracking-[0.27em] sm:text-[11px]"
+              className="hero-promise absolute inset-x-0 flex items-center justify-center text-[10px] font-semibold uppercase tracking-[0.2em] sm:text-[11px] sm:tracking-[0.24em]"
               style={revealStyle(eyebrow, 940, 0, 7)}
             >
-              <span aria-hidden="true" className="block h-px w-4 shrink-0 bg-[color:var(--gold)]/70 md:w-7" />
               {HERO_COPY.eyebrow}
-              <span aria-hidden="true" className="block h-px w-4 shrink-0 bg-[color:var(--gold)]/70 md:w-7" />
             </p>
 
             <h1
               data-hero-stanza="true"
               data-mixed-emphasis="exempt"
-               className="hero-h1 mt-16 font-serif text-[clamp(2.15rem,5.2vw,4.4rem)] font-normal italic leading-[1.12] tracking-normal md:mt-[4.5rem]"
+               className="hero-h1 absolute inset-x-0 m-0 font-serif text-[clamp(2.15rem,5.2vw,4.4rem)] font-normal italic leading-[1.12] tracking-normal"
             >
               <span className="hero-title-mask block">
                 <span
@@ -243,14 +241,14 @@ export function CinematicHero() {
 
             <p
               data-hero-field="subheadline"
-              className="hero-support mx-auto mt-14 max-w-[22rem] font-serif text-[16px] font-normal not-italic leading-[1.7] sm:max-w-[31rem] sm:text-[17px] md:mt-16 md:max-w-[34rem] md:text-[18px]"
+              className="hero-support absolute inset-x-0 mx-auto max-w-[22rem] font-serif text-[16px] font-normal not-italic leading-[1.65] sm:max-w-[31rem] sm:text-[17px] md:max-w-[34rem] md:text-[18px]"
               style={revealStyle(support, SUPPORT_FADE_MS, 0, 9)}
             >
               {HERO_COPY.subheadline}
             </p>
 
             <div
-              className="hero-cta-group mx-auto mt-14 flex w-full max-w-[18rem] flex-col items-center gap-4 md:mt-16 md:max-w-[37rem] md:flex-row md:justify-center md:gap-4"
+              className="hero-cta-group absolute inset-x-0 mx-auto flex w-full max-w-[18rem] flex-col items-center gap-4 md:max-w-[37rem] md:flex-row md:justify-center md:gap-4"
               data-hero-composed={primaryCta && secondaryCta ? "true" : "false"}
             >
               <Link
