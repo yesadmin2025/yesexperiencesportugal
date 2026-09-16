@@ -4,7 +4,7 @@ import { breadcrumbLd, itemListLd, jsonLdScript } from "@/lib/jsonld";
 import { SiteLayout } from "@/components/SiteLayout";
 import { SiteBreadcrumbs } from "@/components/SiteBreadcrumbs";
 import { signatureTours, type SignatureTour } from "@/data/signatureTours";
-import { signatureDurationLabel } from "@/lib/tourContent";
+import { getTourContent, signatureDurationLabel } from "@/lib/tourContent";
 import { useImportedTourImages } from "@/hooks/use-imported-tour-images";
 import { TourImage } from "@/components/tours/TourImage";
 import ogImg from "@/assets/hero-coast.jpg";
@@ -112,6 +112,10 @@ function ExperiencesPage() {
 type ResolveImg = ReturnType<typeof useImportedTourImages>["resolveImg"];
 
 function TourCard({ tour, resolveImg, featured = false }: { tour: SignatureTour; resolveImg: ResolveImg; featured?: boolean }) {
+  // Teaser reads through the tour-content getter so the collection stays
+  // source-of-truth with the experience detail page.
+  const content = getTourContent(tour.id);
+  const teaser = tour.blurb ?? content.overview ?? "";
   return (
     <article className="experience-editorial-card reveal-stagger group flex min-w-0 flex-col text-left" aria-label={tour.title}>
       <Link
@@ -147,7 +151,7 @@ function TourCard({ tour, resolveImg, featured = false }: { tour: SignatureTour;
           </Link>
         </h3>
 
-        <p className="mt-3 line-clamp-2 min-h-[3.2em] text-[14px] leading-[1.6] text-[color:var(--charcoal-soft)] md:text-[15px] md:leading-[1.65]">{tour.blurb}</p>
+        <p className="mt-3 line-clamp-2 min-h-[3.2em] text-[14px] leading-[1.6] text-[color:var(--charcoal-soft)] md:text-[15px] md:leading-[1.65]">{teaser}</p>
 
         <div className="mt-4 flex flex-wrap items-center gap-x-2 gap-y-1 text-[12.5px] text-[color:var(--charcoal)] md:mt-5">
           <span>{signatureDurationLabel(tour.id, tour.durationHours)}</span>

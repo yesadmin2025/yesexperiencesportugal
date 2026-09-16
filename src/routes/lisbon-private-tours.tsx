@@ -145,12 +145,7 @@ function LisbonPrivateTours() {
             tell us your dates and a local writes back personally.
           </p>
           <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-            <a
-              href="#reserve"
-              className="inline-flex min-h-[48px] items-center justify-center rounded-[2px] bg-[color:var(--teal)] px-7 py-3.5 font-sans text-[12.5px] uppercase tracking-[0.18em] font-semibold text-[color:var(--ivory)] no-underline"
-            >
-              Reserve a day
-            </a>
+            <CtaButton href="#reserve">Reserve a day</CtaButton>
             <CtaButton to="/studio-v3" variant="ghost">
               Design your own
             </CtaButton>

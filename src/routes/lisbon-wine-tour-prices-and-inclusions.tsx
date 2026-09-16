@@ -121,12 +121,7 @@ function PricesAndInclusions() {
             deliberately left out.
           </p>
           <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-            <a
-              href="#reserve"
-              className="inline-flex min-h-[48px] items-center justify-center rounded-[2px] bg-[color:var(--teal)] px-7 py-3.5 font-sans text-[12.5px] uppercase tracking-[0.18em] font-semibold text-[color:var(--ivory)] no-underline"
-            >
-              Reserve a wine day
-            </a>
+            <CtaButton href="#reserve">Reserve a wine day</CtaButton>
             <CtaButton to="/lisbon-wine-tour-pickup-and-wineries" variant="ghost">
               Pickup &amp; wineries
             </CtaButton>
