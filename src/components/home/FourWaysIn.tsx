@@ -12,6 +12,7 @@ import { Link } from "@tanstack/react-router";
 import { BookOpen, Wand2, Compass, Sparkles, Users, ArrowRight, type LucideIcon } from "lucide-react";
 import { Eyebrow } from "@/components/ui/Eyebrow";
 import "@/styles/homepage-rebalance.css";
+import "@/styles/homepage-rebalance-extra.css";
 
 type Path = {
   id: "signature" | "studio" | "designer" | "proposals" | "corporate";
