@@ -10,7 +10,6 @@ import {
   MessageCircle,
   Lock,
   Info,
-  Loader2,
 } from "lucide-react";
 import { SiteLayout } from "@/components/SiteLayout";
 import { SiteBreadcrumbs } from "@/components/SiteBreadcrumbs";
@@ -23,6 +22,7 @@ import { useEffect } from "react";
 import { whatsappHref } from "@/components/WhatsAppFab";
 import { Eyebrow } from "@/components/ui/Eyebrow";
 import { SectionTitle } from "@/components/ui/SectionTitle";
+import { CtaButton } from "@/components/ui/CtaButton";
 import { PriceEur } from "@/components/ui/PriceEur";
 import { PriceCurrencyChip } from "@/components/PriceCurrencyChip";
 import { supabase } from "@/integrations/supabase/client";
@@ -1567,7 +1567,7 @@ function TailorPage() {
 
                 <ChargeSummaryLine className="mt-3" quote={versionQuote} />
 
-                <button
+                <CtaButton
                   type="button"
                   data-testid="tailor-reserve-cta"
                   onClick={() => {
@@ -1596,18 +1596,14 @@ function TailorPage() {
                     setDetailsOpen(true);
                   }}
                   disabled={checkoutPending || summaryStops.length === 0 || !compositionReady}
-                  className="mt-3 inline-flex min-h-[52px] w-full items-center justify-center gap-2 bg-[color:var(--teal)] px-5 py-4 text-sm tracking-wide text-[color:var(--ivory)] transition-all hover:bg-[color:var(--teal-2)] disabled:cursor-not-allowed disabled:opacity-60"
+                  loading={checkoutPending}
+                  loadingLabel="Opening checkout…"
+                  iconLeading={<Sparkles size={15} />}
+                  icon={null}
+                  className="mt-3 w-full"
                 >
-                  {checkoutPending ? (
-                    <>
-                      <Loader2 size={15} className="animate-spin" /> Opening checkout…
-                    </>
-                  ) : (
-                    <>
-                      <Sparkles size={15} /> Reserve this day
-                    </>
-                  )}
-                </button>
+                  Reserve this day
+                </CtaButton>
                 <p className="mt-2 text-center text-[12px] leading-relaxed text-[color:var(--charcoal-soft)]">
                   Instant confirmation · {CANCELLATION.custom.en}
                 </p>
