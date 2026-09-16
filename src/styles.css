@@ -5896,7 +5896,6 @@ html {
 /* Hero support line: upright champagne-ivory editorial copy, deliberately
    separated from the headline and actions. */
 .hero-support {
-  position: relative;
   color: color-mix(in oklab, var(--gold-soft) 54%, var(--ivory));
   text-shadow: 0 1px 3px color-mix(in oklab, var(--charcoal-deep) 72%, transparent);
 }
