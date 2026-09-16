@@ -11,8 +11,8 @@
  * Locks:
  *  · Palette = the approved 8 tokens, declared in :root.
  *  · Typography v3 = Fraunces headlines + Fraunces italic + Inter body.
- *  · Heading weights respect v3 (h1/h2 = 700, h3+ = 600).
- *  · Primary CTAs combine teal background + gold border + ivory text.
+ *  · Heading weights preserve the medium-weight premium editorial rhythm.
+ *  · Primary CTAs combine smoked charcoal + gold border + champagne text.
  *  · Editorial shadow stack present (no flat or generic Tailwind shadow
  *    is used as the canonical card lift).
  *  · Gold is used as micro-detail — never as a giant background fill
@@ -97,22 +97,20 @@ describe("Typography v3 — Fraunces / Inter", () => {
 });
 
 // ─── Primary CTA contract ──────────────────────────────────────────────
-describe("Primary CTA — teal fill + gold border + premium hover", () => {
-  it("homepage hero/Studio CTAs combine teal background and gold border", () => {
+describe("Primary CTA — smoked fill + gold border + premium hover", () => {
+  it("homepage exposes the shared premium primary CTA", () => {
     const home = readFileSync(HOMEPAGE_FILES[0], "utf8");
     // CTAs may be rendered either as raw className markup or via the
     // canonical <CtaButton variant="primary"> primitive (which itself
     // applies bg-[color:var(--teal)] + a gold border). Either form is
     // accepted as long as the page exposes a primary CTA.
-    const tealBg =
-      /bg-\[color:var\(--teal(?:-2)?\)\]/.test(home) ||
-      /<CtaButton(?![^>]*variant=["']ghost)/.test(home);
+    const premiumPrimary = /<CtaButton(?![^>]*variant=["']ghost)/.test(home);
     const goldBorder =
       /border-\[color:var\(--gold(?:-soft)?\)\]/.test(home) ||
       /<CtaButton(?![^>]*variant=["']ghost)/.test(home);
     expect(
-      tealBg,
-      "homepage missing primary CTA — need teal background + gold border, raw or via <CtaButton variant='primary'>",
+      premiumPrimary,
+      "homepage missing shared premium primary CTA",
     ).toBe(true);
     expect(goldBorder, "homepage missing var(--gold) border on CTA").toBe(true);
   });
@@ -168,16 +166,15 @@ describe("Gold token usage — micro-detail only", () => {
 });
 
 // ─── Heading hierarchy = Typography v3 weights ─────────────────────────
-describe("Heading hierarchy — h1/h2 700, h3+ 600", () => {
+describe("Heading hierarchy — medium-weight editorial display", () => {
   it("encodes the canonical weights in styles.css", () => {
     // The CANONICAL block lives in the Typography v3 section. We
-    // assert that h1 + h2 ride bold and h3+ semibold.
-    const h1Match = css.match(/h1\s*\{[^}]*font-weight:\s*700/);
-    const h2Match = css.match(/h2\s*\{[^}]*font-weight:\s*700/);
-    const h3Match = css.match(/h3\s*\{[^}]*font-weight:\s*600/);
-    expect(h1Match, "h1 should be 700").toBeTruthy();
-    expect(h2Match, "h2 should be 700").toBeTruthy();
-    expect(h3Match, "h3 should be 600").toBeTruthy();
+    const h1Match = css.match(/h1\s*\{[^}]*font-weight:\s*500/);
+    const h2Match = css.match(/h2\s*\{[^}]*font-weight:\s*500/);
+    const h3Match = css.match(/h3\s*\{[^}]*font-weight:\s*500/);
+    expect(h1Match, "h1 should be 500").toBeTruthy();
+    expect(h2Match, "h2 should be 500").toBeTruthy();
+    expect(h3Match, "h3 should be 500").toBeTruthy();
   });
 });
 

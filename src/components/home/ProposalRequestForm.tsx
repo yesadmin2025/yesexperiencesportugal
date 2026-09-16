@@ -8,9 +8,10 @@
  * server, with an inline success state (no page jump).
  */
 import { useRef, useState } from "react";
-import { Check, Loader2 } from "lucide-react";
+import { Check } from "lucide-react";
 import { trackEvent } from "@/lib/analytics-events";
 import { PHONE_DISPLAY } from "@/config/business-nap";
+import { CtaButton } from "@/components/ui/CtaButton";
 
 const OCCASIONS = [
   { value: "proposal", label: "Marriage proposal" },
@@ -215,14 +216,16 @@ export function ProposalRequestForm({ id = "proposal-request" }: { id?: string }
         </p>
       ) : null}
 
-      <button
+      <CtaButton
         type="submit"
         disabled={state === "sending"}
-        className="mt-7 inline-flex min-h-[48px] w-full items-center justify-center gap-2 rounded-[4px] bg-[color:var(--teal)] px-6 font-sans text-[12px] uppercase tracking-[0.22em] font-bold text-[color:var(--ivory)] transition-opacity duration-200 hover:opacity-90 disabled:opacity-60 sm:w-auto"
+        loading={state === "sending"}
+        loadingLabel="Sending"
+        icon={null}
+        className="mt-7 w-full sm:w-auto"
       >
-        {state === "sending" ? <Loader2 size={15} className="animate-spin" aria-hidden /> : null}
-        {state === "sending" ? "Sending" : "Send my request"}
-      </button>
+        Send my request
+      </CtaButton>
       <p className="mt-4 font-sans text-[11.5px] leading-[1.6] uppercase tracking-[0.16em] text-[color:var(--charcoal-soft)]">
         One local team · reply within a working day · no obligation
       </p>

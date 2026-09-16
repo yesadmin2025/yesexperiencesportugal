@@ -1,6 +1,7 @@
 import type { ReactNode } from "react";
 import { Link } from "@tanstack/react-router";
 import { Wine, Users, Clock3, ArrowRight, MapPin } from "lucide-react";
+import { CtaButton } from "@/components/ui/CtaButton";
 
 const STOPS = [
   { x: 68, y: 58, label: "Lisbon", caption: "Pickup" },
@@ -107,12 +108,13 @@ export function StudioLivePreview() {
               Choose mood, group and rhythm in the Studio. This example is only here to show how the day comes together.
             </p>
           </div>
-          <Link
+          <CtaButton
             to="/studio-v3"
-            className="mt-4 inline-flex min-h-[46px] shrink-0 items-center justify-center gap-2 rounded-[3px] bg-[color:var(--teal)] px-4 py-2.5 text-[12px] uppercase tracking-[0.15em] font-semibold text-[color:var(--ivory)] hover:-translate-y-0.5 sm:mt-0"
+            size="sm"
+            className="mt-4 shrink-0 sm:mt-0"
           >
-            Design yours <ArrowRight size={13} aria-hidden="true" />
-          </Link>
+            Design your day
+          </CtaButton>
         </div>
         <div className="mt-3 flex flex-wrap items-center justify-between gap-2 border-t border-[color:var(--border)] pt-3">
           <p className="inline-flex items-center gap-1.5 text-[12px] text-[color:var(--charcoal-soft)]">
