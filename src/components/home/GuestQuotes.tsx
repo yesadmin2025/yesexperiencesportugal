@@ -1,9 +1,10 @@
 /**
  * GuestQuotes — homepage social proof block.
  *
- * 1. Aggregate trust line driven by the real `global_review_aggregate`
- *    view (sum across all platforms + first-party). If the DB is empty,
- *    falls back to the "700+" claim without inventing a precise digit.
+ * 1. Aggregate trust line shows "700+ five-star reviews" as the public
+ *    social proof headline. The real `global_review_aggregate` view still
+ *    drives JSON-LD and internal reporting, but the visible count is locked
+ *    to the brand-wide 700+ claim.
  * 2. Up to 6 curated 5★ quotes from `tour_reviews` (admin-marked
  *    is_featured). When none exist, the quote row is hidden.
  * 3. Trust line: "Based on verified guest reviews across major booking
@@ -95,21 +96,10 @@ export function GuestQuotes() {
       </div>
 
       <h2 className="serif mt-3 text-[1.5rem] sm:text-[2rem] md:text-[3.4rem] leading-[1.15] md:leading-[1.02] tracking-[-0.018em] text-[color:var(--charcoal)] font-medium text-balance">
-        {count ? (
-          <>
-            {count.toLocaleString("en-US")} five-star reviews{" "}
-            <span className="italic font-normal text-[color:var(--teal)]">
-              — real guests, real stories.
-            </span>
-          </>
-        ) : (
-          <>
-            700+ five-star reviews{" "}
-            <span className="italic font-normal text-[color:var(--teal)]">
-              — real guests, real stories.
-            </span>
-          </>
-        )}
+        700+ five-star reviews{" "}
+        <span className="italic font-normal text-[color:var(--teal)]">
+          — real guests, real stories.
+        </span>
       </h2>
 
       {/* Platform badge row removed — each review card now carries its
