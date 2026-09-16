@@ -4,6 +4,7 @@ import { ChevronLeft, ChevronRight, X, ZoomIn } from "lucide-react";
 import { Eyebrow } from "@/components/ui/Eyebrow";
 import { CtaButton } from "@/components/ui/CtaButton";
 import { CtaPair } from "@/components/ui/CtaPair";
+import { CTA_LABELS } from "@/content/cta-vocabulary";
 
 /**
  * Bespoke Travel Designer — proof block.
