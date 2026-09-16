@@ -1,37 +1,33 @@
 /**
- * Homepage hero — the continuous YES cinematic film with chapter overlays,
- * over a conversion-first composition.
+ * Homepage hero — restored "One Breath" composition.
  *
- * ONE uninterrupted <video> (HERO_FILM, ~27.1s) is the visual source of
- * truth — never a carousel, never stacked clips. HERO_SCENES supplies the
- * chapter overlay timeline: restrained editorial lines that cross-fade as
- * the film advances.
+ * The held coastal-road film is the dominant element. Copy lives in
+ * separate vertical zones with real negative space between them:
+ *   eyebrow  → open sky above the stanza
+ *   stanza   → upper-middle, at the historical ~30vh position
+ *   support  → its own breathing room below the stanza
+ *   CTAs     → anchored low, as in the original composition
  *
- * Conversion never waits for the film: every action exists and remains
- * interactive while the visual sequence composes over about 5.1s. Reduced motion and `?hero=last`
- * render the final actionable state immediately.
+ * The eyebrow and support line are independent overlays inside space the
+ * original composition already left empty — they never reflow the stanza
+ * or the CTA block. Reduced motion and `?hero=last` render the final
+ * actionable state immediately.
  */
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { Link } from "@tanstack/react-router";
 import { HERO_COPY, HERO_COPY_VERSION, HERO_PHRASES } from "@/content/hero-copy";
 import { HERO_FILM } from "@/content/hero-scenes-manifest";
 
-/**
- * Cinematic pace: the eyebrow opens, the stanza follows one line at a time,
- * and the full actionable state settles in roughly 5.1s. Nothing springs.
- */
-const EYEBROW_DELAY_MS = 280;
-const LINE1_DELAY_MS = 1080;
-const LINE2_DELAY_MS = 2100;
-const SUPPORT_DELAY_MS = 3260;
-const PRIMARY_CTA_DELAY_MS = 4240;
-const SECONDARY_CTA_DELAY_MS = 4780;
-const HEADLINE_FADE_MS = 1260;
-const SUPPORT_FADE_MS = 1160;
-const CTA_FADE_MS = 980;
-
-const EASE = "var(--ease-scene)";
+/** Cinematic pace: one breath per beat, full actionable state by ~5s. */
+const EYEBROW_DELAY_MS = 400;
+const LINE1_DELAY_MS = 1400;
+const LINE2_DELAY_MS = 2600;
+const SUPPORT_DELAY_MS = 3800;
+const CTA_DELAY_MS = 5000;
+const TEXT_FADE_MS = 1600;
+const CTA_FADE_MS = 1800;
+const EASE = "cubic-bezier(0.22,0.61,0.36,1)";
 
 function shouldSkipIntro(): boolean {
   if (typeof window === "undefined") return false;
@@ -47,31 +43,26 @@ function shouldSkipIntro(): boolean {
   }
 }
 
-function revealStyle(on: boolean, ms: number, delayMs = 0, risePx = 12): React.CSSProperties {
-  // `delayMs` staggers the composed block so the closing elements arrive
-  // one after another (eyebrow → subheadline → CTAs → quiet links) rather
-  // than snapping in together. Delay only applies on the way in.
-  const delay = on ? delayMs : 0;
+function revealStyle(on: boolean, ms: number): React.CSSProperties {
   return {
     opacity: on ? 1 : 0,
-    transform: on ? "translateY(0)" : `translateY(${risePx}px)`,
-    willChange: "opacity, transform",
-    transition:
-      `opacity ${ms}ms ${EASE} ${delay}ms, ` +
-      `transform ${ms}ms ${EASE} ${delay}ms`,
+    transform: on ? "translateY(0)" : "translateY(8px)",
+    filter: on ? "blur(0px)" : "blur(3px)",
+    willChange: "opacity, transform, filter",
+    transition: `opacity ${ms}ms ${EASE}, transform ${ms}ms ${EASE}, filter ${ms}ms ${EASE}`,
   };
 }
 
-function headlineRevealStyle(on: boolean): React.CSSProperties {
-  return {
-    opacity: on ? 1 : 0,
-    transform: on ? "translate3d(0, 0, 0)" : "translate3d(0, 12px, 0)",
-    willChange: "opacity, transform",
-    transition:
-      `opacity ${HEADLINE_FADE_MS}ms ${EASE}, ` +
-      `transform ${HEADLINE_FADE_MS}ms ${EASE}`,
-  };
-}
+/** The original stanza treatment — clean Fraunces italic, one subtle shadow. */
+const stanzaStyle: React.CSSProperties = {
+  fontWeight: 400,
+  fontStyle: "italic",
+  lineHeight: 1.25,
+  letterSpacing: "-0.012em",
+  color: "#F1D8AB",
+  textShadow: "0 1px 1px rgba(0,0,0,0.5), 0 1px 4px rgba(0,0,0,0.28)",
+  fontSize: "clamp(28px, 4.6vw, 50px)",
+};
 
 const ARROW = (
   <svg
@@ -93,12 +84,12 @@ const ARROW = (
 );
 
 export function CinematicHero() {
-  const [eyebrow, setEyebrow] = useState(false);
-  const [line1, setLine1] = useState(false);
-  const [line2, setLine2] = useState(false);
-  const [support, setSupport] = useState(false);
-  const [primaryCta, setPrimaryCta] = useState(false);
-  const [secondaryCta, setSecondaryCta] = useState(false);
+  const skipIntro = useMemo(shouldSkipIntro, []);
+  const [eyebrow, setEyebrow] = useState(skipIntro);
+  const [line1, setLine1] = useState(skipIntro);
+  const [line2, setLine2] = useState(skipIntro);
+  const [support, setSupport] = useState(skipIntro);
+  const [composed, setComposed] = useState(skipIntro);
   const videoRef = useRef<HTMLVideoElement | null>(null);
 
   useEffect(() => {
@@ -123,30 +114,20 @@ export function CinematicHero() {
   }, []);
 
   useEffect(() => {
-    if (shouldSkipIntro()) {
-      setEyebrow(true);
-      setLine1(true);
-      setLine2(true);
-      setSupport(true);
-      setPrimaryCta(true);
-      setSecondaryCta(true);
-      return;
-    }
+    if (skipIntro) return;
     const te = window.setTimeout(() => setEyebrow(true), EYEBROW_DELAY_MS);
     const t1 = window.setTimeout(() => setLine1(true), LINE1_DELAY_MS);
     const t2 = window.setTimeout(() => setLine2(true), LINE2_DELAY_MS);
     const ts = window.setTimeout(() => setSupport(true), SUPPORT_DELAY_MS);
-    const tp = window.setTimeout(() => setPrimaryCta(true), PRIMARY_CTA_DELAY_MS);
-    const ts2 = window.setTimeout(() => setSecondaryCta(true), SECONDARY_CTA_DELAY_MS);
+    const tc = window.setTimeout(() => setComposed(true), CTA_DELAY_MS);
     return () => {
       window.clearTimeout(te);
       window.clearTimeout(t1);
       window.clearTimeout(t2);
       window.clearTimeout(ts);
-      window.clearTimeout(tp);
-      window.clearTimeout(ts2);
+      window.clearTimeout(tc);
     };
-  }, []);
+  }, [skipIntro]);
 
   return (
     <section
@@ -155,9 +136,9 @@ export function CinematicHero() {
       aria-label="YES Experiences Portugal"
       className="hero-cinematic relative mt-[64px] min-h-[calc(100svh-64px)] w-full overflow-hidden bg-[color:var(--charcoal-deep,#1a1816)] md:mt-[84px] md:min-h-[calc(100svh-84px)] lg:mt-[96px] lg:min-h-[calc(100svh-96px)]"
     >
+      {/* ── Held cinematic film ─────────────────────────────────────── */}
       <div className="hero-story-stage absolute inset-0 z-0">
-        {/* The film opens at a whisper of zoom and exhales to rest. */}
-        <picture className="hero-film-settle absolute inset-0 block h-full w-full">
+        <picture className="absolute inset-0 block h-full w-full">
           <source
             media="(max-width: 767px)"
             srcSet={HERO_FILM.posterMobile}
@@ -182,7 +163,7 @@ export function CinematicHero() {
           playsInline
           preload="metadata"
           poster={HERO_FILM.poster}
-          className="hero-film-settle absolute inset-0 h-full w-full object-cover"
+          className="absolute inset-0 h-full w-full object-cover"
           aria-hidden="true"
         >
           <source
@@ -190,101 +171,116 @@ export function CinematicHero() {
             media="(max-width: 767px)"
             type="video/mp4"
           />
-          <source
-            src={HERO_FILM.src1080}
-            type="video/mp4"
-          />
+          <source src={HERO_FILM.src1080} type="video/mp4" />
         </video>
 
-        {/* Restrained grading so copy is AA readable without crushing the film. */}
+        {/* Original grading: lifted blacks, gentle vignette, mobile stanza band. */}
         <div
           aria-hidden="true"
-          className="hero-cinematic-scrim absolute inset-0"
+          className="absolute inset-0 pointer-events-none"
+          style={{ background: "rgba(38, 30, 22, 0.06)" }}
+        />
+        <div
+          aria-hidden="true"
+          className="absolute inset-0 pointer-events-none"
+          style={{
+            background:
+              "radial-gradient(ellipse at center, rgba(0,0,0,0.04) 0%, rgba(0,0,0,0.26) 100%)",
+          }}
+        />
+        <div
+          aria-hidden="true"
+          className="absolute inset-x-0 top-[30%] h-[40%] md:hidden pointer-events-none"
+          style={{
+            background:
+              "linear-gradient(to bottom, transparent 0%, rgba(0,0,0,0.18) 50%, transparent 100%)",
+          }}
         />
       </div>
 
-      <div className="hero-cinematic-content relative z-10 min-h-[calc(100svh-64px)] px-5 sm:px-10 md:min-h-[calc(100svh-84px)] lg:min-h-[calc(100svh-96px)] lg:px-12">
-        <div className="mx-auto h-full w-full max-w-6xl">
-          <div className="hero-cinematic-composition relative mx-auto h-full max-w-[47rem] text-center">
-            <p
-              data-hero-field="eyebrow"
-              className="hero-promise absolute inset-x-0 flex items-center justify-center text-[10px] font-semibold uppercase tracking-[0.2em] sm:text-[11px] sm:tracking-[0.24em]"
-              style={revealStyle(eyebrow, 940, 0, 7)}
-            >
-              {HERO_COPY.eyebrow}
-            </p>
+      {/* ── Eyebrow — independent overlay in the open sky zone ──────── */}
+      <p
+        data-hero-field="eyebrow"
+        className="hero-promise absolute inset-x-0 top-[15%] z-10 px-6 text-center text-[10.5px] font-medium uppercase tracking-[0.18em] text-[#F1D8AB] sm:top-[16%] sm:text-[11px] sm:tracking-[0.2em]"
+        style={{
+          ...revealStyle(eyebrow, TEXT_FADE_MS),
+          textShadow: "0 1px 2px rgba(0,0,0,0.45)",
+        }}
+      >
+        {HERO_COPY.eyebrow}
+      </p>
 
-            <h1
-              data-hero-stanza="true"
-              data-mixed-emphasis="exempt"
-               className="hero-h1 absolute inset-x-0 m-0 font-serif text-[clamp(2.15rem,5.2vw,4.4rem)] font-normal italic leading-[1.12] tracking-normal"
-            >
-              <span className="hero-title-mask block">
-                <span
-                  className="hero-title-line block font-serif font-normal italic m-0"
-                  data-hero-field="headlineLine1"
-                  style={headlineRevealStyle(line1)}
-                >
-                  {HERO_PHRASES[0]}
-                </span>
-              </span>
-              <span className="hero-title-mask mt-4 block sm:mt-[1.125rem]">
-                <span
-                  className="hero-title-line block font-serif italic font-normal text-[color:var(--gold-soft)]"
-                  data-hero-field="headlineLine2"
-                  style={headlineRevealStyle(line2)}
-                >
-                  {HERO_PHRASES[1]}
-                </span>
-              </span>
-            </h1>
-
-            <p
-              data-hero-field="subheadline"
-              className="hero-support absolute inset-x-0 mx-auto max-w-[22rem] font-serif text-[16px] font-normal not-italic leading-[1.65] sm:max-w-[31rem] sm:text-[17px] md:max-w-[34rem] md:text-[18px]"
-              style={revealStyle(support, SUPPORT_FADE_MS, 0, 9)}
-            >
-              {HERO_COPY.subheadline}
-            </p>
-
-            <div
-              className="hero-cta-group absolute inset-x-0 mx-auto flex w-full max-w-[18rem] flex-col items-center gap-4 md:max-w-[37rem] md:flex-row md:justify-center md:gap-4"
-              data-hero-composed={primaryCta && secondaryCta ? "true" : "false"}
-            >
-              <Link
-                to="/studio-v3"
-                data-hero-field="primaryCta"
-                data-analytics="hero_open_studio"
-                data-analytics-placement="hero"
-                className="hero-cta group inline-flex min-h-[46px] w-full max-w-[15.25rem] items-center justify-center whitespace-nowrap px-6 py-2.5 text-[10px] uppercase tracking-[0.2em] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)] focus-visible:ring-offset-4 focus-visible:ring-offset-transparent sm:w-auto sm:min-w-[15.25rem] sm:px-8 sm:text-[10.5px] md:min-w-[17.5rem] hero-cta--primary"
-                style={revealStyle(primaryCta, CTA_FADE_MS, 0, 9)}
-              >
-                <span className="hero-cta__sheen" aria-hidden="true" />
-                <span className="relative z-10 inline-flex items-center gap-2.5">
-                  {HERO_COPY.primaryCta}
-                  {ARROW}
-                </span>
-              </Link>
-              <Link
-                to="/experiences"
-                data-hero-field="secondaryCta"
-                data-analytics="hero_choose_experience"
-                data-analytics-placement="hero"
-                className="hero-cta group inline-flex min-h-[44px] w-full max-w-[18rem] items-center justify-center whitespace-nowrap px-6 py-2.5 text-[10px] uppercase tracking-[0.18em] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)] focus-visible:ring-offset-4 focus-visible:ring-offset-transparent sm:w-auto sm:min-w-[18rem] sm:px-8 sm:text-[10.5px] md:min-w-[17.5rem] hero-cta--ghost"
-                style={revealStyle(secondaryCta, CTA_FADE_MS, 0, 8)}
-              >
-                <span className="hero-cta__sheen" aria-hidden="true" />
-                <span className="relative z-10 inline-flex items-center gap-2.5">
-                  {HERO_COPY.secondaryCta}
-                </span>
-              </Link>
-            </div>
-
-          </div>
-        </div>
+      {/* ── Stanza — original position and scale, clean treatment ───── */}
+      <div className="absolute inset-0 z-10 flex items-start justify-center pt-[26svh] px-6 sm:px-10 md:px-16">
+        <h1
+          data-hero-stanza="true"
+          data-mixed-emphasis="exempt"
+          className="hero-h1 m-0 text-center font-serif"
+        >
+          <span
+            className="hero-title-line block"
+            data-hero-field="headlineLine1"
+            style={{ ...stanzaStyle, ...revealStyle(line1, TEXT_FADE_MS) }}
+          >
+            {HERO_PHRASES[0]}
+          </span>
+          <span
+            className="hero-title-line mt-3 block sm:mt-4"
+            data-hero-field="headlineLine2"
+            style={{ ...stanzaStyle, ...revealStyle(line2, TEXT_FADE_MS) }}
+          >
+            {HERO_PHRASES[1]}
+          </span>
+        </h1>
       </div>
 
-      <div aria-hidden="true" className="hero-editorial-handoff absolute inset-x-0 bottom-0 z-[5] h-[4%]" />
+      {/* ── Support line — its own breathing room below the stanza ──── */}
+      <p
+        data-hero-field="subheadline"
+        className="hero-support absolute inset-x-0 top-[52%] z-10 mx-auto max-w-[21rem] px-6 text-center font-serif text-[15.5px] font-normal not-italic leading-[1.65] text-[color:var(--ivory)] sm:max-w-[30rem] sm:text-[16.5px]"
+        style={{
+          ...revealStyle(support, TEXT_FADE_MS),
+          textShadow: "0 1px 2px rgba(0,0,0,0.4)",
+        }}
+      >
+        {HERO_COPY.subheadline}
+      </p>
+
+      {/* ── CTAs — anchored low, original dimensions ────────────────── */}
+      <div
+        className="hero-cta-group absolute inset-x-0 bottom-0 z-20 flex flex-col items-center gap-3 px-6 pb-[max(5.5rem,calc(env(safe-area-inset-bottom)+4.25rem))] sm:flex-row sm:justify-center sm:gap-5 sm:pb-14 md:pb-20"
+        data-hero-composed={composed ? "true" : "false"}
+        style={{
+          opacity: composed ? 1 : 0,
+          transform: composed ? "translateY(0)" : "translateY(12px)",
+          transition: `opacity ${CTA_FADE_MS}ms ${EASE}, transform ${CTA_FADE_MS}ms ${EASE}`,
+          pointerEvents: composed ? "auto" : "none",
+        }}
+      >
+        <Link
+          to="/studio-v3"
+          data-hero-field="primaryCta"
+          data-analytics="hero_open_studio"
+          data-analytics-placement="hero"
+          className="hero-cta hero-cta--primary group inline-flex min-h-[44px] min-w-[196px] items-center justify-center whitespace-nowrap px-7 py-[10px] text-[11px] uppercase tracking-[0.14em] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)] focus-visible:ring-offset-4 focus-visible:ring-offset-transparent sm:min-w-[206px] sm:text-[11.5px]"
+        >
+          <span className="hero-cta__sheen" aria-hidden="true" />
+          <span className="relative z-10 inline-flex items-center gap-2.5">
+            {HERO_COPY.primaryCta}
+            {ARROW}
+          </span>
+        </Link>
+        <Link
+          to="/experiences"
+          data-hero-field="secondaryCta"
+          data-analytics="hero_choose_experience"
+          data-analytics-placement="hero"
+          className="hero-cta hero-cta--ghost group inline-flex min-h-[44px] min-w-[196px] items-center justify-center whitespace-nowrap px-7 py-[10px] text-[11px] uppercase tracking-[0.14em] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)] focus-visible:ring-offset-4 focus-visible:ring-offset-transparent sm:min-w-[206px] sm:text-[11.5px]"
+        >
+          <span className="hero-cta__sheen" aria-hidden="true" />
+          <span className="relative z-10">{HERO_COPY.secondaryCta}</span>
+        </Link>
+      </div>
 
       <div
         data-hero-copy-version={HERO_COPY_VERSION}
