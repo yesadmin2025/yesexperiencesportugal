@@ -6066,16 +6066,10 @@ html {
     transform: none;
   }
   .hero-cinematic .hero-promise {
-    top: 17%;
-  }
-  .hero-cinematic .hero-h1 {
-    top: 29%;
+    top: 16%;
   }
   .hero-cinematic .hero-support {
-    top: 57%;
-  }
-  .hero-cinematic .hero-cta-group {
-    top: 73%;
+    top: 54%;
   }
 }
 @media (min-width: 1024px) {
