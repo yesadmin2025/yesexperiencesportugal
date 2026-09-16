@@ -428,7 +428,26 @@ function TourHero({
                 </>
               )}
             </div>
+
+            {/* Included at a glance — first inclusions from the existing
+                source-of-truth list, so the offer is understandable above
+                the fold without opening anything. Full list stays below. */}
+            {heroIncluded.length > 0 && (
+              <ul className="mt-4 flex flex-wrap items-center gap-x-4 gap-y-1.5 text-[13px] leading-[1.5] text-[color:var(--charcoal-soft)]">
+                {heroIncluded.map((item) => (
+                  <li key={item} className="flex items-start gap-1.5">
+                    <Check
+                      size={13}
+                      className="mt-[3px] flex-shrink-0 text-[color:var(--gold)]"
+                      aria-hidden="true"
+                    />
+                    <span>{item}</span>
+                  </li>
+                ))}
+              </ul>
+            )}
           </div>
+
 
           <div className="mt-6 flex flex-col items-start gap-3">
             {typeof (tour as { priceFrom?: number }).priceFrom === "number" ? (
