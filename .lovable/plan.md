@@ -1,19 +1,42 @@
-# Focused Hero and Experiences editorial pass
+# Release-candidate premium polish
 
-## Scope
-Refine only the homepage Hero and `/experiences` collection presentation. Preserve the existing film, approved copy, Premium System Lock, routes, tour data, prices, business logic, metadata, and reduced-motion behavior.
+## Scope and safeguards
+Polish the current public presentation without changing routes, metadata, structured data, prices, tour facts, inclusions, booking rules, payment accounts, database schemas, or production data. No deployment.
 
 ## Implementation
-- Re-sequence the Hero into five restrained cinematic beats using existing motion tokens: eyebrow, first headline line, second headline line, positioning sentence, primary action, then secondary action.
-- Keep both actions interactive throughout, remove the two lower micro-links from the first viewport, create more breathing room, and add a subtle bottom fade into the ivory page.
-- Simplify `/experiences` into a two-column desktop and one-column mobile editorial collection with consistent image ratios, one essence sentence, one compact metadata line, quiet ratings, and one detail-page action.
-- Remove collection-only highlight bullets and the competing Tailor action without changing underlying tour data or detail-page capabilities.
-- Add one restrained 300–450ms card reveal with light staggering and reduced-motion fallback; avoid continuous or theatrical effects.
-- Update only focused assertions affected by the intentional Hero/card DOM changes.
+1. **Cinematic homepage Hero**
+   - Make the mobile film fill the usable viewport below the fixed header, with safe-area-aware spacing and a lighter bottom handoff so the video remains visible.
+   - Extend the existing reveal into a calm 4–5 second sequence: eyebrow, first line, second line, Fraunces upright support copy, primary action, secondary action.
+   - Keep both actions available immediately in the document, restore the premium teal/ivory/gold and dark-glass CTA treatments, and use only opacity, small vertical movement, and restrained blur.
+   - Preserve the exact locked headline, CTA vocabulary, film assets, accessibility contrast, and immediate reduced-motion state.
 
-## Verification
-- Run focused Hero CTA, typography, reveal, and reduced-motion checks.
-- Run directly affected Experiences checks and the mobile overflow guard.
-- Run typecheck and production build.
-- Check the live preview at 393px and desktop for hierarchy, overflow, CTA access, and console errors.
-- Do not deploy.
+2. **Homepage and shared editorial motion**
+   - Reuse the existing motion controller and semantic duration/easing tokens for section, image, card, and CTA reveals.
+   - Apply motion selectively to the homepage’s major editorial sections and align visible title styling on Homepage, Experiences, Studio V3, and Travel Designer through existing typography primitives rather than rewriting content.
+   - Keep mobile free of parallax and ensure reduced motion removes ornamental effects.
+
+3. **Experiences discovery**
+   - Keep the two-column desktop / one-column mobile editorial grid, real imagery, tour data, and detail links.
+   - Remove collection-only reviews, “Private”, lunch/inclusion labels, and other duplicate signals; retain region/theme, title, one teaser, duration, from-price, and one “View experience” action.
+   - Normalize card rhythm, image proportions, content height, tap targets, and restrained hover/reveal behavior.
+
+4. **Representative Signature booking choice**
+   - Simplify the Arrábida page’s initial decision hierarchy without removing information: one dominant reserve action with essential price/date/guest context first; tailoring, preferences, trust, and explanations remain available as quieter or progressively disclosed supporting choices.
+   - Reuse the existing booking form’s disclosure and checkout components; preserve pricing resolution, availability, guest rules, payloads, and checkout behavior exactly.
+
+5. **Operational P0 verification and surgical gaps only**
+   - Verify the existing canonical-host Stripe environment lock, canonical live return URLs, shared in-flight checkout guard, sanitized URL logging, analytics exclusions, and environment/traffic tagging across all call sites.
+   - Change these areas only if the audit identifies a concrete bypass or missing checkout surface. Add host × key/environment and double-submit/privacy regression coverage without touching live payment data or historical rows.
+
+## Technical details
+- Primary files expected: `src/components/home/CinematicHero.tsx`, `src/routes/experiences.tsx`, `src/routes/tours.$tourId.tsx`, `src/components/SimpleBookingForm.tsx`, `src/styles.css`, and directly affected focused tests.
+- Payment/privacy files remain unchanged unless a verified gap exists: `src/lib/payments-environment.ts`, `supabase/functions/_shared/payments-environment.ts`, `src/lib/checkout/session-request.ts`, `src/lib/url-sanitize.ts`, `src/lib/analytics-exclusions.ts`, pageview/error logging modules, and checkout function callers.
+- Update `roadmap.md` with this release-candidate task and close it after validation.
+
+## Validation
+- Focused Hero CTA, typography, choreography, and reduced-motion tests.
+- Experiences collection and representative Signature booking tests.
+- Payment host/environment matrix, return-origin, checkout deduplication, analytics exclusion, and URL privacy tests.
+- Mobile browser smoke checks at approximately 393px for Homepage, Experiences, Arrábida booking flow, Studio entry, and embedded Stripe opening in test mode only.
+- Verify no horizontal overflow, duplicate H1s, broken touched links, accidental price/text drift, or reduced-motion regressions.
+- Run TypeScript checks and production build; report unrelated failures separately.
