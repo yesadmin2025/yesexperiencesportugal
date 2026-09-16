@@ -19,13 +19,13 @@ import { Link } from "@tanstack/react-router";
 import { HERO_COPY, HERO_COPY_VERSION, HERO_PHRASES } from "@/content/hero-copy";
 import { HERO_FILM } from "@/content/hero-scenes-manifest";
 
-/** Cinematic pace: one breath per beat, full actionable state by ~4.7s. */
+/** Cinematic pace: one breath per beat, full actionable state by ~4.5s. */
 const EYEBROW_DELAY_MS = 300;
-const LINE1_DELAY_MS = 850;
-const LINE2_DELAY_MS = 1500;
-const SUPPORT_DELAY_MS = 2300;
-const CTA_DELAY_MS = 3200;
-const TEXT_FADE_MS = 1200;
+const LINE1_DELAY_MS = 900;
+const LINE2_DELAY_MS = 1700;
+const SUPPORT_DELAY_MS = 2600;
+const CTA_DELAY_MS = 3500;
+const TEXT_FADE_MS = 1300;
 const CTA_FADE_MS = 1000;
 const EASE = "cubic-bezier(0.22,1,0.36,1)";
 
@@ -46,7 +46,7 @@ function shouldSkipIntro(): boolean {
 function revealStyle(on: boolean, ms: number): React.CSSProperties {
   return {
     opacity: on ? 1 : 0,
-    transform: on ? "translateY(0)" : "translateY(6px)",
+    transform: on ? "translateY(0)" : "translateY(14px)",
     willChange: "opacity, transform",
     transition: `opacity ${ms}ms ${EASE}, transform ${ms}ms ${EASE}`,
   };
@@ -56,9 +56,9 @@ function revealStyle(on: boolean, ms: number): React.CSSProperties {
 const stanzaStyle: React.CSSProperties = {
   fontWeight: 400,
   fontStyle: "italic",
-  lineHeight: 1.25,
-  letterSpacing: "0",
-  fontSize: "clamp(29px, 4.6vw, 50px)",
+  lineHeight: 1.14,
+  letterSpacing: "-0.005em",
+  fontSize: "clamp(34px, 5.6vw, 62px)",
 };
 
 const ARROW = (
@@ -194,7 +194,7 @@ export function CinematicHero() {
           className="absolute inset-0 pointer-events-none"
           style={{
             background:
-              "radial-gradient(ellipse at center, rgba(0,0,0,0.04) 0%, rgba(0,0,0,0.26) 100%)",
+              "radial-gradient(ellipse at center, rgba(0,0,0,0.03) 0%, rgba(0,0,0,0.34) 100%)",
           }}
         />
         <div
@@ -220,7 +220,7 @@ export function CinematicHero() {
         </p>
       </div>
 
-      <div className="hero-stanza-zone absolute inset-x-0 top-[30%] z-10 flex justify-center px-5 sm:top-[31%] sm:px-10 md:px-16">
+      <div className="hero-stanza-zone absolute inset-x-0 top-[28%] z-10 flex justify-center px-5 sm:top-[30%] sm:px-10 md:px-16">
         <h1
           data-hero-stanza="true"
           data-mixed-emphasis="exempt"
@@ -234,7 +234,7 @@ export function CinematicHero() {
             {HERO_PHRASES[0]}
           </span>
           <span
-            className="hero-title-line mt-3 block font-serif italic font-normal text-[color:var(--gold-soft)] sm:mt-4"
+            className="hero-title-line mt-2 block font-serif italic font-normal text-[color:var(--gold-soft)] sm:mt-2.5"
             data-hero-field="headlineLine2"
             style={{ ...stanzaStyle, ...revealStyle(line2, TEXT_FADE_MS) }}
           >

@@ -6071,11 +6071,11 @@ html {
 /* Historical centred stanza: two distinct lines with the breathing room
    shown in the approved reference. Eyebrow/support remain separate zones. */
 .hero-cinematic .hero-title-line {
-  line-height: 1.25;
-  letter-spacing: 0;
+  line-height: 1.14;
+  letter-spacing: -0.005em;
 }
 .hero-cinematic .hero-title-line + .hero-title-line {
-  margin-top: 0.75rem;
+  margin-top: 0.5rem;
 }
 .hero-cinematic .hero-support {
   text-wrap: balance;
