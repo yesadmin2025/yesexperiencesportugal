@@ -19,15 +19,15 @@ import { Link } from "@tanstack/react-router";
 import { HERO_COPY, HERO_COPY_VERSION, HERO_PHRASES } from "@/content/hero-copy";
 import { HERO_FILM } from "@/content/hero-scenes-manifest";
 
-/** Cinematic pace: one breath per beat, full actionable state by ~5s. */
+/** Cinematic pace: one breath per beat, full actionable state by ~4.6s. */
 const EYEBROW_DELAY_MS = 400;
-const LINE1_DELAY_MS = 1400;
-const LINE2_DELAY_MS = 2600;
-const SUPPORT_DELAY_MS = 3800;
-const CTA_DELAY_MS = 5000;
-const TEXT_FADE_MS = 1600;
-const CTA_FADE_MS = 1800;
-const EASE = "cubic-bezier(0.22,0.61,0.36,1)";
+const LINE1_DELAY_MS = 1200;
+const LINE2_DELAY_MS = 2200;
+const SUPPORT_DELAY_MS = 3300;
+const CTA_DELAY_MS = 4600;
+const TEXT_FADE_MS = 1500;
+const CTA_FADE_MS = 1700;
+const EASE = "cubic-bezier(0.22,1,0.36,1)";
 
 function shouldSkipIntro(): boolean {
   if (typeof window === "undefined") return false;
@@ -217,7 +217,7 @@ export function CinematicHero() {
       </p>
 
       {/* ── Stanza — original position and scale, clean treatment ───── */}
-      <div className="absolute inset-0 z-10 flex items-start justify-center pt-[23svh] px-6 sm:pt-[24svh] sm:px-10 md:px-16">
+      <div className="absolute inset-0 z-10 flex items-start justify-center pt-[21svh] px-6 sm:pt-[22svh] sm:px-10 md:px-16">
         <h1
           data-hero-stanza="true"
           data-mixed-emphasis="exempt"
@@ -243,7 +243,7 @@ export function CinematicHero() {
       {/* ── Support line — its own breathing room below the stanza ──── */}
       <p
         data-hero-field="subheadline"
-        className="hero-support absolute inset-x-0 top-[50%] z-10 mx-auto max-w-[23rem] px-6 text-center font-serif text-[17px] font-normal not-italic leading-[1.68] tracking-[0.01em] sm:max-w-[36rem] sm:text-[18px] sm:leading-[1.7]"
+        className="hero-support absolute inset-x-0 top-[50%] z-10 mx-auto max-w-[23rem] px-6 text-center font-serif text-[18px] font-normal not-italic leading-[1.76] sm:max-w-[36rem] sm:text-[19px] sm:leading-[1.72]"
         style={revealStyle(support, TEXT_FADE_MS)}
       >
         {HERO_COPY.subheadline}
@@ -251,7 +251,7 @@ export function CinematicHero() {
 
       {/* ── CTAs — anchored low, original dimensions ────────────────── */}
       <div
-        className="hero-cta-group absolute inset-x-0 bottom-0 z-20 flex flex-col items-center gap-[18px] px-6 pb-[max(5.5rem,calc(env(safe-area-inset-bottom)+4.25rem))] sm:flex-row sm:justify-center sm:gap-6 sm:pb-14 md:pb-20"
+        className="hero-cta-group absolute inset-x-0 bottom-0 z-20 flex flex-col items-center gap-[20px] px-6 pb-[max(3.5rem,calc(env(safe-area-inset-bottom)+2.75rem))] sm:flex-row sm:justify-center sm:gap-6 sm:pb-12 md:pb-16"
         data-hero-composed={composed ? "true" : "false"}
         style={{
           opacity: composed ? 1 : 0,
