@@ -95,21 +95,10 @@ export function GuestQuotes() {
       </div>
 
       <h2 className="serif mt-3 text-[1.5rem] sm:text-[2rem] md:text-[3.4rem] leading-[1.15] md:leading-[1.02] tracking-[-0.018em] text-[color:var(--charcoal)] font-medium text-balance">
-        {count ? (
-          <>
-            {count.toLocaleString("en-US")} five-star reviews{" "}
-            <span className="italic font-normal text-[color:var(--teal)]">
-              — real guests, real stories.
-            </span>
-          </>
-        ) : (
-          <>
-            700+ five-star reviews{" "}
-            <span className="italic font-normal text-[color:var(--teal)]">
-              — real guests, real stories.
-            </span>
-          </>
-        )}
+        700+ five-star reviews{" "}
+        <span className="italic font-normal text-[color:var(--teal)]">
+          — real guests, real stories.
+        </span>
       </h2>
 
       {/* Platform badge row removed — each review card now carries its
