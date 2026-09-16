@@ -60,7 +60,7 @@ export function TheDifferenceSection() {
 
           {/* LEFT — process */}
           <div>
-            <h3 className="text-[1.1rem] md:text-[1.2rem] font-bold uppercase tracking-[0.18em] text-[color:var(--charcoal-deep)]">
+            <h3 className="font-sans text-[0.78rem] md:text-[0.82rem] font-semibold uppercase tracking-[0.18em] text-[color:var(--charcoal-deep)]">
               Your design process
             </h3>
             <ol className="mt-5 space-y-3.5 list-none p-0">
@@ -83,7 +83,7 @@ export function TheDifferenceSection() {
 
           {/* RIGHT — benefits */}
           <div>
-            <h3 className="text-[1.1rem] md:text-[1.2rem] font-bold uppercase tracking-[0.18em] text-[color:var(--charcoal-deep)]">
+            <h3 className="font-sans text-[0.78rem] md:text-[0.82rem] font-semibold uppercase tracking-[0.18em] text-[color:var(--charcoal-deep)]">
               What you get
             </h3>
             <ul className="mt-5 space-y-3.5 list-none p-0">

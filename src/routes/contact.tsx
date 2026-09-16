@@ -10,6 +10,7 @@ import ogImg from "@/assets/why-image.jpg";
 
 import { Eyebrow } from "@/components/ui/Eyebrow";
 import { SectionTitle } from "@/components/ui/SectionTitle";
+import { CtaButton } from "@/components/ui/CtaButton";
 import { Scene } from "@/components/motion/Scene";
 import { useMarketingMotion } from "@/hooks/use-marketing-motion";
 import {
@@ -285,13 +286,15 @@ function Page() {
                     {errorMsg}
                   </p>
                 ) : null}
-                <button
+                <CtaButton
                   type="submit"
                   disabled={status === "submitting"}
-                  className="inline-flex items-center justify-center gap-2 bg-[color:var(--teal)] hover:bg-[color:var(--teal-2)] text-[color:var(--ivory)] px-7 py-3.5 text-[11px] uppercase tracking-[0.22em] transition-colors disabled:opacity-60 disabled:cursor-not-allowed"
+                  loading={status === "submitting"}
+                  loadingLabel="Sending…"
+                  icon={null}
                 >
-                  {status === "submitting" ? "Sending…" : "Send Message"}
-                </button>
+                  Send Message
+                </CtaButton>
               </form>
             )}
           </div>

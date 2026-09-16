@@ -206,7 +206,7 @@ function PathCard({ path, featured }: { path: Path; featured: boolean }) {
       to={path.href}
       data-home-primary-path={path.id}
       data-analytics={path.analyticsEvent}
-      className={`${featured ? "lg:col-span-2 bg-[color:var(--sand)]" : "lg:col-span-3 bg-[color:var(--ivory)]"} group flex min-h-[238px] flex-col rounded-[6px] border border-[color:var(--border)] p-6 no-underline transition-[transform,border-color,box-shadow] duration-[var(--dur-base)] ease-[var(--ease-scene)] hover:-translate-y-0.5 hover:border-[color:var(--gold)]/70 hover:shadow-[0_18px_40px_-30px_rgba(46,46,46,0.35)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--teal)] focus-visible:ring-offset-2 md:p-7`}
+      className={`${featured ? "lg:col-span-2 bg-[color:var(--sand)]" : "lg:col-span-3 bg-[color:var(--ivory)]"} group flex min-h-[238px] flex-col rounded-[4px] border border-[color:var(--border)] border-t-[color:var(--gold)]/65 p-6 no-underline transition-[transform,border-color,box-shadow] duration-[var(--dur-base)] ease-[var(--ease-scene)] hover:-translate-y-px hover:border-[color:var(--gold)]/70 hover:shadow-[0_18px_40px_-30px_color-mix(in_oklab,var(--charcoal-deep)_35%,transparent)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)] focus-visible:ring-offset-2 md:p-7`}
     >
       <div className="flex items-center justify-between gap-4">
         <span className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-[color:var(--gold)]/45 bg-[color:var(--ivory)] text-[color:var(--teal)]">
@@ -223,8 +223,8 @@ function PathCard({ path, featured }: { path: Path; featured: boolean }) {
       <p className="mt-3 text-[15px] md:text-[16px] leading-[1.7] text-[color:var(--charcoal-soft)]">
         {path.body}
       </p>
-      <span className="mt-auto pt-7 inline-flex min-h-[44px] items-center gap-2 text-[12px] uppercase tracking-[0.15em] font-semibold text-[color:var(--teal)] group-hover:text-[color:var(--charcoal)]">
-        {path.cta} <ArrowRight size={14} aria-hidden="true" />
+        <span className="mt-auto pt-7 inline-flex min-h-[44px] items-center gap-2 text-[12px] uppercase tracking-[0.15em] font-semibold text-[color:var(--charcoal)] group-hover:text-[color:var(--teal)]">
+          {path.cta} <ArrowRight size={14} aria-hidden="true" className="text-[color:var(--gold)] transition-transform duration-[var(--dur-base)] group-hover:translate-x-1" />
       </span>
     </Link>
   );

@@ -84,8 +84,9 @@
 - [x] Keep production undeployed
 
 ## 13. Premium editorial visual-system restoration
-- [ ] Restore gold-led Hero and shared premium CTA language
-- [ ] Reinstate medium-weight mixed Fraunces heading signature across requested public surfaces
-- [ ] Simplify Experiences page into a calm editorial collection
-- [ ] Restore restrained homepage continuity and motion
-- [ ] Validate mobile/desktop, reduced motion, tests, TypeScript, and production build
+- [x] Restore gold-led Hero and shared premium CTA language
+- [x] Reinstate medium-weight mixed Fraunces heading signature across requested public surfaces
+- [x] Simplify Experiences page into a calm editorial collection
+- [x] Restore restrained homepage continuity and motion
+- [x] Align Tailor, Studio V3, Multi-day, About, Contact, Header, Footer, forms, Moments, and Corporate to the shared public system
+- [x] Validate mobile/desktop, reduced motion, tests, TypeScript, and production build

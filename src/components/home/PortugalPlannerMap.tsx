@@ -1,5 +1,6 @@
 import { useMemo, useState } from "react";
 import { Link } from "@tanstack/react-router";
+import { CtaButton } from "@/components/ui/CtaButton";
 import {
   PLANNER_MAINLAND_REGIONS,
   PLANNER_MAP,
@@ -206,13 +207,14 @@ export function PortugalPlannerMap() {
           </ul>
         )}
 
-        <Link
+        <CtaButton
           to="/contact"
           search={{ type: "multi_day", place: active.label }}
-          className="mt-5 inline-flex min-h-11 items-center rounded-md bg-[color:var(--teal)] px-5 text-[11px] uppercase tracking-[0.22em] text-[color:var(--ivory)] transition-colors hover:bg-[color:var(--teal-2)]"
+          size="sm"
+          className="mt-5"
         >
-          Design a day in {active.label} →
-        </Link>
+          Design a day in {active.label}
+        </CtaButton>
 
       </div>
     </div>

@@ -2,6 +2,7 @@ import { Link } from "@tanstack/react-router";
 
 import { Eyebrow } from "@/components/ui/Eyebrow";
 import { SectionTitle } from "@/components/ui/SectionTitle";
+import { CtaButton } from "@/components/ui/CtaButton";
 import type { SignatureTour } from "@/data/signatureTours";
 
 /**
@@ -70,15 +71,12 @@ export function TourEditorialNote({ tour }: { tour: SignatureTour }) {
             person · instant confirmation, hotel pickup included.
           </p>
           <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
-            <a
+            <CtaButton
               href="#book"
-              className="inline-flex min-h-[48px] items-center justify-center gap-2 rounded-[4px] bg-[color:var(--teal)] px-6 font-sans text-[12px] uppercase tracking-[0.18em] font-semibold text-[color:var(--ivory)] no-underline hover:bg-[color:var(--charcoal)]"
+              size="sm"
             >
               Check dates &amp; book
-              <span aria-hidden="true" className="text-[color:var(--gold)]">
-                →
-              </span>
-            </a>
+            </CtaButton>
             <Link
               to="/book"
               search={{ tour: tour.id }}
