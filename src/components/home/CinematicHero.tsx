@@ -56,9 +56,9 @@ function revealStyle(on: boolean, ms: number): React.CSSProperties {
 const stanzaStyle: React.CSSProperties = {
   fontWeight: 400,
   fontStyle: "italic",
-  lineHeight: 1.22,
-  letterSpacing: "-0.012em",
-  fontSize: "clamp(32px, 4.8vw, 54px)",
+  lineHeight: 1.08,
+  letterSpacing: "-0.014em",
+  fontSize: "clamp(34px, 5vw, 56px)",
 };
 
 const ARROW = (
