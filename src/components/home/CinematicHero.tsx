@@ -19,14 +19,14 @@ import { Link } from "@tanstack/react-router";
 import { HERO_COPY, HERO_COPY_VERSION, HERO_PHRASES } from "@/content/hero-copy";
 import { HERO_FILM } from "@/content/hero-scenes-manifest";
 
-/** Cinematic pace: one breath per beat, full actionable state by ~4.6s. */
+/** Cinematic pace: one breath per beat, full actionable state by ~4.7s. */
 const EYEBROW_DELAY_MS = 400;
-const LINE1_DELAY_MS = 1200;
-const LINE2_DELAY_MS = 2200;
-const SUPPORT_DELAY_MS = 3300;
-const CTA_DELAY_MS = 4600;
-const TEXT_FADE_MS = 1500;
-const CTA_FADE_MS = 1700;
+const LINE1_DELAY_MS = 1100;
+const LINE2_DELAY_MS = 2050;
+const SUPPORT_DELAY_MS = 3150;
+const CTA_DELAY_MS = 4650;
+const TEXT_FADE_MS = 1650;
+const CTA_FADE_MS = 1450;
 const EASE = "cubic-bezier(0.22,1,0.36,1)";
 
 function shouldSkipIntro(): boolean {
@@ -56,9 +56,9 @@ function revealStyle(on: boolean, ms: number): React.CSSProperties {
 const stanzaStyle: React.CSSProperties = {
   fontWeight: 400,
   fontStyle: "italic",
-  lineHeight: 1.25,
+  lineHeight: 1.22,
   letterSpacing: "-0.012em",
-  fontSize: "clamp(28px, 4.6vw, 50px)",
+  fontSize: "clamp(32px, 4.8vw, 54px)",
 };
 
 const ARROW = (
@@ -243,7 +243,7 @@ export function CinematicHero() {
       {/* ── Support line — its own breathing room below the stanza ──── */}
       <p
         data-hero-field="subheadline"
-        className="hero-support absolute inset-x-0 top-[50%] z-10 mx-auto max-w-[23rem] px-6 text-center font-serif text-[18px] font-normal not-italic leading-[1.76] sm:max-w-[36rem] sm:text-[19px] sm:leading-[1.72]"
+        className="hero-support absolute inset-x-0 top-[50%] z-10 mx-auto max-w-[24rem] px-6 text-center font-serif text-[19px] font-normal not-italic leading-[1.68] sm:max-w-[38rem] sm:text-[21px] sm:leading-[1.66]"
         style={revealStyle(support, TEXT_FADE_MS)}
       >
         {HERO_COPY.subheadline}

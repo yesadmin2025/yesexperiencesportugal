@@ -5896,8 +5896,10 @@ html {
 /* Hero support line: upright Fraunces in the refined editorial treatment
    of the original film captions, separated from headline and actions. */
 .hero-support {
-  color: color-mix(in oklab, var(--gold-soft) 46%, var(--ivory));
-  text-shadow: 0 1px 2px color-mix(in oklab, var(--charcoal-deep) 58%, transparent);
+  color: color-mix(in oklab, var(--gold-soft) 38%, var(--ivory));
+  text-shadow:
+    0 1px 2px color-mix(in oklab, var(--charcoal-deep) 68%, transparent),
+    0 5px 18px color-mix(in oklab, var(--charcoal-deep) 34%, transparent);
 }
 
 .hero-cta {
@@ -5916,13 +5918,14 @@ html {
     border-color 360ms cubic-bezier(0.22, 0.61, 0.36, 1),
     color 360ms cubic-bezier(0.22, 0.61, 0.36, 1);
   will-change: transform, box-shadow;
+  width: min(224px, 100%);
 }
 
 /* Keep a 44px touch target while the visible button material stays slim. */
 .hero-cta::before {
   content: "";
   position: absolute;
-  inset: 6px 0;
+  inset: 8px 0;
   z-index: 0;
   border: 1px solid transparent;
   border-radius: 1px;
@@ -5940,12 +5943,23 @@ html {
   background: linear-gradient(
     115deg,
     transparent 30%,
-    color-mix(in oklab, var(--ivory) 18%, transparent) 50%,
+    color-mix(in oklab, var(--ivory) 24%, transparent) 50%,
     transparent 70%
   );
   transform: translateX(-120%);
   transition: transform 760ms var(--ease-scene);
   opacity: 0;
+}
+
+@keyframes heroCtaSheenOnce {
+  0% { opacity: 0; transform: translateX(-120%); }
+  18% { opacity: 0.72; }
+  72% { opacity: 0.46; }
+  100% { opacity: 0; transform: translateX(120%); }
+}
+
+.hero-cta-group[data-hero-composed="true"] .hero-cta--primary .hero-cta__sheen {
+  animation: heroCtaSheenOnce 1050ms var(--ease-scene) 520ms 1;
 }
 .hero-cta:hover .hero-cta__sheen,
 .hero-cta:focus-visible .hero-cta__sheen {
@@ -6046,8 +6060,10 @@ html {
 }
 .hero-cinematic .hero-h1 {
   font-weight: 400;
-  color: color-mix(in oklab, var(--gold-soft) 34%, var(--ivory));
-  text-shadow: 0 1px 3px color-mix(in oklab, var(--charcoal-deep) 72%, transparent);
+  color: color-mix(in oklab, var(--gold-soft) 28%, var(--ivory));
+  text-shadow:
+    0 1px 3px color-mix(in oklab, var(--charcoal-deep) 78%, transparent),
+    0 7px 24px color-mix(in oklab, var(--charcoal-deep) 38%, transparent);
 }
 .hero-cinematic .hero-cinematic-composition {
   transform: none;
@@ -6097,6 +6113,12 @@ html {
   }
   .hero-cinematic .hero-support {
     top: 51%;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-cta-group[data-hero-composed="true"] .hero-cta--primary .hero-cta__sheen {
+    animation: none;
   }
 }
 @media (min-width: 1024px) {
