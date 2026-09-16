@@ -258,7 +258,7 @@ export function CinematicHero() {
                 data-hero-field="primaryCta"
                 data-analytics="hero_open_studio"
                 data-analytics-placement="hero"
-                className="hero-cta group inline-flex min-h-[48px] w-full items-center justify-center whitespace-nowrap px-6 py-3 text-[10px] uppercase tracking-[0.2em] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)] focus-visible:ring-offset-4 focus-visible:ring-offset-transparent sm:w-auto sm:min-w-[19rem] sm:px-8 sm:text-[10.5px] hero-cta--primary"
+                className="hero-cta group inline-flex min-h-[48px] w-full max-w-[19rem] items-center justify-center whitespace-nowrap px-6 py-3 text-[10px] uppercase tracking-[0.2em] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)] focus-visible:ring-offset-4 focus-visible:ring-offset-transparent sm:w-auto sm:min-w-[19rem] sm:px-8 sm:text-[10.5px] hero-cta--primary"
                 style={revealStyle(primaryCta, CTA_FADE_MS, 0, 12)}
               >
                 <span className="hero-cta__sheen" aria-hidden="true" />
@@ -272,7 +272,7 @@ export function CinematicHero() {
                 data-hero-field="secondaryCta"
                 data-analytics="hero_choose_experience"
                 data-analytics-placement="hero"
-                className="hero-cta group inline-flex min-h-[46px] w-full items-center justify-center whitespace-nowrap px-6 py-2.5 text-[10px] uppercase tracking-[0.18em] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)] focus-visible:ring-offset-4 focus-visible:ring-offset-transparent sm:w-auto sm:min-w-[19rem] sm:px-8 sm:text-[10.5px] hero-cta--ghost"
+                className="hero-cta group inline-flex min-h-[46px] w-full max-w-[19rem] items-center justify-center whitespace-nowrap px-6 py-2.5 text-[10px] uppercase tracking-[0.18em] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)] focus-visible:ring-offset-4 focus-visible:ring-offset-transparent sm:w-auto sm:min-w-[19rem] sm:px-8 sm:text-[10.5px] hero-cta--ghost"
                 style={revealStyle(secondaryCta, CTA_FADE_MS, 0, 10)}
               >
                 <span className="hero-cta__sheen" aria-hidden="true" />
