@@ -6053,7 +6053,10 @@ html {
   font-weight: 400;
 }
 .hero-cinematic .hero-cinematic-composition {
-  transform: translateY(1.5vh);
+  transform: translateY(-2.5vh);
+}
+.hero-cinematic .hero-promise {
+  transform-origin: center center;
 }
 .hero-cinematic .hero-story-stage :is(img, video) {
   object-position: 57% center;
@@ -6074,7 +6077,7 @@ html {
     object-position: center center;
   }
   .hero-cinematic .hero-cinematic-composition {
-    transform: translateY(2vh);
+    transform: translateY(-1vh);
   }
 }
 @media (min-width: 1024px) {
