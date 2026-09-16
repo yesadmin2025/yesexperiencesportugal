@@ -119,6 +119,8 @@ function TourCard({ tour, resolveImg, featured = false }: { tour: SignatureTour;
   const content = getTourContent(tour.id);
   const teaser = tour.blurb ?? content.overview ?? "";
   const meta = getViatorMeta(tour.id);
+  const verifiedRating = meta?.rating;
+  const verifiedReviewCount = meta?.reviewCount;
   const highlights = tour.highlights.slice(0, 3);
   return (
     <article className="experience-editorial-card reveal-stagger group flex min-w-0 flex-col text-left" aria-label={tour.title}>
@@ -155,11 +157,11 @@ function TourCard({ tour, resolveImg, featured = false }: { tour: SignatureTour;
           </Link>
         </h3>
 
-        {meta && meta.reviewCount > 0 && (
-          <div className="mt-3 flex items-center gap-1.5 text-[12.5px] text-[color:var(--charcoal)]" aria-label={`${meta.rating.toFixed(1)} out of 5, ${meta.reviewCount} reviews`}>
+        {verifiedRating && verifiedReviewCount && verifiedReviewCount > 0 && (
+          <div className="mt-3 flex items-center gap-1.5 text-[12.5px] text-[color:var(--charcoal)]" aria-label={`${verifiedRating.toFixed(1)} out of 5, ${verifiedReviewCount} reviews`}>
             <Star size={13} fill="currentColor" strokeWidth={0} className="text-[color:var(--gold)]" aria-hidden="true" />
-            <span className="font-semibold">{meta.rating.toFixed(1)}</span>
-            <span className="text-[color:var(--charcoal-soft)]">· {meta.reviewCount} reviews</span>
+            <span className="font-semibold">{verifiedRating.toFixed(1)}</span>
+            <span className="text-[color:var(--charcoal-soft)]">· {verifiedReviewCount} reviews</span>
           </div>
         )}
 
