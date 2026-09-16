@@ -270,15 +270,11 @@ function TourDetailPage() {
       {/* ── 3 · SHORT INTRO ─────────────────────────────────────── */}
       <IntroBlock tour={tour} />
 
-      {/* ── 3b · EDITORIAL NOTE + BOOKING CTA ──────────────────── */}
-      <TourEditorialNote tour={tour} />
-
-      {/* ── 4 · HIGHLIGHTS ─────────────────────────────────────── */}
-      <HighlightsBlock tour={tour} />
-
-
-      {/* ── 5 · ITINERARY (real Viator stops only) ────────────── */}
+      {/* ── 4 · ITINERARY (real Viator stops only) ────────────── */}
       <ItineraryTimeline tour={tour} meta={meta} />
+
+      {/* ── 5 · HIGHLIGHTS ─────────────────────────────────────── */}
+      <HighlightsBlock tour={tour} />
 
       {/* ── 6 · MAP — real geographic map with driving route (lazy) ─ */}
       <Suspense fallback={<SignatureRouteMapShell />}>
@@ -287,6 +283,9 @@ function TourDetailPage() {
 
       {/* ── 7 · WHAT'S INCLUDED ────────────────────────────────── */}
       <IncludedAndIdeal tour={tour} meta={meta} />
+
+      {/* Long-form context follows the decision essentials. */}
+      <TourEditorialNote tour={tour} />
 
       {/* ── 9 · GALLERY (real photos) ──────────────────────────── */}
       <GalleryStrip tour={tour} resolveImg={resolveImg} meta={meta} adminPhotos={adminPhotos} />
@@ -485,9 +484,9 @@ function TourHero({
               data-analytics-placement="hero"
               data-analytics-experience-id={tour.id}
               data-analytics-experience-type="signature"
-              className="inline-flex min-h-[44px] items-center gap-2 font-sans text-[11px] font-medium uppercase tracking-[0.16em] text-[color:var(--charcoal-soft)] underline decoration-[color:var(--gold)]/60 underline-offset-4 transition-colors duration-[var(--dur-quick)] hover:text-[color:var(--teal)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)]"
+              className="editorial-action inline-flex min-h-[44px] items-center gap-2 font-sans text-[11px] font-medium uppercase tracking-[0.16em] text-[color:var(--charcoal-soft)] underline decoration-[color:var(--gold)]/60 underline-offset-4 transition-colors duration-[var(--dur-quick)] hover:text-[color:var(--teal)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)]"
             >
-              Prefer to adjust the day? Tailor this day <span aria-hidden="true">→</span>
+              Tailor this day <span aria-hidden="true" className="editorial-arrow">→</span>
             </Link>
           </div>
         </div>

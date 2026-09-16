@@ -92,11 +92,11 @@ export function startHomeMotion(): () => void {
   const debugFlag =
     typeof window.location !== "undefined" && /[?&]motionDebug=1\b/.test(window.location.search);
 
-  // Auto-tag legacy reveal classes so the new controller is the single
-  // source of truth on the homepage.
+  // Auto-tag legacy reveal classes so the shared controller remains the
+  // single source of truth. Marketing pages settle rather than lift.
   const legacy = document.querySelectorAll<HTMLElement>(".reveal, .reveal-stagger, .section-enter");
   legacy.forEach((el) => {
-    if (!el.hasAttribute("data-motion")) el.setAttribute("data-motion", "fade-up");
+    if (!el.hasAttribute("data-motion")) el.setAttribute("data-motion", "settle");
   });
 
   // Auto-tag section-level headings, eyebrows and lead paragraphs inside
@@ -141,7 +141,7 @@ export function startHomeMotion(): () => void {
       const idx = seenContainers.get(container) ?? 0;
       seenContainers.set(container, idx + 1);
 
-      el.setAttribute("data-motion", "fade-up-sm");
+      el.setAttribute("data-motion", isMarketing ? "editorial-clip" : "fade-up-sm");
       const delay = Math.min(idx * HEADING_STEP, HEADING_CAP);
       if (delay > 0 && !el.hasAttribute("data-motion-delay")) {
         el.setAttribute("data-motion-delay", String(delay));

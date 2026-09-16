@@ -15,6 +15,8 @@ import { useMarketingMotion } from "@/hooks/use-marketing-motion";
 import { PriceCurrencyChip } from "@/components/PriceCurrencyChip";
 import { PriceEur } from "@/components/ui/PriceEur";
 import { CTA_LABELS } from "@/content/cta-vocabulary";
+import { getViatorMeta } from "@/data/signatureToursViator";
+import { Star } from "lucide-react";
 
 export const Route = createFileRoute("/experiences")({
   head: () => ({
@@ -116,6 +118,8 @@ function TourCard({ tour, resolveImg, featured = false }: { tour: SignatureTour;
   // source-of-truth with the experience detail page.
   const content = getTourContent(tour.id);
   const teaser = tour.blurb ?? content.overview ?? "";
+  const meta = getViatorMeta(tour.id);
+  const highlights = (content.highlights.length > 0 ? content.highlights : tour.highlights).slice(0, 3);
   return (
     <article className="experience-editorial-card reveal-stagger group flex min-w-0 flex-col text-left" aria-label={tour.title}>
       <Link
@@ -151,22 +155,37 @@ function TourCard({ tour, resolveImg, featured = false }: { tour: SignatureTour;
           </Link>
         </h3>
 
-        <p className="mt-3 line-clamp-2 min-h-[3.2em] text-[14px] leading-[1.6] text-[color:var(--charcoal-soft)] md:text-[15px] md:leading-[1.65]">{teaser}</p>
+        {meta && meta.reviewCount > 0 && (
+          <div className="mt-3 flex items-center gap-1.5 text-[12.5px] text-[color:var(--charcoal)]" aria-label={`${meta.rating.toFixed(1)} out of 5, ${meta.reviewCount} reviews`}>
+            <Star size={13} fill="currentColor" strokeWidth={0} className="text-[color:var(--gold)]" aria-hidden="true" />
+            <span className="font-semibold">{meta.rating.toFixed(1)}</span>
+            <span className="text-[color:var(--charcoal-soft)]">· {meta.reviewCount} reviews</span>
+          </div>
+        )}
 
-        <div className="mt-4 flex flex-wrap items-center gap-x-2 gap-y-1 text-[12.5px] text-[color:var(--charcoal)] md:mt-5">
-          <span>{signatureDurationLabel(tour.id, tour.durationHours)}</span>
-          <span aria-hidden="true" className="text-[color:var(--gold-ink)]">·</span>
-          <span className="whitespace-nowrap">From <PriceEur amountEur={tour.priceFrom} role="from" /> per person</span>
+        <div className="mt-4 flex flex-wrap items-baseline gap-x-3 gap-y-1">
+          <span className="font-serif text-[1.2rem] font-semibold text-[color:var(--charcoal)]">From <PriceEur amountEur={tour.priceFrom} role="from" /> per person</span>
+          <span className="text-[12px] uppercase tracking-[0.12em] text-[color:var(--charcoal-soft)]">{signatureDurationLabel(tour.id, tour.durationHours)}</span>
         </div>
+
+        {highlights.length > 0 && (
+          <ul className="mt-4 space-y-1.5 text-[13px] leading-[1.55] text-[color:var(--charcoal)]">
+            {highlights.map((highlight) => (
+              <li key={highlight} className="flex gap-2"><span aria-hidden="true" className="mt-[0.6em] h-1 w-1 shrink-0 rounded-full bg-[color:var(--gold)]" /><span className="line-clamp-1">{highlight}</span></li>
+            ))}
+          </ul>
+        )}
+
+        <p className="mt-4 line-clamp-2 min-h-[3.2em] text-[14px] leading-[1.6] text-[color:var(--charcoal-soft)] md:text-[15px] md:leading-[1.65]">{teaser}</p>
 
         <div className="mt-auto pt-5 md:pt-6">
           <Link
             to="/tours/$tourId"
             params={{ tourId: tour.id }}
-             className="group/link relative inline-flex min-h-[44px] items-center gap-3 font-sans text-[11px] font-semibold uppercase tracking-[0.16em] text-[color:var(--charcoal)] transition-colors duration-[var(--dur-quick)] after:absolute after:bottom-1 after:left-0 after:h-px after:w-full after:origin-left after:bg-[color:var(--gold)] after:transition-transform after:duration-[var(--dur-base)] hover:text-[color:var(--teal)] hover:after:scale-x-75 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)]"
+             className="editorial-action group/link relative inline-flex min-h-[44px] items-center gap-3 font-sans text-[11px] font-semibold uppercase tracking-[0.16em] text-[color:var(--charcoal)] transition-colors duration-[var(--dur-quick)] after:absolute after:bottom-1 after:left-0 after:h-px after:w-full after:origin-left after:bg-[color:var(--gold)] after:transition-transform after:duration-[var(--dur-base)] hover:text-[color:var(--teal)] hover:after:scale-x-75 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)]"
             aria-label={`View ${tour.title}`}
           >
-             View experience <span aria-hidden="true" className="text-[color:var(--gold)] transition-transform duration-[var(--dur-base)] group-hover/link:translate-x-1">→</span>
+             View experience <span aria-hidden="true" className="editorial-arrow text-[color:var(--gold)] transition-transform duration-[var(--dur-base)]">→</span>
           </Link>
         </div>
       </div>
