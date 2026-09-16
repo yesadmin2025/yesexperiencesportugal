@@ -3240,6 +3240,28 @@ html.reveal-ready .reveal-stagger.is-visible [data-reveal-image] {
   filter: blur(0);
 }
 
+/* Five Ways arrow cue — one-time rightward nudge when the card reveals. */
+@keyframes homeWayArrowNudge {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  40% {
+    transform: translateX(4px);
+  }
+  80% {
+    transform: translateX(1px);
+  }
+}
+html.reveal-ready .reveal-stagger.is-visible .home-way-arrow {
+  animation: homeWayArrowNudge 420ms cubic-bezier(0.22, 0.61, 0.36, 1) both;
+}
+@media (prefers-reduced-motion: reduce) {
+  html.reveal-ready .reveal-stagger.is-visible .home-way-arrow {
+    animation: none !important;
+  }
+}
+
 
 @media (max-width: 767.98px) {
   html.scroll-debug-mobile-reveals-off .reveal,
