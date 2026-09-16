@@ -30,7 +30,7 @@ jobs:
         run: bun install --frozen-lockfile
 
       - name: Typecheck
-        run: bunx tsgo --noEmit
+        run: bunx tsc --noEmit
 
       - name: Prebuild checks (routes, metadata, sitemap, brand, contrast)
         run: bun run prebuild
