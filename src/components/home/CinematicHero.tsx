@@ -56,9 +56,9 @@ function revealStyle(on: boolean, ms: number): React.CSSProperties {
 const stanzaStyle: React.CSSProperties = {
   fontWeight: 400,
   fontStyle: "italic",
-  lineHeight: 1.22,
-  letterSpacing: "-0.012em",
-  fontSize: "clamp(32px, 4.8vw, 54px)",
+  lineHeight: 1.08,
+  letterSpacing: "-0.014em",
+  fontSize: "clamp(34px, 5vw, 56px)",
 };
 
 const ARROW = (
@@ -207,11 +207,13 @@ export function CinematicHero() {
         />
       </div>
 
-      {/* ── One editorial stanza: eyebrow → headline → support ─────── */}
-      <div className="hero-copy-block absolute inset-x-0 top-[16%] z-10 flex flex-col items-center px-6 sm:top-[18%] sm:px-10 md:px-16">
+      {/* ── One centred editorial composition: eyebrow → headline →
+             support → actions. Everything reads as a single caption block
+             laid over the film, with no stranded middle. ─────────────── */}
+      <div className="hero-copy-block absolute inset-0 z-10 flex flex-col items-center justify-center px-6 pb-[max(2rem,calc(env(safe-area-inset-bottom)+1.5rem))] pt-6 sm:px-10 sm:pb-10 md:px-16">
         <p
           data-hero-field="eyebrow"
-          className="hero-promise m-0 text-center text-[10.5px] font-medium uppercase tracking-[0.16em] sm:text-[11px] sm:tracking-[0.18em]"
+          className="hero-promise m-0 text-center text-[10px] font-medium uppercase tracking-[0.24em] sm:text-[11px] sm:tracking-[0.26em]"
           style={revealStyle(eyebrow, TEXT_FADE_MS)}
         >
           {HERO_COPY.eyebrow}
@@ -220,7 +222,7 @@ export function CinematicHero() {
         <h1
           data-hero-stanza="true"
           data-mixed-emphasis="exempt"
-          className="hero-h1 mb-0 mt-[clamp(28px,5.5vh,52px)] text-center font-serif"
+          className="hero-h1 mb-0 mt-[clamp(22px,3.6vh,34px)] text-center font-serif"
         >
           <span
             className="hero-title-line block font-serif font-normal italic m-0"
@@ -238,18 +240,23 @@ export function CinematicHero() {
           </span>
         </h1>
 
+        <span
+          aria-hidden="true"
+          className="hero-copy-rule mt-[clamp(18px,2.6vh,26px)] block h-px w-10"
+          style={revealStyle(support, TEXT_FADE_MS)}
+        />
+
         <p
           data-hero-field="subheadline"
-          className="hero-support mt-[clamp(22px,3.4vh,34px)] max-w-[21rem] text-center font-serif text-[17px] font-normal not-italic leading-[1.62] sm:max-w-[34rem] sm:text-[19px] sm:leading-[1.6]"
+          className="hero-support mt-[clamp(16px,2.4vh,24px)] max-w-[20rem] text-center font-serif text-[17.5px] font-normal not-italic leading-[1.55] sm:max-w-[32rem] sm:text-[19px] sm:leading-[1.55]"
           style={revealStyle(support, TEXT_FADE_MS)}
         >
           {HERO_COPY.subheadline}
         </p>
-      </div>
 
-      {/* ── CTAs — anchored low, original dimensions ────────────────── */}
-      <div
-        className="hero-cta-group absolute inset-x-0 bottom-0 z-20 flex flex-col items-center gap-[14px] px-6 pb-[max(2.75rem,calc(env(safe-area-inset-bottom)+2.25rem))] sm:flex-row sm:justify-center sm:gap-5 sm:pb-12 md:pb-16"
+        {/* ── Actions — pulled directly under the stanza ─────────────── */}
+        <div
+          className="hero-cta-group z-20 mt-[clamp(28px,4.6vh,44px)] flex w-full flex-col items-center gap-[12px] sm:mt-10 sm:flex-row sm:justify-center sm:gap-4"
         data-hero-composed={composed ? "true" : "false"}
         style={{
           opacity: composed ? 1 : 0,
@@ -281,6 +288,7 @@ export function CinematicHero() {
           <span className="hero-cta__sheen" aria-hidden="true" />
           <span className="relative z-10">{HERO_COPY.secondaryCta}</span>
         </Link>
+        </div>
       </div>
 
       <div
