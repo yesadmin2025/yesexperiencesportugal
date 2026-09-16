@@ -247,7 +247,7 @@ export function CinematicHero() {
 
             <p
               data-hero-field="subheadline"
-               className="hero-support mt-8 max-w-[36rem] font-serif text-[17px] font-normal not-italic leading-[1.5] text-[color:var(--gold-soft)] [text-shadow:0_2px_16px_color-mix(in_oklab,var(--charcoal-deep)_72%,transparent)] sm:text-[18px] md:mx-auto md:text-[19px]"
+               className="hero-support mt-8 max-w-[36rem] font-serif text-[17.5px] font-normal not-italic leading-[1.55] sm:text-[18.5px] md:mx-auto md:text-[19.5px]"
               style={revealStyle(support, SUPPORT_FADE_MS, 0, 11)}
             >
               {HERO_COPY.subheadline}
