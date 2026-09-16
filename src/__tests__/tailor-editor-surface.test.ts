@@ -22,9 +22,9 @@ describe("Tailor editor information architecture", () => {
     expect(groups).toEqual(["Moments", "Rhythm", "Enhance"]);
   });
 
-  it("has exactly one primary reserve CTA, labelled 'Reserve this version'", () => {
-    expect(src).toContain("Reserve this version");
-    expect(src.match(/Reserve this version/g)!.length).toBe(1);
+  it("has exactly one primary reserve CTA, using the canonical Signature booking label", () => {
+    expect(src).toContain("Reserve this day");
+    expect(src.match(/Reserve this day/g)?.length).toBe(1);
     expect(src).not.toContain("Reserve securely");
     expect(src.match(/data-testid="tailor-reserve-cta"/g)!.length).toBe(1);
   });
