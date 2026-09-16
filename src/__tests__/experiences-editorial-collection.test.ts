@@ -16,6 +16,8 @@ describe("Experiences editorial collection", () => {
     expect(source).not.toContain("getSignatureCardMoments");
     expect(source).not.toContain("content.highlights");
     expect(source).toContain("signatureDurationLabel");
-    expect(source).toContain("meta.reviewCount");
+    expect(source).not.toContain("meta.reviewCount");
+    expect(source).not.toContain("Lunch included");
+    expect(source).not.toContain("<span>Private</span>");
   });
 });
