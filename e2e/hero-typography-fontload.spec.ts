@@ -6,9 +6,9 @@
  * drift away from canon:
  *
  *   • eyebrow        → Inter,      tracked, uppercase via tracking
- *   • headline L1    → Fraunces, weight 400, font-style: italic
+ *   • headline L1    → Fraunces, weight 400, font-style: normal
  *   • headline L2    → Fraunces, weight 400, font-style: italic, gold
- *   • subheadline    → Inter,      generous leading (≥ 1.6)
+ *   • subheadline    → Fraunces,   upright, generous leading
  *   • microcopy      → Inter,      tracked
  *
  * Scale assertions are clamped to *ranges* (not single px values) so
@@ -111,8 +111,7 @@ test.describe("Hero typography — font families & scale (post font load)", () =
       contentType: "application/json",
     });
 
-    // ── Stanza — Fraunces italic 400, gold-soft, tight editorial leading ──
-    // Both stanza lines form one continuous Fraunces italic statement in gold.
+    // ── Stanza — refined Fraunces 400, gold-soft, tight editorial leading ──
     for (const [label, line] of [
       ["stanza L1", line1],
       ["stanza L2", line2],
@@ -122,7 +121,7 @@ test.describe("Hero typography — font families & scale (post font load)", () =
       expect(line.lineHeightRatio, `${label} leading`).toBeLessThanOrEqual(1.4);
     }
 
-    expect(line1.fontStyle, "stanza L1 must be italic").toBe("italic");
+    expect(line1.fontStyle, "stanza L1 must be upright").toBe("normal");
     expect(line1.fontWeight, "stanza L1 weight").toBe("400");
 
     expect(line2.fontStyle, "stanza L2 must be italic").toBe("italic");
@@ -133,9 +132,10 @@ test.describe("Hero typography — font families & scale (post font load)", () =
     expect(gold[0], "stanza L2 gold R > G").toBeGreaterThan(gold[1]);
     expect(gold[1], "stanza L2 gold G > B").toBeGreaterThan(gold[2]);
 
-    // clamp(2.65rem, 7vw, 5.75rem) — mobile lands at the floor, desktop higher.
-    expect(line1.fontSizePx, "stanza size floor").toBeGreaterThanOrEqual(42);
-    expect(line1.fontSizePx, "stanza size ceiling").toBeLessThanOrEqual(92.5);
+    // The cinematic title stays deliberately restrained on mobile and scales
+    // without becoming a promotional billboard on desktop.
+    expect(line1.fontSizePx, "stanza size floor").toBeGreaterThanOrEqual(34);
+    expect(line1.fontSizePx, "stanza size ceiling").toBeLessThanOrEqual(75);
     if (!isMobile) {
       expect(line1.fontSizePx, "stanza scales up beyond mobile").toBeGreaterThanOrEqual(48);
     }
