@@ -218,14 +218,14 @@ export function CinematicHero() {
           className="hero-h1 m-0 text-center font-serif"
         >
           <span
-            className="hero-title-line block"
+            className="hero-title-line block font-serif font-normal italic m-0"
             data-hero-field="headlineLine1"
             style={{ ...stanzaStyle, ...revealStyle(line1, TEXT_FADE_MS) }}
           >
             {HERO_PHRASES[0]}
           </span>
           <span
-            className="hero-title-line mt-3 block sm:mt-4"
+            className="hero-title-line block font-serif italic font-normal text-[color:var(--gold-soft)] mt-3 sm:mt-4"
             data-hero-field="headlineLine2"
             style={{ ...stanzaStyle, ...revealStyle(line2, TEXT_FADE_MS) }}
           >
