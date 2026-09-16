@@ -60,6 +60,15 @@ const LIVE_REVIEW_FALLBACK_TOURS = [
   "arrabida-boat",
 ] as const;
 
+/**
+ * Homepage search + social metadata, written in the Hero's own voice so the
+ * Google snippet and shared cards read like the premium opening screen.
+ * Keeps the primary keyword ("private day trips from Lisbon") intact.
+ */
+const HOME_SEO_TITLE = "Portugal Is The Stage · Private Day Trips From Lisbon | YES";
+const HOME_SEO_SOCIAL_TITLE = `${HERO_COPY.headlineLine1} ${HERO_COPY.headlineLine2} | YES Experiences Portugal`;
+const HOME_SEO_DESCRIPTION = `${HERO_COPY.headlineLine1} ${HERO_COPY.headlineLine2} ${HERO_COPY.subheadline} Sintra, Arrábida, Évora.`;
+
 
 /** Homepage Journal row — three evergreen Local Stories guides.
  *  `imgTourId` pins each card to a distinct real operation photo so two
@@ -345,31 +354,13 @@ export const Route = createFileRoute("/")({
   }),
   head: () => ({
     meta: [
-      { title: "Private Day Trips From Lisbon & Portugal Tours | YES" },
+      { title: HOME_SEO_TITLE },
       { name: "yes-hero-copy-version", content: HERO_COPY_VERSION },
-      {
-        name: "description",
-        content:
-          "Private day trips from Lisbon to Sintra, Arrábida and Évora — or design your own day. One group per car, hotel pickup, licensed local team, instant booking.",
-      },
-      {
-        property: "og:title",
-        content: "Private Day Trips From Lisbon & Portugal Tours | YES",
-      },
-      {
-        property: "og:description",
-        content:
-          "Private day trips from Lisbon to Sintra, Arrábida and Évora — or design your own day. One group per car, hotel pickup, licensed local team, instant booking.",
-      },
-      {
-        property: "twitter:title",
-        content: "Private Day Trips From Lisbon & Portugal Tours | YES",
-      },
-      {
-        property: "twitter:description",
-        content:
-          "Private day trips from Lisbon to Sintra, Arrábida and Évora — or design your own day. One group per car, hotel pickup, licensed local team, instant booking.",
-      },
+      { name: "description", content: HOME_SEO_DESCRIPTION },
+      { property: "og:title", content: HOME_SEO_SOCIAL_TITLE },
+      { property: "og:description", content: HOME_SEO_DESCRIPTION },
+      { property: "twitter:title", content: HOME_SEO_SOCIAL_TITLE },
+      { property: "twitter:description", content: HOME_SEO_DESCRIPTION },
       { property: "og:image", content: `https://yesexperiencesportugal.com${heroImg}` },
       { property: "twitter:image", content: `https://yesexperiencesportugal.com${heroImg}` },
       { property: "og:url", content: "https://yesexperiencesportugal.com/" },
