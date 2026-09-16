@@ -164,7 +164,7 @@ export function FourWaysIn() {
 
         <div
           data-testid="home-smart-start"
-          className="reveal mx-auto mt-10 grid max-w-6xl grid-cols-1 gap-4 sm:grid-cols-2 md:mt-12 md:gap-5 lg:grid-cols-6"
+          className="he-stagger mx-auto mt-10 grid max-w-6xl grid-cols-1 gap-4 sm:grid-cols-2 md:mt-12 md:gap-5 lg:grid-cols-6"
         >
           {PATHS.map((path, index) => (
             <PathCard key={path.id} path={path} featured={index < 3} />
@@ -206,7 +206,7 @@ function PathCard({ path, featured }: { path: Path; featured: boolean }) {
       to={path.href}
       data-home-primary-path={path.id}
       data-analytics={path.analyticsEvent}
-      className={`${featured ? "lg:col-span-2 bg-[color:var(--sand)]" : "lg:col-span-3 bg-[color:var(--ivory)]"} group flex min-h-[238px] flex-col rounded-[4px] border border-[color:var(--border)] border-t-[color:var(--gold)]/65 p-6 no-underline transition-[transform,border-color,box-shadow] duration-[var(--dur-base)] ease-[var(--ease-scene)] hover:-translate-y-px hover:border-[color:var(--gold)]/70 hover:shadow-[0_18px_40px_-30px_color-mix(in_oklab,var(--charcoal-deep)_35%,transparent)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)] focus-visible:ring-offset-2 md:p-7`}
+      className={`${featured ? "lg:col-span-2" : "lg:col-span-3"} reveal-stagger group flex min-h-[238px] flex-col rounded-[4px] border border-[color:var(--border)] border-t-[color:var(--gold)]/65 bg-[color:var(--sand)] p-6 no-underline transition-[transform,border-color,box-shadow] duration-[var(--dur-base)] ease-[var(--ease-scene)] hover:-translate-y-px hover:border-[color:var(--gold)]/70 hover:shadow-[0_18px_40px_-30px_color-mix(in_oklab,var(--charcoal-deep)_35%,transparent)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)] focus-visible:ring-offset-2 md:p-7`}
     >
       <div className="flex items-center justify-between gap-4">
         <span className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-[color:var(--gold)]/45 bg-[color:var(--ivory)] text-[color:var(--teal)]">
@@ -223,8 +223,16 @@ function PathCard({ path, featured }: { path: Path; featured: boolean }) {
       <p className="mt-3 text-[15px] md:text-[16px] leading-[1.7] text-[color:var(--charcoal-soft)]">
         {path.body}
       </p>
-        <span className="mt-auto pt-7 inline-flex min-h-[44px] items-center gap-2 text-[12px] uppercase tracking-[0.15em] font-semibold text-[color:var(--charcoal)] group-hover:text-[color:var(--teal)]">
-          {path.cta} <ArrowRight size={14} aria-hidden="true" className="text-[color:var(--gold)] transition-transform duration-[var(--dur-base)] group-hover:translate-x-1" />
+      {/* Discreet affordance only — the whole card is the action, so the
+          repeated CTA label is available to assistive tech but no longer
+          shouted five times down the page. */}
+      <span className="mt-auto pt-7 inline-flex min-h-[44px] items-center gap-2">
+        <span className="sr-only">{path.cta}</span>
+        <ArrowRight
+          size={16}
+          aria-hidden="true"
+          className="text-[color:var(--gold)] transition-transform duration-[var(--dur-base)] group-hover:translate-x-1"
+        />
       </span>
     </Link>
   );
