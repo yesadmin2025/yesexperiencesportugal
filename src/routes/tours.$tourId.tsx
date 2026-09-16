@@ -891,10 +891,7 @@ function FinalCta({ tour }: { tour: SignatureTour }) {
           </Link>
         </div>
 
-        <p className="mt-5 text-[12px] uppercase tracking-[0.12em] text-[color:var(--ivory)]/65">
-          Instant confirmation · {CANCELLATION.signature.en} · A local on WhatsApp if you need help
-        </p>
-        <CredentialStrip variant="dark" className="mt-6" />
+        <CredentialStrip variant="dark" className="mt-8" />
         <p className="mt-6 text-[13px] text-[color:var(--ivory)]/75">
           Want a different shape of day?{" "}
           <Link
