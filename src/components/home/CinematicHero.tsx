@@ -59,6 +59,7 @@ function storyLineStyle(on: boolean, direction: "from-left" | "from-right"): Rea
     opacity: on ? 1 : 0,
     transform: on ? "translate3d(0,0,0)" : `translate3d(${offset},0,0)`,
     filter: on ? "blur(0)" : "blur(3px)",
+    textShadow: "none",
     willChange: "opacity, transform, filter",
     transition: `opacity ${TEXT_FADE_MS}ms ${EASE}, transform ${TEXT_FADE_MS}ms ${EASE}, filter ${TEXT_FADE_MS}ms ${EASE}`,
   };
@@ -69,18 +70,24 @@ function supportFadeStyle(on: boolean): React.CSSProperties {
     opacity: on ? 1 : 0,
     transform: on ? "translateY(0)" : "translateY(10px)",
     filter: on ? "blur(0)" : "blur(4px)",
+    textShadow: "none",
+    fontSize: "clamp(17px, 4.5vw, 25px)",
+    lineHeight: 1.5,
+    letterSpacing: "0.01em",
+    wordSpacing: 0,
     willChange: "opacity, transform, filter",
     transition: `opacity ${TEXT_FADE_MS}ms ${EASE}, transform ${TEXT_FADE_MS}ms ${EASE}, filter ${TEXT_FADE_MS}ms ${EASE}`,
   };
 }
 
-/** The original stanza treatment — clean Fraunces italic, one subtle shadow. */
+/** Clean Fraunces italic: cinematic scale without a visible glow/halo. */
 const stanzaStyle: React.CSSProperties = {
   fontWeight: 400,
   fontStyle: "italic",
   lineHeight: 1.14,
   letterSpacing: "0",
-  fontSize: "clamp(38px, 5.8vw, 66px)",
+  fontSize: "clamp(40px, 10.2vw, 66px)",
+  textShadow: "none",
 };
 
 const ARROW = (
@@ -221,10 +228,10 @@ export function CinematicHero() {
         />
         <div
           aria-hidden="true"
-          className="absolute inset-x-0 top-[30%] h-[40%] md:hidden pointer-events-none"
+          className="absolute inset-x-0 top-[28%] h-[38%] md:hidden pointer-events-none"
           style={{
             background:
-              "linear-gradient(to bottom, transparent 0%, rgba(0,0,0,0.18) 50%, transparent 100%)",
+              "linear-gradient(to bottom, transparent 0%, rgba(0,0,0,0.2) 48%, rgba(0,0,0,0.13) 72%, transparent 100%)",
           }}
         />
       </div>
@@ -232,21 +239,22 @@ export function CinematicHero() {
       {/* The original composition is intentionally preserved as separate
           zones. The added eyebrow and support occupy existing negative space
           without pushing the stanza or the low actions out of position. */}
-      <div className="hero-eyebrow-zone absolute inset-x-0 top-[19%] z-10 flex justify-center px-6 sm:top-[21%]">
+      <div className="hero-eyebrow-zone absolute inset-x-0 top-[17%] z-10 flex justify-center px-3 sm:top-[21%] sm:px-6">
         <p
           data-hero-field="eyebrow"
-          className="hero-promise m-0 text-center text-[10px] font-medium uppercase tracking-[0.24em] sm:text-[11px] sm:tracking-[0.26em]"
+          className="hero-promise m-0 whitespace-nowrap text-center text-[9.5px] font-medium uppercase tracking-[0.19em] sm:text-[11px] sm:tracking-[0.26em]"
           style={revealStyle(eyebrow, TEXT_FADE_MS)}
         >
           {HERO_COPY.eyebrow}
         </p>
       </div>
 
-      <div className="hero-stanza-zone absolute inset-x-0 top-[28%] z-10 flex justify-center px-5 sm:top-[30%] sm:px-10 md:px-16">
+      <div className="hero-stanza-zone absolute inset-x-0 top-[30%] z-10 flex justify-center px-5 sm:top-[30%] sm:px-10 md:px-16">
         <h1
           data-hero-stanza="true"
           data-mixed-emphasis="exempt"
           className="hero-h1 m-0 text-center font-serif"
+          style={{ textShadow: "none" }}
         >
           <span className="hero-title-mask block overflow-hidden pb-1">
             <span
@@ -269,19 +277,20 @@ export function CinematicHero() {
         </h1>
       </div>
 
-      <div className="hero-support-zone absolute inset-x-0 top-[52%] z-10 flex justify-center px-6 sm:top-[54%] sm:px-10 md:px-16">
+      <div className="hero-support-zone absolute inset-x-0 top-[54%] z-10 flex justify-center px-6 sm:top-[54%] sm:px-10 md:px-16">
         <p
           data-hero-field="subheadline"
-          className="hero-support m-0 max-w-[22.5rem] text-center font-serif text-[23px] font-normal not-italic leading-[1.62] tracking-[0.025em] sm:max-w-[38rem] sm:text-[24px] md:text-[25px]"
+          className="hero-support m-0 max-w-[21.5rem] text-center font-serif font-normal not-italic sm:max-w-[38rem]"
           style={supportFadeStyle(support)}
         >
           {HERO_COPY.subheadline}
         </p>
       </div>
 
-      {/* Original low CTA anchor. */}
+      {/* Original low CTA anchor: mobile sits close to the safe-area floor so
+          the support line and conversion block remain visibly separate. */}
       <div
-        className="hero-cta-group absolute inset-x-0 bottom-0 z-20 flex flex-col items-center gap-3 px-6 pb-[max(3.25rem,calc(env(safe-area-inset-bottom)+2.5rem))] sm:flex-row sm:justify-center sm:gap-4 sm:pb-14 md:pb-20"
+        className="hero-cta-group absolute inset-x-0 bottom-[max(1.25rem,env(safe-area-inset-bottom))] z-20 flex flex-col items-center gap-3 px-6 pb-0 sm:bottom-0 sm:flex-row sm:justify-center sm:gap-4 sm:pb-14 md:pb-20"
         data-hero-composed={composed ? "true" : "false"}
         style={{
           opacity: composed ? 1 : 0,
@@ -295,7 +304,7 @@ export function CinematicHero() {
           data-hero-field="primaryCta"
           data-analytics="hero_open_studio"
           data-analytics-placement="hero"
-        className="hero-cta hero-cta--primary group inline-flex min-h-[44px] min-w-[196px] items-center justify-center whitespace-nowrap px-7 text-[10.5px] uppercase tracking-[0.18em] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)] focus-visible:ring-offset-4 focus-visible:ring-offset-transparent sm:min-w-[206px] sm:text-[11px]"
+          className="hero-cta hero-cta--primary group inline-flex min-h-[44px] min-w-[196px] items-center justify-center whitespace-nowrap px-7 text-[10.5px] uppercase tracking-[0.18em] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)] focus-visible:ring-offset-4 focus-visible:ring-offset-transparent sm:min-w-[206px] sm:text-[11px]"
         >
           <span className="hero-cta__sheen" aria-hidden="true" />
           <span className="relative z-10 inline-flex items-center gap-2.5">
