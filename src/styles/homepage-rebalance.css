@@ -1,0 +1,270 @@
+/* Homepage editorial rebalance.
+ * Scoped to .home-energy so this pass cannot change Studio, checkout,
+ * tour pages or other public routes. Hero is intentionally untouched.
+ */
+
+/* ── Typography: two section levels + one card level ─────────────── */
+.home-energy .home-section-title,
+.home-energy :is(#signatures, #proposals, #corporate-groups, #plan-map, #journal, #live-reviews) h2 {
+  font-family: var(--font-display);
+  font-size: clamp(2rem, 3.5vw, 2.95rem) !important;
+  line-height: 1.05 !important;
+  letter-spacing: -0.014em !important;
+  font-weight: 500;
+  text-wrap: balance;
+}
+
+.home-energy :is(#builder, #multi-day, #final-cta) h2 {
+  font-family: var(--font-display);
+  font-size: clamp(2.2rem, 4.6vw, 3.8rem) !important;
+  line-height: 1.01 !important;
+  letter-spacing: -0.02em !important;
+  font-weight: 500;
+  text-wrap: balance;
+}
+
+.home-energy .home-card-title {
+  font-family: var(--font-display);
+  font-size: clamp(1.45rem, 2.2vw, 1.72rem);
+  line-height: 1.16;
+  letter-spacing: -0.01em;
+  font-weight: 500;
+  text-wrap: balance;
+}
+
+.home-energy .home-section-lead {
+  font-family: var(--font-sans);
+  font-size: 16px;
+  line-height: 1.7;
+  font-weight: 410;
+}
+
+@media (min-width: 768px) {
+  .home-energy .home-section-lead {
+    font-size: 17px;
+  }
+}
+
+/* ── Five Ways: one coherent card family ─────────────────────────── */
+.home-energy #three-paths .home-path-card {
+  background: var(--sand);
+  box-shadow:
+    inset 0 1px 0 color-mix(in oklab, var(--gold) 28%, transparent),
+    0 1px 2px rgba(46, 46, 46, 0.04);
+  transition:
+    transform 420ms var(--ease-scene),
+    box-shadow 420ms var(--ease-scene),
+    border-color 320ms ease;
+}
+
+.home-energy #three-paths .home-path-card:hover,
+.home-energy #three-paths .home-path-card:focus-visible {
+  border-color: color-mix(in oklab, var(--gold) 72%, var(--border));
+  box-shadow:
+    inset 0 1px 0 color-mix(in oklab, var(--gold) 55%, transparent),
+    0 22px 48px -28px rgba(46, 46, 46, 0.32);
+}
+
+.home-energy #three-paths .home-path-icon,
+.home-energy #three-paths .home-path-arrow,
+.home-energy #three-paths .home-path-arrow > span {
+  transition:
+    transform 420ms var(--ease-scene),
+    color 320ms ease,
+    border-color 320ms ease,
+    background-color 320ms ease;
+}
+
+.home-energy #three-paths .home-path-arrow > span {
+  transform-origin: right center;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .home-energy #three-paths .home-path-card:hover .home-path-icon {
+    transform: translateY(-2px) rotate(-2deg);
+    border-color: var(--gold);
+    background: var(--ivory);
+  }
+
+  .home-energy #three-paths .home-path-card:hover .home-path-arrow {
+    transform: translateX(4px);
+    color: var(--teal);
+  }
+
+  .home-energy #three-paths .home-path-card:hover .home-path-arrow > span {
+    transform: scaleX(1.35);
+  }
+}
+
+/* ── CTA hierarchy: overview pages inform first, convert second ───── */
+/* Signature: keep one quiet action per card. Tailor belongs on the detail
+ * page, after the guest understands the day. */
+.home-energy #signatures a[href$="/tailor"] {
+  display: none !important;
+}
+
+.home-energy #signatures article > div:last-child > div:last-child > a[href^="/tours/"] {
+  min-height: 44px !important;
+  padding: 8px 0 !important;
+  justify-content: flex-start !important;
+  background: transparent !important;
+  color: var(--teal) !important;
+  border: 0 !important;
+  box-shadow: none !important;
+  transform: none !important;
+  text-transform: none !important;
+  letter-spacing: 0.01em !important;
+  font-size: 13.5px !important;
+  font-weight: 600 !important;
+}
+
+.home-energy #signatures article > div:last-child > div:last-child > a[href^="/tours/"]::before,
+.home-energy #signatures article > div:last-child > div:last-child > a[href^="/tours/"]::after {
+  display: none !important;
+}
+
+/* Travel Designer: the real flip-book is already the proof. One commercial
+ * action is enough; the second equivalent contact action becomes noise. */
+.home-energy #multi-day a[href="/contact"] {
+  display: none !important;
+}
+
+/* Final decision: one dominant button, two quieter alternatives. */
+.home-energy #final-cta a[href="/contact"] {
+  display: none !important;
+}
+
+.home-energy #final-cta .grid > a:nth-child(2),
+.home-energy #final-cta .grid > a:nth-child(3) {
+  min-height: 44px !important;
+  padding: 8px 4px !important;
+  background: transparent !important;
+  color: var(--charcoal) !important;
+  border: 0 !important;
+  box-shadow: none !important;
+  transform: none !important;
+  text-transform: none !important;
+  letter-spacing: 0.005em !important;
+  font-size: 13.5px !important;
+  font-weight: 500 !important;
+}
+
+.home-energy #final-cta .grid > a:nth-child(2)::before,
+.home-energy #final-cta .grid > a:nth-child(3)::before,
+.home-energy #final-cta .grid > a:nth-child(2)::after,
+.home-energy #final-cta .grid > a:nth-child(3)::after {
+  display: none !important;
+}
+
+/* ── Motion choreography: movement with a job ────────────────────── */
+/* Proposals + Corporate had their EditorialCard sequence explicitly forced
+ * flat in the route. Reintroduce image -> copy only on these two sections. */
+html.motion-ready .home-energy :is(#proposals, #corporate-groups) article.he-seq > :not([aria-hidden="true"]) {
+  opacity: 0 !important;
+  transform: translateY(16px) !important;
+  transition:
+    opacity 620ms var(--ease-scene),
+    transform 620ms var(--ease-scene) !important;
+}
+
+.home-energy :is(#proposals, #corporate-groups) article.he-seq.is-visible > :not([aria-hidden="true"]) {
+  opacity: 1 !important;
+  transform: translateY(0) !important;
+}
+
+.home-energy :is(#proposals, #corporate-groups) article.he-seq.is-visible > a:not([aria-hidden="true"]) {
+  transition-delay: 40ms !important;
+}
+
+.home-energy :is(#proposals, #corporate-groups) article.he-seq.is-visible > div {
+  transition-delay: 220ms !important;
+}
+
+/* Studio proof points read 01 -> 02 -> 03 before the action settles. */
+.home-energy #builder ol > li {
+  transition:
+    opacity 520ms var(--ease-scene),
+    transform 520ms var(--ease-scene);
+}
+
+html.motion-ready .home-energy #builder:not(.is-visible) ol > li {
+  opacity: 0;
+  transform: translateY(10px);
+}
+
+.home-energy #builder.is-visible ol > li:nth-child(1) { transition-delay: 120ms; }
+.home-energy #builder.is-visible ol > li:nth-child(2) { transition-delay: 220ms; }
+.home-energy #builder.is-visible ol > li:nth-child(3) { transition-delay: 320ms; }
+
+/* Local Stories arrives as an editorial row rather than a static dump. */
+@keyframes homeJournalCardIn {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 18px, 0);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+html.motion-ready .home-energy #journal li {
+  opacity: 0;
+}
+
+.home-energy #journal.is-visible li {
+  animation: homeJournalCardIn 620ms var(--ease-scene) both;
+}
+.home-energy #journal.is-visible li:nth-child(2) { animation-delay: 120ms; }
+.home-energy #journal.is-visible li:nth-child(3) { animation-delay: 240ms; }
+
+.home-energy #journal li img {
+  transition: transform 900ms var(--ease-scene), filter 700ms ease;
+  filter: saturate(0.95) contrast(1.02);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .home-energy #journal li:hover img {
+    transform: scale(1.035);
+    filter: saturate(1) contrast(1.03);
+  }
+}
+
+/* A one-shot cue brings attention to the main action when a commercial
+ * section arrives. It never loops, pulses or competes with reading. */
+@keyframes homeCtaArrival {
+  0%, 100% { transform: translateY(0); }
+  45% {
+    transform: translateY(-2px);
+    box-shadow:
+      0 18px 36px -22px color-mix(in oklab, var(--teal) 62%, transparent),
+      0 0 0 1px color-mix(in oklab, var(--gold) 48%, transparent);
+  }
+}
+
+.home-energy #builder.is-visible a[href="/studio-v3"],
+.home-energy #multi-day.is-visible a[href="/multi-day"],
+.home-energy #proposals.is-visible article a:not([aria-hidden="true"]),
+.home-energy #corporate-groups.is-visible article a:not([aria-hidden="true"]) {
+  animation: homeCtaArrival 1050ms var(--ease-scene) 420ms 1 both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .home-energy #three-paths .home-path-card,
+  .home-energy #three-paths .home-path-icon,
+  .home-energy #three-paths .home-path-arrow,
+  .home-energy #three-paths .home-path-arrow > span,
+  .home-energy #journal li,
+  .home-energy #journal li img,
+  .home-energy :is(#proposals, #corporate-groups) article.he-seq > :not([aria-hidden="true"]),
+  .home-energy #builder ol > li,
+  .home-energy #builder a[href="/studio-v3"],
+  .home-energy #multi-day a[href="/multi-day"],
+  .home-energy #proposals article a,
+  .home-energy #corporate-groups article a {
+    animation: none !important;
+    transition: none !important;
+    opacity: 1 !important;
+    transform: none !important;
+  }
+}
