@@ -2094,6 +2094,15 @@
 .hero-cinematic .hero-title-line {
   font-family: var(--font-editorial);
 }
+/* Stanza line gap — restored "One Breath" cadence (was mt-3 / sm:mt-4). */
+.hero-cinematic [data-hero-field="headlineLine2"] {
+  margin-top: 0.75rem;
+}
+@media (min-width: 640px) {
+  .hero-cinematic [data-hero-field="headlineLine2"] {
+    margin-top: 1rem;
+  }
+}
 
 .hero-cinematic .hero-title-mask {
   overflow: hidden;
