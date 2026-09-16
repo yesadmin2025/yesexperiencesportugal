@@ -6068,14 +6068,35 @@ html {
 .hero-cinematic .hero-cinematic-composition {
   transform: none;
 }
-/* Restored "One Breath" geometry: eyebrow and support are independent
-   overlays in the open space; the stanza and CTA block keep their
-   original component-driven positions. */
+/* Single centred caption block: the two headline lines read as one
+   sentence, a hairline gold rule bridges into the support line, and the
+   actions sit directly beneath the stanza. */
+.hero-cinematic .hero-title-line {
+  line-height: 1.04;
+  letter-spacing: -0.012em;
+}
+.hero-cinematic .hero-title-line + .hero-title-line {
+  margin-top: 0.06em;
+}
+.hero-cinematic .hero-copy-rule {
+  background: linear-gradient(
+    90deg,
+    transparent,
+    color-mix(in oklab, var(--gold) 72%, transparent),
+    transparent
+  );
+}
 .hero-cinematic .hero-support {
   text-wrap: balance;
+  color: color-mix(in oklab, var(--gold-soft) 22%, var(--ivory));
 }
 .hero-cinematic .hero-cta-group {
-  gap: 14px;
+  gap: 12px;
+}
+/* Slimmer, quieter button material — the visible bar is 40px tall inside
+   a 44px touch target. */
+.hero-cinematic .hero-cta::before {
+  inset: 10px 0;
 }
 .hero-cinematic .hero-promise {
   transform-origin: center center;
