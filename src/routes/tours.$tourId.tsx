@@ -267,41 +267,49 @@ function TourDetailPage() {
       {/* ── 2 · TRUST MICROCOPY ─────────────────────────────────── */}
       <TrustStrip meta={meta} />
 
-      {/* ── 3 · SHORT INTRO ─────────────────────────────────────── */}
+      {/* ── A · WHY THIS DAY ────────────────────────────────────── */}
       <IntroBlock tour={tour} />
 
-      {/* ── 4 · ITINERARY (real Viator stops only) ────────────── */}
+      {/* ── B · YOUR DAY — itinerary (real Viator stops only) ───── */}
       <ItineraryTimeline tour={tour} meta={meta} />
 
-      {/* ── 5 · HIGHLIGHTS ─────────────────────────────────────── */}
-      <HighlightsBlock tour={tour} />
-
-      {/* ── 6 · MAP — real geographic map with driving route (lazy) ─ */}
+      {/* ── B2 · MAP — real geographic route (lazy) ─────────────── */}
       <Suspense fallback={<SignatureRouteMapShell />}>
         <SignatureRouteMap tour={tour} />
       </Suspense>
 
-      {/* ── 7 · WHAT'S INCLUDED ────────────────────────────────── */}
+      {/* ── C · HIGHLIGHTS ─────────────────────────────────────── */}
+      <HighlightsBlock tour={tour} />
+
+      {/* ── D/E · INCLUDED + PRACTICAL DETAILS ─────────────────── */}
       <IncludedAndIdeal tour={tour} meta={meta} />
 
-      {/* Long-form context follows the decision essentials. */}
-      <TourEditorialNote tour={tour} />
-
-      {/* ── 9 · GALLERY (real photos) ──────────────────────────── */}
+      {/* ── B3 · GALLERY (real photos) ─────────────────────────── */}
       <GalleryStrip tour={tour} resolveImg={resolveImg} meta={meta} adminPhotos={adminPhotos} />
 
-      <SecondaryContext tour={tour} />
-
-      {/* ── 10 · RESERVE THIS DAY (simple booking) ─────────────── */}
-      <BookingBlock tour={tour} />
-
-      {/* ── 11 · REVIEWS ───────────────────────────────────────── */}
+      {/* ── F · REVIEWS / TRUST ────────────────────────────────── */}
       <section className="container-x py-6">
         <TourReviews tourId={tour.id} />
       </section>
 
-      {/* ── 11b · FAQ (matches FAQPage JSON-LD in <head>) ──────── */}
+      {/* Editorial mentions — shown ONLY on Arrábida-region signatures
+          (the dataset's `arrabida-tour` placement) so other tours don't
+          get the same trust strip when no real article exists for them. */}
+      {(tour.id === "arrabida-wine-allinclusive" ||
+        tour.id === "arrabida-boat" ||
+        tour.id === "azeitao-cheese") && <RecognisedByGuides placement="arrabida-tour" compact />}
+
+      {/* ── G · CONVERSION — reserve this day ──────────────────── */}
+      <BookingBlock tour={tour} />
+
+      <FinalCta tour={tour} />
+
+      {/* ── H · LONG-FORM CONTEXT + FAQ — quiet, below the decision ── */}
       <TourFaq tourId={tour.id} />
+
+      <TourEditorialNote tour={tour} />
+
+      <SecondaryContext tour={tour} />
 
       {tour.id === "arrabida-wine-allinclusive" && (
         <section className="pb-10">
@@ -320,18 +328,6 @@ function TourDetailPage() {
           </div>
         </section>
       )}
-
-
-
-      {/* Editorial mentions — shown ONLY on Arrábida-region signatures
-          (the dataset's `arrabida-tour` placement) so other tours don't
-          get the same trust strip when no real article exists for them. */}
-      {(tour.id === "arrabida-wine-allinclusive" ||
-        tour.id === "arrabida-boat" ||
-        tour.id === "azeitao-cheese") && <RecognisedByGuides placement="arrabida-tour" compact />}
-
-      {/* ── 12 · FINAL CTA ─────────────────────────────────────── */}
-      <FinalCta tour={tour} />
 
       <RelatedTours currentId={tour.id} />
     </SiteLayout>
