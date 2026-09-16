@@ -20,13 +20,13 @@ import { HERO_COPY, HERO_COPY_VERSION, HERO_PHRASES } from "@/content/hero-copy"
 import { HERO_FILM } from "@/content/hero-scenes-manifest";
 
 /** Cinematic pace: one breath per beat, full actionable state by ~4.5s. */
-const EYEBROW_DELAY_MS = 300;
-const LINE1_DELAY_MS = 900;
-const LINE2_DELAY_MS = 1700;
-const SUPPORT_DELAY_MS = 2600;
-const CTA_DELAY_MS = 3500;
-const TEXT_FADE_MS = 1300;
-const CTA_FADE_MS = 1000;
+const EYEBROW_DELAY_MS = 250;
+const LINE1_DELAY_MS = 800;
+const LINE2_DELAY_MS = 1600;
+const SUPPORT_DELAY_MS = 2500;
+const CTA_DELAY_MS = 3550;
+const TEXT_FADE_MS = 1200;
+const CTA_FADE_MS = 950;
 const EASE = "cubic-bezier(0.22,1,0.36,1)";
 
 function shouldSkipIntro(): boolean {
@@ -43,10 +43,10 @@ function shouldSkipIntro(): boolean {
   }
 }
 
-function revealStyle(on: boolean, ms: number): React.CSSProperties {
+function revealStyle(on: boolean, ms: number, distance = 14): React.CSSProperties {
   return {
     opacity: on ? 1 : 0,
-    transform: on ? "translateY(0)" : "translateY(14px)",
+    transform: on ? "translateY(0)" : `translateY(${distance}px)`,
     willChange: "opacity, transform",
     transition: `opacity ${ms}ms ${EASE}, transform ${ms}ms ${EASE}`,
   };
@@ -57,7 +57,7 @@ const stanzaStyle: React.CSSProperties = {
   fontWeight: 400,
   fontStyle: "italic",
   lineHeight: 1.14,
-  letterSpacing: "-0.005em",
+  letterSpacing: "0",
   fontSize: "clamp(34px, 5.6vw, 62px)",
 };
 
@@ -226,19 +226,23 @@ export function CinematicHero() {
           data-mixed-emphasis="exempt"
           className="hero-h1 m-0 text-center font-serif"
         >
-          <span
-            className="hero-title-line block font-serif font-normal italic m-0"
-            data-hero-field="headlineLine1"
-            style={{ ...stanzaStyle, ...revealStyle(line1, TEXT_FADE_MS) }}
-          >
-            {HERO_PHRASES[0]}
+          <span className="hero-title-mask block overflow-hidden pb-1">
+            <span
+              className="hero-title-line block font-serif font-normal italic m-0"
+              data-hero-field="headlineLine1"
+              style={{ ...stanzaStyle, ...revealStyle(line1, TEXT_FADE_MS, 26) }}
+            >
+              {HERO_PHRASES[0]}
+            </span>
           </span>
-          <span
-            className="hero-title-line mt-2 block font-serif italic font-normal text-[color:var(--gold-soft)] sm:mt-2.5"
-            data-hero-field="headlineLine2"
-            style={{ ...stanzaStyle, ...revealStyle(line2, TEXT_FADE_MS) }}
-          >
-            {HERO_PHRASES[1]}
+          <span className="hero-title-mask mt-1 block overflow-hidden pb-1 sm:mt-1.5">
+            <span
+              className="hero-title-line block font-serif italic font-normal text-[color:var(--gold-soft)]"
+              data-hero-field="headlineLine2"
+              style={{ ...stanzaStyle, ...revealStyle(line2, TEXT_FADE_MS, 26) }}
+            >
+              {HERO_PHRASES[1]}
+            </span>
           </span>
         </h1>
       </div>
@@ -246,8 +250,8 @@ export function CinematicHero() {
       <div className="hero-support-zone absolute inset-x-0 top-[52%] z-10 flex justify-center px-6 sm:top-[54%] sm:px-10 md:px-16">
         <p
           data-hero-field="subheadline"
-          className="hero-support m-0 max-w-[20rem] text-center font-serif text-[16px] font-normal not-italic leading-[1.55] sm:max-w-[32rem] sm:text-[18px]"
-          style={revealStyle(support, TEXT_FADE_MS)}
+          className="hero-support m-0 max-w-[21.5rem] text-center font-serif text-[19px] font-normal not-italic leading-[1.62] sm:max-w-[34rem] sm:text-[20px]"
+          style={revealStyle(support, TEXT_FADE_MS, 18)}
         >
           {HERO_COPY.subheadline}
         </p>
