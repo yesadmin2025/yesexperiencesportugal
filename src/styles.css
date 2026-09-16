@@ -6104,12 +6104,6 @@ html {
   .hero-cinematic .hero-cinematic-composition {
     transform: none;
   }
-  .hero-cinematic .hero-promise {
-    top: 12%;
-  }
-  .hero-cinematic .hero-support {
-    top: 51%;
-  }
 }
 
 @media (prefers-reduced-motion: reduce) {
