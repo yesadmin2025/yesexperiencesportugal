@@ -270,15 +270,11 @@ function TourDetailPage() {
       {/* ── 3 · SHORT INTRO ─────────────────────────────────────── */}
       <IntroBlock tour={tour} />
 
-      {/* ── 3b · EDITORIAL NOTE + BOOKING CTA ──────────────────── */}
-      <TourEditorialNote tour={tour} />
-
-      {/* ── 4 · HIGHLIGHTS ─────────────────────────────────────── */}
-      <HighlightsBlock tour={tour} />
-
-
-      {/* ── 5 · ITINERARY (real Viator stops only) ────────────── */}
+      {/* ── 4 · ITINERARY (real Viator stops only) ────────────── */}
       <ItineraryTimeline tour={tour} meta={meta} />
+
+      {/* ── 5 · HIGHLIGHTS ─────────────────────────────────────── */}
+      <HighlightsBlock tour={tour} />
 
       {/* ── 6 · MAP — real geographic map with driving route (lazy) ─ */}
       <Suspense fallback={<SignatureRouteMapShell />}>
@@ -288,8 +284,13 @@ function TourDetailPage() {
       {/* ── 7 · WHAT'S INCLUDED ────────────────────────────────── */}
       <IncludedAndIdeal tour={tour} meta={meta} />
 
+      {/* Long-form context follows the decision essentials. */}
+      <TourEditorialNote tour={tour} />
+
       {/* ── 9 · GALLERY (real photos) ──────────────────────────── */}
       <GalleryStrip tour={tour} resolveImg={resolveImg} meta={meta} adminPhotos={adminPhotos} />
+
+      <SecondaryContext tour={tour} />
 
       {/* ── 10 · RESERVE THIS DAY (simple booking) ─────────────── */}
       <BookingBlock tour={tour} />
@@ -388,7 +389,7 @@ function TourHero({
               focal={tour.focal ?? "50% 50%"}
               sizes="(min-width: 1024px) 1152px, 100vw"
               className="shadow-[0_30px_60px_-30px_rgba(46,46,46,0.4)]"
-              imgClassName="motion-safe:animate-[softFadeIn_var(--dur-image,780ms)_var(--ease-scene,ease-out)_both]"
+              imgClassName="signature-image-settle"
             />
           </ParallaxLayer>
 
@@ -485,9 +486,9 @@ function TourHero({
               data-analytics-placement="hero"
               data-analytics-experience-id={tour.id}
               data-analytics-experience-type="signature"
-              className="inline-flex min-h-[44px] items-center gap-2 font-sans text-[11px] font-medium uppercase tracking-[0.16em] text-[color:var(--charcoal-soft)] underline decoration-[color:var(--gold)]/60 underline-offset-4 transition-colors duration-[var(--dur-quick)] hover:text-[color:var(--teal)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)]"
+              className="editorial-action inline-flex min-h-[44px] items-center gap-2 font-sans text-[11px] font-medium uppercase tracking-[0.16em] text-[color:var(--charcoal-soft)] underline decoration-[color:var(--gold)]/60 underline-offset-4 transition-colors duration-[var(--dur-quick)] hover:text-[color:var(--teal)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)]"
             >
-              Prefer to adjust the day? Tailor this day <span aria-hidden="true">→</span>
+              Tailor this day <span aria-hidden="true" className="editorial-arrow">→</span>
             </Link>
           </div>
         </div>
@@ -504,13 +505,6 @@ function TrustStrip({ meta }: { meta?: ViatorMeta }) {
     { icon: <Shield size={14} />, label: "Instant confirmation" },
     { icon: <Check size={14} />, label: CANCELLATION.signature.en },
     { icon: <Check size={14} />, label: "A local on WhatsApp if you need help" },
-    {
-      icon: <Star size={14} />,
-      label:
-        meta && meta.reviewCount > 0
-          ? `${meta.rating.toFixed(1)} · ${meta.reviewCount} reviews`
-          : "Trusted local guide",
-    },
   ];
   return (
     <section className="border-y border-[color:var(--border)] bg-[color:var(--ivory)] reveal">
@@ -539,8 +533,19 @@ function IntroBlock({ tour }: { tour: SignatureTour }) {
         <p className="serif mt-5 text-[1.5rem] sm:text-2xl md:text-[1.85rem] leading-snug text-[color:var(--charcoal)]">
           {tour.intro}
         </p>
+      </div>
+    </section>
+  );
+}
+
+function SecondaryContext({ tour }: { tour: SignatureTour }) {
+  if (!tour.contextParagraph && !tour.contextLink) return null;
+  return (
+    <section className="reveal py-12 md:py-16">
+      <div className="container-x prose-longform max-w-3xl">
+        <Eyebrow>Local context</Eyebrow>
         {tour.contextParagraph && (
-          <p className="mt-6 text-[15px] md:text-[16px] leading-[1.8] text-[color:var(--charcoal-soft)]">
+          <p className="mt-5 text-[15px] leading-[1.8] text-[color:var(--charcoal-soft)] md:text-[16px]">
             {tour.contextParagraph}
           </p>
         )}
@@ -548,9 +553,9 @@ function IntroBlock({ tour }: { tour: SignatureTour }) {
           <p className="mt-4 text-[14px]">
             <a
               href={tour.contextLink.href}
-              className="underline decoration-[color:var(--gold)]/60 underline-offset-4 text-[color:var(--teal)] hover:text-[color:var(--charcoal)] transition-colors"
+              className="editorial-action inline-flex min-h-[44px] items-center gap-2 text-[color:var(--teal)] underline decoration-[color:var(--gold)]/60 underline-offset-4 transition-colors hover:text-[color:var(--charcoal)]"
             >
-              {tour.contextLink.label} →
+              {tour.contextLink.label} <span aria-hidden="true" className="editorial-arrow">→</span>
             </a>
           </p>
         )}

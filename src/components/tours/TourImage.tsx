@@ -8,7 +8,7 @@
  * Uses brand tokens only (--sand, --ivory, --teal). No color choices here.
  * Motion respects the site contract: ≤220ms fade + soft blur out on load.
  */
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 type Ratio = "3/2" | "16/9" | "4/5";
 
@@ -49,10 +49,15 @@ export function TourImage({
 }: Props) {
   const [loaded, setLoaded] = useState(false);
   const [errored, setErrored] = useState(false);
+  const imageRef = useRef<HTMLImageElement | null>(null);
 
   useEffect(() => {
     setLoaded(false);
     setErrored(false);
+    const image = imageRef.current;
+    // Cached eager images can finish before React attaches onLoad during
+    // hydration. Read the native state so a real image never stays hidden.
+    if (image?.complete && image.naturalWidth > 0) setLoaded(true);
   }, [src]);
 
   return (
@@ -73,6 +78,7 @@ export function TourImage({
       )}
 
       <img
+        ref={imageRef}
         src={src}
         srcSet={srcSet}
         sizes={sizes}

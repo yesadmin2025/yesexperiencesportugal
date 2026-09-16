@@ -3414,26 +3414,62 @@ html.motion-ready [data-motion].motion-in {
   transform: translateY(0);
 }
 
-/* Marketing-scoped override — public marketing pages boot the same
-   `[data-motion]` controller via `useMarketingMotion`, which sets
-   `data-motion-scope="marketing"` on <html>. Elevated to feel alive
-   without any bounce/spring: translateY 18px, 420ms editorial ease,
-   subtle blur-in. Runs once, no layout shift. Homepage (no scope
-   attribute) keeps its stronger 22px/620ms cadence. */
+/* Marketing-scoped editorial motion. Public storytelling pages settle into
+   focus rather than jumping upward. Headings use a restrained clip reveal;
+   cards/images use opacity + a 0.985 scale settle. */
 html.motion-ready[data-motion-scope="marketing"] [data-motion] {
-  transform: translateY(18px);
-  filter: blur(4px);
+  transform: translate3d(0, 4px, 0) scale(0.985);
+  filter: blur(1.5px);
   transition:
-    opacity 420ms cubic-bezier(0.22, 0.61, 0.36, 1),
-    transform 420ms cubic-bezier(0.22, 0.61, 0.36, 1),
-    filter 420ms cubic-bezier(0.22, 0.61, 0.36, 1);
+    opacity 560ms var(--ease-scene),
+    transform 620ms var(--ease-scene),
+    filter 520ms var(--ease-scene),
+    clip-path 680ms var(--ease-scene);
+  animation: none;
 }
 html.motion-ready[data-motion-scope="marketing"] [data-motion].motion-in {
-  transform: translateY(0);
+  transform: translate3d(0, 0, 0) scale(1);
   filter: blur(0);
 }
-html.motion-ready[data-motion-scope="marketing"] [data-motion="fade-up-sm"] {
-  transform: translateY(12px);
+html.motion-ready[data-motion-scope="marketing"] [data-motion="editorial-clip"] {
+  clip-path: inset(0 0 100% 0);
+  transform: none;
+  filter: none;
+}
+html.motion-ready[data-motion-scope="marketing"] [data-motion="editorial-clip"].motion-in {
+  clip-path: inset(0 0 0 0);
+  transform: none;
+}
+html.motion-ready[data-motion-scope="marketing"] [data-motion="fade"] {
+  transform: none;
+  filter: none;
+}
+
+@keyframes editorialArrowCue {
+  0%, 100% { transform: translateX(0); }
+  55% { transform: translateX(4px); }
+}
+html.motion-ready[data-motion-scope="marketing"] .motion-in .editorial-arrow {
+  animation: editorialArrowCue 520ms var(--ease-scene) 420ms both;
+}
+.editorial-action:hover .editorial-arrow,
+.editorial-action:focus-visible .editorial-arrow {
+  transform: translateX(4px);
+}
+html[data-motion-scope="marketing"] a svg[data-lucide="arrow-right"] {
+  transition: transform var(--dur-base) var(--ease-scene);
+}
+html[data-motion-scope="marketing"] a:hover svg[data-lucide="arrow-right"],
+html[data-motion-scope="marketing"] a:focus-visible svg[data-lucide="arrow-right"] {
+  transform: translateX(4px);
+}
+
+@keyframes signatureImageSettle {
+  from { opacity: 0; transform: scale(1.015); }
+  to { opacity: 1; transform: scale(1); }
+}
+html[data-motion-scope="marketing"] .signature-image-settle {
+  animation: signatureImageSettle var(--dur-image) var(--ease-scene) both;
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -3442,6 +3478,16 @@ html.motion-ready[data-motion-scope="marketing"] [data-motion="fade-up-sm"] {
     opacity: 1 !important;
     transform: none !important;
     transition: none !important;
+  }
+  html.motion-ready[data-motion-scope="marketing"] [data-motion="editorial-clip"] {
+    clip-path: none !important;
+  }
+  .editorial-arrow {
+    animation: none !important;
+    transform: none !important;
+  }
+  html[data-motion-scope="marketing"] .signature-image-settle {
+    animation: none !important;
   }
 }
 

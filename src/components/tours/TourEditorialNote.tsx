@@ -1,14 +1,11 @@
-import { Link } from "@tanstack/react-router";
-
 import { Eyebrow } from "@/components/ui/Eyebrow";
 import { SectionTitle } from "@/components/ui/SectionTitle";
-import { CtaButton } from "@/components/ui/CtaButton";
 import type { SignatureTour } from "@/data/signatureTours";
 
 /**
  * TourEditorialNote — the local-stories reading experience, on a Signature day
  * page: why we designed the day, the rhythm it keeps, and two moments people
- * remember, followed by its own booking CTA.
+ * remember. Conversion actions live only at the top and close of the page.
  *
  * Every sentence is assembled from authoritative tour data (region, duration,
  * pace, fitsBest, blurb and the real stop stories). Nothing is invented here.
@@ -60,32 +57,6 @@ export function TourEditorialNote({ tour }: { tour: SignatureTour }) {
             ))}
           </div>
         )}
-
-        <div
-          className="mt-9 flex flex-col gap-3 rounded-[6px] border border-[color:var(--gold)]/45 bg-[color:var(--ivory)] p-5 sm:flex-row sm:items-center sm:justify-between"
-          data-testid="tour-editorial-booking-cta"
-        >
-          <p className="text-[14.5px] leading-relaxed text-[color:var(--charcoal-soft)]">
-            From{" "}
-            <span className="font-medium text-[color:var(--charcoal)]">€{tour.priceFrom}</span> per
-            person · instant confirmation, hotel pickup included.
-          </p>
-          <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
-            <CtaButton
-              href="#book"
-              size="sm"
-            >
-              Check dates &amp; book
-            </CtaButton>
-            <Link
-              to="/book"
-              search={{ tour: tour.id }}
-              className="inline-flex min-h-[48px] items-center justify-center font-sans text-[12px] uppercase tracking-[0.16em] font-semibold text-[color:var(--teal)] underline decoration-[color:var(--gold)]/60 underline-offset-4 hover:text-[color:var(--charcoal)]"
-            >
-              Tell us your dates
-            </Link>
-          </div>
-        </div>
       </div>
     </section>
   );
