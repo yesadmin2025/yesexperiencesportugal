@@ -5896,10 +5896,10 @@ html {
 /* Hero support line: upright Fraunces in the refined editorial treatment
    of the original film captions, separated from headline and actions. */
 .hero-support {
-  color: color-mix(in oklab, var(--gold-soft) 34%, var(--ivory));
+  color: color-mix(in oklab, var(--gold-soft) 18%, var(--ivory));
   text-shadow:
-    0 1px 2px color-mix(in oklab, var(--charcoal-deep) 62%, transparent),
-    0 4px 14px color-mix(in oklab, var(--charcoal-deep) 28%, transparent);
+    0 1px 2px color-mix(in oklab, var(--charcoal-deep) 76%, transparent),
+    0 5px 18px color-mix(in oklab, var(--charcoal-deep) 44%, transparent);
 }
 
 .hero-cta {
@@ -6072,14 +6072,11 @@ html {
    shown in the approved reference. Eyebrow/support remain separate zones. */
 .hero-cinematic .hero-title-line {
   line-height: 1.14;
-  letter-spacing: -0.005em;
-}
-.hero-cinematic .hero-title-line + .hero-title-line {
-  margin-top: 0.5rem;
+  letter-spacing: 0;
 }
 .hero-cinematic .hero-support {
   text-wrap: balance;
-  color: color-mix(in oklab, var(--gold-soft) 22%, var(--ivory));
+  color: color-mix(in oklab, var(--gold-soft) 14%, var(--ivory));
 }
 .hero-cinematic .hero-cta-group {
   gap: 12px;
