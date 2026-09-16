@@ -6,7 +6,7 @@
  * drift away from canon:
  *
  *   • eyebrow        → Inter,      tracked, uppercase via tracking
- *   • headline L1    → Fraunces, weight 400, font-style: normal
+ *   • headline L1    → Fraunces, weight 400, font-style: italic
  *   • headline L2    → Fraunces, weight 400, font-style: italic, gold
  *   • subheadline    → Fraunces,   upright, generous leading
  *   • microcopy      → Inter,      tracked
@@ -121,7 +121,7 @@ test.describe("Hero typography — font families & scale (post font load)", () =
       expect(line.lineHeightRatio, `${label} leading`).toBeLessThanOrEqual(1.4);
     }
 
-    expect(line1.fontStyle, "stanza L1 must be upright").toBe("normal");
+    expect(line1.fontStyle, "stanza L1 must be italic").toBe("italic");
     expect(line1.fontWeight, "stanza L1 weight").toBe("400");
 
     expect(line2.fontStyle, "stanza L2 must be italic").toBe("italic");
