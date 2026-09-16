@@ -6034,6 +6034,9 @@ html {
 .hero-cinematic .hero-support {
   top: 50%;
 }
+.hero-cinematic .hero-cta-group {
+  gap: 18px;
+}
 .hero-cinematic .hero-promise {
   transform-origin: center center;
   color: color-mix(in oklab, var(--gold-soft) 42%, var(--ivory));
