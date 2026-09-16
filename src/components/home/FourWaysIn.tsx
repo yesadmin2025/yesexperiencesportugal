@@ -223,16 +223,19 @@ function PathCard({ path, featured }: { path: Path; featured: boolean }) {
       <p className="mt-3 text-[15px] md:text-[16px] leading-[1.7] text-[color:var(--charcoal-soft)]">
         {path.body}
       </p>
-      {/* Discreet affordance only — the whole card is the action, so the
-          repeated CTA label is available to assistive tech but no longer
-          shouted five times down the page. */}
+      {/* Discreet affordance — the whole card is the action. The arrow is
+          enlarged and given a visible surface so the interaction cue reads
+          instantly, with a one-time rightward nudge on reveal and a small
+          shift on hover / tap. */}
       <span className="mt-auto pt-7 inline-flex min-h-[44px] items-center gap-2">
         <span className="sr-only">{path.cta}</span>
-        <ArrowRight
-          size={16}
-          aria-hidden="true"
-          className="text-[color:var(--gold)] transition-transform duration-[var(--dur-base)] group-hover:translate-x-1"
-        />
+        <span className="home-way-arrow inline-flex h-9 w-9 items-center justify-center rounded-full border border-[color:var(--gold)]/60 bg-[color:var(--ivory)] text-[color:var(--teal)] shadow-[0_6px_18px_-8px_color-mix(in_oklab,var(--charcoal-deep)_22%,transparent)] transition-[transform,background-color,border-color] duration-[var(--dur-base)] ease-[var(--ease-scene)] group-hover:translate-x-1.5 group-hover:border-[color:var(--gold)] group-hover:bg-[color:var(--gold-soft)] group-active:translate-x-1">
+          <ArrowRight
+            size={18}
+            aria-hidden="true"
+            strokeWidth={2.4}
+          />
+        </span>
       </span>
     </Link>
   );
