@@ -7,6 +7,7 @@ import { SiteLayout } from "@/components/SiteLayout";
 import { SiteBreadcrumbs } from "@/components/SiteBreadcrumbs";
 import { Eyebrow } from "@/components/ui/Eyebrow";
 import { SectionTitle } from "@/components/ui/SectionTitle";
+import { CtaButton } from "@/components/ui/CtaButton";
 import { signatureTours, findTour } from "@/data/signatureTours";
 import { SimpleBookingForm } from "@/components/SimpleBookingForm";
 import { guideAttributionMetadata } from "@/lib/guide-attribution";
@@ -178,7 +179,7 @@ function BookPage() {
   const labelClass =
     "mb-1.5 block font-sans text-[11px] uppercase tracking-[0.2em] text-[color:var(--charcoal-soft)]";
   const primaryBtn =
-    "inline-flex min-h-[52px] w-full items-center justify-center gap-2 rounded-[4px] bg-[color:var(--teal)] px-7 font-sans text-[12px] uppercase tracking-[0.18em] font-semibold text-[color:var(--ivory)] transition-colors hover:bg-[color:var(--charcoal)] disabled:opacity-60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--teal)] focus-visible:ring-offset-2";
+    "premium-cta premium-cta--primary t-button inline-flex min-h-[52px] w-full items-center justify-center gap-2 overflow-hidden rounded-[2px] bg-[color:var(--charcoal-deep)] px-7 font-sans text-[12px] uppercase tracking-[0.16em] font-semibold text-[color:var(--gold-soft)] transition-transform duration-[var(--dur-base)] ease-[var(--ease-scene)] [@media(hover:hover)]:hover:-translate-y-px disabled:opacity-60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)] focus-visible:ring-offset-2 focus-visible:ring-offset-[color:var(--ivory)]";
 
   const next = () => {
     if (step === 1) {
@@ -263,27 +264,15 @@ function BookPage() {
 
               <div className="mt-7 flex flex-col gap-3 sm:flex-row sm:justify-center">
                 {chosenTour ? (
-                  <Link
-                    to="/tours/$tourId"
-                    params={{ tourId: chosenTour.id }}
-                    className="inline-flex min-h-[52px] items-center justify-center gap-2 rounded-[4px] bg-[color:var(--teal)] px-7 font-sans text-[12px] uppercase tracking-[0.18em] font-semibold text-[color:var(--ivory)] no-underline hover:bg-[color:var(--charcoal)]"
-                  >
-                    Book this day instantly →
-                  </Link>
+                  <CtaButton to="/tours/$tourId" params={{ tourId: chosenTour.id }}>
+                    Book this day instantly
+                  </CtaButton>
                 ) : (
-                  <Link
-                    to="/experiences"
-                    className="inline-flex min-h-[52px] items-center justify-center gap-2 rounded-[4px] bg-[color:var(--teal)] px-7 font-sans text-[12px] uppercase tracking-[0.18em] font-semibold text-[color:var(--ivory)] no-underline hover:bg-[color:var(--charcoal)]"
-                  >
-                    Browse Signature days →
-                  </Link>
+                  <CtaButton to="/experiences">Browse Signature days</CtaButton>
                 )}
-                <Link
-                  to="/local-stories"
-                  className="inline-flex min-h-[52px] items-center justify-center gap-2 rounded-[4px] border border-[color:var(--charcoal)]/20 px-7 font-sans text-[12px] uppercase tracking-[0.18em] font-semibold text-[color:var(--charcoal)] no-underline hover:border-[color:var(--gold)]"
-                >
+                <CtaButton to="/local-stories" variant="ghost">
                   Read local stories
-                </Link>
+                </CtaButton>
               </div>
             </div>
           ) : (
@@ -552,12 +541,9 @@ function BookPage() {
               In a hurry? Every Signature day can be booked instantly, with dates and prices shown
               before you pay.
             </p>
-            <Link
-              to="/experiences"
-              className="inline-flex min-h-[48px] shrink-0 items-center justify-center gap-2 rounded-[4px] bg-[color:var(--teal)] px-6 font-sans text-[12px] uppercase tracking-[0.18em] font-semibold text-[color:var(--ivory)] no-underline hover:bg-[color:var(--charcoal)]"
-            >
-              Book instantly →
-            </Link>
+            <CtaButton to="/experiences" size="sm" className="shrink-0">
+              Book instantly
+            </CtaButton>
           </div>
         </div>
       </section>
