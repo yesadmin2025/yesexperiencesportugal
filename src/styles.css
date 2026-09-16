@@ -5896,10 +5896,10 @@ html {
 /* Hero support line: upright Fraunces in the refined editorial treatment
    of the original film captions, separated from headline and actions. */
 .hero-support {
-  color: color-mix(in oklab, var(--gold-soft) 38%, var(--ivory));
+  color: color-mix(in oklab, var(--gold-soft) 34%, var(--ivory));
   text-shadow:
-    0 1px 2px color-mix(in oklab, var(--charcoal-deep) 68%, transparent),
-    0 5px 18px color-mix(in oklab, var(--charcoal-deep) 34%, transparent);
+    0 1px 2px color-mix(in oklab, var(--charcoal-deep) 62%, transparent),
+    0 4px 14px color-mix(in oklab, var(--charcoal-deep) 28%, transparent);
 }
 
 .hero-cta {
@@ -5921,11 +5921,11 @@ html {
   width: min(224px, 100%);
 }
 
-/* Keep a 44px touch target while the visible button material stays slim. */
+/* The historical direction uses a clean 44px bar: slim, but fully tangible. */
 .hero-cta::before {
   content: "";
   position: absolute;
-  inset: 8px 0;
+  inset: 0;
   z-index: 0;
   border: 1px solid transparent;
   border-radius: 1px;
@@ -6060,31 +6060,22 @@ html {
 }
 .hero-cinematic .hero-h1 {
   font-weight: 400;
-  color: color-mix(in oklab, var(--gold-soft) 28%, var(--ivory));
+  color: var(--gold-soft);
   text-shadow:
-    0 1px 3px color-mix(in oklab, var(--charcoal-deep) 78%, transparent),
-    0 7px 24px color-mix(in oklab, var(--charcoal-deep) 38%, transparent);
+    0 1px 1px color-mix(in oklab, var(--charcoal-deep) 72%, transparent),
+    0 2px 5px color-mix(in oklab, var(--charcoal-deep) 36%, transparent);
 }
 .hero-cinematic .hero-cinematic-composition {
   transform: none;
 }
-/* Single centred caption block: the two headline lines read as one
-   sentence, a hairline gold rule bridges into the support line, and the
-   actions sit directly beneath the stanza. */
+/* Historical centred stanza: two distinct lines with the breathing room
+   shown in the approved reference. Eyebrow/support remain separate zones. */
 .hero-cinematic .hero-title-line {
-  line-height: 1.04;
-  letter-spacing: -0.012em;
+  line-height: 1.25;
+  letter-spacing: 0;
 }
 .hero-cinematic .hero-title-line + .hero-title-line {
-  margin-top: 0.06em;
-}
-.hero-cinematic .hero-copy-rule {
-  background: linear-gradient(
-    90deg,
-    transparent,
-    color-mix(in oklab, var(--gold) 72%, transparent),
-    transparent
-  );
+  margin-top: 0.75rem;
 }
 .hero-cinematic .hero-support {
   text-wrap: balance;
@@ -6093,10 +6084,9 @@ html {
 .hero-cinematic .hero-cta-group {
   gap: 12px;
 }
-/* Slimmer, quieter button material — the visible bar is 40px tall inside
-   a 44px touch target. */
+/* Keep the original full-height button silhouette. */
 .hero-cinematic .hero-cta::before {
-  inset: 10px 0;
+  inset: 0;
 }
 .hero-cinematic .hero-promise {
   transform-origin: center center;
