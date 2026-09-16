@@ -680,14 +680,17 @@ function HomePage() {
                 the user reads "Create it live." before seeing the
                 device. On desktop the rail returns to the left so the
                 reading flow stays natural. */}
-              <div className="reveal lg:col-span-5 lg:order-1 order-1">
-                <Eyebrow live className="mb-5">
+              {/* Staged reading order: eyebrow → headline → copy → 01/02/03
+                  steps → CTA. `he-stagger` sequences the direct children with
+                  the homepage cadence; reduced motion shows everything at once. */}
+              <div className="he-stagger lg:col-span-5 lg:order-1 order-1">
+                <Eyebrow live className="reveal-stagger mb-5">
                   Experience Studio
                 </Eyebrow>
 
                 <h2
                   id="studio-title"
-                  className="serif mt-3 text-[2.1rem] sm:text-[2.5rem] lg:text-[3.8rem] leading-[1.05] lg:leading-[0.96] tracking-[-0.02em] text-[color:var(--charcoal)] font-medium"
+                  className="reveal-stagger serif mt-3 text-[2.1rem] sm:text-[2.5rem] lg:text-[3.8rem] leading-[1.05] lg:leading-[0.96] tracking-[-0.02em] text-[color:var(--charcoal)] font-medium"
                 >
                   Design your day.{" "}
                   <span className="italic font-normal text-[color:var(--teal)]">
@@ -695,7 +698,7 @@ function HomePage() {
                   </span>
                 </h2>
 
-                <p className="mt-4 text-[14.5px] md:text-[16px] text-[color:var(--charcoal-soft)] leading-[1.7] max-w-md font-normal">
+                <p className="reveal-stagger mt-4 text-[14.5px] md:text-[16px] text-[color:var(--charcoal-soft)] leading-[1.7] max-w-md font-normal">
                   The Studio draws the day as you shape it: a{" "}
                   <strong className="font-medium text-[color:var(--charcoal)]">real route</strong> on
                   the map, honest driving times, and the price updating as it goes. The final price is
@@ -704,13 +707,16 @@ function HomePage() {
                 </p>
 
                 {/* Three differentiators — tied to the product, not a floating manifesto. */}
-                <ol className="mt-7 grid grid-cols-3 gap-1.5 max-w-md" aria-label="Why the Studio">
+                <ol
+                  className="he-stagger reveal-stagger mt-7 grid grid-cols-3 gap-1.5 max-w-md"
+                  aria-label="Why the Studio"
+                >
                   {[
                     { n: "01", label: "Real route" },
                     { n: "02", label: "Instant confirmation" },
                     { n: "03", label: "Local on WhatsApp" },
                   ].map((d) => (
-                    <li key={d.n} className="flex flex-col gap-1.5">
+                    <li key={d.n} className="reveal-stagger flex flex-col gap-1.5">
                       <span aria-hidden="true" className="block h-[3px] bg-[color:var(--gold)]" />
                       <span className="text-[10.5px] uppercase tracking-[0.18em] font-semibold text-[color:var(--charcoal)] tabular-nums">
                         {d.n} · {d.label}
@@ -719,12 +725,12 @@ function HomePage() {
                   ))}
                 </ol>
 
-                <div className="mt-8 flex flex-wrap gap-x-5 gap-y-4">
+                <div className="reveal-stagger mt-8 flex flex-wrap gap-x-5 gap-y-4">
                   <CtaButton to="/studio-v3" variant="primary">
-                    {CTA_LABELS.studio}
+                    {CTA_LABELS.studioSection}
                   </CtaButton>
                 </div>
-                <p className="mt-4 text-[13px] text-[color:var(--charcoal-soft)]">
+                <p className="reveal-stagger mt-4 text-[13px] text-[color:var(--charcoal-soft)]">
                   Prefer a human hand?{" "}
                   <a
                     href="/portugal-travel-designer"
@@ -735,7 +741,7 @@ function HomePage() {
                 </p>
               </div>
 
-              <div className="lg:col-span-7 lg:order-2 order-2">
+              <div className="reveal lg:col-span-7 lg:order-2 order-2">
                 <StudioLivePreview />
               </div>
             </div>
@@ -883,11 +889,10 @@ function HomePage() {
                         </div>
                       </Link>
 
-                      {/* Body — calm editorial card. Short teaser + one
-                        primary CTA + a quiet secondary link. Full
-                        itinerary, real Viator highlights, inclusions
-                        and pricing all live on the detail page so the
-                        homepage card stays uncluttered. */}
+                      {/* Body — calm editorial card. Short teaser + ONE quiet
+                        action. Reserving and tailoring live on the detail
+                        page, so the homepage collection reads as discovery
+                        instead of three competing buttons per card. */}
                       <div className="flex flex-col gap-4 p-5 md:p-6">
                         <p className="text-[13.5px] leading-[1.55] text-[color:var(--charcoal)] line-clamp-3">
                           {t.line}
@@ -897,19 +902,10 @@ function HomePage() {
                           <CtaButton
                             to="/tours/$tourId"
                             params={{ tourId: t.id }}
-                            variant="primary"
-                            size="sm"
-                            aria-label={`${CTA_LABELS.signatureBooking} — ${t.title}`}
-                          >
-                            {CTA_LABELS.signatureBooking}
-                          </CtaButton>
-                          <CtaButton
-                            to="/tours/$tourId/tailor"
-                            params={{ tourId: t.id }}
                             variant="hairline"
-                            aria-label={`Tailor this day — ${t.title}`}
+                            aria-label={`View experience — ${t.title}`}
                           >
-                            {CTA_LABELS.tailor}
+                            View experience
                           </CtaButton>
                         </div>
                       </div>
@@ -972,7 +968,6 @@ function HomePage() {
                     detail={m.detail}
                     cta={{ label: m.cta, to: m.to, ariaLabel: m.cta }}
                     image={{ src: m.img, to: m.to }}
-                    className="[&>*]:!opacity-100 [&>*]:!translate-y-0"
                   />
                 ))}
             </div>
@@ -1018,7 +1013,7 @@ function HomePage() {
                     detail={m.detail}
                     cta={{ label: m.cta, to: m.to, ariaLabel: m.cta }}
                     image={{ src: m.img, to: m.to }}
-                    className="[&>*]:!opacity-100 [&>*]:!translate-y-0"
+                    
                   />
                 ))}
             </div>
@@ -1098,7 +1093,7 @@ function HomePage() {
               </h2>
             </div>
 
-            <ul className="max-w-5xl mx-auto grid gap-5 md:gap-7 md:grid-cols-3 list-none p-0">
+            <ul className="he-stagger max-w-5xl mx-auto grid gap-5 md:gap-7 md:grid-cols-3 list-none p-0">
               {((usedJournalImages: Set<string>) =>
                 homepageJournalLinks.map((entry) => {
                 const meta = journalCardMeta(
@@ -1108,20 +1103,22 @@ function HomePage() {
                   entry.imgFrom,
                 );
                 return (
-                <li key={entry.slug}>
+                <li key={entry.slug} className="reveal-stagger">
                   <Link
                     to="/local-stories/$slug"
                     params={{ slug: entry.slug }}
                     className="group block h-full overflow-hidden rounded-lg border border-[color:var(--border)] bg-[color:var(--ivory)] transition-transform duration-200 hover:-translate-y-[2px] focus-visible:-translate-y-[2px]"
                   >
                     {meta.img ? (
-                      <img
-                        src={meta.img}
-                        alt={meta.alt ?? entry.title}
-                        loading="lazy"
-                        decoding="async"
-                        className="aspect-[3/2] w-full object-cover"
-                      />
+                      <div className="he-image-cinema he-image-rise relative aspect-[3/2] overflow-hidden">
+                        <img
+                          src={meta.img}
+                          alt={meta.alt ?? entry.title}
+                          loading="lazy"
+                          decoding="async"
+                          className="absolute inset-0 h-full w-full object-cover"
+                        />
+                      </div>
                     ) : null}
                     <div className="p-6">
                     <span className="block text-[11px] uppercase tracking-[0.22em] text-[color:var(--teal)]">
@@ -1224,23 +1221,33 @@ function HomePage() {
                   <p className="mt-5 text-[14.5px] md:text-[16px] text-[color:var(--charcoal-soft)] leading-[1.7] max-w-md mx-auto">
                     Reserve a proven day, shape one in the Studio, or ask us to compose a longer Portugal journey.
                   </p>
-                  <div className="mt-9 grid gap-3 sm:grid-cols-3">
-                    <CtaButton to="/experiences" variant="primary" size="sm">
+                  {/* ONE dominant action. The other paths stay as quiet
+                      editorial links so nothing competes with it. */}
+                  <div className="mt-9 flex justify-center">
+                    <CtaButton to="/experiences" variant="primary">
                       Reserve a Signature day
                     </CtaButton>
-                    <CtaButton to="/studio-v3" variant="ghost" size="sm">
-                      Design one private day
-                    </CtaButton>
-                    <CtaButton to="/portugal-travel-designer" variant="ghost" size="sm">
-                      Plan a Portugal journey
-                    </CtaButton>
                   </div>
-                  <Link
-                    to="/contact"
-                    className="mt-7 inline-flex min-h-11 items-center text-sm text-[color:var(--charcoal)] underline decoration-[color:var(--gold)] underline-offset-4 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)]"
-                  >
-                    Not sure where to begin? Talk to a local
-                  </Link>
+                  <div className="mt-7 flex flex-wrap items-center justify-center gap-x-7 gap-y-2 text-sm">
+                    <Link
+                      to="/studio-v3"
+                      className="inline-flex min-h-11 items-center text-[color:var(--charcoal)] underline decoration-[color:var(--gold)]/60 underline-offset-4 hover:decoration-[color:var(--gold)]"
+                    >
+                      Design one private day
+                    </Link>
+                    <Link
+                      to="/portugal-travel-designer"
+                      className="inline-flex min-h-11 items-center text-[color:var(--charcoal)] underline decoration-[color:var(--gold)]/60 underline-offset-4 hover:decoration-[color:var(--gold)]"
+                    >
+                      Plan a Portugal journey
+                    </Link>
+                    <Link
+                      to="/contact"
+                      className="inline-flex min-h-11 items-center text-[color:var(--charcoal-soft)] underline decoration-[color:var(--gold)]/50 underline-offset-4 hover:decoration-[color:var(--gold)]"
+                    >
+                      Talk to a local
+                    </Link>
+                  </div>
                 </div>
               </div>
             </div>
