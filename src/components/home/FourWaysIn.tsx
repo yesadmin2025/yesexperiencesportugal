@@ -31,7 +31,7 @@ const PATHS: ReadonlyArray<Path> = [
     eyebrow: "One custom day",
     title: "Shape a day around you",
     body: "Mood, pace and people — see the real route and live price, then confirm your private day instantly.",
-    cta: CTA_LABELS.studio,
+    cta: CTA_LABELS.studioSection,
     href: "/studio-v3",
     analyticsEvent: "home_path_studio_click",
   },
@@ -41,7 +41,7 @@ const PATHS: ReadonlyArray<Path> = [
     eyebrow: "Ready to book",
     title: "A private day, ready to go",
     body: "Reserve a proven private day as it is or tailor the details — with the real price and instant confirmation.",
-    cta: CTA_LABELS.signatureDiscovery,
+    cta: CTA_LABELS.signatureCollection,
     href: "/experiences",
     analyticsEvent: "home_path_signature_click",
   },
@@ -223,8 +223,8 @@ function PathCard({ path, featured }: { path: Path; featured: boolean }) {
       <p className="mt-3 text-[15px] md:text-[16px] leading-[1.7] text-[color:var(--charcoal-soft)]">
         {path.body}
       </p>
-        <span className="mt-auto pt-7 inline-flex min-h-[44px] items-center gap-2 text-[12px] uppercase tracking-[0.15em] font-semibold text-[color:var(--charcoal)] group-hover:text-[color:var(--teal)]">
-          {path.cta} <ArrowRight size={14} aria-hidden="true" className="text-[color:var(--gold)] transition-transform duration-[var(--dur-base)] group-hover:translate-x-1" />
+      <span className="mt-auto pt-7 inline-flex min-h-[44px] items-center gap-2 text-[12px] uppercase tracking-[0.15em] font-semibold text-[color:var(--charcoal)] group-hover:text-[color:var(--teal)]">
+        {path.cta} <ArrowRight size={14} aria-hidden="true" className="text-[color:var(--gold)] transition-transform duration-[var(--dur-base)] group-hover:translate-x-1" />
       </span>
     </Link>
   );
