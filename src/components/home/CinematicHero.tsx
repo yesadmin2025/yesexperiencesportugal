@@ -19,14 +19,14 @@ import { Link } from "@tanstack/react-router";
 import { HERO_COPY, HERO_COPY_VERSION, HERO_PHRASES } from "@/content/hero-copy";
 import { HERO_FILM } from "@/content/hero-scenes-manifest";
 
-/** Cinematic pace: one breath per beat, full actionable state by ~4.5s. */
+/** Cinematic pace: opposing phrases cross the frame, then copy and actions settle. */
 const EYEBROW_DELAY_MS = 250;
-const LINE1_DELAY_MS = 800;
-const LINE2_DELAY_MS = 1600;
-const SUPPORT_DELAY_MS = 2500;
-const CTA_DELAY_MS = 3550;
-const TEXT_FADE_MS = 1200;
-const CTA_FADE_MS = 950;
+const LINE1_DELAY_MS = 700;
+const LINE2_DELAY_MS = 1450;
+const SUPPORT_DELAY_MS = 2300;
+const CTA_DELAY_MS = 3200;
+const TEXT_FADE_MS = 1350;
+const CTA_FADE_MS = 1050;
 const EASE = "cubic-bezier(0.22,1,0.36,1)";
 
 function shouldSkipIntro(): boolean {
@@ -52,13 +52,35 @@ function revealStyle(on: boolean, ms: number, distance = 14): React.CSSPropertie
   };
 }
 
+function storyLineStyle(on: boolean, direction: "from-left" | "from-right"): React.CSSProperties {
+  const offset = direction === "from-left" ? "-18vw" : "18vw";
+  return {
+    ...stanzaStyle,
+    opacity: on ? 1 : 0,
+    transform: on ? "translate3d(0,0,0)" : `translate3d(${offset},0,0)`,
+    filter: on ? "blur(0)" : "blur(5px)",
+    willChange: "opacity, transform, filter",
+    transition: `opacity ${TEXT_FADE_MS}ms ${EASE}, transform ${TEXT_FADE_MS}ms ${EASE}, filter ${TEXT_FADE_MS}ms ${EASE}`,
+  };
+}
+
+function supportFadeStyle(on: boolean): React.CSSProperties {
+  return {
+    opacity: on ? 1 : 0,
+    transform: on ? "translateY(0)" : "translateY(10px)",
+    filter: on ? "blur(0)" : "blur(4px)",
+    willChange: "opacity, transform, filter",
+    transition: `opacity ${TEXT_FADE_MS}ms ${EASE}, transform ${TEXT_FADE_MS}ms ${EASE}, filter ${TEXT_FADE_MS}ms ${EASE}`,
+  };
+}
+
 /** The original stanza treatment — clean Fraunces italic, one subtle shadow. */
 const stanzaStyle: React.CSSProperties = {
   fontWeight: 400,
   fontStyle: "italic",
   lineHeight: 1.14,
   letterSpacing: "0",
-  fontSize: "clamp(34px, 5.6vw, 62px)",
+  fontSize: "clamp(38px, 5.8vw, 66px)",
 };
 
 const ARROW = (
@@ -230,7 +252,7 @@ export function CinematicHero() {
             <span
               className="hero-title-line block font-serif font-normal italic m-0"
               data-hero-field="headlineLine1"
-              style={{ ...stanzaStyle, ...revealStyle(line1, TEXT_FADE_MS, 26) }}
+              style={storyLineStyle(line1, "from-left")}
             >
               {HERO_PHRASES[0]}
             </span>
@@ -239,7 +261,7 @@ export function CinematicHero() {
             <span
               className="hero-title-line block font-serif italic font-normal text-[color:var(--gold-soft)]"
               data-hero-field="headlineLine2"
-              style={{ ...stanzaStyle, ...revealStyle(line2, TEXT_FADE_MS, 26) }}
+              style={storyLineStyle(line2, "from-right")}
             >
               {HERO_PHRASES[1]}
             </span>
@@ -250,8 +272,8 @@ export function CinematicHero() {
       <div className="hero-support-zone absolute inset-x-0 top-[52%] z-10 flex justify-center px-6 sm:top-[54%] sm:px-10 md:px-16">
         <p
           data-hero-field="subheadline"
-          className="hero-support m-0 max-w-[21.5rem] text-center font-serif text-[19px] font-normal not-italic leading-[1.62] sm:max-w-[34rem] sm:text-[20px]"
-          style={revealStyle(support, TEXT_FADE_MS, 18)}
+          className="hero-support m-0 max-w-[22.5rem] text-center font-serif text-[21px] font-normal not-italic leading-[1.55] sm:max-w-[36rem] sm:text-[22px]"
+          style={supportFadeStyle(support)}
         >
           {HERO_COPY.subheadline}
         </p>
