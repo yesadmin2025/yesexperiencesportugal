@@ -59,8 +59,6 @@ const stanzaStyle: React.CSSProperties = {
   fontStyle: "italic",
   lineHeight: 1.25,
   letterSpacing: "-0.012em",
-  color: "#F1D8AB",
-  textShadow: "0 1px 1px rgba(0,0,0,0.5), 0 1px 4px rgba(0,0,0,0.28)",
   fontSize: "clamp(28px, 4.6vw, 50px)",
 };
 
@@ -213,17 +211,14 @@ export function CinematicHero() {
       {/* ── Eyebrow — independent overlay in the open sky zone ──────── */}
       <p
         data-hero-field="eyebrow"
-        className="hero-promise absolute inset-x-0 top-[15%] z-10 px-6 text-center text-[10.5px] font-medium uppercase tracking-[0.18em] text-[#F1D8AB] sm:top-[16%] sm:text-[11px] sm:tracking-[0.2em]"
-        style={{
-          ...revealStyle(eyebrow, TEXT_FADE_MS),
-          textShadow: "0 1px 2px rgba(0,0,0,0.45)",
-        }}
+        className="hero-promise absolute inset-x-0 top-[11%] z-10 px-6 text-center text-[10.5px] font-medium uppercase tracking-[0.16em] sm:top-[12%] sm:text-[11px] sm:tracking-[0.18em]"
+        style={revealStyle(eyebrow, TEXT_FADE_MS)}
       >
         {HERO_COPY.eyebrow}
       </p>
 
       {/* ── Stanza — original position and scale, clean treatment ───── */}
-      <div className="absolute inset-0 z-10 flex items-start justify-center pt-[26svh] px-6 sm:px-10 md:px-16">
+      <div className="absolute inset-0 z-10 flex items-start justify-center pt-[23svh] px-6 sm:pt-[24svh] sm:px-10 md:px-16">
         <h1
           data-hero-stanza="true"
           data-mixed-emphasis="exempt"
@@ -249,18 +244,15 @@ export function CinematicHero() {
       {/* ── Support line — its own breathing room below the stanza ──── */}
       <p
         data-hero-field="subheadline"
-        className="hero-support absolute inset-x-0 top-[52%] z-10 mx-auto max-w-[21rem] px-6 text-center font-serif text-[15.5px] font-normal not-italic leading-[1.65] text-[color:var(--ivory)] sm:max-w-[30rem] sm:text-[16.5px]"
-        style={{
-          ...revealStyle(support, TEXT_FADE_MS),
-          textShadow: "0 1px 2px rgba(0,0,0,0.4)",
-        }}
+        className="hero-support absolute inset-x-0 top-[50%] z-10 mx-auto max-w-[22rem] px-6 text-center font-sans text-[16px] font-medium not-italic leading-[1.72] tracking-[0.035em] sm:max-w-[34rem] sm:text-[17px] sm:leading-[1.75]"
+        style={revealStyle(support, TEXT_FADE_MS)}
       >
         {HERO_COPY.subheadline}
       </p>
 
       {/* ── CTAs — anchored low, original dimensions ────────────────── */}
       <div
-        className="hero-cta-group absolute inset-x-0 bottom-0 z-20 flex flex-col items-center gap-3 px-6 pb-[max(5.5rem,calc(env(safe-area-inset-bottom)+4.25rem))] sm:flex-row sm:justify-center sm:gap-5 sm:pb-14 md:pb-20"
+        className="hero-cta-group absolute inset-x-0 bottom-0 z-20 flex flex-col items-center gap-[18px] px-6 pb-[max(5.5rem,calc(env(safe-area-inset-bottom)+4.25rem))] sm:flex-row sm:justify-center sm:gap-6 sm:pb-14 md:pb-20"
         data-hero-composed={composed ? "true" : "false"}
         style={{
           opacity: composed ? 1 : 0,
