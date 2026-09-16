@@ -1,6 +1,6 @@
 import type { ReactNode } from "react";
 import { Link } from "@tanstack/react-router";
-import { Wine, Users, Clock3, ArrowRight, MapPin } from "lucide-react";
+import { Wine, Users, Clock3, MapPin } from "lucide-react";
 import { CtaButton } from "@/components/ui/CtaButton";
 
 const STOPS = [
