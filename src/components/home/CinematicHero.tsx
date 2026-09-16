@@ -272,7 +272,7 @@ export function CinematicHero() {
       <div className="hero-support-zone absolute inset-x-0 top-[52%] z-10 flex justify-center px-6 sm:top-[54%] sm:px-10 md:px-16">
         <p
           data-hero-field="subheadline"
-          className="hero-support m-0 max-w-[22.5rem] text-center font-serif text-[22px] font-normal not-italic leading-[1.52] sm:max-w-[36rem] sm:text-[22px]"
+          className="hero-support m-0 max-w-[22.5rem] text-center font-serif text-[23px] font-normal not-italic leading-[1.62] tracking-[0.025em] sm:max-w-[38rem] sm:text-[24px] md:text-[25px]"
           style={supportFadeStyle(support)}
         >
           {HERO_COPY.subheadline}
