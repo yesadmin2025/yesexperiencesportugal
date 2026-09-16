@@ -5890,7 +5890,7 @@ html {
 .hero-support {
   position: relative;
   isolation: isolate;
-  color: color-mix(in oklab, var(--gold-soft) 64%, var(--ivory));
+  color: color-mix(in oklab, var(--gold-soft) 72%, var(--ivory));
   text-shadow:
     0 1px 2px color-mix(in oklab, var(--charcoal-deep) 84%, transparent),
     0 5px 20px color-mix(in oklab, var(--charcoal-deep) 74%, transparent),
@@ -6051,12 +6051,20 @@ html {
 }
 .hero-cinematic .hero-h1 {
   font-weight: 400;
+  color: color-mix(in oklab, var(--gold-soft) 78%, var(--ivory));
+  text-shadow:
+    0 2px 14px color-mix(in oklab, var(--charcoal-deep) 68%, transparent),
+    0 10px 34px color-mix(in oklab, var(--charcoal-deep) 38%, transparent);
 }
 .hero-cinematic .hero-cinematic-composition {
   transform: translateY(-2.5vh);
 }
 .hero-cinematic .hero-promise {
   transform-origin: center center;
+  color: color-mix(in oklab, var(--gold-soft) 84%, var(--ivory));
+  text-shadow:
+    0 1px 3px color-mix(in oklab, var(--charcoal-deep) 90%, transparent),
+    0 5px 18px color-mix(in oklab, var(--charcoal-deep) 72%, transparent);
 }
 .hero-cinematic .hero-story-stage :is(img, video) {
   object-position: 57% center;

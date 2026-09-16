@@ -8,7 +8,7 @@
  * the film advances.
  *
  * Conversion never waits for the film: every action exists and remains
- * interactive while the visual sequence composes over about 4.8s. Reduced motion and `?hero=last`
+ * interactive while the visual sequence composes over about 5.1s. Reduced motion and `?hero=last`
  * render the final actionable state immediately.
  */
 
@@ -19,17 +19,17 @@ import { HERO_FILM } from "@/content/hero-scenes-manifest";
 
 /**
  * Cinematic pace: the eyebrow opens, the stanza follows one line at a time,
- * and the full actionable state settles in roughly 4.8s. Nothing springs.
+ * and the full actionable state settles in roughly 5.1s. Nothing springs.
  */
-const EYEBROW_DELAY_MS = 320;
-const LINE1_DELAY_MS = 1050;
-const LINE2_DELAY_MS = 1980;
-const SUPPORT_DELAY_MS = 3050;
-const PRIMARY_CTA_DELAY_MS = 3950;
-const SECONDARY_CTA_DELAY_MS = 4480;
-const HEADLINE_FADE_MS = 1120;
-const SUPPORT_FADE_MS = 1040;
-const CTA_FADE_MS = 860;
+const EYEBROW_DELAY_MS = 280;
+const LINE1_DELAY_MS = 1080;
+const LINE2_DELAY_MS = 2100;
+const SUPPORT_DELAY_MS = 3260;
+const PRIMARY_CTA_DELAY_MS = 4240;
+const SECONDARY_CTA_DELAY_MS = 4780;
+const HEADLINE_FADE_MS = 1260;
+const SUPPORT_FADE_MS = 1160;
+const CTA_FADE_MS = 980;
 
 const EASE = "var(--ease-scene)";
 
@@ -208,8 +208,8 @@ export function CinematicHero() {
           <div className="hero-cinematic-composition mx-auto max-w-[47rem] text-center">
             <p
               data-hero-field="eyebrow"
-              className="hero-promise flex items-center justify-center gap-2.5 text-[10px] font-semibold uppercase tracking-[0.28em] text-[color:var(--gold-soft)] [text-shadow:0_1px_12px_color-mix(in_oklab,var(--charcoal-deep)_78%,transparent)] sm:text-[10.5px]"
-              style={revealStyle(eyebrow, 820, 0, 7)}
+              className="hero-promise flex items-center justify-center gap-2.5 text-[10.5px] font-semibold uppercase tracking-[0.27em] sm:text-[11px]"
+              style={revealStyle(eyebrow, 940, 0, 7)}
             >
               <span aria-hidden="true" className="block h-px w-4 shrink-0 bg-[color:var(--gold)]/70 md:w-7" />
               {HERO_COPY.eyebrow}
@@ -219,7 +219,7 @@ export function CinematicHero() {
             <h1
               data-hero-stanza="true"
               data-mixed-emphasis="exempt"
-               className="hero-h1 mt-14 font-serif text-[clamp(2.15rem,5.2vw,4.4rem)] font-normal italic leading-[1.12] tracking-normal text-[color:var(--gold-soft)] [text-shadow:0_2px_14px_color-mix(in_oklab,var(--charcoal-deep)_62%,transparent)] md:mt-16"
+               className="hero-h1 mt-16 font-serif text-[clamp(2.15rem,5.2vw,4.4rem)] font-normal italic leading-[1.12] tracking-normal md:mt-[4.5rem]"
             >
               <span className="hero-title-mask block">
                 <span
@@ -230,7 +230,7 @@ export function CinematicHero() {
                   {HERO_PHRASES[0]}
                 </span>
               </span>
-              <span className="hero-title-mask mt-2.5 block sm:mt-3">
+              <span className="hero-title-mask mt-4 block sm:mt-[1.125rem]">
                 <span
                   className="hero-title-line block font-serif italic font-normal text-[color:var(--gold-soft)]"
                   data-hero-field="headlineLine2"
@@ -243,14 +243,14 @@ export function CinematicHero() {
 
             <p
               data-hero-field="subheadline"
-              className="hero-support mx-auto mt-11 max-w-[22rem] font-serif text-[15px] font-normal not-italic leading-[1.58] sm:max-w-[31rem] sm:text-[16px] md:mt-12 md:max-w-[34rem] md:text-[17px]"
+              className="hero-support mx-auto mt-14 max-w-[22rem] font-serif text-[16px] font-normal not-italic leading-[1.7] sm:max-w-[31rem] sm:text-[17px] md:mt-16 md:max-w-[34rem] md:text-[18px]"
               style={revealStyle(support, SUPPORT_FADE_MS, 0, 9)}
             >
               {HERO_COPY.subheadline}
             </p>
 
             <div
-              className="hero-cta-group mx-auto mt-10 flex w-full max-w-[18rem] flex-col items-center gap-3.5 md:mt-11 md:max-w-[37rem] md:flex-row md:justify-center md:gap-4"
+              className="hero-cta-group mx-auto mt-14 flex w-full max-w-[18rem] flex-col items-center gap-4 md:mt-16 md:max-w-[37rem] md:flex-row md:justify-center md:gap-4"
               data-hero-composed={primaryCta && secondaryCta ? "true" : "false"}
             >
               <Link
