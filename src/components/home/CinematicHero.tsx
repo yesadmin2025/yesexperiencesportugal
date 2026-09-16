@@ -210,7 +210,7 @@ export function CinematicHero() {
       {/* ── One centred editorial composition: eyebrow → headline →
              support → actions. Everything reads as a single caption block
              laid over the film, with no stranded middle. ─────────────── */}
-      <div className="hero-copy-block absolute inset-0 z-10 flex flex-col items-center justify-center px-6 pb-[max(4.5rem,calc(env(safe-area-inset-bottom)+3.5rem))] pt-8 sm:px-10 sm:pb-16 md:px-16">
+      <div className="hero-copy-block absolute inset-0 z-10 flex flex-col items-center justify-center px-6 pb-[max(2rem,calc(env(safe-area-inset-bottom)+1.5rem))] pt-6 sm:px-10 sm:pb-10 md:px-16">
         <p
           data-hero-field="eyebrow"
           className="hero-promise m-0 text-center text-[10px] font-medium uppercase tracking-[0.24em] sm:text-[11px] sm:tracking-[0.26em]"
