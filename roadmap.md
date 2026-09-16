@@ -80,6 +80,6 @@
 - [x] Restore restrained editorial motion and canonical title styling on scoped public surfaces
 - [x] Reduce Experiences collection cards to essential decision information
 - [x] Simplify the representative Signature booking decision hierarchy without logic changes
-- [ ] Verify payment, privacy, analytics, mobile, reduced-motion, typecheck, and production build
-- [ ] Keep production undeployed
+- [x] Verify payment, privacy, analytics, mobile, reduced-motion, typecheck, and production build
+- [x] Keep production undeployed
 
