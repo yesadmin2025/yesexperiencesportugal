@@ -119,7 +119,7 @@ function TourCard({ tour, resolveImg, featured = false }: { tour: SignatureTour;
   const content = getTourContent(tour.id);
   const teaser = tour.blurb ?? content.overview ?? "";
   const meta = getViatorMeta(tour.id);
-  const highlights = (content.highlights.length > 0 ? content.highlights : tour.highlights).slice(0, 3);
+  const highlights = tour.highlights.slice(0, 3);
   return (
     <article className="experience-editorial-card reveal-stagger group flex min-w-0 flex-col text-left" aria-label={tour.title}>
       <Link
