@@ -5953,8 +5953,8 @@ html {
 
 @keyframes heroCtaSheenOnce {
   0% { opacity: 0; transform: translateX(-120%); }
-  18% { opacity: 0.72; }
-  72% { opacity: 0.46; }
+  18% { opacity: 0.48; }
+  72% { opacity: 0.3; }
   100% { opacity: 0; transform: translateX(120%); }
 }
 
@@ -6079,7 +6079,10 @@ html {
 }
 .hero-cinematic .hero-support {
   text-wrap: balance;
-  color: color-mix(in oklab, var(--gold-soft) 14%, var(--ivory));
+  color: color-mix(in oklab, var(--gold-soft) 7%, var(--ivory));
+  text-shadow:
+    0 1px 2px color-mix(in oklab, var(--charcoal-deep) 82%, transparent),
+    0 5px 20px color-mix(in oklab, var(--charcoal-deep) 52%, transparent);
 }
 .hero-cinematic .hero-cta-group {
   gap: 12px;
