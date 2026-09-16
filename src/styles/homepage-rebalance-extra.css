@@ -1,0 +1,21 @@
+/* Follow-up rules kept separate so the homepage rebalance remains isolated. */
+.home-energy #multi-day h2 {
+  font-family: var(--font-display);
+  font-size: clamp(2.2rem, 4.6vw, 3.8rem) !important;
+  line-height: 1.01 !important;
+  letter-spacing: -0.02em !important;
+  font-weight: 500;
+  text-wrap: balance;
+}
+
+/* The travel book is already the proof and conversion object. Keep one
+ * commercial action here instead of two equivalent prompts. */
+.home-energy #multi-day a[href="/contact"] {
+  display: none !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .home-energy #multi-day * {
+    scroll-behavior: auto;
+  }
+}
