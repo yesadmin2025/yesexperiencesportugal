@@ -6029,17 +6029,14 @@ html {
 .hero-cinematic .hero-cinematic-composition {
   transform: none;
 }
+/* Restored "One Breath" geometry: eyebrow and support are independent
+   overlays in the open space; the stanza and CTA block keep their
+   original component-driven positions. */
 .hero-cinematic .hero-promise {
-  top: 20%;
-}
-.hero-cinematic .hero-h1 {
-  top: 34%;
+  top: 15%;
 }
 .hero-cinematic .hero-support {
-  top: 54%;
-}
-.hero-cinematic .hero-cta-group {
-  top: 70%;
+  top: 52%;
 }
 .hero-cinematic .hero-promise {
   transform-origin: center center;
