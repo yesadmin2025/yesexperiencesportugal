@@ -5893,19 +5893,21 @@ html {
    Both share a refined arrow ramp. Used only inside .hero-cinematic.
    ──────────────────────────────────────────────────────────── */
 
-/* Hero support line: upright champagne-ivory editorial copy, deliberately
-   separated from the headline and actions. */
+/* Hero support line: upright Fraunces in the refined editorial treatment
+   of the original film captions, separated from headline and actions. */
 .hero-support {
-  color: color-mix(in oklab, var(--gold-soft) 36%, var(--ivory));
-  text-shadow: 0 1px 2px color-mix(in oklab, var(--charcoal-deep) 62%, transparent);
+  color: color-mix(in oklab, var(--gold-soft) 46%, var(--ivory));
+  text-shadow: 0 1px 2px color-mix(in oklab, var(--charcoal-deep) 58%, transparent);
 }
 
 .hero-cta {
   position: relative;
   overflow: hidden;
+  border: 0;
   border-radius: 1px;
+  background: transparent;
   font-family: Inter, system-ui, sans-serif;
-  font-weight: 600;
+  font-weight: 500;
   letter-spacing: 0.2em;
   transition:
     transform 360ms cubic-bezier(0.22, 0.61, 0.36, 1),
@@ -5914,6 +5916,20 @@ html {
     border-color 360ms cubic-bezier(0.22, 0.61, 0.36, 1),
     color 360ms cubic-bezier(0.22, 0.61, 0.36, 1);
   will-change: transform, box-shadow;
+}
+
+/* Keep a 44px touch target while the visible button material stays slim. */
+.hero-cta::before {
+  content: "";
+  position: absolute;
+  inset: 3px 0;
+  z-index: 0;
+  border: 1px solid transparent;
+  border-radius: 1px;
+  transition:
+    background-color 360ms cubic-bezier(0.22, 0.61, 0.36, 1),
+    border-color 360ms cubic-bezier(0.22, 0.61, 0.36, 1),
+    box-shadow 360ms cubic-bezier(0.22, 0.61, 0.36, 1);
 }
 
 /* One quiet light pass on pointer devices; never loops. */
@@ -5951,12 +5967,14 @@ html {
 /* Hero exception: a muted champagne material rather than the site-wide teal
    action fill. It echoes the film's sunset tones without reading yellow. */
 .hero-cta--primary {
-  background: color-mix(in oklab, var(--gold) 76%, var(--gold-soft));
   color: var(--charcoal-deep);
-  border: 1px solid color-mix(in oklab, var(--gold-soft) 72%, var(--gold));
+}
+.hero-cta--primary::before {
+  background: color-mix(in oklab, var(--gold) 70%, var(--gold-soft));
+  border-color: color-mix(in oklab, var(--gold-soft) 76%, var(--gold));
   box-shadow:
     inset 0 1px 0 color-mix(in oklab, var(--ivory) 42%, transparent),
-    0 14px 34px -26px color-mix(in oklab, var(--charcoal-deep) 72%, transparent);
+    0 12px 28px -24px color-mix(in oklab, var(--charcoal-deep) 68%, transparent);
 }
 .hero-cta--primary .hero-cta__arrow {
   color: color-mix(in oklab, var(--charcoal) 72%, var(--gold-deep));
@@ -5964,25 +5982,31 @@ html {
 .hero-cta--primary:hover,
 .hero-cta--primary:focus-visible {
   transform: translateY(-1px);
+}
+.hero-cta--primary:hover::before,
+.hero-cta--primary:focus-visible::before {
   border-color: var(--gold-soft);
   background: color-mix(in oklab, var(--gold) 68%, var(--gold-soft));
   box-shadow:
     inset 0 1px 0 color-mix(in oklab, var(--ivory) 48%, transparent),
-    0 16px 36px -24px color-mix(in oklab, var(--charcoal-deep) 72%, transparent);
+    0 14px 30px -24px color-mix(in oklab, var(--charcoal-deep) 68%, transparent);
 }
 
 .hero-cta--primary:active {
   transform: translateY(0);
-  box-shadow:
-    inset 0 1px 2px color-mix(in oklab, var(--charcoal) 14%, transparent);
   transition-duration: 120ms;
+}
+.hero-cta--primary:active::before {
+  box-shadow: inset 0 1px 2px color-mix(in oklab, var(--charcoal) 14%, transparent);
 }
 
 /* Secondary: fine champagne hairline over barely-there smoked glass. */
 .hero-cta--ghost {
-  background: color-mix(in oklab, var(--charcoal-deep) 12%, transparent);
   color: color-mix(in oklab, var(--gold-soft) 42%, var(--ivory));
-  border: 1px solid color-mix(in oklab, var(--gold-soft) 62%, transparent);
+}
+.hero-cta--ghost::before {
+  background: color-mix(in oklab, var(--charcoal-deep) 10%, transparent);
+  border-color: color-mix(in oklab, var(--gold-soft) 58%, transparent);
   box-shadow: inset 0 1px 0 color-mix(in oklab, var(--ivory) 8%, transparent);
   backdrop-filter: blur(3px);
 }
@@ -6001,6 +6025,9 @@ html {
 .hero-cta--ghost:hover,
 .hero-cta--ghost:focus-visible {
   transform: translateY(-1px);
+}
+.hero-cta--ghost:hover::before,
+.hero-cta--ghost:focus-visible::before {
   background: color-mix(in oklab, var(--charcoal-deep) 32%, transparent);
   border-color: var(--gold-soft);
   box-shadow: inset 0 1px 0 color-mix(in oklab, var(--ivory) 14%, transparent);
@@ -6019,8 +6046,8 @@ html {
 }
 .hero-cinematic .hero-h1 {
   font-weight: 400;
-  color: color-mix(in oklab, var(--gold-soft) 58%, var(--ivory));
-  text-shadow: 0 1px 2px color-mix(in oklab, var(--charcoal-deep) 56%, transparent);
+  color: color-mix(in oklab, var(--gold-soft) 42%, var(--ivory));
+  text-shadow: 0 1px 2px color-mix(in oklab, var(--charcoal-deep) 68%, transparent);
 }
 .hero-cinematic .hero-cinematic-composition {
   transform: none;
@@ -6035,7 +6062,7 @@ html {
   top: 50%;
 }
 .hero-cinematic .hero-cta-group {
-  gap: 18px;
+  gap: 20px;
 }
 .hero-cinematic .hero-promise {
   transform-origin: center center;
