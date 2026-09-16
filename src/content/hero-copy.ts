@@ -10,9 +10,9 @@ export const HERO_COPY = {
   headlineLine1: "Portugal is the stage.",
   headlineLine2: "You write the story.",
   subheadline:
-    "Private days, journeys and special moments across Portugal. Thoughtfully designed around you.",
+    "Private days, journeys and special moments across Portugal, shaped with local knowledge and made entirely your own.",
   primaryCta: "DESIGN YOUR DAY",
-  secondaryCta: "Explore Signature Experiences",
+  secondaryCta: "EXPLORE EXPERIENCES",
   microcopy: "700+ five-star reviews · Private · Local support · Secure checkout",
   brandLine: "Continue the story across Portugal →",
 } as const;

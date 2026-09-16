@@ -21,15 +21,15 @@ import { HERO_FILM } from "@/content/hero-scenes-manifest";
  * Cinematic pace: the eyebrow opens, the stanza follows one line at a time,
  * and the full actionable state settles in roughly 4.5s. Nothing springs.
  */
-const EYEBROW_DELAY_MS = 120;
-const LINE1_DELAY_MS = 760;
-const LINE2_DELAY_MS = 1500;
-const SUPPORT_DELAY_MS = 1900;
-const PRIMARY_CTA_DELAY_MS = 2480;
-const SECONDARY_CTA_DELAY_MS = 2920;
-const HEADLINE_FADE_MS = 900;
-const SUPPORT_FADE_MS = 820;
-const CTA_FADE_MS = 760;
+const EYEBROW_DELAY_MS = 400;
+const LINE1_DELAY_MS = 1000;
+const LINE2_DELAY_MS = 1900;
+const SUPPORT_DELAY_MS = 3000;
+const PRIMARY_CTA_DELAY_MS = 3800;
+const SECONDARY_CTA_DELAY_MS = 4300;
+const HEADLINE_FADE_MS = 960;
+const SUPPORT_FADE_MS = 900;
+const CTA_FADE_MS = 720;
 
 const EASE = "var(--ease-scene)";
 
@@ -55,12 +55,10 @@ function revealStyle(on: boolean, ms: number, delayMs = 0, risePx = 12): React.C
   return {
     opacity: on ? 1 : 0,
     transform: on ? "translateY(0)" : `translateY(${risePx}px)`,
-    filter: on ? "blur(0)" : "blur(2px)",
-    willChange: "opacity, transform, filter",
+    willChange: "opacity, transform",
     transition:
       `opacity ${ms}ms ${EASE} ${delay}ms, ` +
-      `transform ${ms}ms ${EASE} ${delay}ms, ` +
-      `filter ${ms}ms ${EASE} ${delay}ms`,
+      `transform ${ms}ms ${EASE} ${delay}ms`,
   };
 }
 
@@ -68,12 +66,10 @@ function headlineRevealStyle(on: boolean): React.CSSProperties {
   return {
     opacity: on ? 1 : 0,
     transform: on ? "translate3d(0, 0, 0)" : "translate3d(0, 16px, 0)",
-    filter: on ? "blur(0)" : "blur(2px)",
-    willChange: "opacity, transform, filter",
+    willChange: "opacity, transform",
     transition:
       `opacity ${HEADLINE_FADE_MS}ms ${EASE}, ` +
-      `transform ${HEADLINE_FADE_MS}ms ${EASE}, ` +
-      `filter ${HEADLINE_FADE_MS}ms ${EASE}`,
+      `transform ${HEADLINE_FADE_MS}ms ${EASE}`,
   };
 }
 
@@ -207,12 +203,12 @@ export function CinematicHero() {
         />
       </div>
 
-      <div className="hero-cinematic-content relative z-10 flex min-h-[calc(100svh-64px)] items-center px-6 pb-[max(4.5rem,calc(env(safe-area-inset-bottom)+3.5rem))] pt-[max(2.5rem,env(safe-area-inset-top))] sm:px-10 md:min-h-[calc(100svh-84px)] md:pb-20 md:pt-12 lg:min-h-[calc(100svh-96px)] lg:px-12">
+      <div className="hero-cinematic-content relative z-10 flex min-h-[calc(100svh-64px)] items-center px-5 pb-[max(2.75rem,calc(env(safe-area-inset-bottom)+2rem))] pt-[max(2rem,env(safe-area-inset-top))] sm:px-10 md:min-h-[calc(100svh-84px)] md:pb-16 md:pt-12 lg:min-h-[calc(100svh-96px)] lg:px-12">
         <div className="mx-auto w-full max-w-6xl">
-          <div className="max-w-[47rem] text-left md:mx-auto md:text-center">
+          <div className="mx-auto max-w-[47rem] text-center">
             <p
               data-hero-field="eyebrow"
-              className="hero-promise flex items-center gap-3.5 text-[10.5px] font-medium uppercase tracking-[0.3em] text-[color:var(--gold-soft)] [text-shadow:0_1px_10px_color-mix(in_oklab,var(--charcoal-deep)_55%,transparent)] sm:text-[11px] md:justify-center"
+              className="hero-promise flex items-center justify-center gap-3 text-[9px] font-medium uppercase tracking-[0.28em] text-[color:var(--gold-soft)] [text-shadow:0_1px_10px_color-mix(in_oklab,var(--charcoal-deep)_55%,transparent)] sm:text-[10px]"
               style={revealStyle(eyebrow, 620, 0, 8)}
             >
               <span aria-hidden="true" className="hidden h-px w-7 shrink-0 bg-[color:var(--gold)]/70 md:block" />
@@ -223,18 +219,18 @@ export function CinematicHero() {
             <h1
               data-hero-stanza="true"
               data-mixed-emphasis="exempt"
-              className="hero-h1 mt-8 font-serif text-[clamp(2.5rem,6.5vw,5.25rem)] font-medium not-italic leading-[1.08] tracking-normal text-[color:var(--gold-soft)] [text-shadow:0_2px_18px_color-mix(in_oklab,var(--charcoal-deep)_55%,transparent)]"
+               className="hero-h1 mt-9 font-serif text-[clamp(2.15rem,5.6vw,4.65rem)] font-normal not-italic leading-[1.13] tracking-normal text-[color:var(--gold-soft)] [text-shadow:0_2px_14px_color-mix(in_oklab,var(--charcoal-deep)_62%,transparent)]"
             >
               <span className="hero-title-mask block">
                 <span
-                  className="hero-title-line block font-serif font-medium not-italic m-0"
+                  className="hero-title-line block font-serif font-normal not-italic m-0"
                   data-hero-field="headlineLine1"
                   style={headlineRevealStyle(line1)}
                 >
                   {HERO_PHRASES[0]}
                 </span>
               </span>
-              <span className="hero-title-mask mt-2 block sm:mt-3">
+              <span className="hero-title-mask mt-2.5 block sm:mt-3">
                 <span
                   className="hero-title-line block font-serif italic font-normal text-[color:var(--gold-soft)]"
                   data-hero-field="headlineLine2"
@@ -247,14 +243,14 @@ export function CinematicHero() {
 
             <p
               data-hero-field="subheadline"
-               className="hero-support mt-8 max-w-[36rem] font-serif text-[17.5px] font-normal not-italic leading-[1.55] sm:text-[18.5px] md:mx-auto md:text-[19.5px]"
+               className="hero-support mx-auto mt-10 max-w-[21.5rem] font-serif text-[15.5px] font-normal not-italic leading-[1.62] sm:max-w-[32rem] sm:text-[17px] md:max-w-[38rem] md:text-[18px]"
               style={revealStyle(support, SUPPORT_FADE_MS, 0, 11)}
             >
               {HERO_COPY.subheadline}
             </p>
 
             <div
-              className="hero-cta-group mt-8 flex w-full max-w-[28rem] flex-col items-start gap-3 md:mx-auto md:items-center md:justify-center"
+              className="hero-cta-group mx-auto mt-9 flex w-full max-w-[25rem] flex-col items-center gap-3 md:max-w-[44rem] md:flex-row md:justify-center md:gap-4"
               data-hero-composed={primaryCta && secondaryCta ? "true" : "false"}
             >
               <Link
@@ -262,7 +258,7 @@ export function CinematicHero() {
                 data-hero-field="primaryCta"
                 data-analytics="hero_open_studio"
                 data-analytics-placement="hero"
-                className="hero-cta group inline-flex min-h-[56px] w-full items-center justify-center whitespace-nowrap px-6 py-[15px] text-[11px] uppercase tracking-[0.2em] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)] focus-visible:ring-offset-4 focus-visible:ring-offset-transparent sm:px-7 sm:text-[11.5px] hero-cta--primary"
+                className="hero-cta group inline-flex min-h-[48px] w-full items-center justify-center whitespace-nowrap px-6 py-3 text-[10px] uppercase tracking-[0.2em] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)] focus-visible:ring-offset-4 focus-visible:ring-offset-transparent sm:w-auto sm:min-w-[19rem] sm:px-8 sm:text-[10.5px] hero-cta--primary"
                 style={revealStyle(primaryCta, CTA_FADE_MS, 0, 12)}
               >
                 <span className="hero-cta__sheen" aria-hidden="true" />
@@ -276,7 +272,7 @@ export function CinematicHero() {
                 data-hero-field="secondaryCta"
                 data-analytics="hero_choose_experience"
                 data-analytics-placement="hero"
-                className="hero-cta group inline-flex min-h-[52px] w-full items-center justify-center whitespace-nowrap px-6 py-3 text-[10px] uppercase tracking-[0.16em] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)] focus-visible:ring-offset-4 focus-visible:ring-offset-transparent sm:px-7 sm:text-[10.5px] hero-cta--ghost"
+                className="hero-cta group inline-flex min-h-[46px] w-full items-center justify-center whitespace-nowrap px-6 py-2.5 text-[10px] uppercase tracking-[0.18em] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)] focus-visible:ring-offset-4 focus-visible:ring-offset-transparent sm:w-auto sm:min-w-[19rem] sm:px-8 sm:text-[10.5px] hero-cta--ghost"
                 style={revealStyle(secondaryCta, CTA_FADE_MS, 0, 10)}
               >
                 <span className="hero-cta__sheen" aria-hidden="true" />
@@ -291,7 +287,7 @@ export function CinematicHero() {
         </div>
       </div>
 
-      <div aria-hidden="true" className="hero-editorial-handoff absolute inset-x-0 bottom-0 z-[5] h-[10%]" />
+      <div aria-hidden="true" className="hero-editorial-handoff absolute inset-x-0 bottom-0 z-[5] h-[4%]" />
 
       <div
         data-hero-copy-version={HERO_COPY_VERSION}
