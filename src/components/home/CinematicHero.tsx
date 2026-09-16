@@ -207,21 +207,20 @@ export function CinematicHero() {
         />
       </div>
 
-      {/* ── Eyebrow — independent overlay in the open sky zone ──────── */}
-      <p
-        data-hero-field="eyebrow"
-        className="hero-promise absolute inset-x-0 top-[11%] z-10 px-6 text-center text-[10.5px] font-medium uppercase tracking-[0.16em] sm:top-[12%] sm:text-[11px] sm:tracking-[0.18em]"
-        style={revealStyle(eyebrow, TEXT_FADE_MS)}
-      >
-        {HERO_COPY.eyebrow}
-      </p>
+      {/* ── One editorial stanza: eyebrow → headline → support ─────── */}
+      <div className="hero-copy-block absolute inset-x-0 top-[16%] z-10 flex flex-col items-center px-6 sm:top-[18%] sm:px-10 md:px-16">
+        <p
+          data-hero-field="eyebrow"
+          className="hero-promise m-0 text-center text-[10.5px] font-medium uppercase tracking-[0.16em] sm:text-[11px] sm:tracking-[0.18em]"
+          style={revealStyle(eyebrow, TEXT_FADE_MS)}
+        >
+          {HERO_COPY.eyebrow}
+        </p>
 
-      {/* ── Stanza — original position and scale, clean treatment ───── */}
-      <div className="absolute inset-0 z-10 flex items-start justify-center pt-[21svh] px-6 sm:pt-[22svh] sm:px-10 md:px-16">
         <h1
           data-hero-stanza="true"
           data-mixed-emphasis="exempt"
-          className="hero-h1 m-0 text-center font-serif"
+          className="hero-h1 mb-0 mt-[clamp(28px,5.5vh,52px)] text-center font-serif"
         >
           <span
             className="hero-title-line block font-serif font-normal italic m-0"
@@ -238,20 +237,19 @@ export function CinematicHero() {
             {HERO_PHRASES[1]}
           </span>
         </h1>
-      </div>
 
-      {/* ── Support line — its own breathing room below the stanza ──── */}
-      <p
-        data-hero-field="subheadline"
-        className="hero-support absolute inset-x-0 top-[50%] z-10 mx-auto max-w-[24rem] px-6 text-center font-serif text-[19px] font-normal not-italic leading-[1.68] sm:max-w-[38rem] sm:text-[21px] sm:leading-[1.66]"
-        style={revealStyle(support, TEXT_FADE_MS)}
-      >
-        {HERO_COPY.subheadline}
-      </p>
+        <p
+          data-hero-field="subheadline"
+          className="hero-support mt-[clamp(22px,3.4vh,34px)] max-w-[21rem] text-center font-serif text-[17px] font-normal not-italic leading-[1.62] sm:max-w-[34rem] sm:text-[19px] sm:leading-[1.6]"
+          style={revealStyle(support, TEXT_FADE_MS)}
+        >
+          {HERO_COPY.subheadline}
+        </p>
+      </div>
 
       {/* ── CTAs — anchored low, original dimensions ────────────────── */}
       <div
-        className="hero-cta-group absolute inset-x-0 bottom-0 z-20 flex flex-col items-center gap-[20px] px-6 pb-[max(3.5rem,calc(env(safe-area-inset-bottom)+2.75rem))] sm:flex-row sm:justify-center sm:gap-6 sm:pb-12 md:pb-16"
+        className="hero-cta-group absolute inset-x-0 bottom-0 z-20 flex flex-col items-center gap-[14px] px-6 pb-[max(2.75rem,calc(env(safe-area-inset-bottom)+2.25rem))] sm:flex-row sm:justify-center sm:gap-5 sm:pb-12 md:pb-16"
         data-hero-composed={composed ? "true" : "false"}
         style={{
           opacity: composed ? 1 : 0,
