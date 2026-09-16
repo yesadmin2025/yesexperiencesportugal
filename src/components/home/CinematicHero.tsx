@@ -20,13 +20,13 @@ import { HERO_COPY, HERO_COPY_VERSION, HERO_PHRASES } from "@/content/hero-copy"
 import { HERO_FILM } from "@/content/hero-scenes-manifest";
 
 /** Cinematic pace: one breath per beat, full actionable state by ~4.7s. */
-const EYEBROW_DELAY_MS = 400;
-const LINE1_DELAY_MS = 1100;
-const LINE2_DELAY_MS = 2050;
-const SUPPORT_DELAY_MS = 3150;
-const CTA_DELAY_MS = 4650;
-const TEXT_FADE_MS = 1650;
-const CTA_FADE_MS = 1450;
+const EYEBROW_DELAY_MS = 300;
+const LINE1_DELAY_MS = 850;
+const LINE2_DELAY_MS = 1500;
+const SUPPORT_DELAY_MS = 2300;
+const CTA_DELAY_MS = 3200;
+const TEXT_FADE_MS = 1200;
+const CTA_FADE_MS = 1000;
 const EASE = "cubic-bezier(0.22,1,0.36,1)";
 
 function shouldSkipIntro(): boolean {
