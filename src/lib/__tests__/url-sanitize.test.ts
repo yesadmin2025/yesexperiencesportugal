@@ -1,4 +1,6 @@
 import { describe, expect, it } from "vitest";
+import { readFileSync } from "node:fs";
+import { resolve } from "node:path";
 
 import { sanitizeLocation, sanitizedPath } from "@/lib/url-sanitize";
 
@@ -26,5 +28,15 @@ describe("url sanitisation", () => {
 
   it("returns a path for malformed input", () => {
     expect(sanitizedPath("not a url")).toBeTypeOf("string");
+  });
+
+  it("sanitizes Hero verification export URLs before they enter shared artifacts", () => {
+    const overlay = readFileSync(
+      resolve(process.cwd(), "src/components/HeroVerifyOverlay.tsx"),
+      "utf8",
+    );
+    expect(overlay).not.toContain("url: window.location.href");
+    expect(overlay).not.toContain("# url=${window.location.href}");
+    expect(overlay.match(/sanitizedPath\(window\.location\.href\)/g)).toHaveLength(2);
   });
 });

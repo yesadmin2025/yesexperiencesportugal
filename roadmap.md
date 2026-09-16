@@ -76,10 +76,10 @@
 - [x] Keep production undeployed
 
 ## 12. Release-candidate premium polish
-- [ ] Expand the mobile Hero to a calm full-viewport 4–5 second cinematic sequence
-- [ ] Restore restrained editorial motion and canonical title styling on scoped public surfaces
-- [ ] Reduce Experiences collection cards to essential decision information
-- [ ] Simplify the representative Signature booking decision hierarchy without logic changes
+- [x] Expand the mobile Hero to a calm full-viewport 4–5 second cinematic sequence
+- [x] Restore restrained editorial motion and canonical title styling on scoped public surfaces
+- [x] Reduce Experiences collection cards to essential decision information
+- [x] Simplify the representative Signature booking decision hierarchy without logic changes
 - [ ] Verify payment, privacy, analytics, mobile, reduced-motion, typecheck, and production build
 - [ ] Keep production undeployed
 
