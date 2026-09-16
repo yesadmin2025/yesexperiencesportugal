@@ -21,12 +21,12 @@ import { HERO_FILM } from "@/content/hero-scenes-manifest";
 
 /** Cinematic pace: opposing phrases cross the frame, then copy and actions settle. */
 const EYEBROW_DELAY_MS = 250;
-const LINE1_DELAY_MS = 700;
-const LINE2_DELAY_MS = 1450;
-const SUPPORT_DELAY_MS = 2300;
-const CTA_DELAY_MS = 3200;
-const TEXT_FADE_MS = 1350;
-const CTA_FADE_MS = 1050;
+const LINE1_DELAY_MS = 650;
+const LINE2_DELAY_MS = 1500;
+const SUPPORT_DELAY_MS = 2550;
+const CTA_DELAY_MS = 3650;
+const TEXT_FADE_MS = 1450;
+const CTA_FADE_MS = 1000;
 const EASE = "cubic-bezier(0.22,1,0.36,1)";
 
 function shouldSkipIntro(): boolean {
@@ -53,12 +53,12 @@ function revealStyle(on: boolean, ms: number, distance = 14): React.CSSPropertie
 }
 
 function storyLineStyle(on: boolean, direction: "from-left" | "from-right"): React.CSSProperties {
-  const offset = direction === "from-left" ? "-18vw" : "18vw";
+  const offset = direction === "from-left" ? "-14vw" : "14vw";
   return {
     ...stanzaStyle,
     opacity: on ? 1 : 0,
     transform: on ? "translate3d(0,0,0)" : `translate3d(${offset},0,0)`,
-    filter: on ? "blur(0)" : "blur(5px)",
+    filter: on ? "blur(0)" : "blur(3px)",
     willChange: "opacity, transform, filter",
     transition: `opacity ${TEXT_FADE_MS}ms ${EASE}, transform ${TEXT_FADE_MS}ms ${EASE}, filter ${TEXT_FADE_MS}ms ${EASE}`,
   };
@@ -272,7 +272,7 @@ export function CinematicHero() {
       <div className="hero-support-zone absolute inset-x-0 top-[52%] z-10 flex justify-center px-6 sm:top-[54%] sm:px-10 md:px-16">
         <p
           data-hero-field="subheadline"
-          className="hero-support m-0 max-w-[22.5rem] text-center font-serif text-[21px] font-normal not-italic leading-[1.55] sm:max-w-[36rem] sm:text-[22px]"
+          className="hero-support m-0 max-w-[22.5rem] text-center font-serif text-[22px] font-normal not-italic leading-[1.52] sm:max-w-[36rem] sm:text-[22px]"
           style={supportFadeStyle(support)}
         >
           {HERO_COPY.subheadline}
