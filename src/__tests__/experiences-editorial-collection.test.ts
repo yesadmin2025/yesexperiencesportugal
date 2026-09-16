@@ -5,18 +5,19 @@ import { resolve } from "node:path";
 const source = readFileSync(resolve(process.cwd(), "src/routes/experiences.tsx"), "utf8");
 
 describe("Experiences editorial collection", () => {
-  it("uses the two-column editorial grid and one detail action", () => {
+  it("uses the two-column editorial grid and two hierarchical actions", () => {
     expect(source).toContain("md:grid-cols-2");
     expect(source).not.toContain("lg:grid-cols-3");
     expect(source).toContain("View experience");
-    expect(source).not.toContain('to="/tours/$tourId/tailor"');
+    expect(source).toContain('to="/tours/$tourId/tailor"');
+    expect(source).toContain("Tailor this day");
   });
 
-  it("keeps cards concise without collection highlight lists", () => {
+  it("keeps cards concise with collection highlight lists and verified reviews", () => {
     expect(source).not.toContain("getSignatureCardMoments");
-    expect(source).not.toContain("content.highlights");
+    expect(source).toContain("tour.highlights");
     expect(source).toContain("signatureDurationLabel");
-    expect(source).not.toContain("meta.reviewCount");
+    expect(source).toContain("verifiedReviewCount");
     expect(source).not.toContain("Lunch included");
     expect(source).not.toContain("<span>Private</span>");
   });
