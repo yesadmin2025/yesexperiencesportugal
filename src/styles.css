@@ -2094,6 +2094,15 @@
 .hero-cinematic .hero-title-line {
   font-family: var(--font-editorial);
 }
+/* Stanza line gap — restored "One Breath" cadence (was mt-3 / sm:mt-4). */
+.hero-cinematic [data-hero-field="headlineLine2"] {
+  margin-top: 0.75rem;
+}
+@media (min-width: 640px) {
+  .hero-cinematic [data-hero-field="headlineLine2"] {
+    margin-top: 1rem;
+  }
+}
 
 .hero-cinematic .hero-title-mask {
   overflow: hidden;
@@ -5887,7 +5896,6 @@ html {
 /* Hero support line: upright champagne-ivory editorial copy, deliberately
    separated from the headline and actions. */
 .hero-support {
-  position: relative;
   color: color-mix(in oklab, var(--gold-soft) 54%, var(--ivory));
   text-shadow: 0 1px 3px color-mix(in oklab, var(--charcoal-deep) 72%, transparent);
 }
@@ -6029,17 +6037,14 @@ html {
 .hero-cinematic .hero-cinematic-composition {
   transform: none;
 }
+/* Restored "One Breath" geometry: eyebrow and support are independent
+   overlays in the open space; the stanza and CTA block keep their
+   original component-driven positions. */
 .hero-cinematic .hero-promise {
-  top: 20%;
-}
-.hero-cinematic .hero-h1 {
-  top: 34%;
+  top: 15%;
 }
 .hero-cinematic .hero-support {
-  top: 54%;
-}
-.hero-cinematic .hero-cta-group {
-  top: 70%;
+  top: 52%;
 }
 .hero-cinematic .hero-promise {
   transform-origin: center center;
@@ -6069,16 +6074,10 @@ html {
     transform: none;
   }
   .hero-cinematic .hero-promise {
-    top: 17%;
-  }
-  .hero-cinematic .hero-h1 {
-    top: 29%;
+    top: 16%;
   }
   .hero-cinematic .hero-support {
-    top: 57%;
-  }
-  .hero-cinematic .hero-cta-group {
-    top: 73%;
+    top: 54%;
   }
 }
 @media (min-width: 1024px) {
