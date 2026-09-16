@@ -2083,6 +2083,8 @@
    square block on mobile. */
 .hero-cinematic [data-hero-reveal],
 .hero-cinematic [data-hero-field="eyebrow"],
+.hero-cinematic [data-hero-field="headlineLine1"],
+.hero-cinematic [data-hero-field="headlineLine2"],
 .hero-cinematic [data-hero-field="subheadline"],
 .hero-cinematic .hero-cta-button[data-hero-field="primaryCta"],
 .hero-cinematic .hero-cta-button[data-hero-field="secondaryCta"] {
