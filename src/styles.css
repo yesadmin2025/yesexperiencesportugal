@@ -6041,8 +6041,8 @@ html {
 .premium-cta--primary:focus-visible {
   background: linear-gradient(
     180deg,
-    color-mix(in oklab, var(--charcoal) 88%, var(--teal)),
-    var(--charcoal-deep)
+    color-mix(in oklab, var(--teal-2) 96%, var(--ivory)),
+    color-mix(in oklab, var(--teal) 92%, var(--charcoal-deep))
   );
   border-color: var(--gold);
   box-shadow:
@@ -6057,9 +6057,10 @@ html {
 }
 .premium-cta--dark:hover,
 .premium-cta--dark:focus-visible {
-  background: color-mix(in oklab, var(--gold) 10%, var(--charcoal-deep));
+  background: color-mix(in oklab, var(--teal) 70%, transparent);
   border-color: var(--gold-soft);
 }
+
 .premium-cta__sheen {
   background: linear-gradient(
     112deg,
