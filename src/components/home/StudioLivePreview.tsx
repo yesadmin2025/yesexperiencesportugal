@@ -1,7 +1,6 @@
 import type { ReactNode } from "react";
 import { Link } from "@tanstack/react-router";
 import { Wine, Users, Clock3, MapPin } from "lucide-react";
-import { CtaButton } from "@/components/ui/CtaButton";
 
 const STOPS = [
   { x: 68, y: 58, label: "Lisbon", caption: "Pickup" },
@@ -99,22 +98,13 @@ export function StudioLivePreview() {
       </div>
 
       <div className="border-t border-[color:var(--gold)]/15 bg-[color:var(--ivory)] px-4 py-4 md:px-5">
-        <div className="sm:flex sm:items-center sm:justify-between sm:gap-5">
-          <div>
-            <p className="text-[12px] uppercase tracking-[0.18em] font-semibold text-[color:var(--teal)]">
-              See your own route and live price
-            </p>
-            <p className="mt-1.5 max-w-md text-[15px] md:text-[16px] leading-[1.65] text-[color:var(--charcoal-soft)]">
-              Choose mood, group and rhythm in the Studio. This example is only here to show how the day comes together.
-            </p>
-          </div>
-          <CtaButton
-            to="/studio-v3"
-            size="sm"
-            className="mt-4 shrink-0 sm:mt-0"
-          >
-            Design your day
-          </CtaButton>
+        <div>
+          <p className="text-[12px] uppercase tracking-[0.18em] font-semibold text-[color:var(--teal)]">
+            See your own route and live price
+          </p>
+          <p className="mt-1.5 max-w-md text-[15px] md:text-[16px] leading-[1.65] text-[color:var(--charcoal-soft)]">
+            Choose mood, group and rhythm in the Studio. This example is only here to show how the day comes together.
+          </p>
         </div>
         <div className="mt-3 flex flex-wrap items-center justify-between gap-2 border-t border-[color:var(--border)] pt-3">
           <p className="inline-flex items-center gap-1.5 text-[12px] text-[color:var(--charcoal-soft)]">
