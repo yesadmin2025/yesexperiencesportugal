@@ -5884,41 +5884,12 @@ html {
    Both share a refined arrow ramp. Used only inside .hero-cinematic.
    ──────────────────────────────────────────────────────────── */
 
-/* Hero support line: champagne-ivory editorial copy that stays readable over
-   every film frame. A soft elliptical vignette sits behind the text only —
-   no card, no rectangle edge. */
+/* Hero support line: upright champagne-ivory editorial copy, deliberately
+   separated from the headline and actions. */
 .hero-support {
   position: relative;
-  isolation: isolate;
-  color: color-mix(in oklab, var(--gold-soft) 72%, var(--ivory));
-  text-shadow:
-    0 1px 2px color-mix(in oklab, var(--charcoal-deep) 84%, transparent),
-    0 5px 20px color-mix(in oklab, var(--charcoal-deep) 74%, transparent),
-    0 12px 36px color-mix(in oklab, var(--charcoal-deep) 48%, transparent);
-}
-.hero-support::before {
-  content: "";
-  position: absolute;
-  inset: -1.2em -2.1em;
-  z-index: -1;
-  pointer-events: none;
-  background: radial-gradient(
-    76% 135% at 50% 50%,
-    color-mix(in oklab, var(--charcoal-deep) 42%, transparent) 0%,
-    color-mix(in oklab, var(--charcoal-deep) 22%, transparent) 54%,
-    transparent 100%
-  );
-  filter: blur(9px);
-}
-@media (min-width: 768px) {
-  .hero-support::before {
-    background: radial-gradient(
-      68% 130% at 50% 50%,
-      color-mix(in oklab, var(--charcoal-deep) 42%, transparent) 0%,
-      color-mix(in oklab, var(--charcoal-deep) 22%, transparent) 55%,
-      transparent 100%
-    );
-  }
+  color: color-mix(in oklab, var(--gold-soft) 54%, var(--ivory));
+  text-shadow: 0 1px 3px color-mix(in oklab, var(--charcoal-deep) 72%, transparent);
 }
 
 .hero-cta {
@@ -6047,24 +6018,33 @@ html {
 /* Final Hero composition. These rules intentionally sit after the historical
    Hero generations above, making this the single active visual contract. */
 .hero-cinematic .hero-cinematic-content {
+  height: calc(100svh - 64px);
   min-height: calc(100svh - 64px);
 }
 .hero-cinematic .hero-h1 {
   font-weight: 400;
-  color: color-mix(in oklab, var(--gold-soft) 78%, var(--ivory));
-  text-shadow:
-    0 2px 14px color-mix(in oklab, var(--charcoal-deep) 68%, transparent),
-    0 10px 34px color-mix(in oklab, var(--charcoal-deep) 38%, transparent);
+  color: color-mix(in oklab, var(--gold-soft) 58%, var(--ivory));
+  text-shadow: 0 1px 3px color-mix(in oklab, var(--charcoal-deep) 70%, transparent);
 }
 .hero-cinematic .hero-cinematic-composition {
-  transform: translateY(-2.5vh);
+  transform: none;
+}
+.hero-cinematic .hero-promise {
+  top: 20%;
+}
+.hero-cinematic .hero-h1 {
+  top: 34%;
+}
+.hero-cinematic .hero-support {
+  top: 54%;
+}
+.hero-cinematic .hero-cta-group {
+  top: 70%;
 }
 .hero-cinematic .hero-promise {
   transform-origin: center center;
-  color: color-mix(in oklab, var(--gold-soft) 84%, var(--ivory));
-  text-shadow:
-    0 1px 3px color-mix(in oklab, var(--charcoal-deep) 90%, transparent),
-    0 5px 18px color-mix(in oklab, var(--charcoal-deep) 72%, transparent);
+  color: color-mix(in oklab, var(--gold-soft) 48%, var(--ivory));
+  text-shadow: 0 1px 2px color-mix(in oklab, var(--charcoal-deep) 72%, transparent);
 }
 .hero-cinematic .hero-story-stage :is(img, video) {
   object-position: 57% center;
@@ -6079,17 +6059,31 @@ html {
 }
 @media (min-width: 768px) {
   .hero-cinematic .hero-cinematic-content {
+    height: calc(100svh - 84px);
     min-height: calc(100svh - 84px);
   }
   .hero-cinematic .hero-story-stage :is(img, video) {
     object-position: center center;
   }
   .hero-cinematic .hero-cinematic-composition {
-    transform: translateY(-1vh);
+    transform: none;
+  }
+  .hero-cinematic .hero-promise {
+    top: 17%;
+  }
+  .hero-cinematic .hero-h1 {
+    top: 29%;
+  }
+  .hero-cinematic .hero-support {
+    top: 57%;
+  }
+  .hero-cinematic .hero-cta-group {
+    top: 73%;
   }
 }
 @media (min-width: 1024px) {
   .hero-cinematic .hero-cinematic-content {
+    height: calc(100svh - 96px);
     min-height: calc(100svh - 96px);
   }
 }
