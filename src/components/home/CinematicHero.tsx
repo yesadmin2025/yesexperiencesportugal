@@ -216,7 +216,7 @@ export function CinematicHero() {
             >
               <span className="hero-title-mask block">
                 <span
-                  className="hero-title-line m-0 block font-serif font-normal italic"
+                  className="hero-title-line block font-serif font-normal italic m-0"
                   data-hero-field="headlineLine1"
                   style={headlineRevealStyle(line1)}
                 >
@@ -225,7 +225,7 @@ export function CinematicHero() {
               </span>
               <span className="hero-title-mask mt-2 block sm:mt-3">
                 <span
-                  className="hero-title-line block font-serif font-normal italic text-[color:var(--gold-soft)]"
+                  className="hero-title-line block font-serif italic font-normal text-[color:var(--gold-soft)]"
                   data-hero-field="headlineLine2"
                   style={headlineRevealStyle(line2)}
                 >
