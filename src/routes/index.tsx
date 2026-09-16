@@ -1124,7 +1124,7 @@ function HomePage() {
                     <span className="block text-[11px] uppercase tracking-[0.22em] text-[color:var(--teal)]">
                       {entry.eyebrow}
                     </span>
-                    <h3 className="serif mt-3 text-[1.15rem] leading-[1.25] text-[color:var(--charcoal)]">
+                    <h3 className="serif mt-3 text-[1.35rem] md:text-[1.5rem] leading-[1.18] text-[color:var(--charcoal)]">
                       {entry.title}
                     </h3>
 

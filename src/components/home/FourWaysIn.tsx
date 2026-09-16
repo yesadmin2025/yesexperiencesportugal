@@ -153,7 +153,7 @@ export function FourWaysIn() {
           <Eyebrow className="mb-5">Where to begin</Eyebrow>
           <h2
             id="choose-path-title"
-            className="serif text-[2rem] sm:text-[2.4rem] md:text-[3.25rem] leading-[1.08] md:leading-[1.02] tracking-[-0.018em] text-[color:var(--charcoal)] font-medium text-balance"
+            className="serif text-[1.8rem] sm:text-[2.1rem] lg:text-[2.95rem] leading-[1.12] lg:leading-[1.02] tracking-[-0.014em] text-[color:var(--charcoal)] font-medium text-balance"
           >
             Five ways <span className="italic font-normal text-[color:var(--teal)]">into Portugal.</span>
           </h2>
@@ -217,7 +217,7 @@ function PathCard({ path, featured }: { path: Path; featured: boolean }) {
         </span>
       </div>
 
-      <h3 className="serif mt-7 text-[1.55rem] md:text-[1.7rem] leading-[1.15] font-medium text-[color:var(--charcoal)]">
+      <h3 className="serif mt-7 text-[1.35rem] md:text-[1.5rem] leading-[1.18] font-medium text-[color:var(--charcoal)]">
         {path.title}
       </h3>
       <p className="mt-3 text-[15px] md:text-[16px] leading-[1.7] text-[color:var(--charcoal-soft)]">
