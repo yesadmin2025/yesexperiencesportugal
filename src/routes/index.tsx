@@ -771,6 +771,9 @@ function HomePage() {
                 Signature days,{" "}
                 <span className="italic font-normal text-[color:var(--teal)]">already loved.</span>
               </h2>
+              <p className="mt-5 text-[15px] md:text-[16px] leading-[1.65] text-[color:var(--charcoal-soft)]">
+                Every Signature can be reserved as designed, or tailored around your pace, interests and group.
+              </p>
             </div>
 
             {/* Mobile: full-bleed editorial cover carousel. Uses
