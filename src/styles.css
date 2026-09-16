@@ -3246,18 +3246,71 @@ html.reveal-ready .reveal-stagger.is-visible [data-reveal-image] {
   100% {
     transform: translateX(0);
   }
-  40% {
-    transform: translateX(4px);
+  45% {
+    transform: translateX(6px);
   }
   80% {
     transform: translateX(1px);
   }
 }
 html.reveal-ready .reveal-stagger.is-visible .home-way-arrow {
-  animation: homeWayArrowNudge 420ms cubic-bezier(0.22, 0.61, 0.36, 1) both;
+  animation: homeWayArrowNudge 520ms cubic-bezier(0.22, 0.61, 0.36, 1) both;
+  animation-delay: 220ms;
 }
 @media (prefers-reduced-motion: reduce) {
   html.reveal-ready .reveal-stagger.is-visible .home-way-arrow {
+    animation: none !important;
+  }
+}
+
+/* =========================================================================
+   Homepage editorial reveal — calm, not bouncy
+   -------------------------------------------------------------------------
+   Scoped to the homepage wrapper (.home-energy) so other routes keep their
+   existing reveal contract. Vertical travel drops to a nearly imperceptible
+   5–6px paired with a tiny scale settle, so sections read as an editorial
+   fade/settle rather than a repeated upward jump. One-time only; disabled
+   under prefers-reduced-motion.
+   ====================================================================== */
+@keyframes homeEditorialSettle {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 6px, 0) scale(0.985);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+}
+html.reveal-ready .home-energy .reveal,
+html.reveal-ready .home-energy.reveal {
+  transform: translate3d(0, 6px, 0) scale(0.985);
+  transition:
+    opacity 620ms cubic-bezier(0.22, 0.61, 0.36, 1),
+    transform 620ms cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+html.reveal-ready .home-energy .reveal.is-visible,
+html.reveal-ready .home-energy.reveal.is-visible {
+  transform: translate3d(0, 0, 0) scale(1);
+  animation: homeEditorialSettle 640ms cubic-bezier(0.22, 0.61, 0.36, 1) both;
+}
+html.reveal-ready .home-energy .reveal-stagger {
+  transform: translate3d(0, 5px, 0) scale(0.99);
+  transition:
+    opacity 560ms cubic-bezier(0.22, 0.61, 0.36, 1),
+    transform 560ms cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+html.reveal-ready .home-energy .reveal-stagger.is-visible {
+  transform: translate3d(0, 0, 0) scale(1);
+  animation: homeEditorialSettle 600ms cubic-bezier(0.22, 0.61, 0.36, 1) both;
+}
+@media (prefers-reduced-motion: reduce) {
+  html.reveal-ready .home-energy .reveal,
+  html.reveal-ready .home-energy.reveal,
+  html.reveal-ready .home-energy .reveal-stagger {
+    opacity: 1 !important;
+    transform: none !important;
+    transition: none !important;
     animation: none !important;
   }
 }
