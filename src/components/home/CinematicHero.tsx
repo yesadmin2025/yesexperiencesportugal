@@ -241,7 +241,7 @@ export function CinematicHero() {
             >
               <span className="block">{supportLead} </span>
               {supportTail ? (
-                <span className="mt-1 block text-[color:var(--ivory)]/82">{supportTail}</span>
+                <span className="mt-1 block text-[color:var(--gold-soft)]/72">{supportTail}</span>
               ) : null}
             </p>
 
