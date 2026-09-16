@@ -5883,6 +5883,43 @@ html {
    restrained gold edge, deliberately quieter.
    Both share a refined arrow ramp. Used only inside .hero-cinematic.
    ──────────────────────────────────────────────────────────── */
+
+/* Hero support line: champagne-ivory editorial copy that stays readable over
+   every film frame. A soft elliptical vignette sits behind the text only —
+   no card, no rectangle edge. */
+.hero-support {
+  position: relative;
+  isolation: isolate;
+  color: color-mix(in oklab, var(--gold-soft) 46%, var(--ivory));
+  text-shadow:
+    0 1px 2px color-mix(in oklab, var(--charcoal-deep) 70%, transparent),
+    0 6px 22px color-mix(in oklab, var(--charcoal-deep) 62%, transparent);
+}
+.hero-support::before {
+  content: "";
+  position: absolute;
+  inset: -0.85em -1.6em;
+  z-index: -1;
+  pointer-events: none;
+  background: radial-gradient(
+    72% 120% at 22% 50%,
+    color-mix(in oklab, var(--charcoal-deep) 46%, transparent) 0%,
+    color-mix(in oklab, var(--charcoal-deep) 26%, transparent) 52%,
+    transparent 100%
+  );
+  filter: blur(6px);
+}
+@media (min-width: 768px) {
+  .hero-support::before {
+    background: radial-gradient(
+      68% 130% at 50% 50%,
+      color-mix(in oklab, var(--charcoal-deep) 42%, transparent) 0%,
+      color-mix(in oklab, var(--charcoal-deep) 22%, transparent) 55%,
+      transparent 100%
+    );
+  }
+}
+
 .hero-cta {
   position: relative;
   overflow: hidden;
