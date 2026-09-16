@@ -223,11 +223,11 @@ export function CinematicHero() {
             <h1
               data-hero-stanza="true"
               data-mixed-emphasis="exempt"
-              className="hero-h1 mt-8 font-serif text-[clamp(2.5rem,6.5vw,5.25rem)] font-normal italic leading-[1.08] tracking-normal text-[color:var(--gold-soft)] [text-shadow:0_2px_18px_color-mix(in_oklab,var(--charcoal-deep)_55%,transparent)]"
+              className="hero-h1 mt-8 font-serif text-[clamp(2.5rem,6.5vw,5.25rem)] font-medium not-italic leading-[1.08] tracking-normal text-[color:var(--gold-soft)] [text-shadow:0_2px_18px_color-mix(in_oklab,var(--charcoal-deep)_55%,transparent)]"
             >
               <span className="hero-title-mask block">
                 <span
-                  className="hero-title-line block font-serif font-normal italic m-0"
+                  className="hero-title-line block font-serif font-medium not-italic m-0"
                   data-hero-field="headlineLine1"
                   style={headlineRevealStyle(line1)}
                 >
@@ -247,7 +247,7 @@ export function CinematicHero() {
 
             <p
               data-hero-field="subheadline"
-              className="hero-support mt-7 max-w-[34rem] font-serif text-[16px] font-normal not-italic leading-[1.55] text-[color:var(--ivory)]/95 [text-shadow:0_1px_12px_color-mix(in_oklab,var(--charcoal-deep)_62%,transparent)] sm:text-[17px] md:mx-auto"
+               className="hero-support mt-8 max-w-[36rem] font-serif text-[17px] font-normal not-italic leading-[1.5] text-[color:var(--gold-soft)] [text-shadow:0_2px_16px_color-mix(in_oklab,var(--charcoal-deep)_72%,transparent)] sm:text-[18px] md:mx-auto md:text-[19px]"
               style={revealStyle(support, SUPPORT_FADE_MS, 0, 11)}
             >
               {HERO_COPY.subheadline}

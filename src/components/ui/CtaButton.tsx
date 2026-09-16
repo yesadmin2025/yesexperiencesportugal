@@ -12,8 +12,8 @@ import {
  * CtaButton — site-wide primary / ghost CTA, with the canonical arrow
  * colour ramp locked in.
  *
- *   primary: solid --teal, ivory text, gold-soft → gold arrow on hover
- *   ghost:   transparent w/ teal border, charcoal text, gold → gold-deep arrow on hover
+ *   primary: smoked charcoal, warm-gold keyline, champagne text and arrow
+ *   ghost:   transparent warm-gold hairline with charcoal text
  *
  * Both variants share spacing (px-7 py-3.5, min-h-[48px]), Inter 12.5/13px
  * uppercase 0.18em, rounded-[2px], focus ring on --gold offset --ivory,
@@ -77,7 +77,7 @@ const sizeClasses: Record<Size, string> = {
 };
 
 const baseClasses =
-  "t-button group relative inline-flex items-center rounded-[2px] overflow-visible transition-[background-color,color,border-color,transform,box-shadow] duration-[var(--dur-base)] ease-[var(--ease-scene)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)] focus-visible:ring-offset-2 focus-visible:ring-offset-[color:var(--ivory)] [@media(hover:hover)]:hover:-translate-y-[1px] active:translate-y-0 active:scale-[0.985] active:transition-transform active:duration-[var(--dur-tap)] disabled:cursor-not-allowed disabled:pointer-events-none disabled:opacity-55 disabled:shadow-none aria-busy:cursor-progress data-[cta-error]:animate-[ctaNudge_360ms_ease-in-out]";
+  "premium-cta t-button group relative isolate inline-flex items-center rounded-[2px] overflow-hidden transition-[background-color,color,border-color,transform,box-shadow] duration-[var(--dur-base)] ease-[var(--ease-scene)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)] focus-visible:ring-offset-2 focus-visible:ring-offset-[color:var(--ivory)] [@media(hover:hover)]:hover:-translate-y-px active:translate-y-0 active:scale-[0.985] active:transition-transform active:duration-[var(--dur-tap)] disabled:cursor-not-allowed disabled:pointer-events-none disabled:opacity-55 disabled:shadow-none aria-busy:cursor-progress data-[cta-error]:animate-[ctaNudge_360ms_ease-in-out]";
 const baseLayoutWithTrailing = "justify-between gap-6";
 const baseLayoutNoTrailing = "justify-center gap-2.5";
 
@@ -86,26 +86,18 @@ const hairlineBaseClasses =
 
 const variantClasses: Record<Variant, string> = {
   primary:
-    "bg-[color:var(--teal)] text-[color:var(--ivory)] hover:bg-[color:var(--charcoal)] active:bg-[color:var(--charcoal)]",
+    "premium-cta--primary bg-[color:var(--charcoal-deep)] text-[color:var(--gold-soft)]",
   ghost:
-    "bg-transparent text-[color:var(--charcoal)] hover:bg-[color:var(--teal)] hover:text-[color:var(--ivory)] active:bg-[color:var(--teal)] active:text-[color:var(--ivory)]",
+    "premium-cta--ghost bg-transparent text-[color:var(--charcoal)]",
   ghostDark:
-    "bg-transparent text-[color:var(--ivory)] hover:bg-[color:var(--ivory)]/[0.08] active:bg-[color:var(--ivory)]/[0.08]",
+    "premium-cta--dark bg-transparent text-[color:var(--gold-soft)]",
   hairline: "opacity-100",
 };
 
 const variantStyle: Record<Variant, React.CSSProperties | undefined> = {
-  primary: {
-    boxShadow: "0 8px 22px -16px color-mix(in oklab, var(--charcoal-deep) 48%, transparent)",
-  },
-  ghost: {
-    border: "1px solid color-mix(in oklab, var(--teal) 55%, transparent)",
-  },
-  ghostDark: {
-    border: "1px solid color-mix(in oklab, var(--gold) 62%, transparent)",
-    boxShadow:
-      "inset 0 0 0 1px color-mix(in oklab, var(--ivory) 10%, transparent), 0 8px 22px -14px color-mix(in oklab, var(--charcoal-deep) 55%, transparent)",
-  },
+  primary: undefined,
+  ghost: undefined,
+  ghostDark: undefined,
   hairline: undefined,
 };
 
@@ -140,7 +132,7 @@ function GoldSweep() {
   return (
     <span
       aria-hidden="true"
-      className="pointer-events-none absolute bottom-0 left-0 h-[1px] w-0 bg-[color:var(--gold)] opacity-50 transition-[width] duration-[var(--dur-slow)] ease-in-out group-hover:w-full group-focus-visible:w-full group-active:w-full motion-reduce:hidden"
+      className="premium-cta__sheen pointer-events-none absolute inset-0 motion-reduce:hidden"
     />
   );
 }
@@ -177,7 +169,7 @@ export function CtaButton(props: CtaButtonProps) {
   const p14Label = isP14ExperimentActive ? p14YourDayCtaLabelForVariant(p14Variant) : null;
 
   const isHairline = variant === "hairline";
-  const isKinetic = variant === "primary" || variant === "ghostDark";
+  const isKinetic = variant === "primary" || variant === "ghostDark" || variant === "ghost";
 
   // Replay the error animation whenever `error` changes to a fresh truthy value.
   const [errorPlaying, setErrorPlaying] = React.useState(false);

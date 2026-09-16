@@ -353,9 +353,9 @@ function Page() {
         <div className="container-x grid lg:grid-cols-2 gap-14">
           <div>
             <Eyebrow>How we work</Eyebrow>
-            <h2 className="mt-3 font-display text-2xl md:text-3xl font-semibold tracking-tight">
-              Private, local and accountable from start to finish.
-            </h2>
+            <SectionTitle as="h2" size="compact" spacing="normal">
+              Private, local and <SectionTitle.Em>accountable.</SectionTitle.Em>
+            </SectionTitle>
             <ul className="mt-6 space-y-4 text-[color:var(--charcoal-soft)] leading-relaxed">
               <li>
                 <strong className="text-[color:var(--charcoal)]">Private only.</strong> No shared
@@ -390,9 +390,9 @@ function Page() {
 
           <div>
             <Eyebrow>Policies, briefly</Eyebrow>
-            <h2 className="mt-3 font-display text-2xl md:text-3xl font-semibold tracking-tight">
-              Clear, fair, written down.
-            </h2>
+            <SectionTitle as="h2" size="compact" spacing="normal">
+              Clear, fair, <SectionTitle.Em>written down.</SectionTitle.Em>
+            </SectionTitle>
             <ul className="mt-6 space-y-4 text-[color:var(--charcoal-soft)] leading-relaxed">
               <li>
                 <strong className="text-[color:var(--charcoal)]">Cancellation (Signature)</strong> —{" "}
