@@ -112,6 +112,10 @@ function ExperiencesPage() {
 type ResolveImg = ReturnType<typeof useImportedTourImages>["resolveImg"];
 
 function TourCard({ tour, resolveImg, featured = false }: { tour: SignatureTour; resolveImg: ResolveImg; featured?: boolean }) {
+  // Teaser reads through the tour-content getter so the collection stays
+  // source-of-truth with the experience detail page.
+  const content = getTourContent(tour.id);
+  const teaser = tour.blurb ?? content.overview ?? "";
   return (
     <article className="experience-editorial-card reveal-stagger group flex min-w-0 flex-col text-left" aria-label={tour.title}>
       <Link
