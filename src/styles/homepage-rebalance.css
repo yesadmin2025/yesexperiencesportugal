@@ -244,8 +244,8 @@ html.motion-ready .home-energy #journal li {
 
 .home-energy #builder.is-visible a[href="/studio-v3"],
 .home-energy #multi-day.is-visible a[href="/multi-day"],
-.home-energy #proposals.is-visible article a:not([aria-hidden="true"]),
-.home-energy #corporate-groups.is-visible article a:not([aria-hidden="true"]) {
+.home-energy #proposals.is-visible article .premium-cta,
+.home-energy #corporate-groups.is-visible article .premium-cta {
   animation: homeCtaArrival 1050ms var(--ease-scene) 420ms 1 both;
 }
 
@@ -260,8 +260,8 @@ html.motion-ready .home-energy #journal li {
   .home-energy #builder ol > li,
   .home-energy #builder a[href="/studio-v3"],
   .home-energy #multi-day a[href="/multi-day"],
-  .home-energy #proposals article a,
-  .home-energy #corporate-groups article a {
+  .home-energy #proposals article .premium-cta,
+  .home-energy #corporate-groups article .premium-cta {
     animation: none !important;
     transition: none !important;
     opacity: 1 !important;
