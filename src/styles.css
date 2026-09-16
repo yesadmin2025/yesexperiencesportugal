@@ -6000,6 +6000,18 @@ html {
 }
 
 @media (prefers-reduced-motion: reduce) {
+  .hero-cinematic [data-hero-field="eyebrow"],
+  .hero-cinematic [data-hero-field="headlineLine1"],
+  .hero-cinematic [data-hero-field="headlineLine2"],
+  .hero-cinematic [data-hero-field="subheadline"],
+  .hero-cinematic [data-hero-field="primaryCta"],
+  .hero-cinematic [data-hero-field="secondaryCta"] {
+    opacity: 1 !important;
+    transform: none !important;
+    filter: none !important;
+    transition: none !important;
+  }
+
   .hero-cinematic .hero-film-settle {
     animation: none !important;
     transform: none !important;
