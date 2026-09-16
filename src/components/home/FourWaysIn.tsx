@@ -229,9 +229,9 @@ function PathCard({ path, featured }: { path: Path; featured: boolean }) {
           shift on hover / tap. */}
       <span className="mt-auto pt-7 inline-flex min-h-[44px] items-center gap-2">
         <span className="sr-only">{path.cta}</span>
-        <span className="home-way-arrow inline-flex h-9 w-9 items-center justify-center rounded-full border border-[color:var(--gold)]/60 bg-[color:var(--ivory)] text-[color:var(--teal)] shadow-[0_6px_18px_-8px_color-mix(in_oklab,var(--charcoal-deep)_22%,transparent)] transition-[transform,background-color,border-color] duration-[var(--dur-base)] ease-[var(--ease-scene)] group-hover:translate-x-1.5 group-hover:border-[color:var(--gold)] group-hover:bg-[color:var(--gold-soft)] group-active:translate-x-1">
+        <span className="home-way-arrow inline-flex h-10 w-10 items-center justify-center rounded-full border border-[color:var(--gold)] bg-[color:var(--gold-soft)] text-[color:var(--teal)] shadow-[0_8px_20px_-10px_color-mix(in_oklab,var(--charcoal-deep)_28%,transparent)] transition-[transform,background-color,border-color] duration-[var(--dur-base)] ease-[var(--ease-scene)] group-hover:translate-x-2 group-hover:bg-[color:var(--gold)] group-focus-visible:translate-x-2 group-active:translate-x-1.5">
           <ArrowRight
-            size={18}
+            size={21}
             aria-hidden="true"
             strokeWidth={2.4}
           />

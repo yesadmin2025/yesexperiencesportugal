@@ -359,6 +359,8 @@ function TourHero({
     adminCover?.src ?? meta?.localGallery?.[0]?.src ?? meta?.gallery?.[0] ?? heroResolved.src;
   const heroSrcSet = adminCover?.srcSet ?? heroResolved.srcSet;
   const heroAlt = adminCover?.alt || getHeroAlt(tour, meta);
+  // Existing source-of-truth inclusions, trimmed for an at-a-glance row.
+  const heroIncluded: string[] = bookableIncluded(tour, meta).items.slice(0, 3);
   return (
     <>
       {/* Breadcrumb */}
@@ -386,14 +388,14 @@ function TourHero({
               focal={tour.focal ?? "50% 50%"}
               sizes="(min-width: 1024px) 1152px, 100vw"
               className="shadow-[0_30px_60px_-30px_rgba(46,46,46,0.4)]"
-              imgClassName="motion-safe:animate-[heroZoom_28s_ease-out_infinite_alternate]"
+              imgClassName="motion-safe:animate-[softFadeIn_var(--dur-image,780ms)_var(--ease-scene,ease-out)_both]"
             />
           </ParallaxLayer>
 
           {/* Editorial header — title, blurb and meta sit BELOW the hero
               so the cinematic image reads as a single quiet frame. */}
           <div className="mt-6 sm:mt-8">
-            <Eyebrow>Signature Experience</Eyebrow>
+            <Eyebrow>Private Signature Experience</Eyebrow>
             <h1 className="serif mt-3 text-[2rem] font-medium sm:text-4xl md:text-5xl lg:text-6xl leading-[1.08] sm:leading-[1.02] tracking-normal max-w-3xl text-[color:var(--charcoal)]">
               {tour.title}
             </h1>
@@ -428,7 +430,26 @@ function TourHero({
                 </>
               )}
             </div>
+
+            {/* Included at a glance — first inclusions from the existing
+                source-of-truth list, so the offer is understandable above
+                the fold without opening anything. Full list stays below. */}
+            {heroIncluded.length > 0 && (
+              <ul className="mt-4 flex flex-wrap items-center gap-x-4 gap-y-1.5 text-[13px] leading-[1.5] text-[color:var(--charcoal-soft)]">
+                {heroIncluded.map((item) => (
+                  <li key={item} className="flex items-start gap-1.5">
+                    <Check
+                      size={13}
+                      className="mt-[3px] flex-shrink-0 text-[color:var(--gold)]"
+                      aria-hidden="true"
+                    />
+                    <span>{item}</span>
+                  </li>
+                ))}
+              </ul>
+            )}
           </div>
+
 
           <div className="mt-6 flex flex-col items-start gap-3">
             {typeof (tour as { priceFrom?: number }).priceFrom === "number" ? (
