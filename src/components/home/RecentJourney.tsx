@@ -4,6 +4,7 @@ import { ChevronLeft, ChevronRight, X, ZoomIn } from "lucide-react";
 import { Eyebrow } from "@/components/ui/Eyebrow";
 import { CtaButton } from "@/components/ui/CtaButton";
 import { CtaPair } from "@/components/ui/CtaPair";
+import { CTA_LABELS } from "@/content/cta-vocabulary";
 
 /**
  * Bespoke Travel Designer — proof block.
@@ -602,17 +603,16 @@ export function RecentJourney() {
             expands on hover into a small chevron. Primary sits at
             full charcoal; secondary softens to 70% opacity. */}
         <div className="reveal mt-10 md:mt-12 max-w-2xl mx-auto text-center">
+          {/* ONE primary action only — the duplicate "Talk to a designer"
+              competed with the same intent and has been removed. */}
           <CtaPair justify="center" className="gap-x-10">
             <CtaButton
               to="/multi-day"
               variant="hairline"
-              aria-label="Start the conversation with a Travel Designer"
+              aria-label="Design my journey with a Travel Designer"
               className="opacity-100"
             >
-              Start the conversation
-            </CtaButton>
-            <CtaButton to="/contact" variant="hairline" aria-label="Talk to a designer">
-              Talk to a designer
+              {CTA_LABELS.travelDesigner}
             </CtaButton>
           </CtaPair>
         </div>

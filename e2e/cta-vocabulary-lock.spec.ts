@@ -47,8 +47,10 @@ test.describe("CTA vocabulary lock", () => {
     });
   }
 
-  test("home surfaces the new Signature primary", async ({ page }) => {
-    await page.goto("/");
+  // Homepage Signature cards intentionally carry ONE quiet "View experience"
+  // action; reserving and tailoring live on the detail page.
+  test("signature detail page surfaces the new Signature primary", async ({ page }) => {
+    await page.goto("/tours/arrabida-wine-allinclusive");
     await expect(
       page.getByRole("link", { name: /reserve this day/i }).first(),
     ).toBeVisible();
