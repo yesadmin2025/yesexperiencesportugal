@@ -6064,9 +6064,7 @@ html {
 .hero-cinematic .hero-h1 {
   font-weight: 400;
   color: var(--gold-soft);
-  text-shadow:
-    0 1px 1px color-mix(in oklab, var(--charcoal-deep) 72%, transparent),
-    0 2px 5px color-mix(in oklab, var(--charcoal-deep) 36%, transparent);
+  text-shadow: 0 1px 2px color-mix(in oklab, var(--charcoal-deep) 45%, transparent);
 }
 .hero-cinematic .hero-cinematic-composition {
   transform: none;
@@ -6082,9 +6080,7 @@ html {
   color: color-mix(in oklab, var(--gold-soft) 78%, var(--ivory));
   letter-spacing: 0.035em;
   word-spacing: 0.05em;
-  text-shadow:
-    0 1px 2px color-mix(in oklab, var(--charcoal-deep) 86%, transparent),
-    0 5px 22px color-mix(in oklab, var(--charcoal-deep) 58%, transparent);
+  text-shadow: 0 1px 3px color-mix(in oklab, var(--charcoal-deep) 42%, transparent);
 }
 .hero-cinematic .hero-cta-group {
   gap: 12px;
