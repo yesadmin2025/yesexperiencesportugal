@@ -223,12 +223,12 @@ function PathCard({ path, featured }: { path: Path; featured: boolean }) {
       <p className="mt-3 text-[15px] md:text-[16px] leading-[1.7] text-[color:var(--charcoal-soft)]">
         {path.body}
       </p>
-      {/* Discreet affordance — the whole card is the action. The arrow is
-          enlarged and given a visible surface so the interaction cue reads
-          instantly, with a one-time rightward nudge on reveal and a small
-          shift on hover / tap. */}
-      <span className="mt-auto pt-7 inline-flex min-h-[44px] items-center gap-2">
-        <span className="sr-only">{path.cta}</span>
+      {/* Visible label + arrow — the whole card remains the action, but the
+          destination is readable at a glance before clicking. */}
+      <span className="mt-auto pt-7 inline-flex min-h-[44px] items-center gap-3">
+        <span className="text-[11px] uppercase tracking-[0.22em] font-semibold text-[color:var(--teal)]">
+          {path.cta}
+        </span>
         <span className="home-way-arrow inline-flex h-10 w-10 items-center justify-center rounded-full border border-[color:var(--gold)] bg-[color:var(--gold-soft)] text-[color:var(--teal)] shadow-[0_8px_20px_-10px_color-mix(in_oklab,var(--charcoal-deep)_28%,transparent)] transition-[transform,background-color,border-color] duration-[var(--dur-base)] ease-[var(--ease-scene)] group-hover:translate-x-2 group-hover:bg-[color:var(--gold)] group-focus-visible:translate-x-2 group-active:translate-x-1.5">
           <ArrowRight
             size={21}
