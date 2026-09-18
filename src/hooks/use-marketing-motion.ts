@@ -27,14 +27,20 @@ export function usePublicEditorialMotion(pathname: string): void {
     let disposeController: (() => void) | undefined;
     let firstFrame = 0;
     let secondFrame = 0;
+    let settleTimer = 0;
 
     // Effects run after hydration. Two frames give the routed subtree one
     // settled paint without making visitors wait for a long mutation-free
     // window before scroll movement becomes available.
     const boot = () => {
-      void import("@/lib/home-motion").then(({ startHomeMotion }) => {
-        if (!cancelled) disposeController = startHomeMotion();
-      });
+      // A short post-hydration settle avoids adding data attributes while a
+      // lazy route subtree is still hydrating. Content remains visible during
+      // this window, so conversion actions are never delayed or blocked.
+      settleTimer = window.setTimeout(() => {
+        void import("@/lib/home-motion").then(({ startHomeMotion }) => {
+          if (!cancelled) disposeController = startHomeMotion();
+        });
+      }, 180);
     };
     firstFrame = window.requestAnimationFrame(() => {
       secondFrame = window.requestAnimationFrame(boot);
@@ -44,6 +50,7 @@ export function usePublicEditorialMotion(pathname: string): void {
       cancelled = true;
       window.cancelAnimationFrame(firstFrame);
       window.cancelAnimationFrame(secondFrame);
+      window.clearTimeout(settleTimer);
       disposeController?.();
       document.documentElement.classList.remove("motion-ready");
       delete document.documentElement.dataset.motionScope;

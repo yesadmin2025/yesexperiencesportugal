@@ -153,4 +153,4 @@
 ## 23. Site-wide public animations
 - [x] Audit all public pages for central editorial motion coverage and missing reveal targets.
 - [x] Apply calm site-wide transitions without changing checkout, Studio, routes, copy, or business logic.
-- [ ] Validate motion budget, reduced motion, mobile overflow, and representative public pages.
+- [x] Validate motion budget, reduced motion, mobile overflow, and representative public pages.
