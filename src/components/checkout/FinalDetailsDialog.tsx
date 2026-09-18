@@ -155,6 +155,7 @@ export function FinalDetailsDialog({
     if (initial?.language) setLanguage(initial.language);
     if (initial?.startTime) setStartTime(initial.startTime);
     setDateError(null);
+    setMissingSummary([]);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [open]);
 
