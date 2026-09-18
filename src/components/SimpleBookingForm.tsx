@@ -330,7 +330,10 @@ export function SimpleBookingForm({ tour }: { tour: SignatureTour }) {
   };
 
   return (
-    <div className="border-y border-[color:var(--border)] bg-[color:var(--ivory)] py-6 sm:border sm:bg-[color:var(--card)] sm:p-7">
+    <div
+      ref={formRef}
+      className="border-y border-[color:var(--border)] bg-[color:var(--ivory)] py-6 sm:border sm:bg-[color:var(--card)] sm:p-7"
+    >
       <Eyebrow>Availability</Eyebrow>
       <SectionTitle size="compact" spacing="tight">
         Book the Signature, <SectionTitle.Em>as designed</SectionTitle.Em>
@@ -341,6 +344,7 @@ export function SimpleBookingForm({ tour }: { tour: SignatureTour }) {
         <Field label="Date" icon={<Calendar size={14} />}>
           <input
             type="date"
+            ref={dateRef}
             aria-label="Date of your experience"
             value={date}
             onChange={(e) => {
