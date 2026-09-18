@@ -61,6 +61,11 @@ export const ADMIN_GROUPS: AdminGroup[] = [
     links: [
       { to: "/admin/gsc", label: "Google Search Console" },
       { to: "/admin/seo-monitor", label: "SEO monitor" },
+      {
+        to: "/admin/seo-experiences",
+        label: "SEO by experience",
+        hint: "Clicks, position and paid bookings per experience",
+      },
       { to: "/admin/seo-strategy", label: "SEO authority strategy" },
       { to: "/admin/seo-jsonld", label: "Structured data" },
       { to: "/admin/tour-link-audit", label: "Internal link audit" },
