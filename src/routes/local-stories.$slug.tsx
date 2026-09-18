@@ -1,5 +1,5 @@
 import type React from "react";
-import { createFileRoute, Link, notFound, useRouter } from "@tanstack/react-router";
+import { createFileRoute, Link, notFound, redirect, useRouter } from "@tanstack/react-router";
 
 import { SiteLayout } from "@/components/SiteLayout";
 import { SiteBreadcrumbs } from "@/components/SiteBreadcrumbs";
@@ -15,6 +15,7 @@ import {
 } from "@/lib/jsonld";
 import { PLANNER_REGIONS } from "@/content/portugal-planner-map";
 import {
+  consolidatedLocalStoryTarget,
   getLocalStoryArticle,
   GUIDE_INLINE_BOOKING,
   type LocalStoryArticle,
@@ -215,6 +216,17 @@ export const Route = createFileRoute("/local-stories/$slug")({
     const placeholders = new Set(["", "slug", "undefined", "null", "example"]);
     const validSlug = /^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(slug) && slug.length >= 2;
     if (placeholders.has(slug) || slug.startsWith("$") || !validSlug) throw notFound();
+
+    // Wine-cluster consolidation: retired guides 301 to the surviving guide
+    // that owns the same search intent, so authority lands on one URL.
+    const consolidatedTarget = consolidatedLocalStoryTarget(slug);
+    if (consolidatedTarget) {
+      throw redirect({
+        to: "/local-stories/$slug",
+        params: { slug: consolidatedTarget },
+        statusCode: 301,
+      });
+    }
     return undefined as never;
   },
 

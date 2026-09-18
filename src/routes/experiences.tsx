@@ -121,7 +121,7 @@ function TourCard({ tour, resolveImg, featured = false }: { tour: SignatureTour;
   const meta = getViatorMeta(tour.id);
   const verifiedRating = meta?.rating;
   const verifiedReviewCount = meta?.reviewCount;
-  const highlights = tour.highlights.slice(0, 3);
+  const highlights = content.highlights.slice(0, 3);
   return (
     <article className="experience-editorial-card reveal-stagger group flex min-w-0 flex-col text-left" aria-label={tour.title}>
       <Link

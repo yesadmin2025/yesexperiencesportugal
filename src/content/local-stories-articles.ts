@@ -201,7 +201,7 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
       },
       {
         heading: "What to pair it with",
-        body: "Setúbal wine makes most sense when experienced with the food and landscape that surround it. Azeitão cheese is the classic local pairing, particularly with Moscatel, but the region also offers excellent bread, olive oil, seafood and grilled fish.\n\nSetúbal itself is known for its fishing tradition, while Sesimbra and Portinho da Arrábida offer coastal lunches where the setting becomes part of the experience. A dry white can work beautifully with fresh fish, while local reds pair naturally with meat, richer dishes and aged cheese.\n\nThe point is not to rush from tasting to tasting. A good Setúbal wine day leaves room for lunch, conversation and the pleasure of understanding why the wines taste as they do here. If you are choosing where to start, our guide to the [best wine tasting near Lisbon](/local-stories/best-wine-tasting-near-lisbon) compares Azeitão, Setúbal and Arrábida side by side.",
+        body: "Setúbal wine makes most sense when experienced with the food and landscape that surround it. Azeitão cheese is the classic local pairing, particularly with Moscatel, but the region also offers excellent bread, olive oil, seafood and grilled fish.\n\nSetúbal itself is known for its fishing tradition, while Sesimbra and Portinho da Arrábida offer coastal lunches where the setting becomes part of the experience. A dry white can work beautifully with fresh fish, while local reds pair naturally with meat, richer dishes and aged cheese.\n\nThe point is not to rush from tasting to tasting. A good Setúbal wine day leaves room for lunch, conversation and the pleasure of understanding why the wines taste as they do here. If you are choosing where to start, our guide to the [best wine tours from Lisbon](/local-stories/best-wine-tours-from-lisbon) compares Azeitão, Setúbal and Arrábida side by side.",
       },
     ],
     ctaLead:
@@ -209,7 +209,7 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
     ctaLabel: "See the Arrábida Wine Signature",
     signatureSlug: "arrabida-wine-allinclusive",
     relatedReads: [
-      { path: "/local-stories/arrabida-wine-tour", label: "Arrábida wine tour from Lisbon" },
+      { path: "/local-stories/arrabida-wine-tour-from-lisbon", label: "Arrábida wine tour from Lisbon" },
       { path: "/tours/arrabida-wine-allinclusive", label: "Arrábida Wine — All Inclusive" },
       { path: "/local-stories/best-wineries-near-lisbon", label: "Best wineries near Lisbon" },
       { path: "/local-stories/what-to-do-in-sesimbra", label: "Things to do in Sesimbra" },
@@ -249,7 +249,7 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
       },
       {
         heading: "A half-day in Sesimbra, if you have less time",
-        body: "Sesimbra also works well when a full sightseeing day feels unnecessary. A relaxed half-day can include a coastal drive through Arrábida, time beside the harbour, a walk through the old centre and a long seafood lunch.\n\nIt is particularly suitable for travelers staying in Lisbon who want to see another side of the region without beginning early or returning late. The town offers enough to feel like a genuine escape, but not so much that the visit becomes another demanding itinerary.\n\nFor a slower version, combine Sesimbra with a viewpoint or quiet beach. For a fuller day, add wineries in Azeitão or Setúbal — our guide to the [best wine tasting near Lisbon](/local-stories/best-wine-tasting-near-lisbon) compares them, and you can shape either version yourself in the [Experience Studio](/studio-v3).",
+        body: "Sesimbra also works well when a full sightseeing day feels unnecessary. A relaxed half-day can include a coastal drive through Arrábida, time beside the harbour, a walk through the old centre and a long seafood lunch.\n\nIt is particularly suitable for travelers staying in Lisbon who want to see another side of the region without beginning early or returning late. The town offers enough to feel like a genuine escape, but not so much that the visit becomes another demanding itinerary.\n\nFor a slower version, combine Sesimbra with a viewpoint or quiet beach. For a fuller day, add wineries in Azeitão or Setúbal — our guide to the [wine day from Lisbon](/local-stories/best-wine-tours-from-lisbon) compares them, and you can shape either version yourself in the [Experience Studio](/studio-v3).",
       },
       {
         heading: "Best time to visit Sesimbra, and how long you need",
@@ -272,7 +272,6 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
       { path: "/tours/wild-beaches-picnic", label: "Wild Beaches & Picnic — private day" },
       { path: "/tours/arrabida-wine-allinclusive", label: "Arrábida Wine — All Inclusive" },
       { path: "/local-stories/best-day-trips-from-lisbon", label: "Best day trips from Lisbon" },
-      { path: "/local-stories/best-wine-tasting-near-lisbon", label: "Where to taste wine near Lisbon" },
     ],
 
     datePublished: "2026-06-04",
@@ -594,7 +593,7 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
       },
       {
         heading: "Setúbal Moscatel — sweet, salty, and very Portuguese",
-        body: "Moscatel de Setúbal is one of Portugal's great fortified wines and one of the clearest expressions of this region. It begins with intensely aromatic grapes and develops greater complexity through ageing.\n\nOrange blossom, candied citrus, honey, dried fruit and spices are common notes. Some wines remain bright and floral, while older Moscatel can become deep, nutty and almost savoury. That contrast between sweetness, acidity and a subtle saline character is what makes it so distinctive.\n\nIt is traditionally associated with dessert, but locally it also appears beside Azeitão cheese or as the final glass after a long lunch. For many visitors, Moscatel becomes the unexpected discovery of a wine tour near Lisbon — and it is the reason we point first-time guests towards a [tasting day in Azeitão and Setúbal](/local-stories/best-wine-tasting-near-lisbon).",
+        body: "Moscatel de Setúbal is one of Portugal's great fortified wines and one of the clearest expressions of this region. It begins with intensely aromatic grapes and develops greater complexity through ageing.\n\nOrange blossom, candied citrus, honey, dried fruit and spices are common notes. Some wines remain bright and floral, while older Moscatel can become deep, nutty and almost savoury. That contrast between sweetness, acidity and a subtle saline character is what makes it so distinctive.\n\nIt is traditionally associated with dessert, but locally it also appears beside Azeitão cheese or as the final glass after a long lunch. For many visitors, Moscatel becomes the unexpected discovery of a wine tour near Lisbon — and it is the reason we point first-time guests towards a a private wine day from Lisbon.",
       },
       {
         heading: "Alentejo talha wines — buried clay, ancient method",
@@ -602,7 +601,7 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
       },
       {
         heading: "How we choose which wineries to visit",
-        body: "We choose wineries according to the quality of the experience, not only the fame of the label. Good wine matters, but so do the people hosting, the time allowed for the visit and the ability to explain the region without turning the tasting into a rehearsed sales presentation.\n\nFor some guests, the right choice is a small family cellar. Others appreciate the history and wider range of an established estate. Some want traditional Portuguese grapes, while others are curious about natural methods, clay amphorae or premium aged wines.\n\nWe therefore build the winery combination around the traveler, availability and the rhythm of the day. The goal is contrast: different producers, different stories and enough time to understand what makes each one worth visiting.\n\nIf you are still deciding which region to give your day to, our guide to the [best wine tours from Lisbon](/local-stories/best-wine-tours-from-lisbon) sets Arrábida, Azeitão and Alentejo side by side.",
+        body: "We choose wineries according to the quality of the experience, not only the fame of the label. Good wine matters, but so do the people hosting, the time allowed for the visit and the ability to explain the region without turning the tasting into a rehearsed sales presentation.\n\nFor some guests, the right choice is a small family cellar. Others appreciate the history and wider range of an established estate. Some want traditional Portuguese grapes, while others are curious about natural methods, clay amphorae or premium aged wines.\n\nWe therefore build the winery combination around the traveler, availability and the rhythm of the day. The goal is contrast: different producers, different stories and enough time to understand what makes each one worth visiting.\n\nIf you are still deciding which region to give your day to, our guide to the [Arrábida, Azeitão and Alentejo compared](/local-stories/best-wine-tours-from-lisbon) sets Arrábida, Azeitão and Alentejo side by side.",
       },
     ],
     ctaLead:
@@ -611,7 +610,6 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
     signatureSlug: "arrabida-wine-allinclusive",
     relatedSignatures: [{ slug: "evora-alentejo", label: "Évora & Alentejo Signature" }],
     relatedReads: [
-      { path: "/local-stories/wine-tours-lisbon", label: "Wine tours from Lisbon" },
       { path: "/tours/arrabida-wine-allinclusive", label: "Arrábida Wine — All Inclusive" },
       { path: "/local-stories/setubal-wine-guide", label: "Setúbal wine country guide" },
     ],
@@ -673,10 +671,10 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
     ],
     relatedReads: [
       { path: "/local-stories/private-tours-from-lisbon", label: "Best private tours from Lisbon" },
-      { path: "/local-stories/arrabida-wine-tour", label: "Arrábida wine tour guide" },
+      { path: "/local-stories/arrabida-wine-tour-from-lisbon", label: "Arrábida wine tour guide" },
       {
-        path: "/local-stories/best-wine-tasting-near-lisbon",
-        label: "Best wine tasting near Lisbon",
+        path: "/local-stories/best-wine-tours-from-lisbon",
+        label: "Best wine tours from Lisbon",
       },
       { path: "/local-stories/what-to-do-in-sesimbra", label: "Things to do in Sesimbra" },
     ],
@@ -1172,11 +1170,11 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
     slug: "best-wine-tours-from-lisbon",
     title: "Best Wine Tours from Lisbon: Private Day Trips (2026)",
     metaDescription:
-      "Compare the best wine tours from Lisbon: private Arrábida, Azeitão and Alentejo day trips with hotel pickup and tastings, run by a licensed local team.",
+      "Compare and book the best wine tours from Lisbon — private Arrábida, Azeitão and Alentejo day trips with hotel pickup, tastings and lunch, run by a local team.",
     h1: "The Best Wine Tours from Lisbon",
     eyebrow: "Lisbon · Wine",
     standfirst:
-      "Three real wine regions sit within 90 minutes of Lisbon. Here are the private days we actually run — what each one feels like, and how to choose between them.",
+      "Three real wine regions sit within 90 minutes of Lisbon. Here are the private days we actually run — what each one feels like, what it costs you in time, and how to choose between them.",
     sections: [
       {
         heading: "Lisbon is closer to serious wine country than travelers expect.",
@@ -1202,9 +1200,69 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
         heading: "How to choose.",
         body: "If it is your first wine day from Lisbon, choose [Arrábida](/tours/arrabida-wine-allinclusive) — coast, food and wine in the same afternoon. If you want to be back early and taste seriously, choose [Azeitão](/tours/azeitao-cheese). If Alentejo is on your list, choose [Évora](/tours/evora-alentejo) for the heritage plus wine, or [Roman Heritage](/tours/roman-heritage-alentejo) for the deeper wine story. All four are private, licensed, and shaped around your pace — never a fixed coach itinerary.",
       },
+      {
+        heading: "The wine regions themselves, compared.",
+        body: "Setúbal is the closest — twenty-five minutes south, Moscatel country, family estates and quiet tastings along the Sado estuary. Palmela next door is Castelão red country: dark, structured, some of the best value bottles in Portugal. Arrábida is the one with the view, vineyards sitting between a limestone natural park and the Atlantic, with lunch in Sesimbra or Portinho. Alentejo, ninety minutes east, changes the landscape completely: cork oaks, wheat plains, white villages, and cellars still fermenting in buried clay talhas.\n\nShort on time and you want one beautiful day, choose Arrábida. Wine-obsessed and happy to drive, choose Alentejo. First trip to Portugal and you want something genuinely local without the distance, Setúbal and Azeitão together are the answer.",
+      },
+      {
+        heading: "Is a wine tour from Lisbon actually worth it?",
+        body: "Yes — if you go private, go south, and skip the coach. Within an hour of the city you have three serious wine regions, and within two, Alentejo opens up. The mistake most travelers make is booking a forty-seat bus with three rushed tastings and a buffet lunch. That is not a wine tour; it is a logistics exercise with wine in it.\n\nIt is worth it when the day is private and paced around one or two real wineries instead of five, when lunch is sit-down and local and lasts longer than the tastings, and when the host actually knows the winemakers. If you have only one day in Lisbon and have never seen the city, do Lisbon instead. If you do not drink, a wine-led day will feel long.",
+      },
+      {
+        heading: "What a private wine day from Lisbon includes.",
+        body: "Every day on this page is private to your party and runs door to door: pickup and drop-off at your Lisbon hotel or apartment, a licensed driver-guide, a comfortable private vehicle, winery visits and tastings arranged in advance, and a long local lunch on the full-day versions. You choose how long to linger at each table, which cellar to add, and whether the day ends on a viewpoint or back in the city for dinner.\n\nEach Signature page shows the exact duration, the from-price and what is included, and can be reserved for a chosen date — or tailored around your pace, interests and group size before you book.",
+      },
+    ],
+    comparison: {
+      caption: "The private wine days we run from Lisbon",
+      columns: ["Private day", "Region", "Length", "Best for"],
+      rows: [
+        [
+          "Arrábida Wine — All Inclusive",
+          "Azeitão · Setúbal · Arrábida",
+          "About 8 hours",
+          "First wine day from Lisbon: cellars, market, coast and a long lunch",
+        ],
+        [
+          "Azeitão Cheese & Wine",
+          "Azeitão",
+          "Half day",
+          "Tasting-focused travelers who want the evening in Lisbon",
+        ],
+        [
+          "Évora & Alentejo Wine",
+          "Alentejo · Évora",
+          "About 11 hours",
+          "UNESCO heritage plus Alentejo reds in one full day",
+        ],
+        [
+          "Roman Heritage & Talha Wines",
+          "Alentejo",
+          "Full day",
+          "Wine travelers curious about clay-amphora winemaking",
+        ],
+      ],
+    },
+    faq: [
+      {
+        q: "What is the best wine tour from Lisbon?",
+        a: "For a first visit, the private Arrábida all-inclusive day: family cellars in Azeitão, Setúbal's Livramento market, a long Portuguese lunch and the Arrábida coast, about eight hours door to door from your Lisbon hotel.",
+      },
+      {
+        q: "How far is wine country from Lisbon?",
+        a: "Azeitão, Setúbal and Palmela are roughly twenty-five to forty minutes south of Lisbon. Arrábida is about forty minutes. Évora and the wider Alentejo are around ninety minutes east.",
+      },
+      {
+        q: "Is a private wine tour better than a group tour?",
+        a: "For wine, yes. A private day means your own pace at each cellar, a sit-down local lunch rather than a buffet, and the freedom to add or skip a stop. Group coaches compress the same route into a fixed timetable.",
+      },
+      {
+        q: "Can I book a wine tour from Lisbon for a specific date?",
+        a: "Yes. Each Signature wine day can be reserved for your date with hotel pickup, or tailored around your group and interests first.",
+      },
     ],
     ctaLead:
-      "Every day above exists as a private Signature Experience. Prefer to shape your own? Our Studio lets you design a wine day from scratch.",
+      "Every day above exists as a private Signature Experience you can reserve for your date. Prefer to shape your own? Our Studio lets you design a wine day from scratch.",
     ctaLabel: "See all Signature Experiences",
     signatureSlug: "arrabida-wine-allinclusive",
     relatedSignatures: [
@@ -1213,14 +1271,16 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
       { slug: "roman-heritage-alentejo", label: "Roman Heritage Wine Tour" },
     ],
     relatedReads: [
-      { path: "/local-stories/private-wine-tour-lisbon", label: "Private wine tour from Lisbon" },
       {
-        path: "/local-stories/best-wine-tasting-near-lisbon",
-        label: "Best wine tasting near Lisbon",
+        path: "/local-stories/arrabida-wine-tour-from-lisbon",
+        label: "The Arrábida wine day in detail",
       },
+      { path: "/local-stories/setubal-wine-guide", label: "Setúbal wine country guide" },
+      { path: "/local-stories/best-wineries-near-lisbon", label: "Best wineries near Lisbon" },
       { path: "/portugal-travel-designer", label: "Design your own Portugal journey" },
     ],
     datePublished: "2026-07-24",
+    dateModified: "2026-09-18",
   },
   {
     slug: "portugal-coastal-drives-from-lisbon",
@@ -1699,7 +1759,7 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
     signatureSlug: "arrabida-wine-allinclusive",
     relatedReads: [
       { path: "/portugal-for-american-travelers", label: "Portugal for American travelers" },
-      { path: "/local-stories/portugal-wine-tours", label: "Portugal wine tours guide" },
+      { path: "/local-stories/best-wine-tours-from-lisbon", label: "Best wine tours from Lisbon" },
     ],
     datePublished: "2026-09-11",
   },
@@ -1754,6 +1814,46 @@ export const LOCAL_STORIES_ARTICLES_BY_SLUG: Record<string, LocalStoryArticle> =
 export function getLocalStoryArticle(slug: string): LocalStoryArticle | undefined {
   return LOCAL_STORIES_ARTICLES_BY_SLUG[slug];
 }
+
+/**
+ * Wine-cluster consolidation (Sept 2026).
+ *
+ * The wine guides below all answered the same search intent as
+ * `/local-stories/best-wine-tours-from-lisbon`, so Google kept rotating which
+ * one it showed and none of them built authority ("best wine tours lisbon"
+ * fell from page 1 to position 42). Their unique reading now lives in the hub
+ * guide, and each retired slug 301-redirects to its surviving target.
+ *
+ * Keys are retired slugs; values are the surviving slug that owns the intent.
+ * Retired slugs stay out of the sitemap and out of the Local Stories index,
+ * and must never be used as an internal link target.
+ */
+export const CONSOLIDATED_LOCAL_STORY_SLUGS: Readonly<Record<string, string>> = {
+  "wine-tours-lisbon": "best-wine-tours-from-lisbon",
+  "portugal-wine-tours": "best-wine-tours-from-lisbon",
+  "private-wine-tour-lisbon": "best-wine-tours-from-lisbon",
+  "best-wine-regions-near-lisbon": "best-wine-tours-from-lisbon",
+  "best-wine-tasting-near-lisbon": "best-wine-tours-from-lisbon",
+  "is-a-wine-tour-from-lisbon-worth-it": "best-wine-tours-from-lisbon",
+  "arrabida-vs-alentejo": "best-wine-tours-from-lisbon",
+  "arrabida-wine-tour": "arrabida-wine-tour-from-lisbon",
+  "evora-alentejo-wine-tour": "alentejo-wine-tour-from-lisbon",
+} as const;
+
+/** Surviving slug for a retired one, or undefined when the slug still publishes. */
+export function consolidatedLocalStoryTarget(slug: string): string | undefined {
+  return CONSOLIDATED_LOCAL_STORY_SLUGS[slug];
+}
+
+/**
+ * The articles that should be indexed, listed and advertised in sitemap.xml.
+ * Always use this list for anything crawler- or navigation-facing;
+ * `LOCAL_STORIES_ARTICLES` still holds the retired bodies so their reading can
+ * be re-used inside surviving guides.
+ */
+export const PUBLISHED_LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = LOCAL_STORIES_ARTICLES.filter(
+  (a) => !(a.slug in CONSOLIDATED_LOCAL_STORY_SLUGS),
+);
 
 /**
  * Inline booking cards — day-trip guides where the reader arrives with clear

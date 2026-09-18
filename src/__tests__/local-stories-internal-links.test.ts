@@ -3,10 +3,11 @@ import { LOCAL_STORIES_ARTICLES } from "@/content/local-stories-articles";
 
 const TARGET = "/local-stories/best-wine-tours-from-lisbon";
 
+// Surviving wine guides only — the consolidated slugs now 301 to the hub.
 const SOURCE_SLUGS = [
-  "best-wine-tasting-near-lisbon",
+  "setubal-wine-guide",
   "best-wineries-near-lisbon",
-  "private-wine-tour-lisbon",
+  "what-to-do-in-sesimbra",
   "arrabida-wine-tour-from-lisbon",
 ] as const;
 
