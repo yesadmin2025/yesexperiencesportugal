@@ -134,8 +134,8 @@ const POPULAR_SEARCHES: FooterLink[] = [
   { to: "/private-tours-portugal", label: "Private tours Portugal" },
   {
     to: "/local-stories/$slug",
-    params: { slug: "portugal-wine-tours" },
-    label: "Portugal wine tours",
+    params: { slug: "best-wine-tours-from-lisbon" },
+    label: "Best wine tours from Lisbon",
   },
   {
     to: "/local-stories/$slug",
@@ -144,8 +144,8 @@ const POPULAR_SEARCHES: FooterLink[] = [
   },
   {
     to: "/local-stories/$slug",
-    params: { slug: "private-wine-tour-lisbon" },
-    label: "Private wine tour Lisbon",
+    params: { slug: "arrabida-wine-tour-from-lisbon" },
+    label: "Private Arrábida wine tour",
   },
   {
     to: "/local-stories/$slug",

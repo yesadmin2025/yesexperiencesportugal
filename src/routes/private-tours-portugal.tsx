@@ -177,7 +177,7 @@ function Page() {
                 <li>
                   <Link
                     to="/local-stories/$slug"
-                    params={{ slug: "portugal-wine-tours" }}
+                    params={{ slug: "best-wine-tours-from-lisbon" }}
                     className="hover:text-[color:var(--teal)]"
                   >
                     Portugal wine tours →

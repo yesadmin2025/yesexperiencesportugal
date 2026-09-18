@@ -15,7 +15,7 @@ describe("Experiences editorial collection", () => {
 
   it("keeps cards concise with collection highlight lists and verified reviews", () => {
     expect(source).not.toContain("getSignatureCardMoments");
-    expect(source).toContain("tour.highlights");
+    expect(source).toContain("content.highlights");
     expect(source).toContain("signatureDurationLabel");
     expect(source).toContain("verifiedReviewCount");
     expect(source).not.toContain("Lunch included");

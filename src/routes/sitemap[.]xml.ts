@@ -1,7 +1,10 @@
 import { createFileRoute } from "@tanstack/react-router";
 import type {} from "@tanstack/react-start";
 import { signatureTours } from "@/data/signatureTours";
-import { LOCAL_STORIES_ARTICLES } from "@/content/local-stories-articles";
+import {
+  LOCAL_STORIES_ARTICLES,
+  PUBLISHED_LOCAL_STORIES_ARTICLES,
+} from "@/content/local-stories-articles";
 import { supabase } from "@/integrations/supabase/client";
 import { PT_PAIRED_PATHS } from "@/i18n/pt-ready";
 import { SITEMAP_STATIC_ROUTES } from "@/generated/sitemap-routes";
@@ -56,7 +59,9 @@ export const Route = createFileRoute("/sitemap.xml")({
           return /^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(s) && s.length >= 2;
         };
 
-        const staticArticleEntries: SitemapEntry[] = LOCAL_STORIES_ARTICLES.filter((a) =>
+        // Consolidated wine guides 301-redirect to their surviving hub, so only the
+        // published set is advertised to crawlers.
+        const staticArticleEntries: SitemapEntry[] = PUBLISHED_LOCAL_STORIES_ARTICLES.filter((a) =>
           isRealSlug(a.slug),
         ).map((a) => ({
           path: `/local-stories/${a.slug}`,

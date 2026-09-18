@@ -16,13 +16,11 @@ import { SITE_URL } from "@/lib/seo";
 
 /** Local Stories articles migrated from legacy landing routes. */
 export const AFFECTED_PATHS = [
-  "/local-stories/private-wine-tour-lisbon",
-  "/local-stories/wine-tours-lisbon",
-  "/local-stories/arrabida-wine-tour",
+  "/local-stories/best-wine-tours-from-lisbon",
+  "/local-stories/arrabida-wine-tour-from-lisbon",
   "/local-stories/arrabida-day-trip-from-lisbon",
   "/local-stories/sintra-day-tour-from-lisbon",
   "/local-stories/evora-private-tour-from-lisbon",
-  "/local-stories/evora-alentejo-wine-tour",
   "/local-stories/alentejo-wine-tour-from-lisbon",
 ] as const;
 

@@ -6,7 +6,7 @@ import { SiteBreadcrumbs } from "@/components/SiteBreadcrumbs";
 import { Eyebrow } from "@/components/ui/Eyebrow";
 import { SectionTitle } from "@/components/ui/SectionTitle";
 import { CtaButton } from "@/components/ui/CtaButton";
-import { LOCAL_STORIES_ARTICLES } from "@/content/local-stories-articles";
+import { PUBLISHED_LOCAL_STORIES_ARTICLES as LOCAL_STORIES_ARTICLES } from "@/content/local-stories-articles";
 import ogImg from "@/assets/edit-viewpoint.jpg";
 import { useMarketingMotion } from "@/hooks/use-marketing-motion";
 
