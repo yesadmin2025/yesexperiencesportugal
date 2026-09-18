@@ -47,6 +47,7 @@ import {
   gaCheckoutDrawerOpened,
 } from "@/lib/analytics-ga4";
 import { guideAttributionMetadata } from "@/lib/guide-attribution";
+import { SIGNATURE_RESERVE_INTENT_EVENT } from "@/lib/booking/reserve-intent";
 
 /**
  * SimpleBookingForm — the *reserve as-is* path.
