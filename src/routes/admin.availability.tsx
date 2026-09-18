@@ -340,6 +340,40 @@ function AdminAvailabilityPage() {
             </div>
           </header>
 
+          {/* Coverage overview — every Signature, its own calendar state at a
+              glance, so no experience silently falls back to defaults. */}
+          <div className="mt-8 border border-[color:var(--border)] bg-white p-4 sm:p-5" data-availability-coverage>
+            <p className="text-[10px] uppercase tracking-[0.18em] text-[color:var(--charcoal-soft)]">
+              Calendar per experience
+            </p>
+            <ul className="mt-3 divide-y divide-[color:var(--border)]">
+              {tours.map((tour) => {
+                const row = rules[tour.id];
+                const closed = normaliseBlackoutDates(row?.blackout_dates).length;
+                const openDays = row ? normaliseWeekdays(row.weekdays).length : 7;
+                const lead = row?.min_lead_hours ?? 24;
+                const active = tour.id === selectedTourId;
+                return (
+                  <li key={tour.id}>
+                    <button
+                      type="button"
+                      onClick={() => setSelectedTourId(tour.id)}
+                      className={`flex min-h-11 w-full flex-wrap items-center justify-between gap-x-4 gap-y-1 py-2.5 text-left transition-colors ${
+                        active ? "text-[color:var(--teal)]" : "hover:text-[color:var(--teal)]"
+                      }`}
+                    >
+                      <span className="text-sm">{tour.title}</span>
+                      <span className="text-[11px] uppercase tracking-[0.12em] text-[color:var(--charcoal-soft)]">
+                        {row ? "Own calendar" : "Defaults"} · {openDays}/7 days ·{" "}
+                        {closed} closed · {lead}h notice
+                      </span>
+                    </button>
+                  </li>
+                );
+              })}
+            </ul>
+          </div>
+
           <div className="mt-8 grid gap-6 lg:grid-cols-[minmax(0,1fr)_18rem]">
             <div className="border border-[color:var(--border)] bg-white p-4 sm:p-6">
               <div className="flex flex-wrap items-center justify-between gap-3">

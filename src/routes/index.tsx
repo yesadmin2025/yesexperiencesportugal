@@ -907,9 +907,9 @@ function HomePage() {
                             to="/tours/$tourId"
                             params={{ tourId: t.id }}
                             variant="hairline"
-                            aria-label={`View experience — ${t.title}`}
+                            aria-label={`See dates and reserve — ${t.title}`}
                           >
-                            View experience
+                            See dates &amp; reserve
                           </CtaButton>
                         </div>
                       </div>

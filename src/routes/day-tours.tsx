@@ -191,7 +191,7 @@ function DayToursPage() {
                     size="sm"
                     className="mt-5 self-start"
                   >
-                    View experience &amp; reserve
+                    See dates &amp; reserve
                   </CtaButton>
                 </article>
               );

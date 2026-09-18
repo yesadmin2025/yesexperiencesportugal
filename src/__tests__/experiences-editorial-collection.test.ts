@@ -8,7 +8,7 @@ describe("Experiences editorial collection", () => {
   it("uses the two-column editorial grid and two hierarchical actions", () => {
     expect(source).toContain("md:grid-cols-2");
     expect(source).not.toContain("lg:grid-cols-3");
-    expect(source).toContain("View experience");
+    expect(source).toContain("See dates &amp; reserve");
     expect(source).toContain('to="/tours/$tourId/tailor"');
     expect(source).toContain("Tailor this day");
   });

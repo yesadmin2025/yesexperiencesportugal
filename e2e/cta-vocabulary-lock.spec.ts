@@ -47,8 +47,8 @@ test.describe("CTA vocabulary lock", () => {
     });
   }
 
-  // Homepage Signature cards intentionally carry ONE quiet "View experience"
-  // action; reserving and tailoring live on the detail page.
+  // Homepage Signature cards carry ONE conversion-led action, "See dates &
+  // reserve"; reserving and tailoring themselves live on the detail page.
   test("signature detail page surfaces the new Signature primary", async ({ page }) => {
     await page.goto("/tours/arrabida-wine-allinclusive");
     await expect(

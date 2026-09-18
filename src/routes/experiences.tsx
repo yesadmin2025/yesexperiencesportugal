@@ -185,9 +185,9 @@ function TourCard({ tour, resolveImg, featured = false }: { tour: SignatureTour;
             to="/tours/$tourId"
             params={{ tourId: tour.id }}
              className="editorial-action group/link relative inline-flex min-h-[44px] items-center gap-3 font-sans text-[11px] font-semibold uppercase tracking-[0.16em] text-[color:var(--charcoal)] transition-colors duration-[var(--dur-quick)] after:absolute after:bottom-1 after:left-0 after:h-px after:w-full after:origin-left after:bg-[color:var(--gold)] after:transition-transform after:duration-[var(--dur-base)] hover:text-[color:var(--teal)] hover:after:scale-x-75 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)]"
-            aria-label={`View ${tour.title}`}
+            aria-label={`See dates and reserve — ${tour.title}`}
           >
-             View experience <span aria-hidden="true" className="editorial-arrow text-[color:var(--gold)] transition-transform duration-[var(--dur-base)]">→</span>
+             See dates &amp; reserve <span aria-hidden="true" className="editorial-arrow text-[color:var(--gold)] transition-transform duration-[var(--dur-base)]">→</span>
           </Link>
           <Link
             to="/tours/$tourId/tailor"
