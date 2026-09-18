@@ -331,6 +331,11 @@ function TourDetailPage() {
       {/* ── G · CONVERSION — reserve this day ──────────────────── */}
       <BookingBlock tour={tour} />
 
+      <MobileReserveBar
+        tourId={tour.id}
+        priceFrom={(tour as { priceFrom?: number }).priceFrom}
+      />
+
       <FinalCta tour={tour} />
 
       {/* ── H · LONG-FORM CONTEXT + FAQ — quiet, below the decision ── */}
