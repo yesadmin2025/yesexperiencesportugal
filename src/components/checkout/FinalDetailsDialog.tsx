@@ -241,6 +241,28 @@ export function FinalDetailsDialog({
           </DialogHeader>
 
           <div className="overflow-y-auto px-5 sm:px-7 py-5 space-y-5">
+            {/* Errors live in the form itself, not only in a floating toast. */}
+            {missingSummary.length > 0 ? (
+              <div
+                role="alert"
+                aria-live="polite"
+                data-testid="final-details-error-summary"
+                className="border border-[color:var(--gold)]/60 bg-[color:var(--gold-soft)]/25 px-3.5 py-3 text-[13px] leading-snug text-[color:var(--charcoal)]"
+              >
+                {missingSummary.length === 1 ? (
+                  <p>{missingSummary[0]}</p>
+                ) : (
+                  <>
+                    <p className="font-medium">Please complete before payment:</p>
+                    <ul className="mt-1.5 list-disc pl-4 text-[color:var(--charcoal-soft)]">
+                      {missingSummary.map((m) => (
+                        <li key={m}>{m}</li>
+                      ))}
+                    </ul>
+                  </>
+                )}
+              </div>
+            ) : null}
             {/* Already-known day + party: compact summary with Edit, never re-asked. */}
             <div
               data-testid="final-details-known-summary"
