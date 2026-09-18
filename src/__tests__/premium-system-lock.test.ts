@@ -55,7 +55,9 @@ describe("Premium System Lock", () => {
     expect(hook).toContain("NON_EDITORIAL_PATHS");
     expect(hook).toMatch(/\/\^\\\/checkout/);
     expect(hook).toMatch(/\/\^\\\/studio/);
-    expect(hook).toContain("acquireMarketingMotion");
+    expect(hook).toContain('document.documentElement.dataset.motionScope = "marketing"');
+    expect(hook).toContain('import("@/lib/home-motion")');
+    expect(hook).toContain("new MutationObserver");
   });
 
   it("uses Inter for public micro-labels and controls", () => {

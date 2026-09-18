@@ -1,31 +1,5 @@
 import { useEffect } from "react";
 
-let disposeController: (() => void) | undefined;
-let controllerBoot: Promise<void> | undefined;
-
-function stopMarketingMotion(): void {
-  disposeController?.();
-  disposeController = undefined;
-  controllerBoot = undefined;
-  document.documentElement.classList.remove("motion-ready");
-  delete document.documentElement.dataset.motionScope;
-}
-
-function acquireMarketingMotion(): void {
-  document.documentElement.dataset.motionScope = "marketing";
-
-  if (!controllerBoot) {
-    controllerBoot = import("@/lib/home-motion").then(({ startHomeMotion }) => {
-      if (
-        document.documentElement.dataset.motionScope === "marketing" &&
-        !disposeController
-      ) {
-        disposeController = startHomeMotion();
-      }
-    });
-  }
-}
-
 const NON_EDITORIAL_PATHS = [
   /^\/admin(?:\/|\.|$)/,
   /^\/auth(?:\/|$)/,
@@ -43,10 +17,41 @@ const NON_EDITORIAL_PATHS = [
 export function usePublicEditorialMotion(pathname: string): void {
   useEffect(() => {
     if (NON_EDITORIAL_PATHS.some((pattern) => pattern.test(pathname))) {
-      stopMarketingMotion();
+      document.documentElement.classList.remove("motion-ready");
+      delete document.documentElement.dataset.motionScope;
       return;
     }
-    acquireMarketingMotion();
+
+    document.documentElement.dataset.motionScope = "marketing";
+    let cancelled = false;
+    let disposeController: (() => void) | undefined;
+    let settleTimer = 0;
+
+    // Wait until the streamed route subtree has stopped mounting before
+    // auto-tagging it. Mutating SSR markup while a lazy route is hydrating
+    // makes React restore the original attributes and emits a mismatch.
+    const boot = () => {
+      observer.disconnect();
+      void import("@/lib/home-motion").then(({ startHomeMotion }) => {
+        if (!cancelled) disposeController = startHomeMotion();
+      });
+    };
+    const scheduleBoot = () => {
+      window.clearTimeout(settleTimer);
+      settleTimer = window.setTimeout(boot, 400);
+    };
+    const observer = new MutationObserver(scheduleBoot);
+    observer.observe(document.body, { childList: true, subtree: true });
+    scheduleBoot();
+
+    return () => {
+      cancelled = true;
+      observer.disconnect();
+      window.clearTimeout(settleTimer);
+      disposeController?.();
+      document.documentElement.classList.remove("motion-ready");
+      delete document.documentElement.dataset.motionScope;
+    };
   }, [pathname]);
 }
 
@@ -70,6 +75,5 @@ export function usePublicEditorialMotion(pathname: string): void {
  */
 export function useMarketingMotion(): void {
   // Kept as a compatibility hook for existing public route components.
-  // RootComponent now owns the single pathname-aware controller, avoiding
-  // duplicate route-level acquire/release cycles during SPA transitions.
+  // RootComponent owns the pathname-aware controller.
 }
