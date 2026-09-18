@@ -1942,6 +1942,158 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
     ],
     datePublished: "2026-09-18",
   },
+
+  {
+    slug: "tomar-coimbra-day-trip-from-lisbon",
+    title: "Tomar & Coimbra Day Trip from Lisbon — Private Tour (2026)",
+    metaDescription:
+      "Tomar's Templar convent and Coimbra's university in one private day from Lisbon: drive times, what you see inside each site, lunch, and how our day runs.",
+    h1: "Tomar and Coimbra in One Day from Lisbon",
+    eyebrow: "Centro · Heritage",
+    standfirst:
+      "Two inland cities, eight centuries of history and almost no crowds — the day most American travellers add once they have already seen Sintra and Évora.",
+    sections: [
+      {
+        heading: "Why these two cities travel well together.",
+        body: "Tomar and Coimbra sit on the same road north of Lisbon, which is what makes the pairing work. Tomar holds the Templar Convento de Cristo, the fortress-monastery behind Portugal's age of discovery. Coimbra holds the country's oldest university, founded in 1290. Neither needs a full day on its own, and together they fill one properly.",
+      },
+      {
+        heading: "Inside the Convento de Cristo.",
+        body: "The round Templar church sits at the centre, ringed by cloisters added by later orders, and the Manueline window on the west face is the single most photographed piece of stonework in central Portugal. You walk from a fighting order's chapel into Renaissance calm in a few minutes — the layers are the reason to come.",
+      },
+      {
+        heading: "Coimbra is a university you can walk into.",
+        body: "The UNESCO-listed university stands above the city with the Royal Palace of Alcáçova at its heart, law students still in black capes, and the Baroque Biblioteca Joanina holding rare manuscripts — guarded, famously, by a colony of bats that eat the insects that would eat the books. Library entry runs on timed slots, so your guide books the slot on the day rather than making you queue.",
+      },
+      {
+        heading: "Lunch, and the Mondego.",
+        body: "Lunch is in a quiet inland town rather than a tourist row, and it is included on our day along with a local pastry. Afterwards the old-town lanes drop toward the Mondego river, which is the calmest half hour of the trip and the one guests usually remember.",
+      },
+      {
+        heading: "How long the day takes.",
+        body: "Eight to nine hours door to door from your Lisbon accommodation, with entrances, tickets, a certified guide and lunch arranged. The driving is comfortable because both cities lie on the same motorway corridor, and we build in the timed library slot rather than racing it.",
+      },
+      {
+        heading: "Who this day suits.",
+        body: "History and heritage travellers, couples on a longer Portugal trip, and anyone who has already done the Sintra and Évora circuits and wants somewhere with far fewer coaches. It is also a strong choice in summer, because both main sites are largely indoors and inland shade is easy to find.",
+      },
+    ],
+    ctaLead:
+      "This is the day exactly as we run it — private to your party, Lisbon pickup, entrances, guide and lunch included.",
+    ctaLabel: "See dates & reserve",
+    signatureSlug: "tomar-coimbra",
+    relatedSignatures: [
+      { slug: "fatima-nazare-obidos", label: "Fátima · Nazaré · Óbidos" },
+      { slug: "evora-alentejo", label: "Évora & Alentejo Signature" },
+    ],
+    relatedReads: [
+      { path: "/day-trips-from-lisbon", label: "Compare every day trip from Lisbon" },
+      { path: "/local-stories/fatima-day-trip-from-lisbon", label: "Fátima day trip guide" },
+      {
+        path: "/portugal-for-american-travelers",
+        label: "Plan Portugal from the United States",
+      },
+    ],
+    faq: [
+      {
+        q: "Can you really see Tomar and Coimbra in one day from Lisbon?",
+        a: "Yes. Both sit on the same corridor north of Lisbon, so the driving between them is short. It is a full eight to nine hour day, not a half day.",
+      },
+      {
+        q: "Is the Joanina library included?",
+        a: "Yes — entrances and tickets are included, and because library entry runs on timed slots your guide secures the slot on the day.",
+      },
+      {
+        q: "How much walking is involved?",
+        a: "Moderate. The convent is large and flat inside, while Coimbra's old town is steep in places. Tell us in advance and we adjust the route and the pace.",
+      },
+      {
+        q: "Is lunch included?",
+        a: "Yes, along with bottled water and a local pastry, in a quiet inland town rather than a tourist strip.",
+      },
+      {
+        q: "Is it better than Sintra for a first visit?",
+        a: "No — if it is your first day trip, Sintra or Arrábida usually wins. Tomar and Coimbra are the day to add on a second visit, or when you want history without crowds.",
+      },
+    ],
+    datePublished: "2026-09-19",
+  },
+
+  {
+    slug: "arrabida-boat-tour-from-lisbon",
+    title: "Arrábida Boat Tour from Lisbon — Private Day with Coastal Cruise",
+    metaDescription:
+      "A private Arrábida day from Lisbon with a Sesimbra coastal boat ride into hidden coves, Cabo Espichel cliffs and golden-hour Sesimbra. What to expect.",
+    h1: "Seeing Arrábida from the Water",
+    eyebrow: "Setúbal · Arrábida",
+    standfirst:
+      "The Arrábida coast looks good from the road. From a boat, inside the coves, it looks like somewhere else entirely.",
+    sections: [
+      {
+        heading: "The day starts at a market, not a marina.",
+        body: "Mercado do Livramento in Setúbal is tiled floor to ceiling and still the place the local fish goes first thing in the morning. It sets the tone for a day led by the sea, and it is a short drive from there into the Arrábida Natural Park.",
+      },
+      {
+        heading: "Into the park by road, then out on the water.",
+        body: "The park road climbs through green hills with the bay opening below, and the coastal boat tour leaves from Sesimbra. There are three boat options, so the ride can be a short coastal cruise or a longer discovery route with lunch on board.",
+      },
+      {
+        heading: "Lapa de Santa Margarida is the reason people book the boat.",
+        body: "It is a sea cave with a chapel inside it, reachable comfortably from the water, and it is silent in a way the rest of the coast is not. Depending on the day and the conditions there is time to swim, snorkel, or simply drift in the turquoise water.",
+      },
+      {
+        heading: "Sesimbra and Cabo Espichel close the day.",
+        body: "Back on land, Sesimbra is a working fishing village — harbour seafood, an easy stroll, and a ninth-century clifftop castle above it. Late afternoon runs out to Cabo Espichel, a wind-exposed cape with a lighthouse and the Sanctuary of Our Lady of the Cape, which is where the light is best.",
+      },
+      {
+        heading: "What the sea decides.",
+        body: "Boat departures depend on sea conditions, and your guide reroutes naturally when the water does not cooperate — the coast road, the castle and the cape carry the day on their own. Bring swimwear and a light layer for the boat.",
+      },
+      {
+        heading: "Who this day suits.",
+        body: "Couples wanting a slow, sea-led day, active families with older children, and travellers who would rather look at landscape than at monuments. If you want cellars and a long lunch instead, the Arrábida wine day covers the same region by road.",
+      },
+    ],
+    ctaLead:
+      "Private to your party, with the coastal boat ride, pickup anywhere in Lisbon, Setúbal, Sesimbra or Almada, and the guide arranged.",
+    ctaLabel: "See dates & reserve",
+    signatureSlug: "arrabida-boat",
+    relatedSignatures: [
+      { slug: "arrabida-wine-allinclusive", label: "Arrábida Wine Signature" },
+      { slug: "wild-beaches-picnic", label: "Wild Beaches & Picnic" },
+    ],
+    relatedReads: [
+      {
+        path: "/local-stories/arrabida-day-trip-from-lisbon",
+        label: "Arrábida day trip guide",
+      },
+      { path: "/local-stories/what-to-do-in-sesimbra", label: "Things to do in Sesimbra" },
+      { path: "/experiences", label: "All Signature experiences" },
+    ],
+    faq: [
+      {
+        q: "How long is the boat ride?",
+        a: "It depends on the option chosen — there are three, from a shorter coastal cruise to a longer discovery route that includes lunch on board.",
+      },
+      {
+        q: "What happens if the sea is rough?",
+        a: "The boat does not go out. Your guide reroutes the day along the coast road, the Sesimbra castle and Cabo Espichel instead, so the day still happens.",
+      },
+      {
+        q: "Can we swim?",
+        a: "Usually yes, conditions permitting — swimming, snorkelling or simply drifting in the coves. Bring swimwear and a light layer.",
+      },
+      {
+        q: "Is lunch included?",
+        a: "Lunch is included when you choose the Arrábida Discovery Boat Tour with lunch; on the other boat options it can be added when you tailor the day.",
+      },
+      {
+        q: "Is it suitable for young children?",
+        a: "It works best with older children and teenagers. Tell us the ages in advance and we advise on the calmest boat option.",
+      },
+    ],
+    datePublished: "2026-09-19",
+  },
 ];
 
 
@@ -2064,5 +2216,13 @@ export const GUIDE_INLINE_BOOKING: Readonly<
   "azulejo-tile-painting-workshop-lisbon": {
     tourSlug: "tiles-workshop",
     lead: "The craft day itself: the tile atelier, a Setúbal winery tasting and Sesimbra by the sea, private to your party.",
+  },
+  "tomar-coimbra-day-trip-from-lisbon": {
+    tourSlug: "tomar-coimbra",
+    lead: "The day above, run privately from your Lisbon door: the Templar convent, Coimbra University, entrances and lunch included.",
+  },
+  "arrabida-boat-tour-from-lisbon": {
+    tourSlug: "arrabida-boat",
+    lead: "The coastal day with the boat ride included — hidden coves, Sesimbra at golden hour and pickup on both sides of the Tagus.",
   },
 } as const;
