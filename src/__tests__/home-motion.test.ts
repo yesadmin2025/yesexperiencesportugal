@@ -108,7 +108,7 @@ describe("home-motion controller", () => {
     expect(el.classList.contains("motion-in")).toBe(true);
   });
 
-  it("auto-tags legacy reveal classes with data-motion", async () => {
+  it("leaves legacy reveal classes to the SiteLayout controller", async () => {
     const legacy = document.createElement("div");
     legacy.className = "reveal";
     legacy.getBoundingClientRect = () =>
@@ -126,8 +126,8 @@ describe("home-motion controller", () => {
     document.body.appendChild(legacy);
     dispose = startHomeMotion();
     await flushRaf();
-    expect(legacy.getAttribute("data-motion")).toBe("settle");
-    expect(legacy.classList.contains("motion-in")).toBe(true);
+    expect(legacy.hasAttribute("data-motion")).toBe(false);
+    expect(legacy.classList.contains("motion-in")).toBe(false);
   });
 
   it("auto-tags public editorial headings, imagery, and conversion actions", async () => {
@@ -152,6 +152,16 @@ describe("home-motion controller", () => {
     expect(document.querySelector("h1")?.getAttribute("data-motion")).toBe("editorial-clip");
     expect(document.querySelector("figure")?.getAttribute("data-motion")).toBe("settle");
     expect(document.querySelector("a")?.getAttribute("data-motion")).toBe("settle");
+  });
+
+  it("does not double-tag content already owned by a legacy reveal", async () => {
+    document.documentElement.dataset.motionScope = "marketing";
+    document.body.innerHTML = `
+      <main><section><div class="reveal"><h2>One calm entrance</h2></div></section></main>
+    `;
+    dispose = startHomeMotion();
+    await flushRaf();
+    expect(document.querySelector("h2")?.hasAttribute("data-motion")).toBe(false);
   });
 
   it("under prefers-reduced-motion, marks everything motion-in and skips motion-ready", () => {

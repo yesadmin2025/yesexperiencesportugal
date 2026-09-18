@@ -92,17 +92,9 @@ export function startHomeMotion(): () => void {
   const debugFlag =
     typeof window.location !== "undefined" && /[?&]motionDebug=1\b/.test(window.location.search);
 
-  // Auto-tag legacy reveal classes so the shared controller remains the
-  // single source of truth. Marketing pages settle rather than lift.
-  const legacy = document.querySelectorAll<HTMLElement>(".reveal, .reveal-stagger, .section-enter");
-  const viewportH = window.innerHeight || 800;
-  legacy.forEach((el) => {
-    if (el.hasAttribute("data-motion")) return;
-    // Skip full-chapter wrappers: fading a 2000px block as one unit reads as
-    // "nothing happened". Their inner headings/cards get tagged instead below.
-    if (el.getBoundingClientRect().height > viewportH * 1.2) return;
-    el.setAttribute("data-motion", "settle");
-  });
+  // `.reveal`, `.reveal-stagger` and `.section-enter` are already driven by
+  // SiteLayout. Do not auto-tag them here: one element must never be animated
+  // by two reveal controllers at the same time.
 
   // Auto-tag section-level headings, eyebrows and lead paragraphs inside
   // `.home-energy` so every homepage section gains a subtle scroll-in
@@ -142,6 +134,7 @@ export function startHomeMotion(): () => void {
     nodes.forEach((el) => {
       if (el.hasAttribute("data-motion")) return;
       if (el.closest('[data-section="hero"], [aria-live], .sr-only, form, dialog, nav')) return;
+      if (el.closest(".reveal, .reveal-stagger, .section-enter")) return;
       if (el.parentElement?.closest("[data-motion]")) return;
 
       const container = (el.closest("section, article, header") as HTMLElement | null) ?? homeScope;
@@ -152,6 +145,7 @@ export function startHomeMotion(): () => void {
       const delay = Math.min(idx * HEADING_STEP, HEADING_CAP);
       if (delay > 0 && !el.hasAttribute("data-motion-delay")) {
         el.setAttribute("data-motion-delay", String(delay));
+        el.style.setProperty("--motion-delay", `${delay}ms`);
       }
     });
 
@@ -168,6 +162,7 @@ export function startHomeMotion(): () => void {
       if (el.hasAttribute("data-motion-delay")) return;
       const delay = Math.min(idx * CARD_STEP, CARD_CAP);
       el.setAttribute("data-motion-delay", String(delay));
+      el.style.setProperty("--motion-delay", `${delay}ms`);
     });
 
     // Give public imagery and conversion groups one calm entrance. Never tag
@@ -179,6 +174,7 @@ export function startHomeMotion(): () => void {
     supportingNodes.forEach((el) => {
       if (el.hasAttribute("data-motion")) return;
       if (el.closest('[data-section="hero"], [aria-live], form, dialog, nav')) return;
+      if (el.closest(".reveal, .reveal-stagger, .section-enter")) return;
       if (el.parentElement?.closest("[data-motion]")) return;
       el.setAttribute("data-motion", "settle");
     });

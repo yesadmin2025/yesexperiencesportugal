@@ -1059,7 +1059,7 @@
       transform: translateX(0);
     }
     55% {
-      transform: translateX(3px);
+      transform: translateX(6px);
     }
   }
   .cta-arrow-cue {
@@ -3270,34 +3270,34 @@ html.reveal-ready .reveal-stagger.is-visible .home-way-arrow {
 @keyframes homeEditorialSettle {
   from {
     opacity: 0;
-    transform: translate3d(0, 6px, 0) scale(0.985);
+    transform: translate3d(0, 14px, 0);
   }
   to {
     opacity: 1;
-    transform: translate3d(0, 0, 0) scale(1);
+    transform: translate3d(0, 0, 0);
   }
 }
 html.reveal-ready .home-energy .reveal,
 html.reveal-ready .home-energy.reveal {
-  transform: translate3d(0, 6px, 0) scale(0.985);
+  transform: translate3d(0, 14px, 0);
   transition:
-    opacity 620ms cubic-bezier(0.22, 0.61, 0.36, 1),
-    transform 620ms cubic-bezier(0.22, 0.61, 0.36, 1);
+    opacity 420ms var(--ease-scene),
+    transform 440ms var(--ease-scene);
 }
 html.reveal-ready .home-energy .reveal.is-visible,
 html.reveal-ready .home-energy.reveal.is-visible {
-  transform: translate3d(0, 0, 0) scale(1);
-  animation: homeEditorialSettle 640ms cubic-bezier(0.22, 0.61, 0.36, 1) both;
+  transform: translate3d(0, 0, 0);
+  animation: homeEditorialSettle 440ms var(--ease-scene) both;
 }
 html.reveal-ready .home-energy .reveal-stagger {
-  transform: translate3d(0, 5px, 0) scale(0.99);
+  transform: translate3d(0, 14px, 0);
   transition:
-    opacity 560ms cubic-bezier(0.22, 0.61, 0.36, 1),
-    transform 560ms cubic-bezier(0.22, 0.61, 0.36, 1);
+    opacity 420ms var(--ease-scene),
+    transform 440ms var(--ease-scene);
 }
 html.reveal-ready .home-energy .reveal-stagger.is-visible {
-  transform: translate3d(0, 0, 0) scale(1);
-  animation: homeEditorialSettle 600ms cubic-bezier(0.22, 0.61, 0.36, 1) both;
+  transform: translate3d(0, 0, 0);
+  animation: homeEditorialSettle 440ms var(--ease-scene) both;
 }
 @media (prefers-reduced-motion: reduce) {
   html.reveal-ready .home-energy .reveal,
@@ -3409,35 +3409,26 @@ html.motion-ready [data-motion].motion-in {
   transform: translateY(0);
 }
 
-/* Marketing-scoped editorial motion. Public storytelling pages settle into
-   focus rather than jumping upward. Headings use a restrained clip reveal;
-   cards/images use opacity + a 0.985 scale settle. */
+/* Marketing-scoped editorial motion. Public storytelling pages use one clear
+   language: opacity plus a short vertical transition. No blur, mask or scale. */
 html.motion-ready[data-motion-scope="marketing"] [data-motion] {
-  transform: translate3d(0, 20px, 0) scale(0.985);
-  filter: blur(2px);
+  transform: translate3d(0, 14px, 0);
   transition:
-    opacity 560ms var(--ease-scene),
-    transform 620ms var(--ease-scene),
-    filter 520ms var(--ease-scene),
-    clip-path 680ms var(--ease-scene);
+    opacity 420ms var(--ease-scene),
+    transform 440ms var(--ease-scene);
   animation: none;
 }
 html.motion-ready[data-motion-scope="marketing"] [data-motion].motion-in {
-  transform: translate3d(0, 0, 0) scale(1);
-  filter: blur(0);
+  transform: translate3d(0, 0, 0);
 }
 html.motion-ready[data-motion-scope="marketing"] [data-motion="editorial-clip"] {
-  clip-path: inset(0 0 100% 0);
-  transform: translate3d(0, 14px, 0);
-  filter: none;
+  transform: translate3d(0, 12px, 0);
 }
 html.motion-ready[data-motion-scope="marketing"] [data-motion="editorial-clip"].motion-in {
-  clip-path: inset(0 0 0 0);
   transform: translate3d(0, 0, 0);
 }
 html.motion-ready[data-motion-scope="marketing"] [data-motion="fade"] {
   transform: none;
-  filter: none;
 }
 
 @keyframes editorialArrowCue {
@@ -3445,7 +3436,7 @@ html.motion-ready[data-motion-scope="marketing"] [data-motion="fade"] {
   55% { transform: translateX(8px); }
 }
 html.motion-ready[data-motion-scope="marketing"] .motion-in .editorial-arrow {
-  animation: editorialArrowCue 620ms var(--ease-scene) 420ms both;
+  animation: editorialArrowCue 560ms var(--ease-scene) 240ms both;
 }
 .editorial-arrow {
   transition: transform var(--dur-base) var(--ease-scene);
@@ -3504,7 +3495,7 @@ html[data-motion-scope="marketing"] .signature-image-settle {
     transition: none !important;
   }
   html.motion-ready[data-motion-scope="marketing"] [data-motion="editorial-clip"] {
-    clip-path: none !important;
+    transform: none !important;
   }
   .editorial-arrow {
     animation: none !important;
@@ -4829,11 +4820,9 @@ html[data-motion-scope="marketing"] .signature-image-settle {
     opacity: 0.7;
   }
 
-  /* ── Homepage motion visibility tuning ─────────────────────────
-     Production homepage motion is deliberately more readable than the
-     site-wide default: 16–18px lift, ~520ms, visible card stagger.
-     The separate `?motion-visible-test=1` flag exaggerates these values
-     for QA only and never changes copy, layout, or scroll behaviour. */
+  /* Homepage legacy reveal values are owned by the canonical block above.
+     Keep these selectors layout-neutral so they cannot create a second
+     transform or animation on the same element. */
   @keyframes homeRevealIn {
     from {
       opacity: 0;
@@ -4855,24 +4844,16 @@ html[data-motion-scope="marketing"] .signature-image-settle {
     }
   }
   .home-energy .reveal {
-    transform: translateY(18px);
-    transition:
-      opacity 520ms cubic-bezier(0.22, 1, 0.36, 1),
-      transform 520ms cubic-bezier(0.22, 1, 0.36, 1);
+    transition-delay: var(--motion-delay, 0ms);
   }
   .home-energy .reveal.is-visible {
-    transform: translateY(0);
-    animation: homeRevealIn 520ms cubic-bezier(0.22, 1, 0.36, 1) both;
+    transform: translate3d(0, 0, 0);
   }
   .home-energy .reveal-stagger {
-    transform: translateY(18px);
-    transition:
-      opacity 520ms cubic-bezier(0.22, 1, 0.36, 1),
-      transform 520ms cubic-bezier(0.22, 1, 0.36, 1);
+    transition-delay: var(--motion-delay, 0ms);
   }
   .home-energy .reveal-stagger.is-visible {
-    transform: translateY(0);
-    animation: homeRevealIn 520ms cubic-bezier(0.22, 1, 0.36, 1) both;
+    transform: translate3d(0, 0, 0);
   }
   .home-energy .section-enter {
     transition: opacity 520ms cubic-bezier(0.22, 1, 0.36, 1);
