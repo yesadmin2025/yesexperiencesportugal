@@ -95,8 +95,13 @@ export function startHomeMotion(): () => void {
   // Auto-tag legacy reveal classes so the shared controller remains the
   // single source of truth. Marketing pages settle rather than lift.
   const legacy = document.querySelectorAll<HTMLElement>(".reveal, .reveal-stagger, .section-enter");
+  const viewportH = window.innerHeight || 800;
   legacy.forEach((el) => {
-    if (!el.hasAttribute("data-motion")) el.setAttribute("data-motion", "settle");
+    if (el.hasAttribute("data-motion")) return;
+    // Skip full-chapter wrappers: fading a 2000px block as one unit reads as
+    // "nothing happened". Their inner headings/cards get tagged instead below.
+    if (el.getBoundingClientRect().height > viewportH * 1.2) return;
+    el.setAttribute("data-motion", "settle");
   });
 
   // Auto-tag section-level headings, eyebrows and lead paragraphs inside

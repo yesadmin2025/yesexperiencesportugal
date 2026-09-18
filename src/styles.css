@@ -3477,8 +3477,10 @@ html[data-motion-scope="marketing"] .editorial-action {
   transition-timing-function: var(--ease-scene);
 }
 html[data-motion-scope="marketing"] .premium-cta:hover,
-html[data-motion-scope="marketing"] .premium-cta:focus-visible {
-  transform: translateY(-1px);
+html[data-motion-scope="marketing"] .premium-cta:focus-visible,
+html[data-motion-scope="marketing"] .editorial-action:hover,
+html[data-motion-scope="marketing"] .editorial-action:focus-visible {
+  transform: translateY(-3px);
 }
 html[data-motion-scope="marketing"] .premium-cta:active,
 html[data-motion-scope="marketing"] .editorial-action:active {
