@@ -129,6 +129,7 @@ import { Route as AdminStudioV3AuditRouteImport } from './routes/admin.studio-v3
 import { Route as AdminStopParityRouteImport } from './routes/admin.stop-parity'
 import { Route as AdminSotRefreshRouteImport } from './routes/admin.sot-refresh'
 import { Route as AdminSotDiffRouteImport } from './routes/admin.sot-diff'
+import { Route as AdminSeoStrategyRouteImport } from './routes/admin.seo-strategy'
 import { Route as AdminSeoMonitorRouteImport } from './routes/admin.seo-monitor'
 import { Route as AdminSeoJsonldRouteImport } from './routes/admin.seo-jsonld'
 import { Route as AdminReviewsRouteImport } from './routes/admin.reviews'
@@ -807,6 +808,11 @@ const AdminSotDiffRoute = AdminSotDiffRouteImport.update({
   path: '/admin/sot-diff',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AdminSeoStrategyRoute = AdminSeoStrategyRouteImport.update({
+  id: '/admin/seo-strategy',
+  path: '/admin/seo-strategy',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AdminSeoMonitorRoute = AdminSeoMonitorRouteImport.update({
   id: '/admin/seo-monitor',
   path: '/admin/seo-monitor',
@@ -1253,6 +1259,7 @@ export interface FileRoutesByFullPath {
   '/admin/reviews': typeof AdminReviewsRoute
   '/admin/seo-jsonld': typeof AdminSeoJsonldRoute
   '/admin/seo-monitor': typeof AdminSeoMonitorRoute
+  '/admin/seo-strategy': typeof AdminSeoStrategyRoute
   '/admin/sot-diff': typeof AdminSotDiffRoute
   '/admin/sot-refresh': typeof AdminSotRefreshRoute
   '/admin/stop-parity': typeof AdminStopParityRoute
@@ -1435,6 +1442,7 @@ export interface FileRoutesByTo {
   '/admin/reviews': typeof AdminReviewsRoute
   '/admin/seo-jsonld': typeof AdminSeoJsonldRoute
   '/admin/seo-monitor': typeof AdminSeoMonitorRoute
+  '/admin/seo-strategy': typeof AdminSeoStrategyRoute
   '/admin/sot-diff': typeof AdminSotDiffRoute
   '/admin/sot-refresh': typeof AdminSotRefreshRoute
   '/admin/stop-parity': typeof AdminStopParityRoute
@@ -1620,6 +1628,7 @@ export interface FileRoutesById {
   '/admin/reviews': typeof AdminReviewsRoute
   '/admin/seo-jsonld': typeof AdminSeoJsonldRoute
   '/admin/seo-monitor': typeof AdminSeoMonitorRoute
+  '/admin/seo-strategy': typeof AdminSeoStrategyRoute
   '/admin/sot-diff': typeof AdminSotDiffRoute
   '/admin/sot-refresh': typeof AdminSotRefreshRoute
   '/admin/stop-parity': typeof AdminStopParityRoute
@@ -1806,6 +1815,7 @@ export interface FileRouteTypes {
     | '/admin/reviews'
     | '/admin/seo-jsonld'
     | '/admin/seo-monitor'
+    | '/admin/seo-strategy'
     | '/admin/sot-diff'
     | '/admin/sot-refresh'
     | '/admin/stop-parity'
@@ -1988,6 +1998,7 @@ export interface FileRouteTypes {
     | '/admin/reviews'
     | '/admin/seo-jsonld'
     | '/admin/seo-monitor'
+    | '/admin/seo-strategy'
     | '/admin/sot-diff'
     | '/admin/sot-refresh'
     | '/admin/stop-parity'
@@ -2172,6 +2183,7 @@ export interface FileRouteTypes {
     | '/admin/reviews'
     | '/admin/seo-jsonld'
     | '/admin/seo-monitor'
+    | '/admin/seo-strategy'
     | '/admin/sot-diff'
     | '/admin/sot-refresh'
     | '/admin/stop-parity'
@@ -2357,6 +2369,7 @@ export interface RootRouteChildren {
   AdminReviewsRoute: typeof AdminReviewsRoute
   AdminSeoJsonldRoute: typeof AdminSeoJsonldRoute
   AdminSeoMonitorRoute: typeof AdminSeoMonitorRoute
+  AdminSeoStrategyRoute: typeof AdminSeoStrategyRoute
   AdminSotDiffRoute: typeof AdminSotDiffRoute
   AdminSotRefreshRoute: typeof AdminSotRefreshRoute
   AdminStopParityRoute: typeof AdminStopParityRoute
@@ -3250,6 +3263,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminSotDiffRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/admin/seo-strategy': {
+      id: '/admin/seo-strategy'
+      path: '/admin/seo-strategy'
+      fullPath: '/admin/seo-strategy'
+      preLoaderRoute: typeof AdminSeoStrategyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/admin/seo-monitor': {
       id: '/admin/seo-monitor'
       path: '/admin/seo-monitor'
@@ -3879,6 +3899,7 @@ const rootRouteChildren: RootRouteChildren = {
   AdminReviewsRoute: AdminReviewsRoute,
   AdminSeoJsonldRoute: AdminSeoJsonldRoute,
   AdminSeoMonitorRoute: AdminSeoMonitorRoute,
+  AdminSeoStrategyRoute: AdminSeoStrategyRoute,
   AdminSotDiffRoute: AdminSotDiffRoute,
   AdminSotRefreshRoute: AdminSotRefreshRoute,
   AdminStopParityRoute: AdminStopParityRoute,

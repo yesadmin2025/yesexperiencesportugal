@@ -18,8 +18,12 @@ export const Route = createFileRoute("/admin/seo-strategy")({
 });
 
 type Block =
-  | { kind: "h1" | "h2" | "h3" | "p"; text: string }
-  | { kind: "ul" | "ol"; items: string[] }
+  | { kind: "h1"; text: string }
+  | { kind: "h2"; text: string }
+  | { kind: "h3"; text: string }
+  | { kind: "p"; text: string }
+  | { kind: "ul"; items: string[] }
+  | { kind: "ol"; items: string[] }
   | { kind: "table"; header: string[]; rows: string[][] };
 
 /** Minimal Markdown reader for this one document: headings, lists, tables. */
