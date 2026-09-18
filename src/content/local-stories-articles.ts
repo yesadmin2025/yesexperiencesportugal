@@ -1801,6 +1801,147 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
     ],
     datePublished: "2026-09-11",
   },
+
+  {
+    slug: "fatima-day-trip-from-lisbon",
+    title: "Fátima Day Trip from Lisbon: Private Tour Guide (2026)",
+    metaDescription:
+      "Planning a Fátima day trip from Lisbon? Drive time, what you see at the sanctuary, how Nazaré and Óbidos fit the same day, and how our private tour runs.",
+    h1: "Fátima Day Trip from Lisbon — What the Day Actually Looks Like",
+    eyebrow: "Centro · Fátima",
+    standfirst:
+      "The sanctuary, the Atlantic cliffs at Nazaré and the walled town of Óbidos fit comfortably into one private day from Lisbon. Here is how, and what to expect at each stop.",
+    sections: [
+      {
+        heading: "Fátima is about ninety minutes north of Lisbon.",
+        body: "The drive runs inland through pine and eucalyptus country, so most visitors treat Fátima as a full day rather than a morning errand. On a private day we leave from your Lisbon accommodation, which removes the two parts travellers find hardest: parking near the sanctuary and coordinating onward travel to the coast.",
+      },
+      {
+        heading: "At the sanctuary, the visit is quieter than photographs suggest.",
+        body: "You walk the esplanade to the Basilica of the Rosary and the Chapel of the Apparitions, where candles burn through the day. Many guests light one, sit for a while, and leave without a guided commentary. We keep that part unhurried on purpose — for pilgrims it is the reason for the trip, and for everyone else it is the most memorable half hour of the day.",
+      },
+      {
+        heading: "Nazaré adds the Atlantic, and lunch.",
+        body: "From Fátima the road reaches the coast at Nazaré, a working fishing town known worldwide for its giant winter waves. Lunch is traditional and fish-led. Above the town, the Sítio viewpoint and the lighthouse look straight down the underwater canyon that makes those waves possible, and the wide crescent beach stretches below with fish still drying in the sun.",
+      },
+      {
+        heading: "Óbidos closes the day inside medieval walls.",
+        body: "Óbidos is small, whitewashed and entirely walkable. The castle sits on Roman foundations with a Moorish layout, a royal palace from 1148 and towers added in 1375. The local ritual is ginjinha, a cherry liqueur served in a small chocolate cup, which is included on our day.",
+      },
+      {
+        heading: "Why three stops work, and when they do not.",
+        body: "Fátima, Nazaré and Óbidos sit roughly on one loop, so the driving between them is short. What breaks the day is adding Sintra or the Alentejo on the same date — those are the opposite direction, and you would spend most of the day in the car. If you want only Fátima, we shorten the route rather than filling it.",
+      },
+      {
+        heading: "Best time of year.",
+        body: "The sanctuary is busiest around the 13th of May and the 13th of October, the main pilgrimage dates. Nazaré's big waves peak in winter, while the cliff view is worth it all year. Spring and early autumn give the most comfortable walking weather for Óbidos.",
+      },
+    ],
+    ctaLead:
+      "This is the day exactly as we run it — private to your party, hotel pickup included, lunch and entrances arranged.",
+    ctaLabel: "See dates & reserve",
+    signatureSlug: "fatima-nazare-obidos",
+    relatedSignatures: [
+      { slug: "tomar-coimbra", label: "Tomar & Coimbra Signature" },
+      { slug: "sintra-cascais", label: "Sintra & Cascais Signature" },
+    ],
+    relatedReads: [
+      { path: "/day-trips-from-lisbon", label: "Compare every day trip from Lisbon" },
+      { path: "/local-stories/lisbon-day-trips-by-drive-time", label: "Day trips by drive time" },
+      {
+        path: "/portugal-for-american-travelers",
+        label: "Plan Portugal from the United States",
+      },
+    ],
+    faq: [
+      {
+        q: "How far is Fátima from Lisbon?",
+        a: "About ninety minutes each way by road, roughly 120 km north of the city. It is comfortable as a day trip, but not as a half day if you also want the coast.",
+      },
+      {
+        q: "Is a private tour to Fátima worth it?",
+        a: "If your visit matters for faith reasons, yes — you decide how long to stay at the Chapel of the Apparitions rather than following a coach schedule. It also lets us add or drop Nazaré and Óbidos on the day itself.",
+      },
+      {
+        q: "What should I wear at the sanctuary?",
+        a: "It is an active place of worship, so shoulders and knees covered is the respectful choice. The esplanade is large and open, so bring sun protection in summer and a layer in winter.",
+      },
+      {
+        q: "Can we visit Fátima, Nazaré and Óbidos in one day?",
+        a: "Yes. The three sit on a natural loop north of Lisbon, and that is how our private day is built — sanctuary in the morning, Nazaré for lunch and the viewpoint, Óbidos late afternoon.",
+      },
+      {
+        q: "Is the day suitable for older travellers?",
+        a: "Mostly. The sanctuary esplanade is flat, but Óbidos has cobbled lanes and the Nazaré viewpoint involves some steps. Tell us in advance and we adjust the walking.",
+      },
+    ],
+    datePublished: "2026-09-18",
+  },
+
+  {
+    slug: "azulejo-tile-painting-workshop-lisbon",
+    title: "Azulejo Tile Painting Workshop Near Lisbon — Private Day",
+    metaDescription:
+      "Paint a real Portuguese azulejo with a master tile-maker near Lisbon, taste Setúbal wines and finish in Sesimbra. What the workshop involves and how to book.",
+    h1: "Painting Your Own Azulejo Near Lisbon",
+    eyebrow: "Azeitão · Craft",
+    standfirst:
+      "Portugal's blue tiles are on almost every wall in Lisbon. This is the day you stop photographing them and make one yourself.",
+    sections: [
+      {
+        heading: "The azulejo is the most Portuguese souvenir there is.",
+        body: "Tiles have covered Portuguese façades, churches and kitchens for five centuries. Most visitors buy one. Very few paint one. South of Lisbon, in the Azeitão and Sesimbra area, small ateliers still work the traditional way, and that is where our craft day happens.",
+      },
+      {
+        heading: "What the workshop actually involves.",
+        body: "You meet the tile-maker, mix the cobalt blue, and paint a single azulejo by hand. There is no artistic requirement — the master guides the line work. Tiles are fired after you leave, so we ship yours to your home address on request, which is the practical answer for travellers flying back to the United States with a full suitcase.",
+      },
+      {
+        heading: "Then the day turns to wine.",
+        body: "The same region makes Moscatel de Setúbal. Depending on the day and availability we visit one estate — a vineyard walk and a guided tasting at Quinta de Catralvos, the founding Moscatel house of José Maria da Fonseca, or Bacalhôa, where a modern cellar sits beside a striking art collection. One winery, properly, rather than three in a rush.",
+      },
+      {
+        heading: "Sesimbra closes it by the sea.",
+        body: "Sesimbra is a fishing town on the Atlantic: a harbour, easy seafood plates and a ninth-century clifftop castle whose chapel carries around ten thousand hand-painted tiles from the 1500s — a fitting full stop after painting your own. Many days also stop at Setúbal's Mercado do Livramento, a 145-year-old market, and finish at the Cristo Rei viewpoint above the Tagus.",
+      },
+      {
+        heading: "Who this day suits.",
+        body: "Couples and creative travellers, and families with teenagers who want to do something rather than look at something. It is also a strong rainy-day or shoulder-season choice, because the central hour is indoors and the coast still looks dramatic under grey skies.",
+      },
+    ],
+    ctaLead:
+      "Private to your party, with the atelier, tasting, lunch and tile shipping already arranged.",
+    ctaLabel: "See dates & reserve",
+    signatureSlug: "tiles-workshop",
+    relatedSignatures: [
+      { slug: "azeitao-cheese", label: "Azeitão Cheese & Wine" },
+      { slug: "wild-beaches-picnic", label: "Wild Beaches & Picnic" },
+    ],
+    relatedReads: [
+      { path: "/local-stories/what-to-do-in-sesimbra", label: "Things to do in Sesimbra" },
+      { path: "/local-stories/setubal-wine-guide", label: "Setúbal wine guide" },
+      { path: "/experiences", label: "All Signature experiences" },
+    ],
+    faq: [
+      {
+        q: "Do I need to be able to paint?",
+        a: "No. The master tile-maker guides the design and the brushwork, and most guests finish with something they are happy to hang.",
+      },
+      {
+        q: "Can I take the tile home the same day?",
+        a: "No — tiles are kiln-fired after you leave. We ship yours to your home address on request, which is included.",
+      },
+      {
+        q: "How long is the day?",
+        a: "Eight to nine hours door to door from your Lisbon accommodation, including the workshop, a winery tasting, lunch and time in Sesimbra.",
+      },
+      {
+        q: "Is it suitable for children?",
+        a: "It works best with teenagers and adults. Younger children can paint, but the wine tasting and the longer stops suit older groups better.",
+      },
+    ],
+    datePublished: "2026-09-18",
+  },
 ];
 
 
