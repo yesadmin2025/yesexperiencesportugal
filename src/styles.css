@@ -3240,14 +3240,15 @@ html.reveal-ready .reveal-stagger.is-visible [data-reveal-image] {
   filter: blur(0);
 }
 
-/* Five Ways arrow cue — one-time rightward nudge when the card reveals. */
+/* Five Ways arrow cue — one-time rightward nudge when the card reveals.
+   Slightly longer arrow, aligned to the right of every card, same direction. */
 @keyframes homeWayArrowNudge {
   0%,
   100% {
     transform: translateX(0);
   }
   45% {
-    transform: translateX(6px);
+    transform: translateX(5px);
   }
   80% {
     transform: translateX(1px);
