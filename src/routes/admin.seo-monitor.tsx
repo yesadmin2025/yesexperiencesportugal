@@ -2,6 +2,14 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { useServerFn } from "@tanstack/react-start";
 import { inspectGscUrls, type UrlInspectionResult } from "@/lib/gscMonitor.functions";
+import {
+  getBookingConversions,
+  getRetiredUrlRedirects,
+  getSearchPerformance,
+  type BookingConversionRow,
+  type RetiredUrlRow,
+  type SearchPerformance,
+} from "@/lib/seoPerformance.functions";
 import { auditSeoUrls, type SeoAuditResult } from "@/lib/seoAudit.functions";
 
 const KEY_URLS = [
@@ -286,6 +294,9 @@ function SeoMonitorPage() {
           </ul>
         </section>
 
+        <SearchPerformancePanel />
+        <ConversionPanel />
+        <RetiredUrlPanel />
         <IndexationPanel />
         <CriticalSeoPanel />
 
@@ -520,6 +531,303 @@ function CriticalSeoPanel() {
                 )}
               </div>
             </details>
+          );
+        })}
+      </div>
+    </section>
+  );
+}
+
+function Delta({ now, before, lowerIsBetter = false }: { now: number; before?: number; lowerIsBetter?: boolean }) {
+  if (before == null) return <span className="text-[color:var(--charcoal-soft)]">novo</span>;
+  const diff = now - before;
+  if (Math.abs(diff) < 0.05) return <span className="text-[color:var(--charcoal-soft)]">=</span>;
+  const good = lowerIsBetter ? diff < 0 : diff > 0;
+  const shown = Math.abs(diff) >= 10 ? Math.round(Math.abs(diff)) : Math.abs(diff).toFixed(1);
+  return (
+    <span className={good ? "text-emerald-600" : "text-rose-600"}>
+      {diff > 0 ? "+" : "−"}
+      {shown}
+    </span>
+  );
+}
+
+function SearchRows({ rows, label }: { rows: SearchPerformance["pages"]; label: string }) {
+  if (rows.length === 0) {
+    return <p className="mt-2 text-xs text-[color:var(--charcoal-soft)]">Sem dados de {label}.</p>;
+  }
+  return (
+    <div className="mt-3 overflow-x-auto">
+      <table className="w-full min-w-[520px] text-left text-xs">
+        <thead className="text-[color:var(--charcoal-soft)]">
+          <tr>
+            <th className="py-2 pr-3 font-medium">{label}</th>
+            <th className="py-2 pr-3 font-medium">Cliques</th>
+            <th className="py-2 pr-3 font-medium">Impressões</th>
+            <th className="py-2 pr-3 font-medium">Posição</th>
+          </tr>
+        </thead>
+        <tbody>
+          {rows.map((r) => (
+            <tr key={r.key} className="border-t border-[color:var(--sand)]">
+              <td className="py-2 pr-3 break-all text-[color:var(--charcoal)]">
+                {r.key.replace(SITE, "") || "/"}
+              </td>
+              <td className="py-2 pr-3">
+                {r.clicks} <Delta now={r.clicks} before={r.prevClicks} />
+              </td>
+              <td className="py-2 pr-3">
+                {r.impressions} <Delta now={r.impressions} before={r.prevImpressions} />
+              </td>
+              <td className="py-2 pr-3">
+                {r.position.toFixed(1)}{" "}
+                <Delta now={r.position} before={r.prevPosition} lowerIsBetter />
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  );
+}
+
+function SearchPerformancePanel() {
+  const run = useServerFn(getSearchPerformance);
+  const [data, setData] = useState<SearchPerformance>();
+  const [loading, setLoading] = useState(false);
+  const [err, setErr] = useState<string>();
+
+  async function load() {
+    setLoading(true);
+    setErr(undefined);
+    try {
+      setData(await run({ data: { days: 28, rowLimit: 25 } }));
+    } catch (e) {
+      setErr(e instanceof Error ? e.message : String(e));
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  useEffect(() => {
+    const handler = () => load();
+    window.addEventListener(REFRESH_EVENT, handler);
+    return () => window.removeEventListener(REFRESH_EVENT, handler);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  return (
+    <section className="mt-10">
+      <div className="flex items-center justify-between">
+        <h2 className="text-lg font-semibold text-[color:var(--charcoal)]">
+          Performance de pesquisa (28 dias)
+        </h2>
+        <button
+          onClick={load}
+          disabled={loading}
+          className="rounded-full bg-[color:var(--teal)] px-4 py-2 text-xs font-medium text-white hover:bg-[color:var(--teal-2)] disabled:opacity-50"
+        >
+          {loading ? "A carregar…" : "Carregar"}
+        </button>
+      </div>
+      <p className="mt-1 text-xs text-[color:var(--charcoal-soft)]">
+        Cliques, impressões e posição média por página e por pesquisa, comparados com os 28 dias
+        anteriores.
+        {data ? ` · ${data.current.startDate} → ${data.current.endDate} vs ${data.previous.startDate} → ${data.previous.endDate}` : ""}
+      </p>
+      {err || data?.error ? (
+        <p className="mt-3 text-xs text-rose-600">{err ?? data?.error}</p>
+      ) : null}
+      {data && !data.error ? (
+        <>
+          <div className="mt-4 grid grid-cols-3 gap-3">
+            {[
+              { label: "Cliques", now: data.totals.clicks, before: data.totals.prevClicks, lower: false },
+              {
+                label: "Impressões",
+                now: data.totals.impressions,
+                before: data.totals.prevImpressions,
+                lower: false,
+              },
+              {
+                label: "Posição média",
+                now: Number(data.totals.position.toFixed(1)),
+                before: Number(data.totals.prevPosition.toFixed(1)),
+                lower: true,
+              },
+            ].map((k) => (
+              <div
+                key={k.label}
+                className="rounded-lg border border-[color:var(--sand)] bg-white p-4"
+              >
+                <p className="text-[11px] uppercase tracking-[0.18em] text-[color:var(--gold)]">
+                  {k.label}
+                </p>
+                <p className="mt-1 text-xl font-semibold text-[color:var(--charcoal)]">{k.now}</p>
+                <p className="text-xs">
+                  <Delta now={k.now} before={k.before} lowerIsBetter={k.lower} />
+                </p>
+              </div>
+            ))}
+          </div>
+          <div className="mt-6 rounded-lg border border-[color:var(--sand)] bg-white p-4">
+            <SearchRows rows={data.pages} label="Página" />
+          </div>
+          <div className="mt-4 rounded-lg border border-[color:var(--sand)] bg-white p-4">
+            <SearchRows rows={data.queries} label="Pesquisa" />
+          </div>
+        </>
+      ) : null}
+    </section>
+  );
+}
+
+function ConversionPanel() {
+  const run = useServerFn(getBookingConversions);
+  const [rows, setRows] = useState<BookingConversionRow[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [err, setErr] = useState<string>();
+
+  async function load() {
+    setLoading(true);
+    setErr(undefined);
+    try {
+      const r = await run({ data: { days: 28 } });
+      setRows(r.rows);
+      if (r.error) setErr(r.error);
+    } catch (e) {
+      setErr(e instanceof Error ? e.message : String(e));
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  useEffect(() => {
+    const handler = () => load();
+    window.addEventListener(REFRESH_EVENT, handler);
+    return () => window.removeEventListener(REFRESH_EVENT, handler);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  return (
+    <section className="mt-10">
+      <div className="flex items-center justify-between">
+        <h2 className="text-lg font-semibold text-[color:var(--charcoal)]">
+          Reservas por experiência (28 dias)
+        </h2>
+        <button
+          onClick={load}
+          disabled={loading}
+          className="rounded-full border border-[color:var(--teal)] px-4 py-2 text-xs font-medium text-[color:var(--teal)] hover:bg-[color:var(--teal)] hover:text-white disabled:opacity-50"
+        >
+          {loading ? "A carregar…" : "Carregar"}
+        </button>
+      </div>
+      <p className="mt-1 text-xs text-[color:var(--charcoal-soft)]">
+        Quantas pessoas iniciaram, chegaram aos dados do hóspede e pagaram, por experiência.
+      </p>
+      {err ? <p className="mt-3 text-xs text-rose-600">{err}</p> : null}
+      {rows.length > 0 ? (
+        <div className="mt-4 overflow-x-auto rounded-lg border border-[color:var(--sand)] bg-white p-4">
+          <table className="w-full min-w-[420px] text-left text-xs">
+            <thead className="text-[color:var(--charcoal-soft)]">
+              <tr>
+                <th className="py-2 pr-3 font-medium">Experiência</th>
+                <th className="py-2 pr-3 font-medium">Iniciadas</th>
+                <th className="py-2 pr-3 font-medium">Dados do hóspede</th>
+                <th className="py-2 pr-3 font-medium">Pagas</th>
+              </tr>
+            </thead>
+            <tbody>
+              {rows.map((r) => (
+                <tr key={r.tourId} className="border-t border-[color:var(--sand)]">
+                  <td className="py-2 pr-3 break-all text-[color:var(--charcoal)]">{r.tourId}</td>
+                  <td className="py-2 pr-3">{r.started}</td>
+                  <td className="py-2 pr-3">{r.reachedDetails}</td>
+                  <td className="py-2 pr-3 font-medium text-[color:var(--charcoal)]">{r.paid}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      ) : null}
+    </section>
+  );
+}
+
+function RetiredUrlPanel() {
+  const run = useServerFn(getRetiredUrlRedirects);
+  const [rows, setRows] = useState<RetiredUrlRow[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [err, setErr] = useState<string>();
+
+  async function load() {
+    setLoading(true);
+    setErr(undefined);
+    try {
+      const r = await run();
+      setRows(r.rows);
+    } catch (e) {
+      setErr(e instanceof Error ? e.message : String(e));
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  useEffect(() => {
+    const handler = () => load();
+    window.addEventListener(REFRESH_EVENT, handler);
+    return () => window.removeEventListener(REFRESH_EVENT, handler);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const failing = rows.filter((r) => !r.permanent || !r.correctTarget).length;
+
+  return (
+    <section className="mt-10">
+      <div className="flex items-center justify-between">
+        <h2 className="text-lg font-semibold text-[color:var(--charcoal)]">
+          Redirecionamentos das páginas retiradas
+        </h2>
+        <button
+          onClick={load}
+          disabled={loading}
+          className="rounded-full border border-[color:var(--teal)] px-4 py-2 text-xs font-medium text-[color:var(--teal)] hover:bg-[color:var(--teal)] hover:text-white disabled:opacity-50"
+        >
+          {loading ? "A verificar…" : "Verificar"}
+        </button>
+      </div>
+      <p className="mt-1 text-xs text-[color:var(--charcoal-soft)]">
+        Cada guia de vinho retirado deve responder com redirecionamento permanente para o guia que
+        ficou.
+        {rows.length > 0 ? ` · ${rows.length - failing}/${rows.length} corretos` : ""}
+      </p>
+      {err ? <p className="mt-3 text-xs text-rose-600">{err}</p> : null}
+      <div className="mt-4 space-y-2">
+        {rows.map((r) => {
+          const ok = r.permanent && r.correctTarget;
+          return (
+            <div
+              key={r.from}
+              className="rounded-lg border border-[color:var(--sand)] bg-white p-4 text-sm"
+            >
+              <div className="flex items-start gap-3">
+                <span
+                  className={`mt-1.5 inline-block h-2 w-2 rounded-full ${ok ? "bg-emerald-500" : "bg-rose-500"}`}
+                />
+                <div>
+                  <p className="break-all font-medium text-[color:var(--charcoal)]">
+                    {r.from.replace(SITE, "")}
+                  </p>
+                  <p className="mt-1 break-all text-xs text-[color:var(--charcoal-soft)]">
+                    {r.error
+                      ? r.error
+                      : `HTTP ${r.status ?? "—"} → ${(r.location ?? "—").replace(SITE, "")}`}
+                    {!ok && !r.error ? ` · esperado ${r.expectedTo.replace(SITE, "")}` : ""}
+                  </p>
+                </div>
+              </div>
+            </div>
           );
         })}
       </div>

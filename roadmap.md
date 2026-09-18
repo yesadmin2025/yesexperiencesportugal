@@ -107,3 +107,10 @@
 - [x] Remove competing reveal ownership and delayed startup
 - [x] Use one editorial fade language without blur, masks, scale or bounce
 - [x] Validate homepage cadence, CTA and arrow response in mobile, desktop and reduced motion
+
+## 17. Search performance reporting and wine-guide booking intent
+- [x] Add Search Console clicks/impressions/position per page and per query, with 28-day period comparison
+- [x] Add bookings per experience (started, guest details, paid) beside search data
+- [x] Add automatic permanent-redirect verification for the retired wine guides
+- [x] Add an early booking card to the surviving wine guide instead of a duplicate landing page
+- [x] Validate typecheck, focused tests, mobile/desktop rendering and production build
