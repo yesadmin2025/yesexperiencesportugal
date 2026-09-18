@@ -349,6 +349,12 @@ export function SimpleBookingForm({ tour }: { tour: SignatureTour }) {
             value={date}
             onChange={(e) => {
               const v = e.target.value;
+              // Always keep what the traveller typed. Discarding the value here
+              // wiped in-progress keyboard entry (year segment typed digit by
+              // digit looks "before min" until it is complete) and the date
+              // could never be completed on desktop. canReserve still gates the
+              // CTA, so an invalid date cannot reach checkout.
+              setDate(v);
               if (v && rule) {
                 const check = validateDateISO(v, rule);
                 if (!check.ok) {
@@ -363,11 +369,11 @@ export function SimpleBookingForm({ tour }: { tour: SignatureTour }) {
                       : check.reason === "blackout"
                         ? "That date is unavailable. Please pick another."
                         : "Please choose a date at least 24 hours from now.";
-                  toast.error(msg);
+                  // Only nag once the date is actually complete (YYYY-MM-DD).
+                  if (v.length === 10) toast.error(msg);
                   return;
                 }
               }
-              setDate(v);
               if (v) {
                 if (!firedDate.current) {
                   firedDate.current = true;
