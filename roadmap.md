@@ -101,4 +101,4 @@
 - [x] Activate the shared fade/settle controller across public storytelling and discovery routes
 - [x] Extend one-shot movement to headings, imagery, cards, conversion actions, and Five Ways arrows
 - [x] Keep transactional, Studio, admin, auth, and internal routes free from decorative motion
-- [ ] Validate public journeys at mobile/desktop sizes, reduced motion, focused tests, and build
+- [x] Validate public journeys at mobile/desktop sizes, reduced motion, focused tests, and build
