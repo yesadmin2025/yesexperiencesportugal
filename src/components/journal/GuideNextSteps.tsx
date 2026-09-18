@@ -15,6 +15,7 @@ import { recordGuideLinkClick, type GuideLinkKind } from "@/lib/guide-attributio
 import { guideRefDataAttrs } from "@/lib/guide-attribution-inline";
 import { resolveGuideNextSteps } from "@/lib/internal-linking";
 import type { LocalStoryArticle } from "@/content/local-stories-articles";
+import { CTA_LABELS } from "@/content/cta-vocabulary";
 
 const linkClass =
   "underline decoration-[color:var(--gold)]/60 underline-offset-4 hover:text-[color:var(--teal)] transition-colors";
@@ -75,7 +76,7 @@ export function GuideNextSteps({ article }: { article: LocalStoryArticle }) {
 
         <div>
           <p className="font-sans text-[11px] uppercase tracking-[0.22em] text-[color:var(--charcoal-soft)] mb-2">
-            Design your own
+            {CTA_LABELS.studio}
           </p>
           <Link
             to="/studio-v3"

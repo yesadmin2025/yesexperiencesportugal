@@ -5,6 +5,7 @@ import { SiteBreadcrumbs } from "@/components/SiteBreadcrumbs";
 import { Eyebrow } from "@/components/ui/Eyebrow";
 import { SectionTitle } from "@/components/ui/SectionTitle";
 import { CtaButton } from "@/components/ui/CtaButton";
+import { CTA_LABELS } from "@/content/cta-vocabulary";
 import { RealReviewsStrip } from "@/components/home/RealReviewsStrip";
 import { breadcrumbLd, faqPageLd, jsonLdScript, localBusinessLd } from "@/lib/jsonld";
 import { US_TRAVELER_NOTES } from "@/content/lisbon-day-trip-comparison";
@@ -161,8 +162,8 @@ function PortugalForAmericans() {
           </p>
           <div className="mt-8 flex flex-col gap-3 sm:flex-row">
             <CtaButton to="/day-trips-from-lisbon">Compare day trips from Lisbon</CtaButton>
-            <CtaButton to="/book" variant="ghost">
-              Tell us your dates
+            <CtaButton to="/portugal-travel-designer" variant="ghost">
+              {CTA_LABELS.travelDesigner}
             </CtaButton>
           </div>
           <p className="mt-6 font-sans text-[11.5px] uppercase tracking-[0.18em] text-[color:var(--charcoal-soft)]">
@@ -265,9 +266,9 @@ function PortugalForAmericans() {
             <SectionTitle.Em>we will shape the days around them</SectionTitle.Em>.
           </SectionTitle>
           <div className="mt-8 flex flex-col items-center gap-3 sm:flex-row sm:justify-center">
-            <CtaButton to="/experiences">See every private day</CtaButton>
+            <CtaButton to="/experiences">{CTA_LABELS.signatureDiscovery}</CtaButton>
             <CtaButton to="/portugal-travel-designer" variant="ghost">
-              Design a whole trip
+              {CTA_LABELS.travelDesigner}
             </CtaButton>
           </div>
         </div>

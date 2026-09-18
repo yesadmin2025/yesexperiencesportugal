@@ -1,5 +1,5 @@
 import type React from "react";
-import { useEffect, useState } from "react";
+import { useEffect, useId, useRef, useState } from "react";
 
 import { Lock } from "lucide-react";
 import { CtaButton } from "@/components/ui/CtaButton";
@@ -30,6 +30,12 @@ import {
   GuestRow,
   guestInputClass,
 } from "@/components/checkout/guest-form-ui";
+import {
+  computeMinDateISO,
+  dateAvailabilityMessage,
+  validateDateISO,
+  type OperatingRule,
+} from "@/lib/availability";
 
 /**
  * Final details before payment — the last step before Stripe checkout
@@ -99,6 +105,8 @@ interface Props {
    * when the selection isn't priceable yet.
    */
   priceQuote?: (c: { adults: number; minorAges: number[] }) => ChargeQuote | null;
+  /** The same live operating rule used by the date picker before this step. */
+  dateRule?: OperatingRule | null;
 }
 
 const isEmail = (v: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v.trim());
@@ -110,6 +118,7 @@ export function FinalDetailsDialog({
   initial,
   submitting = false,
   priceQuote,
+  dateRule = null,
 }: Props) {
   const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
@@ -130,6 +139,9 @@ export function FinalDetailsDialog({
   const [editDay, setEditDay] = useState(false);
   const [altContact, setAltContact] = useState(false);
   const [extrasOpen, setExtrasOpen] = useState(false);
+  const [dateError, setDateError] = useState<string | null>(null);
+  const dateInputRef = useRef<HTMLInputElement>(null);
+  const dateErrorId = useId();
 
 
   useEffect(() => {
@@ -140,6 +152,7 @@ export function FinalDetailsDialog({
     if (initial?.pickupAddress) setPickupAddress(initial.pickupAddress);
     if (initial?.language) setLanguage(initial.language);
     if (initial?.startTime) setStartTime(initial.startTime);
+    setDateError(null);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [open]);
 
@@ -156,9 +169,25 @@ export function FinalDetailsDialog({
     if (!fullName.trim()) missing.push("full name");
     if (!email.trim() || !isEmail(email)) missing.push("email");
     if (!phone.trim()) missing.push("phone / WhatsApp");
-    if (!tourDate) missing.push("tour date");
+    if (!tourDate) {
+      missing.push("tour date");
+      setDateError("Choose your tour date before continuing.");
+      setEditDay(true);
+      requestAnimationFrame(() => dateInputRef.current?.focus());
+    }
     if (!pickupAddress.trim()) missing.push("pickup address");
     if (!compositionComplete) missing.push("age for every child");
+    if (tourDate && dateRule) {
+      const dateCheck = validateDateISO(tourDate, dateRule);
+      if (!dateCheck.ok) {
+        const message = dateAvailabilityMessage(dateCheck.reason, dateRule.minLeadHours);
+        setDateError(message);
+        setEditDay(true);
+        requestAnimationFrame(() => dateInputRef.current?.focus());
+        toast.error(message);
+        return;
+      }
+    }
     if (missing.length) {
       toast.error(`Please complete: ${missing.join(", ")}`);
       return;
@@ -234,12 +263,33 @@ export function FinalDetailsDialog({
 
               {editDay ? (
                 <div className="mt-3 space-y-4" data-testid="final-details-day-editor">
-                  <GuestField label="Tour date" required>
+                  <GuestField
+                    label="Tour date"
+                    required
+                    error={dateError ?? undefined}
+                    errorId={dateError ? dateErrorId : undefined}
+                  >
                     <input
+                      ref={dateInputRef}
                       type="date"
                       value={tourDate}
-                      min={new Date().toISOString().split("T")[0]}
-                      onChange={(e) => setTourDate(e.target.value)}
+                      min={computeMinDateISO(dateRule?.minLeadHours ?? 24)}
+                      aria-invalid={Boolean(dateError)}
+                      aria-describedby={dateError ? dateErrorId : undefined}
+                      onChange={(e) => {
+                        const value = e.target.value;
+                        setTourDate(value);
+                        if (value.length !== 10 || !dateRule) {
+                          setDateError(null);
+                          return;
+                        }
+                        const check = validateDateISO(value, dateRule);
+                        setDateError(
+                          check.ok
+                            ? null
+                            : dateAvailabilityMessage(check.reason, dateRule.minLeadHours),
+                        );
+                      }}
                       className={guestInputClass}
                     />
                   </GuestField>

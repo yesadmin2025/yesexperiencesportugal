@@ -15,6 +15,7 @@ import { Link } from "@tanstack/react-router";
 import { signatureTours } from "@/data/signatureTours";
 import { guideRefDataAttrs } from "@/lib/guide-attribution-inline";
 import { recordGuideLinkClick } from "@/lib/guide-attribution";
+import { CTA_LABELS } from "@/content/cta-vocabulary";
 
 export function GuideBookingCta({
   guideSlug,
@@ -68,7 +69,7 @@ export function GuideBookingCta({
           }
           className="inline-flex min-h-[48px] items-center justify-center gap-2 rounded-[4px] bg-[color:var(--teal)] px-7 font-sans text-[12px] uppercase tracking-[0.18em] font-semibold text-[color:var(--ivory)] no-underline transition-colors duration-200 hover:bg-[color:var(--charcoal)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--teal)] focus-visible:ring-offset-2"
         >
-          Check dates &amp; book
+          {CTA_LABELS.signatureCardBooking}
           <span aria-hidden="true" className="text-[color:var(--gold)]">
             →
           </span>
@@ -87,24 +88,7 @@ export function GuideBookingCta({
           }
           className="inline-flex min-h-[48px] items-center gap-2 font-sans text-[12px] uppercase tracking-[0.16em] font-semibold text-[color:var(--teal)] underline decoration-[color:var(--gold)]/60 underline-offset-4 hover:text-[color:var(--charcoal)]"
         >
-          Or design your own day
-        </Link>
-
-        <Link
-          to="/book"
-          search={{ tour: tour.id }}
-          {...guideRefDataAttrs(guideSlug, "inline_book_request")}
-          onClick={() =>
-            recordGuideLinkClick({
-              guideSlug,
-              slot: "inline_book_request",
-              kind: "other",
-              destination: `/book?tour=${tour.id}`,
-            })
-          }
-          className="inline-flex min-h-[48px] items-center gap-2 font-sans text-[12px] uppercase tracking-[0.16em] font-semibold text-[color:var(--teal)] underline decoration-[color:var(--gold)]/60 underline-offset-4 hover:text-[color:var(--charcoal)] sm:ml-auto"
-        >
-          Tell us your dates
+          {CTA_LABELS.studio}
         </Link>
       </div>
     </aside>

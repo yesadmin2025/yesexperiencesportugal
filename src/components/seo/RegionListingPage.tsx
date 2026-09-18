@@ -7,6 +7,7 @@ import { Eyebrow } from "@/components/ui/Eyebrow";
 import { trackEvent } from "@/lib/analytics-events";
 import { SectionTitle } from "@/components/ui/SectionTitle";
 import { CtaButton } from "@/components/ui/CtaButton";
+import { CTA_LABELS } from "@/content/cta-vocabulary";
 import { LiveReviews } from "@/components/reviews/LiveReviews";
 import { signatureTours } from "@/data/signatureTours";
 import { REVIEW_CERTIFICATE } from "@/config/trust-certificate";
@@ -308,9 +309,7 @@ export function RegionListingPage({ region }: { region: LisbonRegion }) {
                 >
                   Book &amp; pay online
                 </CtaButton>
-                <CtaButton to="/studio-v3" variant="ghost">
-                  Design your own day
-                </CtaButton>
+                <CtaButton to="/studio-v3" variant="ghost">{CTA_LABELS.studio}</CtaButton>
               </div>
             </div>
           </div>

@@ -399,7 +399,7 @@ export function GuestDetailsStep({
             {fixedDate ? (
               <div
                 data-testid="studio-v3-fixed-tour-date"
-                className={guestInputClass + " flex items-center"}
+                className={guestInputClass + " flex min-w-0 flex-wrap items-center gap-x-2 gap-y-1"}
                 aria-label="Selected tour date"
               >
                 {new Intl.DateTimeFormat("en-GB", {
@@ -413,7 +413,7 @@ export function GuestDetailsStep({
                     type="button"
                     onClick={onEditOperational}
                     data-testid="studio-v3-edit-date"
-                    className="ml-auto min-h-[44px] px-2 text-[12px] uppercase tracking-[0.22em] font-semibold text-[color:var(--teal)]"
+                    className="ml-auto shrink-0 min-h-[44px] px-2 text-[12px] uppercase tracking-[0.18em] font-semibold text-[color:var(--teal)]"
                   >
                     Change
                   </button>

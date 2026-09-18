@@ -9,6 +9,7 @@ export const CTA_LABELS = {
   signatureCollection: "Explore the collection",
   signatureDiscoveryCompact: "Explore Signature days",
   signatureBooking: "Reserve this day",
+  signatureCardBooking: "See dates & reserve",
   tailor: "Tailor this day",
   refine: "Refine this day",
   travelDesigner: "Design my journey",

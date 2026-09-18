@@ -1,7 +1,7 @@
 import { useMemo } from "react";
 import { CalendarDays } from "lucide-react";
 
-import { Calendar } from "@/components/ui/calendar";
+import { StudioDateCalendar } from "@/components/studio-v3/StudioDateCalendar";
 import {
   isStudioBookingDateAllowed,
   minimumStudioBookingDateIso,
@@ -32,7 +32,7 @@ export function LivingAtlasDateStep({
   onContinue: () => void;
 }) {
   const minimumIso = useMemo(() => minimumStudioBookingDateIso(), []);
-  const minimumDate = useMemo(() => dateFromIso(minimumIso)!, [minimumIso]);
+  const minimumDate = useMemo(() => dateFromIso(minimumIso) ?? new Date(), [minimumIso]);
   const selected = useMemo(() => dateFromIso(selectedDate), [selectedDate]);
 
   return (
@@ -44,7 +44,7 @@ export function LivingAtlasDateStep({
       />
 
       <div
-        className="mx-auto mt-8 max-w-md rounded-2xl border p-3 sm:p-5"
+        className="mx-auto mt-8 w-full max-w-md rounded-2xl border p-3 sm:p-5"
         style={{
           borderColor: "color-mix(in oklab, var(--gold) 34%, transparent)",
           background: "color-mix(in oklab, var(--ivory) 5%, transparent)",
@@ -56,7 +56,7 @@ export function LivingAtlasDateStep({
         >
           <CalendarDays size={14} aria-hidden /> Your travel date
         </div>
-        <Calendar
+        <StudioDateCalendar
           mode="single"
           selected={selected}
           defaultMonth={selected ?? minimumDate}
@@ -67,8 +67,7 @@ export function LivingAtlasDateStep({
             if (isStudioBookingDateAllowed(iso)) onChange(iso);
           }}
           showOutsideDays={false}
-          // Mobile tap targets: day cells and month nav must stay >= 44px.
-          className="pointer-events-auto mx-auto rounded-xl bg-[color:var(--ivory)] text-[color:var(--charcoal)] [--cell-size:2.75rem]"
+          className="rounded-xl bg-[color:var(--ivory)] text-[color:var(--charcoal)]"
         />
         <p
           data-testid="living-atlas-min-date-note"

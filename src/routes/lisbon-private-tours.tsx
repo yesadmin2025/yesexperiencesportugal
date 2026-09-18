@@ -6,6 +6,7 @@ import { SiteBreadcrumbs } from "@/components/SiteBreadcrumbs";
 import { Eyebrow } from "@/components/ui/Eyebrow";
 import { SectionTitle } from "@/components/ui/SectionTitle";
 import { CtaButton } from "@/components/ui/CtaButton";
+import { CTA_LABELS } from "@/content/cta-vocabulary";
 import { RealReviewsStrip } from "@/components/home/RealReviewsStrip";
 import { HubBookingPicker } from "@/components/booking/HubBookingPicker";
 import { signatureTours } from "@/data/signatureTours";
@@ -145,9 +146,9 @@ function LisbonPrivateTours() {
             tell us your dates and a local writes back personally.
           </p>
           <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-            <CtaButton href="#reserve">Reserve a day</CtaButton>
+            <CtaButton href="#reserve">{CTA_LABELS.signatureBooking}</CtaButton>
             <CtaButton to="/studio-v3" variant="ghost">
-              Design your own
+              {CTA_LABELS.studio}
             </CtaButton>
           </div>
           <p className="mt-6 flex flex-wrap items-center gap-x-5 gap-y-2 font-sans text-[11.5px] uppercase tracking-[0.18em] text-[color:var(--charcoal-soft)]">

@@ -1,6 +1,6 @@
 import { trackEvent } from "@/lib/analytics-events";
 import { createFileRoute, Link, notFound, useNavigate } from "@tanstack/react-router";
-import { useMemo, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 import {
   ArrowLeft,
   Check,
@@ -83,6 +83,7 @@ import { signatureDurationLabel } from "@/lib/tourContent";
 import {
   getOperatingRule,
   computeMinDateISO,
+  dateAvailabilityMessage,
   validateDateISO,
   type OperatingRule,
 } from "@/lib/availability";
@@ -230,6 +231,8 @@ function TailorPage() {
 
   // ─── State (only adjustable details) ────────────────────────
   const [date, setDate] = useState("");
+  const [dateError, setDateError] = useState<string | null>(null);
+  const dateRef = useRef<HTMLInputElement>(null);
   const [rule, setRule] = useState<OperatingRule | null>(null);
   useEffect(() => {
     let active = true;
@@ -874,6 +877,28 @@ function TailorPage() {
 
   const handleReserve = async (details: GuestDetails) => {
     if (checkoutPending) return;
+    if (!rule) {
+      const message = "We're checking this date. Please try again in a moment.";
+      setDateError(message);
+      toast.error(message);
+      return;
+    }
+    const dateCheck = validateDateISO(details.tourDate, rule);
+    if (!dateCheck.ok) {
+      const message = dateAvailabilityMessage(dateCheck.reason, rule.minLeadHours);
+      setDate(details.tourDate);
+      setDateError(message);
+      setCheckoutOpen(false);
+      setDetailsOpen(false);
+      requestAnimationFrame(() => dateRef.current?.focus());
+      gaBookingValidationBlocked({
+        tourId: tour.id,
+        surface: "tailor",
+        reason: `date_${dateCheck.reason}`,
+      });
+      toast.error(message);
+      return;
+    }
     // Exact-tier truth gate — the server refuses this party size, so never
     // open a checkout against the generic "from" anchor.
     if (tierUnavailable) {
@@ -1126,13 +1151,19 @@ function TailorPage() {
                     Date
                   </label>
                   <input
+                    ref={dateRef}
                     id="tailor-date"
                     type="date"
                     aria-label="Date"
                     value={date}
                     onChange={(e) => {
                       const v = e.target.value;
-                      if (v && rule) {
+                      setDate(v);
+                      if (v.length !== 10) {
+                        setDateError(null);
+                        return;
+                      }
+                      if (rule) {
                         const check = validateDateISO(v, rule);
                         if (!check.ok) {
                           gaBookingValidationBlocked({
@@ -1140,23 +1171,27 @@ function TailorPage() {
                             surface: "tailor",
                             reason: `date_${check.reason}`,
                           });
-                          const msg =
-                            check.reason === "weekday_closed"
-                              ? "This tour doesn't run on that day. Please pick another date."
-                              : check.reason === "blackout"
-                                ? "That date is unavailable. Please pick another."
-                                : "Please choose a date at least 24 hours from now.";
+                          const msg = dateAvailabilityMessage(check.reason, rule.minLeadHours);
+                          setDateError(msg);
                           toast.error(msg);
                           return;
                         }
                       }
-                      setDate(v);
+                      setDateError(null);
                       if (v)
                         gaBookingDateSelected({ tourId: tour.id, surface: "tailor", dateISO: v });
                     }}
                     min={minDateISO}
+                    required
+                    aria-invalid={Boolean(dateError)}
+                    aria-describedby={dateError ? "tailor-date-error" : undefined}
                     className="min-h-[48px] w-full border border-[color:var(--border)] bg-transparent px-3 py-3 text-[16px] sm:text-sm focus:border-[color:var(--gold)] focus:outline-none"
                   />
+                  {dateError ? (
+                    <p id="tailor-date-error" role="alert" className="mt-2 text-[12.5px] leading-snug text-destructive">
+                      {dateError}
+                    </p>
+                  ) : null}
                 </div>
                 <div className="min-w-0">
                   <span className="mb-1.5 block text-[10px] uppercase tracking-[0.25em] text-[color:var(--charcoal-soft)]">
@@ -1584,6 +1619,38 @@ function TailorPage() {
                       });
                       return;
                     }
+                    if (!date) {
+                      const message = "Choose your date before continuing.";
+                      setDateError(message);
+                      gaBookingValidationBlocked({
+                        tourId: tour.id,
+                        surface: "tailor",
+                        reason: "date_missing",
+                      });
+                      requestAnimationFrame(() => dateRef.current?.focus());
+                      toast.error(message);
+                      return;
+                    }
+                    if (!rule) {
+                      const message = "We're checking availability. Please try again in a moment.";
+                      setDateError(message);
+                      requestAnimationFrame(() => dateRef.current?.focus());
+                      toast.error(message);
+                      return;
+                    }
+                    const dateCheck = validateDateISO(date, rule);
+                    if (!dateCheck.ok) {
+                      const message = dateAvailabilityMessage(dateCheck.reason, rule.minLeadHours);
+                      setDateError(message);
+                      gaBookingValidationBlocked({
+                        tourId: tour.id,
+                        surface: "tailor",
+                        reason: `date_${dateCheck.reason}`,
+                      });
+                      requestAnimationFrame(() => dateRef.current?.focus());
+                      toast.error(message);
+                      return;
+                    }
                     if (summaryStops.length === 0) {
                       gaBookingValidationBlocked({
                         tourId: tour.id,
@@ -1648,6 +1715,7 @@ function TailorPage() {
         onOpenChange={setDetailsOpen}
         submitting={checkoutPending}
         tourId={tour.id}
+        dateRule={rule}
         initial={{
           tourDate: date,
           adults: composition.adults,

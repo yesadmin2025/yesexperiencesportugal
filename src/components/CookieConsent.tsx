@@ -64,17 +64,17 @@ export function CookieConsent() {
   const [customize, setCustomize] = React.useState(false);
   const [analytics, setAnalytics] = React.useState(true);
   const [ads, setAds] = React.useState(false);
-  // A modal (guest details, checkout) must never be blocked by the consent
-  // bar: on small screens the bar sits exactly over the modal's primary
-  // action and intercepts the tap. Yield while any modal dialog is open.
-  const [modalOpen, setModalOpen] = React.useState(false);
+  // Conversion-critical UI (guest details, checkout, validation toasts) must
+  // never be blocked by the consent bar on small screens.
+  const [conversionOverlayOpen, setConversionOverlayOpen] = React.useState(false);
 
   React.useEffect(() => {
     if (!hydrated) return;
     const sync = () =>
-      setModalOpen(
-        document.querySelectorAll('[role="dialog"][data-state="open"], [data-radix-dialog-content]')
-          .length > 0,
+      setConversionOverlayOpen(
+        document.querySelectorAll(
+          '[role="dialog"][data-state="open"], [data-radix-dialog-content], [data-sonner-toast][data-visible="true"]',
+        ).length > 0,
       );
     sync();
     const observer = new MutationObserver(sync);
@@ -130,7 +130,7 @@ export function CookieConsent() {
     [],
   );
 
-  if (!hydrated || !open || modalOpen) return null;
+  if (!hydrated || !open || conversionOverlayOpen) return null;
 
   return (
     <div

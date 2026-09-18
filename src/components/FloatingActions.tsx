@@ -1,10 +1,11 @@
 import { Link } from "@tanstack/react-router";
 import { ArrowUp } from "lucide-react";
 import { usePastHero } from "@/hooks/use-past-hero";
+import { CTA_LABELS } from "@/content/cta-vocabulary";
 
 /**
  * FloatingActions
- *  - Subtle floating CTA ("Start Your Experience") on lg+ — appears only after
+ *  - Subtle floating Studio CTA on lg+ — appears only after
  *    the user has scrolled past the hero (~600px). The hero already carries two
  *    prominent CTAs, so a third floating one over the hero is visual noise; it
  *    earns its place once the user has signalled engagement by scrolling.
@@ -64,19 +65,19 @@ export function FloatingActions() {
           on top of the wrapper-level `inert`. */}
       <Link
         to="/studio-v3"
-        aria-label="Start your experience"
+        aria-label={CTA_LABELS.studio}
         tabIndex={pastHero ? 0 : -1}
         className={
-          "hidden lg:inline-flex group items-center gap-2 rounded-full border border-[color:var(--teal)]/60 bg-[color:var(--ivory)]/95 backdrop-blur-md px-5 py-2.5 text-[12px] uppercase tracking-[0.18em] text-[color:var(--teal)] shadow-[0_8px_24px_-12px_rgba(41,91,97,0.35)] hover:-translate-y-0.5 hover:border-[color:var(--teal)] hover:bg-[color:var(--teal)] hover:text-[color:var(--ivory)] transition-all duration-500 " +
+          "hidden lg:inline-flex group items-center gap-2 rounded-full border border-[color:var(--teal)]/60 bg-[color:var(--ivory)] px-5 py-2.5 text-[12px] uppercase tracking-[0.18em] text-[color:var(--teal)] hover:-translate-y-0.5 hover:border-[color:var(--teal)] hover:bg-[color:var(--teal)] hover:text-[color:var(--ivory)] transition-[opacity,transform,background-color,border-color,color] duration-[var(--dur-base)] " +
           (pastHero
             ? "opacity-100 translate-y-0 pointer-events-auto"
             : "opacity-0 translate-y-2 pointer-events-none")
         }
       >
-        Start Your Experience
+        {CTA_LABELS.studio}
         <span
           aria-hidden
-          className="h-1.5 w-1.5 rounded-full bg-[color:var(--gold)] group-hover:bg-[color:var(--ivory)] transition-colors duration-500"
+          className="h-1.5 w-1.5 rounded-full bg-[color:var(--gold)] group-hover:bg-[color:var(--ivory)] transition-colors duration-[var(--dur-quick)]"
         />
       </Link>
 
@@ -87,7 +88,7 @@ export function FloatingActions() {
         aria-label="Scroll to top"
         tabIndex={pastHero ? 0 : -1}
         className={
-          "inline-flex h-11 w-11 items-center justify-center rounded-full border border-[color:var(--border)] bg-[color:var(--ivory)]/95 backdrop-blur-md text-[color:var(--charcoal)] shadow-[0_6px_18px_-10px_rgba(46,46,46,0.35)] transition-all duration-500 hover:-translate-y-0.5 hover:border-[color:var(--teal)]/60 hover:text-[color:var(--teal)] " +
+          "inline-flex h-11 w-11 items-center justify-center rounded-full border border-[color:var(--border)] bg-[color:var(--ivory)] text-[color:var(--charcoal)] transition-[opacity,transform,border-color,color] duration-[var(--dur-base)] hover:-translate-y-0.5 hover:border-[color:var(--teal)]/60 hover:text-[color:var(--teal)] " +
           (pastHero
             ? "opacity-100 translate-y-0 pointer-events-auto"
             : "opacity-0 translate-y-2 pointer-events-none")
