@@ -122,6 +122,8 @@ function TourCard({ tour, resolveImg, featured = false }: { tour: SignatureTour;
   const verifiedRating = meta?.rating;
   const verifiedReviewCount = meta?.reviewCount;
   const highlights = content.highlights.slice(0, 3);
+  // Fourth decision fact, read straight from the tour source of truth.
+  const idealFor = tour.idealFor?.[0];
   return (
     <article className="experience-editorial-card reveal-stagger group flex min-w-0 flex-col text-left" aria-label={tour.title}>
       <Link
