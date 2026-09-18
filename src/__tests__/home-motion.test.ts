@@ -154,6 +154,16 @@ describe("home-motion controller", () => {
     expect(document.querySelector("a")?.getAttribute("data-motion")).toBe("settle");
   });
 
+  it("does not double-tag content already owned by a legacy reveal", async () => {
+    document.documentElement.dataset.motionScope = "marketing";
+    document.body.innerHTML = `
+      <main><section><div class="reveal"><h2>One calm entrance</h2></div></section></main>
+    `;
+    dispose = startHomeMotion();
+    await flushRaf();
+    expect(document.querySelector("h2")?.hasAttribute("data-motion")).toBe(false);
+  });
+
   it("under prefers-reduced-motion, marks everything motion-in and skips motion-ready", () => {
     window.matchMedia = vi.fn().mockImplementation((q: string) => ({
       matches: q.includes("reduce"),

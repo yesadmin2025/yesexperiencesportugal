@@ -134,6 +134,7 @@ export function startHomeMotion(): () => void {
     nodes.forEach((el) => {
       if (el.hasAttribute("data-motion")) return;
       if (el.closest('[data-section="hero"], [aria-live], .sr-only, form, dialog, nav')) return;
+      if (el.closest(".reveal, .reveal-stagger, .section-enter")) return;
       if (el.parentElement?.closest("[data-motion]")) return;
 
       const container = (el.closest("section, article, header") as HTMLElement | null) ?? homeScope;
@@ -173,6 +174,7 @@ export function startHomeMotion(): () => void {
     supportingNodes.forEach((el) => {
       if (el.hasAttribute("data-motion")) return;
       if (el.closest('[data-section="hero"], [aria-live], form, dialog, nav')) return;
+      if (el.closest(".reveal, .reveal-stagger, .section-enter")) return;
       if (el.parentElement?.closest("[data-motion]")) return;
       el.setAttribute("data-motion", "settle");
     });
