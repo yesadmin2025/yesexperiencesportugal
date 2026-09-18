@@ -9,7 +9,7 @@
 
 import { useEffect, useState } from "react";
 import { Link } from "@tanstack/react-router";
-import { BookOpen, Wand2, Compass, Sparkles, Users, ArrowRight, type LucideIcon } from "lucide-react";
+import { BookOpen, Wand2, Compass, Sparkles, Users, ArrowRight, MoveRight, type LucideIcon } from "lucide-react";
 import { Eyebrow } from "@/components/ui/Eyebrow";
 import { CTA_LABELS } from "@/content/cta-vocabulary";
 
@@ -224,13 +224,30 @@ function PathCard({ path, featured }: { path: Path; featured: boolean }) {
         {path.body}
       </p>
       {/* Visible label + arrow — the whole card remains the action, but the
-          destination is readable at a glance before clicking. */}
-      <span className="mt-auto pt-7 inline-flex min-h-[44px] items-center gap-2.5">
+          destination is readable at a glance before clicking. The arrow is
+          pushed to the right so every card's arrow aligns across the row. */}
+      <span className="mt-auto pt-7 flex w-full min-h-[44px] items-center justify-between gap-3">
         <span className="text-[11px] uppercase tracking-[0.22em] font-semibold text-[color:var(--teal)]">
           {path.cta}
         </span>
-        <span className="home-way-arrow inline-flex items-center text-[color:var(--gold)] transition-transform duration-[var(--dur-base)] ease-[var(--ease-scene)] group-hover:translate-x-1.5 group-focus-visible:translate-x-1.5 group-active:translate-x-1">
-          <ArrowRight size={18} aria-hidden="true" strokeWidth={2.2} />
+        <span className="home-way-arrow inline-flex items-center text-[color:var(--gold)] transition-transform duration-[var(--dur-base)] ease-[var(--ease-scene)] group-hover:translate-x-1.5 group-focus-visible:translate-x-1.5 group-active:translate-x-0.5">
+          {/* Intentionally long, thin right arrow — aligned across all five cards. */}
+          <svg
+            width="28"
+            height="14"
+            viewBox="0 0 28 14"
+            fill="none"
+            aria-hidden="true"
+            className="block"
+          >
+            <path
+              d="M2 7H25.5M25.5 7L20 2M25.5 7L20 12"
+              stroke="currentColor"
+              strokeWidth="1.5"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+          </svg>
         </span>
       </span>
     </Link>
