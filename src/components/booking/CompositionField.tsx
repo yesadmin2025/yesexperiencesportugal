@@ -171,14 +171,14 @@ export function CompositionField({ value, onChange, maxParty, compact }: Props) 
               return (
                 <li
                   key={i}
-                  className="grid grid-cols-[52px_minmax(0,1fr)_44px] items-center gap-2 border px-2.5 py-2 sm:gap-3 sm:px-3"
+                  className="grid grid-cols-[minmax(0,1fr)_44px] items-center gap-x-2 gap-y-1.5 border px-2.5 py-2 sm:grid-cols-[52px_minmax(0,1fr)_44px] sm:gap-3 sm:px-3"
                   style={{
                     background: "var(--ivory)",
                     borderColor: "color-mix(in oklab, var(--charcoal) 28%, transparent)",
                   }}
                 >
                   <span
-                    className="text-[11px] uppercase tracking-[0.2em] min-w-[52px]"
+                    className="min-w-0 text-[11px] uppercase tracking-[0.14em] sm:min-w-[52px] sm:tracking-[0.2em]"
                     style={{
                       fontFamily: "var(--font-display)",
                       color: "color-mix(in oklab, var(--charcoal) 82%, transparent)",
@@ -186,7 +186,7 @@ export function CompositionField({ value, onChange, maxParty, compact }: Props) 
                   >
                     Child {i + 1}
                   </span>
-                  <label className="grid min-w-0 grid-cols-[64px_minmax(0,1fr)] items-center gap-2">
+                  <label className="col-start-1 row-start-2 grid min-w-0 grid-cols-[56px_minmax(0,1fr)] items-center gap-2 sm:col-start-2 sm:row-start-1 sm:grid-cols-[64px_minmax(0,1fr)]">
                     <span className="sr-only">Age of child {i + 1}</span>
                     <input
                       type="number"
@@ -232,7 +232,7 @@ export function CompositionField({ value, onChange, maxParty, compact }: Props) 
                   <button
                     type="button"
                     onClick={() => removeMinor(i)}
-                    className="inline-flex h-11 w-11 items-center justify-center focus:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)]"
+                    className="col-start-2 row-span-2 row-start-1 inline-flex h-11 w-11 items-center justify-center focus:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)] sm:col-start-3 sm:row-span-1"
                     aria-label={`Remove child ${i + 1}`}
                     style={{
                       color: "var(--charcoal-soft)",

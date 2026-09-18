@@ -601,6 +601,7 @@ export function SimpleBookingForm({ tour }: { tour: SignatureTour }) {
         }}
         submitting={pending}
         tourId={tour.id}
+        dateRule={rule}
         initial={{
           tourDate: date,
           adults: composition.adults,

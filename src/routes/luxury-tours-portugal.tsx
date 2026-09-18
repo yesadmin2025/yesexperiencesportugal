@@ -3,6 +3,7 @@ import { SiteLayout } from "@/components/SiteLayout";
 import { Eyebrow } from "@/components/ui/Eyebrow";
 import { SectionTitle } from "@/components/ui/SectionTitle";
 import { CtaButton } from "@/components/ui/CtaButton";
+import { CTA_LABELS } from "@/content/cta-vocabulary";
 import { jsonLdScript, breadcrumbLd } from "@/lib/jsonld";
 import { useMarketingMotion } from "@/hooks/use-marketing-motion";
 import ogSocialImg from "@/assets/hero-coast.jpg";
@@ -106,10 +107,10 @@ function Page() {
             </p>
             <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-4">
               <CtaButton to="/experiences" variant="primary">
-                Explore Signature Tours
+                {CTA_LABELS.signatureDiscovery}
               </CtaButton>
               <CtaButton to="/studio-v3" variant="ghost">
-                Design your own
+                {CTA_LABELS.studio}
               </CtaButton>
             </div>
           </div>

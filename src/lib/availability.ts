@@ -78,6 +78,13 @@ export function computeMinDateISO(leadHours: number, now: Date = new Date()): st
 
 export type DateInvalidReason = "before_min" | "weekday_closed" | "blackout";
 
+export function dateAvailabilityMessage(reason: DateInvalidReason, minLeadHours = 24): string {
+  if (reason === "weekday_closed") return "This experience doesn't run on that day. Please pick another date.";
+  if (reason === "blackout") return "That date is unavailable. Please pick another.";
+  const hours = Math.max(1, Math.round(minLeadHours));
+  return `Please choose a date at least ${hours} hour${hours === 1 ? "" : "s"} from now.`;
+}
+
 export function validateDateISO(
   dateISO: string,
   rule: OperatingRule,

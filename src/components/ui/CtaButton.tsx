@@ -103,24 +103,17 @@ const variantStyle: Record<Variant, React.CSSProperties | undefined> = {
 
 /**
  * Kinetic Luxury trailing block: gold arrow that translates on hover
- * with a diffuse gold ramp glow behind it. Used for all filled/ghost
+ * with a restrained directional response. Used for all filled/ghost
  * conversion CTAs so the arrow micro-interaction stays canonical.
  */
 function KineticArrow({ tone = "gold" }: { tone?: "gold" | "goldSoft" }) {
   const color = tone === "goldSoft" ? "var(--gold-soft)" : "var(--gold)";
   return (
     <span aria-hidden="true" className="relative flex items-center">
-      <span
-        className="pointer-events-none absolute right-[-14px] h-8 w-14 rounded-full opacity-0 blur-[6px] transition-opacity duration-[var(--dur-base)] group-hover:opacity-100 group-focus-visible:opacity-100 group-active:opacity-100 motion-reduce:hidden"
-        style={{
-          background:
-            "linear-gradient(90deg, transparent 0%, color-mix(in oklab, var(--gold) 22%, transparent) 55%, color-mix(in oklab, var(--gold) 42%, transparent) 100%)",
-        }}
-      />
       <ArrowRight
         size={16}
         strokeWidth={1.3}
-        className="cta-arrow-cue relative transition-transform duration-[var(--dur-base)] ease-[var(--ease-scene)] group-hover:translate-x-2 group-focus-visible:translate-x-2 group-active:translate-x-1 motion-reduce:transition-none motion-reduce:group-hover:translate-x-0"
+        className="cta-arrow-cue relative transition-transform duration-[var(--dur-quick)] ease-[var(--ease-scene)] group-hover:translate-x-1 group-focus-visible:translate-x-1 group-active:translate-x-0.5 motion-reduce:transition-none motion-reduce:group-hover:translate-x-0"
         style={{ color }}
       />
     </span>
