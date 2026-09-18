@@ -132,6 +132,7 @@ import { Route as AdminSotDiffRouteImport } from './routes/admin.sot-diff'
 import { Route as AdminSeoStrategyRouteImport } from './routes/admin.seo-strategy'
 import { Route as AdminSeoMonitorRouteImport } from './routes/admin.seo-monitor'
 import { Route as AdminSeoJsonldRouteImport } from './routes/admin.seo-jsonld'
+import { Route as AdminSeoExperiencesRouteImport } from './routes/admin.seo-experiences'
 import { Route as AdminReviewsRouteImport } from './routes/admin.reviews'
 import { Route as AdminRedirectsMonitorRouteImport } from './routes/admin.redirects-monitor'
 import { Route as AdminPricingToolRouteImport } from './routes/admin.pricing-tool'
@@ -823,6 +824,11 @@ const AdminSeoJsonldRoute = AdminSeoJsonldRouteImport.update({
   path: '/admin/seo-jsonld',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AdminSeoExperiencesRoute = AdminSeoExperiencesRouteImport.update({
+  id: '/admin/seo-experiences',
+  path: '/admin/seo-experiences',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AdminReviewsRoute = AdminReviewsRouteImport.update({
   id: '/admin/reviews',
   path: '/admin/reviews',
@@ -1257,6 +1263,7 @@ export interface FileRoutesByFullPath {
   '/admin/pricing-tool': typeof AdminPricingToolRoute
   '/admin/redirects-monitor': typeof AdminRedirectsMonitorRoute
   '/admin/reviews': typeof AdminReviewsRoute
+  '/admin/seo-experiences': typeof AdminSeoExperiencesRoute
   '/admin/seo-jsonld': typeof AdminSeoJsonldRoute
   '/admin/seo-monitor': typeof AdminSeoMonitorRoute
   '/admin/seo-strategy': typeof AdminSeoStrategyRoute
@@ -1440,6 +1447,7 @@ export interface FileRoutesByTo {
   '/admin/pricing-tool': typeof AdminPricingToolRoute
   '/admin/redirects-monitor': typeof AdminRedirectsMonitorRoute
   '/admin/reviews': typeof AdminReviewsRoute
+  '/admin/seo-experiences': typeof AdminSeoExperiencesRoute
   '/admin/seo-jsonld': typeof AdminSeoJsonldRoute
   '/admin/seo-monitor': typeof AdminSeoMonitorRoute
   '/admin/seo-strategy': typeof AdminSeoStrategyRoute
@@ -1626,6 +1634,7 @@ export interface FileRoutesById {
   '/admin/pricing-tool': typeof AdminPricingToolRoute
   '/admin/redirects-monitor': typeof AdminRedirectsMonitorRoute
   '/admin/reviews': typeof AdminReviewsRoute
+  '/admin/seo-experiences': typeof AdminSeoExperiencesRoute
   '/admin/seo-jsonld': typeof AdminSeoJsonldRoute
   '/admin/seo-monitor': typeof AdminSeoMonitorRoute
   '/admin/seo-strategy': typeof AdminSeoStrategyRoute
@@ -1813,6 +1822,7 @@ export interface FileRouteTypes {
     | '/admin/pricing-tool'
     | '/admin/redirects-monitor'
     | '/admin/reviews'
+    | '/admin/seo-experiences'
     | '/admin/seo-jsonld'
     | '/admin/seo-monitor'
     | '/admin/seo-strategy'
@@ -1996,6 +2006,7 @@ export interface FileRouteTypes {
     | '/admin/pricing-tool'
     | '/admin/redirects-monitor'
     | '/admin/reviews'
+    | '/admin/seo-experiences'
     | '/admin/seo-jsonld'
     | '/admin/seo-monitor'
     | '/admin/seo-strategy'
@@ -2181,6 +2192,7 @@ export interface FileRouteTypes {
     | '/admin/pricing-tool'
     | '/admin/redirects-monitor'
     | '/admin/reviews'
+    | '/admin/seo-experiences'
     | '/admin/seo-jsonld'
     | '/admin/seo-monitor'
     | '/admin/seo-strategy'
@@ -2367,6 +2379,7 @@ export interface RootRouteChildren {
   AdminPricingToolRoute: typeof AdminPricingToolRoute
   AdminRedirectsMonitorRoute: typeof AdminRedirectsMonitorRoute
   AdminReviewsRoute: typeof AdminReviewsRoute
+  AdminSeoExperiencesRoute: typeof AdminSeoExperiencesRoute
   AdminSeoJsonldRoute: typeof AdminSeoJsonldRoute
   AdminSeoMonitorRoute: typeof AdminSeoMonitorRoute
   AdminSeoStrategyRoute: typeof AdminSeoStrategyRoute
@@ -3284,6 +3297,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminSeoJsonldRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/admin/seo-experiences': {
+      id: '/admin/seo-experiences'
+      path: '/admin/seo-experiences'
+      fullPath: '/admin/seo-experiences'
+      preLoaderRoute: typeof AdminSeoExperiencesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/admin/reviews': {
       id: '/admin/reviews'
       path: '/admin/reviews'
@@ -3897,6 +3917,7 @@ const rootRouteChildren: RootRouteChildren = {
   AdminPricingToolRoute: AdminPricingToolRoute,
   AdminRedirectsMonitorRoute: AdminRedirectsMonitorRoute,
   AdminReviewsRoute: AdminReviewsRoute,
+  AdminSeoExperiencesRoute: AdminSeoExperiencesRoute,
   AdminSeoJsonldRoute: AdminSeoJsonldRoute,
   AdminSeoMonitorRoute: AdminSeoMonitorRoute,
   AdminSeoStrategyRoute: AdminSeoStrategyRoute,
