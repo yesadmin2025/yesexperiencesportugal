@@ -59,7 +59,13 @@ describe("Premium System Lock", () => {
     expect(hook).toContain('import("@/lib/home-motion")');
     expect(hook).toContain("requestAnimationFrame");
     expect(hook).not.toContain("MutationObserver");
-    expect(css).not.toContain("filter: blur(2px)");
+    const marketingMotion = css.slice(
+      css.indexOf('html.motion-ready[data-motion-scope="marketing"] [data-motion]'),
+      css.indexOf("@keyframes editorialArrowCue"),
+    );
+    expect(marketingMotion).not.toContain("filter:");
+    expect(marketingMotion).not.toContain("clip-path:");
+    expect(marketingMotion).not.toContain("scale(");
   });
 
   it("uses Inter for public micro-labels and controls", () => {
