@@ -1339,6 +1339,72 @@ export type Database = {
         }
         Relationships: []
       }
+      experience_content_overrides: {
+        Row: {
+          blurb: string | null
+          created_at: string
+          fits_best: string | null
+          intro: string | null
+          is_published: boolean
+          tour_id: string
+          updated_at: string
+          updated_by: string | null
+        }
+        Insert: {
+          blurb?: string | null
+          created_at?: string
+          fits_best?: string | null
+          intro?: string | null
+          is_published?: boolean
+          tour_id: string
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Update: {
+          blurb?: string | null
+          created_at?: string
+          fits_best?: string | null
+          intro?: string | null
+          is_published?: boolean
+          tour_id?: string
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Relationships: []
+      }
+      experience_content_revisions: {
+        Row: {
+          blurb: string | null
+          created_at: string
+          fits_best: string | null
+          id: string
+          intro: string | null
+          is_published: boolean
+          tour_id: string
+          updated_by: string | null
+        }
+        Insert: {
+          blurb?: string | null
+          created_at?: string
+          fits_best?: string | null
+          id?: string
+          intro?: string | null
+          is_published?: boolean
+          tour_id: string
+          updated_by?: string | null
+        }
+        Update: {
+          blurb?: string | null
+          created_at?: string
+          fits_best?: string | null
+          id?: string
+          intro?: string | null
+          is_published?: boolean
+          tour_id?: string
+          updated_by?: string | null
+        }
+        Relationships: []
+      }
       experience_images: {
         Row: {
           alt_text: string
