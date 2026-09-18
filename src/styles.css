@@ -1059,7 +1059,7 @@
       transform: translateX(0);
     }
     55% {
-      transform: translateX(3px);
+      transform: translateX(6px);
     }
   }
   .cta-arrow-cue {
@@ -3409,35 +3409,26 @@ html.motion-ready [data-motion].motion-in {
   transform: translateY(0);
 }
 
-/* Marketing-scoped editorial motion. Public storytelling pages settle into
-   focus rather than jumping upward. Headings use a restrained clip reveal;
-   cards/images use opacity + a 0.985 scale settle. */
+/* Marketing-scoped editorial motion. Public storytelling pages use one clear
+   language: opacity plus a short vertical transition. No blur, mask or scale. */
 html.motion-ready[data-motion-scope="marketing"] [data-motion] {
-  transform: translate3d(0, 20px, 0) scale(0.985);
-  filter: blur(2px);
+  transform: translate3d(0, 14px, 0);
   transition:
-    opacity 560ms var(--ease-scene),
-    transform 620ms var(--ease-scene),
-    filter 520ms var(--ease-scene),
-    clip-path 680ms var(--ease-scene);
+    opacity 420ms var(--ease-scene),
+    transform 440ms var(--ease-scene);
   animation: none;
 }
 html.motion-ready[data-motion-scope="marketing"] [data-motion].motion-in {
-  transform: translate3d(0, 0, 0) scale(1);
-  filter: blur(0);
+  transform: translate3d(0, 0, 0);
 }
 html.motion-ready[data-motion-scope="marketing"] [data-motion="editorial-clip"] {
-  clip-path: inset(0 0 100% 0);
-  transform: translate3d(0, 14px, 0);
-  filter: none;
+  transform: translate3d(0, 12px, 0);
 }
 html.motion-ready[data-motion-scope="marketing"] [data-motion="editorial-clip"].motion-in {
-  clip-path: inset(0 0 0 0);
   transform: translate3d(0, 0, 0);
 }
 html.motion-ready[data-motion-scope="marketing"] [data-motion="fade"] {
   transform: none;
-  filter: none;
 }
 
 @keyframes editorialArrowCue {
@@ -3445,7 +3436,7 @@ html.motion-ready[data-motion-scope="marketing"] [data-motion="fade"] {
   55% { transform: translateX(8px); }
 }
 html.motion-ready[data-motion-scope="marketing"] .motion-in .editorial-arrow {
-  animation: editorialArrowCue 620ms var(--ease-scene) 420ms both;
+  animation: editorialArrowCue 560ms var(--ease-scene) 240ms both;
 }
 .editorial-arrow {
   transition: transform var(--dur-base) var(--ease-scene);
@@ -3504,7 +3495,7 @@ html[data-motion-scope="marketing"] .signature-image-settle {
     transition: none !important;
   }
   html.motion-ready[data-motion-scope="marketing"] [data-motion="editorial-clip"] {
-    clip-path: none !important;
+    transform: none !important;
   }
   .editorial-arrow {
     animation: none !important;

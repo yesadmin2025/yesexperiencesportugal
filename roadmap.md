@@ -102,3 +102,8 @@
 - [x] Extend one-shot movement to headings, imagery, cards, conversion actions, and Five Ways arrows
 - [x] Keep transactional, Studio, admin, auth, and internal routes free from decorative motion
 - [x] Validate public journeys at mobile/desktop sizes, reduced motion, focused tests, and build
+
+## 16. Preview motion correction
+- [x] Remove competing reveal ownership and delayed startup
+- [x] Use one editorial fade language without blur, masks, scale or bounce
+- [ ] Validate homepage cadence, CTA and arrow response in mobile, desktop and reduced motion

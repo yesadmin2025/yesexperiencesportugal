@@ -25,29 +25,25 @@ export function usePublicEditorialMotion(pathname: string): void {
     document.documentElement.dataset.motionScope = "marketing";
     let cancelled = false;
     let disposeController: (() => void) | undefined;
-    let settleTimer = 0;
+    let firstFrame = 0;
+    let secondFrame = 0;
 
-    // Wait until the streamed route subtree has stopped mounting before
-    // auto-tagging it. Mutating SSR markup while a lazy route is hydrating
-    // makes React restore the original attributes and emits a mismatch.
+    // Effects run after hydration. Two frames give the routed subtree one
+    // settled paint without making visitors wait for a long mutation-free
+    // window before scroll movement becomes available.
     const boot = () => {
-      observer.disconnect();
       void import("@/lib/home-motion").then(({ startHomeMotion }) => {
         if (!cancelled) disposeController = startHomeMotion();
       });
     };
-    const scheduleBoot = () => {
-      window.clearTimeout(settleTimer);
-      settleTimer = window.setTimeout(boot, 400);
-    };
-    const observer = new MutationObserver(scheduleBoot);
-    observer.observe(document.body, { childList: true, subtree: true });
-    scheduleBoot();
+    firstFrame = window.requestAnimationFrame(() => {
+      secondFrame = window.requestAnimationFrame(boot);
+    });
 
     return () => {
       cancelled = true;
-      observer.disconnect();
-      window.clearTimeout(settleTimer);
+      window.cancelAnimationFrame(firstFrame);
+      window.cancelAnimationFrame(secondFrame);
       disposeController?.();
       document.documentElement.classList.remove("motion-ready");
       delete document.documentElement.dataset.motionScope;

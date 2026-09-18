@@ -108,7 +108,7 @@ describe("home-motion controller", () => {
     expect(el.classList.contains("motion-in")).toBe(true);
   });
 
-  it("auto-tags legacy reveal classes with data-motion", async () => {
+  it("leaves legacy reveal classes to the SiteLayout controller", async () => {
     const legacy = document.createElement("div");
     legacy.className = "reveal";
     legacy.getBoundingClientRect = () =>
@@ -126,8 +126,8 @@ describe("home-motion controller", () => {
     document.body.appendChild(legacy);
     dispose = startHomeMotion();
     await flushRaf();
-    expect(legacy.getAttribute("data-motion")).toBe("settle");
-    expect(legacy.classList.contains("motion-in")).toBe(true);
+    expect(legacy.hasAttribute("data-motion")).toBe(false);
+    expect(legacy.classList.contains("motion-in")).toBe(false);
   });
 
   it("auto-tags public editorial headings, imagery, and conversion actions", async () => {

@@ -57,7 +57,9 @@ describe("Premium System Lock", () => {
     expect(hook).toMatch(/\/\^\\\/studio/);
     expect(hook).toContain('document.documentElement.dataset.motionScope = "marketing"');
     expect(hook).toContain('import("@/lib/home-motion")');
-    expect(hook).toContain("new MutationObserver");
+    expect(hook).toContain("requestAnimationFrame");
+    expect(hook).not.toContain("MutationObserver");
+    expect(css).not.toContain("filter: blur(2px)");
   });
 
   it("uses Inter for public micro-labels and controls", () => {
