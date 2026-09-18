@@ -154,6 +154,30 @@ describe("home-motion controller", () => {
     expect(document.querySelector("a")?.getAttribute("data-motion")).toBe("settle");
   });
 
+  it("auto-tags supporting copy and repeated discovery cards", async () => {
+    document.documentElement.dataset.motionScope = "marketing";
+    document.body.innerHTML = `
+      <main><section>
+        <p>Choose the day that feels right.</p>
+        <ul>
+          <li><h3>Arrábida</h3><a href="/tours/arrabida">Reserve</a></li>
+          <li><h3>Sintra</h3><a href="/tours/sintra">Reserve</a></li>
+        </ul>
+      </section></main>
+    `;
+    document.querySelectorAll<HTMLElement>("p, li, h3").forEach((el) => {
+      el.getBoundingClientRect = () =>
+        ({ top: 100, bottom: 200, left: 0, right: 320, width: 320, height: 100, x: 0, y: 100, toJSON: () => ({}) }) as DOMRect;
+    });
+    dispose = startHomeMotion();
+    await flushRaf();
+
+    expect(document.querySelector("p")?.getAttribute("data-motion")).toBe("editorial-clip");
+    const cards = document.querySelectorAll("li");
+    expect(cards[0]?.getAttribute("data-motion")).toBe("settle");
+    expect(cards[1]?.getAttribute("data-motion-delay")).toBe("100");
+  });
+
   it("does not double-tag content already owned by a legacy reveal", async () => {
     document.documentElement.dataset.motionScope = "marketing";
     document.body.innerHTML = `

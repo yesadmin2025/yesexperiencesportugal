@@ -3192,40 +3192,39 @@ svg.lucide {
    visible for no-JS renders, crawlers and pre-hydration paint. */
 html.reveal-ready .reveal {
   opacity: 0;
-  transform: translateY(20px);
+  transform: translateY(14px);
   transition:
-    opacity 520ms cubic-bezier(0.22, 0.61, 0.36, 1),
-    transform 520ms cubic-bezier(0.22, 0.61, 0.36, 1);
+    opacity 420ms var(--ease-scene),
+    transform 440ms var(--ease-scene);
   will-change: opacity, transform;
 }
 html.reveal-ready .reveal.is-visible {
   opacity: 1;
   transform: translateY(0);
-  animation: siteRevealIn 560ms cubic-bezier(0.22, 0.61, 0.36, 1) both;
+  animation: siteRevealIn 440ms var(--ease-scene) both;
 }
 
 /* Stagger child — opt-in reveal for individual items inside a parent. */
 html.reveal-ready .reveal-stagger {
   opacity: 0;
-  transform: translateY(16px);
+  transform: translateY(12px);
   transition:
-    opacity 460ms cubic-bezier(0.22, 0.61, 0.36, 1),
-    transform 460ms cubic-bezier(0.22, 0.61, 0.36, 1);
+    opacity 400ms var(--ease-scene),
+    transform 420ms var(--ease-scene);
   will-change: opacity, transform;
 }
 html.reveal-ready .reveal-stagger.is-visible {
   opacity: 1;
   transform: translateY(0);
-  animation: siteRevealStaggerIn 500ms cubic-bezier(0.22, 0.61, 0.36, 1) both;
+  animation: siteRevealStaggerIn 420ms var(--ease-scene) both;
 }
 
-/* Cinematic image blur-in inside reveals — no layout shift. */
+/* Images inherit the same calm reveal without blur or a second effect. */
 html.reveal-ready .reveal img,
 html.reveal-ready .reveal [data-reveal-image],
 html.reveal-ready .reveal-stagger img,
 html.reveal-ready .reveal-stagger [data-reveal-image] {
-  filter: blur(3px);
-  transition: filter 560ms cubic-bezier(0.22, 0.61, 0.36, 1);
+  filter: none;
 }
 html.reveal-ready .reveal.is-visible img,
 html.reveal-ready .reveal.is-visible [data-reveal-image],
@@ -3330,18 +3329,18 @@ html.reveal-ready .home-energy .reveal-stagger.is-visible {
 .lift-layer-sm {
   transform: translateZ(0);
   transition:
-    transform 600ms cubic-bezier(0.22, 0.61, 0.36, 1),
-    box-shadow 600ms cubic-bezier(0.22, 0.61, 0.36, 1),
-    border-color 500ms ease;
+    transform var(--dur-base) var(--ease-scene),
+    box-shadow var(--dur-base) var(--ease-scene),
+    border-color var(--dur-quick) var(--ease-scene);
   will-change: transform, box-shadow;
 }
 .group:hover .lift-layer,
 .lift-layer:hover {
-  transform: translate3d(0, -8px, 0);
+  transform: translate3d(0, -2px, 0);
 }
 .group:hover .lift-layer-sm,
 .lift-layer-sm:hover {
-  transform: translate3d(0, -6px, 0);
+  transform: translate3d(0, -2px, 0);
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -3443,8 +3442,10 @@ html.motion-ready[data-motion-scope="marketing"] .motion-in .editorial-arrow {
 }
 .editorial-action:hover .editorial-arrow,
 .editorial-action:focus-visible .editorial-arrow,
+.editorial-action:active .editorial-arrow,
 a:hover .editorial-arrow,
 a:focus-visible .editorial-arrow,
+a:active .editorial-arrow,
 .group:hover .editorial-arrow {
   transform: translateX(7px);
 }
@@ -3454,7 +3455,10 @@ html[data-motion-scope="marketing"] button svg[data-lucide="arrow-right"] {
 }
 html[data-motion-scope="marketing"] a:hover svg[data-lucide="arrow-right"],
 html[data-motion-scope="marketing"] a:focus-visible svg[data-lucide="arrow-right"],
+html[data-motion-scope="marketing"] a:active svg[data-lucide="arrow-right"],
 html[data-motion-scope="marketing"] button:hover svg[data-lucide="arrow-right"],
+html[data-motion-scope="marketing"] button:focus-visible svg[data-lucide="arrow-right"],
+html[data-motion-scope="marketing"] button:active svg[data-lucide="arrow-right"],
 html[data-motion-scope="marketing"] .group:hover svg[data-lucide="arrow-right"] {
   transform: translateX(7px);
 }
@@ -3477,6 +3481,13 @@ html[data-motion-scope="marketing"] .premium-cta:active,
 html[data-motion-scope="marketing"] .editorial-action:active {
   transform: translateY(0) scale(0.985);
   transition-duration: var(--dur-tap);
+}
+
+@media (hover: none) {
+  html[data-motion-scope="marketing"] .premium-cta,
+  html[data-motion-scope="marketing"] .editorial-action {
+    -webkit-tap-highlight-color: transparent;
+  }
 }
 
 @keyframes signatureImageSettle {

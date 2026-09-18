@@ -127,6 +127,8 @@ export function startHomeMotion(): () => void {
       ".he-eyebrow-bar",
       ".lead",
       ".section-lead",
+      "section > p",
+      "article > p",
     ].join(",");
 
     const seenContainers = new WeakMap<HTMLElement, number>();
@@ -169,7 +171,18 @@ export function startHomeMotion(): () => void {
     // interactive form surfaces or anything already governed by a parent
     // reveal, so movement stays editorial rather than busy.
     const supportingNodes = homeScope.querySelectorAll<HTMLElement>(
-      "main section figure, main section picture, main section .editorial-card, main section .decision-scene, main section .premium-cta, main section .editorial-action",
+      [
+        "section figure",
+        "section picture",
+        "section .editorial-card",
+        "section .decision-scene",
+        "section .he-card-lift",
+        "section .fw-card",
+        "section [data-editorial-card]",
+        "section .premium-cta",
+        "section .editorial-action",
+        "section [data-cta-group]",
+      ].join(","),
     );
     supportingNodes.forEach((el) => {
       if (el.hasAttribute("data-motion")) return;
@@ -178,9 +191,38 @@ export function startHomeMotion(): () => void {
       if (el.parentElement?.closest("[data-motion]")) return;
       el.setAttribute("data-motion", "settle");
     });
+
+    // Route-specific discovery grids still share a reliable semantic shape:
+    // repeated list items containing a heading and a link. Tag that structure
+    // once, without coupling the motion system to every card class name.
+    const collections = homeScope.querySelectorAll<HTMLElement>(
+      "section > ul, section > ol, section > [role='list']",
+    );
+    collections.forEach((collection) => {
+      const discoveryCards = Array.from(collection.children).filter(
+        (node): node is HTMLElement =>
+          node instanceof HTMLElement &&
+          Boolean(node.querySelector("h2, h3")) &&
+          Boolean(node.querySelector("a[href]")) &&
+          !node.closest("form, dialog, nav, [aria-live]"),
+      );
+      if (discoveryCards.length < 2) return;
+      discoveryCards.forEach((card, idx) => {
+        if (card.hasAttribute("data-motion")) return;
+        if (card.closest(".reveal, .reveal-stagger, .section-enter")) return;
+        if (card.parentElement?.closest("[data-motion]")) return;
+        card.setAttribute("data-motion", "settle");
+        const delay = Math.min(idx * CARD_STEP, CARD_CAP);
+        if (delay > 0) {
+          card.setAttribute("data-motion-delay", String(delay));
+          card.style.setProperty("--motion-delay", `${delay}ms`);
+        }
+      });
+    });
   }
 
-  const all = () => Array.from(document.querySelectorAll<HTMLElement>("[data-motion]"));
+  const all = () =>
+    Array.from(document.querySelectorAll<HTMLElement>("[data-motion]:not([data-reveal-image])"));
 
   // Reduced motion: never hide anything, mark everything triggered, exit.
   if (reduced) {
