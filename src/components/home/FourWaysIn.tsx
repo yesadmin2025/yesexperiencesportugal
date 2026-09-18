@@ -9,7 +9,7 @@
 
 import { useEffect, useState } from "react";
 import { Link } from "@tanstack/react-router";
-import { BookOpen, Wand2, Compass, Sparkles, Users, ArrowRight, type LucideIcon } from "lucide-react";
+import { BookOpen, Wand2, Compass, Sparkles, Users, MoveRight, type LucideIcon } from "lucide-react";
 import { Eyebrow } from "@/components/ui/Eyebrow";
 import { CTA_LABELS } from "@/content/cta-vocabulary";
 
