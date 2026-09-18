@@ -886,6 +886,11 @@ function FinalCta({ tour }: { tour: SignatureTour }) {
             href="#book"
             variant="primary"
             iconLeading={<Sparkles size={14} aria-hidden="true" />}
+            data-analytics="signature_reserve_click"
+            data-analytics-placement="final"
+            onClick={() =>
+              dispatchSignatureReserveIntent({ tourId: tour.id, placement: "final" })
+            }
           >
              Reserve this day
           </CtaButton>
