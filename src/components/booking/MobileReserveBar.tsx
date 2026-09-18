@@ -13,7 +13,7 @@
  */
 
 import { useEffect, useState } from "react";
-import { PriceEur } from "@/components/PriceEur";
+import { PriceEur } from "@/components/ui/PriceEur";
 import { dispatchSignatureReserveIntent } from "@/lib/booking/reserve-intent";
 import { CTA_LABELS } from "@/content/cta-vocabulary";
 
