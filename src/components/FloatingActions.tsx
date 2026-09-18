@@ -5,7 +5,7 @@ import { CTA_LABELS } from "@/content/cta-vocabulary";
 
 /**
  * FloatingActions
- *  - Subtle floating CTA ("Start Your Experience") on lg+ — appears only after
+ *  - Subtle floating Studio CTA on lg+ — appears only after
  *    the user has scrolled past the hero (~600px). The hero already carries two
  *    prominent CTAs, so a third floating one over the hero is visual noise; it
  *    earns its place once the user has signalled engagement by scrolling.

@@ -1,5 +1,5 @@
 import { useMemo, useState } from "react";
-import { Calendar } from "@/components/ui/calendar";
+import { StudioDateCalendar } from "./StudioDateCalendar";
 import { isStudioBookingDateAllowed, minimumStudioBookingDateIso } from "./dateGuards";
 import type { DateMode } from "./types";
 
@@ -99,7 +99,7 @@ export function DatePhaseControls({
           animation: "studioV3RiseIn 640ms ease-out 180ms both",
         }}
       >
-        <Calendar
+        <StudioDateCalendar
           mode="single"
           selected={selected}
           onSelect={(d) => {
@@ -113,8 +113,6 @@ export function DatePhaseControls({
           onMonthChange={setMonth}
           disabled={{ before: earliest }}
           showOutsideDays={false}
-          // Mobile tap targets: day cells and month nav must stay >= 44px.
-          className="pointer-events-auto mx-auto [--cell-size:2.75rem]"
         />
         {exactSelected && selected ? (
           <p

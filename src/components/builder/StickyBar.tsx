@@ -26,7 +26,7 @@ export function StickyBar({
   setGuests,
   onConfirm,
   disabled,
-  ctaLabel = "Confirm experience",
+  ctaLabel = "Reserve this day",
 }: Props) {
   const total = pricePerPersonEur * guests;
   return (

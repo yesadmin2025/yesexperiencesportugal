@@ -140,3 +140,13 @@
 - [x] Páginas públicas de experiência usam o texto editado quando existe, com fallback ao texto de origem; sitemap intocado
 - [x] Estratégia SEO de 12 meses publicada em docs/seo/authority-strategy-2026.md e legível em /admin/seo-strategy
 - [x] Validação: typecheck, 1531 testes, route-meta, build de produção, 393x1800 + 1280x900 sem overflow nem erros
+
+## 22. Conversão mobile, CTAs e movimento premium
+- [x] Bloquear Tailor sem data e validar a mesma regra no editor, dados pessoais e repetição do checkout
+- [x] Preservar datas digitadas parcialmente e mostrar erros junto ao campo
+- [x] Tornar idades e resumo da data flexíveis em ecrãs estreitos
+- [x] Unificar os dois calendários Studio numa geometria móvel partilhada
+- [x] Normalizar as principais ações públicas e reduzir escolhas concorrentes nos artigos
+- [x] Remover glow e ajustar movimentos de ação aos tempos premium
+- [ ] Validar visualmente 320, 360, 393 e 1280 px; testar falha/repetição de checkout
+- [ ] Executar verificações completas e manter produção sem publicar

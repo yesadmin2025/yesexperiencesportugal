@@ -169,7 +169,12 @@ export function FinalDetailsDialog({
     if (!fullName.trim()) missing.push("full name");
     if (!email.trim() || !isEmail(email)) missing.push("email");
     if (!phone.trim()) missing.push("phone / WhatsApp");
-    if (!tourDate) missing.push("tour date");
+    if (!tourDate) {
+      missing.push("tour date");
+      setDateError("Choose your tour date before continuing.");
+      setEditDay(true);
+      requestAnimationFrame(() => dateInputRef.current?.focus());
+    }
     if (!pickupAddress.trim()) missing.push("pickup address");
     if (!compositionComplete) missing.push("age for every child");
     if (tourDate && dateRule) {
