@@ -127,3 +127,9 @@
 - [x] 5 guias consolidados em /day-trips-from-lisbon e /lisbon-private-tours (301)
 - [x] Ligações internas, hub de cluster e sitemap (35 rotas) atualizados
 - [ ] Fase 2: reforçar Sintra, Fátima, Évora, Comporta e luxury com blocos de resposta e FAQ para o mercado EUA
+
+## 20. Painel de medição orgânica + publicação
+- [x] Email de confirmação automático com detalhes + itinerário (já existente, verificado ponta a ponta)
+- [x] Painel validado com sessão real de admin: SEO monitor, origem → pagamento, reservas por experiência, estado de cada reserva
+- [x] Corrigido contador "Dados do hóspede" (usava um campo nunca preenchido, mostrava sempre 0)
+- [x] Publicado e confirmado em produção: sitemap com 84 URLs reais, 301 das páginas retiradas, títulos/descrições reais
