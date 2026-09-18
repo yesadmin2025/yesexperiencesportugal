@@ -124,10 +124,6 @@ export function PhaseShell({
 
       {/* Local keyframes — scoped via style tag to avoid polluting global CSS. */}
       <style>{`
-        @keyframes studioV3Breathe {
-          0%, 100% { opacity: 0.85; transform: translateY(0); }
-          50% { opacity: 1; transform: translateY(-2%); }
-        }
         @keyframes studioV3RiseIn {
           from { opacity: 0; transform: translateY(14px); }
           to { opacity: 1; transform: translateY(0); }
