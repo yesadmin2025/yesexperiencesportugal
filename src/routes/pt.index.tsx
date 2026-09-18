@@ -22,9 +22,9 @@ import ogSocialImg from "@/assets/hero-coast.jpg";
  * the completed PT surface: Signature → Studio (EN) → Multi-day paths,
  * featured day experiences, corporate & reviews strips, contact.
  */
-const PT_TITLE = "YES Experiences Portugal — Portugal privado, ao seu ritmo";
+const PT_TITLE = "Experiência Privada Portugal · Reservar Tour Privado | YES";
 const PT_DESCRIPTION =
-  "Experiências privadas por Portugal com guias locais — Arrábida ao Douro, Sintra ao Alentejo. Signature ou à medida, sem grupos.";
+  "Experiências privadas em Portugal com anfitriões locais — Sintra, Arrábida, Évora, Douro. Veja o percurso e o preço real e reserve o seu tour privado com confirmação imediata.";
 
 export const Route = createFileRoute("/pt/")({
   head: () => ({
