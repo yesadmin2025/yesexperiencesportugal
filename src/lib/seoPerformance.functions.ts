@@ -406,3 +406,167 @@ export const getAcquisitionConversions = createServerFn({ method: "POST" })
       return { rows, days: data.days };
     },
   );
+
+export type ExperienceSeoRow = {
+  tourId: string;
+  title: string;
+  /** Canonical experience page path. */
+  path: string;
+  /** Guide articles that feed this experience. */
+  guidePaths: string[];
+  /** Search Console, current window (experience page + its guides combined). */
+  clicks: number;
+  impressions: number;
+  position: number;
+  prevClicks: number;
+  prevImpressions: number;
+  prevPosition: number;
+  /** Own data: checkouts opened, reached guest details, paid, revenue in EUR. */
+  started: number;
+  reachedDetails: number;
+  paid: number;
+  paidRevenueEur: number;
+};
+
+export type ExperienceSeoPerformance = {
+  days: number;
+  current: { startDate: string; endDate: string };
+  previous: { startDate: string; endDate: string };
+  rows: ExperienceSeoRow[];
+  searchError?: string;
+  bookingError?: string;
+};
+
+/**
+ * Per-experience SEO + conversion view: Search Console demand for each
+ * `/tours/<id>` page plus the guide articles that point at it, joined with our
+ * own booking funnel for the same experience. Read-only; no invented numbers.
+ */
+export const getExperienceSeoPerformance = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((input: { days?: number }) => ({
+    days: Math.min(Math.max(Number(input?.days ?? 28), 7), 90),
+  }))
+  .handler(async ({ data, context }): Promise<ExperienceSeoPerformance> => {
+    await assertAdmin(context);
+
+    const [{ signatureTours }, articles] = await Promise.all([
+      import("@/data/signatureTours"),
+      import("@/content/local-stories-articles"),
+    ]);
+
+    const current = windowFor(data.days, 0);
+    const previous = windowFor(data.days, data.days);
+
+    // path -> tourId, for every experience page and every guide that points at it.
+    const owner = new Map<string, string>();
+    const guidesByTour = new Map<string, string[]>();
+    for (const t of signatureTours) {
+      owner.set(`/tours/${t.id}`, t.id);
+      guidesByTour.set(t.id, []);
+    }
+    for (const a of articles.PUBLISHED_LOCAL_STORIES_ARTICLES) {
+      const tourId =
+        a.signatureSlug ?? articles.GUIDE_INLINE_BOOKING[a.slug]?.tourSlug ?? undefined;
+      if (!tourId || !guidesByTour.has(tourId)) continue;
+      const path = `/local-stories/${a.slug}`;
+      owner.set(path, tourId);
+      guidesByTour.get(tourId)!.push(path);
+    }
+
+    const pathOf = (url: string) => {
+      try {
+        return new URL(url).pathname.replace(/\/$/, "") || "/";
+      } catch {
+        return url;
+      }
+    };
+
+    type Agg = { clicks: number; impressions: number; weighted: number };
+    const blank = (): Agg => ({ clicks: 0, impressions: 0, weighted: 0 });
+    const nowByTour = new Map<string, Agg>();
+    const prevByTour = new Map<string, Agg>();
+    let searchError: string | undefined;
+
+    const absorb = (rows: RawRow[], into: Map<string, Agg>) => {
+      for (const r of rows) {
+        const tourId = owner.get(pathOf(r.keys?.[0] ?? ""));
+        if (!tourId) continue;
+        const agg = into.get(tourId) ?? blank();
+        agg.clicks += r.clicks ?? 0;
+        agg.impressions += r.impressions ?? 0;
+        agg.weighted += (r.position ?? 0) * (r.impressions ?? 0);
+        into.set(tourId, agg);
+      }
+    };
+
+    try {
+      const [nowRows, prevRows] = await Promise.all([
+        queryDimension("page", current, 100),
+        queryDimension("page", previous, 100),
+      ]);
+      absorb(nowRows, nowByTour);
+      absorb(prevRows, prevByTour);
+    } catch (e) {
+      searchError = e instanceof Error ? e.message : String(e);
+    }
+
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const since = new Date();
+    since.setDate(since.getDate() - data.days);
+    const { data: bookings, error: bookingErr } = await supabaseAdmin
+      .from("bookings")
+      .select("source_tour_id, status, amount_total, booking_details_completed_at, booking_details")
+      .gte("created_at", since.toISOString());
+
+    type Funnel = { started: number; reachedDetails: number; paid: number; revenue: number };
+    const funnel = new Map<string, Funnel>();
+    for (const b of bookings ?? []) {
+      const tourId = b.source_tour_id ?? "";
+      if (!tourId) continue;
+      const f = funnel.get(tourId) ?? { started: 0, reachedDetails: 0, paid: 0, revenue: 0 };
+      f.started += 1;
+      if (reachedGuestDetails(b)) f.reachedDetails += 1;
+      if (b.status === "paid") {
+        f.paid += 1;
+        f.revenue += Math.round((b.amount_total ?? 0) / 100);
+      }
+      funnel.set(tourId, f);
+    }
+
+    const rows: ExperienceSeoRow[] = signatureTours
+      .map((t) => {
+        const now = nowByTour.get(t.id) ?? blank();
+        const before = prevByTour.get(t.id) ?? blank();
+        const f = funnel.get(t.id) ?? { started: 0, reachedDetails: 0, paid: 0, revenue: 0 };
+        return {
+          tourId: t.id,
+          title: t.title,
+          path: `/tours/${t.id}`,
+          guidePaths: guidesByTour.get(t.id) ?? [],
+          clicks: now.clicks,
+          impressions: now.impressions,
+          position: now.impressions > 0 ? now.weighted / now.impressions : 0,
+          prevClicks: before.clicks,
+          prevImpressions: before.impressions,
+          prevPosition: before.impressions > 0 ? before.weighted / before.impressions : 0,
+          started: f.started,
+          reachedDetails: f.reachedDetails,
+          paid: f.paid,
+          paidRevenueEur: f.revenue,
+        };
+      })
+      .sort(
+        (a, b) =>
+          b.paid - a.paid || b.clicks - a.clicks || b.impressions - a.impressions,
+      );
+
+    return {
+      days: data.days,
+      current,
+      previous,
+      rows,
+      searchError,
+      bookingError: bookingErr?.message,
+    };
+  });
