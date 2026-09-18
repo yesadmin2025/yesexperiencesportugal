@@ -25,24 +25,29 @@ export function usePublicEditorialMotion(pathname: string): void {
     document.documentElement.dataset.motionScope = "marketing";
     let cancelled = false;
     let disposeController: (() => void) | undefined;
-    let firstFrame = 0;
-    let secondFrame = 0;
+    let settleTimer = 0;
 
-    // Wait until the route subtree has finished hydrating before auto-tagging
-    // it. Mutating SSR markup during hydration makes React restore the original
-    // attributes, leaving the controller active but its targets untagged.
-    firstFrame = window.requestAnimationFrame(() => {
-      secondFrame = window.requestAnimationFrame(() => {
-        void import("@/lib/home-motion").then(({ startHomeMotion }) => {
-          if (!cancelled) disposeController = startHomeMotion();
-        });
+    // Wait until the streamed route subtree has stopped mounting before
+    // auto-tagging it. Mutating SSR markup while a lazy route is hydrating
+    // makes React restore the original attributes and emits a mismatch.
+    const boot = () => {
+      observer.disconnect();
+      void import("@/lib/home-motion").then(({ startHomeMotion }) => {
+        if (!cancelled) disposeController = startHomeMotion();
       });
-    });
+    };
+    const scheduleBoot = () => {
+      window.clearTimeout(settleTimer);
+      settleTimer = window.setTimeout(boot, 400);
+    };
+    const observer = new MutationObserver(scheduleBoot);
+    observer.observe(document.body, { childList: true, subtree: true });
+    scheduleBoot();
 
     return () => {
       cancelled = true;
-      window.cancelAnimationFrame(firstFrame);
-      window.cancelAnimationFrame(secondFrame);
+      observer.disconnect();
+      window.clearTimeout(settleTimer);
       disposeController?.();
       document.documentElement.classList.remove("motion-ready");
       delete document.documentElement.dataset.motionScope;
