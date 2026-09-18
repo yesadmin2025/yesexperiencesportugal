@@ -225,16 +225,12 @@ function PathCard({ path, featured }: { path: Path; featured: boolean }) {
       </p>
       {/* Visible label + arrow — the whole card remains the action, but the
           destination is readable at a glance before clicking. */}
-      <span className="mt-auto pt-7 inline-flex min-h-[44px] items-center gap-3">
+      <span className="mt-auto pt-7 inline-flex min-h-[44px] items-center gap-2.5">
         <span className="text-[11px] uppercase tracking-[0.22em] font-semibold text-[color:var(--teal)]">
           {path.cta}
         </span>
-        <span className="home-way-arrow inline-flex h-10 w-10 items-center justify-center rounded-full border border-[color:var(--gold)] bg-[color:var(--gold-soft)] text-[color:var(--teal)] shadow-[0_8px_20px_-10px_color-mix(in_oklab,var(--charcoal-deep)_28%,transparent)] transition-[transform,background-color,border-color] duration-[var(--dur-base)] ease-[var(--ease-scene)] group-hover:translate-x-2 group-hover:bg-[color:var(--gold)] group-focus-visible:translate-x-2 group-active:translate-x-1.5">
-          <ArrowRight
-            size={21}
-            aria-hidden="true"
-            strokeWidth={2.4}
-          />
+        <span className="home-way-arrow inline-flex items-center text-[color:var(--gold)] transition-transform duration-[var(--dur-base)] ease-[var(--ease-scene)] group-hover:translate-x-1.5 group-focus-visible:translate-x-1.5 group-active:translate-x-1">
+          <ArrowRight size={18} aria-hidden="true" strokeWidth={2.2} />
         </span>
       </span>
     </Link>

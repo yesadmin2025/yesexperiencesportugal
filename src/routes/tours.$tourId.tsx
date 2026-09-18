@@ -102,18 +102,28 @@ export const Route = createFileRoute("/tours/$tourId")({
     // Keep <title> under 60 chars for SERP truncation. When the tour supplies
     // an explicit `seoTitle` (Phase 2 SEO focus tours) use it verbatim.
     // Otherwise auto-build: full brand suffix → short suffix → raw → truncated.
+    const SUFFIX_PRIVATE = " · Private Tour Portugal | YES";
     const SUFFIX_FULL = " — YES experiences Portugal";
     const SUFFIX_SHORT = " | YES Portugal";
+    const hasPrivate = /private/i.test(t.title);
     const pageTitle =
       t.seoTitle ??
-      (t.title.length + SUFFIX_FULL.length <= 60
-        ? `${t.title}${SUFFIX_FULL}`
-        : t.title.length + SUFFIX_SHORT.length <= 60
-          ? `${t.title}${SUFFIX_SHORT}`
-          : t.title.length <= 60
-            ? t.title
-            : `${t.title.slice(0, 57)}…`);
-    const pageDescription = t.seoDescription ?? t.blurb;
+      (!hasPrivate && t.title.length + SUFFIX_PRIVATE.length <= 60
+        ? `${t.title}${SUFFIX_PRIVATE}`
+        : t.title.length + SUFFIX_FULL.length <= 60
+          ? `${t.title}${SUFFIX_FULL}`
+          : t.title.length + SUFFIX_SHORT.length <= 60
+            ? `${t.title}${SUFFIX_SHORT}`
+            : t.title.length <= 60
+              ? t.title
+              : `${t.title.slice(0, 57)}…`);
+    // Fallback descriptions get one booking-intent sentence when the blurb
+    // leaves room inside the 165-char snippet budget. Tours with a curated
+    // `seoDescription` are used verbatim.
+    const BOOK_INTENT = " Book this private day in Portugal — instant confirmation.";
+    const pageDescription =
+      t.seoDescription ??
+      (t.blurb.length + BOOK_INTENT.length <= 165 ? `${t.blurb}${BOOK_INTENT}` : t.blurb);
 
     return {
       meta: [
