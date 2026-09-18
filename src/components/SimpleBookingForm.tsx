@@ -151,6 +151,29 @@ export function SimpleBookingForm({ tour }: { tour: SignatureTour }) {
     getViatorMeta(tour.id)?.priceTiersEUR,
   );
 
+  // Page-level "Reserve this day" CTAs (hero + final band) hand over here:
+  // scroll the form into view and, when date + party are already valid, open
+  // the real guest-details → Stripe step instead of stopping at the anchor.
+  const formRef = useRef<HTMLDivElement | null>(null);
+  const dateRef = useRef<HTMLInputElement | null>(null);
+  useEffect(() => {
+    const onIntent = (event: Event) => {
+      const detail = (event as CustomEvent<{ tourId?: string }>).detail;
+      if (detail?.tourId && detail.tourId !== tour.id) return;
+      formRef.current?.scrollIntoView({ behavior: "smooth", block: "center" });
+      if (priceUnavailable) return;
+      if (canReserve) {
+        setDetailsOpen(true);
+        return;
+      }
+      window.setTimeout(() => {
+        if (!dateValid) dateRef.current?.focus({ preventScroll: true });
+      }, 320);
+    };
+    window.addEventListener(SIGNATURE_RESERVE_INTENT_EVENT, onIntent);
+    return () => window.removeEventListener(SIGNATURE_RESERVE_INTENT_EVENT, onIntent);
+  }, [tour.id, canReserve, dateValid, priceUnavailable]);
+
   // Embedded checkout state
   const [checkoutOpen, setCheckoutOpen] = useState(false);
   const [clientSecret, setClientSecret] = useState<string | null>(null);
