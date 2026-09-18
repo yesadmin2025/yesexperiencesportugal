@@ -23,6 +23,21 @@ const GATEWAY = "https://connector-gateway.lovable.dev/google_search_console";
 const SITE = "https://yesexperiencesportugal.com";
 const PROPERTY = `${SITE}/`;
 
+/**
+ * A booking reached the guest-details step when the frozen details snapshot
+ * exists. `booking_details_completed_at` is not written by the current
+ * checkout flow, so relying on it alone reported a permanent zero.
+ */
+function reachedGuestDetails(b: {
+  booking_details_completed_at?: string | null;
+  booking_details?: unknown;
+}): boolean {
+  if (b.booking_details_completed_at) return true;
+  const d = b.booking_details;
+  if (!d || typeof d !== "object") return false;
+  return Object.keys(d as Record<string, unknown>).length > 0;
+}
+
 async function assertAdmin(context: { userId: string }) {
   const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
   const { data: roleRow, error } = await supabaseAdmin
@@ -273,7 +288,7 @@ export const getBookingConversions = createServerFn({ method: "POST" })
 
       const { data: bookings, error } = await supabaseAdmin
         .from("bookings")
-        .select("source_tour_id, status, booking_details_completed_at, created_at")
+        .select("source_tour_id, status, booking_details_completed_at, booking_details, created_at")
         .gte("created_at", since.toISOString());
 
       if (error) return { rows: [], days: data.days, error: error.message };
@@ -284,7 +299,7 @@ export const getBookingConversions = createServerFn({ method: "POST" })
         const row =
           byTour.get(tourId) ?? { tourId, started: 0, reachedDetails: 0, paid: 0 };
         row.started += 1;
-        if (b.booking_details_completed_at) row.reachedDetails += 1;
+        if (reachedGuestDetails(b)) row.reachedDetails += 1;
         if (b.status === "paid") row.paid += 1;
         byTour.set(tourId, row);
       }
@@ -337,7 +352,7 @@ export const getAcquisitionConversions = createServerFn({ method: "POST" })
 
       const { data: bookings, error } = await supabaseAdmin
         .from("bookings")
-        .select("status, metadata, amount_total, booking_details_completed_at, created_at")
+        .select("status, metadata, amount_total, booking_details_completed_at, booking_details, created_at")
         .gte("created_at", since.toISOString());
 
       if (error) return { rows: [], days: data.days, error: error.message };
@@ -372,7 +387,7 @@ export const getAcquisitionConversions = createServerFn({ method: "POST" })
           } satisfies Acc);
 
         row.started += 1;
-        if (b.booking_details_completed_at) row.reachedDetails += 1;
+        if (reachedGuestDetails(b)) row.reachedDetails += 1;
         if (b.status === "paid") {
           row.paid += 1;
           row.paidRevenueEur += Math.round((b.amount_total ?? 0) / 100);
