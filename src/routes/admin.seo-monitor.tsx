@@ -2,6 +2,14 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { useServerFn } from "@tanstack/react-start";
 import { inspectGscUrls, type UrlInspectionResult } from "@/lib/gscMonitor.functions";
+import {
+  getBookingConversions,
+  getRetiredUrlRedirects,
+  getSearchPerformance,
+  type BookingConversionRow,
+  type RetiredUrlRow,
+  type SearchPerformance,
+} from "@/lib/seoPerformance.functions";
 import { auditSeoUrls, type SeoAuditResult } from "@/lib/seoAudit.functions";
 
 const KEY_URLS = [
@@ -286,6 +294,9 @@ function SeoMonitorPage() {
           </ul>
         </section>
 
+        <SearchPerformancePanel />
+        <ConversionPanel />
+        <RetiredUrlPanel />
         <IndexationPanel />
         <CriticalSeoPanel />
 
