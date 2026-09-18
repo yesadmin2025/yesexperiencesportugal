@@ -1,12 +1,9 @@
 import { useEffect } from "react";
 
-let activeConsumers = 0;
 let disposeController: (() => void) | undefined;
 let controllerBoot: Promise<void> | undefined;
-let teardownTimer: ReturnType<typeof setTimeout> | undefined;
 
-function teardownMarketingMotion(): void {
-  if (activeConsumers > 0) return;
+function stopMarketingMotion(): void {
   disposeController?.();
   disposeController = undefined;
   controllerBoot = undefined;
@@ -14,31 +11,19 @@ function teardownMarketingMotion(): void {
   delete document.documentElement.dataset.motionScope;
 }
 
-function acquireMarketingMotion(): () => void {
-  if (teardownTimer) {
-    clearTimeout(teardownTimer);
-    teardownTimer = undefined;
-  }
-  activeConsumers += 1;
+function startMarketingMotion(): void {
   document.documentElement.dataset.motionScope = "marketing";
 
   if (!controllerBoot) {
     controllerBoot = import("@/lib/home-motion").then(({ startHomeMotion }) => {
-      if (activeConsumers > 0 && !disposeController) disposeController = startHomeMotion();
+      if (
+        document.documentElement.dataset.motionScope === "marketing" &&
+        !disposeController
+      ) {
+        disposeController = startHomeMotion();
+      }
     });
   }
-
-  return () => {
-    activeConsumers = Math.max(0, activeConsumers - 1);
-    if (activeConsumers > 0) return;
-    // Route transitions and React StrictMode can release and reacquire the
-    // shared controller in the same task. Deferring teardown prevents a
-    // stale dynamic import from orphaning the live editorial motion scope.
-    teardownTimer = setTimeout(() => {
-      teardownTimer = undefined;
-      teardownMarketingMotion();
-    }, 0);
-  };
 }
 
 const NON_EDITORIAL_PATHS = [
@@ -57,8 +42,11 @@ const NON_EDITORIAL_PATHS = [
 
 export function usePublicEditorialMotion(pathname: string): void {
   useEffect(() => {
-    if (NON_EDITORIAL_PATHS.some((pattern) => pattern.test(pathname))) return;
-    return acquireMarketingMotion();
+    if (NON_EDITORIAL_PATHS.some((pattern) => pattern.test(pathname))) {
+      stopMarketingMotion();
+      return;
+    }
+    startMarketingMotion();
   }, [pathname]);
 }
 
