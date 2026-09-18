@@ -60,6 +60,7 @@ const SignatureRouteMap = lazy(() =>
 import { CANCELLATION } from "@/config/business-nap";
 import { resolveLegacyTourId } from "@/lib/legacy-tour-redirects";
 import { TourEditorialNote } from "@/components/tours/TourEditorialNote";
+import { getPublishedExperienceContent } from "@/lib/experienceContent.functions";
 
 
 export const Route = createFileRoute("/tours/$tourId")({
@@ -74,9 +75,25 @@ export const Route = createFileRoute("/tours/$tourId")({
       });
     }
   },
-  loader: ({ params }) => {
-    const tour = findTour(params.tourId);
-    if (!tour) throw notFound();
+  loader: async ({ params }) => {
+    const base = findTour(params.tourId);
+    if (!base) throw notFound();
+    // Owner-edited editorial copy, when published. Falls back silently to the
+    // code copy so the page can never render an empty teaser or intro.
+    let tour = base;
+    try {
+      const override = await getPublishedExperienceContent({ data: { tourId: params.tourId } });
+      if (override) {
+        tour = {
+          ...base,
+          blurb: override.blurb ?? base.blurb,
+          intro: override.intro ?? base.intro,
+          fitsBest: override.fitsBest ?? base.fitsBest,
+        };
+      }
+    } catch {
+      /* copy overrides are optional — never block the page */
+    }
     return { tour };
   },
 

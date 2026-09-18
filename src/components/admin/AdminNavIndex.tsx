@@ -61,6 +61,7 @@ export const ADMIN_GROUPS: AdminGroup[] = [
     links: [
       { to: "/admin/gsc", label: "Google Search Console" },
       { to: "/admin/seo-monitor", label: "SEO monitor" },
+      { to: "/admin/seo-strategy", label: "SEO authority strategy" },
       { to: "/admin/seo-jsonld", label: "Structured data" },
       { to: "/admin/tour-link-audit", label: "Internal link audit" },
       { to: "/admin/guide-attribution", label: "Guide attribution" },
