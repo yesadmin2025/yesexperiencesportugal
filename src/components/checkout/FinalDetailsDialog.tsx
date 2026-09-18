@@ -185,6 +185,7 @@ export function FinalDetailsDialog({
       if (!dateCheck.ok) {
         const message = dateAvailabilityMessage(dateCheck.reason, dateRule.minLeadHours);
         setDateError(message);
+        setMissingSummary([message]);
         setEditDay(true);
         requestAnimationFrame(() => dateInputRef.current?.focus());
         toast.error(message);
@@ -192,9 +193,11 @@ export function FinalDetailsDialog({
       }
     }
     if (missing.length) {
+      setMissingSummary(missing);
       toast.error(`Please complete: ${missing.join(", ")}`);
       return;
     }
+    setMissingSummary([]);
     await onConfirm({
       fullName: fullName.trim(),
       email: email.trim(),
