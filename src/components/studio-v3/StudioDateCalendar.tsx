@@ -12,22 +12,10 @@ export function StudioDateCalendar({ className, classNames, ...props }: Calendar
       <Calendar
         {...props}
         className={cn(
-          "pointer-events-auto mx-auto w-fit max-w-full bg-[color:var(--ivory)] p-0 text-[color:var(--charcoal)] [--cell-size:2.5rem] min-[360px]:[--cell-size:2.75rem]",
+          "pointer-events-auto mx-auto w-fit max-w-full bg-[color:var(--ivory)] p-0 text-[color:var(--charcoal)] [--cell-size:2.5rem] min-[360px]:[--cell-size:2.75rem] [&_.rdp-button_next]:opacity-100 [&_.rdp-button_next]:text-[color:var(--charcoal-soft)] [&_.rdp-button_previous]:opacity-100 [&_.rdp-button_previous]:text-[color:var(--charcoal-soft)] [&_.rdp-caption_label]:text-[color:var(--charcoal)] [&_.rdp-day_button:not(:disabled)]:opacity-100 [&_.rdp-day_button:not(:disabled)]:text-[color:var(--charcoal)] [&_.rdp-day_button:disabled]:opacity-40 [&_.rdp-day_button:disabled]:text-[color:var(--charcoal-soft)] [&_.rdp-weekday]:opacity-100 [&_.rdp-weekday]:text-[color:var(--charcoal-soft)]",
           className,
         )}
-        classNames={{
-          caption_label: "text-[color:var(--charcoal)]",
-          button_previous:
-            "text-[color:var(--charcoal-soft)] opacity-100 hover:bg-[color:var(--sand)] hover:text-[color:var(--teal)]",
-          button_next:
-            "text-[color:var(--charcoal-soft)] opacity-100 hover:bg-[color:var(--sand)] hover:text-[color:var(--teal)]",
-          weekday: "text-[color:var(--charcoal-soft)] opacity-100",
-          day_button:
-            "text-[color:var(--charcoal)] opacity-100 hover:bg-[color:var(--sand)] hover:text-[color:var(--teal)]",
-          disabled: "text-[color:var(--charcoal-soft)] opacity-40",
-          today: "bg-[color:var(--sand)] text-[color:var(--teal)]",
-          ...classNames,
-        }}
+        classNames={classNames}
       />
     </div>
   );
