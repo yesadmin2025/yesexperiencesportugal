@@ -13,7 +13,7 @@ import {
   DialogFooter,
 } from "@/components/ui/dialog";
 import { ChevronDown } from "lucide-react";
-import { CANCELLATION } from "@/config/business-nap";
+import { CANCELLATION, LICENSE_LABEL } from "@/config/business-nap";
 import { toast } from "sonner";
 import { prewarmStripeScript } from "@/components/checkout/BrandedCheckoutDrawer";
 import { CompositionField } from "@/components/booking/CompositionField";
