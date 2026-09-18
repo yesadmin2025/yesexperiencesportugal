@@ -13,6 +13,7 @@ import {
   DialogFooter,
 } from "@/components/ui/dialog";
 import { ChevronDown } from "lucide-react";
+import { CANCELLATION } from "@/config/business-nap";
 import { toast } from "sonner";
 import { prewarmStripeScript } from "@/components/checkout/BrandedCheckoutDrawer";
 import { CompositionField } from "@/components/booking/CompositionField";
@@ -490,6 +491,16 @@ export function FinalDetailsDialog({
 
           <DialogFooter className="px-5 sm:px-7 py-4 border-t border-[color:var(--border)] bg-[color:var(--sand)]/40 sm:flex-col sm:items-stretch sm:space-x-0 gap-2">
             {priceQuote ? <ChargeSummaryLine quote={quote} /> : null}
+            {/* Canonical cancellation + payment reassurance, never hand-authored. */}
+            <p
+              data-testid="final-details-reassurance"
+              className="flex items-center gap-2 text-[12px] leading-snug text-[color:var(--charcoal-soft)]"
+            >
+              <Lock size={12} aria-hidden className="shrink-0" />
+              <span>
+                Secure payment · Stripe · {CANCELLATION.signature.en}
+              </span>
+            </p>
             {submitting ? (
               <BookingCtaSkeleton className="w-full" label="Opening secure checkout…" />
             ) : (
