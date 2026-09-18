@@ -170,6 +170,12 @@ function TourCard({ tour, resolveImg, featured = false }: { tour: SignatureTour;
           <span className="text-[12px] uppercase tracking-[0.12em] text-[color:var(--charcoal-soft)]">{signatureDurationLabel(tour.id, tour.durationHours)}</span>
         </div>
 
+        {idealFor && (
+          <p className="mt-2 text-[13px] leading-[1.5] text-[color:var(--charcoal-soft)]">
+            <span className="font-medium text-[color:var(--charcoal)]">Ideal for:</span> {idealFor}
+          </p>
+        )}
+
         {highlights.length > 0 && (
           <ul className="mt-4 space-y-1.5 text-[13px] leading-[1.55] text-[color:var(--charcoal)]">
             {highlights.map((highlight) => (
