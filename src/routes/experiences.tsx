@@ -122,6 +122,8 @@ function TourCard({ tour, resolveImg, featured = false }: { tour: SignatureTour;
   const verifiedRating = meta?.rating;
   const verifiedReviewCount = meta?.reviewCount;
   const highlights = content.highlights.slice(0, 3);
+  // Fourth decision fact, read straight from the tour source of truth.
+  const idealFor = tour.idealFor?.[0];
   return (
     <article className="experience-editorial-card reveal-stagger group flex min-w-0 flex-col text-left" aria-label={tour.title}>
       <Link
@@ -170,6 +172,12 @@ function TourCard({ tour, resolveImg, featured = false }: { tour: SignatureTour;
           <span className="text-[12px] uppercase tracking-[0.12em] text-[color:var(--charcoal-soft)]">{signatureDurationLabel(tour.id, tour.durationHours)}</span>
         </div>
 
+        {idealFor && (
+          <p className="mt-2 text-[13px] leading-[1.5] text-[color:var(--charcoal-soft)]">
+            <span className="font-medium text-[color:var(--charcoal)]">Ideal for:</span> {idealFor}
+          </p>
+        )}
+
         {highlights.length > 0 && (
           <ul className="mt-4 space-y-1.5 text-[13px] leading-[1.55] text-[color:var(--charcoal)]">
             {highlights.map((highlight) => (
@@ -188,14 +196,6 @@ function TourCard({ tour, resolveImg, featured = false }: { tour: SignatureTour;
             aria-label={`See dates and reserve — ${tour.title}`}
           >
              See dates &amp; reserve <span aria-hidden="true" className="editorial-arrow text-[color:var(--gold)] transition-transform duration-[var(--dur-base)]">→</span>
-          </Link>
-          <Link
-            to="/tours/$tourId/tailor"
-            params={{ tourId: tour.id }}
-            className="inline-flex min-h-[44px] items-center gap-1.5 text-[13px] text-[color:var(--charcoal-soft)] underline decoration-[color:var(--gold)]/60 underline-offset-4 transition-colors hover:text-[color:var(--teal)] hover:decoration-[color:var(--gold)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)]"
-            aria-label={`Tailor ${tour.title}`}
-          >
-            Tailor this day <span aria-hidden="true" className="editorial-arrow transition-transform duration-[var(--dur-base)]">→</span>
           </Link>
         </div>
       </div>
