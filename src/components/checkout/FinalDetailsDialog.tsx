@@ -140,6 +140,8 @@ export function FinalDetailsDialog({
   const [altContact, setAltContact] = useState(false);
   const [extrasOpen, setExtrasOpen] = useState(false);
   const [dateError, setDateError] = useState<string | null>(null);
+  /** Missing/invalid fields surfaced at the top of the form, not only in a toast. */
+  const [missingSummary, setMissingSummary] = useState<string[]>([]);
   const dateInputRef = useRef<HTMLInputElement>(null);
   const dateErrorId = useId();
 
