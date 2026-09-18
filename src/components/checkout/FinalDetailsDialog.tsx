@@ -498,7 +498,7 @@ export function FinalDetailsDialog({
             >
               <Lock size={12} aria-hidden className="shrink-0" />
               <span>
-                Secure payment · Stripe · {CANCELLATION.signature.en}
+                Secure payment · Stripe · {CANCELLATION.signature.en} · Licensed operator {LICENSE_LABEL}
               </span>
             </p>
             {submitting ? (
