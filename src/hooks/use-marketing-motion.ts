@@ -11,7 +11,7 @@ function stopMarketingMotion(): void {
   delete document.documentElement.dataset.motionScope;
 }
 
-function startMarketingMotion(): void {
+function acquireMarketingMotion(): void {
   document.documentElement.dataset.motionScope = "marketing";
 
   if (!controllerBoot) {
@@ -46,7 +46,7 @@ export function usePublicEditorialMotion(pathname: string): void {
       stopMarketingMotion();
       return;
     }
-    startMarketingMotion();
+    acquireMarketingMotion();
   }, [pathname]);
 }
 
