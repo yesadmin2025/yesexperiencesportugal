@@ -27,6 +27,7 @@ import {
 } from "@/lib/viatorValidation";
 import { useEffect, lazy, Suspense } from "react";
 import { SimpleBookingForm } from "@/components/SimpleBookingForm";
+import { dispatchSignatureReserveIntent } from "@/lib/booking/reserve-intent";
 import { useImportedTourImages } from "@/hooks/use-imported-tour-images";
 import { Eyebrow } from "@/components/ui/Eyebrow";
 import { SectionTitle } from "@/components/ui/SectionTitle";
