@@ -27,6 +27,7 @@ import {
 } from "@/lib/viatorValidation";
 import { useEffect, lazy, Suspense } from "react";
 import { SimpleBookingForm } from "@/components/SimpleBookingForm";
+import { MobileReserveBar } from "@/components/booking/MobileReserveBar";
 import { dispatchSignatureReserveIntent } from "@/lib/booking/reserve-intent";
 import { useImportedTourImages } from "@/hooks/use-imported-tour-images";
 import { Eyebrow } from "@/components/ui/Eyebrow";
@@ -329,6 +330,11 @@ function TourDetailPage() {
 
       {/* ── G · CONVERSION — reserve this day ──────────────────── */}
       <BookingBlock tour={tour} />
+
+      <MobileReserveBar
+        tourId={tour.id}
+        priceFrom={(tour as { priceFrom?: number }).priceFrom}
+      />
 
       <FinalCta tour={tour} />
 
