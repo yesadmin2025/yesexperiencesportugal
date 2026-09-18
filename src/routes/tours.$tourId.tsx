@@ -27,6 +27,7 @@ import {
 } from "@/lib/viatorValidation";
 import { useEffect, lazy, Suspense } from "react";
 import { SimpleBookingForm } from "@/components/SimpleBookingForm";
+import { dispatchSignatureReserveIntent } from "@/lib/booking/reserve-intent";
 import { useImportedTourImages } from "@/hooks/use-imported-tour-images";
 import { Eyebrow } from "@/components/ui/Eyebrow";
 import { SectionTitle } from "@/components/ui/SectionTitle";
@@ -478,6 +479,9 @@ function TourHero({
               variant="primary"
               size="md"
               className="w-full sm:w-auto"
+              onClick={() =>
+                dispatchSignatureReserveIntent({ tourId: tour.id, placement: "hero" })
+              }
               data-analytics="signature_reserve_click"
               data-analytics-placement="hero"
               data-analytics-experience-id={tour.id}
@@ -882,6 +886,11 @@ function FinalCta({ tour }: { tour: SignatureTour }) {
             href="#book"
             variant="primary"
             iconLeading={<Sparkles size={14} aria-hidden="true" />}
+            data-analytics="signature_reserve_click"
+            data-analytics-placement="final"
+            onClick={() =>
+              dispatchSignatureReserveIntent({ tourId: tour.id, placement: "final" })
+            }
           >
              Reserve this day
           </CtaButton>

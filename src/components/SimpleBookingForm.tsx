@@ -47,6 +47,7 @@ import {
   gaCheckoutDrawerOpened,
 } from "@/lib/analytics-ga4";
 import { guideAttributionMetadata } from "@/lib/guide-attribution";
+import { SIGNATURE_RESERVE_INTENT_EVENT } from "@/lib/booking/reserve-intent";
 
 /**
  * SimpleBookingForm — the *reserve as-is* path.
@@ -150,6 +151,29 @@ export function SimpleBookingForm({ tour }: { tour: SignatureTour }) {
     (tierOverrides?.[tour.id] && Object.keys(tierOverrides[tour.id] as object).length > 0) ||
     getViatorMeta(tour.id)?.priceTiersEUR,
   );
+
+  // Page-level "Reserve this day" CTAs (hero + final band) hand over here:
+  // scroll the form into view and, when date + party are already valid, open
+  // the real guest-details → Stripe step instead of stopping at the anchor.
+  const formRef = useRef<HTMLDivElement | null>(null);
+  const dateRef = useRef<HTMLInputElement | null>(null);
+  useEffect(() => {
+    const onIntent = (event: Event) => {
+      const detail = (event as CustomEvent<{ tourId?: string }>).detail;
+      if (detail?.tourId && detail.tourId !== tour.id) return;
+      formRef.current?.scrollIntoView({ behavior: "smooth", block: "center" });
+      if (priceUnavailable) return;
+      if (canReserve) {
+        setDetailsOpen(true);
+        return;
+      }
+      window.setTimeout(() => {
+        if (!dateValid) dateRef.current?.focus({ preventScroll: true });
+      }, 320);
+    };
+    window.addEventListener(SIGNATURE_RESERVE_INTENT_EVENT, onIntent);
+    return () => window.removeEventListener(SIGNATURE_RESERVE_INTENT_EVENT, onIntent);
+  }, [tour.id, canReserve, dateValid, priceUnavailable]);
 
   // Embedded checkout state
   const [checkoutOpen, setCheckoutOpen] = useState(false);
@@ -306,7 +330,10 @@ export function SimpleBookingForm({ tour }: { tour: SignatureTour }) {
   };
 
   return (
-    <div className="border-y border-[color:var(--border)] bg-[color:var(--ivory)] py-6 sm:border sm:bg-[color:var(--card)] sm:p-7">
+    <div
+      ref={formRef}
+      className="border-y border-[color:var(--border)] bg-[color:var(--ivory)] py-6 sm:border sm:bg-[color:var(--card)] sm:p-7"
+    >
       <Eyebrow>Availability</Eyebrow>
       <SectionTitle size="compact" spacing="tight">
         Book the Signature, <SectionTitle.Em>as designed</SectionTitle.Em>
@@ -317,6 +344,7 @@ export function SimpleBookingForm({ tour }: { tour: SignatureTour }) {
         <Field label="Date" icon={<Calendar size={14} />}>
           <input
             type="date"
+            ref={dateRef}
             aria-label="Date of your experience"
             value={date}
             onChange={(e) => {
