@@ -131,7 +131,7 @@ const SIGNATURE_TOURS: FooterLink[] = [
 const POPULAR_SEARCHES: FooterLink[] = [
   { to: "/portugal-tours", label: "Portugal tours" },
   { to: "/luxury-tours-portugal", label: "Luxury Portugal tours" },
-  { to: "/private-tours-portugal", label: "Private tours Portugal" },
+  { to: "/portugal-tours", label: "Private tours Portugal" },
   {
     to: "/local-stories/$slug",
     params: { slug: "best-wine-tours-from-lisbon" },
@@ -152,11 +152,7 @@ const POPULAR_SEARCHES: FooterLink[] = [
     params: { slug: "arrabida-day-trip-from-lisbon" },
     label: "Arrábida day trip from Lisbon",
   },
-  {
-    to: "/local-stories/$slug",
-    params: { slug: "best-day-trips-from-lisbon" },
-    label: "Day trips from Lisbon",
-  },
+  { to: "/day-trips-from-lisbon", label: "Day trips from Lisbon" },
   {
     to: "/local-stories/$slug",
     params: { slug: "alentejo-wine-tour-from-lisbon" },

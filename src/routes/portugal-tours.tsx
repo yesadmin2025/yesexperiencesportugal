@@ -204,7 +204,7 @@ function Page() {
                   </Link>
                 </li>
                 <li>
-                  <Link to="/private-tours-portugal" className="hover:text-[color:var(--teal)]">
+                  <Link to="/lisbon-private-tours" className="hover:text-[color:var(--teal)]">
                     Private Portugal tours →
                   </Link>
                 </li>
@@ -218,11 +218,7 @@ function Page() {
                   </Link>
                 </li>
                 <li>
-                  <Link
-                    to="/local-stories/$slug"
-                    params={{ slug: "best-day-trips-from-lisbon" }}
-                    className="hover:text-[color:var(--teal)]"
-                  >
+                  <Link to="/day-trips-from-lisbon" className="hover:text-[color:var(--teal)]">
                     Day trips from Lisbon →
                   </Link>
                 </li>

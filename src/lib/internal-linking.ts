@@ -10,14 +10,18 @@
  * never invented here. Nothing is linked that does not exist.
  */
 
-import { LOCAL_STORIES_ARTICLES, type LocalStoryArticle } from "@/content/local-stories-articles";
+import {
+  PUBLISHED_LOCAL_STORIES_ARTICLES,
+  type LocalStoryArticle,
+} from "@/content/local-stories-articles";
 
 export type GuideCluster = "arrabida-wine" | "lisbon-day-trips" | "sintra" | "alentejo" | "coast";
 
-/** Hub guide slug per cluster. Each must exist in LOCAL_STORIES_ARTICLES. */
+/** Hub guide slug per cluster. Each must exist in PUBLISHED_LOCAL_STORIES_ARTICLES. */
 export const CLUSTER_HUBS: Record<GuideCluster, string> = {
   "arrabida-wine": "arrabida-wine-tour-from-lisbon",
-  "lisbon-day-trips": "best-day-trips-from-lisbon",
+  // Retired into /day-trips-from-lisbon; see CLUSTER_HUB_OVERRIDES below.
+  "lisbon-day-trips": "arrabida-day-trip-from-lisbon",
   sintra: "sintra-day-tour-from-lisbon",
   alentejo: "alentejo-wine-tour-from-lisbon",
   coast: "portugal-coastal-drives-from-lisbon",
@@ -59,6 +63,17 @@ export interface GuideNextSteps {
   studioLead: string;
 }
 
+/**
+ * Clusters whose hub is a commercial page (live prices, comparison table,
+ * instant booking) rather than a guide. The override wins over CLUSTER_HUBS.
+ */
+export const CLUSTER_HUB_OVERRIDES: Partial<Record<GuideCluster, GuideLinkTarget>> = {
+  "lisbon-day-trips": {
+    path: "/day-trips-from-lisbon",
+    label: "Best day trips from Lisbon, compared",
+  },
+};
+
 const STUDIO_LEAD: Record<GuideCluster, string> = {
   "arrabida-wine": "Design a private wine day around what you actually like drinking",
   "lisbon-day-trips": "Design your own day out of Lisbon, hour by hour",
@@ -69,7 +84,7 @@ const STUDIO_LEAD: Record<GuideCluster, string> = {
 
 function byPath(path: string): LocalStoryArticle | undefined {
   const slug = path.replace("/local-stories/", "");
-  return LOCAL_STORIES_ARTICLES.find((a) => a.slug === slug);
+  return PUBLISHED_LOCAL_STORIES_ARTICLES.find((a) => a.slug === slug);
 }
 
 function target(article: LocalStoryArticle): GuideLinkTarget {
@@ -83,7 +98,8 @@ function target(article: LocalStoryArticle): GuideLinkTarget {
 export function resolveGuideNextSteps(article: LocalStoryArticle): GuideNextSteps {
   const cluster = clusterForSlug(article.slug);
   const hubSlug = CLUSTER_HUBS[cluster];
-  const hubArticle = LOCAL_STORIES_ARTICLES.find((a) => a.slug === hubSlug);
+  const hubArticle = PUBLISHED_LOCAL_STORIES_ARTICLES.find((a) => a.slug === hubSlug);
+  const hubOverride = CLUSTER_HUB_OVERRIDES[cluster];
   const isHub = article.slug === hubSlug;
 
   const seen = new Set<string>([article.slug, ...(isHub ? [] : [hubSlug])]);
@@ -98,13 +114,13 @@ export function resolveGuideNextSteps(article: LocalStoryArticle): GuideNextStep
   for (const r of article.relatedReads ?? []) {
     if (r.path.startsWith("/local-stories/")) push(byPath(r.path));
   }
-  for (const a of LOCAL_STORIES_ARTICLES) {
+  for (const a of PUBLISHED_LOCAL_STORIES_ARTICLES) {
     if (clusterForSlug(a.slug) === cluster) push(a);
   }
 
   return {
     cluster,
-    hub: !isHub && hubArticle ? target(hubArticle) : undefined,
+    hub: hubOverride ?? (!isHub && hubArticle ? target(hubArticle) : undefined),
     siblings,
     signatureSlug: article.signatureSlug,
     studioLead: STUDIO_LEAD[cluster],

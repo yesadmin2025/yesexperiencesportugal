@@ -15,6 +15,7 @@ import {
 } from "@/lib/jsonld";
 import { PLANNER_REGIONS } from "@/content/portugal-planner-map";
 import {
+  consolidatedLocalStoryPath,
   consolidatedLocalStoryTarget,
   getLocalStoryArticle,
   GUIDE_INLINE_BOOKING,
@@ -217,8 +218,12 @@ export const Route = createFileRoute("/local-stories/$slug")({
     const validSlug = /^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(slug) && slug.length >= 2;
     if (placeholders.has(slug) || slug.startsWith("$") || !validSlug) throw notFound();
 
-    // Wine-cluster consolidation: retired guides 301 to the surviving guide
-    // that owns the same search intent, so authority lands on one URL.
+    // Cluster consolidation: retired guides 301 to whichever URL owns the same
+    // search intent — a surviving guide, or the commercial hub page.
+    const consolidatedPath = consolidatedLocalStoryPath(slug);
+    if (consolidatedPath) {
+      throw redirect({ href: consolidatedPath, statusCode: 301 });
+    }
     const consolidatedTarget = consolidatedLocalStoryTarget(slug);
     if (consolidatedTarget) {
       throw redirect({

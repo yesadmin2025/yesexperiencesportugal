@@ -237,7 +237,7 @@ function PickupAndWineries() {
               private Lisbon wine tours
             </Link>{" "}
             ·{" "}
-            <Link to="/private-tours-azeitao" className="underline underline-offset-4">
+            <Link to="/private-tours-azeitao-setubal" className="underline underline-offset-4">
               Azeitão private tours
             </Link>
           </p>

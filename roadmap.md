@@ -120,3 +120,10 @@
 - [x] Carry the source into Stripe metadata and onto the booking row
 - [x] Add an "Origem → pagamento" panel with Google checkouts, payments and revenue in /admin/seo-monitor
 - [x] Validate typecheck, tests, production build and browser capture at 393x852
+
+## 19. SEO mercado americano — consolidação (fase 1)
+- [x] 9 páginas de zona (Lisboa, Sintra, Cascais, Sesimbra, Setúbal, Azeitão, Évora, Comporta, Tróia) → 301 para a página de destino + âncora da área
+- [x] /private-tours-portugal → /portugal-tours (301); /private-tours-from-lisbon → /lisbon-private-tours (301)
+- [x] 5 guias consolidados em /day-trips-from-lisbon e /lisbon-private-tours (301)
+- [x] Ligações internas, hub de cluster e sitemap (35 rotas) atualizados
+- [ ] Fase 2: reforçar Sintra, Fátima, Évora, Comporta e luxury com blocos de resposta e FAQ para o mercado EUA

@@ -107,7 +107,7 @@ const FAQS = [
 const FEATURED_STORIES = [
   { slug: "lisbon-neighborhoods-guide", label: "Lisbon neighborhoods: where each part of the city feels different" },
   { slug: "portuguese-culture-for-first-time-visitors", label: "Portuguese culture: what first-time visitors should know" },
-  { slug: "must-visit-places-near-lisbon", label: "Must-visit places near Lisbon, chosen by mood" },
+  { slug: "arrabida-day-trip-from-lisbon", label: "The Arrábida day trip from Lisbon, hour by hour" },
 ] as const;
 
 export const Route = createFileRoute("/portugal-for-american-travelers")({
