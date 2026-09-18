@@ -478,6 +478,9 @@ function TourHero({
               variant="primary"
               size="md"
               className="w-full sm:w-auto"
+              onClick={() =>
+                dispatchSignatureReserveIntent({ tourId: tour.id, placement: "hero" })
+              }
               data-analytics="signature_reserve_click"
               data-analytics-placement="hero"
               data-analytics-experience-id={tour.id}
