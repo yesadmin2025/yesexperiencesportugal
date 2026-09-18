@@ -64,6 +64,28 @@ export function CookieConsent() {
   const [customize, setCustomize] = React.useState(false);
   const [analytics, setAnalytics] = React.useState(true);
   const [ads, setAds] = React.useState(false);
+  // A modal (guest details, checkout) must never be blocked by the consent
+  // bar: on small screens the bar sits exactly over the modal's primary
+  // action and intercepts the tap. Yield while any modal dialog is open.
+  const [modalOpen, setModalOpen] = React.useState(false);
+
+  React.useEffect(() => {
+    if (!hydrated) return;
+    const sync = () =>
+      setModalOpen(
+        document.querySelectorAll('[role="dialog"][data-state="open"], [data-radix-dialog-content]')
+          .length > 0,
+      );
+    sync();
+    const observer = new MutationObserver(sync);
+    observer.observe(document.body, {
+      subtree: true,
+      childList: true,
+      attributes: true,
+      attributeFilter: ["data-state"],
+    });
+    return () => observer.disconnect();
+  }, [hydrated]);
 
   React.useEffect(() => {
     if (!hydrated) return;
