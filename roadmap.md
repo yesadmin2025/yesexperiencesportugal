@@ -106,4 +106,4 @@
 ## 16. Preview motion correction
 - [x] Remove competing reveal ownership and delayed startup
 - [x] Use one editorial fade language without blur, masks, scale or bounce
-- [ ] Validate homepage cadence, CTA and arrow response in mobile, desktop and reduced motion
+- [x] Validate homepage cadence, CTA and arrow response in mobile, desktop and reduced motion
