@@ -69,4 +69,11 @@ describe("compact payment drawer", () => {
   it("does not link to an invented cancellation policy page", () => {
     expect(drawer).not.toMatch(/href="[^"]*(policy|terms|cancellation)/i);
   });
+
+  it("keeps the completed details available for an immediate checkout retry", () => {
+    expect(bookingForm).toContain("setLastDetails(details)");
+    expect(bookingForm).toContain("Your details are saved — please try again.");
+    expect(bookingForm).toContain("onRetry={lastDetails ? () => void handleReserve(lastDetails) : undefined}");
+    expect(drawer).toContain("Try secure checkout again");
+  });
 });

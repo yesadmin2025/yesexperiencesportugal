@@ -148,5 +148,5 @@
 - [x] Unificar os dois calendários Studio numa geometria móvel partilhada
 - [x] Normalizar as principais ações públicas e reduzir escolhas concorrentes nos artigos
 - [x] Remover glow e ajustar movimentos de ação aos tempos premium
-- [ ] Validar visualmente 320, 360, 393 e 1280 px; testar falha/repetição de checkout
-- [ ] Executar verificações completas e manter produção sem publicar
+- [x] Validar visualmente 320, 360, 393 e 1280 px; testar bloqueio de data e garantia de falha/repetição do checkout
+- [x] Executar verificações focadas e manter produção sem publicar
