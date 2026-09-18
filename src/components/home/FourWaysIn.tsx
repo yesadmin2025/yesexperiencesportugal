@@ -230,8 +230,24 @@ function PathCard({ path, featured }: { path: Path; featured: boolean }) {
         <span className="text-[11px] uppercase tracking-[0.22em] font-semibold text-[color:var(--teal)]">
           {path.cta}
         </span>
-        <span className="home-way-arrow inline-flex items-center text-[color:var(--gold)] transition-transform duration-[var(--dur-base)] ease-[var(--ease-scene)] group-hover:translate-x-1 group-focus-visible:translate-x-1 group-active:translate-x-0.5">
-          <MoveRight size={22} aria-hidden="true" strokeWidth={1.75} />
+        <span className="home-way-arrow inline-flex items-center text-[color:var(--gold)] transition-transform duration-[var(--dur-base)] ease-[var(--ease-scene)] group-hover:translate-x-1.5 group-focus-visible:translate-x-1.5 group-active:translate-x-0.5">
+          {/* Intentionally long, thin right arrow — aligned across all five cards. */}
+          <svg
+            width="28"
+            height="14"
+            viewBox="0 0 28 14"
+            fill="none"
+            aria-hidden="true"
+            className="block"
+          >
+            <path
+              d="M2 7H25.5M25.5 7L20 2M25.5 7L20 12"
+              stroke="currentColor"
+              strokeWidth="1.5"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+          </svg>
         </span>
       </span>
     </Link>
