@@ -1880,6 +1880,10 @@ export const GUIDE_INLINE_BOOKING: Readonly<
     tourSlug: "arrabida-wine-allinclusive",
     lead: "This is the day described above, exactly as we run it — private, unhurried, and bookable now.",
   },
+  "best-wine-tours-from-lisbon": {
+    tourSlug: "arrabida-wine-allinclusive",
+    lead: "Most readers of this page book this one: the full Arrábida wine day, private to your party, hotel pickup included and confirmed for your date.",
+  },
   "what-to-do-in-sesimbra": {
     tourSlug: "wild-beaches-picnic",
     lead: "The coastal version of this guide: Arrábida viewpoints, a quiet cove and a picnic by the sea, with pickup in Lisbon.",
