@@ -56,7 +56,7 @@ export const LEGACY_REDIRECT_MAP: Readonly<Record<string, string>> = {
   "/experiences": "/experiences",
   "/day-tours": "/day-tours",
   "/multi-day": "/multi-day",
-  "/private-tours": "/private-tours-portugal",
+  "/private-tours": "/portugal-tours",
   "/luxury-tours": "/luxury-tours-portugal",
 
   // Blog → Local Stories hub. Individual posts get added case-by-case

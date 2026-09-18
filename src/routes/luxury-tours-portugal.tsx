@@ -165,7 +165,7 @@ function Page() {
                   </Link>
                 </li>
                 <li>
-                  <Link to="/private-tours-portugal" className="hover:text-[color:var(--teal)]">
+                  <Link to="/portugal-tours" className="hover:text-[color:var(--teal)]">
                     Private Portugal tours →
                   </Link>
                 </li>

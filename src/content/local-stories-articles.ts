@@ -1846,13 +1846,41 @@ export function consolidatedLocalStoryTarget(slug: string): string | undefined {
 }
 
 /**
+ * Day-trip / private-tour cluster consolidation (US market pass).
+ *
+ * These guides answered the same US search intent as the commercial hub pages
+ * that hold live prices, the comparison table and instant booking
+ * (`/day-trips-from-lisbon`, `/lisbon-private-tours`), so the hub owns the
+ * intent and each retired guide 301-redirects to it.
+ *
+ * Keys are retired slugs; values are absolute site paths.
+ */
+export const CONSOLIDATED_LOCAL_STORY_PATHS: Readonly<Record<string, string>> = {
+  "best-day-trips-from-lisbon": "/day-trips-from-lisbon",
+  "lisbon-day-trips-by-drive-time": "/day-trips-from-lisbon",
+  "must-visit-places-near-lisbon": "/day-trips-from-lisbon",
+  "private-tours-from-lisbon": "/lisbon-private-tours",
+  "best-private-day-tours-from-lisbon": "/lisbon-private-tours",
+} as const;
+
+/** Surviving site path for a retired guide, or undefined when it still publishes. */
+export function consolidatedLocalStoryPath(slug: string): string | undefined {
+  return CONSOLIDATED_LOCAL_STORY_PATHS[slug];
+}
+
+/** True when the slug was retired into another guide or into a hub page. */
+export function isRetiredLocalStorySlug(slug: string): boolean {
+  return slug in CONSOLIDATED_LOCAL_STORY_SLUGS || slug in CONSOLIDATED_LOCAL_STORY_PATHS;
+}
+
+/**
  * The articles that should be indexed, listed and advertised in sitemap.xml.
  * Always use this list for anything crawler- or navigation-facing;
  * `LOCAL_STORIES_ARTICLES` still holds the retired bodies so their reading can
  * be re-used inside surviving guides.
  */
 export const PUBLISHED_LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = LOCAL_STORIES_ARTICLES.filter(
-  (a) => !(a.slug in CONSOLIDATED_LOCAL_STORY_SLUGS),
+  (a) => !isRetiredLocalStorySlug(a.slug),
 );
 
 /**

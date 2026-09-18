@@ -1,61 +1,15 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, redirect } from "@tanstack/react-router";
 
-import { AreaLandingPage, areaFaq, areaTours } from "@/components/seo/AreaLandingPage";
-import { findServiceAreaPage } from "@/content/service-area-pages";
-import {
-  breadcrumbLd,
-  faqPageLd,
-  itemListLd,
-  jsonLdScript,
-  localBusinessLd,
-} from "@/lib/jsonld";
-import { WEBSITE_URL } from "@/config/business-nap";
-
-const AREA = findServiceAreaPage("/private-tours-azeitao");
-const PAGE_URL = `${WEBSITE_URL}${AREA.path}`;
-
+/**
+ * /private-tours-azeitao → /private-tours-azeitao-setubal#azeitao (301).
+ *
+ * Pickup-area consolidation (US market pass): this thin area page duplicated
+ * the destination page that already carries the same pickup copy in its
+ * "Where we collect you" block (see AREA_PROFILES), so the destination page
+ * owns the intent and this URL redirects to its area anchor.
+ */
 export const Route = createFileRoute("/private-tours-azeitao")({
-  head: () => ({
-    meta: [
-      { title: AREA.title },
-      { name: "description", content: AREA.description },
-      { property: "og:title", content: AREA.title },
-      { property: "og:description", content: AREA.description },
-      { property: "og:type", content: "website" },
-      { property: "og:url", content: PAGE_URL },
-      { name: "twitter:card", content: "summary_large_image" },
-    ],
-    links: [{ rel: "canonical", href: PAGE_URL }],
-    scripts: [
-      jsonLdScript(
-        breadcrumbLd([
-          { name: "Home", path: "/" },
-          { name: "Day trips from Lisbon", path: "/day-trips-from-lisbon" },
-          { name: AREA.area, path: AREA.path },
-        ]),
-      ),
-      jsonLdScript(
-        localBusinessLd({
-          path: AREA.path,
-          name: `YES Experiences Portugal — ${AREA.area}`,
-          description: AREA.description,
-          areaServed: AREA.areaServed,
-          pickup: AREA.pickup,
-        }),
-      ),
-      jsonLdScript(
-        itemListLd({
-          name: `Private tours from ${AREA.area}`,
-          path: AREA.path,
-          items: areaTours(AREA).map((t) => ({
-            id: t.id,
-            name: t.title,
-            description: t.blurb,
-          })),
-        }),
-      ),
-      jsonLdScript(faqPageLd(areaFaq(AREA))),
-    ],
-  }),
-  component: () => <AreaLandingPage page={AREA} />,
+  loader: () => {
+    throw redirect({ href: "/private-tours-azeitao-setubal#azeitao", statusCode: 301 });
+  },
 });
