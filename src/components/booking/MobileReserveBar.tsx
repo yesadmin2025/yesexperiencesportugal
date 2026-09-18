@@ -35,12 +35,18 @@ export function MobileReserveBar({
         const r = book.getBoundingClientRect();
         bookOnScreen = r.top < window.innerHeight * 0.85 && r.bottom > 0;
       }
-      setVisible(pastHero && !bookOnScreen);
+      // Never stack two bottom bars: the cookie notice owns the bottom edge
+      // until the guest answers it.
+      const cookieNotice = document.querySelector(".cookie-consent-card");
+      setVisible(pastHero && !bookOnScreen && !cookieNotice);
     };
     onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
     window.addEventListener("resize", onScroll);
+    const observer = new MutationObserver(onScroll);
+    observer.observe(document.body, { childList: true, subtree: true });
     return () => {
+      observer.disconnect();
       window.removeEventListener("scroll", onScroll);
       window.removeEventListener("resize", onScroll);
     };
