@@ -133,3 +133,10 @@
 - [x] Painel validado com sessão real de admin: SEO monitor, origem → pagamento, reservas por experiência, estado de cada reserva
 - [x] Corrigido contador "Dados do hóspede" (usava um campo nunca preenchido, mostrava sempre 0)
 - [x] Publicado e confirmado em produção: sitemap com 84 URLs reais, 301 das páginas retiradas, títulos/descrições reais
+
+## 21. Vendas pagas, edição de experiências e estratégia SEO
+- [x] Quadro de vendas em /admin/bookings: receita paga, nº de reservas, média, mês atual e tabela data · experiência · grupo · total
+- [x] Editor de descrição por experiência em /admin/experiences (frase de cartão, parágrafo de abertura, para quem é) com histórico e publicar/despublicar
+- [x] Páginas públicas de experiência usam o texto editado quando existe, com fallback ao texto de origem; sitemap intocado
+- [x] Estratégia SEO de 12 meses publicada em docs/seo/authority-strategy-2026.md e legível em /admin/seo-strategy
+- [x] Validação: typecheck, 1531 testes, route-meta, build de produção, 393x1800 + 1280x900 sem overflow nem erros
