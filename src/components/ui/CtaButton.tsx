@@ -120,7 +120,7 @@ function KineticArrow({ tone = "gold" }: { tone?: "gold" | "goldSoft" }) {
       <ArrowRight
         size={16}
         strokeWidth={1.3}
-        className="cta-arrow-idle relative transition-transform duration-[var(--dur-base)] ease-[cubic-bezier(0.23,1,0.32,1)] group-hover:translate-x-2 group-focus-visible:translate-x-2 group-active:translate-x-1 motion-reduce:transition-none motion-reduce:group-hover:translate-x-0"
+        className="cta-arrow-cue relative transition-transform duration-[var(--dur-base)] ease-[var(--ease-scene)] group-hover:translate-x-2 group-focus-visible:translate-x-2 group-active:translate-x-1 motion-reduce:transition-none motion-reduce:group-hover:translate-x-0"
         style={{ color }}
       />
     </span>

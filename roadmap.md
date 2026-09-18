@@ -92,7 +92,7 @@
 - [x] Validate mobile/desktop, reduced motion, tests, TypeScript, and production build
 
 ## 14. Public typography and conversion-motion consistency
-- [ ] Normalize public labels and controls to Inter; keep Fraunces for headings and intentional editorial emphasis
-- [ ] Remove perpetual CTA motion and keep one-shot, interaction-led conversion cues
-- [ ] Make payment transitions immediate while preserving clear loading and error feedback
-- [ ] Validate representative public journeys at 393×852 and 1280×900, reduced motion, focused tests, and build
+- [x] Normalize public labels and controls to Inter; keep Fraunces for headings and intentional editorial emphasis
+- [x] Remove perpetual CTA motion and keep one-shot, interaction-led conversion cues
+- [x] Make payment transitions immediate while preserving clear loading and error feedback
+- [x] Validate representative public journeys at 393×852 and 1280×900, reduced motion, focused tests, and build

@@ -83,7 +83,7 @@ export function GuestMomentsStrip({
       <div className="container-x">
         <header className="max-w-2xl">
           <div data-motion="fade-up-sm">
-            <span className="inline-block font-[family-name:var(--font-display)] text-[11px] uppercase tracking-[0.22em] text-[color:var(--gold-deep)]">
+            <span className="t-eyebrow inline-block text-[color:var(--gold-deep)]">
               {eyebrow}
             </span>
           </div>

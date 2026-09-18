@@ -188,14 +188,12 @@ export function CheckoutSummary({
       });
     }
     // Embedded Checkout is intentionally below the reviewed summary. Bring
-    // the newly mounted secure form into view so Reserve always feels like a
-    // completed transition, especially on a 393px phone viewport.
+    // the newly mounted secure form into view immediately: payment is a quiet,
+    // functional handoff rather than an ornamental transition.
     window.requestAnimationFrame(() => {
       stripeSurfaceRef.current?.scrollIntoView({
         block: "start",
-        behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches
-          ? "auto"
-          : "smooth",
+        behavior: "auto",
       });
     });
   }, [clientSecret, state.tourId]);

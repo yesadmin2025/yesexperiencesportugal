@@ -111,7 +111,7 @@ export function TravelFilePreview({ className, onEngage }: TravelFilePreviewProp
             <ChevronLeft size={18} strokeWidth={1.8} />
           </button>
           <span
-            className="font-[family-name:var(--font-display)] text-[11px] uppercase tracking-[0.26em] text-[color:var(--charcoal-soft)] tabular-nums"
+            className="font-sans text-[11px] font-medium uppercase tracking-[0.26em] text-[color:var(--charcoal-soft)] tabular-nums"
             aria-live="polite"
           >
             {String(index + 1).padStart(2, "0")} / {TOTAL_SAMPLE_PAGES}

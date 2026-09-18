@@ -189,7 +189,7 @@ function PageLightbox({
     >
       {/* Top bar */}
       <div className="flex items-center justify-between px-4 py-3 border-b border-[color:var(--charcoal)]/10">
-        <p className="font-[family-name:var(--font-display)] text-[10.5px] uppercase tracking-[0.3em] font-semibold text-[color:var(--charcoal)]">
+        <p className="font-sans text-[10.5px] uppercase tracking-[0.3em] font-semibold text-[color:var(--charcoal)]">
           {String(index + 1).padStart(2, "0")}
           <span className="mx-1.5 text-[color:var(--charcoal-soft)]/60">/</span>
           {String(total).padStart(2, "0")}
@@ -457,7 +457,7 @@ function BookFlip() {
 
         <div className="flex flex-col items-center min-w-[8rem]">
           <p
-            className="font-[family-name:var(--font-display)] text-[11px] uppercase tracking-[0.32em] font-semibold text-[color:var(--charcoal)]"
+            className="font-sans text-[11px] uppercase tracking-[0.32em] font-semibold text-[color:var(--charcoal)]"
             aria-hidden="true"
           >
             {String(index + 1).padStart(2, "0")}
@@ -572,7 +572,7 @@ export function RecentJourney() {
           <BookFlip />
         </div>
 
-        <p className="reveal mt-5 font-[family-name:var(--font-display)] text-center text-[11px] uppercase tracking-[0.28em] text-[color:var(--charcoal-soft)] font-semibold">
+        <p className="reveal mt-5 font-sans text-center text-[11px] uppercase tracking-[0.28em] text-[color:var(--charcoal-soft)] font-semibold">
           A real example
         </p>
 

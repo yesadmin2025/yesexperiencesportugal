@@ -62,20 +62,11 @@ export function PhaseShell({
       }`}
       style={{ background: "var(--ivory)" }}
     >
-      {/* Ambient wash — slow radial glow that breathes. */}
+      {/* Static ambient wash — atmosphere without perpetual interface motion. */}
       <div
         aria-hidden
         data-testid="studio-v3-wash-layer"
-        className="pointer-events-none absolute inset-0 z-0 motion-reduce:hidden"
-        style={{
-          background: `radial-gradient(120% 80% at 50% 0%, ${accentColor} 0%, transparent 65%)`,
-          animation: "studioV3Breathe 14s ease-in-out infinite",
-        }}
-      />
-      {/* Static fallback for reduced motion. */}
-      <div
-        aria-hidden
-        className="pointer-events-none absolute inset-0 z-0 hidden motion-reduce:block"
+        className="pointer-events-none absolute inset-0 z-0"
         style={{
           background: `radial-gradient(120% 80% at 50% 0%, ${accentColor} 0%, transparent 65%)`,
         }}
@@ -133,10 +124,6 @@ export function PhaseShell({
 
       {/* Local keyframes — scoped via style tag to avoid polluting global CSS. */}
       <style>{`
-        @keyframes studioV3Breathe {
-          0%, 100% { opacity: 0.85; transform: translateY(0); }
-          50% { opacity: 1; transform: translateY(-2%); }
-        }
         @keyframes studioV3RiseIn {
           from { opacity: 0; transform: translateY(14px); }
           to { opacity: 1; transform: translateY(0); }
