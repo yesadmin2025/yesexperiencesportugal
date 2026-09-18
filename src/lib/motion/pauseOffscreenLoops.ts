@@ -13,7 +13,13 @@
  * untouched. Progressive enhancement only: without JS, IntersectionObserver
  * or `getAnimations`, every loop keeps running exactly as it does today.
  */
-const LOOP_SELECTOR = [".ken-burns-slow", ".he-image-cinema img", ".cinematic-editorial"].join(",");
+const LOOP_SELECTOR = [
+  ".ken-burns-slow",
+  ".he-image-cinema img",
+  ".cinematic-editorial",
+  ".live-dot",
+  ".lmp-pulse",
+].join(",");
 
 type Animatable = Element & {
   getAnimations?: (options?: { subtree?: boolean }) => Animation[];
