@@ -130,6 +130,30 @@ describe("home-motion controller", () => {
     expect(legacy.classList.contains("motion-in")).toBe(true);
   });
 
+  it("auto-tags public editorial headings, imagery, and conversion actions", async () => {
+    document.documentElement.dataset.motionScope = "marketing";
+    document.body.innerHTML = `
+      <main>
+        <section>
+          <h1>Portugal, privately</h1>
+          <figure><img alt="Coast" /></figure>
+          <a class="premium-cta" href="/experiences">Explore</a>
+        </section>
+      </main>
+    `;
+    document.querySelectorAll<HTMLElement>("h1, figure, a").forEach((el) => {
+      el.getBoundingClientRect = () =>
+        ({ top: 100, bottom: 200, left: 0, right: 320, width: 320, height: 100, x: 0, y: 100, toJSON: () => ({}) }) as DOMRect;
+    });
+
+    dispose = startHomeMotion();
+    await flushRaf();
+
+    expect(document.querySelector("h1")?.getAttribute("data-motion")).toBe("editorial-clip");
+    expect(document.querySelector("figure")?.getAttribute("data-motion")).toBe("settle");
+    expect(document.querySelector("a")?.getAttribute("data-motion")).toBe("settle");
+  });
+
   it("under prefers-reduced-motion, marks everything motion-in and skips motion-ready", () => {
     window.matchMedia = vi.fn().mockImplementation((q: string) => ({
       matches: q.includes("reduce"),

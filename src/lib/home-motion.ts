@@ -122,6 +122,7 @@ export function startHomeMotion(): () => void {
     const CARD_CAP = lowPower ? 260 : 400;
 
     const revealSelector = [
+      "h1",
       "h2",
       "h3",
       "[data-eyebrow]",
@@ -135,7 +136,8 @@ export function startHomeMotion(): () => void {
     const nodes = homeScope.querySelectorAll<HTMLElement>(revealSelector);
     nodes.forEach((el) => {
       if (el.hasAttribute("data-motion")) return;
-      if (el.closest('[data-section="hero"], [aria-live], .sr-only')) return;
+      if (el.closest('[data-section="hero"], [aria-live], .sr-only, form, dialog, nav')) return;
+      if (el.parentElement?.closest("[data-motion]")) return;
 
       const container = (el.closest("section, article, header") as HTMLElement | null) ?? homeScope;
       const idx = seenContainers.get(container) ?? 0;
@@ -161,6 +163,19 @@ export function startHomeMotion(): () => void {
       if (el.hasAttribute("data-motion-delay")) return;
       const delay = Math.min(idx * CARD_STEP, CARD_CAP);
       el.setAttribute("data-motion-delay", String(delay));
+    });
+
+    // Give public imagery and conversion groups one calm entrance. Never tag
+    // interactive form surfaces or anything already governed by a parent
+    // reveal, so movement stays editorial rather than busy.
+    const supportingNodes = homeScope.querySelectorAll<HTMLElement>(
+      "main section figure, main section picture, main section .editorial-card, main section .decision-scene, main section .premium-cta, main section .editorial-action",
+    );
+    supportingNodes.forEach((el) => {
+      if (el.hasAttribute("data-motion")) return;
+      if (el.closest('[data-section="hero"], [aria-live], form, dialog, nav')) return;
+      if (el.parentElement?.closest("[data-motion]")) return;
+      el.setAttribute("data-motion", "settle");
     });
   }
 

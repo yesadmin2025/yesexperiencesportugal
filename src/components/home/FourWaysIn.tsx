@@ -230,7 +230,7 @@ function PathCard({ path, featured }: { path: Path; featured: boolean }) {
         <span className="text-[11px] uppercase tracking-[0.22em] font-semibold text-[color:var(--teal)]">
           {path.cta}
         </span>
-        <span className="home-way-arrow inline-flex items-center text-[color:var(--gold)] transition-transform duration-[var(--dur-base)] ease-[var(--ease-scene)] group-hover:translate-x-1.5 group-focus-visible:translate-x-1.5 group-active:translate-x-0.5">
+        <span className="home-way-arrow editorial-arrow inline-flex items-center text-[color:var(--gold)] transition-transform duration-[var(--dur-base)] ease-[var(--ease-scene)] group-hover:translate-x-1.5 group-focus-visible:translate-x-1.5 group-active:translate-x-0.5 motion-reduce:transition-none">
           {/* Intentionally long, thin right arrow — aligned across all five cards. */}
           <svg
             width="28"
