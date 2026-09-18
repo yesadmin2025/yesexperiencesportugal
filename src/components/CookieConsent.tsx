@@ -130,7 +130,7 @@ export function CookieConsent() {
     [],
   );
 
-  if (!hydrated || !open) return null;
+  if (!hydrated || !open || modalOpen) return null;
 
   return (
     <div
