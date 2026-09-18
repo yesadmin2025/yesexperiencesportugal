@@ -436,22 +436,6 @@ function HomePage() {
   // still detect "the homepage's hero copy is rendered" — copy probes
   // live inside <CinematicHero/>, the new single-element hero.
 
-  // Homepage motion controller — `[data-motion]` / `.motion-in`.
-  // See src/lib/home-motion.ts for the full contract. This is the
-  // single source of truth for visible scroll motion on the homepage.
-  // Auto-tags legacy `.reveal` / `.reveal-stagger` / `.section-enter`
-  // elements with `data-motion`, so this controller wins on the
-  // homepage without per-component edits.
-  useEffect(() => {
-    let dispose: (() => void) | undefined;
-    import("@/lib/home-motion").then(({ startHomeMotion }) => {
-      dispose = startHomeMotion();
-    });
-    return () => {
-      dispose?.();
-    };
-  }, []);
-
   // ── Hash navigation ────────────────────────────────────────────────
   // Two cooperating effects:
   //   1. Deep-link handler: on mount (and on subsequent hashchange via
