@@ -150,3 +150,7 @@
 - [x] Remover glow e ajustar movimentos de ação aos tempos premium
 - [x] Validar visualmente 320, 360, 393 e 1280 px; testar bloqueio de data e garantia de falha/repetição do checkout
 - [x] Executar verificações focadas e manter produção sem publicar
+## 23. Site-wide public animations
+- [ ] Audit all public pages for central editorial motion coverage and missing reveal targets.
+- [ ] Apply calm site-wide transitions without changing checkout, Studio, routes, copy, or business logic.
+- [ ] Validate motion budget, reduced motion, mobile overflow, and representative public pages.
