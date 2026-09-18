@@ -114,3 +114,9 @@
 - [x] Add automatic permanent-redirect verification for the retired wine guides
 - [x] Add an early booking card to the surviving wine guide instead of a duplicate landing page
 - [x] Validate typecheck, focused tests, mobile/desktop rendering and production build
+
+## 18. Google-to-payment attribution
+- [x] Capture first-touch acquisition source, medium and landing page (covers Google organic, which carries no utm_*)
+- [x] Carry the source into Stripe metadata and onto the booking row
+- [x] Add an "Origem → pagamento" panel with Google checkouts, payments and revenue in /admin/seo-monitor
+- [x] Validate typecheck, tests, production build and browser capture at 393x852
