@@ -3413,8 +3413,8 @@ html.motion-ready [data-motion].motion-in {
    focus rather than jumping upward. Headings use a restrained clip reveal;
    cards/images use opacity + a 0.985 scale settle. */
 html.motion-ready[data-motion-scope="marketing"] [data-motion] {
-  transform: translate3d(0, 4px, 0) scale(0.985);
-  filter: blur(1.5px);
+  transform: translate3d(0, 7px, 0) scale(0.99);
+  filter: blur(1px);
   transition:
     opacity 560ms var(--ease-scene),
     transform 620ms var(--ease-scene),
@@ -3457,6 +3457,24 @@ html[data-motion-scope="marketing"] a svg[data-lucide="arrow-right"] {
 html[data-motion-scope="marketing"] a:hover svg[data-lucide="arrow-right"],
 html[data-motion-scope="marketing"] a:focus-visible svg[data-lucide="arrow-right"] {
   transform: translateX(4px);
+}
+
+/* Shared conversion response: calm surface lift plus a directional cue.
+   Touch receives a short press state; there is no spring or bounce. */
+html[data-motion-scope="marketing"] .premium-cta,
+html[data-motion-scope="marketing"] .editorial-action {
+  transition-property: background-color, color, border-color, box-shadow, opacity, transform;
+  transition-duration: var(--dur-base);
+  transition-timing-function: var(--ease-scene);
+}
+html[data-motion-scope="marketing"] .premium-cta:hover,
+html[data-motion-scope="marketing"] .premium-cta:focus-visible {
+  transform: translateY(-1px);
+}
+html[data-motion-scope="marketing"] .premium-cta:active,
+html[data-motion-scope="marketing"] .editorial-action:active {
+  transform: translateY(0) scale(0.985);
+  transition-duration: var(--dur-tap);
 }
 
 @keyframes signatureImageSettle {

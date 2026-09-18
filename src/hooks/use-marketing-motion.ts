@@ -1,5 +1,55 @@
 import { useEffect } from "react";
 
+let disposeController: (() => void) | undefined;
+let controllerBoot: Promise<void> | undefined;
+
+function stopMarketingMotion(): void {
+  disposeController?.();
+  disposeController = undefined;
+  controllerBoot = undefined;
+  document.documentElement.classList.remove("motion-ready");
+  delete document.documentElement.dataset.motionScope;
+}
+
+function acquireMarketingMotion(): void {
+  document.documentElement.dataset.motionScope = "marketing";
+
+  if (!controllerBoot) {
+    controllerBoot = import("@/lib/home-motion").then(({ startHomeMotion }) => {
+      if (
+        document.documentElement.dataset.motionScope === "marketing" &&
+        !disposeController
+      ) {
+        disposeController = startHomeMotion();
+      }
+    });
+  }
+}
+
+const NON_EDITORIAL_PATHS = [
+  /^\/admin(?:\/|\.|$)/,
+  /^\/auth(?:\/|$)/,
+  /^\/api(?:\/|$)/,
+  /^\/book(?:\/|$)/,
+  /^\/booking-(?:confirmed|receipt)(?:\/|$)/,
+  /^\/builder(?:\/|$)/,
+  /^\/checkout(?:\/|\.|$)/,
+  /^\/studio(?:\/|-|$)/,
+  /^\/tours\/[^/]+\/tailor(?:\/|$)/,
+  /^\/(?:i|s)\.[^/]+/,
+  /^\/(?:lovable|\.lovable|mcp|e2e\.|qa\.|hero-verify|preview-check|typography-audit)/,
+] as const;
+
+export function usePublicEditorialMotion(pathname: string): void {
+  useEffect(() => {
+    if (NON_EDITORIAL_PATHS.some((pattern) => pattern.test(pathname))) {
+      stopMarketingMotion();
+      return;
+    }
+    acquireMarketingMotion();
+  }, [pathname]);
+}
+
 /**
  * useMarketingMotion — boots the existing homepage motion controller
  * (`src/lib/home-motion.ts`) for a public marketing route and scopes its
@@ -19,22 +69,7 @@ import { useEffect } from "react";
  *     this hook.
  */
 export function useMarketingMotion(): void {
-  useEffect(() => {
-    if (typeof document !== "undefined") {
-      document.documentElement.dataset.motionScope = "marketing";
-    }
-    let dispose: (() => void) | undefined;
-    let cancelled = false;
-    void import("@/lib/home-motion").then(({ startHomeMotion }) => {
-      if (cancelled) return;
-      dispose = startHomeMotion();
-    });
-    return () => {
-      cancelled = true;
-      dispose?.();
-      if (typeof document !== "undefined") {
-        delete document.documentElement.dataset.motionScope;
-      }
-    };
-  }, []);
+  // Kept as a compatibility hook for existing public route components.
+  // RootComponent now owns the single pathname-aware controller, avoiding
+  // duplicate route-level acquire/release cycles during SPA transitions.
 }

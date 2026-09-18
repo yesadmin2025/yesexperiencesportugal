@@ -96,3 +96,9 @@
 - [x] Remove perpetual CTA motion and keep one-shot, interaction-led conversion cues
 - [x] Make payment transitions immediate while preserving clear loading and error feedback
 - [x] Validate representative public journeys at 393×852 and 1280×900, reduced motion, focused tests, and build
+
+## 15. Site-wide editorial conversion motion
+- [x] Activate the shared fade/settle controller across public storytelling and discovery routes
+- [x] Extend one-shot movement to headings, imagery, cards, conversion actions, and Five Ways arrows
+- [x] Keep transactional, Studio, admin, auth, and internal routes free from decorative motion
+- [x] Validate public journeys at mobile/desktop sizes, reduced motion, focused tests, and build

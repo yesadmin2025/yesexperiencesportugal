@@ -33,6 +33,7 @@ import { captureGuideRefFromLocation } from "@/lib/guide-attribution";
 import { LocaleProvider } from "@/i18n/locale-context";
 import { LOCALE_BCP47, parseLocaleFromPath } from "@/i18n/config";
 import { Analytics } from "@vercel/analytics/react";
+import { usePublicEditorialMotion } from "@/hooks/use-marketing-motion";
 
 /* ──────────────────────────────────────────────────────────────────
  * App readiness flag — sets `window.__APP_READY__ = true` and fires
@@ -323,6 +324,7 @@ function RootComponent() {
     captureGuideRefFromLocation();
   }, []);
   const pathname = useRouterState({ select: (s) => s.location.pathname });
+  usePublicEditorialMotion(pathname);
   const { locale } = parseLocaleFromPath(pathname);
   useEffect(() => {
     setAnalyticsLocale(locale);

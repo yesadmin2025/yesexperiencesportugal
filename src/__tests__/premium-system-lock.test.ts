@@ -47,6 +47,17 @@ describe("Premium System Lock", () => {
     expect(studioShell).not.toContain("studioV3Breathe");
   });
 
+  it("activates editorial motion centrally while excluding transactional journeys", () => {
+    const hook = read("src/hooks/use-marketing-motion.ts");
+    const root = read("src/routes/__root.tsx");
+
+    expect(root).toContain("usePublicEditorialMotion(pathname)");
+    expect(hook).toContain("NON_EDITORIAL_PATHS");
+    expect(hook).toMatch(/\/\^\\\/checkout/);
+    expect(hook).toMatch(/\/\^\\\/studio/);
+    expect(hook).toContain("acquireMarketingMotion");
+  });
+
   it("uses Inter for public micro-labels and controls", () => {
     const publicUi = [
       "src/components/Footer.tsx",
