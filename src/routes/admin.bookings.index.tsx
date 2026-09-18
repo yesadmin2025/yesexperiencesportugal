@@ -13,6 +13,7 @@ import { listAdminBookings } from "@/lib/bookingsAdmin.functions";
 import { formatGuestComposition } from "@/components/studio-v3/formatGuests";
 import { BookingsAvailabilityCalendar } from "@/components/admin/BookingsAvailabilityCalendar";
 import { CalendarSubscribePanel } from "@/components/admin/CalendarSubscribePanel";
+import { PaidSalesSummary } from "@/components/admin/PaidSalesSummary";
 import { PHONE_DISPLAY, WHATSAPP_NUMBER } from "@/config/business-nap";
 
 export const Route = createFileRoute("/admin/bookings/")({
@@ -232,6 +233,9 @@ function AdminBookingsPage() {
             {rows.length} trip{rows.length === 1 ? "" : "s"} ·{" "}
             {money(totalCents, rows[0]?.currency ?? "eur")}
           </p>
+
+          {/* Sales reading: every paid booking with date, group and total. */}
+          <PaidSalesSummary rows={rows} currency={rows[0]?.currency ?? "eur"} />
 
           {groups.map(([bucket, list]) => (
             <section key={bucket} className="mt-8" data-bucket={bucket}>
