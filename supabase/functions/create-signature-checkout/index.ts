@@ -744,6 +744,9 @@ Deno.serve(async (req) => {
             "utm_content",
             "gclid",
             "fbclid",
+            "attr_source",
+            "attr_medium",
+            "landing_path",
           ];
           const out: Record<string, string> = {};
           for (const key of allowed) {

@@ -28,7 +28,7 @@
 
 import { supabase } from "@/integrations/supabase/client";
 import { trackEvent } from "@/lib/analytics-events";
-import { utmParams } from "@/lib/utm";
+import { acquisitionParams, utmParams } from "@/lib/utm";
 
 import { GUIDE_REF_STORAGE_KEY } from "@/lib/guide-attribution-inline";
 export { guideRefDataAttrs } from "@/lib/guide-attribution-inline";
@@ -135,6 +135,10 @@ export function guideAttributionMetadata(): Record<string, string> {
     out.guide_slot = guide.slot;
   }
   for (const [k, v] of Object.entries(utmParams())) out[k] = String(v).slice(0, 200);
+  // First-touch acquisition — covers Google organic, which never carries utm_*.
+  for (const [k, v] of Object.entries(acquisitionParams())) {
+    if (!out[k]) out[k] = String(v).slice(0, 200);
+  }
   return out;
 }
 
