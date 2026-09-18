@@ -126,7 +126,7 @@ describe("home-motion controller", () => {
     document.body.appendChild(legacy);
     dispose = startHomeMotion();
     await flushRaf();
-    expect(legacy.getAttribute("data-motion")).toBe("fade-up");
+    expect(legacy.getAttribute("data-motion")).toBe("settle");
     expect(legacy.classList.contains("motion-in")).toBe(true);
   });
 

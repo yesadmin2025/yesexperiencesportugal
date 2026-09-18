@@ -48,7 +48,7 @@ const LEGAL_META_LINE = BASED_IN;
 --------------------------------------------------------------------------- */
 
 const EYEBROW_CLASS =
-  "font-[family-name:var(--font-display)] text-[11px] uppercase tracking-[0.32em] text-[color:var(--gold-warm)]";
+  "font-sans text-[11px] font-medium uppercase tracking-[0.32em] text-[color:var(--gold-warm)]";
 
 const LINK_CLASS =
   "link-hairline-gold tap inline-flex min-h-11 md:min-h-[28px] items-center text-[color:var(--ivory)]/85 hover:text-[color:var(--gold-soft)] transition-colors duration-[var(--dur-quick)] rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)] focus-visible:ring-offset-2 focus-visible:ring-offset-[color:var(--charcoal)]";

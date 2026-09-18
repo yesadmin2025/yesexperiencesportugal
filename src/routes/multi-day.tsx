@@ -199,7 +199,7 @@ function MultiDayPage() {
               See Sample Travel File
             </CtaButton>
           </div>
-          <p className="mt-5 font-[family-name:var(--font-display)] text-[11px] md:text-[12px] uppercase tracking-[0.24em] text-[color:var(--charcoal)]/85">
+          <p className="mt-5 font-sans text-[11px] md:text-[12px] uppercase tracking-[0.24em] text-[color:var(--charcoal)]/85">
             Designed locally · Delivered as a travel file · Supported in Portugal
           </p>
         </div>
@@ -350,7 +350,7 @@ function MultiDayPage() {
                 key={s.n}
                 className="reveal-stagger bg-white border border-[color:var(--border)] p-6 md:p-8"
               >
-                <div className="font-[family-name:var(--font-display)] text-[11px] uppercase tracking-[0.28em] text-[color:var(--charcoal)]">
+                <div className="font-sans text-[11px] uppercase tracking-[0.28em] text-[color:var(--charcoal)]">
                   {s.n}
                 </div>
                 <h3 className="mt-3 serif font-medium tracking-[-0.012em] text-[1.25rem] md:text-[1.4rem] text-[color:var(--charcoal)] leading-tight">
@@ -419,7 +419,7 @@ function MultiDayPage() {
                     key={c.title}
                     className="bg-white border border-[color:var(--border)] p-4 md:p-5"
                   >
-                    <div className="font-[family-name:var(--font-display)] text-[11px] uppercase tracking-[0.22em] text-[color:var(--charcoal)]">
+                    <div className="font-sans text-[11px] uppercase tracking-[0.22em] text-[color:var(--charcoal)]">
                       {c.title}
                     </div>
                     <p className="mt-2 text-[14.5px] text-[color:var(--charcoal-soft)] leading-relaxed">
@@ -439,7 +439,7 @@ function MultiDayPage() {
           {/* Peek strip — a horizontal glimpse of the file. Any page tap opens
               full-size. Keeps the section compact; no 23-image scroll wall. */}
           <div className="mt-10 md:mt-14 reveal-stagger">
-            <p className="text-center font-[family-name:var(--font-display)] text-[11px] uppercase tracking-[0.28em] text-[color:var(--charcoal-soft)]">
+            <p className="text-center font-sans text-[11px] uppercase tracking-[0.28em] text-[color:var(--charcoal-soft)]">
               A glimpse inside
             </p>
             <div
@@ -466,7 +466,7 @@ function MultiDayPage() {
                   />
                   <span
                     aria-hidden="true"
-                    className="absolute bottom-2 right-2 font-[family-name:var(--font-display)] text-[10px] uppercase tracking-[0.2em] font-semibold text-[color:var(--charcoal)] bg-[color:var(--ivory)]/90 px-1.5 py-0.5 rounded-sm"
+                    className="absolute bottom-2 right-2 font-sans text-[10px] uppercase tracking-[0.2em] font-semibold text-[color:var(--charcoal)] bg-[color:var(--ivory)]/90 px-1.5 py-0.5 rounded-sm"
                   >
                     {String(i + 2).padStart(2, "0")}
                   </span>
@@ -534,7 +534,7 @@ function MultiDayPage() {
             parts feel effortless. When weather, timing or energy shifts, the route can be adjusted
             with local judgement, not call-centre scripts.
           </p>
-          <p className="mt-6 font-[family-name:var(--font-display)] text-[12px] uppercase tracking-[0.22em] text-[color:var(--charcoal)]">
+          <p className="mt-6 font-sans text-[12px] uppercase tracking-[0.22em] text-[color:var(--charcoal)]">
             Daily local contact · in-country adjustments · transport coordination · trusted partners
             on the ground
           </p>
@@ -595,7 +595,7 @@ function MultiDayPage() {
               <MessageCircle size={14} aria-hidden="true" /> Talk to a Local
             </a>
           </div>
-          <p className="mt-6 font-[family-name:var(--font-display)] text-[11px] uppercase tracking-[0.24em] text-[color:var(--charcoal-soft)]">
+          <p className="mt-6 font-sans text-[11px] uppercase tracking-[0.24em] text-[color:var(--charcoal-soft)]">
             Licensed Portuguese tour operator · local support · private journeys only
           </p>
         </div>

@@ -105,7 +105,7 @@ export function RecognisedByGuides({
                 {m.articleTitle}
               </p>
 
-              <blockquote className="text-[13.5px] leading-[1.7] text-[color:var(--charcoal-soft)] italic mb-4 border-l-2 border-[color:var(--gold-soft)] pl-3">
+              <blockquote className="font-serif text-[13.5px] leading-[1.7] text-[color:var(--charcoal-soft)] italic mb-4 border-l-2 border-[color:var(--gold-soft)] pl-3">
                 "{m.quote}"
               </blockquote>
 
