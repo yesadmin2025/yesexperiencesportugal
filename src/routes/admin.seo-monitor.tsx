@@ -3,9 +3,11 @@ import { useEffect, useState } from "react";
 import { useServerFn } from "@tanstack/react-start";
 import { inspectGscUrls, type UrlInspectionResult } from "@/lib/gscMonitor.functions";
 import {
+  getAcquisitionConversions,
   getBookingConversions,
   getRetiredUrlRedirects,
   getSearchPerformance,
+  type AcquisitionConversionRow,
   type BookingConversionRow,
   type RetiredUrlRow,
   type SearchPerformance,
@@ -295,6 +297,7 @@ function SeoMonitorPage() {
         </section>
 
         <SearchPerformancePanel />
+        <AcquisitionPanel />
         <ConversionPanel />
         <RetiredUrlPanel />
         <IndexationPanel />
@@ -675,6 +678,113 @@ function SearchPerformancePanel() {
           </div>
           <div className="mt-4 rounded-lg border border-[color:var(--sand)] bg-white p-4">
             <SearchRows rows={data.queries} label="Pesquisa" />
+          </div>
+        </>
+      ) : null}
+    </section>
+  );
+}
+
+function AcquisitionPanel() {
+  const run = useServerFn(getAcquisitionConversions);
+  const [rows, setRows] = useState<AcquisitionConversionRow[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [err, setErr] = useState<string>();
+
+  async function load() {
+    setLoading(true);
+    setErr(undefined);
+    try {
+      const r = await run({ data: { days: 28 } });
+      setRows(r.rows);
+      if (r.error) setErr(r.error);
+    } catch (e) {
+      setErr(e instanceof Error ? e.message : String(e));
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  useEffect(() => {
+    const handler = () => load();
+    window.addEventListener(REFRESH_EVENT, handler);
+    return () => window.removeEventListener(REFRESH_EVENT, handler);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const google = rows.filter((r) => r.source === "google");
+  const googlePaid = google.reduce((n, r) => n + r.paid, 0);
+  const googleStarted = google.reduce((n, r) => n + r.started, 0);
+  const googleRevenue = google.reduce((n, r) => n + r.paidRevenueEur, 0);
+
+  return (
+    <section className="mt-10">
+      <div className="flex items-center justify-between">
+        <h2 className="text-lg font-semibold text-[color:var(--charcoal)]">
+          Origem → pagamento (28 dias)
+        </h2>
+        <button
+          onClick={load}
+          disabled={loading}
+          className="rounded-full border border-[color:var(--teal)] px-4 py-2 text-xs font-medium text-[color:var(--teal)] hover:bg-[color:var(--teal)] hover:text-white disabled:opacity-50"
+        >
+          {loading ? "A carregar…" : "Carregar"}
+        </button>
+      </div>
+      <p className="mt-1 text-xs text-[color:var(--charcoal-soft)]">
+        De onde veio cada visita que iniciou o checkout e quantas terminaram em pagamento real.
+        Reservas anteriores a esta medição aparecem como “unknown”.
+      </p>
+      {err ? <p className="mt-3 text-xs text-rose-600">{err}</p> : null}
+      {rows.length > 0 ? (
+        <>
+          <div className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-3">
+            {[
+              { label: "Checkouts do Google", value: String(googleStarted) },
+              { label: "Pagamentos do Google", value: String(googlePaid) },
+              { label: "Receita do Google", value: `€${googleRevenue.toLocaleString("pt-PT")}` },
+            ].map((k) => (
+              <div
+                key={k.label}
+                className="rounded-lg border border-[color:var(--sand)] bg-white p-4"
+              >
+                <p className="text-[11px] uppercase tracking-[0.18em] text-[color:var(--gold)]">
+                  {k.label}
+                </p>
+                <p className="mt-1 text-xl font-semibold text-[color:var(--charcoal)]">{k.value}</p>
+              </div>
+            ))}
+          </div>
+          <div className="mt-4 overflow-x-auto rounded-lg border border-[color:var(--sand)] bg-white p-4">
+            <table className="w-full min-w-[560px] text-left text-xs">
+              <thead className="text-[color:var(--charcoal-soft)]">
+                <tr>
+                  <th className="py-2 pr-3 font-medium">Origem</th>
+                  <th className="py-2 pr-3 font-medium">Tipo</th>
+                  <th className="py-2 pr-3 font-medium">Iniciadas</th>
+                  <th className="py-2 pr-3 font-medium">Dados do hóspede</th>
+                  <th className="py-2 pr-3 font-medium">Pagas</th>
+                  <th className="py-2 pr-3 font-medium">Receita</th>
+                  <th className="py-2 pr-3 font-medium">Página de entrada</th>
+                </tr>
+              </thead>
+              <tbody>
+                {rows.map((r) => (
+                  <tr
+                    key={`${r.source}-${r.medium}`}
+                    className="border-t border-[color:var(--sand)]"
+                  >
+                    <td className="py-2 pr-3 text-[color:var(--charcoal)]">{r.source}</td>
+                    <td className="py-2 pr-3">{r.medium}</td>
+                    <td className="py-2 pr-3">{r.started}</td>
+                    <td className="py-2 pr-3">{r.reachedDetails}</td>
+                    <td className="py-2 pr-3 font-medium text-[color:var(--charcoal)]">{r.paid}</td>
+                    <td className="py-2 pr-3">€{r.paidRevenueEur.toLocaleString("pt-PT")}</td>
+                    <td className="py-2 pr-3 break-all">{r.topLandingPath}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
           </div>
         </>
       ) : null}

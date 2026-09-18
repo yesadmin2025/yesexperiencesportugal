@@ -293,3 +293,101 @@ export const getBookingConversions = createServerFn({ method: "POST" })
       return { rows, days: data.days };
     },
   );
+
+export type AcquisitionConversionRow = {
+  /** "google", "bing", "chatgpt.com", "direct", … */
+  source: string;
+  /** "organic" | "referral" | "direct" | "paid" | "social" | "unknown" */
+  medium: string;
+  /** Checkouts opened from this source. */
+  started: number;
+  /** Reached the guest-details step. */
+  reachedDetails: number;
+  /** Real paid bookings. */
+  paid: number;
+  /** Paid revenue in EUR. */
+  paidRevenueEur: number;
+  /** Most frequent landing page for this source. */
+  topLandingPath: string;
+};
+
+/**
+ * Which acquisition source produced real payments.
+ *
+ * First-touch source/medium travels from the browser (see `src/lib/utm.ts`)
+ * into Stripe metadata and lands on the `bookings` row, so Google organic —
+ * which never carries utm_* — is finally attributable end to end.
+ * Rows created before this shipped read as "unknown".
+ */
+export const getAcquisitionConversions = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((input: { days?: number }) => ({
+    days: Math.min(Math.max(Number(input?.days ?? 28), 7), 180),
+  }))
+  .handler(
+    async ({
+      data,
+      context,
+    }): Promise<{ rows: AcquisitionConversionRow[]; days: number; error?: string }> => {
+      await assertAdmin(context);
+      const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+
+      const since = new Date();
+      since.setDate(since.getDate() - data.days);
+
+      const { data: bookings, error } = await supabaseAdmin
+        .from("bookings")
+        .select("status, metadata, amount_total, booking_details_completed_at, created_at")
+        .gte("created_at", since.toISOString());
+
+      if (error) return { rows: [], days: data.days, error: error.message };
+
+      type Acc = AcquisitionConversionRow & { landings: Map<string, number> };
+      const byKey = new Map<string, Acc>();
+
+      for (const b of bookings ?? []) {
+        const meta = (b.metadata ?? {}) as Record<string, unknown>;
+        const str = (k: string) => (typeof meta[k] === "string" ? (meta[k] as string) : "");
+        const source = (str("attr_source") || str("utm_source") || "unknown").slice(0, 80);
+        const medium = (
+          str("attr_medium") ||
+          str("utm_medium") ||
+          (str("gclid") ? "paid" : "") ||
+          "unknown"
+        ).slice(0, 40);
+        const landing = str("landing_path");
+        const key = `${source}·${medium}`;
+
+        const row =
+          byKey.get(key) ??
+          ({
+            source,
+            medium,
+            started: 0,
+            reachedDetails: 0,
+            paid: 0,
+            paidRevenueEur: 0,
+            topLandingPath: "—",
+            landings: new Map<string, number>(),
+          } satisfies Acc);
+
+        row.started += 1;
+        if (b.booking_details_completed_at) row.reachedDetails += 1;
+        if (b.status === "paid") {
+          row.paid += 1;
+          row.paidRevenueEur += Math.round((b.amount_total ?? 0) / 100);
+        }
+        if (landing) row.landings.set(landing, (row.landings.get(landing) ?? 0) + 1);
+        byKey.set(key, row);
+      }
+
+      const rows: AcquisitionConversionRow[] = [...byKey.values()]
+        .map(({ landings, ...r }) => {
+          const top = [...landings.entries()].sort((a, b) => b[1] - a[1])[0];
+          return { ...r, topLandingPath: top ? top[0] : "—" };
+        })
+        .sort((a, b) => b.paid - a.paid || b.started - a.started);
+
+      return { rows, days: data.days };
+    },
+  );

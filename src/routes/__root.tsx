@@ -28,7 +28,7 @@ import { Scene } from "@/components/motion/Scene";
 import { usePageViewTracking } from "@/lib/analytics-page-view";
 import { installAnalyticsAttrs } from "@/lib/analytics";
 import { setAnalyticsLocale } from "@/lib/analytics-events";
-import { captureUtmsFromLocation } from "@/lib/utm";
+import { captureAcquisitionFromLocation, captureUtmsFromLocation } from "@/lib/utm";
 import { captureGuideRefFromLocation } from "@/lib/guide-attribution";
 import { LocaleProvider } from "@/i18n/locale-context";
 import { LOCALE_BCP47, parseLocaleFromPath } from "@/i18n/config";
@@ -321,6 +321,7 @@ function RootComponent() {
   usePageViewTracking();
   useEffect(() => {
     captureUtmsFromLocation();
+    captureAcquisitionFromLocation();
     captureGuideRefFromLocation();
   }, []);
   const pathname = useRouterState({ select: (s) => s.location.pathname });
@@ -330,6 +331,7 @@ function RootComponent() {
     setAnalyticsLocale(locale);
     // Re-check UTMs on client-side navigation (SPA route changes).
     captureUtmsFromLocation();
+    captureAcquisitionFromLocation();
     captureGuideRefFromLocation();
   }, [locale, pathname]);
   // Pause long Ken Burns / crossfade loops while they are offscreen.
