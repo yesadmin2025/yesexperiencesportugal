@@ -6,6 +6,7 @@ import { SiteBreadcrumbs } from "@/components/SiteBreadcrumbs";
 import { Eyebrow } from "@/components/ui/Eyebrow";
 import { SectionTitle } from "@/components/ui/SectionTitle";
 import { CtaButton } from "@/components/ui/CtaButton";
+import { CTA_LABELS } from "@/content/cta-vocabulary";
 import { RealReviewsStrip } from "@/components/home/RealReviewsStrip";
 import { signatureTours } from "@/data/signatureTours";
 import {
@@ -200,10 +201,8 @@ function DayTripsFromLisbon() {
             beaches on the Atlantic, cork and marble in the Alentejo.
           </p>
           <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-            <CtaButton to="/experiences">See every private day</CtaButton>
-            <CtaButton to="/book" variant="ghost">
-              Tell us your dates
-            </CtaButton>
+            <CtaButton to="/experiences">{CTA_LABELS.signatureDiscovery}</CtaButton>
+            <CtaButton to="/studio-v3" variant="ghost">{CTA_LABELS.studio}</CtaButton>
           </div>
           <p className="mt-6 flex flex-wrap items-center gap-x-5 gap-y-2 font-sans text-[11.5px] uppercase tracking-[0.18em] text-[color:var(--charcoal-soft)]">
             <span className="inline-flex items-center gap-1.5">
@@ -521,9 +520,7 @@ function DayTripsFromLisbon() {
               </p>
               <div className="mt-5 flex flex-col gap-3">
                 <CtaButton to="/book">Book &amp; pay online</CtaButton>
-                <CtaButton to="/studio-v3" variant="ghost">
-                  Design your own day
-                </CtaButton>
+                <CtaButton to="/studio-v3" variant="ghost">{CTA_LABELS.studio}</CtaButton>
               </div>
             </div>
           </div>

@@ -185,6 +185,31 @@ export function SimpleBookingForm({ tour }: { tour: SignatureTour }) {
 
   const handleReserve = async (details: GuestDetails) => {
     if (pending) return;
+    const activeRule = rule ?? {
+      tourId: tour.id,
+      weekdays: [0, 1, 2, 3, 4, 5, 6],
+      blackoutDates: [],
+      minLeadHours: leadHours,
+      cutoffLocalTime: null,
+    };
+    const dateCheck = validateDateISO(details.tourDate, activeRule);
+    if (!dateCheck.ok) {
+      gaBookingValidationBlocked({
+        tourId: tour.id,
+        surface: "signature",
+        reason: `date_${dateCheck.reason}`,
+      });
+      toast.error(
+        dateCheck.reason === "weekday_closed"
+          ? "This experience doesn't run on that day. Please pick another date."
+          : dateCheck.reason === "blackout"
+            ? "That date is unavailable. Please pick another."
+            : `Please choose a date at least ${leadHours} hours from now.`,
+      );
+      setDetailsOpen(false);
+      requestAnimationFrame(() => dateRef.current?.focus());
+      return;
+    }
     const resolved = resolvePerPaxEur(tour, details.guests, tierOverrides);
     // No approved tier for this exact party size — never quote the generic
     // anchor, and never open checkout on a price we cannot honour.
@@ -537,10 +562,12 @@ export function SimpleBookingForm({ tour }: { tour: SignatureTour }) {
           data-testid="signature-reserve-cta"
           onClick={() => {
             if (!canReserve) {
-              const reason = !dateValid ? "date_missing_or_past" : "composition_incomplete";
+              const reason = !dateValid ? "date_missing_or_unavailable" : "composition_incomplete";
               gaBookingValidationBlocked({ tourId: tour.id, surface: "signature", reason });
               toast.error(
-                !dateValid ? "Pick a date at least 24h from now." : "Add an age for every child.",
+                !dateValid
+                  ? `Pick an available date at least ${leadHours} hours from now.`
+                  : "Add an age for every child.",
               );
               return;
             }
