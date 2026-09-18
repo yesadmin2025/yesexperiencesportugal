@@ -2057,4 +2057,12 @@ export const GUIDE_INLINE_BOOKING: Readonly<
     tourSlug: "wild-beaches-picnic",
     lead: "The coastal version of this guide: Arrábida viewpoints, a quiet cove and a picnic by the sea, with pickup in Lisbon.",
   },
+  "fatima-day-trip-from-lisbon": {
+    tourSlug: "fatima-nazare-obidos",
+    lead: "The loop described above, run as one private day: Fátima sanctuary, Nazaré's cliffs and Óbidos, with Lisbon pickup and lunch included.",
+  },
+  "azulejo-tile-painting-workshop-lisbon": {
+    tourSlug: "tiles-workshop",
+    lead: "The craft day itself: the tile atelier, a Setúbal winery tasting and Sesimbra by the sea, private to your party.",
+  },
 } as const;
