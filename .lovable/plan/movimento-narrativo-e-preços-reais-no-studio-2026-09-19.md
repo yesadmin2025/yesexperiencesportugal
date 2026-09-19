@@ -2,7 +2,7 @@
 
 ## Resultado
 
-Dar vida aos cartões “Five ways in”, à página de experiências e ao About com movimento premium visível no telemóvel — não apenas nas setas — e fazer cada atividade extra do Studio mostrar exatamente o preço definido no painel, até ao pagamento.
+Dar vida aos cartões “Five ways in”, à página de experiências e ao About e todas as outras com movimento premium visível no telemóvel — não apenas nas setas — e fazer cada atividade extra do Studio mostrar exatamente o preço definido no painel, até ao pagamento.
 
 ## 1. Five ways in: cartões que contam uma história
 
@@ -18,7 +18,7 @@ Dar vida aos cartões “Five ways in”, à página de experiências e ao About
 - Fazer a frase principal e a ação aparecerem em momentos distintos, preservando títulos, preços, avaliações, factos, rotas e SEO.
 - No desktop, usar apenas hover subtil na imagem, regra e ação; no touch, toda a narrativa acontece pelo scroll.
 
-## 3. About: história com progressão
+## 3. About e restantes páginas- história com progressão
 
 - Aplicar revelação por linhas às frases editoriais mais importantes, em vez de simples fades de secções inteiras.
 - Sequenciar parágrafos, fotografia, capítulos “What we create” e credenciais para criar progressão de leitura.
