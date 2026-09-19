@@ -50,6 +50,23 @@ import { guideAttributionMetadata } from "@/lib/guide-attribution";
 import { SIGNATURE_RESERVE_INTENT_EVENT } from "@/lib/booking/reserve-intent";
 
 /**
+ * Human-readable echo of an ISO date, e.g. "Sat, 4 Oct 2026".
+ * Parsed as UTC so the label never drifts a day by timezone.
+ */
+function readableDateLabel(iso: string): string {
+  const [y, m, d] = iso.split("-").map(Number);
+  if (!y || !m || !d) return iso;
+  return new Date(Date.UTC(y, m - 1, d)).toLocaleDateString("en-GB", {
+    weekday: "short",
+    day: "numeric",
+    month: "short",
+    year: "numeric",
+    timeZone: "UTC",
+  });
+}
+
+
+/**
  * SimpleBookingForm — the *reserve as-is* path.
  *
  * Embedded Stripe checkout in a branded drawer. The server resolves the
