@@ -232,7 +232,7 @@ export function CookieConsent() {
                   type="button"
                   variant="ghost"
                   onClick={() => setCustomize(false)}
-                  className="tap min-h-11 rounded-sm text-[10px] uppercase tracking-[0.18em] text-[color:var(--charcoal-soft)]"
+                  className="tap min-h-11 rounded-sm text-[11px] uppercase tracking-[0.16em] text-[color:var(--charcoal-soft)]"
                 >
                   Back
                 </Button>
@@ -247,7 +247,7 @@ export function CookieConsent() {
                       "customise_save",
                     )
                   }
-                  className="tap min-h-11 rounded-sm bg-[color:var(--teal)] px-4 text-[10px] uppercase tracking-[0.14em] text-[color:var(--ivory)] shadow-none hover:bg-[color:var(--teal-2)]"
+                  className="tap min-h-11 rounded-sm bg-[color:var(--teal)] px-4 text-[11px] uppercase tracking-[0.12em] text-[color:var(--ivory)] shadow-none hover:bg-[color:var(--teal-2)]"
                 >
                   Save preferences
                 </Button>
