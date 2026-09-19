@@ -263,32 +263,60 @@ export function BookingsAvailabilityCalendar() {
 
       {selected ? (
         <div className="mt-4 border-t border-[color:var(--sand)] pt-4">
-          <h3 className="text-sm text-[color:var(--charcoal)]">{selected}</h3>
+          <h3 className="text-sm text-[color:var(--charcoal)]">
+            {selected} · {selectedBookings.length} reservation(s)
+          </h3>
           {selectedBookings.length === 0 ? (
             <p className="mt-2 text-sm text-[color:var(--charcoal-soft)]">
               No reservations on this date.
             </p>
           ) : (
-            <ul className="mt-2 space-y-3">
-              {selectedBookings.map((b) => {
-                const stops = stopLabels(b);
-                return (
-                  <li key={b.id} className="text-sm">
-                    <span className="text-[color:var(--charcoal)]">
-                      {tourTitle(b.source_tour_id)} · {b.guests} guests · {b.status}
-                    </span>
-                    <span className="block text-[color:var(--charcoal-soft)]">
-                      {b.customer_name || b.customer_email}
-                    </span>
-                    {stops.length > 0 ? (
-                      <span className="mt-1 block text-xs text-[color:var(--charcoal-soft)]">
-                        Moments booked: {stops.join(" · ")}
+            <>
+              <ul className="mt-2 divide-y divide-[color:var(--sand)]">
+                {selectedBookings.map((b) => {
+                  const stops = stopLabels(b);
+                  const startTime = startTimeOf(b);
+                  const pickup = pickupOf(b);
+                  return (
+                    <li key={b.id} className="py-3 text-sm">
+                      <span className="block text-[color:var(--charcoal)]">
+                        {startTime ? `${startTime} · ` : ""}
+                        {tourTitle(b.source_tour_id)} · {b.guests} guests · {b.status}
                       </span>
-                    ) : null}
-                  </li>
-                );
-              })}
-            </ul>
+                      <span className="block text-[color:var(--charcoal-soft)]">
+                        {b.customer_name || b.customer_email}
+                        {pickup ? ` · pickup: ${pickup}` : ""}
+                      </span>
+                      {stops.length > 0 ? (
+                        <span className="mt-1 block text-xs text-[color:var(--charcoal-soft)]">
+                          Moments booked: {stops.join(" · ")}
+                        </span>
+                      ) : null}
+                      <Link
+                        to="/admin/bookings/$id"
+                        params={{ id: b.id }}
+                        className="mt-1 inline-block text-xs text-[color:var(--teal)] underline"
+                      >
+                        Open full detail
+                      </Link>
+                      <GuideBriefPanel bookingId={b.id} />
+                    </li>
+                  );
+                })}
+              </ul>
+              {selectedBookings.length > 1 ? (
+                <div className="mt-3 border-t border-[color:var(--sand)] pt-3">
+                  <p className="text-[11px] uppercase tracking-[0.18em] text-[color:var(--charcoal-soft)]">
+                    Whole day
+                  </p>
+                  <GuideBriefPanel
+                    date={selected}
+                    {...(tourFilter !== "all" ? { tourId: tourFilter } : {})}
+                    label="Day brief for the guide"
+                  />
+                </div>
+              ) : null}
+            </>
           )}
         </div>
       ) : null}
