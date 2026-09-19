@@ -1,6 +1,6 @@
 import { localeAlternateLinks } from "@/i18n/seo";
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 
 import { SiteLayout } from "@/components/SiteLayout";
 import { FAQ } from "@/components/FAQ";
