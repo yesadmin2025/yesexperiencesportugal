@@ -175,7 +175,6 @@ function GroupCard({ title, body }: Card) {
       <h3 className="serif font-medium tracking-[-0.012em] text-[1.05rem] md:text-[1.15rem] text-[color:var(--charcoal)] leading-tight">
         {title}
       </h3>
-      <span className="gold-rule mt-3 max-w-[36px]" aria-hidden="true" />
       <p className="mt-3 text-[14.5px] md:text-[15px] text-[color:var(--charcoal-soft)] leading-relaxed">
         {body}
       </p>
@@ -194,7 +193,6 @@ function MultiDayPage() {
           <SectionTitle as="h1" size="anchor" spacing="loose">
             Full Portugal journeys, <SectionTitle.Em>designed for you.</SectionTitle.Em>
           </SectionTitle>
-          <span className="gold-rule mt-6 mx-auto max-w-[80px]" aria-hidden="true" />
           <p className="mt-6 text-[1rem] md:text-[1.1rem] text-[color:var(--charcoal-soft)] leading-relaxed">
             Portugal changes quickly as the road moves from one region to another — a private
             multi-day journey is designed around the travellers, the time available and the rhythm
@@ -301,7 +299,6 @@ function MultiDayPage() {
             <SectionTitle size="compact" spacing="loose">
               When the trip matters, <SectionTitle.Em>the structure matters too.</SectionTitle.Em>
             </SectionTitle>
-            <span className="gold-rule mt-5 mx-auto max-w-[64px]" aria-hidden="true" />
             <p className="mt-5 text-[color:var(--charcoal-soft)] leading-relaxed">
               Travel Designer is for guests who want Portugal planned with care from beginning to
               end — not just a hotel list, a transfer and a few tours dropped into a calendar.
@@ -324,7 +321,6 @@ function MultiDayPage() {
             <SectionTitle size="compact" spacing="loose">
               A journey with rhythm, <SectionTitle.Em>not a list of places.</SectionTitle.Em>
             </SectionTitle>
-            <span className="gold-rule mt-5 mx-auto max-w-[64px]" aria-hidden="true" />
             <p className="mt-5 text-[color:var(--charcoal-soft)] leading-relaxed">
               Portugal is small on a map, but it is not small in rhythm. A good journey depends on
               knowing what belongs together, what needs space, what is worth the drive and what
@@ -534,7 +530,6 @@ function MultiDayPage() {
           <SectionTitle size="compact" spacing="loose">
             Supported <SectionTitle.Em>on the ground.</SectionTitle.Em>
           </SectionTitle>
-          <span className="gold-rule mt-5 mx-auto max-w-[64px]" aria-hidden="true" />
           <p className="mt-5 font-serif italic text-[1.1rem] md:text-[1.2rem] text-[color:var(--teal)] leading-snug">
             Designed before you arrive. Adjusted while you travel.
           </p>
@@ -559,7 +554,6 @@ function MultiDayPage() {
             <SectionTitle id="td-faq" size="compact" spacing="loose">
               Travel Designer, <SectionTitle.Em>answered.</SectionTitle.Em>
             </SectionTitle>
-            <span className="gold-rule mt-5 mx-auto max-w-[64px]" aria-hidden="true" />
           </div>
           <Accordion type="single" collapsible defaultValue="td-0" className="mt-8 space-y-3">
             {TRAVEL_DESIGNER_FAQ.map((item, i) => (
@@ -587,7 +581,6 @@ function MultiDayPage() {
           <SectionTitle size="compact" spacing="loose">
             Begin with <SectionTitle.Em>a designer.</SectionTitle.Em>
           </SectionTitle>
-          <span className="gold-rule mt-5 mx-auto max-w-[64px]" aria-hidden="true" />
           <p className="mt-5 text-[color:var(--charcoal-soft)] leading-relaxed">
             Tell us what you have in mind. We will shape the journey with you, day by day, route by
             route, until Portugal feels like yours.

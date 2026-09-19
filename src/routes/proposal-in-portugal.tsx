@@ -116,7 +116,6 @@ export function ProposalInPortugalPage() {
           <SectionTitle as="h1" size="anchor" spacing="loose">
             A proposal in Portugal, <SectionTitle.Em>planned discreetly.</SectionTitle.Em>
           </SectionTitle>
-          <span className="gold-rule mt-6 mx-auto max-w-[80px]" aria-hidden="true" />
           <RouteThread compact className="mx-auto mt-6 max-w-xl" />
           <p className="mt-6 text-[1rem] md:text-[1.1rem] text-[color:var(--charcoal-soft)] leading-relaxed">
             Anywhere in Portugal — coastline, vineyard, palace garden or a quiet city terrace. A
@@ -163,7 +162,6 @@ export function ProposalInPortugalPage() {
 
                 <div>
                   <Eyebrow icon={<Icon strokeWidth={1.8} />}>{b.eyebrow}</Eyebrow>
-                  <span className="gold-rule mt-4 max-w-[64px]" aria-hidden="true" />
                   <SectionTitle size="compact" spacing="loose">
                     {b.title}
                   </SectionTitle>

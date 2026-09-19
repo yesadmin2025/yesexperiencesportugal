@@ -198,7 +198,6 @@ function CorporatePage() {
             Corporate experiences in Portugal,{" "}
             <SectionTitle.Em>designed by locals.</SectionTitle.Em>
           </SectionTitle>
-          <span className="gold-rule mt-7 mx-auto max-w-[80px]" aria-hidden="true" />
           <RouteThread compact className="mx-auto mt-6 max-w-xl" />
           <p className="mt-7 mx-auto max-w-[46ch] md:max-w-[62ch] text-[1rem] md:text-[1.1rem] text-[color:var(--charcoal-soft)] leading-[1.8]">
             Private team-building days, incentive programmes, corporate retreats, executive
@@ -253,7 +252,6 @@ function CorporatePage() {
 
           <div>
             <Eyebrow>Designed for the purpose</Eyebrow>
-            <span className="gold-rule mt-4 max-w-[64px]" aria-hidden="true" />
             <SectionTitle size="compact" spacing="loose">
               Built around the team. <SectionTitle.Em>Scaled around the group.</SectionTitle.Em>
             </SectionTitle>
@@ -289,7 +287,6 @@ function CorporatePage() {
 
           <div>
             <Eyebrow>Beyond the meeting room</Eyebrow>
-            <span className="gold-rule mt-4 max-w-[64px]" aria-hidden="true" />
             <SectionTitle size="compact" spacing="loose">
               Local knowledge, <SectionTitle.Em>across the country.</SectionTitle.Em>
             </SectionTitle>
@@ -326,7 +323,6 @@ function CorporatePage() {
         <div className="container-x">
           <div className="max-w-2xl reveal">
             <Eyebrow>What we design</Eyebrow>
-            <span className="gold-rule mt-4 max-w-[64px]" aria-hidden="true" />
             <SectionTitle spacing="loose">
               Different briefs. <SectionTitle.Em>One local team.</SectionTitle.Em>
             </SectionTitle>
@@ -431,7 +427,6 @@ function CorporatePage() {
 
           <div className="order-1 lg:order-2">
             <Eyebrow>Start with the brief</Eyebrow>
-            <span className="gold-rule mt-4 max-w-[64px]" aria-hidden="true" />
             <SectionTitle size="compact" spacing="loose">
               Tell us about <SectionTitle.Em>your group.</SectionTitle.Em>
             </SectionTitle>
