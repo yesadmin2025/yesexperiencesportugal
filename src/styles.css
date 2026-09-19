@@ -6513,6 +6513,9 @@ html {
   min-height: calc(100svh - 64px);
 }
 .hero-cinematic .hero-cinematic-layout {
+  position: relative;
+  inset: auto;
+  min-height: inherit;
   grid-template-rows: minmax(0, 1fr) auto minmax(1.5rem, 0.24fr) auto;
   row-gap: 0;
   padding-top: clamp(2rem, 7svh, 5rem);
