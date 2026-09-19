@@ -234,7 +234,7 @@ function PageLightbox({
         </button>
         <p
           aria-hidden="true"
-          className="font-[family-name:var(--font-serif)] italic text-[13px] text-[color:var(--charcoal-soft)] px-2 truncate"
+          className="font-sans text-[13px] text-[color:var(--charcoal-soft)] px-2 truncate"
         >
           {page.label}
         </p>
@@ -466,7 +466,7 @@ function BookFlip() {
           </p>
           <p
             key={current.label}
-            className="mt-1.5 font-[family-name:var(--font-serif)] italic text-[14px] md:text-[15px] leading-[1.2] text-[color:var(--charcoal-soft)] transition-opacity duration-300"
+            className="mt-1.5 font-sans text-[14px] md:text-[15px] leading-[1.35] text-[color:var(--charcoal-soft)] transition-opacity duration-300"
           >
             {current.label}
           </p>

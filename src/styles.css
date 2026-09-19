@@ -4427,9 +4427,8 @@ html[data-motion-scope="marketing"] .signature-image-settle {
     }
   }
 
-  /* Animated gold rule — thin divider that draws from left to right
-     when its parent enters the viewport via .reveal/.reveal-stagger.
-     Pure CSS, ≤220ms, respects reduced-motion via the global rules. */
+  /* Retired under-title divider. Keep legacy call sites visually neutral:
+     the canonical gold motif is now the animated side rule in Eyebrow. */
   .gold-rule {
     display: none;
   }
