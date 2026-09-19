@@ -86,6 +86,21 @@ export const getPublishedExperienceContent = createServerFn({ method: "GET" })
     }
   });
 
+/** Published card copy for public collection pages, fetched in one request. */
+export const listPublishedExperienceContent = createServerFn({ method: "GET" }).handler(
+  async (): Promise<ExperienceContentOverride[]> => {
+    try {
+      const { data } = await publicClient()
+        .from("experience_content_overrides")
+        .select(SELECT)
+        .eq("is_published", true);
+      return (data ?? []).map(toOverride);
+    } catch {
+      return [];
+    }
+  },
+);
+
 /** Every override, published or not — admin console. */
 export const listExperienceContent = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])

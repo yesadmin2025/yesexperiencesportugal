@@ -245,7 +245,7 @@ const HERO_FILM_PLAYBACK_RATE = 0.6;
  * THERE, not here, so attribution stays in sync with what's rendered.
  */
 
-const signatures = FEATURED_TOUR_IDS.filter((id) => isValidTourId(id))
+const baseSignatures = FEATURED_TOUR_IDS.filter((id) => isValidTourId(id))
   .map((id) => signatureTours.find((t) => t.id === id)!)
   .map((t) => {
     const meta = getViatorMeta(t.id);
@@ -344,6 +344,10 @@ const groupsAndCelebrations = [
  * yes-hero-copy-version meta tag) keep passing.
  * ────────────────────────────────────────────────────────────── */
 export const Route = createFileRoute("/")({
+  loader: async () => {
+    const { listPublishedExperienceContent } = await import("@/lib/experienceContent.functions");
+    return { contentOverrides: await listPublishedExperienceContent() };
+  },
   headers: () => ({
     // Allow crawlers + CDN to cache a stable HTML snapshot of the homepage.
     // Previously `no-store` combined with hero A/B variants made Googlebot
@@ -430,6 +434,20 @@ export const Route = createFileRoute("/")({
  * 13. Final decision
  * ════════════════════════════════════════════════════════════ */
 function HomePage() {
+  const { contentOverrides } = Route.useLoaderData();
+  const signatures = useMemo(() => {
+    const byTour = new Map(contentOverrides.map((row) => [row.tourId, row]));
+    return baseSignatures.map((tour) => {
+      const override = byTour.get(tour.id);
+      return override
+        ? {
+            ...tour,
+            line: override.blurb ?? tour.line,
+            highlights: override.highlights?.slice(0, 3) ?? tour.highlights,
+          }
+        : tour;
+    });
+  }, [contentOverrides]);
   const scrollDebug = useScrollDebugFlags();
 
   // Mark this scope so e2e visual-regression / copy-lock helpers can
