@@ -36,6 +36,7 @@ O movimento passa a ser **contínuo, discreto e direcional**. Nada sobe e desce,
 - Ao tocar, botões e cartões respondem imediatamente com uma compressão mínima e mudança de contraste, sem saltar.
 - As sequências são ativadas pelo scroll, não pelo hover, para que a experiência móvel seja a principal.
 - No computador, o hover acrescenta apenas uma mudança controlada de imagem, sombra e seta — sem levantar cartões.
+- Ctas com movimento premmium também. Não é preciso passar o rato para os itens se mexerem. Tem de comunicar , de forma moderna mas premmium 
 
 ### 5. Transições entre páginas
 
