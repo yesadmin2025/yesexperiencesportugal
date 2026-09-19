@@ -24,6 +24,10 @@ const row = (over: Partial<ComposableStopRow> & { stopId: string }): ComposableS
   minGuests: 1,
   active: true,
   notes: null,
+  durationMinutes: 60,
+  openFrom: "10:00",
+  openTo: "17:00",
+  fixedStartTimes: [],
   ...over,
 });
 
@@ -35,10 +39,14 @@ describe("composableStopAuthority", () => {
       row({ stopId: "a" }),
       row({ stopId: "b", active: false }),
       row({ stopId: "c", priceCents: 0 }),
+      row({ stopId: "d", durationMinutes: null }),
+      row({ stopId: "e", openFrom: null, openTo: null, fixedStartTimes: [] }),
     ]);
     expect(isComposableStop("a")).toBe(true);
     expect(isComposableStop("b")).toBe(false);
     expect(isComposableStop("c")).toBe(false);
+    expect(isComposableStop("d")).toBe(false);
+    expect(isComposableStop("e")).toBe(false);
     expect(isComposableStop("unknown")).toBe(false);
   });
 

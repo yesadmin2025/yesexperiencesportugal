@@ -122,6 +122,7 @@ import {
 import { addOnPartyAmount, addOnsPartyTotal } from "@/lib/checkout/studio-charge";
 
 import { useTourPriceTiers } from "@/hooks/use-tour-price-tiers";
+import type { ComposableStopRow } from "@/lib/studio-v3/composableStopAuthority";
 import { invokeSignatureCheckout } from "@/lib/checkout/session-request";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
@@ -4132,6 +4133,7 @@ export function StudioV3() {
               onRefine={() => jumpBackToPhase("logistics", "checkout-edit-operational")}
               pending={checkoutPending}
               tourPriceTiers={tourPriceTiers}
+              composableRows={composableRows}
               selectedAddOnIds={selectedAddOnIds}
               selectedAddOnMinutes={selectedAddOnMinutes}
               onAddOnsChange={handleAddOnsChange}
@@ -4699,6 +4701,7 @@ export function StoryboardHandoff({
   onRefine,
   pending,
   tourPriceTiers,
+  composableRows = [],
   selectedAddOnIds,
   selectedAddOnMinutes = 0,
   onAddOnsChange,
@@ -4718,6 +4721,7 @@ export function StoryboardHandoff({
   onRefine: () => void;
   pending?: boolean;
   tourPriceTiers?: import("@/hooks/use-tour-price-tiers").TourPriceTiersMap;
+  composableRows?: readonly ComposableStopRow[];
   selectedAddOnIds?: ReadonlyArray<string>;
   /** Minutes already committed by the CURRENT add-on basket. */
   selectedAddOnMinutes?: number;
@@ -4980,6 +4984,8 @@ export function StoryboardHandoff({
       });
       const seenLabels = new Set(pool.map((p) => p.label.toLowerCase()));
       for (const c of cands) {
+        const operational = composableRows.find((row) => row.stopId === c.id);
+        if (!operational) continue;
         const key = c.name.toLowerCase();
         if (seenLabels.has(key) || inUse.has(key)) continue;
         if (c.oneOfGroup && usedGroups.has(c.oneOfGroup)) continue;
@@ -4989,9 +4995,10 @@ export function StoryboardHandoff({
           label: c.name,
           story: customerStopBlurb(c),
           source: "region-pool",
-          durationMinutes: c.durationMin ?? null,
-          // REGION_STOP_POOL candidates carry a structural inventory duration.
-          durationSource: c.durationMin > 0 ? ("inventory" as DwellSource) : null,
+          durationMinutes: operational.durationMinutes,
+          // Owner-published catalogue duration is the live inventory truth.
+          durationSource:
+            (operational.durationMinutes ?? 0) > 0 ? ("inventory" as DwellSource) : null,
           lat: c.coords?.lat ?? null,
           lng: c.coords?.lng ?? null,
           inventoryStopId: (c as { id?: string | null }).id ?? null,
@@ -5008,6 +5015,7 @@ export function StoryboardHandoff({
     state.companions,
     state.rhythm,
     state.interests,
+    composableRows,
     state.investment,
     state.considerations,
   ]);
