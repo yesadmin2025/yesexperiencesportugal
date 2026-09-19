@@ -68,21 +68,21 @@ describe("reveal animation contract — CSS rules", () => {
     expect(body).toMatch(/transform:\s*none/);
   });
 
-  it(".reveal-stagger starts hidden and uses a horizontal mask without positional movement", () => {
+  it(".reveal-stagger starts hidden and uses contrast cadence without positional movement", () => {
     const body = ruleBlock("html.reveal-ready .reveal-stagger {");
     expect(body, ".reveal-stagger rule must exist").not.toBe("");
     expect(body).toMatch(/opacity:\s*0/);
     expect(body).toMatch(/transform:\s*none/);
-    expect(body).toMatch(/clip-path:\s*inset\(0 100% 0 0\)/);
+    expect(body).toMatch(/filter:\s*saturate\(0\.76\) contrast\(0\.92\)/);
     expect(body).toMatch(/transition:[\s\S]*opacity/);
-    expect(body).toMatch(/transition:[\s\S]*clip-path/);
+    expect(body).toMatch(/transition:[\s\S]*filter/);
   });
 
   it(".reveal-stagger.is-visible reaches opacity:1 without movement", () => {
     const body = ruleBlock("html.reveal-ready .reveal-stagger.is-visible");
     expect(body, ".reveal-stagger.is-visible rule must exist").not.toBe("");
     expect(body).toMatch(/opacity:\s*1/);
-    expect(body).toMatch(/clip-path:\s*inset\(0 0 0 0\)/);
+    expect(body).toMatch(/filter:\s*saturate\(1\) contrast\(1\)/);
     expect(body).toMatch(/transform:\s*none/);
   });
 

@@ -180,3 +180,9 @@
 - [ ] Keep visible reviews and structured review data aligned — blocked until verified per-experience review totals are supplied
 - [x] Remove map resize runtime warnings
 - [x] Validate mobile/desktop, reduced motion, SEO/schema/sitemap, publish and resubmit sitemap
+
+## 28. Corrective mobile motion and booking pass
+- [x] Unify public CTA arrows around one viewport-aware mobile cue
+- [x] Replace the repeated left-to-right homepage wipe with varied editorial sequences
+- [x] Fix Signature date containment and simplify traveller composition on mobile
+- [x] Validate scroll motion and booking layout at 393px and 1280px

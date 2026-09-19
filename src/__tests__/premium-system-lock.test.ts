@@ -43,7 +43,7 @@ describe("Premium System Lock", () => {
     expect(cta).not.toContain("cta-arrow-idle");
     expect(cta).toContain('inView && "is-visible"');
     expect(css).toContain(".cta-arrow-stage.is-visible .cta-arrow-cue");
-    expect(css).toContain("animation: ctaArrowEntranceCue 760ms");
+    expect(css).toContain("animation: ctaArrowEntranceCue 960ms");
     expect(css).not.toMatch(/\.cta-arrow-cue\s*\{[^}]*infinite/s);
     expect(checkout).toContain('behavior: "auto"');
     expect(studioShell).not.toContain("studioV3Breathe");
@@ -69,14 +69,11 @@ describe("Premium System Lock", () => {
     expect(hook).toMatch(/\/\^\\\/checkout/);
     expect(hook).toMatch(/\/\^\\\/studio/);
     expect(hook).toContain('document.documentElement.dataset.motionScope = "marketing"');
-    expect(hook).toContain('import("@/lib/home-motion")');
+    expect(hook).toContain('import { startHomeMotion } from "@/lib/home-motion"');
     expect(hook).toContain("requestAnimationFrame");
-    // Auto-tagging must wait for a bounded mutation-free window so React never
-    // sees mutated attributes while a lazy route subtree hydrates. The observer
-    // is required to be disconnected and capped by a hard deadline.
-    expect(hook).toContain("new MutationObserver");
-    expect(hook).toContain("observer?.disconnect()");
-    expect(hook).toContain("hardDeadline");
+    // Annotation begins after hydration frames, without the old mutation quiet
+    // window that made mobile movement complete before it could be perceived.
+    expect(hook).toContain("secondFrame = window.requestAnimationFrame");
 
     // Anchor on the base editorial reveal rule itself (the `{` guards against
     // matching later descendant rules such as the image-settle parity block).
@@ -85,9 +82,9 @@ describe("Premium System Lock", () => {
       css.indexOf("@keyframes editorialArrowCue"),
     );
 
-    expect(marketingMotion).not.toContain("filter:");
+    expect(marketingMotion).toContain("filter: saturate(0.72) contrast(0.9)");
     expect(marketingMotion).toContain("clip-path:");
-    expect(marketingMotion).not.toContain("scale(");
+    expect(marketingMotion).toContain("transform: scale(1.018)");
     expect(marketingMotion).not.toMatch(/translate(?:Y|3d)\([^)]*[1-9]/);
   });
 

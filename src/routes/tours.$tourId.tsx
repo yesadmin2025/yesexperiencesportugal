@@ -32,7 +32,7 @@ import { dispatchSignatureReserveIntent } from "@/lib/booking/reserve-intent";
 import { useImportedTourImages } from "@/hooks/use-imported-tour-images";
 import { Eyebrow } from "@/components/ui/Eyebrow";
 import { SectionTitle } from "@/components/ui/SectionTitle";
-import { CtaButton } from "@/components/ui/CtaButton";
+import { CtaButton, CtaMotionArrow } from "@/components/ui/CtaButton";
 import { Scene } from "@/components/motion/Scene";
 import { ParallaxLayer } from "@/components/motion/ParallaxLayer";
 
@@ -531,7 +531,7 @@ function TourHero({
               data-analytics-experience-type="signature"
               className="editorial-action inline-flex min-h-[44px] items-center gap-2 font-sans text-[11px] font-medium uppercase tracking-[0.16em] text-[color:var(--charcoal-soft)] underline decoration-[color:var(--gold)]/60 underline-offset-4 transition-colors duration-[var(--dur-quick)] hover:text-[color:var(--teal)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)]"
             >
-              Tailor this day <span aria-hidden="true" className="editorial-arrow">→</span>
+              Tailor this day <CtaMotionArrow />
             </Link>
           </div>
         </div>
@@ -598,7 +598,7 @@ function SecondaryContext({ tour }: { tour: SignatureTour }) {
               href={tour.contextLink.href}
               className="editorial-action inline-flex min-h-[44px] items-center gap-2 text-[color:var(--teal)] underline decoration-[color:var(--gold)]/60 underline-offset-4 transition-colors hover:text-[color:var(--charcoal)]"
             >
-              {tour.contextLink.label} <span aria-hidden="true" className="editorial-arrow">→</span>
+              {tour.contextLink.label} <CtaMotionArrow />
             </a>
           </p>
         )}
