@@ -45,15 +45,26 @@ export function GuideNextSteps({ article }: { article: LocalStoryArticle }) {
             <p className="font-sans text-[11px] uppercase tracking-[0.22em] text-[color:var(--charcoal-soft)] mb-2">
               Start here
             </p>
-            <Link
-              to="/local-stories/$slug"
-              params={{ slug: next.hub.path.replace("/local-stories/", "") }}
-              className={linkClass}
-              {...guideRefDataAttrs(article.slug, "next_hub")}
-              onClick={onClick("next_hub", "guide", next.hub.path)}
-            >
-              {next.hub.label}
-            </Link>
+            {next.hub.path.startsWith("/local-stories/") ? (
+              <Link
+                to="/local-stories/$slug"
+                params={{ slug: next.hub.path.replace("/local-stories/", "") }}
+                className={linkClass}
+                {...guideRefDataAttrs(article.slug, "next_hub")}
+                onClick={onClick("next_hub", "guide", next.hub.path)}
+              >
+                {next.hub.label}
+              </Link>
+            ) : (
+              <a
+                href={next.hub.path}
+                className={linkClass}
+                {...guideRefDataAttrs(article.slug, "next_hub")}
+                onClick={onClick("next_hub", "guide", next.hub.path)}
+              >
+                {next.hub.label}
+              </a>
+            )}
           </div>
         )}
 

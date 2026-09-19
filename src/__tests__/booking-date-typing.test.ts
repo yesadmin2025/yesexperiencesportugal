@@ -16,6 +16,11 @@ describe("Signature booking date field", () => {
   });
 
   it("only warns once the typed date is complete", () => {
-    expect(source).toContain("if (v.length === 10) toast.error(msg);");
+    // The warning is both inline (setBlockMessage) and a toast, but only
+    // after the typed value is a full YYYY-MM-DD.
+    expect(source).toContain("if (v.length === 10) {");
+    const gate = source.slice(source.indexOf("if (v.length === 10) {"));
+    expect(gate.slice(0, 160)).toContain("setBlockMessage(msg)");
+    expect(gate.slice(0, 160)).toContain("toast.error(msg)");
   });
 });

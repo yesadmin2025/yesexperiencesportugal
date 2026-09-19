@@ -31,7 +31,10 @@ describe("Your Day progression gate", () => {
     const start = STUDIO.indexOf("const dayHardRejected =");
     const rule = STUDIO.slice(start, STUDIO.indexOf(";", start));
     expect(rule).toContain('approvalStatus === "reject"');
-    expect(rule).toContain('finalDayGate.fit.verdict === "over-day-budget"');
+    // An over-budget day is NOT a progression blocker: it is blocked later, at
+    // the reserve/Stripe seam, which re-judges the exact route.
+    expect(rule).not.toContain("finalDayGate.bookable");
+    expect(STUDIO).toContain("if (!checkoutTimeGate.bookable) {");
   });
 
   it("gates the primary CTA on the SAME final reserve truth as checkout", () => {

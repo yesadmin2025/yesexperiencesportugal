@@ -73,7 +73,7 @@ describe("payment seam re-asks the operational truth", () => {
     expect(STUDIO_SRC).not.toContain(
       "isOperationallyBookable(describeRouteIdentity(checkoutStops))",
     );
-    const stripeAt = STUDIO_SRC.indexOf("create-signature-checkout");
+    const stripeAt = STUDIO_SRC.indexOf("invokeSignatureCheckout({");
     expect(stripeAt).toBeGreaterThan(-1);
     // Existing fail-closed gates are preserved, all ahead of Stripe.
     for (const guard of [

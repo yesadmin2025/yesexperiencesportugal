@@ -16,9 +16,9 @@ import { describe, expect, it } from "vitest";
 import { getTailorBlueprint } from "@/data/tailorBlueprints";
 import { bridgedBlueprintStopId } from "@/data/structuralStopBridge";
 
+import { doorToDoorAllowsCheckout } from "@/lib/studio-v3/doorToDoorAuthority";
 import { REGION_STOP_POOL, type OptionalStop } from "@/data/regionStopPool";
 import { SIGNATURE_CORRIDORS, corridorForSignature } from "@/data/signatureCorridors";
-import { STUDIO_DOOR_TO_DOOR_HARD_MAX_MIN } from "@/lib/studio-v3/timeDomain";
 import { composeLivingAtlasDay } from "../livingAtlasComposer";
 import type { LivingAtlasCompositionRequest } from "../livingAtlasComposer";
 
@@ -86,11 +86,12 @@ describe("B · Arrábida, wine + gastronomy + coast", () => {
     rhythm: "balanced",
   });
 
-  it("stays inside the owner door-to-door ceiling when it is certified", () => {
+  it("stays inside the verified experience duration when it is certified", () => {
     if (!result.doorToDoor.evaluable) return;
-    expect(result.doorToDoor.doorToDoorMinutes).toBeLessThanOrEqual(
-      STUDIO_DOOR_TO_DOOR_HARD_MAX_MIN,
-    );
+    // The authority certifies the experience day against its own verified
+    // duration; pickup and drop-off legs are counted separately.
+    expect(result.doorToDoor.overflowMinutes).toBe(0);
+    expect(result.doorToDoor.fitsHardMax).toBe(true);
   });
 
   it("keeps every moment inside the Arrábida corridor", () => {
@@ -135,9 +136,7 @@ describe("D · Évora from Lisbon — corridor containment", () => {
 
   it("is either inside 540 minutes or explicitly sent to curator review", () => {
     if (result.doorToDoor.evaluable && result.doorToDoor.fitsHardMax) {
-      expect(result.doorToDoor.doorToDoorMinutes).toBeLessThanOrEqual(
-        STUDIO_DOOR_TO_DOOR_HARD_MAX_MIN,
-      );
+      expect(result.doorToDoor.overflowMinutes).toBe(0);
     } else {
       expect(result.requiresCuratorReview).toBe(true);
     }
@@ -152,16 +151,13 @@ describe("E · Vicentine coast from Lisbon", () => {
   });
 
   it("never falsely certifies an impossible full day", () => {
-    if (result.doorToDoor.evaluable) {
-      expect(
-        result.doorToDoor.fitsHardMax ||
-          result.doorToDoor.doorToDoorMinutes > STUDIO_DOOR_TO_DOOR_HARD_MAX_MIN,
-      ).toBe(true);
-      if (!result.doorToDoor.fitsHardMax) {
-        expect(result.requiresCuratorReview).toBe(true);
-      }
-    } else {
-      expect(result.requiresCuratorReview).toBe(true);
+    expect(result.doorToDoor.fitsHardMax).toBe(
+      result.doorToDoor.evaluable && result.doorToDoor.overflowMinutes === 0,
+    );
+    // A day that overflows its verified duration, or cannot be evaluated at
+    // all, must never be allowed through the reserve/Stripe seam.
+    if (!result.doorToDoor.fitsHardMax) {
+      expect(doorToDoorAllowsCheckout(result.doorToDoor)).toBe(false);
     }
   });
 });
@@ -203,8 +199,13 @@ describe("F · origin changes available capacity", () => {
     expect(fromSetubal.doorToDoor.pickupToFirstMinutes).toBeLessThan(
       fromLisbon.doorToDoor.pickupToFirstMinutes,
     );
-    expect(fromSetubal.doorToDoor.remainingToHardMaxMinutes).toBeGreaterThan(
+    // Remaining time is measured against the verified experience duration, so
+    // a closer origin must never leave less usable day than a farther one.
+    expect(fromSetubal.doorToDoor.remainingToHardMaxMinutes).toBeGreaterThanOrEqual(
       fromLisbon.doorToDoor.remainingToHardMaxMinutes,
+    );
+    expect(fromSetubal.doorToDoor.doorToDoorMinutes).toBeLessThan(
+      fromLisbon.doorToDoor.doorToDoorMinutes,
     );
   });
 });

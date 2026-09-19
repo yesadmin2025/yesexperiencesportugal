@@ -156,4 +156,7 @@ export const BRAND_HEX_EXEMPT_PATH_PREFIXES = [
   // Apple Mail) do not resolve CSS custom properties, so brand hex
   // MUST be inlined at the template level.
   "src/lib/email-templates/",
+  // Same reason: server-side email senders inline the brand hex into the
+  // HTML they hand to the mail provider.
+  "src/lib/email/",
 ] as const;

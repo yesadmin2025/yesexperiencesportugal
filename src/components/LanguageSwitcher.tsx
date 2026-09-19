@@ -55,7 +55,10 @@ export function LanguageSwitcher({ variant = "header", className }: LanguageSwit
 
   const { path: localeNeutralPath } = parseLocaleFromPath(location.pathname);
   const search = location.searchStr ?? "";
-  const hash = location.hash ? `#${location.hash}` : "";
+  // Deliberately NOT part of the locale link: the hash is only known on the
+  // client, so including it made the SSR href differ from the hydrated one
+  // whenever a page was opened with an anchor (e.g. /tours/x#book).
+  const hash = "";
   const ptReady = isPtReady(localeNeutralPath);
 
   return (
@@ -117,7 +120,7 @@ export function LanguageSwitcher({ variant = "header", className }: LanguageSwit
                   trackEvent("language_changed", { from: active, to: loc });
                 }
               }}
-              aria-current={isActive ? "true" : undefined}
+              aria-current={isActive ? "page" : undefined}
               aria-label={fullName}
               hrefLang={loc}
               data-locale-option={loc}

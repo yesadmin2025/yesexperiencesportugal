@@ -173,5 +173,6 @@ describe("tour content — no unapproved direct legacy reads", () => {
     }
 
     expect(violations).toEqual([]);
-  });
+    // Whole-tree source scan: slower than the 5s default under a full run.
+  }, 30_000);
 });

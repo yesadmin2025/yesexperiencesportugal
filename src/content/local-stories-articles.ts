@@ -112,7 +112,7 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
     relatedReads: [
       { path: "/local-stories/what-to-do-in-sesimbra", label: "Things to do in Sesimbra" },
       { path: "/local-stories/arrabida-vs-sintra", label: "Arrábida vs Sintra" },
-      { path: "/local-stories/lisbon-day-trips-by-drive-time", label: "Day trips by drive time" },
+      { path: "/day-trips-from-lisbon", label: "Day trips by drive time" },
       {
         path: "/local-stories/best-time-of-year-lisbon-day-trip",
         label: "Best time of year to go",
@@ -538,7 +538,7 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
     ],
     relatedReads: [
       { path: "/local-stories/wine-tours-lisbon", label: "Wine tours from Lisbon" },
-      { path: "/local-stories/arrabida-wine-tour", label: "Arrábida wine tour" },
+      { path: "/local-stories/arrabida-wine-tour-from-lisbon", label: "Arrábida wine tour" },
       { path: "/local-stories/setubal-wine-guide", label: "Setúbal wine country guide" },
     ],
     datePublished: "2026-06-11",
@@ -814,7 +814,7 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
     relatedReads: [
       { path: "/local-stories/wine-tours-lisbon", label: "Private wine tours from Lisbon" },
       {
-        path: "/local-stories/arrabida-wine-tour",
+        path: "/local-stories/arrabida-wine-tour-from-lisbon",
         label: "Explore Arrábida and Setúbal wine country",
       },
       {
@@ -853,7 +853,7 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
       { slug: "azeitao-cheese", label: "Azeitão Cheese & Wine" },
     ],
     relatedReads: [
-      { path: "/local-stories/arrabida-wine-tour", label: "Explore the Arrábida wine region" },
+      { path: "/local-stories/arrabida-wine-tour-from-lisbon", label: "Explore the Arrábida wine region" },
       { path: "/tours/arrabida-wine-allinclusive", label: "See the three-winery Signature" },
       {
         path: "/local-stories/portugal-wine-tours",
@@ -899,7 +899,7 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
         path: "/local-stories/best-wine-tasting-near-lisbon",
         label: "Best wine tasting near Lisbon",
       },
-      { path: "/local-stories/arrabida-wine-tour", label: "Arrábida wine tour guide" },
+      { path: "/local-stories/arrabida-wine-tour-from-lisbon", label: "Arrábida wine tour guide" },
       { path: "/local-stories/setubal-wine-guide", label: "Setúbal wine country guide" },
     ],
     datePublished: "2026-07-06",
@@ -1847,7 +1847,7 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
     ],
     relatedReads: [
       { path: "/day-trips-from-lisbon", label: "Compare every day trip from Lisbon" },
-      { path: "/local-stories/lisbon-day-trips-by-drive-time", label: "Day trips by drive time" },
+      { path: "/local-stories/tomar-coimbra-day-trip-from-lisbon", label: "Tomar & Coimbra day trip" },
       {
         path: "/portugal-for-american-travelers",
         label: "Plan Portugal from the United States",

@@ -217,7 +217,7 @@ export const signatureTours: SignatureTour[] = [
     contextParagraph:
       "A private Arrábida wine tour from Lisbon runs about 7–9 hours door to door, with hotel or apartment pickup in Lisbon and a private vehicle and guide for your group only. The day combines Arrábida, Setúbal and Azeitão: the Livramento market early, two or three small family wineries with tastings of Moscatel de Setúbal and small-producer reds, and an unhurried traditional lunch in Azeitão, with an optional viewpoint at Cristo Rei or Sesimbra Castle to close. Wine tastings, lunch and all transport are included in the price from €135 per person. YES experiences is a licensed Portuguese tour operator with more than 700 five-star reviews, and dates confirm instantly — so you can book the day rather than negotiate it.",
     contextLink: {
-      href: "/local-stories/arrabida-wine-tour",
+      href: "/local-stories/arrabida-wine-tour-from-lisbon",
       label: "Read more about wine in Arrábida and Setúbal",
     },
     fitsBest: "Couples · friends · wine-curious travelers",

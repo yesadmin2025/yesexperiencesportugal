@@ -18,7 +18,7 @@
  */
 
 import * as React from "react";
-import { ArrowUp, ArrowDown, ArrowLeftRight } from "lucide-react";
+import { ArrowUp, ArrowDown, ArrowLeftRight, Minus } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 export interface RefineStopCandidate {
@@ -63,6 +63,8 @@ export function RefineStopCard({
   label,
   story,
   reason,
+  minStops = 1,
+  removable,
   canSwap = false,
   swapPool,
   swapOpen = false,
@@ -70,6 +72,7 @@ export function RefineStopCard({
   onMoveLater,
   onToggleSwap,
   onPickSwap,
+  onRemove,
   className,
   testId,
 }: RefineStopCardProps) {
@@ -77,12 +80,15 @@ export function RefineStopCard({
   const isFirst = index === 0;
   const isLast = index === total - 1;
   const showReadMore = !!story && story.length > 140;
+  /** Proven optionality wins when supplied; otherwise keep the legacy floor. */
+  const canRemove =
+    (typeof removable === "boolean" ? removable : true) && total > minStops && !!onRemove;
 
   return (
     <li
       data-testid={testId ?? "studio-v3-refine-stop-card"}
       data-index={index}
-      data-removable="false"
+      data-removable={canRemove ? "true" : "false"}
       className={cn("w-full rounded-[10px] px-4 py-4", className)}
       style={{
         background: "color-mix(in oklab, var(--sand) 45%, transparent)",
@@ -183,6 +189,14 @@ export function RefineStopCard({
           onClick={onToggleSwap}
           ariaExpanded={swapOpen}
           testId="studio-v3-refine-swap"
+        />
+        <ActionButton
+          icon={<Minus size={15} aria-hidden />}
+          label="Remove"
+          ariaLabel={`Remove ${label} from the day`}
+          disabled={!canRemove}
+          onClick={onRemove}
+          testId="studio-v3-refine-remove"
         />
       </div>
 
