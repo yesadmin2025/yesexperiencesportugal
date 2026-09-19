@@ -7,8 +7,9 @@ const read = (path: string) => readFileSync(resolve(process.cwd(), path), "utf8"
 const css = read("src/styles.css");
 
 describe("Premium System Lock", () => {
-  it("defines the complete semantic typography scale with Fraunces and Inter", () => {
-    expect(css).toContain('--font-display: "Fraunces", serif');
+  it("defines the historical semantic typography scale with Montserrat, Georgia and Inter", () => {
+    expect(css).toContain('--font-display: "Montserrat", system-ui, sans-serif');
+    expect(css).toContain('--font-serif: Georgia, "Times New Roman", serif');
     expect(css).toContain('--font-sans: "Inter", system-ui, sans-serif');
     for (const token of [
       ".t-display-xl",

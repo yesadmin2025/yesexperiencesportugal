@@ -3,14 +3,14 @@
  *
  * We can't render every page under jsdom and pixel-diff it cheaply.
  * Instead we lock in the brand contract via static analysis of
- * styles.css + key route files. If anyone later swaps Fraunces for
+ * styles.css + key route files. If anyone later swaps Montserrat for
  * Poppins, repoints --gold, drops the gold border on a primary CTA,
  * or kills the editorial shadow stack, this suite fails before it
  * ships.
  *
  * Locks:
  *  · Palette = the approved 8 tokens, declared in :root.
- *  · Canonical typography = Fraunces headlines + Fraunces italic + Inter body.
+ *  · Historical typography = Montserrat headlines + Georgia italic + Inter body.
  *  · Heading weights preserve the medium-weight premium editorial rhythm.
  *  · Primary CTAs combine smoked charcoal + gold border + champagne text.
  *  · Editorial shadow stack present (no flat or generic Tailwind shadow
@@ -75,10 +75,10 @@ describe("Brand palette — approved 8 tokens", () => {
 });
 
 // ─── Typography v3 ─────────────────────────────────────────────────────
-describe("Canonical typography — Fraunces / Inter", () => {
+describe("Historical typography — Montserrat / Georgia / Inter", () => {
   it("declares the canonical font stacks", () => {
-    expect(css).toMatch(/--font-display:\s*"Fraunces"/);
-    expect(css).toMatch(/--font-serif:\s*"Fraunces"/);
+    expect(css).toMatch(/--font-display:\s*"Montserrat"/);
+    expect(css).toMatch(/--font-serif:\s*Georgia/);
     expect(css).toMatch(/--font-sans:\s*"Inter"/);
   });
 

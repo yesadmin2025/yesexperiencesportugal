@@ -516,8 +516,8 @@ describe("Typography regression — headline class strings", () => {
  * Update with `bunx vitest run -u` when the change is intentional.
  * ───────────────────────────────────────────────────────────────── */
 
-// Note: home, /multi-day and /proposals were rebuilt to Typography v3
-// (Fraunces font-display + Fraunces italic + direct sizing) and intentionally
+// Note: home, /multi-day and /proposals use the historical display system
+// (Montserrat display + Georgia italic + direct sizing) and intentionally
 // no longer use the legacy serif-based t-h* tokens. The homepage uses
 // `he-eyebrow-bar` and direct `font-display font-bold` per the v3 canon.
 // Hero fields are covered by the explicit HEADLINES patterns above; section

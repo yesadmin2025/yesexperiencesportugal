@@ -11,12 +11,12 @@ import { cn } from "@/lib/utils";
  *   • "anchor"  — 34–44.8px mobile / 64px desktop (page anchors)
  *   • "compact" — 25.6–31.2px mobile / 38.4px desktop (dense editorial sections)
  *
- * Italic emphasis: pass JSX inside `children` and wrap the emphasised words
+ * Georgia italic emphasis: pass JSX inside `children` and wrap the emphasised words
  * with the helper <SectionTitle.Em>...</SectionTitle.Em> — that renders
  * `italic font-normal text-[color:var(--teal)]`, the locked emphasis token.
  */
 
-const baseClasses = "editorial-title-safe font-serif text-[color:var(--charcoal)] font-medium tracking-normal";
+const baseClasses = "editorial-title-safe font-display text-[color:var(--charcoal)] font-medium tracking-normal";
 
 const sizeClasses = {
   default:
