@@ -16,6 +16,7 @@ import { Scene } from "@/components/motion/Scene";
 import { Eyebrow } from "@/components/ui/Eyebrow";
 import { SectionTitle } from "@/components/ui/SectionTitle";
 import { CtaButton } from "@/components/ui/CtaButton";
+import { RouteThread } from "@/components/motion/RouteThread";
 import ogSocialImg from "@/assets/hero-coast.jpg";
 import { useMarketingMotion } from "@/hooks/use-marketing-motion";
 import { getReviewsPageData } from "@/lib/reviews.functions";
@@ -179,6 +180,7 @@ function ReviewsPage() {
                 <SectionTitle as="h1" size="anchor" spacing="loose">
                   What guests <SectionTitle.Em>actually</SectionTitle.Em> say.
                 </SectionTitle>
+                <RouteThread compact className="mx-auto mt-7 max-w-xl" />
               </div>
               {global.total_reviews >= 25 && (
                 <p className="scene-body mt-6 font-serif italic text-[1.1rem] md:text-[1.25rem] leading-[1.55] text-[color:var(--charcoal-soft)]">

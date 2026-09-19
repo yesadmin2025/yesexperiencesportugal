@@ -159,13 +159,14 @@ export function PortugalPlannerMap() {
 
 
       {/* Panel */}
-      <div aria-live="polite" className="min-w-0">
+      <div aria-live="polite" className="planner-map-panel min-w-0" key={active.id}>
         <span className="block text-[11px] uppercase tracking-[0.22em] text-[color:var(--teal)]">
           {active.label}
         </span>
         <h3 className="serif mt-3 text-[1.4rem] md:text-[1.7rem] leading-[1.2] text-[color:var(--charcoal)]">
           {active.note}
         </h3>
+        <div className="planner-map-panel__trace" aria-hidden="true"><span /></div>
 
         {/* One clear idea per region: a private day can be designed around it.
             Where fixed Signature days exist, link them; otherwise the CTA

@@ -63,6 +63,7 @@ export function SignatureRouteMapFallback({ tour, reason }: Props) {
             strokeLinecap="round"
             strokeLinejoin="round"
             strokeDasharray="1.6 1.4"
+            className="signature-route-fallback__path"
             opacity="0.75"
           />
         )}

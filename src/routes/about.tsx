@@ -6,6 +6,7 @@ import { ServiceCrossLinks } from "@/components/entity/ServiceCrossLinks";
 import { Scene } from "@/components/motion/Scene";
 import { MaskReveal } from "@/components/motion/MaskReveal";
 import { SplitLines } from "@/components/motion/SplitLines";
+import { RouteThread } from "@/components/motion/RouteThread";
 import { Eyebrow } from "@/components/ui/Eyebrow";
 import { SectionTitle } from "@/components/ui/SectionTitle";
 import { CtaButton } from "@/components/ui/CtaButton";
@@ -82,6 +83,7 @@ function Page() {
                   About YES Experiences Portugal:{" "}
                   <SectionTitle.Em>local travel designers</SectionTitle.Em>.
                 </SectionTitle>
+                <RouteThread compact className="mx-auto mt-7 max-w-xl" />
               </div>
               <p className="scene-body mt-6 max-w-2xl mx-auto text-[color:var(--charcoal-soft)] leading-relaxed">
                 YES Experiences Portugal is a licensed Portuguese private tour operator, founder-led

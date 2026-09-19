@@ -47,6 +47,7 @@ import { getTourContent, signatureDurationLabel } from "@/lib/tourContent";
 import { LOCAL_STORIES_ARTICLES } from "@/content/local-stories-articles";
 import { PortugalPlannerMap } from "@/components/home/PortugalPlannerMap";
 import { LiveReviews } from "@/components/reviews/LiveReviews";
+import { RouteThread } from "@/components/motion/RouteThread";
 import { CTA_LABELS } from "@/content/cta-vocabulary";
 
 /**
@@ -1081,6 +1082,7 @@ function HomePage() {
             </div>
 
             <div className="reveal max-w-5xl mx-auto">
+              <RouteThread compact className="mx-auto mb-7 max-w-xl" />
               <PortugalPlannerMap />
             </div>
           </div>

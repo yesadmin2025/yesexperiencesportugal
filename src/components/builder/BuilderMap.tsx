@@ -111,7 +111,15 @@ export function BuilderMap({
     layerRef.current = L.layerGroup().addTo(map);
 
     let resizeRaf = 0;
-    const ro = new ResizeObserver(() => {
+    let lastWidth = 0;
+    let lastHeight = 0;
+    const ro = new ResizeObserver((entries) => {
+      const entry = entries[0];
+      const width = Math.round(entry?.contentRect.width ?? 0);
+      const height = Math.round(entry?.contentRect.height ?? 0);
+      if (width <= 0 || height <= 0 || (width === lastWidth && height === lastHeight)) return;
+      lastWidth = width;
+      lastHeight = height;
       window.cancelAnimationFrame(resizeRaf);
       resizeRaf = window.requestAnimationFrame(() => {
         const el = ref.current;

@@ -2319,6 +2319,261 @@
   }
 }
 
+/* ── Drawn-route narrative ───────────────────────────────────────────────
+   One restrained graphic language for discovery and tailoring. The path
+   animates once into its final state; content never depends on movement. */
+.route-thread {
+  --route-delay: 0ms;
+  position: relative;
+  min-width: 0;
+}
+
+.route-thread > svg {
+  display: block;
+  width: 100%;
+  height: 2.25rem;
+  overflow: visible;
+}
+
+.route-thread__ghost,
+.route-thread__ink {
+  fill: none;
+  vector-effect: non-scaling-stroke;
+  stroke-linecap: round;
+}
+
+.route-thread__ghost {
+  stroke: var(--border);
+  stroke-width: 1;
+}
+
+.route-thread__ink {
+  stroke: var(--gold);
+  stroke-width: 1.35;
+  stroke-dasharray: 140;
+  stroke-dashoffset: 140;
+}
+
+.route-thread.is-visible .route-thread__ink {
+  animation: yes-route-draw 800ms var(--ease-out-expo) var(--route-delay) both;
+}
+
+.route-thread__stops {
+  display: flex;
+  gap: 0.75rem;
+  margin: 0.35rem 0 0;
+  padding: 0;
+  list-style: none;
+  overflow-x: auto;
+  scroll-snap-type: x proximity;
+  scrollbar-width: none;
+}
+
+.route-thread__stops::-webkit-scrollbar { display: none; }
+
+.route-thread__stops li {
+  flex: 0 0 min(72vw, 12rem);
+  min-width: 0;
+  scroll-snap-align: start;
+}
+
+.route-thread__stops span {
+  display: block;
+  color: var(--gold);
+  font: 600 0.6875rem/1 var(--font-sans);
+  letter-spacing: 0.14em;
+}
+
+.route-thread__stops strong {
+  display: block;
+  margin-top: 0.4rem;
+  color: var(--charcoal);
+  font: 500 0.8125rem/1.35 var(--font-sans);
+}
+
+.route-thread--compact > svg { height: 1.4rem; }
+.route-thread--compact .route-thread__stops { margin-top: 0.2rem; }
+
+@keyframes yes-route-draw { to { stroke-dashoffset: 0; } }
+
+.signature-route-fallback__path {
+  stroke-dasharray: 90;
+  stroke-dashoffset: 90;
+  animation: yes-route-draw 900ms var(--ease-out-expo) 120ms both;
+}
+
+.planner-map-panel {
+  animation: yes-panel-arrive 380ms var(--ease-out-expo) both;
+}
+
+.planner-map-panel__trace {
+  height: 1px;
+  margin-top: 1.25rem;
+  overflow: hidden;
+  background: var(--border);
+}
+
+.planner-map-panel__trace span {
+  display: block;
+  width: 100%;
+  height: 100%;
+  background: var(--gold);
+  transform-origin: left;
+  animation: yes-line-open 420ms var(--ease-out-expo) 80ms both;
+}
+
+@keyframes yes-panel-arrive {
+  from { opacity: 0; clip-path: inset(0 10% 0 0); }
+  to { opacity: 1; clip-path: inset(0); }
+}
+
+@keyframes yes-line-open {
+  from { transform: scaleX(0); }
+  to { transform: scaleX(1); }
+}
+
+/* Mobile-first comparison: chips remain easy to touch; the result is a
+   calm horizontal editorial sheet instead of a dense feature table. */
+.experience-compare {
+  margin: 2rem auto 2.5rem;
+  max-width: 72rem;
+}
+
+.experience-compare__rail {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+  overflow-x: auto;
+  padding: 0.25rem 0.25rem 0.75rem;
+  scrollbar-width: none;
+}
+
+.experience-compare__rail::-webkit-scrollbar { display: none; }
+
+.experience-compare__label {
+  display: inline-flex;
+  min-height: 2.75rem;
+  flex: 0 0 auto;
+  align-items: center;
+  gap: 0.45rem;
+  color: var(--teal);
+  font: 600 0.6875rem/1 var(--font-sans);
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.experience-compare__choice {
+  min-height: 2.75rem;
+  flex: 0 0 auto;
+  border-radius: 0;
+  border-color: var(--border);
+  color: var(--charcoal);
+}
+
+.experience-compare__choice[aria-pressed="true"] {
+  border-color: var(--gold);
+  background: var(--gold-soft);
+}
+
+.experience-compare__choice svg { width: 0.875rem; height: 0.875rem; }
+
+.experience-compare__panel {
+  margin-top: 0.75rem;
+  border-block: 1px solid var(--border);
+  background: var(--ivory);
+  animation: yes-panel-arrive 380ms var(--ease-out-expo) both;
+}
+
+.experience-compare__panel-head {
+  display: flex;
+  min-height: 3.25rem;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid var(--border);
+  color: var(--charcoal-soft);
+  font: 500 0.75rem/1.4 var(--font-sans);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.experience-compare__grid {
+  display: grid;
+  grid-auto-columns: minmax(16.5rem, 82vw);
+  grid-auto-flow: column;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+}
+
+.experience-compare__column {
+  min-width: 0;
+  padding: 1.25rem;
+  border-right: 1px solid var(--border);
+  scroll-snap-align: start;
+}
+
+.experience-compare__region {
+  color: var(--teal);
+  font: 600 0.6875rem/1 var(--font-sans);
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+
+.experience-compare__column h3 {
+  margin-top: 0.65rem;
+  color: var(--charcoal);
+  font: 500 1.25rem/1.16 var(--font-editorial);
+}
+
+.experience-compare__column dl { margin-top: 1rem; }
+.experience-compare__column dl div {
+  display: grid;
+  grid-template-columns: 5rem minmax(0, 1fr);
+  gap: 0.75rem;
+  padding-block: 0.5rem;
+  border-top: 1px solid var(--border);
+  font-size: 0.75rem;
+}
+.experience-compare__column dt { color: var(--charcoal-soft); }
+.experience-compare__column dd { color: var(--charcoal); }
+.experience-compare__column ul {
+  margin: 0.75rem 0 0;
+  padding-left: 1rem;
+  color: var(--charcoal-soft);
+  font-size: 0.75rem;
+  line-height: 1.55;
+}
+.experience-compare__column > a {
+  display: inline-flex;
+  min-height: 2.75rem;
+  align-items: center;
+  gap: 0.65rem;
+  margin-top: 0.75rem;
+  color: var(--teal);
+  font: 600 0.6875rem/1 var(--font-sans);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+@media (min-width: 768px) {
+  .route-thread__stops { justify-content: space-between; overflow: visible; }
+  .route-thread__stops li { flex: 0 1 10rem; }
+  .experience-compare__grid { grid-auto-columns: minmax(0, 1fr); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .route-thread__ink,
+  .signature-route-fallback__path,
+  .planner-map-panel,
+  .planner-map-panel__trace span,
+  .experience-compare__panel {
+    animation: none !important;
+    stroke-dashoffset: 0;
+    transform: none;
+    opacity: 1;
+    clip-path: none;
+  }
+}
+
 /* Legacy data-revealed gates kept harmless: still show eyebrow/h1/h2
    if any older code path fires them, but the new hero-beat rules above
    take precedence via inline data-hero-beat-show. */

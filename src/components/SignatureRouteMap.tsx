@@ -252,7 +252,7 @@ export function SignatureRouteMap({ tour }: Props) {
           </SectionTitle>
           <p className="mt-3 text-[14px] text-[color:var(--charcoal-soft)] max-w-lg mx-auto">
             {unmappable
-              ? `Real locations across ${tour.region}, in the order you'll see them.`
+              ? `Real locations across ${tour.region}, brought together in one private day.`
               : `Real locations across ${tour.region}. The map shows the drive between them — distances only, so you get a feel for the ground you'll cover.`}
           </p>
         </div>
