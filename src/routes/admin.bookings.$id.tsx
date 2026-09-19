@@ -106,8 +106,15 @@ function AdminBookingDetailPage() {
     get({ data: { id } })
       .then((r) => {
         if (!active) return;
-        setBooking((r.booking as AnyRec) ?? null);
+        const b = (r.booking as AnyRec) ?? null;
+        setBooking(b);
         setSnapshot((r.snapshot as AnyRec) ?? null);
+        if (b) {
+          setEditName(b.customer_name ?? "");
+          setEditPhone(b.customer_phone ?? "");
+          setEditDate(b.preferred_date ?? "");
+          setEditNotes(b.notes ?? "");
+        }
       })
       .catch((e: unknown) => active && setError(e instanceof Error ? e.message : String(e)))
       .finally(() => active && setLoading(false));
