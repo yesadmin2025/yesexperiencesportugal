@@ -55,3 +55,8 @@
 - [x] Restore the explanatory hero line without mobile collisions
 - [x] Validate representative public pages and present mobile captures before publishing
 
+
+- [ ] Restore PDF-canonical Fraunces + Inter typography and exact shared weights/scale
+- [ ] Remove conflicting public-page typography overrides across route families
+- [ ] Validate Hero, Five Ways, and representative editorial pages at required viewports
+- [ ] Validate reduced motion, 200% text, overflow, clipping, and loaded font families
