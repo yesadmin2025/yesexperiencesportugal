@@ -24,20 +24,6 @@ const TEXT_FADE_MS = 1450;
 const CTA_FADE_MS = 1000;
 const EASE = "cubic-bezier(0.22,1,0.36,1)";
 
-function shouldSkipIntro(): boolean {
-  if (typeof window === "undefined") return false;
-  try {
-    if (new URLSearchParams(window.location.search).get("hero") === "last") return true;
-  } catch {
-    /* ignore */
-  }
-  try {
-    return !!window.matchMedia?.("(prefers-reduced-motion: reduce)").matches;
-  } catch {
-    return false;
-  }
-}
-
 function storyLineStyle(delayMs: number): React.CSSProperties {
   return {
     ...stanzaStyle,
@@ -177,7 +163,7 @@ export function CinematicHero() {
             <span
               className="hero-title-line block font-serif italic font-normal m-0 text-[color:var(--gold-soft)]"
               data-hero-field="headlineLine1"
-              style={shouldSkipIntro() ? stanzaStyle : storyLineStyle(100)}
+              style={storyLineStyle(100)}
             >
               {HERO_PHRASES[0]}
             </span>
@@ -186,7 +172,7 @@ export function CinematicHero() {
             <span
               className="hero-title-line block font-serif italic font-normal text-[color:var(--gold-soft)]"
               data-hero-field="headlineLine2"
-              style={shouldSkipIntro() ? stanzaStyle : storyLineStyle(520)}
+              style={storyLineStyle(520)}
             >
               {HERO_PHRASES[1]}
             </span>
@@ -200,7 +186,7 @@ export function CinematicHero() {
         data-hero-composed="true"
         style={{
           opacity: 1,
-          animation: shouldSkipIntro() ? undefined : `heroApprovedReveal ${CTA_FADE_MS}ms ${EASE} 980ms both`,
+          animation: `heroApprovedReveal ${CTA_FADE_MS}ms ${EASE} 980ms both`,
           pointerEvents: "auto",
         }}
       >
