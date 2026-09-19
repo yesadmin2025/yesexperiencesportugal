@@ -382,7 +382,6 @@ function flashDebug(el: HTMLElement, label: string) {
 }
 
 export function SiteLayout({ children }: { children: ReactNode }) {
-  const routeFadeKey = useRouterState({ select: (s) => s.location.pathname });
 
   useEffect(() => {
     if (typeof window === "undefined") return;
