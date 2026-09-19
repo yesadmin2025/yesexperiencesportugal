@@ -66,7 +66,7 @@ export function resolvePerPaxEur(
   // we refuse rather than quote a neighbouring/anchor rate. A tour with no
   // tier table at all is priced solely by its approved `priceFrom`.
   const hasTierTable = tiers != null && Object.keys(tiers).length > 0;
-  if (hasTierTable && exactGuests != null && exactGuests < 8 && real == null) return null;
+  if (hasTierTable && exactGuests != null && real == null) return null;
 
 
   const eurPerPax = real ?? anchor;

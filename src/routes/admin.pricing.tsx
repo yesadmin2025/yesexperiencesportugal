@@ -16,6 +16,7 @@ import { signatureTours, type SignatureTour } from "@/data/signatureTours";
 import { TOUR_PRICE_TIERS_QUERY_KEY, useTourPriceTiers } from "@/hooks/use-tour-price-tiers";
 import type { PriceTiersEUR } from "@/data/signatureToursViator";
 import { SignaturePriceCard } from "@/components/studio-v3/SignaturePriceCard";
+import { resolveStudioAddOnAnchorEur } from "@/lib/studio-v3/studioStrictTier";
 import {
   partyTotalForTier,
   pricingGuardrailSummary,
@@ -396,6 +397,7 @@ function TourRow({
               guests={previewGuests}
               showAddOns={false}
               previewTiers={parsed}
+              addOnAnchorEur={resolveStudioAddOnAnchorEur(tour.id, { [tour.id]: parsed })}
             />
           </div>
         </div>
