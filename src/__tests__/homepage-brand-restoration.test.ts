@@ -19,7 +19,8 @@ describe("homepage approved brand restoration", () => {
   it("uses the approved two-family editorial treatment in Five Ways", () => {
     expect(fiveWays).toContain("font-serif");
     expect(fiveWays).toContain("font-normal text-[color:var(--teal)]");
-    expect(fiveWays).not.toMatch(/Montserrat|Georgia|Cormorant|Newsreader|Kaushan/i);
+    expect(fiveWays).not.toMatch(/Montserrat|Georgia|Cormorant|Fraunces|Kaushan/i);
+    expect(hero).toContain("{HERO_COPY.subheadline}");
   });
 
   it("keeps all five paths, visible actions and the canonical arrow", () => {
