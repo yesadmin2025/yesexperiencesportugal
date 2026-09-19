@@ -14,7 +14,7 @@ import { Eyebrow } from "@/components/ui/Eyebrow";
 import { CtaMotionArrow } from "@/components/ui/CtaButton";
 import { Scene } from "@/components/motion/Scene";
 import { CTA_LABELS } from "@/content/cta-vocabulary";
-import { HOME_PATH_DESTINATIONS, useHomePathDestinations, type HomePathId } from "@/content/home-path-images";
+import { HOME_PATHS, useHomePaths, type HomePathId } from "@/content/home-path-images";
 import { ResponsiveEditorialImage, type EditorialImageSource } from "@/components/ui/ResponsiveEditorialImage";
 
 type Path = {
@@ -26,7 +26,6 @@ type Path = {
   href: string;
   analyticsEvent: string;
   image: EditorialImageSource;
-  routeLabel: string;
 };
 
 const PATHS: ReadonlyArray<Path> = [
@@ -38,8 +37,7 @@ const PATHS: ReadonlyArray<Path> = [
     cta: CTA_LABELS.studio,
     href: "/studio-v3",
     analyticsEvent: "home_path_studio_click",
-    image: HOME_PATH_DESTINATIONS.studio.image,
-    routeLabel: HOME_PATH_DESTINATIONS.studio.routeLabel,
+    image: HOME_PATHS.studio.image,
   },
   {
     id: "signature",
@@ -49,8 +47,7 @@ const PATHS: ReadonlyArray<Path> = [
     cta: CTA_LABELS.signatureDiscovery,
     href: "/experiences",
     analyticsEvent: "home_path_signature_click",
-    image: HOME_PATH_DESTINATIONS.signature.image,
-    routeLabel: HOME_PATH_DESTINATIONS.signature.routeLabel,
+    image: HOME_PATHS.signature.image,
   },
   {
     id: "designer",
@@ -60,8 +57,7 @@ const PATHS: ReadonlyArray<Path> = [
     cta: CTA_LABELS.travelDesigner,
     href: "/multi-day",
     analyticsEvent: "home_path_designer_click",
-    image: HOME_PATH_DESTINATIONS.designer.image,
-    routeLabel: HOME_PATH_DESTINATIONS.designer.routeLabel,
+    image: HOME_PATHS.designer.image,
   },
   {
     id: "proposals",
@@ -71,8 +67,7 @@ const PATHS: ReadonlyArray<Path> = [
     cta: CTA_LABELS.moments,
     href: "/proposal-in-portugal",
     analyticsEvent: "home_secondary_moments_click",
-    image: HOME_PATH_DESTINATIONS.proposals.image,
-    routeLabel: HOME_PATH_DESTINATIONS.proposals.routeLabel,
+    image: HOME_PATHS.proposals.image,
   },
   {
     id: "corporate",
@@ -82,8 +77,7 @@ const PATHS: ReadonlyArray<Path> = [
     cta: CTA_LABELS.corporate,
     href: "/corporate",
     analyticsEvent: "home_secondary_corporate_click",
-    image: HOME_PATH_DESTINATIONS.corporate.image,
-    routeLabel: HOME_PATH_DESTINATIONS.corporate.routeLabel,
+    image: HOME_PATHS.corporate.image,
   },
 ] as const;
 
@@ -117,8 +111,8 @@ const RHYTHM_LABELS: Readonly<Record<string, string>> = {
 };
 
 export function FourWaysIn() {
-  const managedDestinations = useHomePathDestinations();
-  const managedPaths = new Map(managedDestinations.map((path) => [path.id, path]));
+  const managedPathList = useHomePaths();
+  const managedPaths = new Map(managedPathList.map((path) => [path.id, path]));
   const [draftSummary, setDraftSummary] = useState<ReadonlyArray<string>>([]);
   const [hasDraft, setHasDraft] = useState(false);
 
@@ -184,7 +178,6 @@ export function FourWaysIn() {
               path={{
                 ...path,
                 title: managedPaths.get(path.id as HomePathId)?.title || path.title,
-                routeLabel: managedPaths.get(path.id as HomePathId)?.routeLabel || path.routeLabel,
                 image: managedPaths.get(path.id as HomePathId)?.image ?? path.image,
               }}
               index={index}
@@ -234,7 +227,6 @@ function PathCard({ path, index }: { path: Path; index: number }) {
           sizes={path.id === "studio" ? "(min-width: 1024px) 58vw, 100vw" : "(min-width: 768px) 40vw, 100vw"}
           className="h-full w-full object-cover"
         />
-        <span className="five-ways-route">{path.routeLabel}</span>
       </div>
       <div className="five-ways-copy">
       <div className="five-ways-kicker flex items-center justify-between gap-4">
@@ -249,9 +241,8 @@ function PathCard({ path, index }: { path: Path; index: number }) {
       <p className="five-ways-body mt-3 text-[15px] md:text-[16px] leading-[1.7] text-[color:var(--charcoal-soft)]">
         {path.body}
       </p>
-      {/* Visible label + arrow — the whole card remains the action, but the
-          destination is readable at a glance before clicking. The arrow is
-          pushed to the right so every card's arrow aligns across the row. */}
+      {/* Visible label + arrow — the whole card remains the action. The arrow
+          is pushed to the right so every card's arrow aligns across the row. */}
       <span className="five-ways-action mt-auto pt-7 flex w-full min-h-[44px] items-center justify-between gap-3">
         <span className="text-[11px] uppercase tracking-[0.22em] font-semibold text-[color:var(--teal)]">
           {path.cta}

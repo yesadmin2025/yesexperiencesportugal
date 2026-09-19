@@ -26,3 +26,8 @@
 - [x] Remove Five Paths photo repetition from Corporate and Moments editorial blocks
 - [x] Add live title, route, destination, card and map previews to the five-path manager
 - [x] Validate photo upload and card/map synchronization while signed in as admin
+- [x] Reframe Five Ways photography as five conceptual editorial chapters
+- [x] Remove route and destination overlays from Five Ways cards
+- [x] Remove photography and path tabs from the homepage map
+- [x] Simplify the five-path photo manager around image, title, and description
+- [x] Validate homepage image uniqueness and visual quality at mobile, tablet, and desktop

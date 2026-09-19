@@ -1,14 +1,6 @@
 import { useMemo, useState } from "react";
 import { Link } from "@tanstack/react-router";
 import { CtaButton } from "@/components/ui/CtaButton";
-import { Button } from "@/components/ui/button";
-import { ResponsiveEditorialImage } from "@/components/ui/ResponsiveEditorialImage";
-import {
-  HOME_PATH_DESTINATION_LIST,
-  HOME_PATH_DESTINATIONS,
-  useHomePathDestinations,
-  type HomePathId,
-} from "@/content/home-path-images";
 import {
   PLANNER_MAINLAND_REGIONS,
   PLANNER_MAP,
@@ -39,9 +31,7 @@ function pct(value: number, span: number) {
 }
 
 export function PortugalPlannerMap() {
-  const managedDestinations = useHomePathDestinations();
   const [activeId, setActiveId] = useState<string>("arrabida");
-  const [activePathId, setActivePathId] = useState<HomePathId>("signature");
 
   const active = useMemo(() => {
     const region =
@@ -49,23 +39,7 @@ export function PortugalPlannerMap() {
     return resolvePlannerRegion(region);
   }, [activeId]);
 
-  const activePath =
-    managedDestinations.find((path) => path.id === activePathId) ??
-    HOME_PATH_DESTINATIONS[activePathId];
-
-  const choosePath = (pathId: HomePathId) => {
-    const path = HOME_PATH_DESTINATIONS[pathId];
-    setActivePathId(pathId);
-    setActiveId(path.mapRegionId);
-  };
-
-  const chooseRegion = (regionId: string, sourcePathId: HomePathId = activePathId) => {
-    setActiveId(regionId);
-    if (HOME_PATH_DESTINATIONS[sourcePathId].mapRegionId !== regionId) {
-      const matchingPath = HOME_PATH_DESTINATION_LIST.find((path) => path.mapRegionId === regionId);
-      if (matchingPath) setActivePathId(matchingPath.id);
-    }
-  };
+  const chooseRegion = (regionId: string) => setActiveId(regionId);
 
   return (
     <div className="grid gap-8 md:gap-12 md:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)] md:items-start">
@@ -188,35 +162,7 @@ export function PortugalPlannerMap() {
 
       {/* Panel */}
       <div className="min-w-0">
-        <div className="planner-path-tabs" aria-label="Five ways into Portugal">
-          {managedDestinations.map((path) => (
-            <Button
-              key={path.id}
-              type="button"
-              variant="ghost"
-              onClick={() => choosePath(path.id)}
-              aria-pressed={activePathId === path.id}
-              className="planner-path-tab"
-            >
-              {path.label}
-            </Button>
-          ))}
-        </div>
-
-      <div aria-live="polite" className="planner-map-panel min-w-0" key={`${active.id}-${activePathId}`}>
-        {active.id === activePath.mapRegionId && (
-          <figure className="planner-map-panel__image">
-            <ResponsiveEditorialImage
-              image={activePath.image}
-              sizes="(min-width: 768px) 52vw, 100vw"
-              className="h-full w-full object-cover"
-            />
-            <figcaption>
-              <span>{activePath.destination}</span>
-              <strong>{activePath.routeLabel}</strong>
-            </figcaption>
-          </figure>
-        )}
+      <div aria-live="polite" className="planner-map-panel min-w-0" key={active.id}>
         <span className="block text-[11px] uppercase tracking-[0.22em] text-[color:var(--teal)]">
           {active.label}
         </span>
