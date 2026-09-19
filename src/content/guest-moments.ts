@@ -22,6 +22,7 @@ import potterWheel from "@/assets/owner-photos/potter-wheel-azeitao.jpeg.asset.j
 import azulejoBlueCat from "@/assets/owner-photos/azulejo-blue-cat.jpeg.asset.json";
 import sintraGroup from "@/assets/owner-photos/sintra-group-selfie.jpeg.asset.json";
 import arrabidaViewpointWomen from "@/assets/owner-photos/arrabida-viewpoint-women.jpeg.asset.json";
+import tastingFlight from "@/assets/owner-photos/tasting-flight-full.jpeg.asset.json";
 
 import type { GuestMoment } from "@/components/ui/GuestMomentsStrip";
 
@@ -115,19 +116,23 @@ export const MOMENT_ARRABIDA_VIEWPOINT_WOMEN: GuestMoment = {
   caption: "The Serra viewpoint — Tróia stretching out below.",
 };
 
+export const MOMENT_TASTING_FLIGHT: GuestMoment = {
+  src: tastingFlight.url,
+  alt: "A complete Portuguese wine tasting flight arranged for guests at the table.",
+  caption: "A tasting flight, ready for a longer journey through the region.",
+};
+
 // Curated sets per surface. HOMEPAGE + CORPORATE are people-only
 // (highest conversion signal). No decorative ambient modules are added.
 export const HOMEPAGE_MOMENTS = [
   MOMENT_PORTINHO_BOARDWALK,
   MOMENT_SINTRA_GROUP,
-  MOMENT_COUPLE_PETISCOS,
   MOMENT_AZULEJO_MASTER,
   MOMENT_ARRABIDA_VIEW,
-  MOMENT_ARRABIDA_VIEWPOINT_WOMEN,
 ];
 
 export const ABOUT_MOMENTS = [MOMENT_CERAMIC_PAINTER, MOMENT_POTTER_WHEEL, MOMENT_AZULEJO_BLUE_CAT];
 
 export const CORPORATE_MOMENTS = [MOMENT_WINERY_GROUP, MOMENT_BARREL_CELLAR];
 
-export const MULTI_DAY_MOMENTS = [MOMENT_WINE_CHEERS, MOMENT_COUPLE_VINEYARD, MOMENT_TASTING_CAKE];
+export const MULTI_DAY_MOMENTS = [MOMENT_TASTING_FLIGHT, MOMENT_COUPLE_VINEYARD, MOMENT_TASTING_CAKE];
