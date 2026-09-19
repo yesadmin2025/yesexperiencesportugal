@@ -42,7 +42,7 @@ export const HOME_PATH_IMAGES = {
     alt: "A couple celebrating together at dusk beneath a lit monument.",
     width: 1440,
     height: 1920,
-    objectPosition: "50% 40%",
+    objectPosition: "50% 76%",
   },
   corporate: {
     src: tableCheers.url,
