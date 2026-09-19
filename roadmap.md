@@ -23,4 +23,5 @@
 - [x] Validate all five path/map states at mobile, tablet, desktop, and reduced motion
 - [x] Add one admin photo manager for the five homepage paths and matching map
 - [x] Support first-party social photo uploads without hotlinking or automated scraping
-- [ ] Validate photo upload, card/map synchronization, and editorial pages while signed in as admin
+- [x] Remove Five Paths photo repetition from Corporate and Moments editorial blocks
+- [ ] Validate photo upload and card/map synchronization while signed in as admin
