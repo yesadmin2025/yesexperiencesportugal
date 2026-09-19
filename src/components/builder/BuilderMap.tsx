@@ -114,6 +114,8 @@ export function BuilderMap({
     const ro = new ResizeObserver(() => {
       window.cancelAnimationFrame(resizeRaf);
       resizeRaf = window.requestAnimationFrame(() => {
+        const el = ref.current;
+        if (!el || el.clientWidth <= 0 || el.clientHeight <= 0) return;
         map.invalidateSize({ pan: false });
         const s = map.getSize();
         if (s.x > 0 && s.y > 0 && lastBoundsRef.current) {
