@@ -84,7 +84,7 @@ describe("Premium System Lock", () => {
 
     expect(marketingMotion).toContain("filter: saturate(0.72) contrast(0.9)");
     expect(marketingMotion).toContain("clip-path:");
-    expect(marketingMotion).not.toContain("scale(");
+    expect(marketingMotion).toContain("transform: scale(1.018)");
     expect(marketingMotion).not.toMatch(/translate(?:Y|3d)\([^)]*[1-9]/);
   });
 
