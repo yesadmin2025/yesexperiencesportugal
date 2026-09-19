@@ -43,14 +43,12 @@
   --color-charcoal: var(--charcoal);
   --color-charcoal-soft: var(--charcoal-soft);
   --color-charcoal-deep: var(--charcoal-deep);
-
-  /* Restored approved editorial hierarchy:
-     Montserrat for display/system headings, Georgia for literary/editorial
-     serif moments, Inter for body/UI. Keep these roles separate. */
-  --font-display: "Montserrat", system-ui, sans-serif;
-  --font-serif: Georgia, "Times New Roman", serif;
+--font-display: "Fraunces", serif;
+  --font-serif: "Fraunces", serif;
   --font-sans: "Inter", system-ui, sans-serif;
-  --font-editorial: Georgia, "Times New Roman", serif;
+  /* Canonical two-family system: Fraunces for editorial titles and Inter
+     for body copy and interface text. */
+  --font-editorial: "Fraunces", serif;
   --font-body: var(--font-sans);
 
   --shadow-elegant: 0 30px 60px -30px color-mix(in oklab, var(--teal) 30%, transparent);
@@ -448,12 +446,10 @@
   h3,
   h4,
   h5,
-  h6,
-  .editorial-title,
-  .section-title,
-  .card-editorial-title {
-    font-family: var(--font-editorial);
-    font-weight: 400;
+  h6 {
+    font-family: var(--font-display);
+    font-weight: 500;
+    letter-spacing: 0;
     color: var(--charcoal-deep);
     text-wrap: balance;
     font-feature-settings: "kern", "liga", "calt", "ss01";
@@ -461,34 +457,41 @@
     -moz-osx-font-smoothing: grayscale;
   }
   h1 {
-    font-weight: 400;
+    font-weight: 500;
+    letter-spacing: 0;
+    line-height: 1.1;
   }
   h2 {
-    font-weight: 400;
+    font-weight: 500;
+    letter-spacing: 0;
+    line-height: 1.15;
   }
   h3 {
-    font-weight: 400;
+    font-weight: 500;
+    letter-spacing: 0;
+    line-height: 1.2;
   }
   h4 {
-    font-weight: 400;
+    font-weight: 500;
+    letter-spacing: 0;
+    line-height: 1.3;
   }
   h5,
   h6 {
-    font-weight: 400;
+    font-weight: 500;
+    letter-spacing: 0;
+    line-height: 1.35;
   }
+  /* Italic emphasis inside display headings uses the canonical Fraunces editorial voice. */
   h1 em,
   h2 em,
   h3 em,
-  .editorial-title em,
-  .section-title em,
-  .card-editorial-title em,
   h1 .italic,
   h2 .italic,
   h3 .italic {
-    font-family: var(--font-editorial);
+    font-family: var(--font-serif);
     font-weight: 400;
     font-style: italic;
-    color: var(--teal);
   }
   /* Subtle, tactile link hover across the page */
   a {
@@ -813,82 +816,84 @@
      pin the sans family + readable line-height. Use mt-* for vertical
      spacing — the scale never bakes in margins.
      ───────────────────────────────────────────────────────────── */
-  /* Final YES typography: Newsreader for editorial titles and emphasis;
-     Inter for body copy, labels, controls, navigation and actions. */
+  /* Typography v3 — all headlines use Fraunces (--font-display).
+     Fraunces italic appears only for intentional emphasis inside headings,
+     handled by the base h1/h2/h3 em rules above.
+     Mobile sizes are tuned by the proportional refinement pass:
+       .t-display 36px (32–36 hero band)
+       .t-h1      32px (Builder / anchor — 30–34 band)
+       .t-h2      ~28.5px (other section titles — 28–32 band)
+       .t-h3      ~23.5px (cards — 22–26 band) */
   .t-display-xl {
-    font-family: var(--font-editorial);
-    font-weight: 400;
-    font-size: clamp(2.55rem, 10vw, 3rem);
-    line-height: 1.04;
-    letter-spacing: -0.015em;
+    font-family: var(--font-display);
+    font-weight: 500;
+    font-size: clamp(2.5rem, 7vw, 5.75rem);
+    line-height: 1.08;
+    letter-spacing: 0;
     text-wrap: balance;
   }
   .t-display {
-    font-family: var(--font-editorial);
-    font-weight: 400;
-    font-size: clamp(2.55rem, 10vw, 3rem);
-    line-height: 1.04;
-    letter-spacing: -0.015em;
+    font-family: var(--font-display);
+    font-weight: 500;
+    font-size: 2.25rem;
+    line-height: 1.06;
+    letter-spacing: 0;
   }
   @media (min-width: 768px) {
     .t-display {
-      font-size: clamp(3.25rem, 5vw, 4.5rem);
-      line-height: 1.02;
-      letter-spacing: -0.018em;
+      font-size: 4rem;
     }
   }
   @media (min-width: 1024px) {
     .t-display {
-      font-size: clamp(3.25rem, 5vw, 4.5rem);
-      line-height: 1.02;
+      font-size: 4.75rem;
+      line-height: 1.06;
     }
   }
   .t-h1 {
-    font-family: var(--font-editorial);
-    font-weight: 400;
-    font-size: clamp(2.55rem, 10vw, 3rem);
-    line-height: 1.04;
-    letter-spacing: -0.015em;
+    font-family: var(--font-display);
+    font-weight: 500;
+    font-size: 2rem;
+    line-height: 1.1;
+    letter-spacing: 0;
   }
   @media (min-width: 768px) {
     .t-h1 {
-      font-size: clamp(3.25rem, 5vw, 4.5rem);
-      line-height: 1.02;
-      letter-spacing: -0.018em;
-    }
-  }
-  .t-h2 {
-    font-family: var(--font-editorial);
-    font-weight: 400;
-    font-size: 2.5rem;
-    line-height: 1.06;
-    letter-spacing: -0.012em;
-  }
-  @media (min-width: 768px) {
-    .t-h2 {
-      font-size: 3.5rem;
-      line-height: 1.03;
-    }
-  }
-  .t-h3 {
-    font-family: var(--font-editorial);
-    font-weight: 400;
-    font-size: 1.9rem;
-    line-height: 1.08;
-    letter-spacing: -0.008em;
-  }
-  @media (min-width: 768px) {
-    .t-h3 {
-      font-size: 2.075rem;
+      font-size: 3.75rem;
       line-height: 1.08;
     }
   }
+  .t-h2 {
+    font-family: var(--font-display);
+    font-weight: 500;
+    font-size: 1.78rem;
+    line-height: 1.18;
+    letter-spacing: 0;
+  }
+  @media (min-width: 768px) {
+    .t-h2 {
+      font-size: 2.25rem;
+      line-height: 1.1;
+    }
+  }
+  .t-h3 {
+    font-family: var(--font-display);
+    font-weight: 500;
+    font-size: 1.47rem;
+    line-height: 1.22;
+    letter-spacing: 0;
+  }
+  @media (min-width: 768px) {
+    .t-h3 {
+      font-size: 1.75rem;
+      line-height: 1.18;
+    }
+  }
   .t-eyebrow {
-    font-family: var(--font-body);
-    font-size: 0.82rem;
-    line-height: 1.3;
-    font-weight: 600;
-    letter-spacing: 0.24em;
+    font-family: var(--font-sans);
+    font-size: 11px;
+    line-height: 1;
+    letter-spacing: 0.28em;
     text-transform: uppercase;
     color: var(--charcoal-soft);
   }
@@ -900,16 +905,16 @@
     color: var(--charcoal);
   }
   .t-body-lg {
-    font-family: var(--font-body);
-    font-size: 1.0625rem;
-    line-height: 1.6;
+    font-family: var(--font-sans);
+    font-size: 17px;
+    line-height: 1.7;
     font-weight: 400;
-    letter-spacing: -0.005em;
+    letter-spacing: 0;
     color: var(--charcoal);
   }
   @media (min-width: 768px) {
     .t-body-lg {
-      font-size: 1.125rem;
+      font-size: 18px;
     }
   }
   @media (min-width: 768px) {
@@ -918,16 +923,15 @@
     }
   }
   .t-body {
-    font-family: var(--font-body);
-    font-size: 1.0625rem;
-    line-height: 1.6;
+    font-family: var(--font-sans);
+    font-size: 16px;
+    line-height: 1.7;
     font-weight: 400;
-    letter-spacing: -0.005em;
     color: var(--charcoal);
   }
   @media (min-width: 768px) {
     .t-body {
-      font-size: 1.125rem;
+      font-size: 17px;
     }
   }
   .t-meta {
@@ -945,11 +949,11 @@
     color: var(--charcoal-soft);
   }
   .t-button {
-    font-family: var(--font-body);
-    font-size: 0.85rem;
+    font-family: var(--font-sans);
+    font-size: 12px;
     line-height: 1.25;
     font-weight: 600;
-    letter-spacing: 0.2em;
+    letter-spacing: 0.16em;
     text-transform: uppercase;
   }
 
@@ -6513,23 +6517,17 @@ html {
   min-height: calc(100svh - 64px);
 }
 .hero-cinematic .hero-cinematic-layout {
-  position: relative;
-  inset: auto;
-  min-height: inherit;
-  grid-template-rows: minmax(0, 1fr) auto minmax(1.5rem, 0.24fr) auto;
+  grid-template-rows: minmax(0, 1fr) auto minmax(3.5rem, 0.62fr) auto;
   row-gap: 0;
   padding-top: clamp(2rem, 7svh, 5rem);
   padding-bottom: max(2.5rem, calc(env(safe-area-inset-bottom) + 1.75rem));
 }
 .hero-cinematic .hero-h1 {
-  font-family: var(--font-editorial);
-  font-style: italic;
   font-weight: 400;
   color: var(--gold-soft);
   text-shadow: 0 1px 2px color-mix(in oklab, var(--charcoal-deep) 30%, transparent);
-  font-size: clamp(2.35rem, 8vw, 2.85rem);
-  line-height: 1.28;
-  letter-spacing: -0.01em;
+  font-size: 2.125rem;
+  line-height: 1.16;
 }
 .hero-cinematic .hero-cinematic-composition {
   transform: none;
@@ -6537,11 +6535,8 @@ html {
 /* Historical centred stanza: two distinct lines with the breathing room
    shown in the approved reference. Eyebrow/support remain separate zones. */
 .hero-cinematic .hero-title-line {
-  font-family: var(--font-editorial);
-  font-style: italic;
-  font-weight: 400;
-  line-height: 1.28;
-  letter-spacing: -0.01em;
+  line-height: 1.14;
+  letter-spacing: 0;
 }
 .hero-cinematic .hero-support {
   text-wrap: balance;
@@ -6549,8 +6544,6 @@ html {
   letter-spacing: 0;
   word-spacing: 0;
   text-shadow: 0 1px 3px color-mix(in oklab, var(--charcoal-deep) 42%, transparent);
-  font-size: 0.9375rem;
-  line-height: 1.5;
 }
 .hero-cinematic .hero-cta-group {
   gap: 12px;
@@ -6602,21 +6595,18 @@ html {
     transform: none;
   }
   .hero-cinematic .hero-cinematic-layout {
-    grid-template-rows: minmax(0, 1fr) auto minmax(2rem, 0.2fr) auto;
+    grid-template-rows: minmax(0, 1fr) auto minmax(4rem, 0.55fr) auto;
     padding-top: clamp(2.5rem, 6svh, 5rem);
     padding-bottom: max(3.5rem, calc(env(safe-area-inset-bottom) + 2.5rem));
   }
   .hero-cinematic .hero-h1 {
-    font-size: clamp(3.75rem, 5vw, 4.5rem);
-    line-height: 1.16;
+    font-size: 3.5rem;
+    line-height: 1.1;
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .hero-cinematic .hero-h1,
-  .hero-cinematic .hero-cinematic-composition,
   .hero-cinematic .hero-title-line,
-  .hero-cinematic .hero-support,
   .hero-cinematic .hero-cta-group {
     animation: none !important;
     opacity: 1 !important;
@@ -7986,47 +7976,24 @@ html.reveal-ready .about-story--quiet :is(li, a) { transition-delay: 0ms; }
   color: var(--teal);
 }
 .five-ways-number {
-  font-family: var(--font-editorial);
-  font-size: 4.5rem;
+  font-family: var(--font-serif);
+  font-size: 3.25rem;
   font-style: italic;
   font-weight: 400;
   line-height: 0.9;
   color: color-mix(in oklab, var(--gold) 62%, var(--ivory));
 }
 .five-ways-eyebrow {
-  font-family: var(--font-body);
-  font-size: 0.82rem;
+  font-family: var(--font-sans);
+  font-size: 0.7rem;
   font-weight: 600;
-  line-height: 1.3;
-  letter-spacing: 0.24em;
+  line-height: 1.35;
+  letter-spacing: 0.22em;
   text-transform: uppercase;
   color: var(--teal);
 }
-.five-ways-title {
-  max-width: 19ch;
-  font-family: var(--font-editorial);
-  font-size: 1.9rem;
-  font-weight: 400;
-  line-height: 1.08;
-  letter-spacing: -0.008em;
-}
-.five-ways-title em {
-  font-family: var(--font-editorial);
-  font-style: italic;
-  font-weight: 400;
-  color: var(--teal);
-}
-.five-ways-body {
-  max-width: 38ch;
-  font-family: var(--font-body);
-  font-size: 1.0625rem;
-  font-weight: 400;
-  line-height: 1.6;
-  letter-spacing: -0.005em;
-}
-@media (min-width: 768px) {
-  .five-ways-title { font-size: 2.075rem; }
-}
+.five-ways-title { max-width: 19ch; }
+.five-ways-body { max-width: 38ch; }
 [data-scene-ready="1"] .five-ways-card :is(.five-ways-kicker, .five-ways-title, .five-ways-body, .five-ways-action) {
   opacity: 0;
   transition: opacity var(--dur-slow) var(--motion-ease-editorial);
@@ -8405,78 +8372,5 @@ html.reveal-ready .about-story.is-visible .about-copy-sequence p:nth-child(4) { 
   .itinerary-doc h2 {
     break-after: avoid;
     page-break-after: avoid;
-  }
-}
-
-
-/* CHATGPT VISUAL RESTORE 2026-09-19
-   Visual-only restoration. No SEO, routing, pricing, booking or data logic.
-   Source of truth: the previously approved warm editorial mobile direction. */
-
-@keyframes heroApprovedReveal {
-  from {
-    opacity: 0;
-    transform: translateY(10px);
-    filter: blur(2px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-    filter: blur(0);
-  }
-}
-
-/* The approved site reads as warm paper, never clinical white. */
-.five-ways-section {
-  background: var(--ivory) !important;
-}
-.five-ways-card,
-.five-ways-copy {
-  background: #FFFDF9 !important;
-}
-.five-ways-card {
-  border-color: color-mix(in oklab, var(--gold) 28%, var(--sand)) !important;
-  box-shadow: 0 1px 2px rgba(46, 46, 46, 0.035);
-}
-
-/* Restore the gentle editorial lift that was flattened to opacity-only. */
-html.reveal-ready .reveal {
-  opacity: 0;
-  transform: translateY(10px);
-  transition:
-    opacity 760ms var(--ease-scene),
-    transform 760ms var(--ease-scene);
-  will-change: opacity, transform;
-}
-html.reveal-ready .reveal.is-visible {
-  opacity: 1;
-  transform: translateY(0);
-}
-html.reveal-ready .reveal-stagger {
-  opacity: 0;
-  transform: translateY(12px);
-  transition:
-    opacity 760ms var(--ease-scene),
-    transform 760ms var(--ease-scene),
-    filter 680ms var(--ease-scene),
-    border-color 440ms var(--ease-scene);
-  filter: saturate(0.82) contrast(0.95);
-  will-change: opacity, transform;
-}
-html.reveal-ready .reveal-stagger.is-visible {
-  opacity: 1;
-  transform: translateY(0);
-  filter: saturate(1) contrast(1);
-}
-@media (prefers-reduced-motion: reduce) {
-  html.reveal-ready .reveal,
-  html.reveal-ready .reveal.is-visible,
-  html.reveal-ready .reveal-stagger,
-  html.reveal-ready .reveal-stagger.is-visible {
-    opacity: 1 !important;
-    transform: none !important;
-    filter: none !important;
-    transition: none !important;
-    animation: none !important;
   }
 }
