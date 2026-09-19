@@ -54,6 +54,7 @@ import { PriceEur } from "@/components/ui/PriceEur";
 import { useAdminTourPhotos } from "@/lib/useAdminTourPhotos";
 // Lazy-loaded below the fold — keeps Leaflet (~140KB) out of the initial tour bundle
 import { SignatureRouteMapShell } from "@/components/SignatureRouteMapShell";
+import { RouteThread } from "@/components/motion/RouteThread";
 
 const SignatureRouteMap = lazy(() =>
   import("@/components/SignatureRouteMap").then((m) => ({ default: m.SignatureRouteMap })),
@@ -669,8 +670,9 @@ function ItineraryTimeline({ tour, meta }: { tour: SignatureTour; meta?: ViatorM
             Your day, <SectionTitle.Em>stop by stop</SectionTitle.Em>
           </SectionTitle>
           <p className="mt-2 text-[13px] text-[color:var(--charcoal-soft)]">
-            {stops.length} stops, in this order · {signatureDurationLabel(tour.id, tour.durationHours)}
+            {stops.length} places across the day · {signatureDurationLabel(tour.id, tour.durationHours)}
           </p>
+          <RouteThread labels={stops.map((stop) => stop.label)} className="mt-6" />
         </div>
 
         <Scene as="ol" className="m-0 list-none space-y-5 p-0">

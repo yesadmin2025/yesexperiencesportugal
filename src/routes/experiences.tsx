@@ -19,6 +19,8 @@ import { CTA_LABELS } from "@/content/cta-vocabulary";
 import { getViatorMeta } from "@/data/signatureToursViator";
 import { Star } from "lucide-react";
 import { listPublishedExperienceContent } from "@/lib/experienceContent.functions";
+import { ExperienceCompare } from "@/components/experiences/ExperienceCompare";
+import { RouteThread } from "@/components/motion/RouteThread";
 
 export const Route = createFileRoute("/experiences")({
   loader: async () => ({ contentOverrides: await listPublishedExperienceContent() }),
@@ -112,6 +114,7 @@ function ExperiencesPage() {
           <div className="mt-7 flex justify-center">
             <PriceCurrencyChip />
           </div>
+          <RouteThread compact className="mx-auto mt-7 max-w-2xl" />
         </div>
       </section>
 
@@ -120,6 +123,7 @@ function ExperiencesPage() {
         aria-label="Signature collection"
       >
         <div className="container-x">
+          <ExperienceCompare tours={tours} />
           <Scene className="experiences-editorial-grid experiences-story grid gap-x-10 gap-y-14 md:grid-cols-2 md:gap-y-18 lg:gap-x-16 lg:gap-y-24">
             {tours.map((tour, index) => (
               <TourCard key={tour.id} tour={tour} resolveImg={resolveImg} featured={index < 2} />

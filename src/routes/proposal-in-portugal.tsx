@@ -9,6 +9,7 @@ import { SectionTitle } from "@/components/ui/SectionTitle";
 import { CtaButton } from "@/components/ui/CtaButton";
 import { CinematicEditorialImage } from "@/components/ui/ResponsiveEditorialImage";
 import { ParallaxLayer } from "@/components/motion/ParallaxLayer";
+import { RouteThread } from "@/components/motion/RouteThread";
 import { ProposalRequestForm } from "@/components/home/ProposalRequestForm";
 
 import { PROPOSAL_SERVICE_IMAGES } from "@/content/editorial-service-images";
@@ -117,6 +118,7 @@ export function ProposalInPortugalPage() {
             A proposal in Portugal, <SectionTitle.Em>planned discreetly.</SectionTitle.Em>
           </SectionTitle>
           <span className="gold-rule mt-6 mx-auto max-w-[80px]" aria-hidden="true" />
+          <RouteThread compact className="mx-auto mt-6 max-w-xl" />
           <p className="mt-6 text-[1rem] md:text-[1.1rem] text-[color:var(--charcoal-soft)] leading-relaxed">
             Anywhere in Portugal — coastline, vineyard, palace garden or a quiet city terrace. A
             private moment shaped end to end by a local team, with the setting, timing and surprise

@@ -19,6 +19,7 @@ import { SectionTitle } from "@/components/ui/SectionTitle";
 import { CtaButton } from "@/components/ui/CtaButton";
 import { CinematicEditorialImage } from "@/components/ui/ResponsiveEditorialImage";
 import { ParallaxLayer } from "@/components/motion/ParallaxLayer";
+import { RouteThread } from "@/components/motion/RouteThread";
 import {
   Accordion,
   AccordionContent,
@@ -236,6 +237,7 @@ function CorporatePage() {
             <SectionTitle.Em>designed by locals.</SectionTitle.Em>
           </SectionTitle>
           <span className="gold-rule mt-7 mx-auto max-w-[80px]" aria-hidden="true" />
+          <RouteThread compact className="mx-auto mt-6 max-w-xl" />
           <p className="mt-7 mx-auto max-w-[46ch] md:max-w-[62ch] text-[1rem] md:text-[1.1rem] text-[color:var(--charcoal-soft)] leading-[1.8]">
             Private team-building days, incentive programmes, corporate retreats, executive
             off-sites, client hosting and company celebrations{" "}

@@ -25,6 +25,7 @@ import { SectionTitle } from "@/components/ui/SectionTitle";
 import { CtaButton } from "@/components/ui/CtaButton";
 import { PriceEur } from "@/components/ui/PriceEur";
 import { PriceCurrencyChip } from "@/components/PriceCurrencyChip";
+import { RouteThread } from "@/components/motion/RouteThread";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { invokeSignatureCheckout } from "@/lib/checkout/session-request";
@@ -1620,6 +1621,7 @@ function TailorPage() {
                 <p className="mt-1 text-[12.5px] leading-snug text-[color:var(--charcoal-soft)]">
                   {date || "Date to choose"} · {formatCompositionSummary(composition)}
                 </p>
+                <RouteThread labels={summaryStops.map((stop) => stop.label)} compact className="mt-4" />
 
                 <ChargeSummaryLine className="mt-3" quote={versionQuote} />
 

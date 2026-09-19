@@ -5,6 +5,7 @@ import { Eyebrow } from "@/components/ui/Eyebrow";
 import { SectionTitle } from "@/components/ui/SectionTitle";
 import { CtaButton } from "@/components/ui/CtaButton";
 import { SplitLines } from "@/components/motion/SplitLines";
+import { RouteThread } from "@/components/motion/RouteThread";
 import { breadcrumbLd, jsonLdScript, travelDesignerServiceLd } from "@/lib/jsonld";
 import { ServiceCrossLinks } from "@/components/entity/ServiceCrossLinks";
 import ogImg from "@/assets/hero-coast.jpg";
@@ -96,6 +97,7 @@ function PortugalTravelDesignerPage() {
             Portugal, <SectionTitle.Em>shaped around you.</SectionTitle.Em>
           </SectionTitle>
           <span className="gold-rule mt-6 mx-auto max-w-[80px]" aria-hidden="true" />
+          <RouteThread compact className="mx-auto mt-6 max-w-xl" />
           <p className="mt-6 mx-auto max-w-2xl text-[16px] md:text-[17px] leading-[1.7] text-[color:var(--charcoal-soft)]">
             One local hand connects the route, rhythm and private experiences into a journey that
             feels entirely your own.

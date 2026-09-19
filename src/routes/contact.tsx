@@ -13,6 +13,7 @@ import { SectionTitle } from "@/components/ui/SectionTitle";
 import { CtaButton } from "@/components/ui/CtaButton";
 import { Scene } from "@/components/motion/Scene";
 import { SplitLines } from "@/components/motion/SplitLines";
+import { RouteThread } from "@/components/motion/RouteThread";
 import { useMarketingMotion } from "@/hooks/use-marketing-motion";
 import {
   BUSINESS_LEGAL_NAME,
@@ -171,6 +172,7 @@ function Page() {
             Tell us a little about who you are and what you'd love to experience. A local usually
             replies within a few hours.
           </p>
+          <RouteThread compact className="scene-body mx-auto mt-7 max-w-xl" />
         </Scene>
       </section>
 
