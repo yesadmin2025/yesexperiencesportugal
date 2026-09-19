@@ -5,7 +5,7 @@
  * takes a typed props bag, renders a compact chip strip. No data fetching,
  * no side effects, no wiring into StudioV3 yet (Step 8 slots it in).
  *
- * Brand: Fraunces numerals in gold-deep, Inter labels in --charcoal.
+ * Brand: Newsreader numerals in gold-deep, Inter labels in --charcoal.
  * Mobile-first, 393px baseline, safe on --ivory and --sand surfaces.
  * No forbidden motion (see mem://constraints/brand-guardrails).
  */

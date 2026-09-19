@@ -9,7 +9,7 @@ interface StepHeadProps {
   onBack?: () => void;
   /** Optional total step count — renders editorial chapter marker "01 / 06". */
   totalChapters?: number;
-  /** Optional Fraunces italic sub-line under the title — emotional framing. */
+  /** Optional Newsreader italic sub-line under the title — emotional framing. */
   italicSub?: string;
 }
 

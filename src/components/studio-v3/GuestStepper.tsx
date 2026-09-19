@@ -51,7 +51,8 @@ export function GuestStepper({ value, inferred, onChange }: Props) {
       <label
         className="block text-[11px] uppercase tracking-[0.22em]"
         style={{
-          fontFamily: "var(--font-display)",
+          fontFamily: "var(--font-body)",
+          fontWeight: 600,
           color: "color-mix(in oklab, var(--charcoal) 78%, transparent)",
         }}
       >
@@ -80,7 +81,7 @@ export function GuestStepper({ value, inferred, onChange }: Props) {
           <span
             className="text-[34px] leading-none font-semibold tabular-nums"
             style={{
-              fontFamily: "var(--font-display)",
+              fontFamily: "var(--font-body)",
               color: "var(--charcoal)",
               letterSpacing: "-0.01em",
             }}
@@ -90,7 +91,8 @@ export function GuestStepper({ value, inferred, onChange }: Props) {
           <span
             className="mt-1 text-[11px] uppercase tracking-[0.2em]"
             style={{
-              fontFamily: "var(--font-display)",
+              fontFamily: "var(--font-body)",
+              fontWeight: 600,
               color: "color-mix(in oklab, var(--charcoal) 72%, transparent)",
             }}
           >
@@ -104,9 +106,9 @@ export function GuestStepper({ value, inferred, onChange }: Props) {
       </div>
 
       <p
-        className="mt-3 text-[12.5px] leading-snug italic"
+        className="mt-3 text-[12.5px] leading-snug"
         style={{
-          fontFamily: "var(--font-serif)",
+          fontFamily: "var(--font-body)",
           color: "color-mix(in oklab, var(--charcoal) 78%, transparent)",
         }}
       >

@@ -226,12 +226,12 @@ function PathCard({ path, index }: { path: Path; index: number }) {
           <span className="five-ways-number">{String(index + 1).padStart(2, "0")}</span>
         </div>
         <p className="five-ways-eyebrow mt-6">{path.eyebrow}</p>
-        <h3 className="five-ways-title editorial-title-safe t-h3 mt-4 text-[color:var(--charcoal)]">
+        <h3 className="five-ways-title card-editorial-title editorial-title-safe mt-4 text-[color:var(--charcoal)]">
           {path.title === `${path.titleLead} ${path.titleEmphasis}` ? (
             <>{path.titleLead} <em className="font-normal text-[color:var(--teal)]">{path.titleEmphasis}</em></>
           ) : path.title}
         </h3>
-        <p className="five-ways-body mt-4 text-[15px] leading-[1.68] text-[color:var(--charcoal-soft)] md:text-[16px]">
+        <p className="five-ways-body mt-4 text-[color:var(--charcoal-soft)]">
           {path.body}
         </p>
         <span className="five-ways-action mt-auto flex min-h-[44px] w-full items-center justify-between gap-3 pt-7">

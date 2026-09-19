@@ -8,7 +8,7 @@ import { cn } from "@/lib/utils";
  * Visual contract (locked by .he-eyebrow-bar in src/styles.css):
  *   • 32×1.5px gold-deep leading rule
  *   • optional trailing rule when `flank` is true (centred titles, FAQ-style)
- *   • Inter 11px / 700 / tracking 0.28em / uppercase, --charcoal label
+ *   • Inter 0.82rem / 600 / tracking 0.24em / uppercase
  *   • 14px gap between rule, optional icon and label
  *   • inline svg icon auto-renders at 12px in --gold-deep
  *

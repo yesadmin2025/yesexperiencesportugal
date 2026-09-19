@@ -6,9 +6,9 @@
  * drift away from canon:
  *
  *   • eyebrow        → Inter,      tracked, uppercase via tracking
- *   • headline L1    → Fraunces, weight 400, font-style: italic
- *   • headline L2    → Fraunces, weight 400, font-style: italic, gold
- *   • subheadline    → Fraunces,   upright, generous leading
+ *   • headline L1    → Newsreader, weight 400, font-style: italic
+ *   • headline L2    → Newsreader, weight 400, font-style: italic, gold
+  *   • subheadline    → Inter, upright, generous leading
  *   • microcopy      → Inter,      tracked
  *
  * Scale assertions are clamped to *ranges* (not single px values) so
@@ -36,7 +36,7 @@ async function waitForFontsAndHero(page: Page) {
   await page.locator('[data-hero-cinematic="true"]').waitFor({ state: "visible" });
   await page.locator('[data-hero-field="headlineLine1"]:not(h1)').waitFor({ state: "visible" });
 
-  // Block until web fonts (Fraunces / Inter) actually
+  // Block until web fonts (Newsreader / Inter) actually
   // finish loading — otherwise computed font-size/line-height reflect
   // the fallback metric and the assertions below are meaningless.
   await page.evaluate(async () => {
@@ -53,13 +53,13 @@ async function waitForFontsAndHero(page: Page) {
   const fontStatus = await page.evaluate(() => {
     type FontFaceSetLike = { check?: (font: string) => boolean };
     const fonts = (document as unknown as { fonts?: FontFaceSetLike }).fonts;
-    if (!fonts?.check) return { fraunces: true, inter: true };
+    if (!fonts?.check) return { newsreader: true, inter: true };
     return {
-      fraunces: fonts.check('italic 400 16px "Fraunces"'),
+      newsreader: fonts.check('italic 400 16px "Newsreader"'),
       inter: fonts.check('400 16px "Inter"'),
     };
   });
-  expect(fontStatus.fraunces, "Fraunces italic 400 not loaded").toBe(true);
+  expect(fontStatus.newsreader, "Newsreader italic 400 not loaded").toBe(true);
   expect(fontStatus.inter, "Inter 400 not loaded").toBe(true);
 }
 
@@ -111,12 +111,12 @@ test.describe("Hero typography — font families & scale (post font load)", () =
       contentType: "application/json",
     });
 
-    // ── Stanza — refined Fraunces 400, gold-soft, tight editorial leading ──
+    // ── Stanza — refined Newsreader 400, gold-soft, tight editorial leading ──
     for (const [label, line] of [
       ["stanza L1", line1],
       ["stanza L2", line2],
     ] as const) {
-      expect(line.primaryFamily, `${label} font-family`).toBe("fraunces");
+      expect(line.primaryFamily, `${label} font-family`).toBe("newsreader");
       expect(line.lineHeightRatio, `${label} leading`).toBeGreaterThanOrEqual(0.95);
       expect(line.lineHeightRatio, `${label} leading`).toBeLessThanOrEqual(1.4);
     }
@@ -151,9 +151,11 @@ test.describe("Hero typography — font families & scale (post font load)", () =
     ] as const) {
       expect(cta.primaryFamily, `${label} font-family`).toBe("inter");
       expect(cta.fontStyle, `${label} style`).toBe("normal");
-      expect(cta.letterSpacingEm, `${label} tracking`).toBeGreaterThanOrEqual(0.12);
-      expect(cta.fontSizePx, `${label} size`).toBeGreaterThanOrEqual(10);
-      expect(cta.fontSizePx, `${label} size`).toBeLessThanOrEqual(13);
+      expect(cta.fontWeight, `${label} weight`).toBe("600");
+      expect(cta.letterSpacingEm, `${label} tracking`).toBeGreaterThanOrEqual(0.19);
+      expect(cta.letterSpacingEm, `${label} tracking`).toBeLessThanOrEqual(0.21);
+      expect(cta.fontSizePx, `${label} size`).toBeGreaterThanOrEqual(13);
+      expect(cta.fontSizePx, `${label} size`).toBeLessThanOrEqual(14);
     }
   });
 });

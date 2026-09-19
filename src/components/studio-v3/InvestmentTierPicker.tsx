@@ -182,15 +182,15 @@ export function InvestmentTierPicker({
                       className="mt-0.5 text-[15px] font-semibold leading-tight"
                       style={{
                         color: "var(--charcoal)",
-                        fontFamily: "var(--font-display)",
+                        fontFamily: "var(--font-body)",
                       }}
                     >
                       {tier.label}
                     </p>
                     <p
-                      className="mt-1 text-[12px] italic leading-snug"
+                      className="mt-1 text-[12px] leading-snug"
                       style={{
-                        fontFamily: "var(--font-serif)",
+                        fontFamily: "var(--font-body)",
                         color: "color-mix(in oklab, var(--charcoal) 70%, transparent)",
                       }}
                     >

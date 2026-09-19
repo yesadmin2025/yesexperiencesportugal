@@ -172,7 +172,7 @@ const FILE_GROUPS: Card[] = [
 function GroupCard({ title, body }: Card) {
   return (
     <div className="reveal-stagger bg-[color:var(--ivory)] border border-[color:var(--border)] p-5 md:p-6">
-      <h3 className="serif font-medium tracking-[-0.012em] text-[1.05rem] md:text-[1.15rem] text-[color:var(--charcoal)] leading-tight">
+      <h3 className="serif font-normal tracking-[-0.012em] text-[1.05rem] md:text-[1.15rem] text-[color:var(--charcoal)] leading-tight">
         {title}
       </h3>
       <p className="mt-3 text-[14.5px] md:text-[15px] text-[color:var(--charcoal-soft)] leading-relaxed">
@@ -357,7 +357,7 @@ function MultiDayPage() {
                 <div className="font-sans text-[11px] uppercase tracking-[0.28em] text-[color:var(--charcoal)]">
                   {s.n}
                 </div>
-                <h3 className="mt-3 serif font-medium tracking-[-0.012em] text-[1.25rem] md:text-[1.4rem] text-[color:var(--charcoal)] leading-tight">
+                <h3 className="mt-3 serif font-normal tracking-[-0.012em] text-[1.25rem] md:text-[1.4rem] text-[color:var(--charcoal)] leading-tight">
                   {s.title}
                 </h3>
                 <p className="mt-3 text-[color:var(--charcoal-soft)] leading-relaxed">{s.body}</p>

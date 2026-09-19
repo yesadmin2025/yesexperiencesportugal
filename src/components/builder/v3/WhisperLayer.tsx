@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 
 /**
- * Transient AI whisper — a single Fraunces italic line that fades in/out
+ * Transient AI whisper — a single Newsreader italic line that fades in/out
  * above the itinerary. Used for pacing advisor sussurros. Non-blocking,
  * non-modal, never demands a click.
  */

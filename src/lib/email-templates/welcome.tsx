@@ -112,7 +112,7 @@ export default Welcome;
 
 const main = {
   backgroundColor: "#ffffff",
-  fontFamily: 'Georgia, "Times New Roman", serif',
+  fontFamily: 'Newsreader, serif',
 } as const;
 const container = { padding: "32px 28px", maxWidth: "560px" } as const;
 const eyebrow = {
@@ -125,7 +125,7 @@ const eyebrow = {
   margin: "0 0 18px",
 } as const;
 const h1 = {
-  fontFamily: 'Georgia, "Times New Roman", serif',
+  fontFamily: 'Newsreader, serif',
   fontSize: "28px",
   lineHeight: 1.18,
   color: CHARCOAL,
@@ -183,7 +183,7 @@ const rowIndex = {
   margin: "0 0 2px",
 } as const;
 const rowLabel = {
-  fontFamily: 'Georgia, "Times New Roman", serif',
+  fontFamily: 'Newsreader, serif',
   fontSize: "16px",
   color: CHARCOAL,
   fontWeight: 600 as const,
@@ -209,7 +209,7 @@ const footer = {
   margin: "0 0 14px",
 } as const;
 const signoff = {
-  fontFamily: 'Georgia, "Times New Roman", serif',
+  fontFamily: 'Newsreader, serif',
   fontSize: "14px",
   fontStyle: "italic" as const,
   color: TEAL,

@@ -1,42 +1,42 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`Typography regression — headline class strings > [home] hero primary CTA 1`] = `"hero-cta hero-cta--primary group inline-flex min-h-[44px] min-w-[196px] items-center justify-center whitespace-nowrap px-7 text-[10.5px] uppercase tracking-[0.18em] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)] focus-visible:ring-offset-4 focus-visible:ring-offset-transparent sm:min-w-[206px] sm:text-[11px]"`;
+exports[`Typography regression — headline class strings > [home] hero primary CTA 1`] = `"hero-cta hero-cta--primary group inline-flex min-h-[44px] min-w-[196px] items-center justify-center whitespace-nowrap px-7 text-[0.85rem] font-semibold uppercase tracking-[0.2em] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)] focus-visible:ring-offset-4 focus-visible:ring-offset-transparent sm:min-w-[206px]"`;
 
-exports[`Typography regression — headline class strings > [home] hero secondary CTA 1`] = `"hero-cta hero-cta--ghost group inline-flex min-h-[44px] min-w-[196px] items-center justify-center whitespace-nowrap px-7 text-[10.5px] uppercase tracking-[0.18em] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)] focus-visible:ring-offset-4 focus-visible:ring-offset-transparent sm:min-w-[206px] sm:text-[11px]"`;
+exports[`Typography regression — headline class strings > [home] hero secondary CTA 1`] = `"hero-cta hero-cta--ghost group inline-flex min-h-[44px] min-w-[196px] items-center justify-center whitespace-nowrap px-7 text-[0.85rem] font-semibold uppercase tracking-[0.2em] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)] focus-visible:ring-offset-4 focus-visible:ring-offset-transparent sm:min-w-[206px]"`;
 
-exports[`Typography regression — headline class strings > [home] hero stanza line 1 1`] = `"hero-title-line block font-serif font-normal italic m-0"`;
+exports[`Typography regression — headline class strings > [home] hero stanza line 1 1`] = `"hero-title-line block font-editorial font-normal italic m-0"`;
 
-exports[`Typography regression — headline class strings > [home] hero stanza line 2 1`] = `"hero-title-line block font-serif italic font-normal text-[color:var(--gold-soft)]"`;
+exports[`Typography regression — headline class strings > [home] hero stanza line 2 1`] = `"hero-title-line block font-editorial italic font-normal text-[color:var(--gold-soft)]"`;
 
 exports[`Typography regression — token rules from styles.css > token .hero-h1 1`] = `
-"base: letter-spacing: -0.012em; line-height: 1.08;
-base: letter-spacing: -0.014em; line-height: 1.04;
-base: letter-spacing: -0.018em; line-height: 1.14;
-base: letter-spacing: -0.022em; line-height: 1.1;
+"base: letter-spacing: -0.01em; line-height: 1.28;
+base: letter-spacing: -0.01em; line-height: 1.28;
+base: letter-spacing: -0.01em; line-height: 1.2;
+base: letter-spacing: -0.01em; line-height: 1.16;
 base: animation: heroEnterFadeOnly 0.4s ease-out 0.6s both !important;"
 `;
 
 exports[`Typography regression — token rules from styles.css > token .t-display 1`] = `
-"base: font-family: var(--font-display); font-weight: 600; font-size: 2.25rem; line-height: 1.06; letter-spacing: 0;
-base: font-size: 4rem;
-base: font-size: 4.75rem; line-height: 0.98;"
+"base: font-family: var(--font-editorial); font-weight: 400; font-size: clamp(2.55rem, 10vw, 3rem); line-height: 1.04; letter-spacing: -0.015em;
+base: font-size: clamp(3.25rem, 5vw, 4.5rem); line-height: 1.02; letter-spacing: -0.018em;
+base: font-size: clamp(3.25rem, 5vw, 4.5rem); line-height: 1.02;"
 `;
 
-exports[`Typography regression — token rules from styles.css > token .t-eyebrow 1`] = `"base: font-family: var(--font-sans); font-size: 11px; line-height: 1; letter-spacing: 0.28em; text-transform: uppercase; color: var(--charcoal-soft);"`;
+exports[`Typography regression — token rules from styles.css > token .t-eyebrow 1`] = `"base: font-family: var(--font-body); font-size: 0.82rem; line-height: 1.3; font-weight: 600; letter-spacing: 0.24em; text-transform: uppercase; color: var(--charcoal-soft);"`;
 
 exports[`Typography regression — token rules from styles.css > token .t-h1 1`] = `
-"base: font-family: var(--font-display); font-weight: 600; font-size: 2rem; line-height: 1.1; letter-spacing: 0;
-base: font-size: 3.75rem; line-height: 1.04;"
+"base: font-family: var(--font-editorial); font-weight: 400; font-size: clamp(2.55rem, 10vw, 3rem); line-height: 1.04; letter-spacing: -0.015em;
+base: font-size: clamp(3.25rem, 5vw, 4.5rem); line-height: 1.02; letter-spacing: -0.018em;"
 `;
 
 exports[`Typography regression — token rules from styles.css > token .t-h2 1`] = `
-"base: font-family: var(--font-display); font-weight: 500; font-size: 1.78rem; line-height: 1.18; letter-spacing: 0;
-base: font-size: 2.25rem; line-height: 1.1;"
+"base: font-family: var(--font-editorial); font-weight: 400; font-size: 2.5rem; line-height: 1.06; letter-spacing: -0.012em;
+base: font-size: 3.5rem; line-height: 1.03;"
 `;
 
 exports[`Typography regression — token rules from styles.css > token .t-h3 1`] = `
-"base: font-family: var(--font-display); font-weight: 500; font-size: 1.47rem; line-height: 1.22; letter-spacing: 0;
-base: font-size: 1.75rem; line-height: 1.18;"
+"base: font-family: var(--font-editorial); font-weight: 400; font-size: 1.9rem; line-height: 1.08; letter-spacing: -0.008em;
+base: font-size: 2.075rem; line-height: 1.08;"
 `;
 
 exports[`Typography regression — token rules from styles.css > token .t-lead 1`] = `

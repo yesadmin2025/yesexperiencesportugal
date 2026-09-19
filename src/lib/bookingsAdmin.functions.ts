@@ -450,7 +450,7 @@ export const notifyBookingCustomer = createServerFn({ method: "POST" })
     const html = [
       `<div style="font-family:Arial,sans-serif;color:#2E2E2E;max-width:560px">`,
       `<p style="font-size:12px;letter-spacing:2px;text-transform:uppercase;color:#295B61">YES Experiences Portugal</p>`,
-      `<h1 style="font-family:Georgia,serif;font-size:22px;font-weight:normal">A note about your day with us</h1>`,
+      `<h1 style="font-family:Newsreader,serif;font-size:22px;font-weight:normal">A note about your day with us</h1>`,
       `<p>Hello ${escapeHtml(guestName)},</p>`,
       `<p style="line-height:1.6">${messageHtml}</p>`,
       `<div style="margin:20px 0;padding:14px 16px;background:#F4EFE7;border-left:3px solid #C9A96A;font-size:14px">`,

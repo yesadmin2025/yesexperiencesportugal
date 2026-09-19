@@ -68,13 +68,13 @@ export function EntryStep({
   return (
     <div className="mx-auto max-w-4xl text-center">
       <p
-        className="text-[11px] font-bold uppercase tracking-[0.3em]"
+        className="text-[0.82rem] font-semibold uppercase tracking-[0.24em]"
         style={{ color: "var(--gold)" }}
       >
         The invitation
       </p>
       <h1
-        className="mx-auto mt-5 max-w-3xl text-[34px] font-semibold leading-[1.04] sm:text-[56px]"
+        className="mx-auto mt-5 max-w-3xl text-[34px] font-normal leading-[1.04] sm:text-[56px]"
         style={{ fontFamily: "var(--font-editorial)" }}
       >
         There is more than one Portugal. Let&apos;s find yours.
@@ -126,12 +126,12 @@ function ChoiceCard({
       }}
     >
       <p
-        className="text-[11px] font-bold uppercase tracking-[0.26em]"
+        className="text-[0.82rem] font-semibold uppercase tracking-[0.24em]"
         style={{ color: "var(--gold)" }}
       >
         {eyebrow}
       </p>
-      <h2 className="mt-5 text-2xl font-semibold" style={{ fontFamily: "var(--font-editorial)" }}>
+      <h2 className="mt-5 text-2xl font-normal" style={{ fontFamily: "var(--font-editorial)" }}>
         {title}
       </h2>
       <div className="mt-3 flex items-end justify-between gap-4">
@@ -155,13 +155,13 @@ function StepHeading({ eyebrow, title, copy }: { eyebrow: string; title: string;
   return (
     <div className="mx-auto max-w-3xl text-center">
       <p
-        className="text-[11px] font-bold uppercase tracking-[0.3em]"
+        className="text-[0.82rem] font-semibold uppercase tracking-[0.24em]"
         style={{ color: "var(--gold)" }}
       >
         {eyebrow}
       </p>
       <h1
-        className="mt-4 text-[30px] font-semibold leading-tight sm:text-[46px]"
+        className="mt-4 text-[30px] font-normal leading-tight sm:text-[46px]"
         style={{ fontFamily: "var(--font-editorial)" }}
       >
         {title}

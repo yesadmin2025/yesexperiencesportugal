@@ -248,7 +248,7 @@ export async function generateRevealStory(input: StoryInput): Promise<RevealStor
             content:
               "You write tone-only lines for a luxury Portugal travel studio. " +
               "STRICT RULES: never invent stops, prices, partners, hours. Only reference the REAL stop names provided. " +
-              "Fraunces-italic register, intimate, restrained. " +
+              "Newsreader-italic register, intimate, restrained. " +
               `${langClause} ${toneClause(input.hints)} ` +
               "Each line under 18 words.",
           },

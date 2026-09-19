@@ -6,7 +6,7 @@ import type { StudioDict } from "@/hooks/useStudioLocale";
  * The single conversational input. Lives at the bottom of the scene as a
  * floating ivory translúcid sheet that expands when focused.
  *
- * No labels, no fields — just a Fraunces italic textarea with a rotating
+ * No labels, no fields — just a Newsreader italic textarea with a rotating
  * placeholder. Optional voice input via Web Speech API (silent fallback).
  */
 

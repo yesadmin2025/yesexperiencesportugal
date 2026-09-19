@@ -275,7 +275,7 @@ export function LeadCaptureSheet({ open, intent, state, onClose }: Props) {
               </p>
               <h2
                 id="lead-sheet-title"
-                className="mt-3 text-[22px] sm:text-[26px] leading-[1.2] font-bold"
+                className="mt-3 text-[22px] sm:text-[26px] leading-[1.2] font-normal"
                 style={{ fontFamily: "var(--font-display)", color: "var(--charcoal)" }}
               >
                 Thank you.
@@ -307,7 +307,7 @@ export function LeadCaptureSheet({ open, intent, state, onClose }: Props) {
               </p>
               <h2
                 id="lead-sheet-title"
-                className="mt-2 text-[22px] sm:text-[26px] leading-[1.2] font-bold"
+                className="mt-2 text-[22px] sm:text-[26px] leading-[1.2] font-normal"
                 style={{ fontFamily: "var(--font-display)", color: "var(--charcoal)" }}
               >
                 {headline}
@@ -385,7 +385,7 @@ export function LeadCaptureSheet({ open, intent, state, onClose }: Props) {
                     </p>
                     <h3
                       id="practical-title"
-                      className="mt-2 text-[17px] leading-[1.3] font-semibold"
+                      className="mt-2 text-[17px] leading-[1.3] font-normal"
                       style={{
                         fontFamily: "var(--font-display)",
                         color: "var(--charcoal)",

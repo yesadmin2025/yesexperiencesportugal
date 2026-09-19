@@ -2,7 +2,7 @@
  * Mixed roman + italic heading lock
  * ─────────────────────────────────────────────────────────────────
  * Headlines on public marketing pages must use the canonical
- * mixed roman + Fraunces-italic-teal emphasis treatment so the brand
+ * mixed roman + Newsreader-italic-teal emphasis treatment so the brand
  * voice stays consistent. The single source of truth is the
  * `<SectionTitle>` + `<SectionTitle.Em>` primitive in
  * `src/components/ui/SectionTitle.tsx`, which emits

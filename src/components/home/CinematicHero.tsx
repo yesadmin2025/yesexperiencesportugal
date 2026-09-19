@@ -28,7 +28,7 @@ function storyLineStyle(delayMs: number): React.CSSProperties {
   };
 }
 
-/** The historical stanza treatment — Georgia 400 in champagne italic. */
+/** Final hero treatment — Newsreader 400 italic in champagne. */
 const stanzaStyle: React.CSSProperties = {
   fontWeight: 400,
   fontStyle: "italic",
@@ -154,11 +154,11 @@ export function CinematicHero() {
         <h1
           data-hero-stanza="true"
           data-mixed-emphasis="exempt"
-          className="hero-h1 m-0 text-center font-serif"
+          className="hero-h1 m-0 text-center font-editorial"
         >
           <span className="hero-title-mask block px-[0.08em] pb-[0.12em]">
             <span
-              className="hero-title-line block font-serif font-normal italic m-0"
+              className="hero-title-line block font-editorial font-normal italic m-0"
               data-hero-field="headlineLine1"
               style={storyLineStyle(100)}
             >
@@ -167,7 +167,7 @@ export function CinematicHero() {
           </span>
           <span className="hero-title-mask mt-1 block px-[0.08em] pb-[0.16em] sm:mt-1.5">
             <span
-              className="hero-title-line block font-serif italic font-normal text-[color:var(--gold-soft)]"
+              className="hero-title-line block font-editorial italic font-normal text-[color:var(--gold-soft)]"
               data-hero-field="headlineLine2"
               style={storyLineStyle(520)}
             >
@@ -205,7 +205,7 @@ export function CinematicHero() {
           data-hero-field="primaryCta"
           data-analytics="hero_open_studio"
           data-analytics-placement="hero"
-        className="hero-cta hero-cta--primary group inline-flex min-h-[44px] min-w-[196px] items-center justify-center whitespace-nowrap px-7 text-[10.5px] uppercase tracking-[0.18em] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)] focus-visible:ring-offset-4 focus-visible:ring-offset-transparent sm:min-w-[206px] sm:text-[11px]"
+        className="hero-cta hero-cta--primary group inline-flex min-h-[44px] min-w-[196px] items-center justify-center whitespace-nowrap px-7 text-[0.85rem] font-semibold uppercase tracking-[0.2em] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)] focus-visible:ring-offset-4 focus-visible:ring-offset-transparent sm:min-w-[206px]"
         >
           <span className="hero-cta__sheen" aria-hidden="true" />
           <span className="relative z-10 inline-flex items-center gap-2.5">
@@ -218,7 +218,7 @@ export function CinematicHero() {
           data-hero-field="secondaryCta"
           data-analytics="hero_choose_experience"
           data-analytics-placement="hero"
-          className="hero-cta hero-cta--ghost group inline-flex min-h-[44px] min-w-[196px] items-center justify-center whitespace-nowrap px-7 text-[10.5px] uppercase tracking-[0.18em] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)] focus-visible:ring-offset-4 focus-visible:ring-offset-transparent sm:min-w-[206px] sm:text-[11px]"
+          className="hero-cta hero-cta--ghost group inline-flex min-h-[44px] min-w-[196px] items-center justify-center whitespace-nowrap px-7 text-[0.85rem] font-semibold uppercase tracking-[0.2em] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)] focus-visible:ring-offset-4 focus-visible:ring-offset-transparent sm:min-w-[206px]"
         >
           <span className="hero-cta__sheen" aria-hidden="true" />
           <span className="relative z-10">{HERO_COPY.secondaryCta}</span>

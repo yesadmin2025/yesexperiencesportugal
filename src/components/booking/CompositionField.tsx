@@ -179,7 +179,7 @@ export function CompositionField({ value, onChange, maxParty, compact }: Props) 
                   <span
                     className="min-w-0 text-[11px] uppercase tracking-[0.14em] sm:min-w-[52px] sm:tracking-[0.2em]"
                     style={{
-                      fontFamily: "var(--font-display)",
+                      fontFamily: "var(--font-body)",
                       color: "color-mix(in oklab, var(--charcoal) 82%, transparent)",
                     }}
                   >
@@ -207,7 +207,7 @@ export function CompositionField({ value, onChange, maxParty, compact }: Props) 
                           ? "color-mix(in oklab, var(--charcoal) 32%, transparent)"
                           : "var(--gold)",
                         color: "var(--charcoal)",
-                        fontFamily: "var(--font-display)",
+                        fontFamily: "var(--font-body)",
                         fontSize: "18px",
                         fontWeight: 600,
                       }}
@@ -222,7 +222,7 @@ export function CompositionField({ value, onChange, maxParty, compact }: Props) 
                           : band && band !== "adult"
                             ? "var(--teal)"
                             : "color-mix(in oklab, var(--charcoal) 78%, transparent)",
-                        fontFamily: "var(--font-display)",
+                        fontFamily: "var(--font-body)",
                       }}
                     >
                       {bandLabel}
@@ -258,7 +258,7 @@ export function CompositionField({ value, onChange, maxParty, compact }: Props) 
           <Plus className="h-4 w-4" aria-hidden />
           <span
             className="text-[12px] font-medium uppercase tracking-[0.1em]"
-            style={{ fontFamily: "var(--font-display)" }}
+            style={{ fontFamily: "var(--font-body)" }}
           >
             {minorAges.length === 0 ? "Add a child" : "Add another"}
           </span>

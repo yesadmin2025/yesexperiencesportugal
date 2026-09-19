@@ -6,7 +6,7 @@ import { fmtMinutes } from "@/components/builder/types";
 /**
  * The emerging itinerary — emotional, not technical. Travellers see the
  * blurb (a sensory phrase), never the internal stop name. Numbered in
- * Fraunces italic; the world rearranges silently on removal.
+ * Newsreader italic; the world rearranges silently on removal.
  */
 
 interface Props {

@@ -32,7 +32,7 @@ const CHARCOAL = "#2E2E2E";
 
 const main = {
   backgroundColor: "#ffffff",
-  fontFamily: 'Georgia, "Times New Roman", serif',
+  fontFamily: 'Newsreader, serif',
 } as const;
 const container = { maxWidth: 560, margin: "0 auto", padding: "32px 28px" } as const;
 const eyebrow = {

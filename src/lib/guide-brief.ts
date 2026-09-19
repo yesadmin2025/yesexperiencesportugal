@@ -179,7 +179,7 @@ export function guideBriefHtml(title: string, body: string): string {
   return [
     `<div style="font-family:Arial,sans-serif;color:#2E2E2E;max-width:600px">`,
     `<p style="font-size:12px;letter-spacing:2px;text-transform:uppercase;color:#295B61">YES Experiences Portugal</p>`,
-    `<h1 style="font-family:Georgia,serif;font-size:22px;font-weight:normal">${escapeHtml(title)}</h1>`,
+    `<h1 style="font-family:Newsreader,serif;font-size:22px;font-weight:normal">${escapeHtml(title)}</h1>`,
     `<pre style="white-space:pre-wrap;font-family:Arial,sans-serif;font-size:14px;line-height:1.6;background:#FAF8F3;border-left:3px solid #C9A96A;padding:14px 16px;margin:16px 0">${escapeHtml(body)}</pre>`,
     `<p style="font-size:13px;color:#6b6b6b">Reply to this email and it reaches the YES team directly.</p>`,
     `</div>`,
