@@ -41,10 +41,23 @@ describe("Premium System Lock", () => {
 
     expect(cta).toContain("cta-arrow-cue");
     expect(cta).not.toContain("cta-arrow-idle");
-    expect(css).toContain("animation: ctaArrowEntranceCue 480ms");
+    expect(cta).toContain('inView && "is-visible"');
+    expect(css).toContain(".cta-arrow-stage.is-visible .cta-arrow-cue");
+    expect(css).toContain("animation: ctaArrowEntranceCue 620ms");
     expect(css).not.toMatch(/\.cta-arrow-cue\s*\{[^}]*infinite/s);
     expect(checkout).toContain('behavior: "auto"');
     expect(studioShell).not.toContain("studioV3Breathe");
+  });
+
+  it("uses fixed-position ink reveals for selected storytelling phrases", () => {
+    const splitLines = read("src/components/motion/SplitLines.tsx");
+    const about = read("src/routes/about.tsx");
+
+    expect(splitLines).toContain("ReactNode[]");
+    expect(about).toContain("<SplitLines");
+    expect(about).not.toContain("<ParallaxLayer");
+    expect(css).toContain("clip-path: inset(0 100% 0 0)");
+    expect(css).not.toMatch(/\.motion-split-line\s*\{[^}]*translateY/s);
   });
 
   it("activates editorial motion centrally while excluding transactional journeys", () => {

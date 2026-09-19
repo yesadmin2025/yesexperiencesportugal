@@ -2,6 +2,7 @@ import * as React from "react";
 import { ArrowRight, Loader2 } from "lucide-react";
 import { Link, type LinkProps } from "@tanstack/react-router";
 import { cn } from "@/lib/utils";
+import { useInView } from "@/components/motion/useInView";
 import {
   P14_YOUR_DAY_CTA_TEST_ID,
   p14YourDayCtaLabelForVariant,
@@ -108,8 +109,14 @@ const variantStyle: Record<Variant, React.CSSProperties | undefined> = {
  */
 function KineticArrow({ tone = "gold" }: { tone?: "gold" | "goldSoft" }) {
   const color = tone === "goldSoft" ? "var(--gold-soft)" : "var(--gold)";
+  const [ref, inView] = useInView<HTMLSpanElement>({ rootMargin: "0px 0px -8% 0px", threshold: 0.01 });
   return (
-    <span aria-hidden="true" className="relative flex items-center">
+    <span
+      ref={ref}
+      aria-hidden="true"
+      className={cn("cta-arrow-stage relative flex items-center", inView && "is-visible")}
+    >
+      <span className="cta-arrow-line" />
       <ArrowRight
         size={16}
         strokeWidth={1.3}

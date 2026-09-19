@@ -159,3 +159,9 @@
 - [x] Remove vertical entrances, automatic card lift, layered Hero rise, and returning arrow cues.
 - [x] Replace them with fixed-position editorial masks, opacity cadence, film-led depth, and one-way CTA cues.
 - [x] Validate real scroll sequences at 393px and 1280px, reduced motion, hydration, overflow, and conversion controls.
+
+## 25. Visible premium storytelling on mobile
+- [x] Connect selected editorial phrases to a fixed-position ink reveal.
+- [x] Trigger CTA arrow drawing only when each action enters the viewport.
+- [x] Compose the About page as a paced editorial story and remove its positional parallax.
+- [x] Validate representative public pages at 393px and 1280px before release.
