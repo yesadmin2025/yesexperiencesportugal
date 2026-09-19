@@ -185,13 +185,13 @@ describe("Block B — winery ladder", () => {
     expect(ledger.disposition).toBe("known-price-action-required");
   });
 
-  it("5 · four wineries with zero omitted core stops fails the removal gate", () => {
+  it("5 · four wineries with zero omitted core stops keeps every inclusion", () => {
     const ledger = withWineries(["jmf", "bacalhoa", "catralvos", "piloto"]);
-    expect(ledger.actions).toEqual([]);
-    expect(ledger.notes.some((note) => note.startsWith("winery-gate-blocked:needs-removal"))).toBe(
-      true,
-    );
-    expect(ledger.disposition).toBe("commercial-unresolved");
+    expect(ledger.actions).toEqual([
+      { actionId: "tailor:extra-winery", priceAction: "extra-winery", quantity: 2 },
+    ]);
+    expect(ledger.notes.some((note) => note.startsWith("winery-gate-blocked"))).toBe(false);
+    expect(ledger.disposition).toBe("known-price-action-required");
   });
 
   it("6 · four wineries with one omitted principal core stop is allowed", () => {

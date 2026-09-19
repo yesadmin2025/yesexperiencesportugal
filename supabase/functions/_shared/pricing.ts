@@ -115,15 +115,14 @@ export const TAILOR_MAX_EXTRA_WINERIES: Record<string, number> = {
 
 /**
  * Winery entitlement mirror — server copy of `tailorRules(...).wineries`.
- * `included` is the baseline the anchor price already covers, `max` the hard
- * ceiling, `requiresRemovalFrom` the winery count from which the guest must
- * TRADE AWAY another moment to make room. Parity with the client table is
- * enforced by a unit test.
+ * `included` is the baseline the anchor price already covers and `max` is the
+ * hard ceiling. The server prices additions independently from any optional
+ * composition changes; it never forces removal of an included moment.
  */
 export const TAILOR_WINERY_ENTITLEMENT: Readonly<
   Record<string, { included: number; max: number; requiresRemovalFrom?: number }>
 > = {
-  "arrabida-wine-allinclusive": { included: 2, max: 4, requiresRemovalFrom: 4 },
+  "arrabida-wine-allinclusive": { included: 2, max: 4 },
 };
 
 /**
@@ -158,10 +157,9 @@ export function serverWineryTradeOffCount(
 }
 
 /**
- * FAIL-CLOSED entitlement gate for extra wineries.
- * Returns the number of extra wineries the server is willing to price, or
- * `null` when the composition claims a winery count that requires a trade-off
- * the payload cannot prove structurally.
+ * FAIL-CLOSED entitlement gate for extra wineries. Counts are clamped to the
+ * approved ceiling; structural trade-off ids are accepted for compatibility
+ * but never used to remove or require an included moment.
  */
 export function serverExtraWineriesAllowed(
   tourId: string,
@@ -173,11 +171,8 @@ export function serverExtraWineriesAllowed(
   if (extra === 0) return 0;
   const entitlement = TAILOR_WINERY_ENTITLEMENT[tourId];
   if (!entitlement) return extra;
-  const threshold = entitlement.requiresRemovalFrom;
-  if (threshold === undefined) return extra;
-  const wineries = entitlement.included + extra;
-  if (wineries < threshold) return extra;
-  return serverWineryTradeOffCount(tourId, tradedStopIds) >= 1 ? extra : null;
+  void tradedStopIds;
+  return extra;
 }
 
 export function serverTailorSupplementsEur(

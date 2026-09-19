@@ -1,9 +1,8 @@
 /**
- * P0-1 / P0-2 — 4th-winery trade-off and one composed-supplement authority.
+ * P0-1 / P0-2 — winery capacity and one composed-supplement authority.
  *
- * P0-1: the server sells the 4th winery ONLY when the payload proves, with
- * stable structural ids from its own whitelist, that a real moment was traded
- * away. Booleans, euro amounts, invented ids and duplicates prove nothing.
+ * P0-1: the server sells up to four wineries without forcing removal of an
+ * included Signature moment. Counts are still clamped server-side.
  *
  * P0-2: the composed supplement is counted from STRUCTURAL identity, never
  * from the generic public labels, and one value feeds Your Day, the Guest
@@ -51,18 +50,18 @@ describe("server mirrors the approved winery entitlement", () => {
   });
 });
 
-describe("P0-1 server-enforced 4th-winery trade-off", () => {
+describe("P0-1 server-enforced winery capacity", () => {
   it("prices the 3rd winery with no trade-off required", () => {
     expect(serverExtraWineriesAllowed(TOUR, 1, undefined)).toBe(1);
   });
 
-  it("REFUSES the 4th winery when nothing was traded away", () => {
-    expect(serverExtraWineriesAllowed(TOUR, 2, undefined)).toBeNull();
-    expect(serverExtraWineriesAllowed(TOUR, 2, [])).toBeNull();
+  it("allows the 4th winery without forcing removal of included moments", () => {
+    expect(serverExtraWineriesAllowed(TOUR, 2, undefined)).toBe(2);
+    expect(serverExtraWineriesAllowed(TOUR, 2, [])).toBe(2);
   });
 
-  it("refuses invented ids and duplicate ids as evidence", () => {
-    expect(serverExtraWineriesAllowed(TOUR, 2, ["made-up-stop"])).toBeNull();
+  it("ignores irrelevant trade ids while retaining structural counting", () => {
+    expect(serverExtraWineriesAllowed(TOUR, 2, ["made-up-stop"])).toBe(2);
     expect(serverWineryTradeOffCount(TOUR, ["livramento", "livramento"])).toBe(1);
     expect(serverWineryTradeOffCount(TOUR, ["nope", "also-nope"])).toBe(0);
   });
