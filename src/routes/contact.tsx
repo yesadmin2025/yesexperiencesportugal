@@ -91,6 +91,7 @@ export const Route = createFileRoute("/contact")({
             "Reach the YES team directly — quiet, human replies from local experience designers in Lisbon. WhatsApp, email or a short call.",
         },
         { property: "og:url", content: "https://yesexperiencesportugal.com/contact" },
+        { property: "og:type", content: "website" },
         { property: "og:image", content: `https://yesexperiencesportugal.com${ogImg}` },
         { property: "og:image:width", content: "1200" },
         { property: "og:image:height", content: "630" },

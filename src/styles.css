@@ -1054,8 +1054,8 @@
   /* One-shot conversion cue. The arrow advances once and keeps its final
      direction; it never returns or oscillates. */
   @keyframes ctaArrowEntranceCue {
-    from { transform: translateX(0); }
-    to { transform: translateX(6px); }
+    from { transform: translateX(-4px); opacity: 0.45; }
+    to { transform: translateX(8px); opacity: 1; }
   }
   .cta-arrow-stage {
     min-width: 22px;
@@ -1063,17 +1063,17 @@
   .cta-arrow-line {
     position: absolute;
     right: 11px;
-    width: 10px;
+    width: 16px;
     height: 1px;
     background: currentColor;
     transform: scaleX(0);
     transform-origin: right center;
   }
   .cta-arrow-stage.is-visible .cta-arrow-line {
-    animation: ctaArrowLineDraw 620ms var(--ease-scene) 260ms both;
+    animation: ctaArrowLineDraw 760ms var(--ease-scene) 180ms both;
   }
   .cta-arrow-stage.is-visible .cta-arrow-cue {
-    animation: ctaArrowEntranceCue 620ms var(--ease-scene) 260ms both;
+    animation: ctaArrowEntranceCue 760ms var(--ease-scene) 180ms both;
   }
   @keyframes ctaArrowLineDraw {
     from { transform: scaleX(0); opacity: 0; }
@@ -3559,27 +3559,6 @@ html[data-motion-scope="marketing"] button:focus-visible svg[data-lucide="arrow-
 html[data-motion-scope="marketing"] button:active svg[data-lucide="arrow-right"],
 html[data-motion-scope="marketing"] .group:hover svg[data-lucide="arrow-right"] {
   transform: translateX(7px);
-}
-
-/* A one-way viewport cue for touch devices: the line writes from left to
-   right while the arrow advances once. No hover, bounce or looping needed. */
-.cta-arrow-stage .cta-arrow-line {
-  width: 0;
-  height: 1px;
-  background: currentColor;
-  opacity: 0;
-}
-.cta-arrow-stage.is-visible .cta-arrow-line {
-  width: 14px;
-  opacity: 0.75;
-  transition: width 620ms var(--ease-scene), opacity 320ms var(--ease-scene);
-}
-.cta-arrow-stage.is-visible .cta-arrow-cue {
-  animation: premiumArrowAdvance 720ms var(--ease-scene) 160ms both;
-}
-@keyframes premiumArrowAdvance {
-  from { transform: translateX(-4px); opacity: 0.45; }
-  to { transform: translateX(6px); opacity: 1; }
 }
 
 /* Shared conversion response: calm surface lift plus a directional cue.

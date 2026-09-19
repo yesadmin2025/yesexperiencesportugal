@@ -156,6 +156,7 @@ export const Route = createFileRoute("/tours/$tourId")({
         { property: "og:description", content: seo?.ogDescription ?? pageDescription },
 
         { property: "og:image", content: img },
+        { name: "twitter:card", content: "summary_large_image" },
         { name: "twitter:image", content: img },
         { property: "og:url", content: url },
         { property: "og:type", content: "product" },

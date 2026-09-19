@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { signatureTours } from "@/data/signatureTours";
 import { DESTINATION_FAQ_BY_ID, WINE_TOUR_FAQ_BY_ID, getFaqForTour } from "@/content/seo-faq";
+import { SIGNATURE_SEO } from "@/content/signature-seo";
 
 /**
  * Snippet quality locks for the US market: Google truncates titles past ~60
@@ -10,13 +11,31 @@ import { DESTINATION_FAQ_BY_ID, WINE_TOUR_FAQ_BY_ID, getFaqForTour } from "@/con
 describe("Signature snippet lengths stay inside Google's US display window", () => {
   for (const tour of signatureTours) {
     it(`${tour.id} has a 45–62 character title and a 120–165 character description`, () => {
-      const title = tour.seoTitle ?? tour.title;
+      const title = SIGNATURE_SEO[tour.id]?.title ?? tour.seoTitle ?? tour.title;
       expect(title.length).toBeGreaterThanOrEqual(45);
       expect(title.length).toBeLessThanOrEqual(62);
 
-      const description = tour.seoDescription ?? "";
+      const description = SIGNATURE_SEO[tour.id]?.description ?? tour.seoDescription ?? "";
       expect(description.length).toBeGreaterThanOrEqual(120);
       expect(description.length).toBeLessThanOrEqual(165);
+    });
+  }
+});
+
+describe("Every Signature has a unique US purchase-intent target", () => {
+  it("covers the complete live catalogue without duplicate snippets", () => {
+    const ids = signatureTours.map((tour) => tour.id);
+    expect(Object.keys(SIGNATURE_SEO).sort()).toEqual([...ids].sort());
+    expect(new Set(ids.map((id) => SIGNATURE_SEO[id]?.title)).size).toBe(ids.length);
+    expect(new Set(ids.map((id) => SIGNATURE_SEO[id]?.description)).size).toBe(ids.length);
+  });
+
+  for (const tour of signatureTours) {
+    it(`${tour.id} names a real primary query and supporting intent`, () => {
+      const seo = SIGNATURE_SEO[tour.id];
+      expect(seo).toBeTruthy();
+      expect(seo?.primaryKeyword.length).toBeGreaterThan(5);
+      expect(seo?.supportingKeywords.length).toBeGreaterThanOrEqual(2);
     });
   }
 });
