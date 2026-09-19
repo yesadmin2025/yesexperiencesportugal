@@ -60,7 +60,7 @@
 - [x] Remove conflicting public-page typography overrides across route families
 - [x] Validate Hero, Five Ways, and representative editorial pages at required viewports
 - [x] Validate reduced motion, 200% text, overflow, clipping, and loaded font families
-- [ ] Restore historical Montserrat + Georgia + Inter typography across public pages
-- [ ] Recalibrate Hero, Five Ways, and editorial page spacing for the historical metrics
-- [ ] Validate mobile, tablet, desktop, reduced motion, slow fonts, and 200% text
-- [ ] Present mobile captures before publishing
+- [x] Restore historical Montserrat + Georgia + Inter typography across public pages
+- [x] Recalibrate Hero, Five Ways, and editorial page spacing for the historical metrics
+- [x] Validate mobile, tablet, desktop, reduced motion, slow fonts, and 200% text
+- [x] Present mobile captures before publishing
