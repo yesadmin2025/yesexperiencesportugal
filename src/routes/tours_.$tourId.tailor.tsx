@@ -1190,6 +1190,28 @@ function TailorPage() {
                     aria-describedby={dateError ? "tailor-date-error" : undefined}
                     className="signature-date-input block w-full min-w-0 max-w-full min-h-[48px] appearance-none border border-[color:var(--border)] bg-[color:var(--ivory)] px-3 py-2.5 text-[16px] sm:text-sm focus:border-[color:var(--gold)] focus:outline-none"
                   />
+                  {/* Same written-out day echo as the Signature card, so both
+                      reserve surfaces confirm the chosen date identically. */}
+                  {!dateError && date.length === 10 ? (
+                    <p
+                      data-testid="tailor-date-readable"
+                      className="mt-2 text-[13px] leading-[1.5] text-[color:var(--charcoal)]"
+                    >
+                      {new Date(
+                        Date.UTC(
+                          Number(date.slice(0, 4)),
+                          Number(date.slice(5, 7)) - 1,
+                          Number(date.slice(8, 10)),
+                        ),
+                      ).toLocaleDateString("en-GB", {
+                        weekday: "short",
+                        day: "numeric",
+                        month: "short",
+                        year: "numeric",
+                        timeZone: "UTC",
+                      })}
+                    </p>
+                  ) : null}
                   {dateError ? (
                     <p id="tailor-date-error" role="alert" className="mt-2 text-[12.5px] leading-snug text-destructive">
                       {dateError}
