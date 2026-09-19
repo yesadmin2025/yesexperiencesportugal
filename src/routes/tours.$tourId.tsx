@@ -408,8 +408,6 @@ function TourHero({
     adminCover?.src ?? meta?.localGallery?.[0]?.src ?? meta?.gallery?.[0] ?? heroResolved.src;
   const heroSrcSet = adminCover?.srcSet ?? heroResolved.srcSet;
   const heroAlt = adminCover?.alt || getHeroAlt(tour, meta);
-  // Existing source-of-truth inclusions, trimmed for an at-a-glance row.
-  const heroIncluded: string[] = bookableIncluded(tour, meta).items.slice(0, 3);
   return (
     <>
       {/* Breadcrumb */}
