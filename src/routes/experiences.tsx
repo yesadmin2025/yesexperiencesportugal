@@ -249,7 +249,7 @@ function TourCard({
           </ul>
         )}
 
-        <p className="mt-4 line-clamp-2 min-h-[3.2em] text-[14px] leading-[1.6] text-[color:var(--charcoal-soft)] md:text-[15px] md:leading-[1.65]">
+        <p className="mt-4 min-h-[3.2em] text-[14px] leading-[1.6] text-[color:var(--charcoal-soft)] md:text-[15px] md:leading-[1.65]">
           {teaser}
         </p>
 
