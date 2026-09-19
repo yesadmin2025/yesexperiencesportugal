@@ -61,6 +61,6 @@
 - [x] Validate Hero, Five Ways, and representative editorial pages at required viewports
 - [x] Validate reduced motion, 200% text, overflow, clipping, and loaded font families
 - [x] Consolidate Hero motion into one visible cinematic sequence
-- [ ] Animate the 700+ reviews story and add one approved editorial photograph
-- [ ] Strengthen Five Ways narrative motion without photographs
+- [x] Animate the 700+ reviews story and add one approved editorial photograph
+- [x] Strengthen Five Ways narrative motion without photographs
 - [x] Normalize Reviews typography and validate representative editorial pages
