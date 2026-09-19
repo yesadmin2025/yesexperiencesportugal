@@ -533,9 +533,13 @@ export function startHomeMotion(): () => void {
     window.removeEventListener("resize", schedule);
     window.removeEventListener("orientationchange", schedule);
     window.removeEventListener("load", schedule);
-    window.removeEventListener("scroll", scheduleHeroParallax);
-    window.removeEventListener("resize", scheduleHeroParallax);
-    heroStage?.style.removeProperty("--hero-parallax");
+    window.removeEventListener("scroll", scheduleScene);
+    window.removeEventListener("resize", scheduleScene);
+    heroStage?.style.removeProperty("--hero-zoom");
+    heroStage?.style.removeProperty("--hero-dim");
+    heroSection?.style.removeProperty("--scene-progress");
+    focusedCard?.classList.remove("is-focus-card");
+
     telemetry.active = false;
   };
 }
