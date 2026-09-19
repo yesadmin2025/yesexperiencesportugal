@@ -767,7 +767,7 @@ function HomePage() {
                         />
                         {/* Top row: region + rating + price — social proof and value signal above the fold */}
                         <div className="absolute inset-x-0 top-0 z-[3] p-4 md:p-5 flex items-start justify-between gap-2">
-                          <span className="min-w-0 max-w-[62%] text-[11px] uppercase leading-[1.35] tracking-[0.16em] font-medium text-white [text-shadow:0_1px_3px_rgba(0,0,0,0.55)]">
+                          <span className="min-w-0 max-w-[62%] whitespace-normal break-words text-[11px] uppercase leading-[1.35] tracking-[0.16em] font-medium text-white [text-shadow:0_1px_3px_rgba(0,0,0,0.55)]">
                             {t.region}
                           </span>
                           <div className="flex items-center gap-1.5 shrink-0">
