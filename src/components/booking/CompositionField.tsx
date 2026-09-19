@@ -75,7 +75,7 @@ export function CompositionField({ value, onChange, maxParty, compact }: Props) 
       <div className="flex items-center justify-between gap-3">
         <div>
           <div
-            className="text-[11px] uppercase tracking-[0.22em]"
+            className="text-[11px] uppercase tracking-[0.12em]"
             style={{
               fontFamily: "var(--font-sans)",
               color: "var(--charcoal)",
@@ -117,9 +117,9 @@ export function CompositionField({ value, onChange, maxParty, compact }: Props) 
         className={compact ? "mt-4 border-t pt-4" : "mt-5 border-t pt-5"}
         style={{ borderColor: "color-mix(in oklab, var(--charcoal) 10%, transparent)" }}
       >
-        <div className="flex items-baseline justify-between gap-3">
+        <div className="flex items-start justify-between gap-4">
           <div
-            className="text-[11px] uppercase tracking-[0.22em]"
+            className="max-w-[58%] text-[11px] uppercase tracking-[0.12em]"
             style={{
               fontFamily: "var(--font-sans)",
               color: "var(--charcoal)",
@@ -128,7 +128,7 @@ export function CompositionField({ value, onChange, maxParty, compact }: Props) 
             Travelling with children?
           </div>
           <span
-            className="text-[11px] uppercase tracking-[0.2em] tabular-nums"
+            className="max-w-[40%] text-right text-[11px] uppercase leading-snug tracking-[0.1em] tabular-nums"
             style={{
               fontFamily: "var(--font-sans)",
               color: "var(--charcoal-soft)",
@@ -140,7 +140,7 @@ export function CompositionField({ value, onChange, maxParty, compact }: Props) 
 
         {minorAges.length === 0 ? (
           <div className="mt-3 border border-[color:var(--border)] bg-[color:var(--sand)]/35 px-3 py-2.5">
-            <p className="text-[10.5px] font-semibold uppercase tracking-[0.2em] text-[color:var(--charcoal)]">
+            <p className="text-[11px] font-semibold uppercase tracking-[0.12em] text-[color:var(--charcoal)]">
               Price per traveller
             </p>
             <dl className="mt-2 grid grid-cols-[1fr_auto] gap-x-4 gap-y-1.5 text-[12px] text-[color:var(--charcoal)]">
@@ -250,7 +250,7 @@ export function CompositionField({ value, onChange, maxParty, compact }: Props) 
           type="button"
           onClick={addMinor}
           disabled={!canAddMinor}
-          className="mt-3 inline-flex items-center gap-2 min-h-[44px] px-3 border transition-[opacity,transform] hover:-translate-y-[1px] disabled:opacity-40 disabled:hover:translate-y-0 focus:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)]"
+          className="mt-3 inline-flex min-h-[44px] items-center gap-2 border px-3 transition-opacity disabled:opacity-40 focus:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)]"
           style={{
             background: "color-mix(in oklab, var(--teal) 6%, var(--ivory))",
             borderColor: "color-mix(in oklab, var(--charcoal) 18%, transparent)",
@@ -259,7 +259,7 @@ export function CompositionField({ value, onChange, maxParty, compact }: Props) 
         >
           <Plus className="h-4 w-4" aria-hidden />
           <span
-            className="text-[11px] uppercase tracking-[0.22em]"
+            className="text-[11px] uppercase tracking-[0.12em]"
             style={{ fontFamily: "var(--font-display)" }}
           >
             {minorAges.length === 0 ? "Add a child" : "Add another"}

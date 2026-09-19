@@ -12,6 +12,7 @@ import { Eyebrow } from "@/components/ui/Eyebrow";
 import { SectionTitle } from "@/components/ui/SectionTitle";
 import { CtaButton } from "@/components/ui/CtaButton";
 import { Scene } from "@/components/motion/Scene";
+import { SplitLines } from "@/components/motion/SplitLines";
 import { useMarketingMotion } from "@/hooks/use-marketing-motion";
 import {
   BUSINESS_LEGAL_NAME,
@@ -156,9 +157,14 @@ function Page() {
             <Eyebrow flank>Talk to a Designer</Eyebrow>
           </div>
           <div className="scene-title">
-            <SectionTitle as="h1" size="anchor" spacing="loose">
-              Begin Your <SectionTitle.Em>Portugal Story</SectionTitle.Em>
-            </SectionTitle>
+            <SplitLines
+              as="h1"
+              className="mt-4 font-serif text-[color:var(--charcoal)] font-medium tracking-normal text-[clamp(2.25rem,10vw,4.75rem)] leading-[1.02] text-balance"
+              lines={[
+                <>Begin your</>,
+                <><span className="italic font-normal text-[color:var(--teal)]">Portugal story.</span></>,
+              ]}
+            />
           </div>
           <p className="scene-body mt-5 max-w-xl mx-auto text-[color:var(--charcoal-soft)]">
             Tell us a little about who you are and what you'd love to experience. A local usually

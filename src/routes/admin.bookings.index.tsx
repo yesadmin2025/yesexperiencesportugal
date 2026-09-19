@@ -15,6 +15,7 @@ import { BookingsAvailabilityCalendar } from "@/components/admin/BookingsAvailab
 import { CalendarSubscribePanel } from "@/components/admin/CalendarSubscribePanel";
 import { PaidSalesSummary } from "@/components/admin/PaidSalesSummary";
 import { PHONE_DISPLAY, WHATSAPP_NUMBER } from "@/config/business-nap";
+import { signatureTours } from "@/data/signatureTours";
 
 export const Route = createFileRoute("/admin/bookings/")({
   component: AdminBookingsPage,
@@ -40,6 +41,13 @@ type Row = {
   stripe_session_id: string | null;
   booking_details: Record<string, unknown> | null;
 };
+
+const TOUR_LABELS = new Map(signatureTours.map((tour) => [tour.id, tour.title]));
+
+function experienceLabel(row: Row): string {
+  if (row.source_tour_id) return TOUR_LABELS.get(row.source_tour_id) ?? row.source_tour_id;
+  return row.booking_type;
+}
 
 /** Pickup is stored inside the frozen booking_details snapshot, not as a column. */
 function pickupOf(b: Row): string | null {
@@ -262,7 +270,7 @@ function AdminBookingsPage() {
                           {b.customer_name || b.customer_email}
                         </span>
                         <span className="text-sm text-[color:var(--charcoal-soft)]">
-                          {b.source_tour_id ?? "—"} · {b.booking_type}
+                          {experienceLabel(b)}
                         </span>
                         <span className="text-sm text-[color:var(--charcoal)]">
                           {partyOf(b)} · {money(b.amount_total, b.currency)}

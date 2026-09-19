@@ -3533,7 +3533,7 @@ html.motion-ready[data-motion-scope="marketing"] [data-motion="fade"] {
   to { transform: translateX(7px); }
 }
 html.motion-ready[data-motion-scope="marketing"] .motion-in .editorial-arrow {
-  animation: editorialArrowCue 560ms var(--ease-scene) 240ms both;
+  animation: editorialArrowCue 720ms var(--ease-scene) 240ms both;
 }
 .editorial-arrow {
   transition: transform var(--dur-base) var(--ease-scene);
@@ -3559,6 +3559,27 @@ html[data-motion-scope="marketing"] button:focus-visible svg[data-lucide="arrow-
 html[data-motion-scope="marketing"] button:active svg[data-lucide="arrow-right"],
 html[data-motion-scope="marketing"] .group:hover svg[data-lucide="arrow-right"] {
   transform: translateX(7px);
+}
+
+/* A one-way viewport cue for touch devices: the line writes from left to
+   right while the arrow advances once. No hover, bounce or looping needed. */
+.cta-arrow-stage .cta-arrow-line {
+  width: 0;
+  height: 1px;
+  background: currentColor;
+  opacity: 0;
+}
+.cta-arrow-stage.is-visible .cta-arrow-line {
+  width: 14px;
+  opacity: 0.75;
+  transition: width 620ms var(--ease-scene), opacity 320ms var(--ease-scene);
+}
+.cta-arrow-stage.is-visible .cta-arrow-cue {
+  animation: premiumArrowAdvance 720ms var(--ease-scene) 160ms both;
+}
+@keyframes premiumArrowAdvance {
+  from { transform: translateX(-4px); opacity: 0.45; }
+  to { transform: translateX(6px); opacity: 1; }
 }
 
 /* Shared conversion response: calm surface lift plus a directional cue.

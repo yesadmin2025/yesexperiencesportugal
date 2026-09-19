@@ -358,7 +358,7 @@ export function SimpleBookingForm({ tour }: { tour: SignatureTour }) {
   return (
     <div
       ref={formRef}
-      className="border-y border-[color:var(--border)] bg-[color:var(--ivory)] py-6 sm:border sm:bg-[color:var(--card)] sm:p-7"
+      className="min-w-0 overflow-hidden border-y border-[color:var(--border)] bg-[color:var(--ivory)] py-6 sm:border sm:bg-[color:var(--card)] sm:p-7"
     >
       <Eyebrow>Availability</Eyebrow>
       <SectionTitle size="compact" spacing="tight">
@@ -425,7 +425,7 @@ export function SimpleBookingForm({ tour }: { tour: SignatureTour }) {
             min={minDateISO}
             aria-invalid={blockMessage ? true : undefined}
             aria-describedby={blockMessage ? "signature-date-error" : undefined}
-            className={`w-full min-h-[48px] border bg-[color:var(--ivory)] px-3 py-2.5 text-[16px] sm:text-sm focus:outline-none ${
+            className={`block w-full min-w-0 max-w-full min-h-[48px] appearance-none border bg-[color:var(--ivory)] px-3 py-2.5 text-[16px] sm:text-sm focus:outline-none ${
               blockMessage
                 ? "border-[color:var(--gold)]"
                 : "border-[color:var(--border)] focus:border-[color:var(--gold)]"
@@ -445,7 +445,7 @@ export function SimpleBookingForm({ tour }: { tour: SignatureTour }) {
       {/* Who's travelling */}
       <div className="mt-4">
         <Field label="Who's travelling">
-          <div className="border border-[color:var(--border)] bg-[color:var(--ivory)] p-3">
+          <div className="border-t border-[color:var(--border)] bg-[color:var(--ivory)] pt-4 sm:border sm:p-3">
             <CompositionField value={composition} onChange={setComposition} compact />
           </div>
           {!compositionReady ? (

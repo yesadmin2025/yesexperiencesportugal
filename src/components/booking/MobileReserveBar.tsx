@@ -67,7 +67,7 @@ export function MobileReserveBar({
       <div className="flex items-center gap-3">
         {typeof priceFrom === "number" ? (
           <div className="min-w-0 leading-tight">
-            <span className="block text-[10.5px] uppercase tracking-[0.18em] text-[color:var(--charcoal-soft)]">
+            <span className="block text-xs uppercase tracking-[0.12em] text-[color:var(--charcoal-soft)]">
               From
             </span>
             <span className="serif text-[18px] font-semibold text-[color:var(--charcoal)]">

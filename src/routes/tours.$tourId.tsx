@@ -62,6 +62,7 @@ import { CANCELLATION } from "@/config/business-nap";
 import { resolveLegacyTourId } from "@/lib/legacy-tour-redirects";
 import { TourEditorialNote } from "@/components/tours/TourEditorialNote";
 import { getPublishedExperienceContent } from "@/lib/experienceContent.functions";
+import { getSignatureSeo } from "@/content/signature-seo";
 
 
 export const Route = createFileRoute("/tours/$tourId")({
@@ -125,7 +126,9 @@ export const Route = createFileRoute("/tours/$tourId")({
     const SUFFIX_FULL = " — YES experiences Portugal";
     const SUFFIX_SHORT = " | YES Portugal";
     const hasPrivate = /private/i.test(t.title);
+    const seo = getSignatureSeo(t.id);
     const pageTitle =
+      seo?.title ??
       t.seoTitle ??
       (!hasPrivate && t.title.length + SUFFIX_PRIVATE.length <= 60
         ? `${t.title}${SUFFIX_PRIVATE}`
@@ -141,6 +144,7 @@ export const Route = createFileRoute("/tours/$tourId")({
     // `seoDescription` are used verbatim.
     const BOOK_INTENT = " Book this private day in Portugal — instant confirmation.";
     const pageDescription =
+      seo?.description ??
       t.seoDescription ??
       (t.blurb.length + BOOK_INTENT.length <= 165 ? `${t.blurb}${BOOK_INTENT}` : t.blurb);
 
@@ -148,8 +152,8 @@ export const Route = createFileRoute("/tours/$tourId")({
       meta: [
         { title: pageTitle },
         { name: "description", content: pageDescription },
-        { property: "og:title", content: pageTitle },
-        { property: "og:description", content: pageDescription },
+        { property: "og:title", content: seo?.ogTitle ?? pageTitle },
+        { property: "og:description", content: seo?.ogDescription ?? pageDescription },
 
         { property: "og:image", content: img },
         { name: "twitter:image", content: img },
