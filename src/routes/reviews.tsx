@@ -215,7 +215,7 @@ function ReviewsPage() {
                       <Link
                         to="/tours/$tourId"
                         params={{ tourId: id }}
-                        className="editorial-title-safe font-serif font-medium t-h3 text-[color:var(--charcoal)] hover:text-[color:var(--teal)] transition-colors"
+                        className="font-display font-semibold text-[1.4rem] md:text-[1.7rem] leading-[1.25] text-[color:var(--charcoal)] hover:text-[color:var(--teal)] transition-colors"
                       >
                         {b.title}
                       </Link>
@@ -237,7 +237,6 @@ function ReviewsPage() {
                         {b.reviews.map((r) => (
                           <li
                             key={r.id}
-                            data-motion="card-reveal"
                             className="rounded-[2px] border border-[color:var(--gold-soft)]/40 bg-[color:var(--ivory)] p-6"
                           >
                             <div className="flex items-center justify-between gap-3">
@@ -249,7 +248,7 @@ function ReviewsPage() {
                               </span>
                             </div>
                             {r.title && (
-                              <p className="mt-3 font-serif font-medium text-[1rem] leading-[1.35] text-[color:var(--charcoal)]">
+                              <p className="mt-3 font-display font-semibold text-[15px] text-[color:var(--charcoal)]">
                                 {r.title}
                               </p>
                             )}

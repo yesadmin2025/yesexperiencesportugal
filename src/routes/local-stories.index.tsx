@@ -6,7 +6,6 @@ import { SiteBreadcrumbs } from "@/components/SiteBreadcrumbs";
 import { Eyebrow } from "@/components/ui/Eyebrow";
 import { SectionTitle } from "@/components/ui/SectionTitle";
 import { CtaButton } from "@/components/ui/CtaButton";
-import { Scene } from "@/components/motion/Scene";
 import { PUBLISHED_LOCAL_STORIES_ARTICLES as LOCAL_STORIES_ARTICLES } from "@/content/local-stories-articles";
 import ogImg from "@/assets/edit-viewpoint.jpg";
 import { useMarketingMotion } from "@/hooks/use-marketing-motion";
@@ -87,19 +86,17 @@ function Page() {
               { name: "Local Stories", path: "/local-stories" },
             ]}
           />
-          <Scene>
-            <div className="scene-atmosphere">
-              <Eyebrow flank>Local Stories</Eyebrow>
-            </div>
-            <div className="scene-title">
-              <SectionTitle as="h1" size="anchor" spacing="loose">
-                The Portugal <SectionTitle.Em>we travel ourselves</SectionTitle.Em>
-              </SectionTitle>
-            </div>
-            <p className="scene-body mt-6 max-w-xl mx-auto text-[15px] md:text-[17px] text-[color:var(--charcoal-soft)] leading-[1.75]">
-              Notes from the road — written by the locals who design our private experiences.
-            </p>
-          </Scene>
+          <div className="scene-atmosphere">
+            <Eyebrow flank>Local Stories</Eyebrow>
+          </div>
+          <div className="scene-title">
+            <SectionTitle as="h1" size="anchor" spacing="loose">
+              The Portugal <SectionTitle.Em>we travel ourselves</SectionTitle.Em>
+            </SectionTitle>
+          </div>
+          <p className="scene-body mt-6 max-w-xl mx-auto text-[15px] md:text-[17px] text-[color:var(--charcoal-soft)] leading-[1.75]">
+            Notes from the road — written by the locals who design our private experiences.
+          </p>
         </div>
       </section>
 
@@ -117,7 +114,7 @@ function Page() {
                     <span className="block font-sans text-[12px] uppercase tracking-[0.28em] text-[color:var(--gold-ink)] mb-3">
                       {article.eyebrow}
                     </span>
-                    <h2 className="editorial-title-safe t-h3 font-serif font-medium text-[color:var(--charcoal)] mb-3 group-hover:text-[color:var(--teal)] transition-colors duration-300">
+                    <h2 className="font-display text-[1.5rem] md:text-[1.7rem] leading-[1.2] text-[color:var(--charcoal)] mb-3 group-hover:text-[color:var(--teal)] transition-colors duration-300">
                       {article.h1}
                     </h2>
                     <p className="text-[15.5px] text-[color:var(--charcoal-soft)] leading-[1.75] max-w-[52ch]">

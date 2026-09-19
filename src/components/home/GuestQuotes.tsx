@@ -22,9 +22,6 @@ import {
 import { ReviewSourceLink } from "@/components/ui/ReviewSourceLink";
 import { buildGuestQuotesJsonLd, SOURCE_LABEL } from "@/lib/guest-quotes-jsonld";
 import { SectionTitle } from "@/components/ui/SectionTitle";
-import { Scene } from "@/components/motion/Scene";
-import wineCheers640 from "@/assets/editorial-responsive/wine-cheers-arch-640.webp.asset.json";
-import wineCheers1280 from "@/assets/editorial-responsive/wine-cheers-arch-1280.webp.asset.json";
 
 export function GuestQuotes() {
   const statsFn = useServerFn(getGlobalReviewStats);
@@ -79,7 +76,7 @@ export function GuestQuotes() {
   );
 
   return (
-    <Scene className="guest-quotes-story mt-6 md:mt-8 text-center">
+    <div className="mt-6 md:mt-8 text-center">
       {/* Structured data — AggregateRating + Review nodes, attached to
           the sitewide Organization. `<script>` renders no visible box so
           it cannot cause layout shift. Emitted only once real reviews
@@ -91,7 +88,7 @@ export function GuestQuotes() {
         />
       )}
       <div
-        className="scene-atmosphere inline-flex items-center gap-1 mb-5 text-[color:var(--gold)]"
+        className="inline-flex items-center gap-1 mb-5 text-[color:var(--gold)]"
         aria-hidden="true"
       >
         {Array.from({ length: 5 }).map((_, i) => (
@@ -99,34 +96,19 @@ export function GuestQuotes() {
         ))}
       </div>
 
-      <div className="scene-title">
-        <SectionTitle className="guest-quotes-heading mt-3">
-          <span className="guest-quotes-count">700+</span> five-star reviews{" "}
-          <SectionTitle.Em>— real guests, real stories.</SectionTitle.Em>
-        </SectionTitle>
-      </div>
-
-      <figure className="scene-atmosphere guest-quotes-photo mx-auto mt-8 max-w-5xl">
-        <picture>
-          <source media="(max-width: 639px)" srcSet={wineCheers640.url} />
-          <img
-            src={wineCheers1280.url}
-            alt="YES Experiences Portugal guests sharing a toast beneath a stone arch."
-            loading="lazy"
-            decoding="async"
-            className="h-full w-full object-cover"
-          />
-        </picture>
-      </figure>
+      <SectionTitle className="mt-3">
+        700+ five-star reviews{" "}
+        <SectionTitle.Em>
+          — real guests, real stories.
+        </SectionTitle.Em>
+      </SectionTitle>
 
       {/* Platform badge row removed — each review card now carries its
           own source label ("via Tripadvisor" etc.), so the standalone
           badge strip was redundant. */}
 
-      <div className="scene-body">
-        <ReviewCarousel quotes={quotes} />
-      </div>
-    </Scene>
+      <ReviewCarousel quotes={quotes} />
+    </div>
   );
 }
 
@@ -186,7 +168,7 @@ function ReviewCarousel({ quotes }: { quotes: PublicReview[] }) {
             {quotes.map((q, idx) => (
               <li
                 key={q.id}
-                className="review-story-card he-card-lift shrink-0 snap-start w-[82vw] sm:w-[46%] lg:w-[31.5%] flex flex-col min-h-[15rem] sm:min-h-[16rem] rounded-[2px] border border-[color:var(--charcoal)]/10 bg-[color:var(--ivory)] p-6 md:p-7 relative shadow-[var(--shadow-card)]"
+                className="he-card-lift shrink-0 snap-start w-[82vw] sm:w-[46%] lg:w-[31.5%] flex flex-col min-h-[15rem] sm:min-h-[16rem] rounded-[2px] border border-[color:var(--charcoal)]/10 bg-[color:var(--ivory)] p-6 md:p-7 relative shadow-[var(--shadow-card)]"
               >
                 <Quote
                   aria-hidden="true"

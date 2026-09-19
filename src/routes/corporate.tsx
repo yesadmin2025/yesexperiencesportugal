@@ -163,7 +163,7 @@ function FormatCard({ format }: { format: (typeof FORMATS)[number] }) {
         aria-hidden="true"
         className="text-[color:var(--gold-deep,var(--gold))]"
       />
-      <h3 className="editorial-title-safe t-h3 mt-4 font-serif font-medium text-[color:var(--charcoal)]">
+      <h3 className="serif mt-4 text-[1.25rem] md:text-[1.5rem] leading-[1.2] text-[color:var(--charcoal)]">
         {format.title}
       </h3>
       <p className="mt-3 text-[15px] md:text-[16px] leading-[1.75] text-[color:var(--charcoal-soft)]">
