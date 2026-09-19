@@ -83,14 +83,21 @@ export const Route = createFileRoute("/tours/$tourId")({
     // Owner-edited editorial copy, when published. Falls back silently to the
     // code copy so the page can never render an empty teaser or intro.
     let tour = base;
+    // Verified highlights (Viator source of truth) are the default; the
+    // owner's published list wins when it exists.
+    const verifiedHighlights = getTourContent(params.tourId).highlights;
+    tour = {
+      ...base,
+      highlights: verifiedHighlights.length > 0 ? verifiedHighlights : base.highlights,
+    };
     try {
       const override = await getPublishedExperienceContent({ data: { tourId: params.tourId } });
       if (override) {
         tour = {
-          ...base,
+          ...tour,
           blurb: override.blurb ?? base.blurb,
           intro: override.intro ?? base.intro,
-          highlights: override.highlights ?? base.highlights,
+          highlights: override.highlights ?? tour.highlights,
           fitsBest: override.fitsBest ?? base.fitsBest,
         };
       }
