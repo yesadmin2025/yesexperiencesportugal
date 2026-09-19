@@ -122,9 +122,9 @@ describe("reveal class coverage — .reveal / .reveal-stagger / .section-enter",
     els.forEach((el) => expect(el.classList.contains("is-visible")).toBe(true));
   });
 
-  it(".reveal-stagger: each element gets .is-visible, lands in `reveal` bucket, and receives a transition delay", () => {
-    // Wrap stagger items in a parent so SiteLayout assigns sequential
-    // delays based on sibling index.
+  it(".reveal-stagger: each element gets .is-visible and lands in the `reveal` bucket", () => {
+    // Cadence is CSS-owned (nth-child) so hydration never receives runtime
+    // style mutations.
     render(
       <SiteLayout>
         <section>
@@ -147,15 +147,7 @@ describe("reveal class coverage — .reveal / .reveal-stagger / .section-enter",
     expect(t.sectionEnter.total).toBe(0);
 
     els.forEach((el) => expect(el.classList.contains("is-visible")).toBe(true));
-    // Stagger cadence side-effect: each sibling gets a transitionDelay
-    // proportional to its sibling index (0ms, 110ms, 220ms in
-    // SiteLayout's current cadence). We assert monotonically
-    // non-decreasing rather than exact values so cadence tweaks don't
-    // break this test.
-    const delays = els.map((el) => parseInt(el.style.transitionDelay || "0", 10));
-    expect(delays[0]).toBe(0);
-    expect(delays[1]).toBeGreaterThan(0);
-    expect(delays[2]).toBeGreaterThanOrEqual(delays[1]);
+    els.forEach((el) => expect(el.style.transitionDelay).toBe(""));
   });
 
   it(".section-enter: each element gets .is-visible and lands in the `sectionEnter` bucket", () => {
