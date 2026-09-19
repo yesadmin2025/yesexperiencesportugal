@@ -279,7 +279,7 @@ export const updateAdminBooking = createServerFn({ method: "POST" })
     const apply = (key: "customer_name" | "customer_phone" | "preferred_date" | "notes", to: unknown) => {
       const from = (booking as Record<string, unknown>)[key];
       if (to !== from) {
-        patch[key] = to as string | null;
+        (patch as Record<string, unknown>)[key] = to;
         changes[key] = {
           from: from == null ? null : String(from),
           to: to == null ? null : String(to),
@@ -298,15 +298,15 @@ export const updateAdminBooking = createServerFn({ method: "POST" })
         ? (booking.metadata as Record<string, unknown>)
         : {};
     const priorEdits = Array.isArray(previousMetadata["booking_edits"])
-      ? (previousMetadata["booking_edits"] as unknown[])
+      ? (previousMetadata["booking_edits"] as Json[])
       : [];
-    patch["metadata"] = {
+    patch["metadata"] = ({
       ...previousMetadata,
       booking_edits: [
         ...priorEdits,
         { at: new Date().toISOString(), by: context.userId, changes },
       ],
-    };
+    }) as Json;
 
     const { error: updateError } = await supabaseAdmin
       .from("bookings")
@@ -394,7 +394,7 @@ export const notifyBookingCustomer = createServerFn({ method: "POST" })
       idempotencyKey: `booking-notify-${booking.id}-${hash.toString(36)}`,
       rendered: { subject, html, text },
     });
-    return { ok: true, status: result.status };
+    return { ok: result.ok };
   });
 
 /**
