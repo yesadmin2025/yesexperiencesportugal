@@ -10,7 +10,7 @@ import { TourImage } from "@/components/tours/TourImage";
 import ogImg from "@/assets/hero-coast.jpg";
 import { Eyebrow } from "@/components/ui/Eyebrow";
 import { SectionTitle } from "@/components/ui/SectionTitle";
-import { CtaButton } from "@/components/ui/CtaButton";
+import { CtaButton, CtaMotionArrow } from "@/components/ui/CtaButton";
 import { useMarketingMotion } from "@/hooks/use-marketing-motion";
 import { PriceCurrencyChip } from "@/components/PriceCurrencyChip";
 import { PriceEur } from "@/components/ui/PriceEur";
@@ -240,13 +240,7 @@ function TourCard({
             className="editorial-action group/link relative inline-flex min-h-[44px] items-center gap-3 font-sans text-[11px] font-semibold uppercase tracking-[0.16em] text-[color:var(--charcoal)] transition-colors duration-[var(--dur-quick)] after:absolute after:bottom-1 after:left-0 after:h-px after:w-full after:origin-left after:bg-[color:var(--gold)] after:transition-transform after:duration-[var(--dur-base)] hover:text-[color:var(--teal)] hover:after:scale-x-75 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)]"
             aria-label={`See dates and reserve — ${tour.title}`}
           >
-            See dates &amp; reserve{" "}
-            <span
-              aria-hidden="true"
-              className="editorial-arrow text-[color:var(--gold)] transition-transform duration-[var(--dur-base)]"
-            >
-              →
-            </span>
+            See dates &amp; reserve <CtaMotionArrow />
           </Link>
         </div>
       </div>
