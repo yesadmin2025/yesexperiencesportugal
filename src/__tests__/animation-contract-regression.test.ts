@@ -4,9 +4,9 @@
  * Beyond "visibility lands within 2.5s", this suite proves the
  * animation primitives still exist and behave the way the UI relies on:
  *
- *   1. `.reveal`     starts at opacity:0 with a transition for opacity AND transform.
- *   2. `.reveal.is-visible`   flips opacity to 1 and removes the translateY offset.
- *   3. `.reveal-stagger`  has the same start/end contract.
+ *   1. `.reveal` starts at opacity:0 without positional movement.
+ *   2. `.reveal.is-visible` flips opacity to 1 without bounce.
+ *   3. `.reveal-stagger` has the same fixed-geometry contract.
  *   4. `.section-enter` is opacity-only (no transform conflict).
  *   5. `.section-enter.is-visible` is opacity:1.
  *   6. Reduced-motion media query forces `.reveal` and `.reveal-stagger`
@@ -52,36 +52,36 @@ function ruleBlock(selector: string): string {
 }
 
 describe("reveal animation contract — CSS rules", () => {
-  it(".reveal starts hidden with translateY and animates opacity + transform", () => {
+  it(".reveal starts hidden and animates opacity without positional movement", () => {
     const body = ruleBlock("html.reveal-ready .reveal {");
     expect(body, "gated .reveal rule must exist").not.toBe("");
     expect(body).toMatch(/opacity:\s*0/);
-    expect(body).toMatch(/transform:\s*translateY/);
+    expect(body).toMatch(/transform:\s*none/);
     expect(body).toMatch(/transition:[\s\S]*opacity/);
-    expect(body).toMatch(/transition:[\s\S]*transform/);
+    expect(body).not.toMatch(/transition:[\s\S]*transform/);
   });
 
-  it(".reveal.is-visible reaches opacity:1 and translateY(0)", () => {
+  it(".reveal.is-visible reaches opacity:1 without movement", () => {
     const body = ruleBlock("html.reveal-ready .reveal.is-visible");
     expect(body, ".reveal.is-visible rule must exist").not.toBe("");
     expect(body).toMatch(/opacity:\s*1/);
-    expect(body).toMatch(/translateY\(0\)/);
+    expect(body).toMatch(/transform:\s*none/);
   });
 
-  it(".reveal-stagger starts hidden and animates opacity + transform", () => {
+  it(".reveal-stagger starts hidden and animates opacity without positional movement", () => {
     const body = ruleBlock("html.reveal-ready .reveal-stagger {");
     expect(body, ".reveal-stagger rule must exist").not.toBe("");
     expect(body).toMatch(/opacity:\s*0/);
-    expect(body).toMatch(/transform:\s*translateY/);
+    expect(body).toMatch(/transform:\s*none/);
     expect(body).toMatch(/transition:[\s\S]*opacity/);
-    expect(body).toMatch(/transition:[\s\S]*transform/);
+    expect(body).not.toMatch(/transition:[\s\S]*transform/);
   });
 
-  it(".reveal-stagger.is-visible reaches opacity:1 and translateY(0)", () => {
+  it(".reveal-stagger.is-visible reaches opacity:1 without movement", () => {
     const body = ruleBlock("html.reveal-ready .reveal-stagger.is-visible");
     expect(body, ".reveal-stagger.is-visible rule must exist").not.toBe("");
     expect(body).toMatch(/opacity:\s*1/);
-    expect(body).toMatch(/translateY\(0\)/);
+    expect(body).toMatch(/transform:\s*none/);
   });
 
   it(".section-enter is opacity-only (never adds a transform that would fight inner reveals)", () => {

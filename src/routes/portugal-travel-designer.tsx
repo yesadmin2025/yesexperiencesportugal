@@ -4,6 +4,7 @@ import { useMarketingMotion } from "@/hooks/use-marketing-motion";
 import { Eyebrow } from "@/components/ui/Eyebrow";
 import { SectionTitle } from "@/components/ui/SectionTitle";
 import { CtaButton } from "@/components/ui/CtaButton";
+import { SplitLines } from "@/components/motion/SplitLines";
 import { breadcrumbLd, jsonLdScript, travelDesignerServiceLd } from "@/lib/jsonld";
 import { ServiceCrossLinks } from "@/components/entity/ServiceCrossLinks";
 import ogImg from "@/assets/hero-coast.jpg";
@@ -70,9 +71,11 @@ function Section({
       <div className="container-x max-w-3xl">
         {eyebrow && <Eyebrow>{eyebrow}</Eyebrow>}
         {title && (
-          <SectionTitle as="h2" size="default" spacing="loose">
-            {title}
-          </SectionTitle>
+          <SplitLines
+            as="h2"
+            className="mt-4 font-serif text-[color:var(--charcoal)] font-medium tracking-normal text-[clamp(1.875rem,7vw,2.4rem)] md:text-[3.6rem] leading-[1.1] md:leading-[1.0] text-balance"
+            lines={[title]}
+          />
         )}
         <div className="mt-6 space-y-5 text-[color:var(--charcoal-soft)] leading-relaxed">
           {children}
