@@ -3,7 +3,7 @@
  *
  * Locks the two authorized levers: "add lunch" (+€35 pp, only where lunch
  * is genuinely excluded) and the Setúbal & Arrábida winery ladder
- * (+€20 pp, max 4, the 4th requiring a stop removal).
+ * (+€20 pp above the two included, max 4).
  */
 
 import { describe, expect, it } from "vitest";
@@ -36,11 +36,10 @@ describe("tailor rules", () => {
     expect(winerySupplementEur("evora-alentejo", 4)).toBe(0);
   });
 
-  it("gates the 4th winery behind removing another stop", () => {
+  it("allows one to four wineries without forcing removal of included moments", () => {
+    expect(tailorRules("arrabida-wine-allinclusive").wineries?.min).toBe(1);
     expect(canSelectWineries("arrabida-wine-allinclusive", 3, 0).allowed).toBe(true);
-    const gated = canSelectWineries("arrabida-wine-allinclusive", 4, 0);
-    expect(gated.allowed).toBe(false);
-    expect(gated.allowed === false && gated.code).toBe("needs-removal");
+    expect(canSelectWineries("arrabida-wine-allinclusive", 4, 0).allowed).toBe(true);
     expect(canSelectWineries("arrabida-wine-allinclusive", 4, 1).allowed).toBe(true);
     const over = canSelectWineries("arrabida-wine-allinclusive", 5, 2);
     expect(over.allowed === false && over.code).toBe("max-reached");

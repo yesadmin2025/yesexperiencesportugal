@@ -64,7 +64,7 @@ export const TAILOR_EXTRA_WINERY_SUPPLEMENT_EUR = 20;
  * A fixed per-person credit. It is NOT a negative "Add lunch" supplement
  * and NOT an itinerary-stop removal: it never counts towards the −15%
  * removal cap, is never scaled by the percentage reduction, is applied
- * after the 70% operational floor, and never unlocks the 4th winery.
+ * after the 70% operational floor, and never changes winery capacity.
  */
 export const TAILOR_LUNCH_REMOVAL_DISCOUNT_EUR = 15;
 

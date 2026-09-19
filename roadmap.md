@@ -186,3 +186,10 @@
 - [x] Replace the repeated left-to-right homepage wipe with varied editorial sequences
 - [x] Fix Signature date containment and simplify traveller composition on mobile
 - [x] Validate scroll motion and booking layout at 393px and 1280px
+
+## 29. Site-wide readability, tour highlights and Tailor semantics
+- [ ] Fix animated-title clipping and verify Fraunces/Inter consistency
+- [ ] Surface real tour highlights on Homepage and Experiences cards
+- [ ] Let Arrábida Wine Tailor select one winery while preserving the full Signature default
+- [ ] Ensure winery additions never auto-remove included moments and rely on real feasibility
+- [ ] Validate conversion, metadata, schema, sitemap, mobile/desktop/reduced motion, then publish
