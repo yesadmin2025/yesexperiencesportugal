@@ -215,7 +215,7 @@ function ReviewsPage() {
                       <Link
                         to="/tours/$tourId"
                         params={{ tourId: id }}
-                        className="font-display font-semibold text-[1.4rem] md:text-[1.7rem] leading-[1.25] text-[color:var(--charcoal)] hover:text-[color:var(--teal)] transition-colors"
+                        className="font-display font-medium text-[1.4rem] md:text-[1.7rem] leading-[1.25] text-[color:var(--charcoal)] hover:text-[color:var(--teal)] transition-colors"
                       >
                         {b.title}
                       </Link>
@@ -248,7 +248,7 @@ function ReviewsPage() {
                               </span>
                             </div>
                             {r.title && (
-                              <p className="mt-3 font-display font-semibold text-[15px] text-[color:var(--charcoal)]">
+                              <p className="mt-3 font-display font-medium text-[15px] text-[color:var(--charcoal)]">
                                 {r.title}
                               </p>
                             )}
