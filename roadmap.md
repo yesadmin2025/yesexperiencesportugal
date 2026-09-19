@@ -195,8 +195,8 @@
 - [ ] Validate conversion, metadata, schema, sitemap, mobile/desktop/reduced motion, then publish
 
 ## 30. Catálogo central de experiências para o Studio
-- [ ] Criar cadastro admin único de duração, janela horária, sessões fixas, preço, unidade e disponibilidade
-- [ ] Proteger leitura completa e escrita por função administrativa; expor ao público apenas experiências ativas e completas
-- [ ] Fazer o Studio usar automaticamente os dados publicados para duração, viabilidade e preço
-- [ ] Revalidar imediatamente o Studio após cada alteração administrativa
-- [ ] Validar no telemóvel, permissões, preços apresentados e cobrança final
+- [x] Criar cadastro admin único de duração, janela horária, sessões fixas, preço, unidade e disponibilidade
+- [x] Proteger leitura completa e escrita por função administrativa; expor ao público apenas experiências ativas e completas
+- [x] Fazer o Studio usar automaticamente os dados publicados para duração, viabilidade e preço
+- [x] Revalidar imediatamente o Studio após cada alteração administrativa
+- [x] Validar no telemóvel, permissões, preços apresentados e cobrança final
