@@ -437,6 +437,7 @@ export function startHomeMotion(): () => void {
   return () => {
     window.cancelAnimationFrame(bootRaf);
     window.cancelAnimationFrame(rafId);
+    window.cancelAnimationFrame(heroRaf);
     window.clearTimeout(pollId);
     window.clearTimeout(summaryId);
     longtaskObserver?.disconnect();
@@ -444,6 +445,9 @@ export function startHomeMotion(): () => void {
     window.removeEventListener("resize", schedule);
     window.removeEventListener("orientationchange", schedule);
     window.removeEventListener("load", schedule);
+    window.removeEventListener("scroll", scheduleHeroParallax);
+    window.removeEventListener("resize", scheduleHeroParallax);
+    heroStage?.style.removeProperty("--hero-parallax");
     telemetry.active = false;
   };
 }
