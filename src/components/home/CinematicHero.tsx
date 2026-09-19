@@ -43,12 +43,12 @@ function shouldSkipIntro(): boolean {
   }
 }
 
-function revealStyle(on: boolean, ms: number, _distance = 14): React.CSSProperties {
+function revealStyle(on: boolean, ms: number, distance = 12): React.CSSProperties {
   return {
     opacity: on ? 1 : 0,
-    clipPath: on ? "inset(0 0 0 0)" : "inset(0 100% 0 0)",
-    willChange: "opacity, clip-path",
-    transition: `opacity ${ms}ms ${EASE}, clip-path ${ms}ms ${EASE}`,
+    transform: on ? "translateY(0)" : `translateY(${distance}px)`,
+    willChange: "opacity, transform",
+    transition: `opacity ${ms}ms ${EASE}, transform ${ms}ms ${EASE}`,
   };
 }
 
@@ -66,18 +66,17 @@ function storyLineStyle(on: boolean, delayDirection: "from-left" | "from-right")
 function supportFadeStyle(on: boolean): React.CSSProperties {
   return {
     opacity: on ? 1 : 0,
-    clipPath: on ? "inset(0 0 0 0)" : "inset(0 50% 0 50%)",
-    willChange: "opacity, clip-path",
-    transition: `opacity ${TEXT_FADE_MS}ms ${EASE}, clip-path ${TEXT_FADE_MS}ms ${EASE}`,
+    transform: on ? "translateY(0)" : "translateY(12px)",
+    willChange: "opacity, transform",
+    transition: `opacity ${TEXT_FADE_MS}ms ${EASE}, transform ${TEXT_FADE_MS}ms ${EASE}`,
   };
 }
 
 /** The approved stanza treatment — Fraunces 400 with italic reserved for gold emphasis. */
 const stanzaStyle: React.CSSProperties = {
   fontWeight: 400,
-  lineHeight: 1.18,
+  lineHeight: 1.12,
   letterSpacing: "0",
-  fontSize: "clamp(38px, 5.8vw, 66px)",
 };
 
 const ARROW = (
@@ -226,10 +225,10 @@ export function CinematicHero() {
         />
       </div>
 
-      {/* The original composition is intentionally preserved as separate
-          zones. The added eyebrow and support occupy existing negative space
-          without pushing the stanza or the low actions out of position. */}
-      <div className="hero-eyebrow-zone absolute inset-x-0 top-[19%] z-10 flex justify-center px-6 sm:top-[21%]">
+      {/* One shared grid owns every text zone. Unlike independent percentage
+          offsets, its rows can never overlap when a line wraps or text grows. */}
+      <div className="hero-cinematic-layout absolute inset-0 z-10 grid px-5 sm:px-10 md:px-16">
+      <div className="hero-eyebrow-zone flex justify-center self-end px-1">
         <p
           data-hero-field="eyebrow"
           className="hero-promise m-0 text-center text-[11px] font-medium uppercase tracking-[0.24em] sm:text-[11px] sm:tracking-[0.26em]"
@@ -239,7 +238,7 @@ export function CinematicHero() {
         </p>
       </div>
 
-      <div className="hero-stanza-zone absolute inset-x-0 top-[28%] z-10 flex justify-center px-5 sm:top-[30%] sm:px-10 md:px-16">
+      <div className="hero-stanza-zone flex min-w-0 items-center justify-center">
         <h1
           data-hero-stanza="true"
           data-mixed-emphasis="exempt"
@@ -266,19 +265,21 @@ export function CinematicHero() {
         </h1>
       </div>
 
-      <div className="hero-support-zone absolute inset-x-0 top-[52%] z-10 flex justify-center px-6 sm:top-[54%] sm:px-10 md:px-16">
+      <div className="hero-support-zone flex min-w-0 justify-center">
         <p
           data-hero-field="subheadline"
-          className="hero-support m-0 max-w-[22.5rem] text-center font-serif text-[23px] font-normal not-italic leading-[1.62] tracking-[0.025em] sm:max-w-[38rem] sm:text-[24px] md:text-[25px]"
+          className="hero-support m-0 max-w-[22.5rem] text-center font-serif text-[16px] font-normal not-italic leading-[1.62] sm:max-w-[34rem] sm:text-[17px] md:text-[18px]"
           style={supportFadeStyle(support)}
         >
           {HERO_COPY.subheadline}
         </p>
       </div>
 
-      {/* Original low CTA anchor. */}
+      <div aria-hidden="true" />
+
+      {/* Original low CTA anchor, now the last non-overlapping grid row. */}
       <div
-        className="hero-cta-group absolute inset-x-0 bottom-0 z-20 flex flex-col items-center gap-3 px-6 pb-[max(3.25rem,calc(env(safe-area-inset-bottom)+2.5rem))] sm:flex-row sm:justify-center sm:gap-4 sm:pb-14 md:pb-20"
+        className="hero-cta-group z-20 flex flex-col items-center gap-3 sm:flex-row sm:justify-center sm:gap-4"
         data-hero-composed={composed ? "true" : "false"}
         style={{
           opacity: composed ? 1 : 0,
@@ -309,6 +310,7 @@ export function CinematicHero() {
           <span className="hero-cta__sheen" aria-hidden="true" />
           <span className="relative z-10">{HERO_COPY.secondaryCta}</span>
         </Link>
+      </div>
       </div>
 
       <div

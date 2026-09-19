@@ -169,7 +169,7 @@ export function FiveWaysIn() {
       <div className="container-x">
         <div className="reveal mx-auto max-w-2xl text-center">
           <Eyebrow flank className="mb-5">Where to begin</Eyebrow>
-          <SectionTitle id="choose-path-title">
+          <SectionTitle id="choose-path-title" className="five-ways-heading">
             Five ways <SectionTitle.Em>into Portugal.</SectionTitle.Em>
           </SectionTitle>
           <p className="mx-auto mt-5 max-w-xl text-[16px] md:text-[17px] leading-[1.7] text-[color:var(--charcoal-soft)]">
@@ -179,7 +179,7 @@ export function FiveWaysIn() {
 
         <Scene
           data-testid="home-smart-start"
-          className="five-ways-story mx-auto mt-10 max-w-6xl md:mt-14"
+          className="five-ways-story mx-auto mt-10 max-w-6xl md:mt-12"
         >
           {PATHS.map((path, index) => (
             <PathCard
@@ -244,7 +244,7 @@ function PathCard({ path, index }: { path: Path; index: number }) {
           </Eyebrow>
         </div>
 
-        <h3 className="five-ways-title editorial-title-safe mt-6 font-serif text-[1.65rem] leading-[1.18] font-normal text-[color:var(--charcoal)] md:text-[1.8rem]">
+        <h3 className="five-ways-title editorial-title-safe mt-5 font-serif text-[1.5rem] leading-[1.2] font-normal text-[color:var(--charcoal)] md:text-[1.625rem]">
           {path.title === `${path.titleLead} ${path.titleEmphasis}` ? (
             <>{path.titleLead} <em className="font-normal text-[color:var(--teal)]">{path.titleEmphasis}</em></>
           ) : path.title}
