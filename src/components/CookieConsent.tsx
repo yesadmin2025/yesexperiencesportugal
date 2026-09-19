@@ -73,7 +73,7 @@ export function CookieConsent() {
     const sync = () =>
       setConversionOverlayOpen(
         document.querySelectorAll(
-          '[role="dialog"][data-state="open"], [data-radix-dialog-content], [data-sonner-toast][data-visible="true"]',
+          '[role="dialog"][data-state="open"], [role="dialog"][aria-modal="true"], [data-radix-dialog-content], [data-sonner-toast][data-visible="true"]',
         ).length > 0,
       );
     sync();
@@ -82,7 +82,7 @@ export function CookieConsent() {
       subtree: true,
       childList: true,
       attributes: true,
-      attributeFilter: ["data-state"],
+      attributeFilter: ["data-state", "aria-modal"],
     });
     return () => observer.disconnect();
   }, [hydrated]);
