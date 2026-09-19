@@ -28,6 +28,8 @@ export function usePublicEditorialMotion(pathname: string): void {
     let firstFrame = 0;
     let secondFrame = 0;
     let settleTimer = 0;
+    let onLoad: (() => void) | undefined;
+
 
     // Effects run after hydration. Two frames give the routed subtree one
     // settled paint without making visitors wait for a long mutation-free
