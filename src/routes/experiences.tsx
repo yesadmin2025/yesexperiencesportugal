@@ -244,7 +244,7 @@ function TourCard({
         )}
 
         <div className="mt-4 flex flex-wrap items-baseline gap-x-3 gap-y-1">
-          <span className="font-serif text-[1.2rem] font-semibold text-[color:var(--charcoal)]">
+          <span className="font-serif text-[1.2rem] font-medium text-[color:var(--charcoal)]">
             From <PriceEur amountEur={tour.priceFrom} role="from" /> per person
           </span>
           <span className="text-[12px] uppercase tracking-[0.12em] text-[color:var(--charcoal-soft)]">

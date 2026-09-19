@@ -7,9 +7,9 @@ import { cn } from "@/lib/utils";
  * and no section invents its own scale.
  *
  * Variants follow the canonical ramp consolidated in the home page:
- *   • "default" — 30–38px mobile / 58px desktop (most sections)
- *   • "anchor"  — 34–45px mobile / 64px desktop (page anchors)
- *   • "compact" — 26–31px mobile / 38px desktop (dense editorial sections)
+ *   • "default" — 30–38px mobile / 57.6px desktop (most sections)
+ *   • "anchor"  — 34–44.8px mobile / 64px desktop (page anchors)
+ *   • "compact" — 25.6–31.2px mobile / 38.4px desktop (dense editorial sections)
  *
  * Italic emphasis: pass JSX inside `children` and wrap the emphasised words
  * with the helper <SectionTitle.Em>...</SectionTitle.Em> — that renders

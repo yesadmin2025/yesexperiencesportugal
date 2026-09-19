@@ -629,7 +629,7 @@ function HomePage() {
                   </SectionTitle.Em>
                 </SectionTitle>
 
-                <p className="reveal-stagger mt-4 text-[14.5px] md:text-[16px] text-[color:var(--charcoal-soft)] leading-[1.7] max-w-md font-normal">
+                <p className="reveal-stagger mt-4 text-[14.5px] md:text-[16px] text-[color:var(--charcoal-soft)] leading-[1.7] max-w-md">
                   The Studio draws the day as you shape it: a{" "}
                   <strong className="font-medium text-[color:var(--charcoal)]">real route</strong> on
                   the map, honest driving times, and the price updating as it goes. The final price is
@@ -791,7 +791,7 @@ function HomePage() {
                               <span className="text-[11px] uppercase tracking-[0.16em] font-semibold">
                                 From
                               </span>
-                              <span className="serif text-[13.5px] leading-none">
+                              <span className="font-sans text-[13.5px] leading-none">
                                 €{t.priceFrom}
                               </span>
                             </span>
