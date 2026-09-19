@@ -76,6 +76,23 @@ function tourTitle(tourId: string | null): string {
   return signatureTours.find((t) => t.id === tourId)?.title ?? tourId;
 }
 
+/** Start time and pickup, only when the frozen record holds them. */
+function detailString(booking: CalendarBooking, keys: string[]): string | null {
+  const details = booking.booking_details ?? {};
+  const snapshot =
+    details["snapshot"] && typeof details["snapshot"] === "object"
+      ? (details["snapshot"] as Record<string, unknown>)
+      : {};
+  for (const key of keys) {
+    const value = (details as Record<string, unknown>)[key] ?? snapshot[key];
+    if (typeof value === "string" && value.trim()) return value.trim();
+  }
+  return null;
+}
+
+const startTimeOf = (b: CalendarBooking) => detailString(b, ["startTime"]);
+const pickupOf = (b: CalendarBooking) => detailString(b, ["pickupAddress", "pickupLabel", "pickup"]);
+
 export function BookingsAvailabilityCalendar() {
   const load = useServerFn(listAdminBookingCalendar);
   const today = new Date();
