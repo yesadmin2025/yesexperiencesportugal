@@ -302,10 +302,15 @@ function TourDetailPage() {
       {/* ── B · YOUR DAY — itinerary (real Viator stops only) ───── */}
       <ItineraryTimeline tour={tour} meta={meta} />
 
-      {/* ── B2 · MAP — real geographic route (lazy) ─────────────── */}
-      <Suspense fallback={<SignatureRouteMapShell />}>
-        <SignatureRouteMap tour={tour} />
-      </Suspense>
+      {/* ── B2 · MAP — real geographic route (lazy) ───────────────
+          The reveal class lives on THIS wrapper, not inside the lazy
+          component: the reveal sweep adds `.is-visible` before the lazy
+          chunk hydrates, which made React report an attribute mismatch. */}
+      <div className="reveal">
+        <Suspense fallback={<SignatureRouteMapShell />}>
+          <SignatureRouteMap tour={tour} />
+        </Suspense>
+      </div>
 
       {/* ── C · HIGHLIGHTS ─────────────────────────────────────── */}
       <HighlightsBlock tour={tour} />

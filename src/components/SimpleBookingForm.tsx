@@ -69,6 +69,7 @@ export function SimpleBookingForm({ tour }: { tour: SignatureTour }) {
   const [language, setLanguage] = useState<"en" | "pt">("en");
   const [pending, setPending] = useState(false);
   const [detailsOpen, setDetailsOpen] = useState(false);
+  const [blockMessage, setBlockMessage] = useState<string | null>(null);
   const [prefsOpen, setPrefsOpen] = useState(false);
 
 
@@ -364,6 +365,17 @@ export function SimpleBookingForm({ tour }: { tour: SignatureTour }) {
         Book the Signature, <SectionTitle.Em>as designed</SectionTitle.Em>
       </SectionTitle>
 
+      {/* Top-of-form blocking summary — never rely on a floating toast alone. */}
+      {blockMessage && (
+        <p
+          role="alert"
+          data-testid="signature-block-summary"
+          className="mt-5 border-l-2 border-[color:var(--gold)] bg-[color:var(--sand)] px-3 py-2 text-[13px] leading-[1.5] text-[color:var(--charcoal)]"
+        >
+          {blockMessage}
+        </p>
+      )}
+
       {/* Date */}
       <div className="mt-6">
         <Field label="Date" icon={<Calendar size={14} />}>
@@ -395,10 +407,14 @@ export function SimpleBookingForm({ tour }: { tour: SignatureTour }) {
                         ? "That date is unavailable. Please pick another."
                         : "Please choose a date at least 24 hours from now.";
                   // Only nag once the date is actually complete (YYYY-MM-DD).
-                  if (v.length === 10) toast.error(msg);
+                  if (v.length === 10) {
+                    setBlockMessage(msg);
+                    toast.error(msg);
+                  }
                   return;
                 }
               }
+              setBlockMessage(null);
               if (v) {
                 if (!firedDate.current) {
                   firedDate.current = true;
@@ -407,8 +423,22 @@ export function SimpleBookingForm({ tour }: { tour: SignatureTour }) {
               }
             }}
             min={minDateISO}
-            className="w-full min-h-[48px] border border-[color:var(--border)] bg-[color:var(--ivory)] px-3 py-2.5 text-[16px] sm:text-sm focus:border-[color:var(--gold)] focus:outline-none"
+            aria-invalid={blockMessage ? true : undefined}
+            aria-describedby={blockMessage ? "signature-date-error" : undefined}
+            className={`w-full min-h-[48px] border bg-[color:var(--ivory)] px-3 py-2.5 text-[16px] sm:text-sm focus:outline-none ${
+              blockMessage
+                ? "border-[color:var(--gold)]"
+                : "border-[color:var(--border)] focus:border-[color:var(--gold)]"
+            }`}
           />
+          {blockMessage && (
+            <p
+              id="signature-date-error"
+              className="mt-2 text-[12.5px] leading-[1.5] text-[color:var(--charcoal)]"
+            >
+              {blockMessage}
+            </p>
+          )}
         </Field>
       </div>
 
@@ -564,13 +594,15 @@ export function SimpleBookingForm({ tour }: { tour: SignatureTour }) {
             if (!canReserve) {
               const reason = !dateValid ? "date_missing_or_unavailable" : "composition_incomplete";
               gaBookingValidationBlocked({ tourId: tour.id, surface: "signature", reason });
-              toast.error(
-                !dateValid
-                  ? `Pick an available date at least ${leadHours} hours from now.`
-                  : "Add an age for every child.",
-              );
+              const msg = !dateValid
+                ? `Pick an available date at least ${leadHours} hours from now.`
+                : "Add an age for every child.";
+              setBlockMessage(msg);
+              toast.error(msg);
+              if (!dateValid) dateRef.current?.focus();
               return;
             }
+            setBlockMessage(null);
             setDetailsOpen(true);
           }}
           disabled={pending}

@@ -243,7 +243,7 @@ export function SignatureRouteMap({ tour }: Props) {
   const legModes = data?.legs?.map(() => "driving" as const) ?? null;
 
   return (
-    <section className="py-14 md:py-20 reveal">
+    <section className="py-14 md:py-20">
       <div className="container-x max-w-5xl">
         <div className="text-center mb-8">
           <Eyebrow flank>The route</Eyebrow>
