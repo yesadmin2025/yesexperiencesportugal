@@ -90,7 +90,7 @@ function FaqPage() {
                   <AccordionItem
                     key={item.q}
                     value={`${group.id}-${i}`}
-                    className="group relative border border-[color:var(--border)] bg-white/80 transition-colors duration-200 hover:border-[color:var(--teal)]/40 [&[data-state=open]]:border-[color:var(--teal)]/55 [&[data-state=open]]:shadow-[var(--shadow-card)]"
+                    className="group relative border border-[color:var(--border)] bg-[color:var(--ivory)]/80 transition-colors duration-200 hover:border-[color:var(--teal)]/40 [&[data-state=open]]:border-[color:var(--teal)]/55 [&[data-state=open]]:shadow-[var(--shadow-card)]"
                   >
                     <AccordionTrigger className="px-5 md:px-6 py-4 md:py-5 text-left text-[15px] md:text-[17px] serif text-[color:var(--charcoal)] hover:no-underline hover:text-[color:var(--teal)] transition-colors duration-200 [&[data-state=open]]:text-[color:var(--teal)]">
                       {item.q}

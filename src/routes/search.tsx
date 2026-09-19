@@ -99,7 +99,7 @@ function SearchPage() {
             <label htmlFor="site-search-input" className="sr-only">
               Search YES experiences Portugal
             </label>
-            <div className="flex items-center gap-2 rounded-full border border-[color:var(--sand)] bg-white px-5 py-1.5 shadow-[0_1px_2px_rgba(46,46,46,0.06)] focus-within:border-[color:var(--teal)]">
+            <div className="flex items-center gap-2 rounded-full border border-[color:var(--sand)] bg-[color:var(--ivory)] px-5 py-1.5 shadow-[var(--shadow-soft)] focus-within:border-[color:var(--teal)]">
               <SearchIcon
                 aria-hidden="true"
                 className="h-[18px] w-[18px] shrink-0 text-[color:var(--charcoal-soft)]"

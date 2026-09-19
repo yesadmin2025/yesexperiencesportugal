@@ -104,7 +104,7 @@ export const APPROVED_HOMEPAGE_SECTIONS: readonly ApprovedSection[] = [
   {
     order: 3,
     name: "Where to begin — five ways in",
-    componentTag: "FourWaysIn",
+    componentTag: "FiveWaysIn",
     inComponent: true,
     requiredSpacing: { kind: "py", minScale: 16 },
   },

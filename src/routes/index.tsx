@@ -17,7 +17,7 @@ import { StudioLivePreview } from "@/components/home/StudioLivePreview";
 import { CinematicHero } from "@/components/home/CinematicHero";
 import { RecentJourney } from "@/components/home/RecentJourney";
 import { ExitIntentEmailCapture } from "@/components/home/EmailCapture";
-import { FourWaysIn } from "@/components/home/FourWaysIn";
+import { FiveWaysIn } from "@/components/home/FiveWaysIn";
 
 import { getScrollDebugFlags, useScrollDebugFlags } from "@/lib/scroll-debug";
 
@@ -261,7 +261,7 @@ const baseSignatures = FEATURED_TOUR_IDS.filter((id) => isValidTourId(id))
     };
   });
 
-/* Moments and group services appear once in FourWaysIn. Their dedicated
+/* Moments and group services appear once in FiveWaysIn. Their dedicated
  * routes retain the complete service narratives without repeating the same
  * commercial choice later on this page. */
 
@@ -582,7 +582,7 @@ function HomePage() {
         {/* 3 — FIVE WAYS INTO PORTUGAL
           Concise editorial explainer so visitors instantly understand
           the paths: Signature, Studio, Travel Designer, Proposals and Corporate. */}
-        <FourWaysIn />
+        <FiveWaysIn />
 
         {/* 4 — EXPERIENCE STUDIO (promoted)
           Promoted up the page so the Builder reads as the core
@@ -797,11 +797,10 @@ function HomePage() {
                             </span>
                           </div>
                         </div>
-                        {/* Bottom: title + meta — clean editorial stack with breathing room.
-                          line-clamp-2 keeps long Signature names ("Roman Heritage Wine & Hidden
-                          Alentejo") tidy on narrow widths without pushing the meta row off-card. */}
+                        {/* Bottom: title + meta — full factual titles remain readable rather than
+                          being clipped to fit the photographic card. */}
                         <div className="absolute inset-x-0 bottom-0 z-[3] p-5 md:p-6 text-white">
-                          <h3 className="serif text-[1.35rem] md:text-[1.5rem] leading-[1.18] text-white text-balance line-clamp-2 [text-shadow:0_2px_14px_rgba(0,0,0,0.55)]">
+                          <h3 className="serif text-[1.2rem] md:text-[1.35rem] leading-[1.2] text-white text-balance [text-shadow:0_2px_14px_rgba(0,0,0,0.55)]">
                             <span className="sm:hidden">
                               {MOBILE_TITLE_OVERRIDES[t.id] ?? t.title}
                             </span>

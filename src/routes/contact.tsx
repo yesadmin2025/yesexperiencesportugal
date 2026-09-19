@@ -161,9 +161,9 @@ function Page() {
           <div className="scene-title">
             <SplitLines
               as="h1"
-              className="mt-4 font-serif text-[color:var(--charcoal)] font-medium tracking-normal text-[clamp(2.25rem,10vw,4.75rem)] leading-[1.02] text-balance"
+              className="mt-4 font-serif text-[color:var(--charcoal)] font-medium tracking-normal text-[clamp(2.25rem,10vw,4.75rem)] leading-[1.1] text-balance"
               lines={[
-                <>Begin your</>,
+                <>Begin your&nbsp;</>,
                 <><span className="italic font-normal text-[color:var(--teal)]">Portugal story.</span></>,
               ]}
             />

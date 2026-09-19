@@ -69,7 +69,7 @@ export function RealReviewsStrip() {
           {quotes.map((q, i) => (
             <li
               key={i}
-              className="reveal-stagger he-card-lift rounded-[6px] border border-[color:var(--border)] bg-white p-5 md:p-6 flex flex-col"
+              className="reveal-stagger he-card-lift rounded-[6px] border border-[color:var(--border)] bg-[color:var(--ivory)] p-5 md:p-6 flex flex-col"
             >
               <div
                 className="inline-flex items-center gap-0.5 text-[color:var(--gold)]"

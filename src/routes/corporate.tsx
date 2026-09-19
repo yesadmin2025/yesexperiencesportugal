@@ -18,7 +18,6 @@ import { Eyebrow } from "@/components/ui/Eyebrow";
 import { SectionTitle } from "@/components/ui/SectionTitle";
 import { CtaButton } from "@/components/ui/CtaButton";
 import { CinematicEditorialImage } from "@/components/ui/ResponsiveEditorialImage";
-import { ParallaxLayer } from "@/components/motion/ParallaxLayer";
 import { RouteThread } from "@/components/motion/RouteThread";
 import {
   Accordion,
@@ -244,14 +243,12 @@ function CorporatePage() {
       <section className="py-16 md:py-24">
         <div className="container-x grid lg:grid-cols-2 gap-10 md:gap-14 items-center reveal-stagger">
           <div className="group overflow-hidden bg-[color:var(--sand)] aspect-[5/4] sm:aspect-[4/3] lg:aspect-[5/6]">
-            <ParallaxLayer amount="md" className="h-full w-full">
-              <CinematicEditorialImage
-                image={positioningImage}
-                priority
-                className="h-full w-full"
-                phase="a"
-              />
-            </ParallaxLayer>
+            <CinematicEditorialImage
+              image={positioningImage}
+              priority
+              className="h-full w-full"
+              phase="a"
+            />
           </div>
 
           <div>
@@ -395,7 +392,7 @@ function CorporatePage() {
                 <AccordionItem
                   key={f.q}
                   value={`corporate-faq-${i}`}
-                  className="reveal-stagger border border-[color:var(--border)] bg-white/80 transition-colors duration-200 hover:border-[color:var(--teal)]/40 [&[data-state=open]]:border-[color:var(--teal)]/55"
+                  className="reveal-stagger border border-[color:var(--border)] bg-[color:var(--ivory)]/80 transition-colors duration-200 hover:border-[color:var(--teal)]/40 [&[data-state=open]]:border-[color:var(--teal)]/55"
                 >
                   <AccordionTrigger className="px-5 md:px-6 py-5 min-h-[56px] text-left serif text-[15.5px] md:text-[17px] leading-snug text-[color:var(--charcoal)] hover:no-underline hover:text-[color:var(--teal)] [&[data-state=open]]:text-[color:var(--teal)]">
                     {f.q}

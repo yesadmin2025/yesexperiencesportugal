@@ -13,7 +13,6 @@ import { SectionTitle } from "@/components/ui/SectionTitle";
 import { CtaButton } from "@/components/ui/CtaButton";
 import { TourImage } from "@/components/tours/TourImage";
 import { useMarketingMotion } from "@/hooks/use-marketing-motion";
-import { ParallaxLayer } from "@/components/motion/ParallaxLayer";
 import { PriceCurrencyChip } from "@/components/PriceCurrencyChip";
 import { PriceEur } from "@/components/ui/PriceEur";
 import { signatureDurationLabel } from "@/lib/tourContent";
@@ -91,7 +90,7 @@ function DayToursPage() {
               { name: "Day Tours", path: "/day-tours" },
             ]}
           />
-          <ParallaxLayer amount="sm">
+          <div>
             <Eyebrow flank>Half &amp; Full Day</Eyebrow>
             <SectionTitle as="h1" size="anchor" spacing="loose">
               Day <SectionTitle.Em>Tours</SectionTitle.Em>
@@ -100,7 +99,7 @@ function DayToursPage() {
               Private guides, refined pace, and the parts of Portugal you'll remember most. Reserve
               instantly — or adjust a few details within the experience to match your rhythm.
             </p>
-          </ParallaxLayer>
+          </div>
         </div>
       </section>
 

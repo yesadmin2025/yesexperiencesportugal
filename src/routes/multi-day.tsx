@@ -171,7 +171,7 @@ const FILE_GROUPS: Card[] = [
 
 function GroupCard({ title, body }: Card) {
   return (
-    <div className="reveal-stagger bg-white border border-[color:var(--border)] p-5 md:p-6">
+    <div className="reveal-stagger bg-[color:var(--ivory)] border border-[color:var(--border)] p-5 md:p-6">
       <h3 className="serif font-medium tracking-[-0.012em] text-[1.05rem] md:text-[1.15rem] text-[color:var(--charcoal)] leading-tight">
         {title}
       </h3>
@@ -358,7 +358,7 @@ function MultiDayPage() {
             {PROCESS.map((s) => (
               <li
                 key={s.n}
-                className="reveal-stagger bg-white border border-[color:var(--border)] p-6 md:p-8"
+                className="reveal-stagger bg-[color:var(--ivory)] border border-[color:var(--border)] p-6 md:p-8"
               >
                 <div className="font-sans text-[11px] uppercase tracking-[0.28em] text-[color:var(--charcoal)]">
                   {s.n}
@@ -403,7 +403,7 @@ function MultiDayPage() {
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label="Open the cover page full size"
-                className="block overflow-hidden border border-[color:var(--border)] shadow-[0_24px_60px_-24px_rgba(46,46,46,0.32)] bg-white cursor-zoom-in focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--teal)]"
+                className="block overflow-hidden border border-[color:var(--border)] shadow-[var(--shadow-card)] bg-[color:var(--ivory)] cursor-zoom-in focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--teal)]"
               >
                 <img
                   src={SAMPLE_PAGES[0].src}
@@ -427,7 +427,7 @@ function MultiDayPage() {
                 {FILE_GROUPS.map((c) => (
                   <div
                     key={c.title}
-                    className="bg-white border border-[color:var(--border)] p-4 md:p-5"
+                    className="bg-[color:var(--ivory)] border border-[color:var(--border)] p-4 md:p-5"
                   >
                     <div className="font-sans text-[11px] uppercase tracking-[0.22em] text-[color:var(--charcoal)]">
                       {c.title}
@@ -463,7 +463,7 @@ function MultiDayPage() {
                   target="_blank"
                   rel="noopener noreferrer"
                   aria-label={`Open page ${i + 2} full size`}
-                  className="group relative flex-none w-[150px] md:w-[180px] snap-start overflow-hidden border border-[color:var(--border)] shadow-[0_12px_30px_-16px_rgba(46,46,46,0.28)] bg-white cursor-zoom-in focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--teal)]"
+                  className="group relative flex-none w-[150px] md:w-[180px] snap-start overflow-hidden border border-[color:var(--border)] shadow-[var(--shadow-soft)] bg-[color:var(--ivory)] cursor-zoom-in focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--teal)]"
                 >
                   <img
                     src={p.src}
@@ -566,7 +566,7 @@ function MultiDayPage() {
               <AccordionItem
                 key={item.q}
                 value={`td-${i}`}
-                className="border border-[color:var(--border)] bg-white/80"
+                className="border border-[color:var(--border)] bg-[color:var(--ivory)]/80"
               >
                 <AccordionTrigger className="px-5 md:px-6 py-4 md:py-5 text-left text-[15px] md:text-[17px] serif text-[color:var(--charcoal)] hover:no-underline hover:text-[color:var(--teal)] [&[data-state=open]]:text-[color:var(--teal)]">
                   {item.q}

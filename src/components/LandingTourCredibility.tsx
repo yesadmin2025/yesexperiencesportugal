@@ -68,7 +68,7 @@ export function LandingTourCredibility({
           {reviews.map((r, i) => (
             <li
               key={i}
-              className="rounded-lg border border-[color:var(--charcoal)]/10 bg-white p-5 text-left"
+              className="rounded-lg border border-[color:var(--charcoal)]/10 bg-[color:var(--ivory)] p-5 text-left shadow-[var(--shadow-soft)]"
             >
               <div className="flex items-center justify-between gap-3">
                 <span

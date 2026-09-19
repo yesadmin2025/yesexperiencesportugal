@@ -12,7 +12,6 @@ import { CtaButton } from "@/components/ui/CtaButton";
 import { TourImage } from "@/components/tours/TourImage";
 
 import { useMarketingMotion } from "@/hooks/use-marketing-motion";
-import { ParallaxLayer } from "@/components/motion/ParallaxLayer";
 import { PriceCurrencyChip } from "@/components/PriceCurrencyChip";
 import { PriceEur } from "@/components/ui/PriceEur";
 import { signatureDurationLabel } from "@/lib/tourContent";
@@ -67,7 +66,7 @@ function DayToursPage() {
     <SiteLayout>
       <section className="reveal pt-32 pb-12 bg-[color:var(--sand)] text-center">
         <div className="container-x">
-          <ParallaxLayer amount="sm">
+          <div>
             <Eyebrow flank>Meio dia &amp; Dia inteiro</Eyebrow>
             <SectionTitle as="h1" size="anchor" spacing="loose">
               Experiências <SectionTitle.Em>de um dia</SectionTitle.Em>
@@ -80,7 +79,7 @@ function DayToursPage() {
             <p className="mt-4 text-xs text-[color:var(--charcoal-soft)]">
               As páginas detalhadas de cada experiência estão, para já, disponíveis em inglês.
             </p>
-          </ParallaxLayer>
+          </div>
         </div>
       </section>
 

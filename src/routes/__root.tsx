@@ -283,7 +283,7 @@ function RootShell({ children }: { children: React.ReactNode }) {
   // it while keeping per-locale SSR behavior. English is the default.
   if (lang === "pt-PT") {
     return (
-      <html lang="pt-PT">
+      <html lang="pt-PT" suppressHydrationWarning>
         <head>
           <HeadContent />
         </head>
@@ -293,7 +293,7 @@ function RootShell({ children }: { children: React.ReactNode }) {
   }
 
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <head>
         <HeadContent />
       </head>

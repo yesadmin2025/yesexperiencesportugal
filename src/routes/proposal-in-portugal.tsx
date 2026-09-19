@@ -8,7 +8,6 @@ import { Eyebrow } from "@/components/ui/Eyebrow";
 import { SectionTitle } from "@/components/ui/SectionTitle";
 import { CtaButton } from "@/components/ui/CtaButton";
 import { CinematicEditorialImage } from "@/components/ui/ResponsiveEditorialImage";
-import { ParallaxLayer } from "@/components/motion/ParallaxLayer";
 import { RouteThread } from "@/components/motion/RouteThread";
 import { ProposalRequestForm } from "@/components/home/ProposalRequestForm";
 
@@ -146,14 +145,12 @@ export function ProposalInPortugalPage() {
               >
                 <div className="group overflow-hidden bg-[color:var(--sand)] aspect-[5/4] sm:aspect-[4/3] lg:aspect-[5/6]">
                   {i === 0 ? (
-                    <ParallaxLayer amount="md" className="h-full w-full">
-                      <CinematicEditorialImage
-                        image={image}
-                        priority
-                        className="h-full w-full"
-                        phase="a"
-                      />
-                    </ParallaxLayer>
+                    <CinematicEditorialImage
+                      image={image}
+                      priority
+                      className="h-full w-full"
+                      phase="a"
+                    />
                   ) : (
                     <CinematicEditorialImage
                       image={image}
