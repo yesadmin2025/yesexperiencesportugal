@@ -194,6 +194,7 @@ import { Route as ApiPublicHooksDnsWatchRouteImport } from './routes/api/public/
 import { Route as ApiPublicHooksCheckoutEmailRouteImport } from './routes/api/public/hooks/checkout-email'
 import { Route as ApiPublicHooksBookingCancelledEmailRouteImport } from './routes/api/public/hooks/booking-cancelled-email'
 import { Route as ApiPublicFeedsThingsToDoDotxmlRouteImport } from './routes/api/public/feeds/things-to-do[.]xml'
+import { Route as ApiPublicFeedsThingsToDoDotjsonRouteImport } from './routes/api/public/feeds/things-to-do[.]json'
 
 const WineToursLisbonRoute = WineToursLisbonRouteImport.update({
   id: '/wine-tours-lisbon',
@@ -1155,6 +1156,12 @@ const ApiPublicFeedsThingsToDoDotxmlRoute =
     path: '/api/public/feeds/things-to-do.xml',
     getParentRoute: () => rootRouteImport,
   } as any)
+const ApiPublicFeedsThingsToDoDotjsonRoute =
+  ApiPublicFeedsThingsToDoDotjsonRouteImport.update({
+    id: '/api/public/feeds/things-to-do.json',
+    path: '/api/public/feeds/things-to-do.json',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -1328,6 +1335,7 @@ export interface FileRoutesByFullPath {
   '/studio-v2/i/$token': typeof StudioV2ITokenRoute
   '/tours/$tourId/tailor': typeof ToursTourIdTailorRoute
   '/admin/bookings/': typeof AdminBookingsIndexRoute
+  '/api/public/feeds/things-to-do.json': typeof ApiPublicFeedsThingsToDoDotjsonRoute
   '/api/public/feeds/things-to-do.xml': typeof ApiPublicFeedsThingsToDoDotxmlRoute
   '/api/public/hooks/booking-cancelled-email': typeof ApiPublicHooksBookingCancelledEmailRoute
   '/api/public/hooks/checkout-email': typeof ApiPublicHooksCheckoutEmailRoute
@@ -1513,6 +1521,7 @@ export interface FileRoutesByTo {
   '/studio-v2/i/$token': typeof StudioV2ITokenRoute
   '/tours/$tourId/tailor': typeof ToursTourIdTailorRoute
   '/admin/bookings': typeof AdminBookingsIndexRoute
+  '/api/public/feeds/things-to-do.json': typeof ApiPublicFeedsThingsToDoDotjsonRoute
   '/api/public/feeds/things-to-do.xml': typeof ApiPublicFeedsThingsToDoDotxmlRoute
   '/api/public/hooks/booking-cancelled-email': typeof ApiPublicHooksBookingCancelledEmailRoute
   '/api/public/hooks/checkout-email': typeof ApiPublicHooksCheckoutEmailRoute
@@ -1701,6 +1710,7 @@ export interface FileRoutesById {
   '/studio-v2/i/$token': typeof StudioV2ITokenRoute
   '/tours_/$tourId/tailor': typeof ToursTourIdTailorRoute
   '/admin/bookings/': typeof AdminBookingsIndexRoute
+  '/api/public/feeds/things-to-do.json': typeof ApiPublicFeedsThingsToDoDotjsonRoute
   '/api/public/feeds/things-to-do.xml': typeof ApiPublicFeedsThingsToDoDotxmlRoute
   '/api/public/hooks/booking-cancelled-email': typeof ApiPublicHooksBookingCancelledEmailRoute
   '/api/public/hooks/checkout-email': typeof ApiPublicHooksCheckoutEmailRoute
@@ -1890,6 +1900,7 @@ export interface FileRouteTypes {
     | '/studio-v2/i/$token'
     | '/tours/$tourId/tailor'
     | '/admin/bookings/'
+    | '/api/public/feeds/things-to-do.json'
     | '/api/public/feeds/things-to-do.xml'
     | '/api/public/hooks/booking-cancelled-email'
     | '/api/public/hooks/checkout-email'
@@ -2075,6 +2086,7 @@ export interface FileRouteTypes {
     | '/studio-v2/i/$token'
     | '/tours/$tourId/tailor'
     | '/admin/bookings'
+    | '/api/public/feeds/things-to-do.json'
     | '/api/public/feeds/things-to-do.xml'
     | '/api/public/hooks/booking-cancelled-email'
     | '/api/public/hooks/checkout-email'
@@ -2262,6 +2274,7 @@ export interface FileRouteTypes {
     | '/studio-v2/i/$token'
     | '/tours_/$tourId/tailor'
     | '/admin/bookings/'
+    | '/api/public/feeds/things-to-do.json'
     | '/api/public/feeds/things-to-do.xml'
     | '/api/public/hooks/booking-cancelled-email'
     | '/api/public/hooks/checkout-email'
@@ -2432,6 +2445,7 @@ export interface RootRouteChildren {
   LovableEmailSuppressionRoute: typeof LovableEmailSuppressionRoute
   ToursTourIdTailorRoute: typeof ToursTourIdTailorRoute
   AdminBookingsIndexRoute: typeof AdminBookingsIndexRoute
+  ApiPublicFeedsThingsToDoDotjsonRoute: typeof ApiPublicFeedsThingsToDoDotjsonRoute
   ApiPublicFeedsThingsToDoDotxmlRoute: typeof ApiPublicFeedsThingsToDoDotxmlRoute
   ApiPublicHooksBookingCancelledEmailRoute: typeof ApiPublicHooksBookingCancelledEmailRoute
   ApiPublicHooksCheckoutEmailRoute: typeof ApiPublicHooksCheckoutEmailRoute
@@ -3745,6 +3759,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicFeedsThingsToDoDotxmlRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/feeds/things-to-do.json': {
+      id: '/api/public/feeds/things-to-do.json'
+      path: '/api/public/feeds/things-to-do.json'
+      fullPath: '/api/public/feeds/things-to-do.json'
+      preLoaderRoute: typeof ApiPublicFeedsThingsToDoDotjsonRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -3979,6 +4000,7 @@ const rootRouteChildren: RootRouteChildren = {
   LovableEmailSuppressionRoute: LovableEmailSuppressionRoute,
   ToursTourIdTailorRoute: ToursTourIdTailorRoute,
   AdminBookingsIndexRoute: AdminBookingsIndexRoute,
+  ApiPublicFeedsThingsToDoDotjsonRoute: ApiPublicFeedsThingsToDoDotjsonRoute,
   ApiPublicFeedsThingsToDoDotxmlRoute: ApiPublicFeedsThingsToDoDotxmlRoute,
   ApiPublicHooksBookingCancelledEmailRoute:
     ApiPublicHooksBookingCancelledEmailRoute,
