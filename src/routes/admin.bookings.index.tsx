@@ -43,6 +43,10 @@ type Row = {
 };
 
 const TOUR_LABELS = new Map(signatureTours.map((tour) => [tour.id, tour.title]));
+/** Real catalogue durations — used only when the snapshot has none. */
+const TOUR_DURATIONS = new Map(
+  signatureTours.map((tour) => [tour.id, tour.durationHours || tour.duration]),
+);
 
 function experienceLabel(row: Row): string {
   if (row.source_tour_id) return TOUR_LABELS.get(row.source_tour_id) ?? row.source_tour_id;
@@ -81,6 +85,28 @@ function startTimeOf(b: Row): string | null {
     (v) => typeof v === "string" && v.trim().length > 0,
   );
   return typeof hit === "string" ? hit : null;
+}
+
+/**
+ * Duration, from the frozen snapshot when the purchase captured one, otherwise
+ * the Signature catalogue's real duration. Never invented.
+ */
+function durationOf(b: Row): string | null {
+  const d = (b.booking_details ?? {}) as Record<string, unknown>;
+  const snapshot = (d["snapshot"] ?? {}) as Record<string, unknown>;
+  const label = [d["durationLabel"], snapshot["durationLabel"]].find(
+    (v) => typeof v === "string" && v.trim().length > 0,
+  );
+  if (typeof label === "string") return label.trim();
+  const minutes = [d["durationMinutes"], snapshot["durationMinutes"]].find(
+    (v) => typeof v === "number" && v > 0,
+  );
+  if (typeof minutes === "number") {
+    const h = Math.floor(minutes / 60);
+    const m = minutes % 60;
+    return m === 0 ? `${h}h` : `${h}h ${m}min`;
+  }
+  return b.source_tour_id ? (TOUR_DURATIONS.get(b.source_tour_id) ?? null) : null;
 }
 
 /** Party split comes from the frozen composition; never guessed. */
@@ -255,6 +281,7 @@ function AdminBookingsPage() {
                 {list.map((b) => {
                   const phone = phoneOf(b);
                   const time = startTimeOf(b);
+                  const duration = durationOf(b);
                   return (
                     <li key={b.id} className="py-4">
                       <Link
@@ -271,6 +298,7 @@ function AdminBookingsPage() {
                         </span>
                         <span className="text-sm text-[color:var(--charcoal-soft)]">
                           {experienceLabel(b)}
+                          {duration ? ` · ${duration}` : ""}
                         </span>
                         <span className="text-sm text-[color:var(--charcoal)]">
                           {partyOf(b)} · {money(b.amount_total, b.currency)}
