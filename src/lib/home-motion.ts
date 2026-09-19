@@ -153,7 +153,6 @@ export function startHomeMotion(): () => void {
     // Cascade: every repeated card in a row gets an increasing delay so the
     // eye tracks a rhythm instead of the whole row landing at once. Includes
     // plain `.reveal-stagger` children (the CSS reads `--motion-delay`).
-    const cardParents = new WeakMap<HTMLElement, number>();
     const cards = homeScope.querySelectorAll<HTMLElement>(
       ".he-card-lift, .reveal-stagger, .fw-card, .editorial-card, [data-editorial-card]",
     );
@@ -161,15 +160,8 @@ export function startHomeMotion(): () => void {
       // Legacy reveal nodes are owned by SiteLayout. Mutating their attributes
       // during selective hydration causes React attribute mismatches.
       if (el.matches(".reveal, .reveal-stagger, .section-enter")) return;
-      const parent = el.parentElement as HTMLElement | null;
-      if (!parent) return;
-      const idx = cardParents.get(parent) ?? 0;
-      cardParents.set(parent, idx + 1);
-      if (idx === 0) return;
-      if (el.hasAttribute("data-motion-delay")) return;
-      const delay = Math.min(idx * CARD_STEP, CARD_CAP);
-      el.setAttribute("data-motion-delay", String(delay));
-      el.style.setProperty("--motion-delay", `${delay}ms`);
+      // Stagger timing is CSS-owned. Adding inline attributes here can race
+      // React's selective hydration on long pages.
     });
 
     // Give public imagery and conversion groups one calm entrance. Never tag

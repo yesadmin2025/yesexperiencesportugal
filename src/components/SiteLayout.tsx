@@ -482,7 +482,6 @@ export function SiteLayout({ children }: { children: ReactNode }) {
     // any inline transition delay so nothing keeps content at opacity:0.
     if (mobileRevealsDisabled || typeof IntersectionObserver === "undefined" || reducedMotion) {
       els.forEach((el) => {
-        el.style.transitionDelay = "0ms";
         el.classList.add("is-visible");
         if (revealDebug) flashDebug(el, "reduced-motion");
       });
@@ -518,12 +517,6 @@ export function SiteLayout({ children }: { children: ReactNode }) {
 
     const revealEl = (target: HTMLElement, source: RevealSource) => {
       if (target.classList.contains("is-visible")) return;
-      // Only apply our cadence when no inline delay is already set, so
-      // route-level overrides still win.
-      if (target.classList.contains("reveal-stagger") && !target.style.transitionDelay) {
-        const idx = indexByEl.get(target) ?? 0;
-        target.style.transitionDelay = `${idx * STAGGER_MS}ms`;
-      }
       target.classList.add("is-visible");
       telemetry.log("reveal", source, target, describeReveal(target));
       if (revealDebug) flashDebug(target, `reveal·${source}`);
