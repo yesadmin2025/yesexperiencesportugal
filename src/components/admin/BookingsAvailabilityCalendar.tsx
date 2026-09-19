@@ -82,6 +82,7 @@ export function BookingsAvailabilityCalendar() {
   const [year, setYear] = useState(today.getUTCFullYear());
   const [monthIndex, setMonthIndex] = useState(today.getUTCMonth());
   const [tourFilter, setTourFilter] = useState<string>("all");
+  const [statusFilter, setStatusFilter] = useState<"all" | "paid" | "pending">("all");
   const [bookings, setBookings] = useState<CalendarBooking[]>([]);
   const [rule, setRule] = useState<{ weekdays: number[]; blackoutDates: string[] } | null>(null);
   const [selected, setSelected] = useState<string | null>(null);
