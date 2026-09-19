@@ -3323,11 +3323,92 @@ html.reveal-ready .home-energy .reveal-stagger.is-visible {
 }
 .group:hover .lift-layer,
 .lift-layer:hover {
-  transform: translate3d(0, -2px, 0);
+  transform: translate3d(0, -4px, 0);
 }
 .group:hover .lift-layer-sm,
 .lift-layer-sm:hover {
-  transform: translate3d(0, -2px, 0);
+  transform: translate3d(0, -3px, 0);
+}
+
+/* =========================================================================
+   Card response on public pages — one micro interaction (160–200ms):
+   a small lift, a calm shadow and a slow image zoom. Pointer devices only,
+   so phones never inherit a stuck hover state; touch keeps its own press
+   state. Never applied inside checkout, forms, dialogs or navigation.
+   ====================================================================== */
+@media (hover: hover) and (pointer: fine) {
+  html[data-motion-scope="marketing"] .he-card-lift,
+  html[data-motion-scope="marketing"] .fw-card,
+  html[data-motion-scope="marketing"] .editorial-card,
+  html[data-motion-scope="marketing"] [data-editorial-card] {
+    transition:
+      transform 180ms var(--ease-scene),
+      box-shadow 180ms var(--ease-scene),
+      border-color 180ms var(--ease-scene);
+  }
+  html[data-motion-scope="marketing"] .he-card-lift:hover,
+  html[data-motion-scope="marketing"] .fw-card:hover,
+  html[data-motion-scope="marketing"] .editorial-card:hover,
+  html[data-motion-scope="marketing"] [data-editorial-card]:hover {
+    transform: translate3d(0, -4px, 0);
+    box-shadow: 0 18px 40px -26px color-mix(in oklab, var(--charcoal) 42%, transparent);
+  }
+
+  /* Slow image zoom inside any public card that already groups its hover. */
+  html[data-motion-scope="marketing"] .group:not(form):not([role="dialog"]) img {
+    transition: transform 240ms var(--ease-scene);
+  }
+  html[data-motion-scope="marketing"] .group:not(form):not([role="dialog"]):hover img {
+    transform: scale(1.035);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  html[data-motion-scope="marketing"] .he-card-lift:hover,
+  html[data-motion-scope="marketing"] .fw-card:hover,
+  html[data-motion-scope="marketing"] .editorial-card:hover,
+  html[data-motion-scope="marketing"] [data-editorial-card]:hover,
+  html[data-motion-scope="marketing"] .group:hover img {
+    transform: none !important;
+  }
+}
+
+/* =========================================================================
+   Hero parallax — homepage only, scroll-driven by `home-motion.ts` which
+   writes `--hero-parallax` (capped at ±18px on phones, ±28px on desktop).
+   Zero effect until the controller runs, and neutralised under reduced
+   motion, so the first paint and crawlers see a still frame.
+   ====================================================================== */
+html.motion-ready .home-energy .hero-story-stage {
+  transform: translate3d(0, var(--hero-parallax, 0px), 0);
+  will-change: transform;
+}
+@media (prefers-reduced-motion: reduce) {
+  html.motion-ready .home-energy .hero-story-stage {
+    transform: none !important;
+  }
+}
+
+/* =========================================================================
+   Route transition — public pages fade in on navigation so a new page
+   arrives instead of snapping. 300ms, opacity only, no layout shift.
+   ====================================================================== */
+@keyframes routeFadeIn {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 8px, 0);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+html[data-motion-scope="marketing"] [data-route-fade] {
+  animation: routeFadeIn 300ms var(--ease-scene) both;
+}
+@media (prefers-reduced-motion: reduce) {
+  html[data-motion-scope="marketing"] [data-route-fade] {
+    animation: none !important;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
