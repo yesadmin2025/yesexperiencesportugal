@@ -157,7 +157,7 @@ export function CookieConsent() {
             >
               We use cookies
             </p>
-            <p className="mt-0.5 max-w-[62ch] font-sans text-[10px] leading-[1.25] text-[color:var(--charcoal-soft)] sm:text-[12px] sm:leading-[1.42]">
+            <p className="mt-0.5 max-w-[62ch] font-sans text-[11px] leading-[1.35] text-[color:var(--charcoal-soft)] sm:text-[12px] sm:leading-[1.42]">
               Essential cookies keep the site working. Analytics help us improve.{" "}
               <a
                 href="/cookies"
