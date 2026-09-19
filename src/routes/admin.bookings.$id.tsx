@@ -169,7 +169,11 @@ function AdminBookingDetailPage() {
               try {
                 const result = await cancelAndRefund({ data: { id } });
                 setBooking((current) => current ? { ...current, status: result.status } : current);
-                setRefundMessage("Cancellation confirmed. The refund was submitted and the guest email was queued.");
+                setRefundMessage(
+                  result.alreadyProcessed
+                    ? "Stripe had already refunded this payment. The booking is now reconciled as refunded and the guest email was queued."
+                    : "Cancellation confirmed. The refund was submitted and the guest email was queued.",
+                );
               } catch (cause) {
                 setRefundMessage(cause instanceof Error ? cause.message : "The refund could not be submitted.");
               } finally {
