@@ -6588,6 +6588,10 @@ html {
 }
 
 @media (prefers-reduced-motion: reduce) {
+  .hero-cinematic .hero-cta-group {
+    opacity: 1 !important;
+    pointer-events: auto !important;
+  }
   .hero-cta-group[data-hero-composed="true"] .hero-cta__sheen {
     animation: none;
   }
