@@ -90,6 +90,7 @@ export const Route = createFileRoute("/tours/$tourId")({
           ...base,
           blurb: override.blurb ?? base.blurb,
           intro: override.intro ?? base.intro,
+          highlights: override.highlights ?? base.highlights,
           fitsBest: override.fitsBest ?? base.fitsBest,
         };
       }
