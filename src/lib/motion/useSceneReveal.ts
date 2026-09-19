@@ -37,9 +37,23 @@ export function useSceneReveal<T extends HTMLElement>(
   const { rootMargin = "0px 0px -10% 0px", threshold = 0.12, disabled = false } = options;
 
   useEffect(() => {
-    const el = ref.current;
-    if (!el || disabled) return;
-    if (el.dataset.scene === "in") return; // StrictMode double-mount guard.
+    if (disabled) return;
+    let io: IntersectionObserver | null = null;
+    let retryFrame = 0;
+
+    const initialise = () => {
+      const el = ref.current;
+      // Callback refs can settle immediately after this passive effect when a
+      // polymorphic Scene hydrates. Retry once rather than silently leaving an
+      // otherwise motion-enabled scene permanently static.
+      if (!el) {
+        retryFrame = window.requestAnimationFrame(() => {
+          const settled = ref.current;
+          if (settled) initialise();
+        });
+        return;
+      }
+      if (el.dataset.scene === "in") return; // StrictMode double-mount guard.
 
     const prefersReduced =
       typeof window !== "undefined" &&
@@ -70,7 +84,7 @@ export function useSceneReveal<T extends HTMLElement>(
     // Below the fold: opt in to reveal styles, then observe.
     el.dataset.sceneReady = "1";
 
-    const io = new IntersectionObserver(
+    io = new IntersectionObserver(
       (entries, observer) => {
         for (const entry of entries) {
           if (entry.isIntersecting) {
@@ -83,9 +97,13 @@ export function useSceneReveal<T extends HTMLElement>(
       { rootMargin, threshold },
     );
     io.observe(el);
+    };
+
+    initialise();
 
     return () => {
-      io.disconnect();
+      if (retryFrame) window.cancelAnimationFrame(retryFrame);
+      io?.disconnect();
     };
   }, [ref, rootMargin, threshold, disabled]);
 }
