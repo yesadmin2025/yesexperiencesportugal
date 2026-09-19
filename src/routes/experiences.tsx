@@ -181,7 +181,7 @@ function TourCard({
       </Link>
 
       <div className="experience-card-content flex flex-1 flex-col border-b border-[color:var(--border)] pb-8 pt-6 md:pb-10">
-        <div className="flex flex-wrap items-center gap-x-2 gap-y-1 text-[10.5px] font-medium uppercase tracking-[0.18em] text-[color:var(--teal)]">
+        <div className="flex flex-wrap items-center gap-x-2 gap-y-1 text-[11px] font-medium uppercase tracking-[0.16em] text-[color:var(--teal)]">
           <span>{tour.region}</span>
           <span aria-hidden="true" className="text-[color:var(--gold)]">
             ·

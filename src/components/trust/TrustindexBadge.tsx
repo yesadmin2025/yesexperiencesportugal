@@ -97,7 +97,7 @@ export function TrustindexBadge() {
           Trusted Site
         </span>
         <span className="flex flex-col items-center bg-[#111111] px-1.5 py-[3px] sm:px-2 text-[#FFFFFF]">
-          <span className="text-[10px] sm:text-[10.5px]" style={{ fontWeight: 400 }}>
+          <span className="text-[11px] sm:text-[11.5px]" style={{ fontWeight: 400 }}>
             Verified by
           </span>
           <span className="text-[11px] sm:text-[11.5px]" style={{ fontWeight: 700 }}>

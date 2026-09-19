@@ -178,7 +178,7 @@ export function TourReviews({ tourId }: { tourId: string }) {
           role="group"
           aria-label="Sort reviews"
         >
-          <span className="text-[10.5px] uppercase tracking-[0.22em] text-[color:var(--text-muted)] mr-1">
+          <span className="text-[11px] uppercase tracking-[0.18em] text-[color:var(--text-muted)] mr-1">
             Sort
           </span>
           {(
@@ -216,7 +216,7 @@ export function TourReviews({ tourId }: { tourId: string }) {
             >
               <div className="flex items-center justify-between gap-3">
                 <Stars rating={r.rating} />
-                <span className="text-[10.5px] uppercase tracking-[0.18em] text-[color:var(--text-muted)]">
+                <span className="text-[11px] uppercase tracking-[0.16em] text-[color:var(--text-muted)]">
                   {r.is_first_party
                     ? "Verified guest"
                     : `via ${SOURCE_LABEL[r.source] ?? r.source}`}

@@ -723,7 +723,7 @@ function HomePage() {
                   ].map((d) => (
                     <li key={d.n} className="reveal-stagger flex flex-col gap-1.5">
                       <span aria-hidden="true" className="block h-[3px] bg-[color:var(--gold)]" />
-                      <span className="text-[10.5px] uppercase tracking-[0.18em] font-semibold text-[color:var(--charcoal)] tabular-nums">
+                      <span className="text-[11px] uppercase tracking-[0.16em] font-semibold text-[color:var(--charcoal)] tabular-nums">
                         {d.n} · {d.label}
                       </span>
                     </li>
@@ -842,7 +842,7 @@ function HomePage() {
                         />
                         {/* Top row: region + rating + price — social proof and value signal above the fold */}
                         <div className="absolute inset-x-0 top-0 z-[3] p-4 md:p-5 flex items-start justify-between gap-2">
-                          <span className="min-w-0 truncate text-[11px] uppercase tracking-[0.26em] font-medium text-white [text-shadow:0_1px_3px_rgba(0,0,0,0.55)]">
+                          <span className="min-w-0 max-w-[62%] text-[11px] uppercase leading-[1.35] tracking-[0.16em] font-medium text-white [text-shadow:0_1px_3px_rgba(0,0,0,0.55)]">
                             {t.region}
                           </span>
                           <div className="flex items-center gap-1.5 shrink-0">
@@ -863,7 +863,7 @@ function HomePage() {
                               </span>
                             )}
                             <span className="inline-flex items-baseline gap-1 rounded-full bg-white px-2.5 py-1 text-[color:var(--charcoal)] shadow-[0_2px_8px_rgba(0,0,0,0.22)]">
-                              <span className="text-[10px] uppercase tracking-[0.2em] font-semibold">
+                              <span className="text-[11px] uppercase tracking-[0.16em] font-semibold">
                                 From
                               </span>
                               <span className="serif text-[13.5px] leading-none">
