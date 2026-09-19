@@ -104,21 +104,24 @@ export function RouteLegend({
           return (
             <li
               key={`${i}-${from}-${to}`}
-              className="grid grid-cols-[16px_1fr_auto] items-center gap-2 text-[12px] text-[color:var(--charcoal)]"
+              className="grid grid-cols-[16px_minmax(0,1fr)_auto] items-start gap-2 text-[12px] leading-[1.5] text-[color:var(--charcoal)]"
             >
               <span
-                className="text-[color:var(--gold)]"
+                className="mt-[1px] text-[color:var(--gold)]"
                 aria-label={mode === "walking" ? "Walking leg" : "Driving leg"}
                 title={mode === "walking" ? "Walking" : "Driving"}
               >
                 {mode === "walking" ? <Footprints size={14} /> : <Car size={14} />}
               </span>
-              <span className="truncate">
+              {/* Wraps instead of truncating: real stop names ("Évora historic
+                  centre → Roman Temple of Évora") exceed the column on a 393px
+                  phone, and a clipped label reads as an error. */}
+              <span className="min-w-0 break-words">
                 <span className="text-[color:var(--charcoal)]/70">{from}</span>
                 <span className="mx-1.5 text-[color:var(--text-icon)]">→</span>
                 <span>{to}</span>
               </span>
-              <span className="text-[11px] tabular-nums text-[color:var(--charcoal)]/70 whitespace-nowrap">
+              <span className="mt-[1px] whitespace-nowrap text-[11px] tabular-nums text-[color:var(--charcoal)]/70">
                 {Math.round(min)} min
                 {km !== null ? ` · ${formatKm(km)}` : ""}
               </span>
