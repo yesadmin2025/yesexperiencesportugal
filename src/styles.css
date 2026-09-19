@@ -3331,21 +3331,22 @@ html.reveal-ready .home-energy .reveal-stagger.is-visible {
 }
 
 /* =========================================================================
-   Card response on public pages — one micro interaction (160–200ms):
-   a small lift, a calm shadow and a slow image zoom. Pointer devices only,
-   so phones never inherit a stuck hover state; touch keeps its own press
-   state. Never applied inside checkout, forms, dialogs or navigation.
+   Card response on public pages — one micro interaction (160–200ms).
+   Pointer devices get hover; touch devices get the SAME language through
+   entry state (`motion-in` / `is-visible`), viewport focus and `:active`,
+   so a phone is never a dead surface. Never inside checkout, forms,
+   dialogs or navigation.
    ====================================================================== */
+html[data-motion-scope="marketing"] .he-card-lift,
+html[data-motion-scope="marketing"] .fw-card,
+html[data-motion-scope="marketing"] .editorial-card,
+html[data-motion-scope="marketing"] [data-editorial-card] {
+  transition:
+    transform 180ms var(--ease-scene),
+    box-shadow 180ms var(--ease-scene),
+    border-color 180ms var(--ease-scene);
+}
 @media (hover: hover) and (pointer: fine) {
-  html[data-motion-scope="marketing"] .he-card-lift,
-  html[data-motion-scope="marketing"] .fw-card,
-  html[data-motion-scope="marketing"] .editorial-card,
-  html[data-motion-scope="marketing"] [data-editorial-card] {
-    transition:
-      transform 180ms var(--ease-scene),
-      box-shadow 180ms var(--ease-scene),
-      border-color 180ms var(--ease-scene);
-  }
   html[data-motion-scope="marketing"] .he-card-lift:hover,
   html[data-motion-scope="marketing"] .fw-card:hover,
   html[data-motion-scope="marketing"] .editorial-card:hover,
@@ -3362,31 +3363,155 @@ html.reveal-ready .home-energy .reveal-stagger.is-visible {
     transform: scale(1.035);
   }
 }
+
+/* Touch parity 1 — the card centred in the viewport lifts slightly. */
+html[data-motion-scope="marketing"] .is-focus-card {
+  transform: translate3d(0, -3px, 0);
+  box-shadow: 0 16px 36px -26px color-mix(in oklab, var(--charcoal) 38%, transparent);
+}
+
+/* Touch parity 2 — images settle out of a soft zoom when the card enters. */
+html.motion-ready[data-motion-scope="marketing"] [data-motion] img,
+html.reveal-ready[data-motion-scope="marketing"] .reveal img,
+html.reveal-ready[data-motion-scope="marketing"] .reveal-stagger img {
+  transform: scale(1.045);
+  transition: transform 720ms var(--ease-scene);
+}
+html.motion-ready[data-motion-scope="marketing"] [data-motion].motion-in img,
+html.reveal-ready[data-motion-scope="marketing"] .reveal.is-visible img,
+html.reveal-ready[data-motion-scope="marketing"] .reveal-stagger.is-visible img {
+  transform: scale(1);
+}
+
+/* Touch parity 3 — arrows advance when the card enters, not on hover. */
+html[data-motion-scope="marketing"] .motion-in .cta-arrow,
+html[data-motion-scope="marketing"] .is-visible .cta-arrow,
+html[data-motion-scope="marketing"] .motion-in [data-cta-arrow],
+html[data-motion-scope="marketing"] .is-visible [data-cta-arrow] {
+  animation: ctaArrowCue 1600ms var(--ease-scene) 320ms 2 both;
+}
+@keyframes ctaArrowCue {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0);
+  }
+  45% {
+    transform: translate3d(7px, 0, 0);
+  }
+}
+
+/* Touch parity 4 — immediate press response on every public action. */
+html[data-motion-scope="marketing"] a:active,
+html[data-motion-scope="marketing"] button:active,
+html[data-motion-scope="marketing"] .he-card-lift:active,
+html[data-motion-scope="marketing"] [data-editorial-card]:active {
+  transform: scale(0.982);
+  transition: transform 140ms var(--ease-scene);
+}
+
 @media (prefers-reduced-motion: reduce) {
   html[data-motion-scope="marketing"] .he-card-lift:hover,
   html[data-motion-scope="marketing"] .fw-card:hover,
   html[data-motion-scope="marketing"] .editorial-card:hover,
   html[data-motion-scope="marketing"] [data-editorial-card]:hover,
-  html[data-motion-scope="marketing"] .group:hover img {
+  html[data-motion-scope="marketing"] .is-focus-card,
+  html[data-motion-scope="marketing"] a:active,
+  html[data-motion-scope="marketing"] button:active,
+  html[data-motion-scope="marketing"] .group:hover img,
+  html[data-motion-scope="marketing"] [data-motion] img,
+  html[data-motion-scope="marketing"] .reveal img,
+  html[data-motion-scope="marketing"] .reveal-stagger img {
     transform: none !important;
+  }
+  html[data-motion-scope="marketing"] .cta-arrow,
+  html[data-motion-scope="marketing"] [data-cta-arrow] {
+    animation: none !important;
   }
 }
 
 /* =========================================================================
-   Hero parallax — homepage only, scroll-driven by `home-motion.ts` which
-   writes `--hero-parallax` (capped at ±18px on phones, ±28px on desktop).
-   Zero effect until the controller runs, and neutralised under reduced
-   motion, so the first paint and crawlers see a still frame.
+   Hero scroll scene — one continuous, scroll-linked cinematic move.
+   `home-motion.ts` writes `--scene-progress` on the hero section and
+   `--hero-zoom` / `--hero-dim` on the film stage; CSS owns every transform.
+   The film pushes in slowly (1 → 1.08) and dims; the headline and the
+   support line rise at different speeds for real depth. The CTA block is
+   never transformed, so the buttons stay exactly where the thumb expects.
+   Zero effect before the controller runs and under reduced motion.
    ====================================================================== */
-html.motion-ready .home-energy .hero-story-stage {
-  transform: translate3d(0, var(--hero-parallax, 0px), 0);
+html.motion-ready .hero-cinematic .hero-story-stage {
+  transform: scale(var(--hero-zoom, 1));
+  transform-origin: 50% 46%;
   will-change: transform;
 }
+html.motion-ready .hero-cinematic .hero-story-stage::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: #14110e;
+  opacity: var(--hero-dim, 0);
+}
+html.motion-ready .hero-cinematic .hero-stanza-zone {
+  transform: translate3d(0, calc(var(--scene-progress, 0) * -34px), 0);
+  opacity: calc(1 - var(--scene-progress, 0) * 0.85);
+}
+html.motion-ready .hero-cinematic .hero-support-zone {
+  transform: translate3d(0, calc(var(--scene-progress, 0) * -74px), 0);
+  opacity: calc(1 - var(--scene-progress, 0) * 1.05);
+}
+html.motion-ready .hero-cinematic .hero-eyebrow-zone {
+  transform: translate3d(0, calc(var(--scene-progress, 0) * -18px), 0);
+  opacity: calc(1 - var(--scene-progress, 0) * 1.2);
+}
 @media (prefers-reduced-motion: reduce) {
-  html.motion-ready .home-energy .hero-story-stage {
+  html.motion-ready .hero-cinematic .hero-story-stage,
+  html.motion-ready .hero-cinematic .hero-stanza-zone,
+  html.motion-ready .hero-cinematic .hero-support-zone,
+  html.motion-ready .hero-cinematic .hero-eyebrow-zone {
+    transform: none !important;
+    opacity: 1 !important;
+  }
+  html.motion-ready .hero-cinematic .hero-story-stage::after {
+    opacity: 0 !important;
+  }
+}
+
+/* =========================================================================
+   Line-by-line storytelling — `home-motion.ts` splits marked headings into
+   rendered lines after hydration and sets `--line-index` per word. Each
+   line arrives from below, 110ms apart, one phrase per section.
+   ====================================================================== */
+@keyframes storyLineIn {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 0.5em, 0);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+html.motion-ready [data-story-lines] .story-word {
+  display: inline-block;
+}
+html.motion-ready [data-story-lines][data-motion]:not(.motion-in) .story-word,
+html.motion-ready [data-story-lines].reveal:not(.is-visible) .story-word {
+  opacity: 0;
+}
+html.motion-ready [data-story-lines][data-motion].motion-in .story-word,
+html.motion-ready [data-story-lines].reveal.is-visible .story-word,
+html.motion-ready [data-story-lines]:not([data-motion]):not(.reveal) .story-word {
+  animation: storyLineIn 460ms var(--ease-scene) both;
+  animation-delay: calc(var(--line-index, 0) * 110ms);
+}
+@media (prefers-reduced-motion: reduce) {
+  html.motion-ready [data-story-lines] .story-word {
+    animation: none !important;
+    opacity: 1 !important;
     transform: none !important;
   }
 }
+
 
 /* =========================================================================
    Route transition — public pages fade in on navigation so a new page
