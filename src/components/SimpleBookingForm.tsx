@@ -727,7 +727,7 @@ function Field({
     <div className="block" role="group" aria-labelledby={labelId}>
       <div
         id={labelId}
-        className="flex items-center gap-1.5 text-[12px] font-medium uppercase tracking-[0.14em] text-[color:var(--charcoal)] mb-2"
+        className="flex items-center gap-1.5 text-[12px] font-medium uppercase tracking-[0.22em] text-[color:var(--charcoal)] mb-1.5"
       >
         {icon}
         {label}

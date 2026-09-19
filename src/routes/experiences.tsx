@@ -78,14 +78,15 @@ function ExperiencesPage() {
   useMarketingMotion();
   const { resolveImg } = useImportedTourImages();
   const tours = signatureTours.map((tour) => {
+    const canonicalContent = getTourContent(tour.id);
     const override = contentOverrides.find((row) => row.tourId === tour.id);
     return override
       ? {
           ...tour,
           blurb: override.blurb ?? tour.blurb,
-          highlights: override.highlights ?? tour.highlights,
+          highlights: override.highlights ?? canonicalContent.highlights,
         }
-      : tour;
+      : { ...tour, highlights: canonicalContent.highlights };
   });
 
   return (

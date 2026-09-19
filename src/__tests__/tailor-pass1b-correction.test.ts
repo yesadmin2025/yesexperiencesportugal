@@ -111,13 +111,13 @@ describe("Arrábida winery counter bounds", () => {
     expect(winerySupplementEur(id, 4)).toBe(40);
   });
 
-  it("still requires a removed stop for the 4th visit", () => {
-    expect(canSelectWineries(id, 4, 0).allowed).toBe(false);
+  it("allows a fourth visit without removing an included moment", () => {
+    expect(canSelectWineries(id, 4, 0).allowed).toBe(true);
     expect(canSelectWineries(id, 4, 1).allowed).toBe(true);
   });
 
   it("disables the controls at the bounds instead of toasting", () => {
-    expect(src).toContain("const wineryMin = rules.wineries?.included ?? 0;");
+    expect(src).toContain("const wineryMin = rules.wineries?.min ?? rules.wineries?.included ?? 0;");
     expect(src).toContain("const wineryMax = rules.wineries?.max ?? 0;");
     expect(src).toContain("disabled={!canRemoveWineryVisit}");
     expect(src).toContain("disabled={!canAddWineryVisit}");

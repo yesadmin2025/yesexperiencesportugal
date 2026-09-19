@@ -437,15 +437,15 @@ function HomePage() {
   const { contentOverrides } = Route.useLoaderData();
   const signatures = useMemo(() => {
     const byTour = new Map(contentOverrides.map((row) => [row.tourId, row]));
-    return baseSignatures.map((tour) => {
-      const override = byTour.get(tour.id);
+    return baseSignatures.map((card) => {
+      const override = byTour.get(card.id);
       return override
         ? {
-            ...tour,
-            line: override.blurb ?? tour.line,
-            highlights: override.highlights?.slice(0, 3) ?? tour.highlights,
+            ...card,
+            line: override.blurb ?? card.line,
+            highlights: override.highlights?.slice(0, 3) ?? card.highlights,
           }
-        : tour;
+        : card;
     });
   }, [contentOverrides]);
   const scrollDebug = useScrollDebugFlags();
