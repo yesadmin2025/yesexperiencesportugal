@@ -126,7 +126,15 @@ function AdminExperiencesHub() {
 
           <ExperienceCopyEditor />
 
-          <div className="mt-10 grid gap-4 md:grid-cols-2">
+          <div className="mt-10 grid gap-4 md:grid-cols-3">
+            <ToolCard
+              to="/admin/photos"
+              search={{ tourId }}
+              icon={<ArrowRight size={20} />}
+              title="Manage photos"
+              eyebrow="Visuals"
+              description="Upload multi-select gallery photos, set a cover image and reorder from your phone."
+            />
             <ToolCard
               to="/admin/pricing"
               icon={<Euro size={20} />}
@@ -156,7 +164,7 @@ function AdminExperiencesHub() {
   );
 }
 
-type Draft = { blurb: string; intro: string; fitsBest: string; isPublished: boolean };
+type Draft = { blurb: string; intro: string; fitsBest: string; highlights: string; isPublished: boolean };
 
 function ExperienceCopyEditor() {
   const load = useServerFn(listExperienceContent);
@@ -170,6 +178,7 @@ function ExperienceCopyEditor() {
     blurb: "",
     intro: "",
     fitsBest: "",
+    highlights: "",
     isPublished: true,
   });
   const [status, setStatus] = useState<string | null>(null);
@@ -199,6 +208,7 @@ function ExperienceCopyEditor() {
       blurb: o?.blurb ?? tour.blurb,
       intro: o?.intro ?? tour.intro,
       fitsBest: o?.fitsBest ?? tour.fitsBest,
+      highlights: o?.highlights?.join(", ") ?? tour.highlights.join(", ")
       isPublished: o?.isPublished ?? true,
     });
     setStatus(null);
@@ -226,6 +236,7 @@ function ExperienceCopyEditor() {
           blurb: draft.blurb,
           intro: draft.intro,
           fitsBest: draft.fitsBest,
+          highlights: draft.highlights.split(",").map(s => s.trim()).filter(Boolean),
           isPublished: draft.isPublished,
         },
       });
@@ -243,6 +254,7 @@ function ExperienceCopyEditor() {
       blurb: rev.blurb ?? "",
       intro: rev.intro ?? "",
       fitsBest: rev.fitsBest ?? "",
+      highlights: rev.highlights?.join(", ") ?? "",
       isPublished: rev.isPublished,
     });
     setStatus("Earlier version loaded. Save to publish it again.");
@@ -254,7 +266,7 @@ function ExperienceCopyEditor() {
     <div className="mt-8 border border-[color:var(--border)] bg-white p-5">
       <h2 className="text-lg font-semibold">Experience description</h2>
       <p className="mt-1 text-xs leading-relaxed text-[color:var(--charcoal-soft)]">
-        Three fields a guest actually reads. Leave one empty to fall back to the current site text.
+        Four fields a guest actually reads. Leave one empty to fall back to the current site text.
       </p>
 
       <label className="mt-5 block text-[10px] uppercase tracking-[0.18em] text-[color:var(--charcoal-soft)]">
@@ -274,6 +286,13 @@ function ExperienceCopyEditor() {
       </label>
 
       <Field
+        label="Highlights"
+        hint="Comma-separated list (e.g. wine tasting, historic tiles, beach lunch)."
+        value={draft.highlights}
+        rows={2}
+        onChange={(v) => setDraft((d) => ({ ...d, highlights: v }))}
+      />
+      <Field
         label="Card teaser"
         hint="One sentence, used on cards and in search results."
         value={draft.blurb}
@@ -281,11 +300,25 @@ function ExperienceCopyEditor() {
         onChange={(v) => setDraft((d) => ({ ...d, blurb: v }))}
       />
       <Field
+        label="Highlights"
+        hint="Comma-separated list (e.g. wine tasting, historic tiles, beach lunch)."
+        value={draft.highlights}
+        rows={2}
+        onChange={(v) => setDraft((d) => ({ ...d, highlights: v }))}
+      />
+      <Field
         label="Opening paragraph"
         hint="Two or three sentences at the top of the experience page."
         value={draft.intro}
         rows={6}
         onChange={(v) => setDraft((d) => ({ ...d, intro: v }))}
+      />
+      <Field
+        label="Highlights"
+        hint="Comma-separated list (e.g. wine tasting, historic tiles, beach lunch)."
+        value={draft.highlights}
+        rows={2}
+        onChange={(v) => setDraft((d) => ({ ...d, highlights: v }))}
       />
       <Field
         label="Who it fits"
@@ -317,6 +350,7 @@ function ExperienceCopyEditor() {
         <Link
           to="/tours/$tourId"
           params={{ tourId: tour.id }}
+          target="_blank"
           target="_blank"
           className="inline-flex min-h-11 items-center border border-[color:var(--border)] px-5 text-sm"
         >
