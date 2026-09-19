@@ -1058,22 +1058,24 @@
     to { transform: translateX(8px); opacity: 1; }
   }
   .cta-arrow-stage {
-    min-width: 22px;
+    min-width: 34px;
+    min-height: 20px;
+    color: var(--gold);
   }
   .cta-arrow-line {
     position: absolute;
-    right: 11px;
-    width: 16px;
+    right: 13px;
+    width: 22px;
     height: 1px;
     background: currentColor;
     transform: scaleX(0);
     transform-origin: right center;
   }
   .cta-arrow-stage.is-visible .cta-arrow-line {
-    animation: ctaArrowLineDraw 760ms var(--ease-scene) 180ms both;
+    animation: ctaArrowLineDraw 960ms var(--ease-scene) 180ms both;
   }
   .cta-arrow-stage.is-visible .cta-arrow-cue {
-    animation: ctaArrowEntranceCue 760ms var(--ease-scene) 180ms both;
+    animation: ctaArrowEntranceCue 960ms var(--ease-scene) 360ms both;
   }
   @keyframes ctaArrowLineDraw {
     from { transform: scaleX(0); opacity: 0; }
@@ -3189,17 +3191,17 @@ html.reveal-ready .reveal.is-visible {
    resolves in cascade instead of all at once. */
 html.reveal-ready .reveal-stagger {
   opacity: 0;
-  clip-path: inset(0 100% 0 0);
   transform: none;
   transition:
     opacity 440ms var(--ease-scene),
-    clip-path 680ms var(--ease-scene),
+    filter 680ms var(--ease-scene),
     border-color 440ms var(--ease-scene);
+  filter: saturate(0.76) contrast(0.92);
   will-change: opacity, clip-path;
 }
 html.reveal-ready .reveal-stagger.is-visible {
   opacity: 1;
-  clip-path: inset(0 0 0 0);
+  filter: saturate(1) contrast(1);
   transform: none;
   animation: none;
   animation-delay: var(--motion-delay, 0ms);
@@ -3255,7 +3257,7 @@ html.reveal-ready .home-energy.reveal.is-visible {
    single observer target, so headings never wait for a competing controller. */
 html.reveal-ready .home-energy .reveal > :is(h1, h2),
 html.reveal-ready .home-energy .reveal > header > :is(h1, h2) {
-  clip-path: inset(0 100% 0 0);
+  clip-path: inset(100% 0 0 0);
   opacity: 0;
   transition:
     clip-path 780ms cubic-bezier(0.16, 1, 0.3, 1),
@@ -3270,7 +3272,7 @@ html.reveal-ready .home-energy .reveal-stagger {
   transform: none;
   transition:
     opacity 440ms var(--ease-scene),
-    clip-path 680ms var(--ease-scene);
+    filter 680ms var(--ease-scene);
 }
 html.reveal-ready .home-energy .reveal-stagger.is-visible {
   transform: none;
@@ -3544,12 +3546,12 @@ html.motion-ready[data-motion-scope="marketing"] [data-motion].motion-in {
 }
 html.motion-ready[data-motion-scope="marketing"] [data-motion="editorial-clip"] {
   transform: none;
-  clip-path: inset(0 100% 0 0);
-  transition: opacity 460ms var(--ease-scene), clip-path 520ms var(--ease-scene);
+  clip-path: inset(100% 0 0 0);
+  transition: opacity 460ms var(--ease-scene), clip-path 680ms var(--ease-scene);
 }
 html.motion-ready[data-motion-scope="marketing"] [data-motion="card-reveal"] {
   opacity: 0;
-  clip-path: inset(0 100% 0 0);
+  clip-path: inset(8% 8% 8% 8%);
   filter: saturate(0.72) contrast(0.9);
   transition:
     opacity 440ms var(--ease-scene),
@@ -3560,6 +3562,41 @@ html.motion-ready[data-motion-scope="marketing"] [data-motion="card-reveal"].mot
   opacity: 1;
   clip-path: inset(0 0 0 0);
   filter: saturate(1) contrast(1);
+}
+
+/* Homepage cards alternate their internal image reveal rather than moving the
+   whole grid in one direction. Geometry remains fixed throughout. */
+html.reveal-ready .home-energy .reveal-stagger .he-image-cinema,
+html.reveal-ready .home-energy .reveal-stagger [data-card-image] {
+  clip-path: inset(0 8% 0 8%);
+  transform: scale(1.018);
+  transition: clip-path 820ms var(--ease-scene), transform 900ms var(--ease-scene);
+}
+html.reveal-ready .home-energy .reveal-stagger:nth-child(even) .he-image-cinema,
+html.reveal-ready .home-energy .reveal-stagger:nth-child(even) [data-card-image] {
+  clip-path: inset(8% 0 8% 0);
+}
+html.reveal-ready .home-energy .reveal-stagger.is-visible .he-image-cinema,
+html.reveal-ready .home-energy .reveal-stagger.is-visible [data-card-image] {
+  clip-path: inset(0);
+  transform: scale(1);
+}
+
+/* Native iOS date controls must remain inside the Signature booking column. */
+.signature-booking-form,
+.signature-booking-form * {
+  box-sizing: border-box;
+}
+.signature-date-input {
+  inline-size: 100%;
+  min-inline-size: 0;
+}
+@supports (-webkit-touch-callout: none) {
+  .signature-date-input {
+    display: flex;
+    align-items: center;
+    -webkit-appearance: none;
+  }
 }
 html.motion-ready[data-motion-scope="marketing"] [data-motion="editorial-clip"].motion-in {
   transform: translate3d(0, 0, 0);

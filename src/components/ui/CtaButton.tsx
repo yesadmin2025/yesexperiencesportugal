@@ -107,19 +107,25 @@ const variantStyle: Record<Variant, React.CSSProperties | undefined> = {
  * with a restrained directional response. Used for all filled/ghost
  * conversion CTAs so the arrow micro-interaction stays canonical.
  */
-function KineticArrow({ tone = "gold" }: { tone?: "gold" | "goldSoft" }) {
+export function CtaMotionArrow({
+  tone = "gold",
+  className,
+}: {
+  tone?: "gold" | "goldSoft";
+  className?: string;
+}) {
   const color = tone === "goldSoft" ? "var(--gold-soft)" : "var(--gold)";
-  const [ref, inView] = useInView<HTMLSpanElement>({ rootMargin: "0px 0px -8% 0px", threshold: 0.01 });
+  const [ref, inView] = useInView<HTMLSpanElement>({ rootMargin: "0px 0px -32% 0px", threshold: 0.01 });
   return (
     <span
       ref={ref}
       aria-hidden="true"
-      className={cn("cta-arrow-stage relative flex items-center", inView && "is-visible")}
+      className={cn("cta-arrow-stage relative flex shrink-0 items-center", inView && "is-visible", className)}
     >
       <span className="cta-arrow-line" />
       <ArrowRight
-        size={16}
-        strokeWidth={1.3}
+        size={19}
+        strokeWidth={1.45}
         className="cta-arrow-cue relative transition-transform duration-[var(--dur-quick)] ease-[var(--ease-scene)] group-hover:translate-x-1 group-focus-visible:translate-x-1 group-active:translate-x-0.5 motion-reduce:transition-none motion-reduce:group-hover:translate-x-0"
         style={{ color }}
       />
@@ -185,17 +191,9 @@ export function CtaButton(props: CtaButtonProps) {
     loading && !isHairline ? (
       <CtaSpinner />
     ) : icon === null ? null : isHairline ? (
-      (icon ?? (
-        <span aria-hidden="true" className="flex items-center">
-          <span className="block h-[1px] w-5 bg-[color:var(--gold)] transition-all duration-[var(--dur-base)] group-hover:w-8 group-focus-visible:w-8 group-active:w-8" />
-          <ArrowRight
-            size={12}
-            className="ml-1 text-[color:var(--gold)] transition-transform duration-[var(--dur-base)] group-hover:translate-x-0.5 group-focus-visible:translate-x-0.5 group-active:translate-x-0.5"
-          />
-        </span>
-      ))
+      (icon ?? <CtaMotionArrow />)
     ) : (
-      (icon ?? <KineticArrow tone={variant === "primary" ? "gold" : "goldSoft"} />)
+      (icon ?? <CtaMotionArrow tone={variant === "primary" ? "gold" : "goldSoft"} />)
     );
 
   const baseLabelNode = loading && loadingLabel !== undefined ? loadingLabel : children;

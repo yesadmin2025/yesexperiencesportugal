@@ -78,7 +78,7 @@ export function MobileReserveBar({
         <a
           href="#book"
           onClick={() => dispatchSignatureReserveIntent({ tourId, placement: "mobile-bar" })}
-          className="ml-auto inline-flex min-h-[44px] flex-1 items-center justify-center rounded-full bg-[color:var(--teal)] px-5 text-[13px] font-medium uppercase tracking-[0.1em] text-[color:var(--ivory)] transition-colors duration-150 hover:bg-[color:var(--teal-2)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)] focus-visible:ring-offset-2"
+          className="ml-auto inline-flex min-h-[48px] flex-1 items-center justify-center rounded-[2px] border border-[color:var(--gold)]/55 bg-[color:var(--teal)] px-5 text-[12px] font-semibold uppercase tracking-[0.12em] text-[color:var(--ivory)] transition-[background-color,transform] duration-150 hover:bg-[color:var(--teal-2)] active:scale-[0.985] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)] focus-visible:ring-offset-2"
         >
           {CTA_LABELS.signatureBooking}
         </a>
