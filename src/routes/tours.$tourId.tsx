@@ -650,7 +650,7 @@ function HighlightsBlock({ tour }: { tour: SignatureTour }) {
 }
 
 /* ════════════════════════════════════════════════════════════════
- * 5 · ITINERARY — visual timeline (Viator stops when available)
+ * 5 · THE ROUTE — plain numbered list of the real stops, in order
  * ════════════════════════════════════════════════════════════ */
 function ItineraryTimeline({ tour, meta }: { tour: SignatureTour; meta?: ViatorMeta }) {
   // Source of truth (in order of preference):
@@ -658,7 +658,7 @@ function ItineraryTimeline({ tour, meta }: { tour: SignatureTour; meta?: ViatorM
   //   2. Tailor blueprint, projected to editorial chapters
   //   3. Raw Viator stops (passBy excluded)
   //   4. Internal tour.stops — last resort
-  type Chapter = { label: string; story?: string; optional?: boolean };
+  type Stop = { label: string; story?: string; optional?: boolean };
   const sot = projectPublicSotItinerary(tour.id) ?? [];
   const fromSot = sot
     .filter((c) => c.stopType !== "pass-by")
@@ -666,7 +666,7 @@ function ItineraryTimeline({ tour, meta }: { tour: SignatureTour; meta?: ViatorM
 
   const fromBlueprint = toEditorialChapters(tour.id);
   const viator = meta?.stops?.filter((s) => !s.passBy) ?? [];
-  const chapters: Chapter[] =
+  const stops: Stop[] =
     fromSot.length > 0
       ? fromSot
       : fromBlueprint && fromBlueprint.length > 0
@@ -675,53 +675,44 @@ function ItineraryTimeline({ tour, meta }: { tour: SignatureTour; meta?: ViatorM
           ? viator.map((s) => ({ label: s.name, story: s.desc }))
           : (tour.stops ?? []).map((s) => ({ label: s.label, story: s.story }));
 
-  if (chapters.length === 0) return null;
+  if (stops.length === 0) return null;
 
   return (
     <section className="py-14 md:py-20 bg-[color:var(--sand)]/40 border-y border-[color:var(--border)] reveal">
-      <div className="container-x max-w-5xl">
-        <div className="flex items-end justify-between mb-10 flex-wrap gap-3">
-          <div>
-            <Eyebrow>Itinerary</Eyebrow>
-            <SectionTitle size="compact">
-              The day, <SectionTitle.Em>chapter by chapter</SectionTitle.Em>
-            </SectionTitle>
-          </div>
-          <span className="text-[12px] uppercase tracking-[0.12em] text-[color:var(--charcoal-soft)]">
-            {chapters.length} chapters · in this order
-          </span>
+      <div className="container-x max-w-3xl">
+        <div className="mb-8">
+          <Eyebrow>Itinerary</Eyebrow>
+          <SectionTitle size="compact">
+            Your day, <SectionTitle.Em>stop by stop</SectionTitle.Em>
+          </SectionTitle>
+          <p className="mt-2 text-[13px] text-[color:var(--charcoal-soft)]">
+            {stops.length} stops, in this order · {signatureDurationLabel(tour.id, tour.durationHours)}
+          </p>
         </div>
 
-        <Scene as="ol" className="relative space-y-7">
-          <span
-            className="absolute left-[15px] top-2 bottom-2 w-px bg-gradient-to-b from-[color:var(--gold)]/60 via-[color:var(--gold)]/30 to-transparent md:left-[19px]"
-            aria-hidden
-          />
-          {chapters.map((s, i) => (
-            <li key={s.label + i} className="scene-item relative pl-12 md:pl-16">
-              <span className="absolute left-0 top-1 w-8 h-8 md:w-10 md:h-10 flex items-center justify-center rounded-full bg-[color:var(--ivory)] border border-[color:var(--gold)] text-[12px] md:text-[13px] text-[color:var(--teal)] shadow-[0_2px_8px_-2px_rgba(0,0,0,0.15)]">
-                {i + 1}
+        <Scene as="ol" className="m-0 list-none space-y-5 p-0">
+          {stops.map((s, i) => (
+            <li
+              key={s.label + i}
+              className="scene-item grid grid-cols-[2rem_minmax(0,1fr)] gap-x-3 border-t border-[color:var(--border)] pt-5 first:border-t-0 first:pt-0"
+            >
+              <span className="serif mt-[2px] text-[15px] tabular-nums text-[color:var(--gold-ink)]">
+                {String(i + 1).padStart(2, "0")}
               </span>
-
-              <div className="pt-1 pb-1">
-                <div className="flex items-center gap-2 flex-wrap">
-                  <span className="text-[12px] uppercase tracking-[0.26em] text-[color:var(--charcoal)]">
-                    Chapter {i + 1}
-                  </span>
-                  {s.optional && (
-                    <span className="text-[12px] uppercase tracking-[0.12em] px-2 py-[3px] rounded-full border border-[color:var(--gold)]/40 text-[color:var(--charcoal)] bg-[color:var(--gold)]/[0.06]">
-                      Optional
-                    </span>
-                  )}
-                </div>
+              <div className="min-w-0">
                 <h3
-                  className="serif text-[17px] md:text-[19px] leading-snug mt-2 text-[color:var(--charcoal)] font-normal"
+                  className="serif text-[17px] md:text-[19px] leading-snug text-[color:var(--charcoal)] font-medium"
                   data-mixed-emphasis="exempt"
                 >
                   {s.label}
+                  {s.optional && (
+                    <span className="ml-2 align-middle text-[11px] uppercase tracking-[0.16em] text-[color:var(--charcoal-soft)]">
+                      Optional
+                    </span>
+                  )}
                 </h3>
                 {s.story && (
-                  <p className="mt-2 text-[13.5px] md:text-[14px] text-[color:var(--charcoal-soft)] leading-relaxed max-w-2xl">
+                  <p className="mt-1.5 text-[14px] leading-relaxed text-[color:var(--charcoal-soft)]">
                     {s.story}
                   </p>
                 )}
