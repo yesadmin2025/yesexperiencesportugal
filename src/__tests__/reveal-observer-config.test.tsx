@@ -354,7 +354,7 @@ describe("reveal observers — prefers-reduced-motion fallback", () => {
     });
   });
 
-  it("clears any inline transition-delay so staggered items can't stay invisible", () => {
+  it("does not mutate an author-supplied inline delay in reduced motion", () => {
     vi.stubGlobal(
       "matchMedia",
       makeMatchMedia({
@@ -363,9 +363,7 @@ describe("reveal observers — prefers-reduced-motion fallback", () => {
       }),
     );
 
-    // Pre-set an inline transition-delay (as the cadence logic would in
-    // the non-reduced path). The reduced-motion fallback must wipe it so
-    // nothing keeps the element at opacity:0 behind a delay.
+    // Reduced motion is CSS-owned and should not mutate SSR-authored styles.
     const Wrapper = () => (
       <SiteLayout>
         <div
@@ -379,8 +377,7 @@ describe("reveal observers — prefers-reduced-motion fallback", () => {
 
     const el = document.querySelector<HTMLElement>('[data-testid="delayed"]')!;
     expect(el.classList.contains("is-visible")).toBe(true);
-    // SiteLayout's reduced-motion branch normalises this to "0ms".
-    expect(el.style.transitionDelay).toBe("0ms");
+    expect(el.style.transitionDelay).toBe("880ms");
   });
 });
 

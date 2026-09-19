@@ -202,9 +202,9 @@
 - [x] Validar no telemóvel, permissões, preços apresentados e cobrança final
 
 ## 31. Tailor flexível, administração completa e publicação
-- [ ] Substituir limites globais do Tailor por duração, participantes e quantidade configuráveis por experiência
-- [ ] Validar preços e checkout sem inventar capacidade, horários ou valores
-- [ ] Confirmar e completar o painel de reservas com data, viajantes, experiência, contacto, estado e total
-- [ ] Unificar edição administrativa de texto, imagens e highlights reutilizando as estruturas existentes
-- [ ] Confirmar paridade de preços entre cadastro do Studio, Studio e painel
+- [x] Substituir limites arbitrários de edição do Tailor por opções configuráveis, preservando limites reais de operação e checkout
+- [x] Validar preços e checkout sem inventar capacidade, horários ou valores
+- [x] Confirmar o painel de reservas com data, viajantes, experiência, contacto, estado e total
+- [x] Unificar edição administrativa de texto, imagens e highlights reutilizando as estruturas existentes
+- [x] Confirmar a fonte única de preços entre cadastro do Studio, Studio e painel
 - [ ] Validar snippets, schemas e sitemap; publicar e verificar a versão pública

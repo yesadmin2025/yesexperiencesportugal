@@ -18,8 +18,10 @@ import { PriceEur } from "@/components/ui/PriceEur";
 import { CTA_LABELS } from "@/content/cta-vocabulary";
 import { getViatorMeta } from "@/data/signatureToursViator";
 import { Star } from "lucide-react";
+import { listPublishedExperienceContent } from "@/lib/experienceContent.functions";
 
 export const Route = createFileRoute("/experiences")({
+  loader: async () => ({ contentOverrides: await listPublishedExperienceContent() }),
   head: () => ({
     meta: [
       { title: "Signature Private Tours in Portugal — Designed by Locals" },
@@ -72,8 +74,20 @@ export const Route = createFileRoute("/experiences")({
 });
 
 function ExperiencesPage() {
+  const { contentOverrides } = Route.useLoaderData();
   useMarketingMotion();
   const { resolveImg } = useImportedTourImages();
+  const tours = signatureTours.map((tour) => {
+    const canonicalContent = getTourContent(tour.id);
+    const override = contentOverrides.find((row) => row.tourId === tour.id);
+    return override
+      ? {
+          ...tour,
+          blurb: override.blurb ?? tour.blurb,
+          highlights: override.highlights ?? canonicalContent.highlights,
+        }
+      : { ...tour, highlights: canonicalContent.highlights };
+  });
 
   return (
     <SiteLayout>
@@ -107,7 +121,7 @@ function ExperiencesPage() {
       >
         <div className="container-x">
           <Scene className="experiences-editorial-grid experiences-story grid gap-x-10 gap-y-14 md:grid-cols-2 md:gap-y-18 lg:gap-x-16 lg:gap-y-24">
-            {signatureTours.map((tour, index) => (
+            {tours.map((tour, index) => (
               <TourCard key={tour.id} tour={tour} resolveImg={resolveImg} featured={index < 2} />
             ))}
           </Scene>

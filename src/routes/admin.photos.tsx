@@ -17,6 +17,9 @@ import { supabase } from "@/integrations/supabase/client";
 import { signatureTours } from "@/data/signatureTours";
 
 export const Route = createFileRoute("/admin/photos")({
+  validateSearch: (search: Record<string, unknown>) => ({
+    tourId: (search.tourId as string) || undefined,
+  }),
   head: () => ({
     meta: [{ title: "Tour photos · Admin" }, { name: "robots", content: "noindex, nofollow" }],
   }),
@@ -54,7 +57,8 @@ function AdminPhotosPage() {
   const [password, setPassword] = useState("");
   const [signingIn, setSigningIn] = useState(false);
 
-  const [tourId, setTourId] = useState<string>(signatureTours[0]?.id ?? "");
+  const search = Route.useSearch();
+  const [tourId, setTourId] = useState<string>((search as any).tourId || signatureTours[0]?.id || "");
   const [photos, setPhotos] = useState<PhotoRow[]>([]);
   const [loadingPhotos, setLoadingPhotos] = useState(false);
   const [uploading, setUploading] = useState(false);

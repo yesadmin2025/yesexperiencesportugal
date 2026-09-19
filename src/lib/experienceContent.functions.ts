@@ -20,6 +20,7 @@ export interface ExperienceContentOverride {
   blurb: string | null;
   intro: string | null;
   fitsBest: string | null;
+  highlights: string[] | null;
   isPublished: boolean;
   updatedAt: string | null;
   updatedBy: string | null;
@@ -52,7 +53,7 @@ function publicClient() {
   });
 }
 
-const SELECT = "tour_id, blurb, intro, fits_best, is_published, updated_at, updated_by";
+const SELECT = "tour_id, blurb, intro, fits_best, highlights, is_published, updated_at, updated_by";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function toOverride(row: any): ExperienceContentOverride {
@@ -61,6 +62,7 @@ function toOverride(row: any): ExperienceContentOverride {
     blurb: (row.blurb as string | null) ?? null,
     intro: (row.intro as string | null) ?? null,
     fitsBest: (row.fits_best as string | null) ?? null,
+    highlights: (row.highlights as string[] | null) ?? null,
     isPublished: row.is_published !== false,
     updatedAt: (row.updated_at as string | null) ?? null,
     updatedBy: (row.updated_by as string | null) ?? null,
@@ -84,6 +86,21 @@ export const getPublishedExperienceContent = createServerFn({ method: "GET" })
     }
   });
 
+/** Published card copy for public collection pages, fetched in one request. */
+export const listPublishedExperienceContent = createServerFn({ method: "GET" }).handler(
+  async (): Promise<ExperienceContentOverride[]> => {
+    try {
+      const { data } = await publicClient()
+        .from("experience_content_overrides")
+        .select(SELECT)
+        .eq("is_published", true);
+      return (data ?? []).map(toOverride);
+    } catch {
+      return [];
+    }
+  },
+);
+
 /** Every override, published or not — admin console. */
 export const listExperienceContent = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
@@ -101,6 +118,7 @@ const saveInput = z.object({
   blurb: z.string().max(400).nullable(),
   intro: z.string().max(2000).nullable(),
   fitsBest: z.string().max(240).nullable(),
+  highlights: z.array(z.string().min(1).max(180)).max(8).nullable(),
   isPublished: z.boolean().default(true),
 });
 
@@ -120,6 +138,7 @@ export const saveExperienceContent = createServerFn({ method: "POST" })
       blurb: clean(data.blurb),
       intro: clean(data.intro),
       fits_best: clean(data.fitsBest),
+      highlights: data.highlights?.map((value) => value.trim()).filter(Boolean) ?? null,
       is_published: data.isPublished,
       updated_by: context.userId,
       updated_at: new Date().toISOString(),
@@ -138,6 +157,7 @@ export const saveExperienceContent = createServerFn({ method: "POST" })
       blurb: payload.blurb,
       intro: payload.intro,
       fits_best: payload.fits_best,
+      highlights: payload.highlights,
       is_published: payload.is_published,
       updated_by: context.userId,
     });
@@ -158,7 +178,7 @@ export const listExperienceContentHistory = createServerFn({ method: "POST" })
     await assertAdmin(context);
     const { data: rows, error } = await context.supabase
       .from("experience_content_revisions")
-      .select("id, tour_id, blurb, intro, fits_best, is_published, updated_by, created_at")
+      .select("id, tour_id, blurb, intro, fits_best, highlights, is_published, updated_by, created_at")
       .eq("tour_id", data.tourId)
       .order("created_at", { ascending: false })
       .limit(20);

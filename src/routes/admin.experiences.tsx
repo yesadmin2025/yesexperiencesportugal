@@ -1,6 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
-import { CalendarDays, Euro, ArrowRight } from "lucide-react";
+import { CalendarDays, Euro, ArrowRight, Image as ImageIcon } from "lucide-react";
 import { useServerFn } from "@tanstack/react-start";
 import { SiteLayout } from "@/components/SiteLayout";
 import { supabase } from "@/integrations/supabase/client";
@@ -126,7 +126,15 @@ function AdminExperiencesHub() {
 
           <ExperienceCopyEditor />
 
-          <div className="mt-10 grid gap-4 md:grid-cols-2">
+          <div className="mt-10 grid gap-4 md:grid-cols-3">
+            <ToolCard
+              to="/admin/photos"
+              search={{ tourId: undefined }}
+              icon={<ImageIcon size={20} />}
+              title="Manage photos"
+              eyebrow="Visuals"
+              description="Upload multi-select gallery photos, set a cover image and reorder from your phone."
+            />
             <ToolCard
               to="/admin/pricing"
               icon={<Euro size={20} />}
@@ -156,7 +164,7 @@ function AdminExperiencesHub() {
   );
 }
 
-type Draft = { blurb: string; intro: string; fitsBest: string; isPublished: boolean };
+type Draft = { blurb: string; intro: string; fitsBest: string; highlights: string; isPublished: boolean };
 
 function ExperienceCopyEditor() {
   const load = useServerFn(listExperienceContent);
@@ -170,6 +178,7 @@ function ExperienceCopyEditor() {
     blurb: "",
     intro: "",
     fitsBest: "",
+    highlights: "",
     isPublished: true,
   });
   const [status, setStatus] = useState<string | null>(null);
@@ -199,6 +208,7 @@ function ExperienceCopyEditor() {
       blurb: o?.blurb ?? tour.blurb,
       intro: o?.intro ?? tour.intro,
       fitsBest: o?.fitsBest ?? tour.fitsBest,
+      highlights: (o?.highlights ?? tour.highlights).join("\n"),
       isPublished: o?.isPublished ?? true,
     });
     setStatus(null);
@@ -226,6 +236,10 @@ function ExperienceCopyEditor() {
           blurb: draft.blurb,
           intro: draft.intro,
           fitsBest: draft.fitsBest,
+          highlights: draft.highlights
+            .split("\n")
+            .map((value) => value.trim())
+            .filter(Boolean),
           isPublished: draft.isPublished,
         },
       });
@@ -243,6 +257,7 @@ function ExperienceCopyEditor() {
       blurb: rev.blurb ?? "",
       intro: rev.intro ?? "",
       fitsBest: rev.fitsBest ?? "",
+      highlights: rev.highlights?.join("\n") ?? "",
       isPublished: rev.isPublished,
     });
     setStatus("Earlier version loaded. Save to publish it again.");
@@ -254,7 +269,7 @@ function ExperienceCopyEditor() {
     <div className="mt-8 border border-[color:var(--border)] bg-white p-5">
       <h2 className="text-lg font-semibold">Experience description</h2>
       <p className="mt-1 text-xs leading-relaxed text-[color:var(--charcoal-soft)]">
-        Three fields a guest actually reads. Leave one empty to fall back to the current site text.
+        Four fields a guest actually reads. Leave one empty to fall back to the current site text.
       </p>
 
       <label className="mt-5 block text-[10px] uppercase tracking-[0.18em] text-[color:var(--charcoal-soft)]">
@@ -279,6 +294,13 @@ function ExperienceCopyEditor() {
         value={draft.blurb}
         rows={3}
         onChange={(v) => setDraft((d) => ({ ...d, blurb: v }))}
+      />
+      <Field
+        label="Highlights"
+        hint="One factual highlight per line, up to eight. These appear on the experience page and cards."
+        value={draft.highlights}
+        rows={6}
+        onChange={(v) => setDraft((d) => ({ ...d, highlights: v }))}
       />
       <Field
         label="Opening paragraph"
@@ -321,6 +343,13 @@ function ExperienceCopyEditor() {
           className="inline-flex min-h-11 items-center border border-[color:var(--border)] px-5 text-sm"
         >
           View live page
+        </Link>
+        <Link
+          to="/admin/photos"
+          search={{ tourId: tour.id }}
+          className="inline-flex min-h-11 items-center gap-2 border border-[color:var(--border)] px-5 text-sm"
+        >
+          <ImageIcon size={15} aria-hidden /> Edit photos &amp; cover
         </Link>
       </div>
 
@@ -391,16 +420,19 @@ function ToolCard({
   title,
   eyebrow,
   description,
+  search,
 }: {
-  to: "/admin/pricing" | "/admin/availability";
+  to: "/admin/pricing" | "/admin/availability" | "/admin/photos";
   icon: React.ReactNode;
   title: string;
   eyebrow: string;
   description: string;
+  search?: { tourId?: string };
 }) {
   return (
     <Link
       to={to}
+      search={to === "/admin/photos" ? (search ?? { tourId: undefined }) : undefined}
       className="group border border-[color:var(--border)] bg-white p-5 transition-colors hover:border-[color:var(--gold)]"
     >
       <div className="flex items-start justify-between gap-4">

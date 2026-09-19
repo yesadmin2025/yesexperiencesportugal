@@ -1344,6 +1344,7 @@ export type Database = {
           blurb: string | null
           created_at: string
           fits_best: string | null
+          highlights: string[] | null
           intro: string | null
           is_published: boolean
           tour_id: string
@@ -1354,6 +1355,7 @@ export type Database = {
           blurb?: string | null
           created_at?: string
           fits_best?: string | null
+          highlights?: string[] | null
           intro?: string | null
           is_published?: boolean
           tour_id: string
@@ -1364,6 +1366,7 @@ export type Database = {
           blurb?: string | null
           created_at?: string
           fits_best?: string | null
+          highlights?: string[] | null
           intro?: string | null
           is_published?: boolean
           tour_id?: string
@@ -1377,6 +1380,7 @@ export type Database = {
           blurb: string | null
           created_at: string
           fits_best: string | null
+          highlights: string[] | null
           id: string
           intro: string | null
           is_published: boolean
@@ -1387,6 +1391,7 @@ export type Database = {
           blurb?: string | null
           created_at?: string
           fits_best?: string | null
+          highlights?: string[] | null
           id?: string
           intro?: string | null
           is_published?: boolean
@@ -1397,6 +1402,7 @@ export type Database = {
           blurb?: string | null
           created_at?: string
           fits_best?: string | null
+          highlights?: string[] | null
           id?: string
           intro?: string | null
           is_published?: boolean
@@ -2109,6 +2115,7 @@ export type Database = {
           active: boolean
           created_at: string
           duration_minutes: number | null
+          duration_options_minutes: number[]
           fixed_start_times: string[]
           min_guests: number
           notes: string | null
@@ -2116,6 +2123,7 @@ export type Database = {
           open_to: string | null
           price_cents: number
           pricing_unit: string
+          quantity_options: number[]
           region: string
           stop_id: string
           updated_at: string
@@ -2125,6 +2133,7 @@ export type Database = {
           active?: boolean
           created_at?: string
           duration_minutes?: number | null
+          duration_options_minutes?: number[]
           fixed_start_times?: string[]
           min_guests?: number
           notes?: string | null
@@ -2132,6 +2141,7 @@ export type Database = {
           open_to?: string | null
           price_cents?: number
           pricing_unit?: string
+          quantity_options?: number[]
           region: string
           stop_id: string
           updated_at?: string
@@ -2141,6 +2151,7 @@ export type Database = {
           active?: boolean
           created_at?: string
           duration_minutes?: number | null
+          duration_options_minutes?: number[]
           fixed_start_times?: string[]
           min_guests?: number
           notes?: string | null
@@ -2148,6 +2159,7 @@ export type Database = {
           open_to?: string | null
           price_cents?: number
           pricing_unit?: string
+          quantity_options?: number[]
           region?: string
           stop_id?: string
           updated_at?: string

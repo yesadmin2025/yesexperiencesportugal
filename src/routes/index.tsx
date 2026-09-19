@@ -1,6 +1,6 @@
 import { localeAlternateLinks } from "@/i18n/seo";
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 
 import { SiteLayout } from "@/components/SiteLayout";
 import { FAQ } from "@/components/FAQ";
@@ -245,7 +245,7 @@ const HERO_FILM_PLAYBACK_RATE = 0.6;
  * THERE, not here, so attribution stays in sync with what's rendered.
  */
 
-const signatures = FEATURED_TOUR_IDS.filter((id) => isValidTourId(id))
+const baseSignatures = FEATURED_TOUR_IDS.filter((id) => isValidTourId(id))
   .map((id) => signatureTours.find((t) => t.id === id)!)
   .map((t) => {
     const meta = getViatorMeta(t.id);
@@ -344,6 +344,10 @@ const groupsAndCelebrations = [
  * yes-hero-copy-version meta tag) keep passing.
  * ────────────────────────────────────────────────────────────── */
 export const Route = createFileRoute("/")({
+  loader: async () => {
+    const { listPublishedExperienceContent } = await import("@/lib/experienceContent.functions");
+    return { contentOverrides: await listPublishedExperienceContent() };
+  },
   headers: () => ({
     // Allow crawlers + CDN to cache a stable HTML snapshot of the homepage.
     // Previously `no-store` combined with hero A/B variants made Googlebot
@@ -430,6 +434,20 @@ export const Route = createFileRoute("/")({
  * 13. Final decision
  * ════════════════════════════════════════════════════════════ */
 function HomePage() {
+  const { contentOverrides } = Route.useLoaderData();
+  const signatures = useMemo(() => {
+    const byTour = new Map(contentOverrides.map((row) => [row.tourId, row]));
+    return baseSignatures.map((card) => {
+      const override = byTour.get(card.id);
+      return override
+        ? {
+            ...card,
+            line: override.blurb ?? card.line,
+            highlights: override.highlights?.slice(0, 3) ?? card.highlights,
+          }
+        : card;
+    });
+  }, [contentOverrides]);
   const scrollDebug = useScrollDebugFlags();
 
   // Mark this scope so e2e visual-regression / copy-lock helpers can
