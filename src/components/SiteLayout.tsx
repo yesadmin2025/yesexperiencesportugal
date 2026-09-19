@@ -495,7 +495,6 @@ export function SiteLayout({ children }: { children: ReactNode }) {
     document.documentElement.classList.add("reveal-ready");
 
     // Unified cadence — small enough to feel continuous, slow enough to read.
-    const STAGGER_MS = 110;
     const MAX_STEPS = 8; // cap so late items don't drift too far behind
 
     // Pre-assign a stagger index to every .reveal-stagger element based on
