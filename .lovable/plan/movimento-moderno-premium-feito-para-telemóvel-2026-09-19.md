@@ -7,6 +7,7 @@ A correção muda a base: o movimento passa a ser conduzido pelo **scroll e pelo
 ## 1. Herói cinematográfico (em vez de parallax barato)
 
 Substituir o deslocamento de 18px por uma cena que se transforma enquanto se faz scroll:
+
 - a imagem/filme aproxima-se lentamente (1.0 → 1.08) e escurece gradualmente à medida que a página avança;
 - o título e o subtítulo sobem e desvanecem-se em ritmos diferentes (o título mais devagar do que o texto), criando profundidade real;
 - os botões mantêm-se estáveis e sempre clicáveis — nunca se movem para fora do alcance do dedo.
@@ -20,6 +21,7 @@ Nas frases-chave (herói, transições de secção, títulos editoriais), o text
 ## 3. Movimento no telemóvel sem rato
 
 Tudo o que hoje só acontece com o rato passa a ter equivalente móvel:
+
 - **setas**: avanço contínuo e discreto, ligado à entrada do cartão no ecrã (e não ao hover);
 - **cartões**: quando entram no ecrã, a imagem assenta de um zoom suave para o tamanho final;
 - **toque**: resposta imediata ao premir (escala 0.98 + sombra), em todos os botões e cartões;
@@ -35,7 +37,7 @@ Pagamento, formulário de dados do cliente, Studio, Tailor, painel de administra
 
 ## Validação
 
-Gravação de scroll em telemóvel (393px) e computador (1280px) na página inicial, experiências, uma experiência, página de destino, artigo e sobre nós: confirmar que o movimento é percetível sem rato, sem cortes, sem erros, sem conteúdo escondido e com botões sempre acima de 44px. Depois publicar.
+Gravação de scroll em telemóvel (393px) e computador (1280px) na página inicial, experiências, uma experiência, página de destino, artigo e sobre nós: confirmar que o movimento é percetível sem rato, sem cortes, sem erros, sem conteúdo escondido e com botões sempre acima de 44px. Validar que a fonte da tipografia é consistente em todo o site .Depois publicar e actualizar gsc 
 
 ## Detalhes técnicos
 
