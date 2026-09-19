@@ -283,7 +283,7 @@ export function Footer() {
                     <Icon size={14} strokeWidth={1.5} aria-hidden="true" />
                   </span>
                   <span
-                    className={`${EYEBROW_CLASS} text-[10.5px] tracking-[0.2em] leading-[1.5]`}
+                    className={`${EYEBROW_CLASS} text-[11px] tracking-[0.2em] leading-[1.5]`}
                     style={{ fontWeight: 600 }}
                   >
                     {label}

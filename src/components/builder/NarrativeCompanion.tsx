@@ -173,7 +173,7 @@ export function NarrativeCompanion({
             aria-hidden
           />
           <span className="font-serif italic truncate max-w-[60vw] sm:max-w-none">{stepHint}</span>
-          <span className="hidden sm:inline text-[10px] uppercase tracking-[0.22em] text-[color:var(--charcoal)]/50 group-hover:text-[color:var(--charcoal)]">
+          <span className="hidden sm:inline text-[11px] uppercase tracking-[0.22em] text-[color:var(--charcoal)]/50 group-hover:text-[color:var(--charcoal)]">
             AI
           </span>
         </button>
@@ -256,7 +256,7 @@ export function NarrativeCompanion({
             disabled={loading}
           />
           <div className="flex items-center justify-between gap-3 mt-2">
-            <span className="text-[10px] text-[color:var(--charcoal)]/50">{text.length}/500</span>
+            <span className="text-[11px] text-[color:var(--charcoal)]/50">{text.length}/500</span>
             <button
               type="button"
               onClick={submit}
@@ -282,7 +282,7 @@ export function NarrativeCompanion({
             </p>
           )}
           {(mood || who || intention || pace) && (
-            <p className="mt-2 text-[10.5px] uppercase tracking-[0.22em] text-[color:var(--text-subtle)]">
+            <p className="mt-2 text-[11px] uppercase tracking-[0.22em] text-[color:var(--text-subtle)]">
               Listening with: {[mood, who, intention, pace].filter(Boolean).join(" · ")}
             </p>
           )}

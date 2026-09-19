@@ -94,7 +94,7 @@ export function ShareExport({ route, stops, guests }: Props) {
 
   return (
     <div className="rounded-[2px] border border-[color:var(--charcoal)]/12 bg-[color:var(--ivory)] p-5">
-      <p className="text-[10px] uppercase tracking-[0.28em] font-bold text-[color:var(--charcoal)]">
+      <p className="text-[11px] uppercase tracking-[0.28em] font-bold text-[color:var(--charcoal)]">
         Exportar & partilhar
       </p>
       <p className="mt-2 text-[12.5px] leading-snug text-[color:var(--charcoal)]/70">

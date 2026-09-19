@@ -268,7 +268,7 @@ export function MemoryCard({ stops, regionKey, pace, chapter, proposal, onClose 
         <div className="relative z-10 w-full max-w-2xl px-6 pt-24 pb-10 flex flex-col items-center text-center gap-6 animate-in fade-in slide-in-from-bottom-2 duration-[1200ms] ease-out">
           <span aria-hidden="true" className="block h-px w-10 bg-[color:var(--gold)]/75" />
           <p
-            className="text-[10px] uppercase tracking-[0.34em] font-bold text-[color:var(--charcoal)]"
+            className="text-[11px] uppercase tracking-[0.34em] font-bold text-[color:var(--charcoal)]"
             style={{ fontFamily: "var(--font-sans)" }}
           >
             {regionLabel(regionKey)}
@@ -402,7 +402,7 @@ export function MemoryCard({ stops, regionKey, pace, chapter, proposal, onClose 
                   <button
                     type="button"
                     onClick={copy}
-                    className="inline-flex items-center gap-1.5 text-[10.5px] uppercase tracking-[0.24em] font-semibold text-[color:var(--ivory)]/70 hover:text-[color:var(--ivory)] transition-colors"
+                    className="inline-flex items-center gap-1.5 text-[11px] uppercase tracking-[0.24em] font-semibold text-[color:var(--ivory)]/70 hover:text-[color:var(--ivory)] transition-colors"
                   >
                     {copied ? <Check size={12} /> : <Copy size={12} />}
                     {copied ? "Copiado" : "Copiar link"}
@@ -411,7 +411,7 @@ export function MemoryCard({ stops, regionKey, pace, chapter, proposal, onClose 
                   <button
                     type="button"
                     onClick={nativeShare}
-                    className="inline-flex items-center gap-1.5 text-[10.5px] uppercase tracking-[0.24em] font-semibold text-[color:var(--ivory)]/70 hover:text-[color:var(--ivory)] transition-colors"
+                    className="inline-flex items-center gap-1.5 text-[11px] uppercase tracking-[0.24em] font-semibold text-[color:var(--ivory)]/70 hover:text-[color:var(--ivory)] transition-colors"
                   >
                     <Share2 size={12} />
                     Partilhar

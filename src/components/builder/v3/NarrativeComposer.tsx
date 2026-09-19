@@ -139,7 +139,7 @@ export function NarrativeComposer({ busy, collapsed, seed, t, onExpand, onSubmit
           disabled={busy}
         />
         <div className="mt-3 flex items-center justify-between gap-3">
-          <span className="text-[10.5px] uppercase tracking-[0.24em] text-[color:var(--text-subtle)] font-semibold">
+          <span className="text-[11px] uppercase tracking-[0.24em] text-[color:var(--text-subtle)] font-semibold">
             {t.composerFooter}
           </span>
           <div className="flex items-center gap-2">

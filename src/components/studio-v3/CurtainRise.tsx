@@ -96,7 +96,7 @@ export function CurtainRise({ state, onDone }: CurtainRiseProps) {
         }}
       >
         <p
-          className="text-[10.5px] uppercase tracking-[0.32em] font-bold inline-flex items-center justify-center gap-2"
+          className="text-[11px] uppercase tracking-[0.32em] font-bold inline-flex items-center justify-center gap-2"
           style={{ color: "var(--gold)" }}
         >
           <span style={{ color: "var(--ivory)" }}>YES</span>

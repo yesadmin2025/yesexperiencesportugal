@@ -439,19 +439,19 @@ export function LivingJourneyPanel({ state, hidden = false }: LivingJourneyPanel
             aria-hidden
           />
           <span
-            className="text-[9px] uppercase tracking-[0.24em] font-bold leading-none whitespace-nowrap"
+            className="text-[11px] uppercase tracking-[0.24em] font-bold leading-none whitespace-nowrap"
             style={{ color: "var(--gold)" }}
           >
             {eyebrow}
           </span>
           <span
-            className="text-[10.5px] leading-none truncate max-w-[55vw]"
+            className="text-[11px] leading-none truncate max-w-[55vw]"
             style={{ color: "color-mix(in oklab, var(--charcoal) 78%, transparent)" }}
           >
             {collapsedTrailing}
           </span>
           <span
-            className="text-[10px] leading-none ml-0.5"
+            className="text-[11px] leading-none ml-0.5"
             style={{ color: "color-mix(in oklab, var(--charcoal) 55%, transparent)" }}
             aria-hidden
           >
@@ -463,7 +463,7 @@ export function LivingJourneyPanel({ state, hidden = false }: LivingJourneyPanel
             data-testid="studio-v3-living-day-feedback"
             aria-live="polite"
 
-            className="mt-1.5 max-w-[280px] px-3 text-center text-[10.5px] leading-snug animate-in fade-in duration-300 motion-reduce:animate-none"
+            className="mt-1.5 max-w-[280px] px-3 text-center text-[11px] leading-snug animate-in fade-in duration-300 motion-reduce:animate-none"
             style={{ color: "color-mix(in oklab, var(--teal) 82%, transparent)" }}
           >
             {feedback}
@@ -668,7 +668,7 @@ function JourneyDraftDrawer({
           <div className="flex items-start justify-between gap-3">
             <div className="min-w-0">
               <p
-                className="text-[9.5px] uppercase tracking-[0.28em] font-bold"
+                className="text-[11px] uppercase tracking-[0.28em] font-bold"
                 style={{ color: "var(--gold)" }}
               >
                 {stage === "direction"
@@ -716,7 +716,7 @@ function JourneyDraftDrawer({
               {dna.map((label) => (
                 <li
                   key={label}
-                  className="rounded-full px-2.5 py-1 text-[10px] uppercase tracking-[0.18em] font-semibold leading-none"
+                  className="rounded-full px-2.5 py-1 text-[11px] uppercase tracking-[0.18em] font-semibold leading-none"
                   style={{
                     background: "color-mix(in oklab, var(--sand) 75%, transparent)",
                     color: "color-mix(in oklab, var(--charcoal) 82%, transparent)",
@@ -741,14 +741,14 @@ function JourneyDraftDrawer({
             >
               <div className="flex items-center justify-between gap-2">
                 <p
-                  className="text-[9.5px] uppercase tracking-[0.26em] font-bold"
+                  className="text-[11px] uppercase tracking-[0.26em] font-bold"
                   style={{ color: "var(--gold)" }}
                 >
                   <span aria-hidden>—</span> Scope so far
                 </p>
                 {scopeRegion ? (
                   <p
-                    className="text-[9px] uppercase tracking-[0.26em] font-bold"
+                    className="text-[11px] uppercase tracking-[0.26em] font-bold"
                     style={{ color: "color-mix(in oklab, var(--teal) 88%, transparent)" }}
                     data-testid="studio-v3-region-voice"
                   >
@@ -811,7 +811,7 @@ function JourneyDraftDrawer({
           {storyText || storyLoading ? (
             <div className="mt-4">
               <p
-                className="text-[9px] uppercase tracking-[0.26em] font-bold"
+                className="text-[11px] uppercase tracking-[0.26em] font-bold"
                 style={{ color: "color-mix(in oklab, var(--teal) 85%, transparent)" }}
               >
                 {storySource === "ai" ? "Composed for you" : "A quiet read"}
@@ -877,7 +877,7 @@ function JourneyDraftDrawer({
                     data-view={v}
                     data-state={active ? "active" : "inactive"}
                     onClick={() => setView(v)}
-                    className="flex-1 rounded-full px-3 py-1.5 text-[10px] uppercase tracking-[0.22em] font-semibold transition-colors duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)]"
+                    className="flex-1 rounded-full px-3 py-1.5 text-[11px] uppercase tracking-[0.22em] font-semibold transition-colors duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)]"
                     style={{
                       background: active ? "var(--ivory)" : "transparent",
                       color: active
@@ -904,7 +904,7 @@ function JourneyDraftDrawer({
                   style={{ color: "color-mix(in oklab, var(--charcoal) 80%, transparent)" }}
                 >
                   <span
-                    className="mr-1.5 text-[9.5px] uppercase tracking-[0.22em] font-bold"
+                    className="mr-1.5 text-[11px] uppercase tracking-[0.22em] font-bold"
                     style={{ color: "color-mix(in oklab, var(--teal) 85%, transparent)" }}
                   >
                     Route
@@ -915,7 +915,7 @@ function JourneyDraftDrawer({
               {moments.length > 0 ? (
                 <div className="mt-3">
                   <p
-                    className="text-[9.5px] uppercase tracking-[0.22em] font-bold"
+                    className="text-[11px] uppercase tracking-[0.22em] font-bold"
                     style={{ color: "color-mix(in oklab, var(--teal) 85%, transparent)" }}
                   >
                     Moments so far
@@ -974,7 +974,7 @@ function JourneyDraftDrawer({
               />
 
               <p
-                className="absolute left-3 top-2 text-[9px] uppercase tracking-[0.26em] font-bold pointer-events-none"
+                className="absolute left-3 top-2 text-[11px] uppercase tracking-[0.26em] font-bold pointer-events-none"
                 style={{ color: "color-mix(in oklab, var(--gold) 90%, white)" }}
               >
                 {activePins < totalPins ? "Drawing your route…" : "Your route"}

@@ -64,7 +64,7 @@ export function DirectorsRead({
           onClick={onBack}
           data-testid="studio-v3-directors-read-back"
           aria-label="Back to previous step"
-          className="mb-7 inline-flex items-center gap-1.5 min-h-[44px] min-w-[44px] px-2 -ml-2 text-[10.5px] uppercase tracking-[0.24em] font-semibold focus:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)] sm:mb-6"
+          className="mb-7 inline-flex items-center gap-1.5 min-h-[44px] min-w-[44px] px-2 -ml-2 text-[11px] uppercase tracking-[0.24em] font-semibold focus:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)] sm:mb-6"
           style={{ color: "color-mix(in oklab, var(--charcoal) 60%, transparent)" }}
         >
           <ArrowLeft size={14} aria-hidden /> Back
@@ -72,7 +72,7 @@ export function DirectorsRead({
       ) : null}
 
       <p
-        className="text-[10.5px] uppercase tracking-[0.24em] font-semibold"
+        className="text-[11px] uppercase tracking-[0.24em] font-semibold"
         style={{ color: "var(--gold)" }}
       >
         {read.eyebrow}
@@ -119,7 +119,7 @@ export function DirectorsRead({
             onClick={delegation.onAdjust}
             data-testid="studio-v3-delegation-adjust"
             aria-label={delegation.adjustLabel}
-            className="-mr-2 inline-flex items-center min-h-[44px] px-2 text-[10.5px] uppercase tracking-[0.22em] font-semibold focus:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)]"
+            className="-mr-2 inline-flex items-center min-h-[44px] px-2 text-[11px] uppercase tracking-[0.22em] font-semibold focus:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)]"
             style={{ color: "var(--teal)" }}
           >
             Adjust

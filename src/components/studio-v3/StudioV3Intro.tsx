@@ -90,7 +90,7 @@ export function StudioV3Intro({ onComplete }: Props) {
         {step === "welcome" ? (
           <div className="animate-in fade-in slide-in-from-bottom-2 duration-[700ms] motion-reduce:animate-none">
             <p
-              className="text-[10.5px] uppercase font-bold"
+              className="text-[11px] uppercase font-bold"
               style={{ color: "var(--gold)", letterSpacing: "0.28em" }}
             >
               — Studio
@@ -146,7 +146,7 @@ export function StudioV3Intro({ onComplete }: Props) {
             className="w-full animate-in fade-in slide-in-from-bottom-2 duration-[700ms] motion-reduce:animate-none"
           >
             <p
-              className="text-[10.5px] uppercase font-bold"
+              className="text-[11px] uppercase font-bold"
               style={{ color: "var(--gold)", letterSpacing: "0.28em" }}
             >
               — Before we begin
@@ -213,7 +213,7 @@ export function StudioV3Intro({ onComplete }: Props) {
               type="button"
               onClick={() => onComplete(null, "guided")}
               data-phase-cta="intro-skip"
-              className="mt-4 inline-flex min-h-[44px] items-center justify-center px-3 text-[10.5px] uppercase font-semibold transition-colors hover:opacity-100"
+              className="mt-4 inline-flex min-h-[44px] items-center justify-center px-3 text-[11px] uppercase font-semibold transition-colors hover:opacity-100"
               style={{
                 color: "color-mix(in oklab, var(--ivory) 55%, transparent)",
                 letterSpacing: "0.24em",

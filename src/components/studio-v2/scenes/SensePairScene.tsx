@@ -69,7 +69,7 @@ export function SensePairScene({ scene, index, onSignal }: Props) {
       style={{ background: "var(--ivory)", color: "var(--charcoal)" }}
     >
       <div
-        className="mx-auto flex items-center gap-3 text-[10.5px] font-bold uppercase tracking-[0.32em]"
+        className="mx-auto flex items-center gap-3 text-[11px] font-bold uppercase tracking-[0.32em]"
         style={{ color: "color-mix(in oklab, var(--charcoal) 65%, transparent)" }}
       >
         <span className="h-px w-6" style={{ background: "var(--gold)" }} />

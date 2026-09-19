@@ -19,7 +19,7 @@ export function HubBookingPicker({ tourIds }: { tourIds: readonly string[] }) {
   return (
     <div>
       <fieldset className="border-0 p-0 m-0">
-        <legend className="font-sans text-[10.5px] uppercase tracking-[0.22em] font-bold text-[color:var(--charcoal)]">
+        <legend className="font-sans text-[11px] uppercase tracking-[0.22em] font-bold text-[color:var(--charcoal)]">
           Choose your day
         </legend>
         <div className="mt-4 flex flex-wrap gap-2">

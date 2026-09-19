@@ -189,8 +189,10 @@ function ReviewCarousel({ quotes }: { quotes: PublicReview[] }) {
                     />
                   ))}
                 </div>
-                <p className="mt-4 font-[family-name:var(--font-serif)] italic text-[15px] md:text-[16px] leading-[1.7] text-[color:var(--charcoal)]/90 line-clamp-6">
-                  “{q.body.length > 220 ? `${q.body.slice(0, 217)}…` : q.body}”
+                {/* No line clamp: the excerpt already ends naturally with an
+                    ellipsis, so clamping only cut a visible line mid-word. */}
+                <p className="mt-4 font-[family-name:var(--font-serif)] italic text-[15px] md:text-[16px] leading-[1.7] text-[color:var(--charcoal)]/90">
+                  “{q.body.length > 200 ? `${q.body.slice(0, 197).trimEnd()}…` : q.body}”
                 </p>
                 <div className="mt-auto pt-5 flex items-center justify-between gap-3 border-t border-[color:var(--charcoal)]/8">
                   <div className="min-w-0">
@@ -198,7 +200,7 @@ function ReviewCarousel({ quotes }: { quotes: PublicReview[] }) {
                       {q.reviewer_name ?? "Guest"}
                     </p>
                     {q.reviewer_country && (
-                      <p className="mt-0.5 text-[10.5px] uppercase tracking-[0.16em] text-[color:var(--text-muted)] truncate">
+                      <p className="mt-0.5 text-[11px] uppercase tracking-[0.16em] text-[color:var(--text-muted)] truncate">
                         {q.reviewer_country}
                       </p>
                     )}

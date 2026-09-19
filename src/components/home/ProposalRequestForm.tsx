@@ -23,7 +23,7 @@ const OCCASIONS = [
 const fieldClass =
   "mt-2 w-full min-h-[48px] rounded-[4px] border border-[color:var(--border)] bg-[color:var(--card)] px-4 py-3 font-sans text-[15px] text-[color:var(--charcoal)] outline-none transition-colors duration-200 focus-visible:border-[color:var(--teal)] focus-visible:ring-2 focus-visible:ring-[color:var(--teal)]/30";
 const labelClass =
-  "block font-sans text-[10.5px] uppercase tracking-[0.22em] font-bold text-[color:var(--charcoal)]";
+  "block font-sans text-[11px] uppercase tracking-[0.22em] font-bold text-[color:var(--charcoal)]";
 
 export function ProposalRequestForm({ id = "proposal-request" }: { id?: string }) {
   const [state, setState] = useState<"idle" | "sending" | "sent">("idle");

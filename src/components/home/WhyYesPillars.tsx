@@ -96,7 +96,7 @@ export function WhyYesPillars() {
             >
               <span aria-hidden="true" className="gold-rule absolute left-0 top-0" />
               <div className="flex items-start justify-between gap-4 pr-1">
-                <span className="inline-flex items-center gap-2 text-[10.5px] uppercase tracking-[0.28em] font-semibold text-[color:var(--teal)]">
+                <span className="inline-flex items-center gap-2 text-[11px] uppercase tracking-[0.28em] font-semibold text-[color:var(--teal)]">
                   {p.eyebrow}
                 </span>
                 <span className="serif text-[1.9rem] md:text-[2.1rem] leading-none text-[color:var(--gold)] font-normal tabular-nums">

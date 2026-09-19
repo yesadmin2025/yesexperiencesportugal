@@ -44,7 +44,7 @@ export function PersistentChatFab({ profile }: { profile: TravelerProfile }) {
       <MessageCircle className="h-5 w-5" strokeWidth={1.6} />
       <span
         aria-hidden
-        className="pointer-events-none absolute right-full mr-2 whitespace-nowrap rounded-[2px] px-2.5 py-1 text-[10px] uppercase tracking-[0.22em] opacity-0 transition-opacity duration-200 group-hover:opacity-100"
+        className="pointer-events-none absolute right-full mr-2 whitespace-nowrap rounded-[2px] px-2.5 py-1 text-[11px] uppercase tracking-[0.22em] opacity-0 transition-opacity duration-200 group-hover:opacity-100"
         style={{
           background: "var(--charcoal)",
           color: "var(--ivory)",

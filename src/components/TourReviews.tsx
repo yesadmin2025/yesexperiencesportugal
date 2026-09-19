@@ -178,7 +178,7 @@ export function TourReviews({ tourId }: { tourId: string }) {
           role="group"
           aria-label="Sort reviews"
         >
-          <span className="text-[10.5px] uppercase tracking-[0.22em] text-[color:var(--text-muted)] mr-1">
+          <span className="text-[11px] uppercase tracking-[0.18em] text-[color:var(--text-muted)] mr-1">
             Sort
           </span>
           {(
@@ -194,7 +194,7 @@ export function TourReviews({ tourId }: { tourId: string }) {
                 type="button"
                 onClick={() => setSortBy(opt.id)}
                 aria-pressed={active}
-                className={`text-[12px] px-3 py-1.5 rounded-full border transition-colors ${
+                className={`inline-flex min-h-[44px] items-center rounded-full border px-4 text-[12.5px] transition-colors ${
                   active
                     ? "border-[color:var(--teal)] bg-[color:var(--teal)] text-white"
                     : "border-[color:var(--charcoal)]/15 text-[color:var(--charcoal)]/75 hover:border-[color:var(--charcoal)]/35"
@@ -216,7 +216,7 @@ export function TourReviews({ tourId }: { tourId: string }) {
             >
               <div className="flex items-center justify-between gap-3">
                 <Stars rating={r.rating} />
-                <span className="text-[10.5px] uppercase tracking-[0.18em] text-[color:var(--text-muted)]">
+                <span className="text-[11px] uppercase tracking-[0.16em] text-[color:var(--text-muted)]">
                   {r.is_first_party
                     ? "Verified guest"
                     : `via ${SOURCE_LABEL[r.source] ?? r.source}`}

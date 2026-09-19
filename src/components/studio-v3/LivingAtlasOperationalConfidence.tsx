@@ -119,8 +119,8 @@ export function LivingAtlasOperationalBadges({
           key={condition.id}
           className={
             compact
-              ? "inline-flex items-center gap-1 rounded-full border px-2 py-1 text-[8px] font-semibold uppercase tracking-[0.1em]"
-              : "inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1 text-[9px] font-semibold uppercase tracking-[0.11em]"
+              ? "inline-flex items-center gap-1 rounded-full border px-2 py-1 text-[11px] font-semibold uppercase tracking-[0.1em]"
+              : "inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1 text-[11px] font-semibold uppercase tracking-[0.11em]"
           }
           style={conditionStyle(condition)}
           title={condition.detail}
@@ -201,7 +201,7 @@ export function LivingAtlasPaceCard({ summary }: { summary: LivingAtlasPaceSumma
       </div>
 
       <p
-        className="mt-4 border-t pt-3 text-[9px] leading-4"
+        className="mt-4 border-t pt-3 text-[11px] leading-4"
         style={{
           borderColor: "color-mix(in oklab, var(--ivory) 10%, transparent)",
           color: "color-mix(in oklab, var(--ivory) 42%, transparent)",
@@ -221,7 +221,7 @@ function Metric({ label, value }: { label: string; value: string }) {
       style={{ borderColor: "color-mix(in oklab, var(--ivory) 12%, transparent)" }}
     >
       <p
-        className="text-[8px] font-bold uppercase tracking-[0.12em]"
+        className="text-[11px] font-bold uppercase tracking-[0.12em]"
         style={{ color: "color-mix(in oklab, var(--ivory) 46%, transparent)" }}
       >
         {label}

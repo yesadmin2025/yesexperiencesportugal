@@ -147,7 +147,12 @@ function TourCard({
   // Teaser reads through the tour-content getter so the collection stays
   // source-of-truth with the experience detail page.
   const content = getTourContent(tour.id);
-  const teaser = tour.blurb ?? content.overview ?? "";
+  const rawTeaser = tour.blurb ?? content.overview ?? "";
+  // One complete idea per card. Previously clamped to two lines, which cut the
+  // sentence mid-word; instead we keep the first full sentence so nothing is
+  // visually truncated and the rest lives on the experience page.
+  const firstSentence = rawTeaser.match(/^[^.!?]+[.!?]/)?.[0]?.trim() ?? rawTeaser.trim();
+  const teaser = firstSentence.length > 0 ? firstSentence : rawTeaser;
   const meta = getViatorMeta(tour.id);
   const verifiedRating = meta?.rating;
   const verifiedReviewCount = meta?.reviewCount;
@@ -176,7 +181,7 @@ function TourCard({
       </Link>
 
       <div className="experience-card-content flex flex-1 flex-col border-b border-[color:var(--border)] pb-8 pt-6 md:pb-10">
-        <div className="flex flex-wrap items-center gap-x-2 gap-y-1 text-[10.5px] font-medium uppercase tracking-[0.18em] text-[color:var(--teal)]">
+        <div className="flex flex-wrap items-center gap-x-2 gap-y-1 text-[11px] font-medium uppercase tracking-[0.16em] text-[color:var(--teal)]">
           <span>{tour.region}</span>
           <span aria-hidden="true" className="text-[color:var(--gold)]">
             ·
@@ -244,7 +249,7 @@ function TourCard({
           </ul>
         )}
 
-        <p className="mt-4 line-clamp-2 min-h-[3.2em] text-[14px] leading-[1.6] text-[color:var(--charcoal-soft)] md:text-[15px] md:leading-[1.65]">
+        <p className="mt-4 min-h-[3.2em] text-[14px] leading-[1.6] text-[color:var(--charcoal-soft)] md:text-[15px] md:leading-[1.65]">
           {teaser}
         </p>
 

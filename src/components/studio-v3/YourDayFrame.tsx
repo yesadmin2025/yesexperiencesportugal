@@ -27,7 +27,7 @@ export function YourDayFrame({ eyebrow = YOUR_DAY_EYEBROW, title, support, class
       style={{ animation: "studioV3RiseIn 620ms ease-out both" }}
     >
       <p
-        className="text-[10px] uppercase tracking-[0.3em] font-semibold"
+        className="text-[11px] uppercase tracking-[0.3em] font-semibold"
         style={{ color: "color-mix(in oklab, var(--charcoal) 55%, transparent)" }}
       >
         <span style={{ color: "var(--gold)" }}>—</span> {eyebrow}

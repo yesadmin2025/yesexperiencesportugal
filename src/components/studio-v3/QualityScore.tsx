@@ -51,7 +51,7 @@ export function QualityScore({ state }: Props) {
       >
         <div className="flex items-baseline justify-between gap-3">
           <p
-            className="text-[10px] uppercase tracking-[0.26em] font-semibold"
+            className="text-[11px] uppercase tracking-[0.26em] font-semibold"
             style={{ color: "color-mix(in oklab, var(--charcoal) 55%, transparent)" }}
           >
             Quality of the day

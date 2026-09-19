@@ -71,7 +71,7 @@ export function TheDifferenceSection() {
                 >
                   <span
                     aria-hidden="true"
-                    className="shrink-0 mt-[3px] inline-flex items-center justify-center w-5 h-5 rounded-full bg-[color:var(--teal)]/10 text-[10px] font-bold text-[color:var(--teal)] tabular-nums"
+                    className="shrink-0 mt-[3px] inline-flex items-center justify-center w-5 h-5 rounded-full bg-[color:var(--teal)]/10 text-[11px] font-bold text-[color:var(--teal)] tabular-nums"
                   >
                     {String(i + 1).padStart(2, "0")}
                   </span>

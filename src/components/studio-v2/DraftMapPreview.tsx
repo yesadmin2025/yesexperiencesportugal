@@ -124,7 +124,7 @@ export function DraftMapPreview({
         }}
       >
         <span
-          className="inline-flex items-center gap-2 text-[9.5px] md:text-[10px] uppercase tracking-[0.28em] tabular-nums"
+          className="inline-flex items-center gap-2 text-[11px] md:text-[11px] uppercase tracking-[0.28em] tabular-nums"
           style={{ color: "var(--gold)" }}
         >
           <span className="relative inline-flex h-1.5 w-1.5">
@@ -140,7 +140,7 @@ export function DraftMapPreview({
           Your draft · live
         </span>
         <span
-          className="text-[9.5px] md:text-[10px] uppercase tracking-[0.26em] tabular-nums"
+          className="text-[11px] md:text-[11px] uppercase tracking-[0.26em] tabular-nums"
           style={{ color: "color-mix(in oklab, var(--ivory) 65%, transparent)" }}
         >
           {stops.length} stops · {hrs}h
@@ -318,13 +318,13 @@ export function DraftMapPreview({
                 }}
               >
                 <span
-                  className="block text-[10px] md:text-[11px] uppercase tracking-[0.22em] font-semibold"
+                  className="block text-[11px] md:text-[11px] uppercase tracking-[0.22em] font-semibold"
                   style={{ color: "var(--ivory)", textShadow: "0 1px 4px rgba(0,0,0,0.6)" }}
                 >
                   {s.label}
                 </span>
                 <span
-                  className="mt-0.5 block text-[9px] md:text-[10px] tracking-[0.04em] truncate"
+                  className="mt-0.5 block text-[11px] md:text-[11px] tracking-[0.04em] truncate"
                   style={{
                     color: "color-mix(in oklab, var(--ivory) 75%, transparent)",
                     textShadow: "0 1px 3px rgba(0,0,0,0.55)",
@@ -342,11 +342,11 @@ export function DraftMapPreview({
           className="absolute bottom-3 left-4 right-4 flex items-end justify-between gap-3"
           style={{ color: "color-mix(in oklab, var(--ivory) 90%, transparent)" }}
         >
-          <p className="text-[10px] uppercase tracking-[0.32em]" style={{ color: "var(--gold)" }}>
+          <p className="text-[11px] uppercase tracking-[0.32em]" style={{ color: "var(--gold)" }}>
             Your draft
           </p>
           <p
-            className="text-[10px] uppercase tracking-[0.28em] tabular-nums"
+            className="text-[11px] uppercase tracking-[0.28em] tabular-nums"
             style={{ color: "color-mix(in oklab, var(--ivory) 60%, transparent)" }}
           >
             {stops.length} stops · {hrs}h
@@ -365,7 +365,7 @@ export function DraftMapPreview({
         <div className="flex flex-wrap items-end justify-between gap-x-3 gap-y-3">
           <div className="min-w-0">
             <span
-              className="block text-[9.5px] uppercase tracking-[0.26em] font-semibold"
+              className="block text-[11px] uppercase tracking-[0.26em] font-semibold"
               style={{ color: "color-mix(in oklab, var(--charcoal) 70%, transparent)" }}
             >
               From
@@ -385,7 +385,7 @@ export function DraftMapPreview({
               </span>
             </div>
             <span
-              className="mt-1 block text-[10px] tabular-nums"
+              className="mt-1 block text-[11px] tabular-nums"
               style={{ color: "color-mix(in oklab, var(--charcoal) 60%, transparent)" }}
             >
               Party of {pax} · all-inclusive · private
@@ -411,7 +411,7 @@ export function DraftMapPreview({
         {/* Reassurance row — matches homepage */}
         <div className="mt-2.5 flex flex-wrap items-center justify-between gap-x-3 gap-y-1">
           <p
-            className="inline-flex items-center gap-1.5 text-[10.5px]"
+            className="inline-flex items-center gap-1.5 text-[11px]"
             style={{ color: "color-mix(in oklab, var(--charcoal) 65%, transparent)" }}
           >
             <MapPin size={11} aria-hidden style={{ color: "var(--teal)" }} />
@@ -442,7 +442,7 @@ export function DraftMapPreview({
 function Chip({ icon, label, value }: { icon: React.ReactNode; label: string; value: string }) {
   return (
     <span
-      className="inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1 text-[10px] uppercase tracking-[0.18em] font-semibold"
+      className="inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1 text-[11px] uppercase tracking-[0.18em] font-semibold"
       style={{
         borderColor: "color-mix(in oklab, var(--gold) 35%, transparent)",
         background: "color-mix(in oklab, var(--charcoal) 60%, transparent)",

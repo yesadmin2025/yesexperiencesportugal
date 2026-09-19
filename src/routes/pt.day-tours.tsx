@@ -107,7 +107,7 @@ function DayToursPage() {
                     focal={t.focal ?? "50% 50%"}
                     imgClassName="group-hover:scale-105 transition-transform duration-700"
                   >
-                    <span className="absolute top-4 right-4 text-[10px] uppercase tracking-[0.22em] bg-[color:var(--gold)]/95 text-[color:var(--charcoal)] px-3 py-1.5">
+                    <span className="absolute top-4 right-4 text-[11px] uppercase tracking-[0.22em] bg-[color:var(--gold)]/95 text-[color:var(--charcoal)] px-3 py-1.5">
                       Signature à medida
                     </span>
                   </TourImage>

@@ -51,7 +51,7 @@ export function LivingAtlasDateStep({
         }}
       >
         <div
-          className="mb-3 flex items-center justify-center gap-2 text-[10px] font-bold uppercase tracking-[0.2em]"
+          className="mb-3 flex items-center justify-center gap-2 text-[11px] font-bold uppercase tracking-[0.2em]"
           style={{ color: "var(--gold)" }}
         >
           <CalendarDays size={14} aria-hidden /> Your travel date

@@ -131,7 +131,7 @@ export function InvestmentTierPicker({
                 {isFlagged ? (
                   <span
                     aria-hidden
-                    className="absolute -top-2 right-3 inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[8.5px] uppercase tracking-[0.24em] font-bold"
+                    className="absolute -top-2 right-3 inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[11px] uppercase tracking-[0.24em] font-bold"
                     style={{
                       background: "var(--gold)",
                       color: "var(--charcoal)",
@@ -159,7 +159,7 @@ export function InvestmentTierPicker({
                   <div className="min-w-0 flex-1">
                     <div className="flex items-center justify-between gap-2">
                       <p
-                        className="text-[9.5px] uppercase tracking-[0.26em] font-bold"
+                        className="text-[11px] uppercase tracking-[0.26em] font-bold"
                         style={{
                           color: active
                             ? "var(--teal)"
@@ -208,7 +208,7 @@ export function InvestmentTierPicker({
                       <p
                         data-testid="studio-v3-tier-price-hint"
                         data-tier-price={tier.id}
-                        className="mt-2 inline-flex items-center gap-1.5 rounded-full px-2 py-0.5 text-[10.5px] uppercase tracking-[0.2em] font-bold tabular-nums"
+                        className="mt-2 inline-flex items-center gap-1.5 rounded-full px-2 py-0.5 text-[11px] uppercase tracking-[0.2em] font-bold tabular-nums"
                         style={{
                           background: active
                             ? "color-mix(in oklab, var(--gold) 22%, var(--ivory))"
@@ -237,7 +237,7 @@ export function InvestmentTierPicker({
       {showPriceHint ? (
         <p
           data-testid="studio-v3-tier-price-anchor"
-          className="mt-3 text-center text-[10.5px] uppercase tracking-[0.22em] font-semibold"
+          className="mt-3 text-center text-[11px] uppercase tracking-[0.22em] font-semibold"
           style={{ color: "color-mix(in oklab, var(--charcoal) 55%, transparent)" }}
         >
           <span style={{ color: "var(--gold)" }}>—</span> Indicative

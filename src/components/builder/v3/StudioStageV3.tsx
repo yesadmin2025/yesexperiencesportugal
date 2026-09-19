@@ -573,14 +573,14 @@ export function StudioStageV3({ onExit }: { onExit?: () => void }) {
                   dismissRestored();
                   patch({ awakened: true });
                 }}
-                className="inline-flex items-center min-h-[34px] rounded-full bg-[color:var(--charcoal)] hover:bg-[color:var(--teal)] text-[color:var(--ivory)] px-3 text-[10.5px] uppercase tracking-[0.22em] font-semibold transition-colors"
+                className="inline-flex items-center min-h-[34px] rounded-full bg-[color:var(--charcoal)] hover:bg-[color:var(--teal)] text-[color:var(--ivory)] px-3 text-[11px] uppercase tracking-[0.22em] font-semibold transition-colors"
               >
                 {t.resumeContinue}
               </button>
               <button
                 type="button"
                 onClick={reset}
-                className="inline-flex items-center gap-1 min-h-[34px] rounded-full px-2.5 text-[10.5px] uppercase tracking-[0.22em] font-semibold text-[color:var(--charcoal)]/60 hover:text-[color:var(--charcoal)] transition-colors"
+                className="inline-flex items-center gap-1 min-h-[34px] rounded-full px-2.5 text-[11px] uppercase tracking-[0.22em] font-semibold text-[color:var(--charcoal)]/60 hover:text-[color:var(--charcoal)] transition-colors"
                 aria-label={t.resumeRestart}
               >
                 <RotateCcw size={11} />
@@ -663,7 +663,7 @@ export function StudioStageV3({ onExit }: { onExit?: () => void }) {
             <button
               type="button"
               onClick={onExit}
-              className="self-start inline-flex items-center gap-1.5 text-[10px] uppercase tracking-[0.22em] font-semibold text-[color:var(--text-on-dark-muted)] hover:text-[color:var(--ivory)] transition-colors"
+              className="self-start inline-flex items-center gap-1.5 text-[11px] uppercase tracking-[0.22em] font-semibold text-[color:var(--text-on-dark-muted)] hover:text-[color:var(--ivory)] transition-colors"
               aria-label={t.back}
             >
               <ArrowLeft size={11} />
@@ -671,7 +671,7 @@ export function StudioStageV3({ onExit }: { onExit?: () => void }) {
             </button>
           )}
           {showMap && (
-            <span className="inline-flex items-center gap-1.5 text-[10px] uppercase tracking-[0.28em] font-bold text-[color:var(--charcoal)] animate-in fade-in duration-700">
+            <span className="inline-flex items-center gap-1.5 text-[11px] uppercase tracking-[0.28em] font-bold text-[color:var(--charcoal)] animate-in fade-in duration-700">
               <Compass size={11} />
               {t.yourDay}
             </span>

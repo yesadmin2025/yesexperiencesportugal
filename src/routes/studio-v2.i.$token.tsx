@@ -41,7 +41,7 @@ function Shell({ title }: { title: string }) {
     >
       <div className="max-w-md text-center">
         <p
-          className="text-[10px] uppercase tracking-[0.28em] font-bold"
+          className="text-[11px] uppercase tracking-[0.28em] font-bold"
           style={{ color: "var(--gold)" }}
         >
           YES Experiences
@@ -155,7 +155,7 @@ function InvitationPage() {
     >
       <article className="w-full max-w-xl text-center">
         <p
-          className="text-[10.5px] uppercase tracking-[0.32em] font-bold"
+          className="text-[11px] uppercase tracking-[0.32em] font-bold"
           style={{ color: "var(--gold)" }}
         >
           A private invitation
@@ -211,7 +211,7 @@ function InvitationPage() {
             Make this composition mine
           </button>
           <p
-            className="text-[10.5px] uppercase tracking-[0.24em] font-semibold"
+            className="text-[11px] uppercase tracking-[0.24em] font-semibold"
             style={{ color: "color-mix(in oklab, var(--charcoal) 55%, transparent)" }}
           >
             No edits required · Composer remains on hand
@@ -219,7 +219,7 @@ function InvitationPage() {
         </div>
 
         <footer
-          className="mt-20 text-[10px] uppercase tracking-[0.32em] font-bold"
+          className="mt-20 text-[11px] uppercase tracking-[0.32em] font-bold"
           style={{ color: "var(--gold)" }}
         >
           YES Experiences Portugal

@@ -129,7 +129,7 @@ function DayToursPage() {
                       focal={t.focal ?? "50% 50%"}
                       imgClassName="group-hover:scale-105 transition-transform duration-700"
                     >
-                      <span className="absolute top-4 right-4 text-[10px] uppercase tracking-[0.22em] bg-[color:var(--gold)]/95 text-[color:var(--charcoal)] px-3 py-1.5">
+                      <span className="absolute top-4 right-4 text-[11px] uppercase tracking-[0.22em] bg-[color:var(--gold)]/95 text-[color:var(--charcoal)] px-3 py-1.5">
                         Tailored Signature
                       </span>
                     </TourImage>
@@ -157,7 +157,7 @@ function DayToursPage() {
                     </span>
                     <span className="text-[color:var(--teal)]">
                       From <PriceEur amountEur={t.priceFrom} role="from" />
-                      <span className="ml-1 text-[10px] tracking-[0.18em] text-[color:var(--charcoal-soft)]">
+                      <span className="ml-1 text-[11px] tracking-[0.18em] text-[color:var(--charcoal-soft)]">
                         per person
                       </span>
                     </span>

@@ -94,7 +94,7 @@ export function LivingAtlasRouteSummary({ routePlan }: { routePlan: LivingAtlasR
 
       {routePlan.warnings.length > 0 ? (
         <ul
-          className="mt-4 space-y-1 border-t pt-3 text-[10px] leading-5"
+          className="mt-4 space-y-1 border-t pt-3 text-[11px] leading-5"
           style={{
             borderColor: "color-mix(in oklab, var(--ivory) 10%, transparent)",
             color: reviewNeeded ? "#e2aa88" : "color-mix(in oklab, var(--ivory) 60%, transparent)",
@@ -107,7 +107,7 @@ export function LivingAtlasRouteSummary({ routePlan }: { routePlan: LivingAtlasR
       ) : null}
 
       <p
-        className="mt-4 border-t pt-3 text-[9px] leading-4"
+        className="mt-4 border-t pt-3 text-[11px] leading-4"
         style={{
           borderColor: "color-mix(in oklab, var(--ivory) 10%, transparent)",
           color: "color-mix(in oklab, var(--ivory) 42%, transparent)",
@@ -127,7 +127,7 @@ function Metric({ icon, label, value }: { icon: React.ReactNode; label: string; 
       style={{ borderColor: "color-mix(in oklab, var(--ivory) 12%, transparent)" }}
     >
       <div
-        className="flex items-center gap-1.5 text-[8px] font-bold uppercase tracking-[0.12em]"
+        className="flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-[0.12em]"
         style={{ color: "color-mix(in oklab, var(--ivory) 46%, transparent)" }}
       >
         {icon}

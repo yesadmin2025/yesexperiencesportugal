@@ -50,6 +50,23 @@ import { guideAttributionMetadata } from "@/lib/guide-attribution";
 import { SIGNATURE_RESERVE_INTENT_EVENT } from "@/lib/booking/reserve-intent";
 
 /**
+ * Human-readable echo of an ISO date, e.g. "Sat, 4 Oct 2026".
+ * Parsed as UTC so the label never drifts a day by timezone.
+ */
+function readableDateLabel(iso: string): string {
+  const [y, m, d] = iso.split("-").map(Number);
+  if (!y || !m || !d) return iso;
+  return new Date(Date.UTC(y, m - 1, d)).toLocaleDateString("en-GB", {
+    weekday: "short",
+    day: "numeric",
+    month: "short",
+    year: "numeric",
+    timeZone: "UTC",
+  });
+}
+
+
+/**
  * SimpleBookingForm — the *reserve as-is* path.
  *
  * Embedded Stripe checkout in a branded drawer. The server resolves the
@@ -431,6 +448,17 @@ export function SimpleBookingForm({ tour }: { tour: SignatureTour }) {
                 : "border-[color:var(--border)] focus:border-[color:var(--gold)]"
             }`}
           />
+          {/* Written-out echo of the chosen day. Native date inputs render in the
+              phone's own short format, which leaves travellers unsure which day
+              they picked; this states it in words without changing the value. */}
+          {!blockMessage && date.length === 10 ? (
+            <p
+              data-testid="signature-date-readable"
+              className="mt-2 text-[13px] leading-[1.5] text-[color:var(--charcoal)]"
+            >
+              {readableDateLabel(date)}
+            </p>
+          ) : null}
           {blockMessage && (
             <p
               id="signature-date-error"

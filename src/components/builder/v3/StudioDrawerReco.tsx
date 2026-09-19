@@ -100,7 +100,7 @@ export function StudioDrawerReco({ profile, locale, confidence, excludeId }: Pro
         </span>
         <div className="min-w-0 flex-1">
           <p
-            className="text-[9.5px] uppercase tracking-[0.18em] font-bold"
+            className="text-[11px] uppercase tracking-[0.18em] font-bold"
             style={{ color: "var(--gold)" }}
           >
             {tt("reco.eyebrow", locale)}
@@ -129,7 +129,7 @@ export function StudioDrawerReco({ profile, locale, confidence, excludeId }: Pro
           </p>
         </div>
         <span
-          className="text-[10px] uppercase tracking-[0.18em] font-bold whitespace-nowrap"
+          className="text-[11px] uppercase tracking-[0.18em] font-bold whitespace-nowrap"
           style={{ color: "var(--teal)" }}
         >
           {tt("reco.open", locale)} →

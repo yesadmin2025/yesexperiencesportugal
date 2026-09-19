@@ -26,7 +26,7 @@ export function StudioDelegationCard({ onDelegate, acknowledgement }: StudioDele
       }}
     >
       <span
-        className="text-[10.5px] uppercase tracking-[0.22em] font-semibold"
+        className="text-[11px] uppercase tracking-[0.22em] font-semibold"
         style={{ fontFamily: "var(--font-display)", color: "var(--teal)" }}
       >
         <span aria-hidden style={{ color: "var(--gold)", marginRight: 8 }}>

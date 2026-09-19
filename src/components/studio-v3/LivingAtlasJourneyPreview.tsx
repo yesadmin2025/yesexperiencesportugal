@@ -208,7 +208,7 @@ export function LivingAtlasJourney() {
         <header className="flex items-start justify-between gap-4">
           <div>
             <p
-              className="text-[10px] font-bold uppercase tracking-[0.28em]"
+              className="text-[11px] font-bold uppercase tracking-[0.28em]"
               style={{ color: "var(--gold)" }}
             >
               YES Experience Studio
@@ -224,7 +224,7 @@ export function LivingAtlasJourney() {
             <button
               type="button"
               onClick={reset}
-              className="inline-flex min-h-10 shrink-0 items-center gap-2 rounded-full border px-3 text-[10px] font-semibold uppercase tracking-[0.2em] transition-opacity hover:opacity-80"
+              className="inline-flex min-h-10 shrink-0 items-center gap-2 rounded-full border px-3 text-[11px] font-semibold uppercase tracking-[0.2em] transition-opacity hover:opacity-80"
               style={{ borderColor: "color-mix(in oklab, var(--ivory) 20%, transparent)" }}
             >
               <RotateCcw size={13} aria-hidden />

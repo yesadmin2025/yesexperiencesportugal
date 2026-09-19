@@ -789,7 +789,7 @@ export function SignaturePriceCard({
         {isRefine ? null : (
           <>
             <p
-              className="text-[10.5px] uppercase tracking-[0.28em] font-semibold"
+              className="text-[11px] uppercase tracking-[0.28em] font-semibold"
               style={{ color: "color-mix(in oklab, var(--charcoal) 55%, transparent)" }}
             >
               <span style={{ color: "var(--gold)" }}>—</span>{" "}
@@ -841,7 +841,7 @@ export function SignaturePriceCard({
                     >
                       €{partyTotalEur}
                       <span
-                        className="mt-2 block text-[10.5px] uppercase tracking-[0.22em] font-semibold"
+                        className="mt-2 block text-[11px] uppercase tracking-[0.22em] font-semibold"
                         style={{ color: "color-mix(in oklab, var(--charcoal) 55%, transparent)" }}
                       >
                         Your investment
@@ -974,7 +974,7 @@ export function SignaturePriceCard({
             className="mt-6 mx-auto max-w-[380px] text-left"
           >
             <legend
-              className="mb-2 w-full text-center text-[10.5px] uppercase tracking-[0.24em] font-semibold"
+              className="mb-2 w-full text-center text-[11px] uppercase tracking-[0.24em] font-semibold"
               style={{ color: "color-mix(in oklab, var(--charcoal) 60%, transparent)" }}
             >
               {isRefine ? (
@@ -1006,7 +1006,7 @@ export function SignaturePriceCard({
                       }}
                     >
                       <div
-                        className="flex items-center justify-between text-[10px] uppercase tracking-[0.22em] font-semibold"
+                        className="flex items-center justify-between text-[11px] uppercase tracking-[0.22em] font-semibold"
                         style={{ color: "color-mix(in oklab, var(--charcoal) 65%, transparent)" }}
                       >
                         <span>
@@ -1036,7 +1036,7 @@ export function SignaturePriceCard({
                         />
                       </div>
                       <p
-                        className="mt-1.5 text-[10.5px] leading-[1.4]"
+                        className="mt-1.5 text-[11px] leading-[1.4]"
                         style={{
                           fontFamily: "var(--font-sans)",
                           color: "color-mix(in oklab, var(--charcoal) 55%, transparent)",
@@ -1126,7 +1126,7 @@ export function SignaturePriceCard({
                         </span>
                         {!fits ? (
                           <span
-                            className="mt-1 inline-block text-[9.5px] uppercase tracking-[0.2em] font-semibold"
+                            className="mt-1 inline-block text-[11px] uppercase tracking-[0.2em] font-semibold"
                             style={{
                               color: "color-mix(in oklab, var(--charcoal) 55%, transparent)",
                             }}
@@ -1142,13 +1142,13 @@ export function SignaturePriceCard({
                       >
                         <span className="whitespace-nowrap">
                           +€{line.perUnit}
-                          <span className="ml-1 text-[9.5px] font-semibold opacity-60 lowercase tracking-normal">
+                          <span className="ml-1 text-[11px] font-semibold opacity-60 lowercase tracking-normal">
                             {line.unitLabel.replace(/^per\s+/i, "/ ")}
                           </span>
                         </span>
                         {a.durationMinutes > 0 ? (
                           <span
-                            className="mt-0.5 text-[9.5px] uppercase tracking-[0.14em] font-semibold whitespace-nowrap"
+                            className="mt-0.5 text-[11px] uppercase tracking-[0.14em] font-semibold whitespace-nowrap"
                             style={{
                               color: "color-mix(in oklab, var(--charcoal) 55%, transparent)",
                             }}
@@ -1164,7 +1164,7 @@ export function SignaturePriceCard({
             </ul>
             {isRefine ? null : (
               <p
-                className="mt-2 text-center text-[10.5px] uppercase tracking-[0.22em] font-semibold"
+                className="mt-2 text-center text-[11px] uppercase tracking-[0.22em] font-semibold"
                 style={{ color: "color-mix(in oklab, var(--charcoal) 50%, transparent)" }}
               >
                 Up to {MAX_ADDONS} add-ons
@@ -1180,7 +1180,7 @@ export function SignaturePriceCard({
                 <>
                   {isRefine ? "Per adult, with additions" : "Additions"}{" "}
                   <span style={{ color: "var(--gold)" }}>—</span> €{totalEur}
-                  <span className="ml-1 text-[9.5px] tracking-[0.18em] opacity-60">total</span>
+                  <span className="ml-1 text-[11px] tracking-[0.18em] opacity-60">total</span>
                 </>
               ) : (
                 <span className="sr-only">No add-ons selected</span>
@@ -1199,7 +1199,7 @@ export function SignaturePriceCard({
             data-testid="studio-v3-add-on-lines-refine"
           >
             <p
-              className="text-[9.5px] uppercase tracking-[0.24em] font-bold flex items-center gap-1.5"
+              className="text-[11px] uppercase tracking-[0.24em] font-bold flex items-center gap-1.5"
               style={{ color: "color-mix(in oklab, var(--charcoal) 55%, transparent)" }}
             >
               <span style={{ color: "var(--gold)" }}>—</span>
@@ -1342,7 +1342,7 @@ export function SignaturePriceCard({
             }}
           >
             <p
-              className="text-[9.5px] uppercase tracking-[0.24em] font-bold"
+              className="text-[11px] uppercase tracking-[0.24em] font-bold"
               style={{ color: "color-mix(in oklab, var(--charcoal) 55%, transparent)" }}
             >
               {INCLUDED_HEADER_REFINE}
@@ -1366,7 +1366,7 @@ export function SignaturePriceCard({
             {selectedAddOns.length > 0 ? (
               <>
                 <p
-                  className="mt-3 text-[9.5px] uppercase tracking-[0.24em] font-bold flex items-center gap-1.5"
+                  className="mt-3 text-[11px] uppercase tracking-[0.24em] font-bold flex items-center gap-1.5"
                   style={{ color: "color-mix(in oklab, var(--charcoal) 55%, transparent)" }}
                 >
                   <span style={{ color: "var(--gold)" }}>—</span>
@@ -1487,7 +1487,7 @@ export function SignaturePriceCard({
                 target="_blank"
                 rel="noopener noreferrer"
                 data-testid="studio-v3-cta-secondary"
-                className="inline-flex items-center gap-1.5 px-3 py-2 min-h-[44px] text-[10.5px] uppercase tracking-[0.24em] font-semibold focus:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)]"
+                className="inline-flex items-center gap-1.5 px-3 py-2 min-h-[44px] text-[11px] uppercase tracking-[0.24em] font-semibold focus:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)]"
                 style={{
                   color: "color-mix(in oklab, var(--charcoal) 72%, transparent)",
                   background: "transparent",
@@ -1515,7 +1515,7 @@ export function SignaturePriceCard({
 
           {hasPrice && !dateExact ? (
             <p
-              className="text-[10.5px] italic"
+              className="text-[11px] italic"
               style={{
                 fontFamily: "var(--font-serif)",
                 color: "color-mix(in oklab, var(--charcoal) 55%, transparent)",
@@ -1549,7 +1549,7 @@ export function SignaturePriceCard({
             See my signature story <ArrowRight size={14} aria-hidden />
           </button>
           <p
-            className="mt-1.5 text-center text-[9.5px] uppercase tracking-[0.22em]"
+            className="mt-1.5 text-center text-[11px] uppercase tracking-[0.22em]"
             style={{ color: "color-mix(in oklab, var(--charcoal) 55%, transparent)" }}
           >
             Nothing is booked yet · Confirm on the next step
@@ -1651,7 +1651,7 @@ function ExitIntentSave({ journeyTitle }: { journeyTitle: string | null }) {
           style={{ background: "var(--gold)" }}
         />
         <p
-          className="text-[10.5px] uppercase tracking-[0.28em] font-semibold"
+          className="text-[11px] uppercase tracking-[0.28em] font-semibold"
           style={{ color: "color-mix(in oklab, var(--charcoal) 55%, transparent)" }}
         >
           <span style={{ color: "var(--gold)" }}>—</span> Before you go
@@ -1684,7 +1684,7 @@ function ExitIntentSave({ journeyTitle }: { journeyTitle: string | null }) {
           <button
             type="button"
             onClick={dismiss}
-            className="text-[10.5px] uppercase tracking-[0.22em] font-semibold focus:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)] rounded px-2 py-1"
+            className="text-[11px] uppercase tracking-[0.22em] font-semibold focus:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)] rounded px-2 py-1"
             style={{ color: "color-mix(in oklab, var(--charcoal) 55%, transparent)" }}
           >
             Keep exploring

@@ -223,7 +223,7 @@ function DayTripsFromLisbon() {
           <ul className="mt-10 grid gap-5 md:grid-cols-2 lg:grid-cols-3 list-none p-0">
             {FEATURED.map((tour) => (
               <li key={tour.id} className={cardClass}>
-                <span className="font-sans text-[10.5px] uppercase tracking-[0.22em] font-bold text-[color:var(--gold)]">
+                <span className="font-sans text-[11px] uppercase tracking-[0.22em] font-bold text-[color:var(--gold)]">
                   {tour.region}
                 </span>
                 <h3 className="font-display mt-3 text-[1.2rem] leading-snug text-[color:var(--charcoal)]">
@@ -287,7 +287,7 @@ function DayTripsFromLisbon() {
                     <th
                       key={h}
                       scope="col"
-                      className="py-3 pr-4 font-sans text-[10.5px] uppercase tracking-[0.22em] font-bold text-[color:var(--charcoal)]"
+                      className="py-3 pr-4 font-sans text-[11px] uppercase tracking-[0.22em] font-bold text-[color:var(--charcoal)]"
                     >
                       {h}
                     </th>
@@ -333,19 +333,19 @@ function DayTripsFromLisbon() {
                 </h3>
                 <dl className="mt-3 grid grid-cols-2 gap-x-4 gap-y-2 text-[13.5px] text-[color:var(--charcoal-soft)]">
                   <div>
-                    <dt className="font-sans text-[10px] uppercase tracking-[0.2em]">Drive</dt>
+                    <dt className="font-sans text-[11px] uppercase tracking-[0.2em]">Drive</dt>
                     <dd className="mt-0.5">{row.drive}</dd>
                   </div>
                   <div>
-                    <dt className="font-sans text-[10px] uppercase tracking-[0.2em]">Distance</dt>
+                    <dt className="font-sans text-[11px] uppercase tracking-[0.2em]">Distance</dt>
                     <dd className="mt-0.5">{row.distance}</dd>
                   </div>
                   <div>
-                    <dt className="font-sans text-[10px] uppercase tracking-[0.2em]">Length</dt>
+                    <dt className="font-sans text-[11px] uppercase tracking-[0.2em]">Length</dt>
                     <dd className="mt-0.5">{tour?.durationHours ?? row.shape}</dd>
                   </div>
                   <div>
-                    <dt className="font-sans text-[10px] uppercase tracking-[0.2em]">From</dt>
+                    <dt className="font-sans text-[11px] uppercase tracking-[0.2em]">From</dt>
                     <dd className="mt-0.5">{tour ? `€${tour.priceFrom} pp` : "—"}</dd>
                   </div>
                 </dl>
@@ -453,7 +453,7 @@ function DayTripsFromLisbon() {
 
           <div className="mt-8 grid gap-5 sm:grid-cols-2">
             <div className="rounded-[6px] border border-[color:var(--border)] bg-[color:var(--card)] p-6">
-              <h3 className="font-sans text-[10.5px] uppercase tracking-[0.22em] font-bold text-[color:var(--charcoal)]">
+              <h3 className="font-sans text-[11px] uppercase tracking-[0.22em] font-bold text-[color:var(--charcoal)]">
                 Address
               </h3>
               <p className="mt-3 flex items-start gap-2 text-[15px] leading-[1.75] text-[color:var(--charcoal-soft)]">
@@ -469,7 +469,7 @@ function DayTripsFromLisbon() {
             </div>
 
             <div className="rounded-[6px] border border-[color:var(--border)] bg-[color:var(--card)] p-6">
-              <h3 className="font-sans text-[10.5px] uppercase tracking-[0.22em] font-bold text-[color:var(--charcoal)]">
+              <h3 className="font-sans text-[11px] uppercase tracking-[0.22em] font-bold text-[color:var(--charcoal)]">
                 Opening hours
               </h3>
               <p className="mt-3 flex items-start gap-2 text-[15px] leading-[1.75] text-[color:var(--charcoal-soft)]">
@@ -483,7 +483,7 @@ function DayTripsFromLisbon() {
             </div>
 
             <div className="rounded-[6px] border border-[color:var(--border)] bg-[color:var(--card)] p-6">
-              <h3 className="font-sans text-[10.5px] uppercase tracking-[0.22em] font-bold text-[color:var(--charcoal)]">
+              <h3 className="font-sans text-[11px] uppercase tracking-[0.22em] font-bold text-[color:var(--charcoal)]">
                 Talk to a local
               </h3>
               <p className="mt-3 flex items-start gap-2 text-[15px] leading-[1.75] text-[color:var(--charcoal-soft)]">
@@ -501,7 +501,7 @@ function DayTripsFromLisbon() {
             </div>
 
             <div className="rounded-[6px] border border-[color:var(--gold)]/45 bg-[color:var(--sand)] p-6">
-              <h3 className="font-sans text-[10.5px] uppercase tracking-[0.22em] font-bold text-[color:var(--charcoal)]">
+              <h3 className="font-sans text-[11px] uppercase tracking-[0.22em] font-bold text-[color:var(--charcoal)]">
                 Reserve your day
               </h3>
               <p className="mt-3 text-[15px] leading-[1.75] text-[color:var(--charcoal-soft)]">

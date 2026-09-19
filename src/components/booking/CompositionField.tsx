@@ -215,7 +215,7 @@ export function CompositionField({ value, onChange, maxParty, compact }: Props) 
                       aria-invalid={!hasAge}
                     />
                     <span
-                      className="min-w-0 text-[10.5px] uppercase tracking-[0.14em] sm:text-[11px] sm:tracking-[0.2em]"
+                      className="min-w-0 text-[11px] uppercase tracking-[0.14em] sm:text-[11px] sm:tracking-[0.2em]"
                       style={{
                         color: !hasAge
                           ? "var(--gold-ink)"

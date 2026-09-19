@@ -32,7 +32,7 @@ function ErrorShell({ title }: { title: string }) {
   return (
     <div className="min-h-[100dvh] bg-[color:var(--ivory)] text-[color:var(--charcoal)] flex items-center justify-center px-6">
       <div className="max-w-md text-center">
-        <p className="text-[10px] uppercase tracking-[0.28em] font-bold text-[color:var(--charcoal)]">
+        <p className="text-[11px] uppercase tracking-[0.28em] font-bold text-[color:var(--charcoal)]">
           YES Experiences
         </p>
         <h1 className="serif mt-3 text-[1.8rem] font-semibold leading-tight">{title}</h1>
@@ -134,7 +134,7 @@ function SharedItineraryPage() {
         <div className="mx-auto flex max-w-3xl items-center justify-between px-5 py-3">
           <a
             href="/"
-            className="text-[10.5px] uppercase tracking-[0.28em] font-bold text-[color:var(--charcoal)]"
+            className="text-[11px] uppercase tracking-[0.28em] font-bold text-[color:var(--charcoal)]"
           >
             YES Experiences Portugal
           </a>
@@ -150,7 +150,7 @@ function SharedItineraryPage() {
       </header>
 
       <article className="mx-auto max-w-3xl px-5 py-10 md:py-16 print:py-6">
-        <p className="text-[10.5px] uppercase tracking-[0.28em] font-bold text-[color:var(--charcoal)]">
+        <p className="text-[11px] uppercase tracking-[0.28em] font-bold text-[color:var(--charcoal)]">
           Roteiro privado
         </p>
         <h1 className="serif mt-3 text-[2.2rem] md:text-[3rem] leading-[1.04] tracking-[-0.01em] font-semibold">
@@ -177,7 +177,7 @@ function SharedItineraryPage() {
 
         {/* Itinerary */}
         <section className="mt-10">
-          <h2 className="text-[10.5px] uppercase tracking-[0.28em] font-bold text-[color:var(--charcoal)]">
+          <h2 className="text-[11px] uppercase tracking-[0.28em] font-bold text-[color:var(--charcoal)]">
             Itinerário
           </h2>
           <ol className="mt-5 flex flex-col gap-5 border-l border-[color:var(--gold)]/30 pl-5">
@@ -193,7 +193,7 @@ function SharedItineraryPage() {
                   </span>
                 </div>
                 {s.tag && (
-                  <p className="mt-0.5 text-[10.5px] uppercase tracking-[0.22em] font-semibold text-[color:var(--charcoal)]">
+                  <p className="mt-0.5 text-[11px] uppercase tracking-[0.22em] font-semibold text-[color:var(--charcoal)]">
                     {s.tag}
                   </p>
                 )}
@@ -203,7 +203,7 @@ function SharedItineraryPage() {
                   </p>
                 )}
                 {i > 0 && s.driveMinutesFromPrev > 0 && (
-                  <p className="mt-2 inline-flex items-center gap-1 text-[10.5px] uppercase tracking-[0.18em] text-[color:var(--charcoal)]/50">
+                  <p className="mt-2 inline-flex items-center gap-1 text-[11px] uppercase tracking-[0.18em] text-[color:var(--charcoal)]/50">
                     <MapPin size={10} />
                     {fmtMinutes(s.driveMinutesFromPrev)} de viagem
                   </p>
@@ -239,7 +239,7 @@ function SharedItineraryPage() {
         {/* Price */}
         <section className="mt-10 rounded-[2px] border border-[color:var(--charcoal)]/12 bg-[color:var(--sand)]/40 p-6 print:bg-transparent">
           <div className="flex items-start justify-between gap-4">
-            <p className="text-[10px] uppercase tracking-[0.28em] font-bold text-[color:var(--charcoal)]">
+            <p className="text-[11px] uppercase tracking-[0.28em] font-bold text-[color:var(--charcoal)]">
               Investimento estimado
             </p>
             <div className="print:hidden">
@@ -270,7 +270,7 @@ function SharedItineraryPage() {
           </p>
         </div>
 
-        <footer className="mt-16 border-t border-[color:var(--charcoal)]/10 pt-6 text-center text-[10px] uppercase tracking-[0.28em] font-bold text-[color:var(--charcoal)]">
+        <footer className="mt-16 border-t border-[color:var(--charcoal)]/10 pt-6 text-center text-[11px] uppercase tracking-[0.28em] font-bold text-[color:var(--charcoal)]">
           YES Experiences Portugal
         </footer>
       </article>
@@ -289,7 +289,7 @@ function Stat({
 }) {
   return (
     <div className="rounded-[2px] border border-[color:var(--charcoal)]/12 bg-[color:var(--ivory)] px-3 py-3">
-      <p className="text-[9.5px] uppercase tracking-[0.24em] font-semibold text-[color:var(--text-muted)]">
+      <p className="text-[11px] uppercase tracking-[0.24em] font-semibold text-[color:var(--text-muted)]">
         {label}
       </p>
       <p
@@ -307,7 +307,7 @@ function Stat({
 function Block({ title, items, muted }: { title: string; items: string[]; muted?: boolean }) {
   return (
     <div className="rounded-[2px] border border-[color:var(--charcoal)]/12 bg-[color:var(--ivory)] p-5 print:border-[color:var(--charcoal)]/30">
-      <p className="text-[10px] uppercase tracking-[0.28em] font-bold text-[color:var(--charcoal)]">
+      <p className="text-[11px] uppercase tracking-[0.28em] font-bold text-[color:var(--charcoal)]">
         {title}
       </p>
       <ul className="mt-2 flex flex-col gap-1.5">

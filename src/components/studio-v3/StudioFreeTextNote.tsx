@@ -24,7 +24,7 @@ export function StudioFreeTextNote({
     <div className="mt-6 w-full" data-testid="studio-free-text-note">
       <label
         htmlFor={id}
-        className="block text-[10.5px] uppercase tracking-[0.22em] font-semibold"
+        className="block text-[11px] uppercase tracking-[0.22em] font-semibold"
         style={{
           fontFamily: "var(--font-display)",
           color: "color-mix(in oklab, var(--charcoal) 62%, transparent)",

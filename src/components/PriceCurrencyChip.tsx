@@ -36,7 +36,7 @@ export function PriceCurrencyChip({ className, align = "end", surface = "light" 
     <div
       data-a11y-scope="price-currency-chip"
       className={cn(
-        "inline-flex items-center gap-2 text-[10.5px] uppercase tracking-[0.22em] text-[color:var(--charcoal-soft)]",
+        "inline-flex items-center gap-2 text-[11px] uppercase tracking-[0.22em] text-[color:var(--charcoal-soft)]",
         align === "end" && "ml-auto",
         className,
       )}

@@ -105,7 +105,7 @@ export function SmartRecommendation({
       <div className="flex items-center gap-1.5">
         <Sparkles size={12} aria-hidden style={{ color: "var(--gold)" }} />
         <p
-          className="text-[9px] uppercase tracking-[0.26em] font-bold"
+          className="text-[11px] uppercase tracking-[0.26em] font-bold"
           style={{ color: "var(--gold)" }}
         >
           Smart recommendation
@@ -143,7 +143,7 @@ export function SmartRecommendation({
           onClick={onAccept}
           disabled={accepted}
           aria-pressed={accepted}
-          className="inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-[10px] uppercase tracking-[0.22em] font-semibold transition-all duration-150 focus:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)] disabled:opacity-80"
+          className="inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-[11px] uppercase tracking-[0.22em] font-semibold transition-all duration-150 focus:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)] disabled:opacity-80"
           style={{
             background: accepted ? "var(--teal)" : "var(--charcoal)",
             color: "var(--ivory)",

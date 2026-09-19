@@ -175,7 +175,7 @@ function SearchPage() {
                         to={r.path}
                         className="group flex min-h-[44px] flex-col gap-1.5 py-6 transition-opacity hover:opacity-90"
                       >
-                        <span className="text-[10.5px] font-bold uppercase tracking-[0.22em] text-[color:var(--gold-ink)]">
+                        <span className="text-[11px] font-bold uppercase tracking-[0.22em] text-[color:var(--gold-ink)]">
                           {SEARCH_KIND_LABEL[r.kind]}
                           {r.meta ? ` · ${r.meta}` : ""}
                         </span>

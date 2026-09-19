@@ -47,7 +47,7 @@ export function DesignedForYou({ notes, className, testId }: DesignedForYouProps
         ))}
       </ol>
       <p
-        className="mt-4 text-[10.5px] uppercase tracking-[0.26em] font-semibold"
+        className="mt-4 text-[11px] uppercase tracking-[0.26em] font-semibold"
         style={{ color: "color-mix(in oklab, var(--charcoal) 55%, transparent)" }}
       >
         <span aria-hidden style={{ color: "var(--gold)" }}>

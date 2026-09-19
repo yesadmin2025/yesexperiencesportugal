@@ -413,7 +413,7 @@ export function LivingItinerary({
           {/* Chapter II — marks the shift from intent-gathering into the
               living journey. Subtle, surfaces only here (Phase 5+). */}
           <p
-            className="text-[9.5px] uppercase tracking-[0.42em]"
+            className="text-[11px] uppercase tracking-[0.42em]"
             style={{
               color: "color-mix(in oklab, var(--charcoal) 42%, transparent)",
               fontWeight: 600,
@@ -422,7 +422,7 @@ export function LivingItinerary({
             Chapter II
           </p>
           <p
-            className="mt-1.5 text-[10.5px] uppercase tracking-[0.32em]"
+            className="mt-1.5 text-[11px] uppercase tracking-[0.32em]"
             style={{
               color: "color-mix(in oklab, var(--gold) 80%, var(--charcoal))",
               fontWeight: 700,
@@ -434,7 +434,7 @@ export function LivingItinerary({
         <button
           type="button"
           onClick={() => setShowControls(true)}
-          className="flex min-h-[44px] items-center gap-1.5 px-2 py-1 text-[10.5px] uppercase tracking-[0.22em]"
+          className="flex min-h-[44px] items-center gap-1.5 px-2 py-1 text-[11px] uppercase tracking-[0.22em]"
           style={{
             color: "color-mix(in oklab, var(--charcoal) 60%, transparent)",
             fontWeight: 600,
@@ -724,7 +724,7 @@ function Scene({
       {/* content */}
       <div className="relative z-10 flex h-full min-h-[280px] flex-col justify-end px-5 pb-5 pl-12 pt-10 text-[var(--ivory)]">
         <p
-          className="text-[10.5px] uppercase tracking-[0.32em]"
+          className="text-[11px] uppercase tracking-[0.32em]"
           style={{
             color: "color-mix(in oklab, var(--gold) 88%, transparent)",
             fontWeight: 700,
@@ -753,7 +753,7 @@ function Scene({
         </p>
         {stop.source_tour_keys.length > 0 && (
           <p
-            className="mt-3 text-[10px] uppercase tracking-[0.28em]"
+            className="mt-3 text-[11px] uppercase tracking-[0.28em]"
             style={{
               color: "color-mix(in oklab, var(--ivory) 60%, transparent)",
               fontWeight: 600,
@@ -768,7 +768,7 @@ function Scene({
       {hasSwapPool && translate < -16 && (
         <div
           aria-hidden
-          className="absolute right-3 top-1/2 -translate-y-1/2 text-[10.5px] uppercase tracking-[0.28em]"
+          className="absolute right-3 top-1/2 -translate-y-1/2 text-[11px] uppercase tracking-[0.28em]"
           style={{
             color: "var(--ivory)",
             fontWeight: 700,
@@ -810,7 +810,7 @@ function DayBreakScene({ dayNumber }: { dayNumber: number }) {
       />
       <div className="relative z-10 flex h-full min-h-[200px] flex-col items-center justify-center px-6 text-center">
         <p
-          className="text-[10.5px] uppercase tracking-[0.36em]"
+          className="text-[11px] uppercase tracking-[0.36em]"
           style={{
             color: "color-mix(in oklab, var(--gold) 80%, var(--ivory))",
             fontWeight: 700,
@@ -846,7 +846,7 @@ function ComposedPrivatelyMark() {
         style={{ background: "color-mix(in oklab, var(--gold) 70%, transparent)" }}
       />
       <p
-        className="mt-3 text-[10px] uppercase tracking-[0.42em]"
+        className="mt-3 text-[11px] uppercase tracking-[0.42em]"
         style={{
           color: "color-mix(in oklab, var(--gold) 88%, var(--charcoal))",
           fontWeight: 700,

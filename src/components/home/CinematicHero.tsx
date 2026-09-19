@@ -233,7 +233,7 @@ export function CinematicHero() {
       <div className="hero-eyebrow-zone absolute inset-x-0 top-[19%] z-10 flex justify-center px-6 sm:top-[21%]">
         <p
           data-hero-field="eyebrow"
-          className="hero-promise m-0 text-center text-[10px] font-medium uppercase tracking-[0.24em] sm:text-[11px] sm:tracking-[0.26em]"
+          className="hero-promise m-0 text-center text-[11px] font-medium uppercase tracking-[0.24em] sm:text-[11px] sm:tracking-[0.26em]"
           style={revealStyle(eyebrow, TEXT_FADE_MS)}
         >
           {HERO_COPY.eyebrow}
@@ -292,7 +292,7 @@ export function CinematicHero() {
           data-hero-field="primaryCta"
           data-analytics="hero_open_studio"
           data-analytics-placement="hero"
-        className="hero-cta hero-cta--primary group inline-flex min-h-[44px] min-w-[196px] items-center justify-center whitespace-nowrap px-7 text-[10.5px] uppercase tracking-[0.18em] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)] focus-visible:ring-offset-4 focus-visible:ring-offset-transparent sm:min-w-[206px] sm:text-[11px]"
+        className="hero-cta hero-cta--primary group inline-flex min-h-[44px] min-w-[196px] items-center justify-center whitespace-nowrap px-7 text-[11px] uppercase tracking-[0.18em] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)] focus-visible:ring-offset-4 focus-visible:ring-offset-transparent sm:min-w-[206px] sm:text-[11px]"
         >
           <span className="hero-cta__sheen" aria-hidden="true" />
           <span className="relative z-10 inline-flex items-center gap-2.5">
@@ -305,7 +305,7 @@ export function CinematicHero() {
           data-hero-field="secondaryCta"
           data-analytics="hero_choose_experience"
           data-analytics-placement="hero"
-          className="hero-cta hero-cta--ghost group inline-flex min-h-[44px] min-w-[196px] items-center justify-center whitespace-nowrap px-7 text-[10.5px] uppercase tracking-[0.18em] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)] focus-visible:ring-offset-4 focus-visible:ring-offset-transparent sm:min-w-[206px] sm:text-[11px]"
+          className="hero-cta hero-cta--ghost group inline-flex min-h-[44px] min-w-[196px] items-center justify-center whitespace-nowrap px-7 text-[11px] uppercase tracking-[0.18em] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)] focus-visible:ring-offset-4 focus-visible:ring-offset-transparent sm:min-w-[206px] sm:text-[11px]"
         >
           <span className="hero-cta__sheen" aria-hidden="true" />
           <span className="relative z-10">{HERO_COPY.secondaryCta}</span>

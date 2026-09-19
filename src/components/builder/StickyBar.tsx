@@ -66,7 +66,7 @@ export function StickyBar({
           </span>
 
           <span className="flex flex-col leading-tight">
-            <span className="hidden sm:inline text-[10px] uppercase tracking-[0.22em] font-semibold text-[color:var(--text-muted)]">
+            <span className="hidden sm:inline text-[11px] uppercase tracking-[0.22em] font-semibold text-[color:var(--text-muted)]">
               From
             </span>
             <span className="text-[14px] sm:text-[15px] tabular-nums font-semibold text-[color:var(--charcoal)]">

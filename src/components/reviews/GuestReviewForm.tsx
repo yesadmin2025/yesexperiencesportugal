@@ -120,7 +120,7 @@ export function GuestReviewForm({
       data-testid="guest-review-form"
     >
       <div className="max-w-xl mx-auto">
-        <p className="font-sans text-[10.5px] uppercase tracking-[0.22em] text-[color:var(--charcoal-soft)]">
+        <p className="font-sans text-[11px] uppercase tracking-[0.22em] text-[color:var(--charcoal-soft)]">
           {t.eyebrow}
         </p>
         <h2 className="mt-2 font-display font-semibold text-[1.5rem] md:text-[1.9rem] leading-[1.25] text-[color:var(--charcoal)]">

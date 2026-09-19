@@ -41,7 +41,7 @@ export function ImageQualityToggle({ className = "" }: { className?: string }) {
         className,
       ].join(" ")}
     >
-      <span className="px-3 py-1.5 text-[10px] uppercase tracking-[0.25em] text-[color:var(--charcoal-soft)] border-r border-[color:var(--border)]">
+      <span className="px-3 py-1.5 text-[11px] uppercase tracking-[0.25em] text-[color:var(--charcoal-soft)] border-r border-[color:var(--border)]">
         Photos
       </span>
       {opt("fast", "Fast", <Zap size={11} />, "Smaller images — quicker to load")}

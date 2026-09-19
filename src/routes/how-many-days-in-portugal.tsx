@@ -189,7 +189,7 @@ function HowManyDays() {
                 key={shape.length}
                 className="rounded-[6px] border border-[color:var(--border)] bg-[color:var(--card)] p-6 md:p-8"
               >
-                <span className="font-sans text-[10.5px] uppercase tracking-[0.22em] font-bold text-[color:var(--gold)]">
+                <span className="font-sans text-[11px] uppercase tracking-[0.22em] font-bold text-[color:var(--gold)]">
                   {shape.length}
                 </span>
                 <h3 className="font-display mt-3 text-[1.35rem] leading-snug text-[color:var(--charcoal)]">

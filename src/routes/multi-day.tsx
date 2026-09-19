@@ -476,7 +476,7 @@ function MultiDayPage() {
                   />
                   <span
                     aria-hidden="true"
-                    className="absolute bottom-2 right-2 font-sans text-[10px] uppercase tracking-[0.2em] font-semibold text-[color:var(--charcoal)] bg-[color:var(--ivory)]/90 px-1.5 py-0.5 rounded-sm"
+                    className="absolute bottom-2 right-2 font-sans text-[11px] uppercase tracking-[0.2em] font-semibold text-[color:var(--charcoal)] bg-[color:var(--ivory)]/90 px-1.5 py-0.5 rounded-sm"
                   >
                     {String(i + 2).padStart(2, "0")}
                   </span>

@@ -187,7 +187,7 @@ function CheckoutPage() {
     return (
       <Shell>
         <p
-          className="text-[10.5px] uppercase tracking-[0.32em]"
+          className="text-[11px] uppercase tracking-[0.32em]"
           style={{
             color: "color-mix(in oklab, var(--gold) 82%, var(--charcoal))",
             fontWeight: 700,
@@ -215,7 +215,7 @@ function CheckoutPage() {
   return (
     <Shell>
       <p
-        className="text-[10.5px] uppercase tracking-[0.32em]"
+        className="text-[11px] uppercase tracking-[0.32em]"
         style={{ color: "color-mix(in oklab, var(--gold) 82%, var(--charcoal))", fontWeight: 700 }}
       >
         Bespoke day · ready to confirm
@@ -262,7 +262,7 @@ function CheckoutPage() {
             </span>
             {s.tag && (
               <span
-                className="ml-2 text-[10.5px] uppercase tracking-[0.22em]"
+                className="ml-2 text-[11px] uppercase tracking-[0.22em]"
                 style={{
                   color: "color-mix(in oklab, var(--charcoal) 55%, transparent)",
                   fontWeight: 600,
@@ -391,7 +391,7 @@ function Field({ label, children }: { label: string; children: React.ReactNode }
   return (
     <label className="block">
       <span
-        className="mb-1.5 block text-[10.5px] uppercase tracking-[0.28em]"
+        className="mb-1.5 block text-[11px] uppercase tracking-[0.28em]"
         style={{ color: "color-mix(in oklab, var(--charcoal) 65%, transparent)", fontWeight: 600 }}
       >
         {label}

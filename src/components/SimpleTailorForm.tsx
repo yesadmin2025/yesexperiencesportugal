@@ -211,7 +211,7 @@ export function SimpleTailorForm({ tour }: { tour: SignatureTour }) {
             </button>
           ))}
         </div>
-        <p className="mt-1.5 text-[10.5px] leading-snug text-[color:var(--charcoal-soft)]">
+        <p className="mt-1.5 text-[11px] leading-snug text-[color:var(--charcoal-soft)]">
           Spanish available on request — subject to guide availability.
         </p>
       </Field>
@@ -238,7 +238,7 @@ export function SimpleTailorForm({ tour }: { tour: SignatureTour }) {
       <p className="mt-2 text-[11px] text-[color:var(--charcoal-soft)] text-center">
         Opens WhatsApp with your tailored request already written.
       </p>
-      <p className="mt-1 text-[10px] uppercase tracking-[0.22em] text-[color:var(--charcoal-soft)]/80 text-center">
+      <p className="mt-1 text-[11px] uppercase tracking-[0.22em] text-[color:var(--charcoal-soft)]/80 text-center">
         A YES curator replies with availability and the final details.
       </p>
     </div>
@@ -258,7 +258,7 @@ function Field({
 }) {
   return (
     <div className={className}>
-      <label className="flex items-center gap-1.5 text-[10px] uppercase tracking-[0.25em] text-[color:var(--charcoal-soft)] mb-1.5">
+      <label className="flex items-center gap-1.5 text-[11px] uppercase tracking-[0.25em] text-[color:var(--charcoal-soft)] mb-1.5">
         {icon}
         {label}
       </label>

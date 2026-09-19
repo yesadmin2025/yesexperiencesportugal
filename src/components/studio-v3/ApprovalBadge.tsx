@@ -60,7 +60,7 @@ export function ApprovalBadge({ state, className, testId }: ApprovalBadgeProps) 
           />
         </svg>
         <span
-          className="text-[10px] uppercase tracking-[0.26em] font-semibold"
+          className="text-[11px] uppercase tracking-[0.26em] font-semibold"
           style={{ color: "var(--teal)" }}
         >
           {APPROVAL_LABELS.approved}
@@ -87,7 +87,7 @@ export function ApprovalBadge({ state, className, testId }: ApprovalBadgeProps) 
           style={{ background: "var(--teal)" }}
         />
         <span
-          className="text-[10px] uppercase tracking-[0.26em] font-semibold"
+          className="text-[11px] uppercase tracking-[0.26em] font-semibold"
           style={{ color: "var(--teal)" }}
         >
           {label}

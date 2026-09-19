@@ -81,7 +81,7 @@ export function StudioBuilderChrome({
           </span>
           <span className="hidden sm:inline-flex flex-col leading-tight">
             <span
-              className="text-[9.5px] uppercase tracking-[0.28em]"
+              className="text-[11px] uppercase tracking-[0.28em]"
               style={{
                 color: "color-mix(in oklab, var(--charcoal) 60%, transparent)",
                 fontWeight: 600,
@@ -145,7 +145,7 @@ export function StudioBuilderChrome({
             }}
           >
             <span
-              className="text-[9.5px] uppercase tracking-[0.28em]"
+              className="text-[11px] uppercase tracking-[0.28em]"
               style={{
                 color: "color-mix(in oklab, var(--charcoal) 60%, transparent)",
                 fontWeight: 600,
@@ -166,7 +166,7 @@ export function StudioBuilderChrome({
               €{pricePerGuestFrom}
             </span>
             <span
-              className="text-[10px]"
+              className="text-[11px]"
               style={{ color: "color-mix(in oklab, var(--charcoal) 55%, transparent)" }}
             >
               / guest
@@ -177,7 +177,7 @@ export function StudioBuilderChrome({
             <button
               type="button"
               onClick={() => setEmailOpen(true)}
-              className="inline-flex h-9 items-center gap-1.5 rounded-[2px] px-3 text-[10.5px] uppercase tracking-[0.28em] transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)]"
+              className="inline-flex h-9 items-center gap-1.5 rounded-[2px] px-3 text-[11px] uppercase tracking-[0.28em] transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)]"
               style={{
                 background: "color-mix(in oklab, var(--ivory) 82%, transparent)",
                 backdropFilter: "blur(10px)",
@@ -258,7 +258,7 @@ function EmailDraftModal({
         <div className="flex items-start justify-between">
           <div>
             <p
-              className="text-[10px] uppercase tracking-[0.36em]"
+              className="text-[11px] uppercase tracking-[0.36em]"
               style={{
                 color: "color-mix(in oklab, var(--gold) 78%, var(--charcoal))",
                 fontWeight: 700,
@@ -293,7 +293,7 @@ function EmailDraftModal({
           <form onSubmit={submit} className="mt-5 space-y-4">
             <label className="block">
               <span
-                className="block text-[10px] uppercase tracking-[0.32em]"
+                className="block text-[11px] uppercase tracking-[0.32em]"
                 style={{
                   color: "color-mix(in oklab, var(--charcoal) 60%, transparent)",
                   fontWeight: 600,

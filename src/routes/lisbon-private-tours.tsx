@@ -178,7 +178,7 @@ function LisbonPrivateTours() {
           <ul className="mt-10 grid gap-5 md:grid-cols-2 lg:grid-cols-3 list-none p-0">
             {FEATURED.map((tour) => (
               <li key={tour.id} className={cardClass}>
-                <span className="font-sans text-[10.5px] uppercase tracking-[0.22em] font-bold text-[color:var(--gold)]">
+                <span className="font-sans text-[11px] uppercase tracking-[0.22em] font-bold text-[color:var(--gold)]">
                   {tour.region}
                 </span>
                 <h3 className="font-display mt-3 text-[1.2rem] leading-snug text-[color:var(--charcoal)]">
@@ -294,13 +294,13 @@ function LisbonPrivateTours() {
                 </p>
                 <dl className="mt-4 grid gap-2 text-[14px] leading-[1.65] text-[color:var(--charcoal-soft)] sm:grid-cols-2">
                   <div>
-                    <dt className="font-sans text-[10.5px] font-bold uppercase tracking-[0.2em] text-[color:var(--charcoal)]">
+                    <dt className="font-sans text-[11px] font-bold uppercase tracking-[0.2em] text-[color:var(--charcoal)]">
                       Pickup
                     </dt>
                     <dd className="mt-1">{a.pickup}</dd>
                   </div>
                   <div>
-                    <dt className="font-sans text-[10.5px] font-bold uppercase tracking-[0.2em] text-[color:var(--charcoal)]">
+                    <dt className="font-sans text-[11px] font-bold uppercase tracking-[0.2em] text-[color:var(--charcoal)]">
                       Driving time
                     </dt>
                     <dd className="mt-1">{a.drive}</dd>

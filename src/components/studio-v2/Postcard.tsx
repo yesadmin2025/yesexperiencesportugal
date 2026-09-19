@@ -184,7 +184,7 @@ export function Postcard({
       >
         {/* Eyebrow */}
         <p
-          className="text-center text-[10.5px] font-bold uppercase tracking-[0.36em]"
+          className="text-center text-[11px] font-bold uppercase tracking-[0.36em]"
           style={{ color: "var(--gold)" }}
         >
           {eyebrow}
@@ -284,7 +284,7 @@ export function Postcard({
                 }}
               >
                 <span
-                  className="shrink-0 text-[10.5px] font-bold uppercase tracking-[0.28em] tabular-nums"
+                  className="shrink-0 text-[11px] font-bold uppercase tracking-[0.28em] tabular-nums"
                   style={{ color: "var(--gold)", minWidth: "1.5rem" }}
                 >
                   {String(i + 1).padStart(2, "0")}
@@ -301,7 +301,7 @@ export function Postcard({
                 </span>
                 {typeof s.duration_minutes === "number" && s.duration_minutes > 0 && (
                   <span
-                    className="shrink-0 text-[10.5px] uppercase tracking-[0.2em]"
+                    className="shrink-0 text-[11px] uppercase tracking-[0.2em]"
                     style={{ color: "color-mix(in oklab, var(--charcoal) 55%, transparent)" }}
                   >
                     {formatDur(s.duration_minutes)}

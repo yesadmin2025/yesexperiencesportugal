@@ -239,7 +239,7 @@ function ReviewsPage() {
                           >
                             <div className="flex items-center justify-between gap-3">
                               <Stars rating={r.rating} />
-                              <span className="font-sans text-[10.5px] uppercase tracking-[0.22em] text-[color:var(--charcoal-soft)]">
+                              <span className="font-sans text-[11px] uppercase tracking-[0.22em] text-[color:var(--charcoal-soft)]">
                                 {r.is_first_party
                                   ? "Verified guest"
                                   : `via ${SOURCE_LABEL[r.source]}`}

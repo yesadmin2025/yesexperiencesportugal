@@ -395,7 +395,7 @@ function ReviewRow({
     >
       <div className="min-w-0">
         <p
-          className="text-[10.5px] uppercase tracking-[0.24em]"
+          className="text-[11px] uppercase tracking-[0.24em]"
           style={{ color: "color-mix(in oklab, var(--charcoal) 55%, transparent)" }}
         >
           {label}
@@ -411,7 +411,7 @@ function ReviewRow({
         type="button"
         onClick={onEdit}
         data-edit-row={moment}
-        className="shrink-0 min-h-[44px] min-w-[44px] px-2 text-[10.5px] uppercase tracking-[0.22em] font-semibold focus:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)]"
+        className="shrink-0 min-h-[44px] min-w-[44px] px-2 text-[11px] uppercase tracking-[0.22em] font-semibold focus:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)]"
         style={{ color: "var(--teal)" }}
         aria-label={`Edit ${label.toLowerCase()}`}
       >

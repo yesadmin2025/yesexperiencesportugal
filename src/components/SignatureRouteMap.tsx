@@ -281,7 +281,7 @@ export function SignatureRouteMap({ tour }: Props) {
 
           {/* Top-right so it never covers Leaflet's top-left zoom controls. */}
           <div className="absolute top-3 right-3 z-[400] pointer-events-none max-w-[62%]">
-            <span className="inline-flex max-w-full items-center gap-1.5 truncate rounded-full bg-[color:var(--ivory)]/95 backdrop-blur-sm px-3 py-1.5 text-[10.5px] uppercase tracking-[0.22em] font-semibold text-[color:var(--charcoal)] border border-[color:var(--gold)]/40 shadow-sm">
+            <span className="inline-flex max-w-full items-center gap-1.5 truncate rounded-full bg-[color:var(--ivory)]/95 backdrop-blur-sm px-3 py-1.5 text-[11px] uppercase tracking-[0.22em] font-semibold text-[color:var(--charcoal)] border border-[color:var(--gold)]/40 shadow-sm">
               <MapPin size={11} className="text-[color:var(--gold)]" aria-hidden />
               {tour.region}
             </span>
@@ -311,7 +311,7 @@ export function SignatureRouteMap({ tour }: Props) {
             >
               <span
                 aria-hidden
-                className="shrink-0 text-[11px] font-semibold text-[color:var(--gold)] tabular-nums w-4"
+                className="w-6 shrink-0 text-[11.5px] font-semibold tabular-nums text-[color:var(--gold)]"
               >
                 {i + 1}.
               </span>

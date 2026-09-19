@@ -30,12 +30,12 @@ export function BuilderMobileStepSummary({ step, furthestCompleted = 0, onJump }
       role="region"
     >
       <div className="min-w-0">
-        <p className="text-[10px] uppercase tracking-[0.22em] font-bold text-[color:var(--text-muted)] tabular-nums">
+        <p className="text-[11px] uppercase tracking-[0.22em] font-bold text-[color:var(--text-muted)] tabular-nums">
           Step {current} / {total}
         </p>
         <p className="text-[13px] font-semibold text-[color:var(--charcoal)] truncate">
           {label}
-          <span className="ml-2 text-[10.5px] uppercase tracking-[0.2em] font-bold text-[color:var(--charcoal)]">
+          <span className="ml-2 text-[11px] uppercase tracking-[0.2em] font-bold text-[color:var(--charcoal)]">
             {completedCount === 0 ? "in progress" : `${completedCount} done`}
           </span>
         </p>

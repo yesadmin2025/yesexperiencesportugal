@@ -112,7 +112,7 @@ export function StudioQualityBand({ day, profile, confidence, locale }: Props) {
     >
       <header className="mb-2.5 flex items-baseline justify-between gap-2">
         <p
-          className="text-[9.5px] uppercase tracking-[0.18em] font-bold"
+          className="text-[11px] uppercase tracking-[0.18em] font-bold"
           style={{ color: "color-mix(in oklab, var(--charcoal) 70%, transparent)" }}
         >
           {tt("quality.eyebrow", locale)}
@@ -145,7 +145,7 @@ export function StudioQualityBand({ day, profile, confidence, locale }: Props) {
         {data.bars.map((b) => (
           <li key={b.key} className="flex items-center gap-2">
             <span
-              className="text-[10px] font-semibold uppercase tracking-[0.12em] whitespace-nowrap"
+              className="text-[11px] font-semibold uppercase tracking-[0.12em] whitespace-nowrap"
               style={{ color: "var(--charcoal)", minWidth: 52 }}
             >
               {b.label}

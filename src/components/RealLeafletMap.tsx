@@ -270,10 +270,10 @@ export function RealLeafletMap({ region }: { region: string | null }) {
       data-active-region={region ?? "portugal"}
     >
       <div className="flex items-baseline justify-between px-5 pt-5">
-        <span className="text-[10px] uppercase tracking-[0.3em] text-[color:var(--charcoal)] inline-flex items-center gap-2">
+        <span className="text-[11px] uppercase tracking-[0.3em] text-[color:var(--charcoal)] inline-flex items-center gap-2">
           <MapIcon size={12} /> Live Map
         </span>
-        <span className="text-[10px] uppercase tracking-[0.22em] text-[color:var(--charcoal-soft)]">
+        <span className="text-[11px] uppercase tracking-[0.22em] text-[color:var(--charcoal-soft)]">
           {loading
             ? "Loading stops…"
             : `${markers.length} stops · ${totalTours} tour mention${totalTours === 1 ? "" : "s"}`}

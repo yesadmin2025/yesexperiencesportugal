@@ -232,7 +232,7 @@ function CopyButton({ value, label = "Copy" }: { value: string; label?: string }
     <button
       type="button"
       onClick={onClick}
-      className="inline-flex shrink-0 items-center gap-1.5 rounded-full border border-[color:var(--charcoal)]/15 bg-[color:var(--ivory)] px-3 py-1 text-[10.5px] uppercase tracking-[0.18em] text-[color:var(--charcoal)]/75 transition hover:border-[color:var(--gold)] hover:text-[color:var(--charcoal)]"
+      className="inline-flex shrink-0 items-center gap-1.5 rounded-full border border-[color:var(--charcoal)]/15 bg-[color:var(--ivory)] px-3 py-1 text-[11px] uppercase tracking-[0.18em] text-[color:var(--charcoal)]/75 transition hover:border-[color:var(--gold)] hover:text-[color:var(--charcoal)]"
       aria-live="polite"
     >
       {copied ? "Copied" : label}
@@ -250,7 +250,7 @@ function Snippet({ label, code, filename }: { label: string; code: string; filen
         <div className="flex items-center gap-2">
           {filename && (
             <a
-              className="text-[10.5px] uppercase tracking-[0.18em] text-[color:var(--teal)] underline underline-offset-4"
+              className="text-[11px] uppercase tracking-[0.18em] text-[color:var(--teal)] underline underline-offset-4"
               href={`data:text/plain;charset=utf-8,${encodeURIComponent(code)}`}
               download={filename}
             >

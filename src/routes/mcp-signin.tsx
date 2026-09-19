@@ -152,7 +152,7 @@ function McpSignInPage() {
           </button>
 
           <div
-            className="my-5 flex items-center gap-3 text-[10.5px] uppercase tracking-[0.22em]"
+            className="my-5 flex items-center gap-3 text-[11px] uppercase tracking-[0.22em]"
             style={{ color: "color-mix(in oklab, var(--charcoal) 50%, transparent)" }}
           >
             <div

@@ -185,7 +185,7 @@ function BookingReceiptPage() {
 
         <article className="border border-[color:var(--border)] bg-[color:var(--ivory)] p-6 sm:p-9 print:border-0 print:p-0">
           <header className="border-b border-[color:var(--border)] pb-5">
-            <p className="text-[10.5px] uppercase tracking-[0.26em] text-[color:var(--charcoal-soft)]">
+            <p className="text-[11px] uppercase tracking-[0.26em] text-[color:var(--charcoal-soft)]">
               Receipt
             </p>
             <h1 className="mt-2 text-[1.6rem] leading-tight text-[color:var(--charcoal)] serif">
@@ -365,7 +365,7 @@ function BookingReceiptPage() {
 function Meta({ label, value }: { label: string; value: string }) {
   return (
     <div className="min-w-0">
-      <dt className="text-[10.5px] uppercase tracking-[0.2em] text-[color:var(--charcoal-soft)]">
+      <dt className="text-[11px] uppercase tracking-[0.2em] text-[color:var(--charcoal-soft)]">
         {label}
       </dt>
       <dd className="mt-0.5 break-words text-[14px] leading-snug text-[color:var(--charcoal)]">
