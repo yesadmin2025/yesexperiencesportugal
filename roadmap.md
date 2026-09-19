@@ -164,4 +164,4 @@
 - [x] Connect selected editorial phrases to a fixed-position ink reveal.
 - [x] Trigger CTA arrow drawing only when each action enters the viewport.
 - [x] Compose the About page as a paced editorial story and remove its positional parallax.
-- [ ] Validate representative public pages at 393px and 1280px before release.
+- [x] Validate representative public pages at 393px and 1280px before release.
