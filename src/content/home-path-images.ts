@@ -12,7 +12,7 @@ export const HOME_PATH_IMAGES = {
   studio: image("azulejo-private-workshop", {
     alt: "Private guests painting traditional azulejos together in Azeitão.",
     width: 1600,
-    height: 1066,
+    height: 1058,
     objectPosition: "50% 46%",
   }),
   signature: image("arrabida-team-viewpoint", {
@@ -33,12 +33,74 @@ export const HOME_PATH_IMAGES = {
     height: 1058,
     objectPosition: "50% 42%",
   }),
-  corporate: image("azeitao-group-tasting", {
-    alt: "Private group sharing a hosted tasting with local producers in Azeitão.",
+  corporate: image("winery-group-orange-tree", {
+    alt: "Private group welcomed at a Setúbal Peninsula winery during a hosted day.",
     width: 1600,
-    height: 1066,
-    objectPosition: "50% 44%",
+    height: 1200,
+    objectPosition: "50% 48%",
   }),
 } satisfies Record<string, EditorialImageSource>;
 
 export const HOME_PATH_IMAGE_LIST = Object.values(HOME_PATH_IMAGES);
+
+export type HomePathId = keyof typeof HOME_PATH_IMAGES;
+
+/**
+ * One factual visual identity shared by the Five Ways cards and the homepage
+ * map. The map consumes this registry directly so the card and destination can
+ * never drift onto different photographs.
+ */
+export const HOME_PATH_DESTINATIONS = {
+  studio: {
+    id: "studio",
+    label: "Studio",
+    destination: "Azeitão",
+    routeLabel: "Lisbon → Azeitão",
+    mapRegionId: "azeitao",
+    image: HOME_PATH_IMAGES.studio,
+  },
+  signature: {
+    id: "signature",
+    label: "Signature",
+    destination: "Arrábida",
+    routeLabel: "Lisbon → Arrábida",
+    mapRegionId: "arrabida",
+    image: HOME_PATH_IMAGES.signature,
+  },
+  designer: {
+    id: "designer",
+    label: "Travel Designer",
+    destination: "Alentejo",
+    routeLabel: "A journey through Alentejo",
+    mapRegionId: "evora",
+    image: HOME_PATH_IMAGES.designer,
+  },
+  proposals: {
+    id: "proposals",
+    label: "Moments",
+    destination: "Tróia",
+    routeLabel: "Lisbon → Tróia",
+    mapRegionId: "troia",
+    image: HOME_PATH_IMAGES.proposals,
+  },
+  corporate: {
+    id: "corporate",
+    label: "Corporate",
+    destination: "Azeitão",
+    routeLabel: "Lisbon → Azeitão",
+    mapRegionId: "azeitao",
+    image: HOME_PATH_IMAGES.corporate,
+  },
+} as const satisfies Record<
+  HomePathId,
+  {
+    id: HomePathId;
+    label: string;
+    destination: string;
+    routeLabel: string;
+    mapRegionId: string;
+    image: EditorialImageSource;
+  }
+>;
+
+export const HOME_PATH_DESTINATION_LIST = Object.values(HOME_PATH_DESTINATIONS);

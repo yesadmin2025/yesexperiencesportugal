@@ -1,6 +1,13 @@
 import { useMemo, useState } from "react";
 import { Link } from "@tanstack/react-router";
 import { CtaButton } from "@/components/ui/CtaButton";
+import { Button } from "@/components/ui/button";
+import { ResponsiveEditorialImage } from "@/components/ui/ResponsiveEditorialImage";
+import {
+  HOME_PATH_DESTINATION_LIST,
+  HOME_PATH_DESTINATIONS,
+  type HomePathId,
+} from "@/content/home-path-images";
 import {
   PLANNER_MAINLAND_REGIONS,
   PLANNER_MAP,
@@ -32,12 +39,29 @@ function pct(value: number, span: number) {
 
 export function PortugalPlannerMap() {
   const [activeId, setActiveId] = useState<string>("arrabida");
+  const [activePathId, setActivePathId] = useState<HomePathId>("signature");
 
   const active = useMemo(() => {
     const region =
       PLANNER_REGIONS.find((r) => r.id === activeId) ?? (PLANNER_REGIONS[0] as PlannerRegion);
     return resolvePlannerRegion(region);
   }, [activeId]);
+
+  const activePath = HOME_PATH_DESTINATIONS[activePathId];
+
+  const choosePath = (pathId: HomePathId) => {
+    const path = HOME_PATH_DESTINATIONS[pathId];
+    setActivePathId(pathId);
+    setActiveId(path.mapRegionId);
+  };
+
+  const chooseRegion = (regionId: string) => {
+    setActiveId(regionId);
+    if (activePath.mapRegionId !== regionId) {
+      const matchingPath = HOME_PATH_DESTINATION_LIST.find((path) => path.mapRegionId === regionId);
+      if (matchingPath) setActivePathId(matchingPath.id);
+    }
+  };
 
   return (
     <div className="grid gap-8 md:gap-12 md:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)] md:items-start">
@@ -94,7 +118,7 @@ export function PortugalPlannerMap() {
               <button
                 key={region.id}
                 type="button"
-                onClick={() => setActiveId(region.id)}
+                 onClick={() => chooseRegion(region.id)}
                 aria-pressed={isActive}
                 aria-label={region.label}
                 className="group absolute flex h-11 w-11 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)]"
@@ -140,7 +164,7 @@ export function PortugalPlannerMap() {
               )}
               <button
                 type="button"
-                onClick={() => setActiveId(island.id)}
+                 onClick={() => chooseRegion(island.id)}
                 aria-pressed={island.id === active.id}
                 className={`inline-flex min-h-11 items-center underline-offset-4 transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)] ${
                   island.id === active.id
@@ -159,7 +183,36 @@ export function PortugalPlannerMap() {
 
 
       {/* Panel */}
-      <div aria-live="polite" className="planner-map-panel min-w-0" key={active.id}>
+      <div className="min-w-0">
+        <div className="planner-path-tabs" aria-label="Five ways into Portugal">
+          {HOME_PATH_DESTINATION_LIST.map((path) => (
+            <Button
+              key={path.id}
+              type="button"
+              variant="ghost"
+              onClick={() => choosePath(path.id)}
+              aria-pressed={activePathId === path.id}
+              className="planner-path-tab"
+            >
+              {path.label}
+            </Button>
+          ))}
+        </div>
+
+      <div aria-live="polite" className="planner-map-panel min-w-0" key={`${active.id}-${activePathId}`}>
+        {active.id === activePath.mapRegionId && (
+          <figure className="planner-map-panel__image">
+            <ResponsiveEditorialImage
+              image={activePath.image}
+              sizes="(min-width: 768px) 52vw, 100vw"
+              className="h-full w-full object-cover"
+            />
+            <figcaption>
+              <span>{activePath.label}</span>
+              <strong>{activePath.routeLabel}</strong>
+            </figcaption>
+          </figure>
+        )}
         <span className="block text-[11px] uppercase tracking-[0.22em] text-[color:var(--teal)]">
           {active.label}
         </span>
@@ -217,6 +270,7 @@ export function PortugalPlannerMap() {
           Design a day in {active.label}
         </CtaButton>
 
+      </div>
       </div>
     </div>
   );

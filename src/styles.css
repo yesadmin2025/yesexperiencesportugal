@@ -2406,6 +2406,69 @@
   animation: yes-panel-arrive 380ms var(--ease-out-expo) both;
 }
 
+.planner-path-tabs {
+  display: flex;
+  gap: 0.35rem;
+  margin-bottom: 1rem;
+  overflow-x: auto;
+  scrollbar-width: none;
+  scroll-snap-type: x proximity;
+}
+
+.planner-path-tabs::-webkit-scrollbar { display: none; }
+
+.planner-path-tab {
+  min-height: 44px;
+  flex: 0 0 auto;
+  scroll-snap-align: start;
+  border-radius: 0;
+  padding-inline: 0.85rem;
+  color: var(--charcoal-soft);
+  font: 600 0.6875rem/1 var(--font-sans);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.planner-path-tab[aria-pressed="true"] {
+  background: var(--teal);
+  color: var(--ivory);
+}
+
+.planner-map-panel__image {
+  position: relative;
+  aspect-ratio: 16 / 10;
+  margin: 0 0 1.25rem;
+  overflow: hidden;
+  background: var(--sand);
+}
+
+.planner-map-panel__image picture,
+.planner-map-panel__image img { height: 100%; }
+
+.planner-map-panel__image figcaption {
+  position: absolute;
+  inset: auto 0 0;
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.9rem 1rem;
+  background: color-mix(in oklab, var(--charcoal) 86%, transparent);
+  color: var(--ivory);
+}
+
+.planner-map-panel__image figcaption span {
+  font: 600 0.6875rem/1.2 var(--font-sans);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.planner-map-panel__image figcaption strong {
+  max-width: 19ch;
+  text-align: right;
+  font: 500 0.8125rem/1.35 var(--font-sans);
+}
+
 .planner-map-panel__trace {
   height: 1px;
   margin-top: 1.25rem;
@@ -7946,6 +8009,22 @@ html.reveal-ready .about-story--quiet :is(li, a) { transition-delay: 0ms; }
   transform: scale(1.015);
   transition: transform var(--dur-slow) var(--ease-scene);
 }
+.five-ways-route {
+  position: absolute;
+  top: 0.75rem;
+  right: 0.75rem;
+  bottom: auto;
+  left: 0.75rem;
+  z-index: 2;
+  width: fit-content;
+  max-width: calc(100% - 1.5rem);
+  padding: 0.55rem 0.7rem;
+  background: color-mix(in oklab, var(--charcoal) 82%, transparent);
+  color: var(--ivory);
+  font: 600 0.6875rem/1.25 var(--font-sans);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
 .five-ways-copy {
   position: relative;
   z-index: 1;
@@ -8081,6 +8160,7 @@ html.reveal-ready .about-story.is-visible .about-copy-sequence p:nth-child(4) { 
     transition: none !important;
   }
   .five-ways-image img { transform: none !important; }
+  .planner-map-panel__image { animation: none !important; }
 }
 
 /* Gold rule draw-in (used by ChapterLead / SectionTitle). */

@@ -9,7 +9,10 @@ import {
   HOMEPAGE_MOMENTS,
   MULTI_DAY_MOMENTS,
 } from "@/content/guest-moments";
-import { HOME_PATH_IMAGE_LIST } from "@/content/home-path-images";
+import {
+  HOME_PATH_DESTINATION_LIST,
+  HOME_PATH_IMAGE_LIST,
+} from "@/content/home-path-images";
 
 describe("editorial image identity", () => {
   it("does not repeat an image between public conversion surfaces", () => {
@@ -53,5 +56,14 @@ describe("editorial image identity", () => {
     expect(urls).toHaveLength(5);
     expect(new Set(urls).size).toBe(urls.length);
     expect(HOME_PATH_IMAGE_LIST.every((photo) => photo.alt.length > 0)).toBe(true);
+  });
+
+  it("uses the exact card image for every matching homepage map destination", () => {
+    expect(HOME_PATH_DESTINATION_LIST).toHaveLength(5);
+    expect(HOME_PATH_DESTINATION_LIST.map((path) => path.image.src)).toEqual(
+      HOME_PATH_IMAGE_LIST.map((photo) => photo.src),
+    );
+    expect(HOME_PATH_DESTINATION_LIST.every((path) => path.mapRegionId.length > 0)).toBe(true);
+    expect(HOME_PATH_DESTINATION_LIST.every((path) => path.routeLabel.length > 0)).toBe(true);
   });
 });
