@@ -7996,13 +7996,24 @@ html.reveal-ready .about-story--quiet :is(li, a) { transition-delay: 0ms; }
 .five-ways-card--proposals .five-ways-image,
 .five-ways-card--corporate .five-ways-image { aspect-ratio: 4 / 3; }
 
-@media (min-width: 520px) and (max-width: 767.98px) {
+@media (min-width: 520px) and (max-width: 1023.98px) {
   .five-ways-story { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .five-ways-card--studio { grid-column: 1 / -1; }
   .five-ways-card--studio .five-ways-image { aspect-ratio: 16 / 10; }
+  .five-ways-card--signature,
+  .five-ways-card--designer,
+  .five-ways-card--proposals,
+  .five-ways-card--corporate {
+    grid-column: auto;
+    margin-top: 0;
+  }
+  .five-ways-card--signature .five-ways-image,
+  .five-ways-card--designer .five-ways-image,
+  .five-ways-card--proposals .five-ways-image,
+  .five-ways-card--corporate .five-ways-image { aspect-ratio: 4 / 5; }
 }
 
-@media (min-width: 768px) {
+@media (min-width: 1024px) {
   .five-ways-story {
     grid-template-columns: repeat(12, minmax(0, 1fr));
     align-items: start;
