@@ -869,7 +869,13 @@ export function SiteLayout({ children }: { children: ReactNode }) {
     <CurrencyProvider>
       <div className="min-h-screen flex flex-col">
         <Navbar />
-        <main className="flex-1">{children}</main>
+        {/* `key` on the pathname re-runs the 300ms route fade on every
+            navigation; the route subtree is new content anyway, so nothing
+            mounted is discarded. Opacity only — no layout shift, and CSS
+            neutralises it under reduced motion and outside marketing pages. */}
+        <main className="flex-1" data-route-fade key={routeFadeKey}>
+          {children}
+        </main>
         <Footer />
         <FloatingActions />
         {/* WhatsAppFab intentionally not rendered — WhatsAppSupportButton (in __root.tsx)
