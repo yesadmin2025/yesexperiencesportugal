@@ -12,7 +12,6 @@ import { Eyebrow } from "@/components/ui/Eyebrow";
 import { SectionTitle } from "@/components/ui/SectionTitle";
 import { CtaButton, CtaMotionArrow } from "@/components/ui/CtaButton";
 import { Scene } from "@/components/motion/Scene";
-import { SplitLines } from "@/components/motion/SplitLines";
 import { useMarketingMotion } from "@/hooks/use-marketing-motion";
 import { PriceCurrencyChip } from "@/components/PriceCurrencyChip";
 import { PriceEur } from "@/components/ui/PriceEur";
@@ -89,14 +88,9 @@ function ExperiencesPage() {
             ]}
           />
           <Eyebrow flank>Signature Collection</Eyebrow>
-          <SplitLines
-            as="h1"
-            className="mx-auto font-serif text-[clamp(2.4rem,10vw,4.75rem)] font-medium leading-[1.02] text-[color:var(--charcoal)]"
-            lines={[
-              <>Private days,</>,
-              <span className="italic font-normal text-[color:var(--teal)]">ready when you are.</span>,
-            ]}
-          />
+          <SectionTitle as="h1" size="anchor" spacing="loose">
+            Private days, <SectionTitle.Em>ready when you are.</SectionTitle.Em>
+          </SectionTitle>
           <p className="mt-6 max-w-[58ch] mx-auto text-[16px] md:text-[17px] leading-[1.7] text-[color:var(--charcoal-soft)]">
             Every Signature can be reserved as designed, or tailored around your pace, interests and
             group.
