@@ -233,6 +233,19 @@ export function BookingsAvailabilityCalendar() {
         </select>
       </label>
 
+      <label className="mt-3 block text-[11px] uppercase tracking-[0.18em] text-[color:var(--charcoal-soft)]">
+        Status
+        <select
+          value={statusFilter}
+          onChange={(e) => setStatusFilter(e.target.value as "all" | "paid" | "pending")}
+          className="mt-1 min-h-11 w-full border border-[color:var(--sand)] bg-white px-3 text-base normal-case tracking-normal md:text-sm"
+        >
+          <option value="all">Paid &amp; pending</option>
+          <option value="paid">Paid only</option>
+          <option value="pending">Pending only</option>
+        </select>
+      </label>
+
       {error ? <p className="mt-3 text-sm text-red-700">{error}</p> : null}
 
       <div className="mt-4 grid grid-cols-7 gap-1 text-center text-[10px] uppercase tracking-[0.16em] text-[color:var(--charcoal-soft)]">
