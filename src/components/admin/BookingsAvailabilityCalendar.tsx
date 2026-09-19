@@ -13,6 +13,8 @@ import { listAdminBookingCalendar } from "@/lib/bookingsAdmin.functions";
 import { buildMonthGrid, normaliseBlackoutDates, normaliseWeekdays } from "@/lib/admin-availability-calendar";
 import { signatureTours } from "@/data/signatureTours";
 import { supabase } from "@/integrations/supabase/client";
+import { Link } from "@tanstack/react-router";
+import { GuideBriefPanel } from "@/components/admin/GuideBriefPanel";
 
 type CalendarBooking = {
   id: string;
