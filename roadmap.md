@@ -30,4 +30,4 @@
 - [x] Remove route and destination overlays from Five Ways cards
 - [x] Remove photography and path tabs from the homepage map
 - [x] Simplify the five-path photo manager around image, title, and description
-- [ ] Validate homepage image uniqueness and visual quality at mobile, tablet, and desktop
+- [x] Validate homepage image uniqueness and visual quality at mobile, tablet, and desktop
