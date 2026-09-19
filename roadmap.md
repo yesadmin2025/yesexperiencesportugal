@@ -33,6 +33,6 @@
 - [x] Validate homepage image uniqueness and visual quality at mobile, tablet, and desktop
 - [x] Validate the five new path photographs and correct tablet layout, loading, and couple framing
 
-- [ ] Refine homepage path-card image proportions and restore the couple-toasting Moments image.
-- [ ] Improve Moments and Corporate service-page imagery using approved owner photographs.
-- [ ] Validate revised imagery at mobile, tablet and desktop sizes.
+- [x] Refine homepage path-card image proportions and restore the couple-toasting Moments image.
+- [x] Improve Moments and Corporate service-page imagery using approved owner photographs.
+- [x] Validate revised imagery at mobile, tablet and desktop sizes.
