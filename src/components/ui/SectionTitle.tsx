@@ -6,22 +6,25 @@ import { cn } from "@/lib/utils";
  * across the site, so mt / leading / tracking / weight stay harmonised
  * and no section invents its own scale.
  *
- * Variants follow the final Newsreader editorial scale.
+ * Variants follow the canonical ramp consolidated in the home page:
+ *   • "default" — 29px mobile / 36px desktop (most sections)
+ *   • "anchor"  — 40px mobile / 60px desktop (page anchors)
+ *   • "compact" — 26px mobile / 32px desktop (dense editorial sections)
  *
- * Newsreader italic emphasis: pass JSX inside `children` and wrap the emphasised words
+ * Italic emphasis: pass JSX inside `children` and wrap the emphasised words
  * with the helper <SectionTitle.Em>...</SectionTitle.Em> — that renders
  * `italic font-normal text-[color:var(--teal)]`, the locked emphasis token.
  */
 
-const baseClasses = "editorial-title section-title editorial-title-safe font-editorial text-[color:var(--charcoal)] font-normal";
+const baseClasses = "editorial-title-safe font-serif text-[color:var(--charcoal)] font-medium tracking-normal";
 
 const sizeClasses = {
   default:
-    "text-[2.5rem] md:text-[3.5rem] leading-[1.06] md:leading-[1.03] tracking-[-0.012em] text-balance",
+    "text-[1.8125rem] md:text-[2.25rem] leading-[1.18] md:leading-[1.1] text-balance",
   anchor:
-    "text-[clamp(2.55rem,10vw,3rem)] md:text-[clamp(3.25rem,5vw,4.5rem)] leading-[1.04] md:leading-[1.02] tracking-[-0.015em] md:tracking-[-0.018em] text-balance",
+    "text-[2.5rem] md:text-[3.75rem] leading-[1.12] md:leading-[1.08] text-balance",
   compact:
-    "text-[1.9rem] md:text-[2.075rem] leading-[1.08] tracking-[-0.008em] text-balance",
+    "text-[1.625rem] md:text-[2rem] leading-[1.2] md:leading-[1.12] text-balance",
 } as const;
 
 export type SectionTitleSize = keyof typeof sizeClasses;
@@ -60,9 +63,9 @@ function SectionTitleRoot({
 
 function Em({ children, className, ...rest }: React.HTMLAttributes<HTMLSpanElement>) {
   return (
-    <em className={cn("font-editorial italic font-normal text-[color:var(--teal)]", className)} {...rest}>
+    <span className={cn("italic font-normal text-[color:var(--teal)]", className)} {...rest}>
       {children}
-    </em>
+    </span>
   );
 }
 
