@@ -1188,7 +1188,7 @@ function TailorPage() {
                     required
                     aria-invalid={Boolean(dateError)}
                     aria-describedby={dateError ? "tailor-date-error" : undefined}
-                    className="min-h-[48px] w-full border border-[color:var(--border)] bg-transparent px-3 py-3 text-[16px] sm:text-sm focus:border-[color:var(--gold)] focus:outline-none"
+                    className="signature-date-input block w-full min-w-0 max-w-full min-h-[48px] appearance-none border border-[color:var(--border)] bg-[color:var(--ivory)] px-3 py-2.5 text-[16px] sm:text-sm focus:border-[color:var(--gold)] focus:outline-none"
                   />
                   {dateError ? (
                     <p id="tailor-date-error" role="alert" className="mt-2 text-[12.5px] leading-snug text-destructive">
@@ -1197,9 +1197,10 @@ function TailorPage() {
                   ) : null}
                 </div>
                 <div className="min-w-0">
-                  <span className="mb-1.5 block text-[10px] uppercase tracking-[0.25em] text-[color:var(--charcoal-soft)]">
+                  <span className="mb-1.5 block text-[12px] font-medium uppercase tracking-[0.22em] text-[color:var(--charcoal)]">
                     Who&rsquo;s travelling
                   </span>
+
 
                   <CompositionField
                     value={composition}
