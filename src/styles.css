@@ -6606,6 +6606,8 @@ html {
 }
 
 @media (prefers-reduced-motion: reduce) {
+  .hero-cinematic .hero-h1,
+  .hero-cinematic .hero-cinematic-composition,
   .hero-cinematic .hero-title-line,
   .hero-cinematic .hero-support,
   .hero-cinematic .hero-cta-group {

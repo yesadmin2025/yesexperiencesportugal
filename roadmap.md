@@ -50,8 +50,8 @@
 - [x] Restore the approved image-free Five Ways order, copy, and card composition
 - [x] Harmonize the referenced editorial page families without changing business logic
 - [x] Validate against the approved mobile references before publishing
-- [ ] Restore the original Newsreader + Inter public typography
-- [ ] Normalize the shared title scale and section rhythm
-- [ ] Restore the explanatory hero line without mobile collisions
-- [ ] Validate representative public pages and present mobile captures before publishing
+- [x] Restore the original Newsreader + Inter public typography
+- [x] Normalize the shared title scale and section rhythm
+- [x] Restore the explanatory hero line without mobile collisions
+- [x] Validate representative public pages and present mobile captures before publishing
 
