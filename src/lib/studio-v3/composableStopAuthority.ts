@@ -115,7 +115,7 @@ export function composableStopLineFromRow(
   if (heads < row.minGuests) return null;
   const quantity = composableQuantity(row.pricingUnit, heads);
   return {
-    stopId,
+    stopId: row.stopId,
     unitEurCents: row.priceCents,
     quantity,
     totalEurCents: row.priceCents * quantity,
