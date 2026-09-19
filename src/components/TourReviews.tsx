@@ -194,7 +194,7 @@ export function TourReviews({ tourId }: { tourId: string }) {
                 type="button"
                 onClick={() => setSortBy(opt.id)}
                 aria-pressed={active}
-                className={`text-[12px] px-3 py-1.5 rounded-full border transition-colors ${
+                className={`inline-flex min-h-[44px] items-center rounded-full border px-4 text-[12.5px] transition-colors ${
                   active
                     ? "border-[color:var(--teal)] bg-[color:var(--teal)] text-white"
                     : "border-[color:var(--charcoal)]/15 text-[color:var(--charcoal)]/75 hover:border-[color:var(--charcoal)]/35"
