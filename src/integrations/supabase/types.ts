@@ -1657,6 +1657,42 @@ export type Database = {
         }
         Relationships: []
       }
+      home_path_content: {
+        Row: {
+          destination: string
+          is_published: boolean
+          path_id: string
+          photo_alt: string
+          photo_src: string
+          route_label: string
+          source_url: string | null
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          destination: string
+          is_published?: boolean
+          path_id: string
+          photo_alt: string
+          photo_src: string
+          route_label: string
+          source_url?: string | null
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          destination?: string
+          is_published?: boolean
+          path_id?: string
+          photo_alt?: string
+          photo_src?: string
+          route_label?: string
+          source_url?: string | null
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       import_mapping_rules: {
         Row: {
           created_at: string
