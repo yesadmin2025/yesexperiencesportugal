@@ -14,15 +14,12 @@
  * actionable state immediately.
  */
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import { Link } from "@tanstack/react-router";
 import { HERO_COPY, HERO_COPY_VERSION, HERO_PHRASES } from "@/content/hero-copy";
 import { HERO_FILM } from "@/content/hero-scenes-manifest";
 
 /** Cinematic pace: opposing phrases cross the frame, then copy and actions settle. */
-const LINE1_DELAY_MS = 250;
-const LINE2_DELAY_MS = 820;
-const CTA_DELAY_MS = 1500;
 const TEXT_FADE_MS = 1450;
 const CTA_FADE_MS = 1000;
 const EASE = "cubic-bezier(0.22,1,0.36,1)";
@@ -41,32 +38,10 @@ function shouldSkipIntro(): boolean {
   }
 }
 
-function revealStyle(on: boolean, ms: number, distance = 12): React.CSSProperties {
-  return {
-    opacity: on ? 1 : 0,
-    transform: on ? "translateY(0)" : `translateY(${distance}px)`,
-    willChange: "opacity, transform",
-    transition: `opacity ${ms}ms ${EASE}, transform ${ms}ms ${EASE}`,
-  };
-}
-
-function storyLineStyle(on: boolean, delayDirection: "from-left" | "from-right"): React.CSSProperties {
-  const distance = delayDirection === "from-left" ? 12 : 16;
+function storyLineStyle(delayMs: number): React.CSSProperties {
   return {
     ...stanzaStyle,
-    opacity: on ? 1 : 0,
-    transform: on ? "translateY(0)" : `translateY(${distance}px)`,
-    willChange: "opacity, transform",
-    transition: `opacity ${TEXT_FADE_MS}ms ${EASE}, transform ${TEXT_FADE_MS}ms ${EASE}`,
-  };
-}
-
-function supportFadeStyle(on: boolean): React.CSSProperties {
-  return {
-    opacity: on ? 1 : 0,
-    transform: on ? "translateY(0)" : "translateY(12px)",
-    willChange: "opacity, transform",
-    transition: `opacity ${TEXT_FADE_MS}ms ${EASE}, transform ${TEXT_FADE_MS}ms ${EASE}`,
+    animation: `heroApprovedReveal ${TEXT_FADE_MS}ms ${EASE} ${delayMs}ms both`,
   };
 }
 
@@ -97,9 +72,6 @@ const ARROW = (
 );
 
 export function CinematicHero() {
-  const [line1, setLine1] = useState(false);
-  const [line2, setLine2] = useState(false);
-  const [composed, setComposed] = useState(false);
   const videoRef = useRef<HTMLVideoElement | null>(null);
 
   useEffect(() => {
@@ -121,24 +93,6 @@ export function CinematicHero() {
     kick();
     v.addEventListener("loadeddata", kick);
     return () => v.removeEventListener("loadeddata", kick);
-  }, []);
-
-  useEffect(() => {
-    const skipIntro = shouldSkipIntro();
-    if (skipIntro) {
-      setLine1(true);
-      setLine2(true);
-      setComposed(true);
-      return;
-    }
-    const t1 = window.setTimeout(() => setLine1(true), LINE1_DELAY_MS);
-    const t2 = window.setTimeout(() => setLine2(true), LINE2_DELAY_MS);
-    const tc = window.setTimeout(() => setComposed(true), CTA_DELAY_MS);
-    return () => {
-      window.clearTimeout(t1);
-      window.clearTimeout(t2);
-      window.clearTimeout(tc);
-    };
   }, []);
 
   return (
@@ -223,7 +177,7 @@ export function CinematicHero() {
             <span
               className="hero-title-line block font-serif italic font-normal m-0 text-[color:var(--gold-soft)]"
               data-hero-field="headlineLine1"
-              style={storyLineStyle(line1, "from-left")}
+              style={shouldSkipIntro() ? stanzaStyle : storyLineStyle(100)}
             >
               {HERO_PHRASES[0]}
             </span>
@@ -232,7 +186,7 @@ export function CinematicHero() {
             <span
               className="hero-title-line block font-serif italic font-normal text-[color:var(--gold-soft)]"
               data-hero-field="headlineLine2"
-              style={storyLineStyle(line2, "from-right")}
+              style={shouldSkipIntro() ? stanzaStyle : storyLineStyle(520)}
             >
               {HERO_PHRASES[1]}
             </span>
@@ -243,11 +197,11 @@ export function CinematicHero() {
       {/* Original low CTA anchor. */}
       <div
         className="hero-cta-group z-20 flex flex-col items-center gap-3 sm:flex-row sm:justify-center sm:gap-4"
-        data-hero-composed={composed ? "true" : "false"}
+        data-hero-composed="true"
         style={{
-          opacity: composed ? 1 : 0,
-          transition: `opacity ${CTA_FADE_MS}ms ${EASE}`,
-          pointerEvents: composed ? "auto" : "none",
+          opacity: 1,
+          animation: shouldSkipIntro() ? undefined : `heroApprovedReveal ${CTA_FADE_MS}ms ${EASE} 980ms both`,
+          pointerEvents: "auto",
         }}
       >
         <Link

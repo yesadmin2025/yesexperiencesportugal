@@ -6494,6 +6494,10 @@ html {
 
 /* Final Hero composition. These rules intentionally sit after the historical
    Hero generations above, making this the single active visual contract. */
+@keyframes heroApprovedReveal {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
 .hero-cinematic .hero-cinematic-content {
   height: calc(100svh - 64px);
   min-height: calc(100svh - 64px);
@@ -6588,8 +6592,11 @@ html {
 }
 
 @media (prefers-reduced-motion: reduce) {
+  .hero-cinematic .hero-title-line,
   .hero-cinematic .hero-cta-group {
+    animation: none !important;
     opacity: 1 !important;
+    transform: none !important;
     pointer-events: auto !important;
   }
   .hero-cta-group[data-hero-composed="true"] .hero-cta__sheen {
