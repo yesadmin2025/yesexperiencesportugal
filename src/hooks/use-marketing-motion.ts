@@ -29,7 +29,7 @@ export function usePublicEditorialMotion(pathname: string): void {
     let firstFrame = 0;
     let secondFrame = 0;
     let idleHandle = 0;
-    let fallbackHandle = 0;
+    let fallbackHandle: ReturnType<typeof setTimeout> | undefined;
 
     const start = () => {
       if (!cancelled) disposeController = startHomeMotion();
@@ -57,7 +57,7 @@ export function usePublicEditorialMotion(pathname: string): void {
       window.cancelAnimationFrame(firstFrame);
       window.cancelAnimationFrame(secondFrame);
       if (idleHandle && "cancelIdleCallback" in window) window.cancelIdleCallback(idleHandle);
-      window.clearTimeout(fallbackHandle);
+      if (fallbackHandle !== undefined) clearTimeout(fallbackHandle);
       disposeController?.();
       document.documentElement.classList.remove("motion-ready");
       delete document.documentElement.dataset.motionScope;
