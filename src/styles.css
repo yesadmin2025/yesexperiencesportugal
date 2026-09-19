@@ -44,11 +44,14 @@
   --color-charcoal-soft: var(--charcoal-soft);
   --color-charcoal-deep: var(--charcoal-deep);
 
-  --font-editorial: "Newsreader", serif;
-  --font-display: "Newsreader", serif;
-  --font-serif: "Newsreader", serif;
-  --font-body: "Inter", system-ui, sans-serif;
+  /* Restored approved editorial hierarchy:
+     Montserrat for display/system headings, Georgia for literary/editorial
+     serif moments, Inter for body/UI. Keep these roles separate. */
+  --font-display: "Montserrat", system-ui, sans-serif;
+  --font-serif: Georgia, "Times New Roman", serif;
   --font-sans: "Inter", system-ui, sans-serif;
+  --font-editorial: Georgia, "Times New Roman", serif;
+  --font-body: var(--font-sans);
 
   --shadow-elegant: 0 30px 60px -30px color-mix(in oklab, var(--teal) 30%, transparent);
   --shadow-card: 0 20px 40px -24px rgba(46, 46, 46, 0.18);
@@ -8402,5 +8405,78 @@ html.reveal-ready .about-story.is-visible .about-copy-sequence p:nth-child(4) { 
   .itinerary-doc h2 {
     break-after: avoid;
     page-break-after: avoid;
+  }
+}
+
+
+/* CHATGPT VISUAL RESTORE 2026-09-19
+   Visual-only restoration. No SEO, routing, pricing, booking or data logic.
+   Source of truth: the previously approved warm editorial mobile direction. */
+
+@keyframes heroApprovedReveal {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+    filter: blur(2px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+    filter: blur(0);
+  }
+}
+
+/* The approved site reads as warm paper, never clinical white. */
+.five-ways-section {
+  background: var(--ivory) !important;
+}
+.five-ways-card,
+.five-ways-copy {
+  background: #FFFDF9 !important;
+}
+.five-ways-card {
+  border-color: color-mix(in oklab, var(--gold) 28%, var(--sand)) !important;
+  box-shadow: 0 1px 2px rgba(46, 46, 46, 0.035);
+}
+
+/* Restore the gentle editorial lift that was flattened to opacity-only. */
+html.reveal-ready .reveal {
+  opacity: 0;
+  transform: translateY(10px);
+  transition:
+    opacity 760ms var(--ease-scene),
+    transform 760ms var(--ease-scene);
+  will-change: opacity, transform;
+}
+html.reveal-ready .reveal.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+html.reveal-ready .reveal-stagger {
+  opacity: 0;
+  transform: translateY(12px);
+  transition:
+    opacity 760ms var(--ease-scene),
+    transform 760ms var(--ease-scene),
+    filter 680ms var(--ease-scene),
+    border-color 440ms var(--ease-scene);
+  filter: saturate(0.82) contrast(0.95);
+  will-change: opacity, transform;
+}
+html.reveal-ready .reveal-stagger.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+  filter: saturate(1) contrast(1);
+}
+@media (prefers-reduced-motion: reduce) {
+  html.reveal-ready .reveal,
+  html.reveal-ready .reveal.is-visible,
+  html.reveal-ready .reveal-stagger,
+  html.reveal-ready .reveal-stagger.is-visible {
+    opacity: 1 !important;
+    transform: none !important;
+    filter: none !important;
+    transition: none !important;
+    animation: none !important;
   }
 }
