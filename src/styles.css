@@ -7899,64 +7899,125 @@ html.reveal-ready .about-story.is-visible .about-sequence-item:nth-child(3) { tr
 html.reveal-ready .about-story.is-visible .about-sequence-item:nth-child(4) { transition-delay: 520ms; }
 html.reveal-ready .about-story--quiet :is(li, a) { transition-delay: 0ms; }
 
-/* Narrative cards: fixed geometry, staged light/mask/contrast instead of lift or bounce. */
+/* YES editorial spread: five distinct photographic invitations, composed as
+   one living page rather than a row of equal product cards. */
 [data-scene-ready="1"].five-ways-story .five-ways-card,
 [data-scene-ready="1"].experiences-story .experience-editorial-card {
   opacity: 0;
-  filter: saturate(.72) contrast(.92);
-  transition: opacity 620ms var(--motion-ease-editorial),
-    filter 820ms var(--motion-ease-editorial),
+  transition: opacity var(--dur-slow) var(--motion-ease-editorial),
     border-color 200ms ease,
     box-shadow 200ms ease;
 }
 [data-scene="in"].five-ways-story .five-ways-card,
 [data-scene="in"].experiences-story .experience-editorial-card {
   opacity: 1;
-  filter: none;
+}
+.five-ways-story {
+  display: grid;
+  gap: 2.75rem 1rem;
 }
 .five-ways-card {
   position: relative;
-  overflow: hidden;
   display: grid;
   min-width: 0;
-  border-bottom: 1px solid var(--border);
-  background: var(--sand);
-  transition: background-color 180ms ease;
+  align-content: start;
+  color: var(--charcoal);
 }
 .five-ways-card::before {
   content: none;
 }
-.five-ways-primary { display: grid; gap: 1rem; }
-.five-ways-secondary { display: grid; gap: 1px; margin-top: 1.5rem; background: var(--border); }
-.five-ways-card--primary { grid-template-columns: minmax(0, 42%) minmax(0, 1fr); min-height: 17.5rem; }
-.five-ways-card--primary:nth-child(even) { grid-template-columns: minmax(0, 1fr) minmax(0, 42%); }
-.five-ways-card--primary:nth-child(even) .five-ways-image { order: 2; }
-.five-ways-image { height: 100%; aspect-ratio: auto; }
-.five-ways-copy { display: flex; min-width: 0; flex-direction: column; padding: 1.35rem; }
-.five-ways-card--secondary { background: var(--ivory); }
-.five-ways-card--secondary .five-ways-copy { padding: 1.5rem; }
-.five-ways-card--secondary .five-ways-kicker > svg { color: var(--teal); }
-[data-scene-ready="1"] .five-ways-card :is(.five-ways-kicker, .five-ways-title, .five-ways-body, .five-ways-action) { transition: opacity 380ms var(--motion-ease-editorial); }
-.five-ways-card:hover { background: color-mix(in oklab, var(--sand) 76%, var(--ivory)); }
+.five-ways-image {
+  position: relative;
+  z-index: 0;
+  aspect-ratio: 4 / 5;
+  min-height: 0;
+  overflow: hidden;
+  background: var(--sand);
+}
+.five-ways-image::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: color-mix(in oklab, var(--teal) 8%, transparent);
+  pointer-events: none;
+  transition: opacity var(--dur-quick) var(--ease-scene);
+}
+.five-ways-image img {
+  transform: scale(1.015);
+  transition: transform var(--dur-slow) var(--ease-scene);
+}
+.five-ways-copy {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  margin: -2rem 1rem 0 0;
+  padding: 1.35rem 1.25rem 0 0;
+  background: var(--ivory);
+}
+.five-ways-card--signature .five-ways-copy,
+.five-ways-card--corporate .five-ways-copy {
+  margin-right: 0;
+  margin-left: 1rem;
+  padding-right: 0;
+  padding-left: 1.25rem;
+}
+.five-ways-title { max-width: 17ch; }
+.five-ways-body { max-width: 38ch; }
+[data-scene-ready="1"] .five-ways-card .five-ways-image {
+  clip-path: inset(0 100% 0 0);
+  transition: clip-path 760ms var(--motion-ease-editorial);
+}
+[data-scene-ready="1"] .five-ways-card:nth-child(even) .five-ways-image {
+  clip-path: inset(0 0 0 100%);
+}
+[data-scene="in"].five-ways-story .five-ways-card .five-ways-image {
+  clip-path: inset(0);
+}
+[data-scene-ready="1"] .five-ways-card :is(.five-ways-kicker, .five-ways-title, .five-ways-body, .five-ways-action) {
+  opacity: 0;
+  transition: opacity var(--dur-slow) var(--motion-ease-editorial);
+}
+[data-scene="in"].five-ways-story .five-ways-card :is(.five-ways-kicker, .five-ways-title, .five-ways-body, .five-ways-action) {
+  opacity: 1;
+}
+[data-scene="in"].five-ways-story .five-ways-card .five-ways-kicker { transition-delay: 180ms; }
+[data-scene="in"].five-ways-story .five-ways-card .five-ways-title { transition-delay: 240ms; }
+[data-scene="in"].five-ways-story .five-ways-card :is(.five-ways-body, .five-ways-action) { transition-delay: 320ms; }
+.five-ways-card:is(:hover, :focus-visible) .five-ways-image img { transform: scale(1.035); }
+.five-ways-card:is(:hover, :focus-visible) .five-ways-image::after { opacity: 0; }
 .five-ways-card:is(:hover, :focus-visible) {
-  border-color: var(--teal);
   box-shadow: none;
 }
+.five-ways-card--studio .five-ways-image { aspect-ratio: 4 / 5; }
+.five-ways-card--signature .five-ways-image { aspect-ratio: 5 / 4; }
+.five-ways-card--designer .five-ways-image { aspect-ratio: 3 / 4; }
+.five-ways-card--proposals .five-ways-image,
+.five-ways-card--corporate .five-ways-image { aspect-ratio: 4 / 3; }
 
-@media (max-width: 479px) {
-  .five-ways-card--primary,
-  .five-ways-card--primary:nth-child(even) { grid-template-columns: minmax(0, 1fr); }
-  .five-ways-card--primary:nth-child(even) .five-ways-image { order: 0; }
-  .five-ways-image { height: auto; aspect-ratio: 3 / 2; }
+@media (min-width: 520px) and (max-width: 767.98px) {
+  .five-ways-story { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .five-ways-card--studio { grid-column: 1 / -1; }
+  .five-ways-card--studio .five-ways-image { aspect-ratio: 16 / 10; }
 }
 
 @media (min-width: 768px) {
-  .five-ways-primary { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1.25rem; }
-  .five-ways-card--primary,
-  .five-ways-card--primary:nth-child(even) { grid-template-columns: minmax(0, 1fr); }
-  .five-ways-card--primary:nth-child(even) .five-ways-image { order: 0; }
-  .five-ways-image { height: auto; aspect-ratio: 4 / 3; }
-  .five-ways-secondary { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .five-ways-story {
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    align-items: start;
+    gap: 5rem 1.5rem;
+  }
+  .five-ways-card--studio { grid-column: 1 / span 7; }
+  .five-ways-card--studio .five-ways-image { aspect-ratio: 16 / 11; }
+  .five-ways-card--signature { grid-column: 9 / -1; margin-top: 7rem; }
+  .five-ways-card--designer { grid-column: 2 / span 4; }
+  .five-ways-card--designer .five-ways-image { aspect-ratio: 4 / 5; }
+  .five-ways-card--proposals { grid-column: 7 / span 3; margin-top: 6rem; }
+  .five-ways-card--corporate { grid-column: 10 / -1; }
+  .five-ways-card--proposals .five-ways-image,
+  .five-ways-card--corporate .five-ways-image { aspect-ratio: 3 / 4; }
+  .five-ways-card--studio .five-ways-title { font-size: 1.85rem; }
 }
 
 [data-scene-ready="1"] .experience-card-image {
@@ -7969,6 +8030,15 @@ html.reveal-ready .about-story--quiet :is(li, a) { transition-delay: 0ms; }
 }
 [data-scene="in"] .experience-editorial-card:nth-child(even) .experience-card-image {
   clip-path: inset(0);
+}
+.experience-card-image { aspect-ratio: 4 / 5; }
+.experience-card-image > * { height: 100%; aspect-ratio: auto; }
+.experience-card-content { position: relative; }
+.experience-card-promise { max-width: 42ch; }
+@media (min-width: 768px) {
+  .experience-editorial-card:nth-child(4n + 2) { margin-top: 5rem; }
+  .experience-editorial-card:nth-child(4n + 3) .experience-card-image { aspect-ratio: 5 / 4; }
+  .experience-editorial-card[data-experience-position="lead"] .experience-card-image { aspect-ratio: 5 / 4; }
 }
 [data-scene-ready="1"] .experience-card-content > * {
   opacity: 0;
@@ -8003,14 +8073,14 @@ html.reveal-ready .about-story.is-visible .about-copy-sequence p:nth-child(3) { 
 html.reveal-ready .about-story.is-visible .about-copy-sequence p:nth-child(4) { transition-delay: 580ms; }
 
 @media (prefers-reduced-motion: reduce) {
-  [data-scene-ready="1"] :is(.five-ways-card, .experience-editorial-card, .experience-card-content > *, .five-ways-kicker, .five-ways-title, .five-ways-body, .five-ways-action),
+  [data-scene-ready="1"] :is(.five-ways-card, .five-ways-image, .experience-editorial-card, .experience-card-content > *, .five-ways-kicker, .five-ways-title, .five-ways-body, .five-ways-action),
   html.reveal-ready .about-story .about-copy-sequence p {
     opacity: 1 !important;
     clip-path: none !important;
     filter: none !important;
     transition: none !important;
   }
-  .five-ways-card::before { transform: scaleY(1); transition: none; }
+  .five-ways-image img { transform: none !important; }
 }
 
 /* Gold rule draw-in (used by ChapterLead / SectionTitle). */

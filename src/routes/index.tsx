@@ -5,21 +5,10 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { SiteLayout } from "@/components/SiteLayout";
 import { FAQ } from "@/components/FAQ";
 import { CtaButton } from "@/components/ui/CtaButton";
-import { EditorialCard } from "@/components/ui/EditorialCard";
 import { Eyebrow } from "@/components/ui/Eyebrow";
 import { buildResponsiveSrc } from "@/lib/responsive-image";
 
 import heroImg from "@/assets/hero-coast.jpg";
-
-// Real Viator-sourced tour photography used by the Occasions / Signature
-// cards on this page. Hero-scene imagery is declared in the manifest at
-// `src/content/hero-scenes-manifest.ts` (single source of truth, feeds
-// both the route and the credits modal).
-import imgArrabidaWineLunch from "@/assets/tours/arrabida-wine-allinclusive/lunch.jpg";
-import imgProposalsRomanticAsset from "@/assets/owner-photos/couple-vineyard.jpeg.asset.json";
-import imgCorporateAsset from "@/assets/owner-photos/winery-group-orange-tree.jpeg.asset.json";
-const imgProposalsRomantic = imgProposalsRomanticAsset.url;
-const imgCorporate = imgCorporateAsset.url;
 
 import { Star, MessageCircle } from "lucide-react";
 
@@ -272,74 +261,9 @@ const baseSignatures = FEATURED_TOUR_IDS.filter((id) => isValidTourId(id))
     };
   });
 
-/* ──────────────────────────────────────────────────────────────────
- * Moments / Groups preview — Multi-day, Proposals, Celebrations,
- * Corporate collapsed into a single band (see groupsAndCelebrations).
- * ────────────────────────────────────────────────────────────── */
-
-/* ──────────────────────────────────────────────────────────────────
- * Moments / Groups preview — Multi-day, Celebrations, Corporate
- * collapsed into a single 3-card band.
- * ────────────────────────────────────────────────────────────── */
-/* ──────────────────────────────────────────────────────────────────
- * Occasions band — Proposals · Celebrations · Corporate & Groups ·
- * Multi-Day. Each block carries the four required elements:
- *   1. strong headline (`title`)
- *   2. short emotional value (`pull`)
- *   3. practical value (`line` body + `detail` + `handles`)
- *   4. local guidance / logistics note (`trust`)
- *   + CTA (`cta` + `to`)
- * Copy is approved verbatim — do not paraphrase without explicit ask.
- * Each block uses its OWN real Viator-sourced image (no duplicates,
- * no stock, no invented imagery).
- * ────────────────────────────────────────────────────────────── */
-const groupsAndCelebrations = [
-  {
-    id: "proposals",
-    eyebrow: "Proposals",
-    title: "A private moment, held with care.",
-    line: (
-      <>
-        Location, timing and every detail arranged{" "}
-        <strong className="font-medium text-[color:var(--charcoal)]">discreetly</strong>.
-      </>
-    ),
-    detail: "Discreet · location of your choosing",
-    cta: "Plan a Proposal",
-    to: "/proposal-in-portugal",
-    img: imgProposalsRomantic,
-  },
-  {
-    id: "celebrations",
-    eyebrow: "Celebrations",
-    title: "For days worth remembering.",
-    line: (
-      <>
-        Birthdays, anniversaries and family days, shaped around{" "}
-        <strong className="font-medium text-[color:var(--charcoal)]">your people</strong>.
-      </>
-    ),
-    detail: "Private host · any group size",
-    cta: "Plan a Celebration",
-    to: "/proposal-in-portugal",
-    img: imgArrabidaWineLunch,
-  },
-  {
-    id: "corporate",
-    eyebrow: "Corporate",
-    title: "Corporate days, handled with care.",
-    line: (
-      <>
-        Off-sites, incentives and client hospitality — venues, transport and timing in one{" "}
-        <strong className="font-medium text-[color:var(--charcoal)]">effortless</strong> day.
-      </>
-    ),
-    detail: "Any group size · invoice & DMC support",
-    cta: "Plan a Corporate Day",
-    to: "/corporate",
-    img: imgCorporate,
-  },
-] as const;
+/* Moments and group services appear once in FourWaysIn. Their dedicated
+ * routes retain the complete service narratives without repeating the same
+ * commercial choice later on this page. */
 
 /* ──────────────────────────────────────────────────────────────────
  * Route definition — keeps headers, head meta and HERO_COPY_VERSION
@@ -946,97 +870,6 @@ function HomePage() {
           and the bespoke narrative deepens desire for higher-value
           Travel Designer journeys. */}
         <RecentJourney />
-
-        {/* 7 — PROPOSALS & CELEBRATIONS
-          A dedicated commercial path for private milestones. */}
-        <section
-          id="proposals"
-          className="he-section-rule section-enter py-16 md:py-20 bg-[color:var(--sand)] border-b border-[color:var(--border)] scroll-mt-24 md:scroll-mt-28"
-          aria-labelledby="proposals-title"
-        >
-          <div className="container-x">
-            <div className="reveal text-center max-w-2xl mx-auto mb-7 md:mb-10">
-              <Eyebrow className="mb-5">Proposals & celebrations</Eyebrow>
-
-              <h2
-                id="proposals-title"
-                className="serif mt-3 text-[1.8rem] sm:text-[2.1rem] lg:text-[2.95rem] leading-[1.12] lg:leading-[1.02] tracking-[-0.014em] text-[color:var(--charcoal)] font-medium"
-              >
-                Private moments,{" "}
-                <span className="italic font-normal text-[color:var(--teal)]">
-                  planned discreetly.
-                </span>
-              </h2>
-              <p className="mx-auto mt-5 max-w-xl text-[15px] leading-[1.7] text-[color:var(--charcoal-soft)]">
-                From the first idea to the right setting and timing, one local team keeps the moment personal.
-              </p>
-            </div>
-
-            <div className="max-w-5xl mx-auto">
-              {groupsAndCelebrations
-                .filter((m) => m.id === "proposals")
-                .map((m) => (
-                  <EditorialCard
-                    key={m.eyebrow}
-                    id={`${m.id}-feature`}
-                    eyebrow={m.eyebrow}
-                    accent={m.id === "proposals" ? "var(--gold)" : "var(--teal-2)"}
-                    title={m.title}
-                    body={m.line}
-                    detail={m.detail}
-                    cta={{ label: m.cta, to: m.to, ariaLabel: m.cta }}
-                    image={{ src: m.img, to: m.to }}
-                  />
-                ))}
-            </div>
-          </div>
-        </section>
-
-
-        {/* 8 — CORPORATE & PRIVATE GROUPS
-          A separate B2B path with its own promise and direct action. */}
-        <section
-          id="corporate-groups"
-          className="he-section-rule section-enter py-16 md:py-20 bg-[color:var(--ivory)] border-b border-[color:var(--border)] scroll-mt-24 md:scroll-mt-28"
-          aria-labelledby="corporate-title"
-        >
-          <div className="container-x">
-            <div className="reveal text-center max-w-2xl mx-auto mb-7 md:mb-10">
-              <Eyebrow className="mb-5">Corporate & private groups</Eyebrow>
-              <h2
-                id="corporate-title"
-                className="serif mt-3 text-[1.8rem] sm:text-[2.1rem] lg:text-[2.95rem] leading-[1.12] lg:leading-[1.02] tracking-[-0.014em] text-[color:var(--charcoal)] font-medium"
-              >
-                Bring people together.{" "}
-                <span className="italic font-normal text-[color:var(--teal)]">
-                  We handle the day.
-                </span>
-              </h2>
-              <p className="mx-auto mt-5 max-w-xl text-[15px] leading-[1.7] text-[color:var(--charcoal-soft)]">
-                Off-sites, incentives, client hospitality and private groups—with transport, timing, venues and invoicing coordinated together.
-              </p>
-            </div>
-
-            <div className="max-w-5xl mx-auto">
-              {groupsAndCelebrations
-                .filter((m) => m.id === "corporate")
-                .map((m) => (
-                  <EditorialCard
-                    key={m.eyebrow}
-                    id={m.id}
-                    eyebrow={m.eyebrow}
-                    accent="var(--teal)"
-                    title={m.title}
-                    body={m.line}
-                    detail={m.detail}
-                    cta={{ label: m.cta, to: m.to, ariaLabel: m.cta }}
-                    image={{ src: m.img, to: m.to }}
-                    
-                  />
-                ))}
-            </div>
-          </div>
-        </section>
 
         {/* 9 — LIVE GUEST REVIEWS
           Reassurance follows the service choices, just before discovery. */}
