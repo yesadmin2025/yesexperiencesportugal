@@ -44,7 +44,7 @@ export function usePublicEditorialMotion(pathname: string): void {
         if ("requestIdleCallback" in window) {
           idleHandle = window.requestIdleCallback(start, { timeout: 500 });
         } else {
-          fallbackHandle = window.setTimeout(start, 160);
+          fallbackHandle = globalThis.setTimeout(start, 160);
         }
       });
     });
