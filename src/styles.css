@@ -1051,14 +1051,14 @@
     transition: box-shadow 320ms var(--ease-premium);
   }
 
-  /* One-shot conversion cue. The arrow settles once after the CTA appears,
-     then stays quiet until the visitor hovers, focuses, or presses it. */
+  /* One-shot conversion cue. The arrow advances once and keeps its final
+     direction; it never returns or oscillates. */
   @keyframes ctaArrowEntranceCue {
     from { transform: translateX(0); }
     to { transform: translateX(6px); }
   }
   .cta-arrow-cue {
-    animation: ctaArrowEntranceCue var(--dur-image) var(--ease-scene) 420ms both;
+    animation: ctaArrowEntranceCue 480ms var(--ease-scene) 420ms both;
   }
   .group:hover .cta-arrow-cue,
   .group:focus-visible .cta-arrow-cue,
@@ -4584,19 +4584,12 @@ html[data-motion-scope="marketing"] .signature-image-settle {
   }
 
   @keyframes heKenBurns {
-    0% {
-      transform: scale(1) translate3d(0, 0, 0);
-    }
-    50% {
-      transform: scale(1.06) translate3d(-1.2%, -0.8%, 0);
-    }
-    100% {
-      transform: scale(1) translate3d(0, 0, 0);
-    }
+    from { transform: scale(1.025); }
+    to { transform: scale(1); }
   }
   .home-energy .he-image-cinema img {
     will-change: transform;
-    animation: heKenBurns 18s ease-in-out infinite;
+    animation: heKenBurns 900ms var(--ease-scene) both;
   }
   .home-energy .he-image-cinema:hover img,
   .home-energy .he-image-cinema:focus-within img {
@@ -6050,31 +6043,17 @@ html[data-motion-scope="marketing"] .signature-image-settle {
   }
 }
 
-/* Hero scroll cue — anchors the storytelling rhythm with a calm,
-   premium downward motion. Floats 3px on a 2.4s sine loop, paused
-   under prefers-reduced-motion. Sequenced into the hero reveal cadence
-   so it surfaces only after the CTAs have settled. */
+/* Hero scroll cue appears once without floating or oscillating. */
 .hero-cinematic .hero-scroll-cue {
   opacity: 0;
-  animation:
-    heroRevealRisePremium 260ms var(--ease-premium) 620ms both,
-    heroScrollCueFloat 2.4s ease-in-out 1.2s infinite;
+  animation: siteSectionFadeIn 420ms var(--ease-premium) 620ms both;
 }
 .hero-cinematic .hero-scroll-cue:hover .hero-scroll-cue__chevron,
 .hero-cinematic .hero-scroll-cue:focus-visible .hero-scroll-cue__chevron {
-  transform: translate3d(0, 2px, 0);
+  opacity: 0.72;
 }
 .hero-cinematic .hero-scroll-cue__chevron {
   transition: transform 220ms var(--ease-premium);
-}
-@keyframes heroScrollCueFloat {
-  0%,
-  100% {
-    transform: translate3d(0, 0, 0);
-  }
-  50% {
-    transform: translate3d(0, 3px, 0);
-  }
 }
 @media (prefers-reduced-motion: reduce) {
   .hero-cinematic .hero-scroll-cue {
@@ -7410,7 +7389,11 @@ html[data-motion-scope="marketing"] :is(.premium-cta, .editorial-action, .hero-c
   transform: scale(0.985);
 }
 
-html[data-motion-scope="marketing"] :is(.hero-cta-arrow-pulse, .cta-breathe)::after {
+html[data-motion-scope="marketing"] .hero-cta-arrow-pulse {
+  animation: none !important;
+}
+
+html[data-motion-scope="marketing"] .cta-breathe::after {
   animation: none !important;
 }
 
