@@ -99,7 +99,7 @@ function ExperiencesPage() {
 
   return (
     <SiteLayout>
-      <section className="pt-32 pb-14 md:pb-20 bg-[color:var(--sand)] text-center">
+      <section className="reveal pt-32 pb-14 md:pb-20 bg-[color:var(--sand)] text-center">
         <div className="container-x">
           <SiteBreadcrumbs
             containerClassName=""
@@ -209,7 +209,7 @@ function TourCard({
         </div>
 
         <h3
-          className={`experience-card-title mt-3 font-serif font-medium leading-[1.14] tracking-normal text-[color:var(--charcoal)] ${featured ? "text-[1.5rem] md:text-[1.75rem]" : "text-[1.45rem] md:text-[1.55rem]"}`}
+          className="experience-card-title editorial-title-safe t-h3 mt-3 font-serif font-medium tracking-normal text-[color:var(--charcoal)]"
         >
           <Link
             to="/tours/$tourId"

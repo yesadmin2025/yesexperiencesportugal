@@ -222,19 +222,19 @@ function PathCard({ path, index }: { path: Path; index: number }) {
     >
       <div className="five-ways-copy">
         <div className="five-ways-kicker flex items-start justify-between gap-4">
-          <span className="five-ways-icon" aria-hidden="true"><Icon size={19} strokeWidth={1.7} /></span>
-          <span className="five-ways-number">{String(index + 1).padStart(2, "0")}</span>
+          <span className="five-ways-icon five-ways-beat" aria-hidden="true"><Icon size={19} strokeWidth={1.7} /></span>
+          <span className="five-ways-number five-ways-beat">{String(index + 1).padStart(2, "0")}</span>
         </div>
-        <p className="five-ways-eyebrow mt-6">{path.eyebrow}</p>
-        <h3 className="five-ways-title editorial-title-safe mt-4 font-serif text-[1.5rem] leading-[1.22] font-normal text-[color:var(--charcoal)] md:text-[1.625rem]">
+        <p className="five-ways-eyebrow five-ways-beat mt-6">{path.eyebrow}</p>
+        <h3 className="five-ways-title five-ways-beat editorial-title-safe mt-4 font-serif font-normal text-[color:var(--charcoal)] t-h3">
           {path.title === `${path.titleLead} ${path.titleEmphasis}` ? (
             <>{path.titleLead} <em className="font-normal text-[color:var(--teal)]">{path.titleEmphasis}</em></>
           ) : path.title}
         </h3>
-        <p className="five-ways-body mt-4 text-[15px] leading-[1.68] text-[color:var(--charcoal-soft)] md:text-[16px]">
+        <p className="five-ways-body five-ways-beat mt-4 text-[15px] leading-[1.68] text-[color:var(--charcoal-soft)] md:text-[16px]">
           {path.body}
         </p>
-        <span className="five-ways-action mt-auto flex min-h-[44px] w-full items-center justify-between gap-3 pt-7">
+        <span className="five-ways-action five-ways-beat mt-auto flex min-h-[44px] w-full items-center justify-between gap-3 pt-7">
           <span className="text-[11px] uppercase tracking-[0.22em] font-semibold text-[color:var(--teal)]">
             {path.cta}
           </span>

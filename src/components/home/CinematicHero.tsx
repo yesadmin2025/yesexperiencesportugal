@@ -113,7 +113,7 @@ export function CinematicHero() {
           playsInline
           preload="metadata"
           poster={HERO_FILM.poster}
-          className="absolute inset-0 h-full w-full object-cover"
+          className="hero-film-settle absolute inset-0 h-full w-full object-cover"
           aria-hidden="true"
         >
           <source
