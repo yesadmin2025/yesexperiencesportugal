@@ -39,7 +39,11 @@ export const ADMIN_GROUPS: AdminGroup[] = [
       { to: "/admin/pricing", label: "Experience prices" },
       { to: "/admin/price-map", label: "Price map (all at once)" },
       { to: "/admin/pricing-tool", label: "Quick price tool" },
-      { to: "/admin/composable-stops", label: "Composed moments (prices)" },
+      {
+        to: "/admin/composable-stops",
+        label: "Studio experience catalogue",
+        hint: "Duration, schedule, price and availability",
+      },
     ],
   },
   {

@@ -547,7 +547,7 @@ Deno.serve(async (req) => {
     if (composableIds.length > 0) {
       const { data: composableRows, error: composableError } = await admin
         .from("studio_composable_stops")
-        .select("stop_id, price_cents, pricing_unit, min_guests, active")
+        .select("stop_id, price_cents, pricing_unit, min_guests, active, duration_minutes, open_from, open_to, fixed_start_times")
         .in("stop_id", composableIds);
       if (composableError) return jsonError("composable_stop_lookup_failed", 500);
       const rowById = new Map(
@@ -558,6 +558,14 @@ Deno.serve(async (req) => {
         const priceCents = Number(row?.price_cents ?? 0);
         if (!row || row.active !== true || !Number.isFinite(priceCents) || priceCents <= 0) {
           return jsonError(`composable_stop_not_priced:${stopId}`, 409);
+        }
+        const durationMinutes = Number(row.duration_minutes ?? 0);
+        const fixedStartTimes = Array.isArray(row.fixed_start_times) ? row.fixed_start_times : [];
+        const hasSchedule =
+          (typeof row.open_from === "string" && typeof row.open_to === "string") ||
+          fixedStartTimes.length > 0;
+        if (!Number.isFinite(durationMinutes) || durationMinutes <= 0 || !hasSchedule) {
+          return jsonError(`composable_stop_operations_incomplete:${stopId}`, 409);
         }
         const minGuests = Math.max(1, Number(row.min_guests ?? 1));
         if (body.guests < minGuests) {

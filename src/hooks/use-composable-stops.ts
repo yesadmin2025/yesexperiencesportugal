@@ -20,7 +20,7 @@ export const COMPOSABLE_STOPS_QUERY_KEY = ["studio-composable-stops"] as const;
 export async function fetchComposableStops(): Promise<ComposableStopRow[]> {
   const { data, error } = await supabase
     .from("studio_composable_stops")
-    .select("stop_id, region, price_cents, pricing_unit, min_guests, active, notes");
+    .select("stop_id, region, price_cents, pricing_unit, min_guests, active, notes, duration_minutes, open_from, open_to, fixed_start_times");
   if (error) throw error;
   const rows = (data ?? []).map((row) => ({
     stopId: row.stop_id,
@@ -30,6 +30,10 @@ export async function fetchComposableStops(): Promise<ComposableStopRow[]> {
     minGuests: row.min_guests,
     active: row.active,
     notes: row.notes,
+    durationMinutes: row.duration_minutes,
+    openFrom: row.open_from?.slice(0, 5) ?? null,
+    openTo: row.open_to?.slice(0, 5) ?? null,
+    fixedStartTimes: (row.fixed_start_times ?? []).map((value) => value.slice(0, 5)),
   }));
   // Publish before React receives the successful query result. This keeps the
   // structural commercial ledger and the row-based visible total on the same

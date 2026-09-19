@@ -4980,6 +4980,8 @@ export function StoryboardHandoff({
       });
       const seenLabels = new Set(pool.map((p) => p.label.toLowerCase()));
       for (const c of cands) {
+        const operational = composableRows.find((row) => row.stopId === c.id);
+        if (!operational) continue;
         const key = c.name.toLowerCase();
         if (seenLabels.has(key) || inUse.has(key)) continue;
         if (c.oneOfGroup && usedGroups.has(c.oneOfGroup)) continue;
@@ -4989,9 +4991,10 @@ export function StoryboardHandoff({
           label: c.name,
           story: customerStopBlurb(c),
           source: "region-pool",
-          durationMinutes: c.durationMin ?? null,
-          // REGION_STOP_POOL candidates carry a structural inventory duration.
-          durationSource: c.durationMin > 0 ? ("inventory" as DwellSource) : null,
+          durationMinutes: operational.durationMinutes,
+          // Owner-published catalogue duration is the live inventory truth.
+          durationSource:
+            (operational.durationMinutes ?? 0) > 0 ? ("inventory" as DwellSource) : null,
           lat: c.coords?.lat ?? null,
           lng: c.coords?.lng ?? null,
           inventoryStopId: (c as { id?: string | null }).id ?? null,
@@ -5008,6 +5011,7 @@ export function StoryboardHandoff({
     state.companions,
     state.rhythm,
     state.interests,
+    composableRows,
     state.investment,
     state.considerations,
   ]);

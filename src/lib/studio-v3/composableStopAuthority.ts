@@ -31,6 +31,13 @@ export interface ComposableStopRow {
   readonly minGuests: number;
   readonly active: boolean;
   readonly notes: string | null;
+  /** Owner-set operational duration. Null keeps a draft out of new compositions. */
+  readonly durationMinutes: number | null;
+  /** Optional operating window, stored as local Portugal wall-clock time. */
+  readonly openFrom: string | null;
+  readonly openTo: string | null;
+  /** Optional fixed sessions. Values are normalized HH:MM strings. */
+  readonly fixedStartTimes: readonly string[];
 }
 
 /** Guests per vehicle used for `per_vehicle` quantities. Matches add-on rules. */
@@ -47,9 +54,22 @@ export function setComposableStopAuthority(rows: readonly ComposableStopRow[]): 
   for (const row of rows) {
     if (!row.active) continue;
     if (!Number.isFinite(row.priceCents) || row.priceCents <= 0) continue;
+    if (!Number.isFinite(row.durationMinutes) || (row.durationMinutes ?? 0) <= 0) continue;
+    if (!hasComposableSchedule(row)) continue;
     next.set(row.stopId, row);
   }
   registry = next;
+}
+
+export function hasComposableSchedule(row: ComposableStopRow): boolean {
+  return Boolean((row.openFrom && row.openTo) || row.fixedStartTimes.length > 0);
+}
+
+/** Human-readable schedule for Studio summaries; no availability is inferred. */
+export function composableScheduleLabel(row: ComposableStopRow): string | null {
+  if (row.fixedStartTimes.length > 0) return row.fixedStartTimes.join(" · ");
+  if (row.openFrom && row.openTo) return `${row.openFrom}–${row.openTo}`;
+  return null;
 }
 
 export function clearComposableStopAuthority(): void {
@@ -110,9 +130,15 @@ export function composableStopLineFromRow(
   row: ComposableStopRow,
   guests: number,
 ): ComposableStopLine | null {
-  if (!row.active || !Number.isFinite(row.priceCents) || row.priceCents <= 0) return null;
+  if (
+    !row.active ||
+    !Number.isFinite(row.priceCents) ||
+    row.priceCents <= 0 ||
+    !Number.isFinite(row.durationMinutes) ||
+    (row.durationMinutes ?? 0) <= 0 ||
+    !hasComposableSchedule(row)
+  ) return null;
   const heads = Math.max(1, Math.floor(guests));
-  if (heads < row.minGuests) return null;
   if (heads < row.minGuests) return null;
   const quantity = composableQuantity(row.pricingUnit, heads);
   return {

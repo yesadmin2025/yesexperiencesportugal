@@ -33,6 +33,10 @@ type RowForm = {
   price: string;
   unit: ComposablePricingUnit;
   minGuests: string;
+  durationMinutes: string;
+  openFrom: string;
+  openTo: string;
+  fixedStartTimes: string;
   active: boolean;
   notes: string;
 };
@@ -41,6 +45,10 @@ const emptyForm: RowForm = {
   price: "",
   unit: "per_person",
   minGuests: "1",
+  durationMinutes: "",
+  openFrom: "",
+  openTo: "",
+  fixedStartTimes: "",
   active: false,
   notes: "",
 };
@@ -120,6 +128,10 @@ function AdminComposableStopsPage() {
         price: row.priceCents > 0 ? (row.priceCents / 100).toFixed(2) : "",
         unit: row.pricingUnit,
         minGuests: String(row.minGuests),
+        durationMinutes: row.durationMinutes ? String(row.durationMinutes) : "",
+        openFrom: row.openFrom ?? "",
+        openTo: row.openTo ?? "",
+        fixedStartTimes: row.fixedStartTimes.join(", "),
         active: row.active,
         notes: row.notes ?? "",
       };
@@ -154,6 +166,40 @@ function AdminComposableStopsPage() {
       return;
     }
     const minGuests = Math.max(1, Number.parseInt(form.minGuests, 10) || 1);
+    const durationMinutes = Number.parseInt(form.durationMinutes, 10);
+    const sessions = form.fixedStartTimes
+      .split(",")
+      .map((value) => value.trim())
+      .filter(Boolean);
+    const timePattern = /^([01]\d|2[0-3]):[0-5]\d$/;
+    if (!Number.isFinite(durationMinutes) || durationMinutes < 15 || durationMinutes > 720) {
+      toast.error("Enter a duration between 15 and 720 minutes.");
+      return;
+    }
+    if (Boolean(form.openFrom) !== Boolean(form.openTo)) {
+      toast.error("Enter both opening and closing time, or leave both empty.");
+      return;
+    }
+    if (form.openFrom && form.openTo && form.openFrom >= form.openTo) {
+      toast.error("Closing time must be after opening time.");
+      return;
+    }
+    if (sessions.some((value) => !timePattern.test(value))) {
+      toast.error("Fixed sessions must use HH:MM, separated by commas.");
+      return;
+    }
+    if (!form.openFrom && sessions.length === 0) {
+      toast.error("Add an operating window, fixed sessions, or both.");
+      return;
+    }
+    if (
+      form.openFrom &&
+      form.openTo &&
+      sessions.some((value) => value < form.openFrom || value >= form.openTo)
+    ) {
+      toast.error("Every fixed session must sit inside the operating window.");
+      return;
+    }
     setSaving(stop.id);
     const { error } = await supabase.from("studio_composable_stops").upsert(
       {
@@ -162,6 +208,10 @@ function AdminComposableStopsPage() {
         price_cents: Number.isFinite(euros) && euros > 0 ? Math.round(euros * 100) : 0,
         pricing_unit: form.unit,
         min_guests: minGuests,
+        duration_minutes: durationMinutes,
+        open_from: form.openFrom || null,
+        open_to: form.openTo || null,
+        fixed_start_times: [...new Set(sessions)].sort(),
         active: form.active,
         notes: form.notes.trim() || null,
       },
@@ -187,11 +237,11 @@ function AdminComposableStopsPage() {
           <p className="text-[11px] uppercase tracking-[0.22em] text-[color:var(--charcoal-soft)]">
             Studio
           </p>
-          <h1 className="mt-2 text-3xl">Composable moments</h1>
+           <h1 className="mt-2 text-3xl">Studio experience catalogue</h1>
           <p className="prose-longform mt-4 text-sm text-[color:var(--charcoal-soft)]">
-            Any moment priced and activated here can be composed into a client-designed day
-            anywhere in its region — at its natural place in the day, not appended at the end.
-            A moment with no price stays invisible to guests.
+             Set the real duration, schedule and price for each experience. Only complete,
+             active entries can appear in a client-designed day; saved changes update Studio
+             immediately.
           </p>
           <p className="mt-3 text-sm">
             <strong className="font-medium">{pricedCount}</strong> priced and active ·{" "}
@@ -262,7 +312,7 @@ function AdminComposableStopsPage() {
                       {sourceTourOf(stop)} · <code>{stop.id}</code>
                     </p>
 
-                    <div className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+                     <div className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
                       <label className="block text-xs uppercase tracking-[0.18em] text-[color:var(--charcoal-soft)]">
                         Price (€)
                         <input
@@ -294,6 +344,43 @@ function AdminComposableStopsPage() {
                           inputMode="numeric"
                           value={form.minGuests}
                           onChange={(event) => patch(stop.id, { minGuests: event.target.value })}
+                          className="mt-1 min-h-[44px] w-full border border-[color:var(--border)] bg-[color:var(--ivory)] px-3 text-base normal-case tracking-normal outline-none focus:border-[color:var(--gold)] md:text-sm"
+                        />
+                      </label>
+                      <label className="block text-xs uppercase tracking-[0.18em] text-[color:var(--charcoal-soft)]">
+                        Duration (minutes)
+                        <input
+                          inputMode="numeric"
+                          value={form.durationMinutes}
+                          onChange={(event) => patch(stop.id, { durationMinutes: event.target.value })}
+                          placeholder={String(stop.durationMin)}
+                          className="mt-1 min-h-[44px] w-full border border-[color:var(--border)] bg-[color:var(--ivory)] px-3 text-base normal-case tracking-normal outline-none focus:border-[color:var(--gold)] md:text-sm"
+                        />
+                      </label>
+                      <label className="block text-xs uppercase tracking-[0.18em] text-[color:var(--charcoal-soft)]">
+                        Opens
+                        <input
+                          type="time"
+                          value={form.openFrom}
+                          onChange={(event) => patch(stop.id, { openFrom: event.target.value })}
+                          className="mt-1 min-h-[44px] w-full min-w-0 border border-[color:var(--border)] bg-[color:var(--ivory)] px-3 text-base normal-case tracking-normal outline-none focus:border-[color:var(--gold)] md:text-sm"
+                        />
+                      </label>
+                      <label className="block text-xs uppercase tracking-[0.18em] text-[color:var(--charcoal-soft)]">
+                        Closes
+                        <input
+                          type="time"
+                          value={form.openTo}
+                          onChange={(event) => patch(stop.id, { openTo: event.target.value })}
+                          className="mt-1 min-h-[44px] w-full min-w-0 border border-[color:var(--border)] bg-[color:var(--ivory)] px-3 text-base normal-case tracking-normal outline-none focus:border-[color:var(--gold)] md:text-sm"
+                        />
+                      </label>
+                      <label className="block text-xs uppercase tracking-[0.18em] text-[color:var(--charcoal-soft)] sm:col-span-2">
+                        Fixed sessions (HH:MM, comma separated)
+                        <input
+                          value={form.fixedStartTimes}
+                          onChange={(event) => patch(stop.id, { fixedStartTimes: event.target.value })}
+                          placeholder="10:00, 14:30"
                           className="mt-1 min-h-[44px] w-full border border-[color:var(--border)] bg-[color:var(--ivory)] px-3 text-base normal-case tracking-normal outline-none focus:border-[color:var(--gold)] md:text-sm"
                         />
                       </label>
