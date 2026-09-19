@@ -5,6 +5,8 @@ import { SiteBreadcrumbs } from "@/components/SiteBreadcrumbs";
 import { Eyebrow } from "@/components/ui/Eyebrow";
 import { SectionTitle } from "@/components/ui/SectionTitle";
 import { CtaButton } from "@/components/ui/CtaButton";
+import { SplitLines } from "@/components/motion/SplitLines";
+import { useMarketingMotion } from "@/hooks/use-marketing-motion";
 import {
   Accordion,
   AccordionContent,
@@ -43,6 +45,7 @@ export const Route = createFileRoute("/faq")({
 });
 
 function FaqPage() {
+  useMarketingMotion();
   return (
     <SiteLayout>
       <SiteBreadcrumbs crumbs={crumbs} />
@@ -51,9 +54,14 @@ function FaqPage() {
       <section className="pt-10 pb-14 md:pb-16 bg-[color:var(--sand)] text-center">
         <div className="container-x max-w-3xl">
           <Eyebrow flank>Before you book</Eyebrow>
-          <SectionTitle as="h1" size="anchor" spacing="loose">
-            Everything worth asking, <SectionTitle.Em>answered honestly</SectionTitle.Em>.
-          </SectionTitle>
+          <SplitLines
+            as="h1"
+            className="mt-4 font-serif text-[color:var(--charcoal)] font-medium tracking-normal text-[clamp(2.25rem,10vw,4.75rem)] leading-[1.02] text-balance"
+            lines={[
+              <>Everything worth asking,</>,
+              <><span className="italic font-normal text-[color:var(--teal)]">answered honestly.</span></>,
+            ]}
+          />
           <p className="mt-6 text-[15.5px] md:text-[17px] leading-[1.75] text-[color:var(--charcoal-soft)]">
             How our private days are designed, what they cost, where you stand if plans change, and
             the two ways to book. If your question isn&apos;t here, a local answers it personally.

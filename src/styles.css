@@ -1054,8 +1054,8 @@
   /* One-shot conversion cue. The arrow advances once and keeps its final
      direction; it never returns or oscillates. */
   @keyframes ctaArrowEntranceCue {
-    from { transform: translateX(0); }
-    to { transform: translateX(6px); }
+    from { transform: translateX(-4px); opacity: 0.45; }
+    to { transform: translateX(8px); opacity: 1; }
   }
   .cta-arrow-stage {
     min-width: 22px;
@@ -1063,17 +1063,17 @@
   .cta-arrow-line {
     position: absolute;
     right: 11px;
-    width: 10px;
+    width: 16px;
     height: 1px;
     background: currentColor;
     transform: scaleX(0);
     transform-origin: right center;
   }
   .cta-arrow-stage.is-visible .cta-arrow-line {
-    animation: ctaArrowLineDraw 620ms var(--ease-scene) 260ms both;
+    animation: ctaArrowLineDraw 760ms var(--ease-scene) 180ms both;
   }
   .cta-arrow-stage.is-visible .cta-arrow-cue {
-    animation: ctaArrowEntranceCue 620ms var(--ease-scene) 260ms both;
+    animation: ctaArrowEntranceCue 760ms var(--ease-scene) 180ms both;
   }
   @keyframes ctaArrowLineDraw {
     from { transform: scaleX(0); opacity: 0; }
@@ -3533,7 +3533,7 @@ html.motion-ready[data-motion-scope="marketing"] [data-motion="fade"] {
   to { transform: translateX(7px); }
 }
 html.motion-ready[data-motion-scope="marketing"] .motion-in .editorial-arrow {
-  animation: editorialArrowCue 560ms var(--ease-scene) 240ms both;
+  animation: editorialArrowCue 720ms var(--ease-scene) 240ms both;
 }
 .editorial-arrow {
   transition: transform var(--dur-base) var(--ease-scene);

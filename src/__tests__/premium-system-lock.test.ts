@@ -43,7 +43,7 @@ describe("Premium System Lock", () => {
     expect(cta).not.toContain("cta-arrow-idle");
     expect(cta).toContain('inView && "is-visible"');
     expect(css).toContain(".cta-arrow-stage.is-visible .cta-arrow-cue");
-    expect(css).toContain("animation: ctaArrowEntranceCue 620ms");
+    expect(css).toContain("animation: ctaArrowEntranceCue 760ms");
     expect(css).not.toMatch(/\.cta-arrow-cue\s*\{[^}]*infinite/s);
     expect(checkout).toContain('behavior: "auto"');
     expect(studioShell).not.toContain("studioV3Breathe");
