@@ -1,45 +1,56 @@
 import type { EditorialImageSource } from "@/components/ui/ResponsiveEditorialImage";
 
-import { premiumEditorialImage as image } from "@/content/editorial-premium-images";
+import coupleEvening from "@/assets/owner-photos/cristo-rei-couple-evening.jpeg.asset.json";
+import couplePetiscos from "@/assets/owner-photos/couple-petiscos-patio.jpeg.asset.json";
+import arrabidaWomen from "@/assets/owner-photos/arrabida-viewpoint-women.jpeg.asset.json";
+import wineryGroup from "@/assets/owner-photos/winery-group-orange-tree.jpeg.asset.json";
+import barrelCellar from "@/assets/owner-photos/barrel-cellar-tasting.jpeg.asset.json";
+import moscatelGuide from "@/assets/owner-photos/moscatel-giant-vats-guide.jpeg.asset.json";
 
 export const CORPORATE_SERVICE_IMAGES: EditorialImageSource[] = [
-  image("azeitao-group-tasting", {
-    alt: "Private group sharing a hosted tasting with local producers in Azeitão.",
+  {
+    src: wineryGroup.url,
+    alt: "Private group welcomed together at a winery in the Setúbal Peninsula.",
     width: 1600,
-    height: 1066,
-    objectPosition: "50% 44%",
-  }),
-  image("arrabida-viewpoint-group", {
-    alt: "Private group pausing together above the Arrábida coast during a hosted day.",
-    width: 1824,
-    height: 1368,
-    objectPosition: "50% 42%",
-  }),
-  image("sintra-group-selfie", {
-    alt: "Private group arriving in Sintra with their local host.",
-    width: 1280,
-    height: 1707,
-    objectPosition: "50% 42%",
-  }),
+    height: 1200,
+    objectPosition: "50% 48%",
+  },
+  {
+    src: barrelCellar.url,
+    alt: "Colleagues gathered around a guided tasting inside a Portuguese barrel cellar.",
+    width: 1920,
+    height: 885,
+    objectPosition: "50% 50%",
+  },
+  {
+    src: moscatelGuide.url,
+    alt: "A local guide hosting a small private group beside historic Moscatel vats.",
+    width: 1440,
+    height: 1920,
+    objectPosition: "50% 50%",
+  },
 ];
 
 export const PROPOSAL_SERVICE_IMAGES: EditorialImageSource[] = [
-  image("couple-petiscos-patio", {
-    alt: "Couple sharing wine and petiscos on a quiet Portuguese terrace.",
+  {
+    src: coupleEvening.url,
+    alt: "A couple sharing a private evening beneath the illuminated Cristo Rei monument.",
+    width: 1440,
+    height: 1920,
+    objectPosition: "50% 70%",
+  },
+  {
+    src: couplePetiscos.url,
+    alt: "A couple sharing wine and petiscos on a relaxed Portuguese terrace.",
     width: 1920,
     height: 885,
-    objectPosition: "50% 52%",
-  }),
-  image("wine-cheers-arch", {
-    alt: "Guests raising Portuguese wine glasses together beneath a stone arch.",
+    objectPosition: "52% 52%",
+  },
+  {
+    src: arrabidaWomen.url,
+    alt: "Two friends pausing together above the Arrábida coast during a private day.",
     width: 1440,
-    height: 1800,
+    height: 1920,
     objectPosition: "50% 48%",
-  }),
-  image("couple-vineyard", {
-    alt: "Couple embracing between vineyard rows during a private day in Portugal.",
-    width: 1368,
-    height: 1824,
-    objectPosition: "50% 44%",
-  }),
+  },
 ];

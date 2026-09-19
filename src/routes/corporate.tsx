@@ -243,7 +243,7 @@ function CorporatePage() {
       {/* ── Positioning: built around the team ───────────── */}
       <section className="py-16 md:py-24">
         <div className="container-x grid lg:grid-cols-2 gap-10 md:gap-14 items-center reveal-stagger">
-          <div className="group overflow-hidden bg-[color:var(--sand)] aspect-[4/5] md:aspect-[5/6]">
+          <div className="group overflow-hidden bg-[color:var(--sand)] aspect-[5/4] sm:aspect-[4/3] lg:aspect-[5/6]">
             <ParallaxLayer amount="md" className="h-full w-full">
               <CinematicEditorialImage
                 image={positioningImage}
@@ -281,7 +281,7 @@ function CorporatePage() {
       {/* ── Nationwide reach ─────────────────────────────── */}
       <section className="py-16 md:py-24 bg-[color:var(--ivory)]">
         <div className="container-x grid lg:grid-cols-2 gap-10 md:gap-14 items-center reveal-stagger lg:[&>*:first-child]:order-2">
-          <div className="group overflow-hidden bg-[color:var(--sand)] aspect-[4/5] md:aspect-[5/6]">
+          <div className="group overflow-hidden bg-[color:var(--sand)] aspect-[5/4] sm:aspect-[4/3] lg:aspect-[5/6]">
             <CinematicEditorialImage
               image={reachImage}
               priority={false}
@@ -423,7 +423,7 @@ function CorporatePage() {
       {/* ── Final conversion ─────────────────────────────── */}
       <section className="py-16 md:py-24 bg-[color:var(--sand)] reveal">
         <div className="container-x grid lg:grid-cols-2 gap-10 md:gap-14 items-center">
-          <div className="group overflow-hidden bg-[color:var(--ivory)] aspect-[4/5] md:aspect-[5/6] order-2 lg:order-1">
+          <div className="group overflow-hidden bg-[color:var(--ivory)] aspect-[5/4] sm:aspect-[4/3] lg:aspect-[5/6] order-2 lg:order-1">
             <CinematicEditorialImage
               image={closingImage}
               priority={false}

@@ -5,7 +5,7 @@ import { supabase } from "@/integrations/supabase/client";
 import pierDawn from "@/assets/owner-photos/carrasqueira-pier-dawn-landscape.jpeg.asset.json";
 import courtyardSunlight from "@/assets/owner-photos/espichel-courtyard-sunlight.jpeg.asset.json";
 import coastPanorama from "@/assets/owner-photos/arrabida-coast-panorama-landscape.jpeg.asset.json";
-import coupleEvening from "@/assets/owner-photos/cristo-rei-couple-evening.jpeg.asset.json";
+import coupleCheers from "@/assets/owner-photos/wine-cheers-arch.jpeg.asset.json";
 import tableCheers from "@/assets/owner-photos/winery-table-cheers-group.jpeg.asset.json";
 
 /**
@@ -35,14 +35,14 @@ export const HOME_PATH_IMAGES = {
     alt: "A long stretch of coastline opening beneath shifting light.",
     width: 1600,
     height: 747,
-    objectPosition: "50% 50%",
+    objectPosition: "50% 46%",
   },
   proposals: {
-    src: coupleEvening.url,
-    alt: "A couple celebrating together at dusk beneath a lit monument.",
+    src: coupleCheers.url,
+    alt: "A couple raising a glass together beneath a shaded Portuguese arch.",
     width: 1440,
-    height: 1920,
-    objectPosition: "50% 76%",
+    height: 1800,
+    objectPosition: "50% 46%",
   },
   corporate: {
     src: tableCheers.url,
