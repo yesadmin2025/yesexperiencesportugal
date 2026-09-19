@@ -1,15 +1,15 @@
-import { createElement } from "react";
+import { createElement, type ReactNode } from "react";
 import { cn } from "@/lib/utils";
 import { useInView } from "./useInView";
 
 /**
- * SplitLines — splits a string into line elements that rise from below a
- * mask on entry. Only accepts a plain string to avoid runtime measurement
- * cost. Provide manual line breaks by passing `lines` instead.
+ * SplitLines — reveals intentional editorial lines through an ink-like
+ * horizontal mask. It never measures or rewrites browser-wrapped text.
+ * Provide manual line breaks with `lines`; plain `text` remains supported.
  */
 interface SplitLinesProps {
   text?: string;
-  lines?: string[];
+  lines?: ReactNode[];
   as?: "h1" | "h2" | "h3" | "h4" | "p" | "span";
   className?: string;
   lineClassName?: string;

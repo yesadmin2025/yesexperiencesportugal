@@ -1057,8 +1057,27 @@
     from { transform: translateX(0); }
     to { transform: translateX(6px); }
   }
-  .cta-arrow-cue {
-    animation: ctaArrowEntranceCue 480ms var(--ease-scene) 420ms both;
+  .cta-arrow-stage {
+    min-width: 22px;
+  }
+  .cta-arrow-line {
+    position: absolute;
+    right: 11px;
+    width: 10px;
+    height: 1px;
+    background: currentColor;
+    transform: scaleX(0);
+    transform-origin: right center;
+  }
+  .cta-arrow-stage.is-visible .cta-arrow-line {
+    animation: ctaArrowLineDraw 620ms var(--ease-scene) 260ms both;
+  }
+  .cta-arrow-stage.is-visible .cta-arrow-cue {
+    animation: ctaArrowEntranceCue 620ms var(--ease-scene) 260ms both;
+  }
+  @keyframes ctaArrowLineDraw {
+    from { transform: scaleX(0); opacity: 0; }
+    to { transform: scaleX(1); opacity: 0.72; }
   }
   .group:hover .cta-arrow-cue,
   .group:focus-visible .cta-arrow-cue,
@@ -1068,6 +1087,10 @@
   @media (prefers-reduced-motion: reduce) {
     .cta-arrow-cue {
       animation: none !important;
+    }
+    .cta-arrow-line {
+      animation: none !important;
+      transform: scaleX(1) !important;
     }
   }
 
@@ -7572,28 +7595,58 @@ html[data-motion-scope="marketing"] .cta-breathe::after {
   clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
 }
 
-/* SplitLines — line-by-line rise, mask overflow so descenders don't clip UI. */
+/* SplitLines — line-by-line editorial ink reveal. Geometry never moves. */
 .motion-split {
   display: block;
-  overflow: hidden;
 }
 [data-motion-ready="1"] .motion-split-line {
   display: block;
-  transform: translateY(110%);
+  position: relative;
+  width: fit-content;
+  max-width: 100%;
+  margin-inline: inherit;
+  clip-path: inset(0 100% 0 0);
   opacity: 0;
   transition:
-    transform var(--motion-dur-split) var(--motion-ease-editorial),
-    opacity var(--motion-dur-split) var(--motion-ease-editorial);
-  transition-delay: calc(var(--split-index, 0) * var(--motion-stagger));
-  will-change: transform, opacity;
+    clip-path 760ms var(--motion-ease-editorial),
+    opacity 480ms var(--motion-ease-editorial);
+  transition-delay: calc(var(--split-index, 0) * 120ms);
+  will-change: clip-path, opacity;
 }
 .motion-split-line {
   display: block;
 }
 [data-motion-ready="1"] .motion-split.is-visible .motion-split-line {
-  transform: translateY(0);
+  clip-path: inset(0 0 0 0);
   opacity: 1;
 }
+
+/* About is composed as chapters rather than full-section crossfades. */
+html.reveal-ready .about-story.reveal {
+  opacity: 1;
+}
+html.reveal-ready .about-story :is([data-eyebrow], h1, h2, .about-sequence-item, p) {
+  opacity: 0;
+  transition: opacity 480ms var(--ease-scene);
+}
+html.reveal-ready .about-story :is(h1, h2) {
+  clip-path: inset(0 100% 0 0);
+  transition: opacity 480ms var(--ease-scene), clip-path 760ms var(--ease-scene);
+}
+html.reveal-ready .about-story.is-visible :is([data-eyebrow], h1, h2, .about-sequence-item, p) {
+  opacity: 1;
+}
+html.reveal-ready .about-story.is-visible :is(h1, h2) {
+  clip-path: inset(0 0 0 0);
+}
+html.reveal-ready .about-story.is-visible [data-eyebrow] { transition-delay: 40ms; }
+html.reveal-ready .about-story.is-visible :is(h1, h2) { transition-delay: 120ms; }
+html.reveal-ready .about-story.is-visible p { transition-delay: 260ms; }
+html.reveal-ready .about-story.is-visible .about-sequence-item:nth-child(1) { transition-delay: 220ms; }
+html.reveal-ready .about-story.is-visible .about-sequence-item:nth-child(2) { transition-delay: 320ms; }
+html.reveal-ready .about-story.is-visible .about-sequence-item:nth-child(3) { transition-delay: 420ms; }
+html.reveal-ready .about-story.is-visible .about-sequence-item:nth-child(4) { transition-delay: 520ms; }
+html.reveal-ready .about-story--quiet :is(li, a) { transition-delay: 0ms; }
 
 /* Gold rule draw-in (used by ChapterLead / SectionTitle). */
 [data-motion-ready="1"] .motion-rule {

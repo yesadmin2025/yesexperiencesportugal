@@ -4,7 +4,8 @@ import { breadcrumbLd, jsonLdScript } from "@/lib/jsonld";
 import { SiteLayout } from "@/components/SiteLayout";
 import { ServiceCrossLinks } from "@/components/entity/ServiceCrossLinks";
 import { Scene } from "@/components/motion/Scene";
-import { ParallaxLayer } from "@/components/motion/ParallaxLayer";
+import { MaskReveal } from "@/components/motion/MaskReveal";
+import { SplitLines } from "@/components/motion/SplitLines";
 import { Eyebrow } from "@/components/ui/Eyebrow";
 import { SectionTitle } from "@/components/ui/SectionTitle";
 import { CtaButton } from "@/components/ui/CtaButton";
@@ -70,10 +71,9 @@ function Page() {
   return (
     <SiteLayout>
       {/* Hero */}
-      <section className="reveal pt-32 pb-14 bg-[color:var(--sand)] text-center">
+      <section className="reveal about-story pt-32 pb-14 bg-[color:var(--sand)] text-center">
         <div className="container-x">
-          <ParallaxLayer amount="sm">
-            <Scene>
+          <Scene>
               <div className="scene-atmosphere">
                 <Eyebrow flank>About YES</Eyebrow>
               </div>
@@ -92,18 +92,22 @@ function Page() {
                 Private days, live-designed experiences and full journeys, created from real routes,
                 real guests and real local knowledge.
               </p>
-            </Scene>
-          </ParallaxLayer>
+          </Scene>
         </div>
       </section>
 
       {/* Created from real travel */}
-      <section className="reveal py-20">
+      <section className="reveal about-story py-20">
         <div className="container-x max-w-3xl">
           <Eyebrow>Created from real travel</Eyebrow>
-          <SectionTitle as="h2" size="default">
-            Built from the road, <SectionTitle.Em>not a template</SectionTitle.Em>.
-          </SectionTitle>
+          <SplitLines
+            as="h2"
+            className="about-ink-title mt-3 font-serif text-[color:var(--charcoal)] font-medium tracking-normal text-[clamp(1.875rem,7vw,2.4rem)] md:text-[3.6rem] leading-[1.1] md:leading-[1.0]"
+            lines={[
+              <>Built from the road,</>,
+              <><span className="italic font-normal text-[color:var(--teal)]">not a template</span>.</>,
+            ]}
+          />
           <div className="mt-8 space-y-5 text-[color:var(--charcoal-soft)] leading-relaxed">
             <p>
               YES did not begin as an agency concept, a marketplace idea or a travel-tech trend.
@@ -121,7 +125,7 @@ function Page() {
       </section>
 
       {/* Founder-built */}
-      <section className="reveal py-20 bg-[color:var(--sand)]">
+      <section className="reveal about-story py-20 bg-[color:var(--sand)]">
         <div className="container-x grid lg:grid-cols-[1.15fr_1fr] gap-14 items-start">
           <div>
             <Eyebrow>Founder-built</Eyebrow>
@@ -142,7 +146,7 @@ function Page() {
               <p>The idea was too specific to hand over as a standard agency brief.</p>
             </div>
 
-            <figure className="mt-10 lg:hidden">
+            <MaskReveal as="figure" className="mt-10 lg:hidden">
               <img
                 src={founderAsset.url}
                 alt="Nídia Almeida hosting a private wine experience with YES Experiences Portugal guests."
@@ -155,7 +159,7 @@ function Page() {
                 Nídia Almeida, founder of YES Experiences Portugal, hosting a private wine
                 experience in Portugal.
               </figcaption>
-            </figure>
+            </MaskReveal>
 
             <div className="mt-8 space-y-5 text-[color:var(--charcoal-soft)] leading-relaxed">
               <p>
@@ -176,7 +180,7 @@ function Page() {
             </div>
           </div>
 
-          <figure className="hidden lg:block lg:sticky lg:top-28">
+          <MaskReveal as="figure" className="hidden lg:block lg:sticky lg:top-28">
             <img
               src={founderAsset.url}
               alt="Nídia Almeida hosting a private wine experience with YES Experiences Portugal guests."
@@ -189,12 +193,12 @@ function Page() {
               Nídia Almeida, founder of YES Experiences Portugal, hosting a private wine experience
               in Portugal.
             </figcaption>
-          </figure>
+          </MaskReveal>
         </div>
       </section>
 
       {/* Founder-led */}
-      <section className="reveal py-20">
+      <section className="reveal about-story py-20">
         <div className="container-x max-w-3xl">
           <Eyebrow>Founder-led</Eyebrow>
           <SectionTitle as="h2" size="default">
@@ -246,7 +250,7 @@ function Page() {
       </section>
 
       {/* What we create */}
-      <section className="reveal py-20 bg-[color:var(--sand)]">
+      <section className="reveal about-story py-20 bg-[color:var(--sand)]">
         <div className="container-x">
           <Eyebrow flank>What we create</Eyebrow>
           <SectionTitle as="h2" size="default">
@@ -254,7 +258,7 @@ function Page() {
             <SectionTitle.Em>and full journeys</SectionTitle.Em>.
           </SectionTitle>
           <div className="mt-10 grid md:grid-cols-2 gap-5">
-            <div className="bg-[color:var(--ivory)] p-6 sm:p-8">
+            <div className="about-sequence-item bg-[color:var(--ivory)] p-6 sm:p-8">
               <h3 className="font-display text-lg font-medium text-[color:var(--charcoal)]">
                 Signature Experiences
               </h3>
@@ -262,7 +266,7 @@ function Page() {
                 Ready private days shaped from real routes, trusted partners and guest feedback.
               </p>
             </div>
-            <div className="bg-[color:var(--ivory)] p-6 sm:p-8">
+            <div className="about-sequence-item bg-[color:var(--ivory)] p-6 sm:p-8">
               <h3 className="font-display text-lg font-medium text-[color:var(--charcoal)]">
                 Experience Studio
               </h3>
@@ -271,7 +275,7 @@ function Page() {
                 and book securely.
               </p>
             </div>
-            <div className="bg-[color:var(--ivory)] p-6 sm:p-8">
+            <div className="about-sequence-item bg-[color:var(--ivory)] p-6 sm:p-8">
               <h3 className="font-display text-lg font-medium text-[color:var(--charcoal)]">
                 Travel Designer
               </h3>
@@ -280,7 +284,7 @@ function Page() {
                 celebrations and complex private travel.
               </p>
             </div>
-            <div className="bg-[color:var(--ivory)] p-6 sm:p-8">
+            <div className="about-sequence-item bg-[color:var(--ivory)] p-6 sm:p-8">
               <h3 className="font-display text-lg font-medium text-[color:var(--charcoal)]">
                 Moments &amp; Corporate
               </h3>
@@ -298,7 +302,7 @@ function Page() {
       </section>
 
       {/* Credentials & trust */}
-      <section className="reveal py-16">
+      <section className="reveal about-story py-16">
         <div className="container-x">
           <Eyebrow flank>Credentials &amp; trust</Eyebrow>
           <SectionTitle as="h2" size="default">
@@ -306,7 +310,7 @@ function Page() {
           </SectionTitle>
 
           <div className="mt-10 grid md:grid-cols-2 lg:grid-cols-4 gap-8">
-            <div>
+            <div className="about-sequence-item">
               <div className="text-xs uppercase tracking-[0.22em] text-[color:var(--charcoal)]">
                 Licence
               </div>
@@ -316,7 +320,7 @@ function Page() {
                 Turística).
               </p>
             </div>
-            <div>
+            <div className="about-sequence-item">
               <div className="text-xs uppercase tracking-[0.22em] text-[color:var(--charcoal)]">
                 Founded
               </div>
@@ -325,7 +329,7 @@ function Page() {
                 Based in Sesimbra, designing private journeys across Portugal.
               </p>
             </div>
-            <div>
+            <div className="about-sequence-item">
               <div className="text-xs uppercase tracking-[0.22em] text-[color:var(--charcoal)]">
                 Reviews
               </div>
@@ -335,7 +339,7 @@ function Page() {
                 major travel platforms.
               </p>
             </div>
-            <div>
+            <div className="about-sequence-item">
               <div className="text-xs uppercase tracking-[0.22em] text-[color:var(--charcoal)]">
                 Insurance
               </div>
@@ -349,7 +353,7 @@ function Page() {
       </section>
 
       {/* How we work + policies */}
-      <section className="reveal py-20 bg-[color:var(--sand)]">
+      <section className="reveal about-story about-story--quiet py-20 bg-[color:var(--sand)]">
         <div className="container-x grid lg:grid-cols-2 gap-14">
           <div>
             <Eyebrow>How we work</Eyebrow>
@@ -429,7 +433,7 @@ function Page() {
       </section>
 
       {/* Final CTA */}
-      <section className="reveal py-20 text-center">
+      <section className="reveal about-story py-20 text-center">
         <div className="container-x max-w-2xl mx-auto">
           <Eyebrow flank>Talk to YES</Eyebrow>
           <SectionTitle as="h2" size="default">
