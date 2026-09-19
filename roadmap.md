@@ -12,9 +12,9 @@
 - [x] Rebuild Five ways in with three primary and two secondary paths
 - [x] Remove decorative gold rules and card chrome site-wide
 - [x] Verify key journeys, reduced motion, accessibility, and production
-- [ ] Establish a homepage-only image inventory with no repeated path imagery
-- [ ] Rebuild Five Ways as the approved bold editorial sequence
-- [ ] Recompose Experiences cards around the mobile decision order
-- [ ] Shorten the homepage by removing repeated service chapters
-- [ ] Extend the editorial grammar through shared public-page primitives
-- [ ] Audit mobile, tablet, desktop, reduced motion, conversion actions, and metadata
+- [x] Establish a homepage-only image inventory with no repeated path imagery
+- [x] Rebuild Five Ways as the approved bold editorial sequence
+- [x] Recompose Experiences cards around the mobile decision order
+- [x] Shorten the homepage by removing repeated service chapters
+- [x] Extend the editorial grammar through shared public-page primitives
+- [x] Audit mobile, tablet, desktop, reduced motion, conversion actions, and metadata
