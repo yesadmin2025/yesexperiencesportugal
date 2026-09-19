@@ -79,7 +79,10 @@ export function usePublicEditorialMotion(pathname: string): void {
       window.cancelAnimationFrame(firstFrame);
       window.cancelAnimationFrame(secondFrame);
       window.clearTimeout(settleTimer);
-      if (onLoad) window.removeEventListener("load", onLoad);
+      window.clearTimeout(quietTimer);
+      window.clearTimeout(hardDeadline);
+      observer?.disconnect();
+
 
       disposeController?.();
       document.documentElement.classList.remove("motion-ready");
