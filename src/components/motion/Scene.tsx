@@ -8,7 +8,7 @@ import {
   type Ref,
 } from "react";
 
-import { useSceneReveal, type UseSceneRevealOptions } from "@/lib/motion/useSceneReveal";
+import { activateSceneReveal, type UseSceneRevealOptions } from "@/lib/motion/useSceneReveal";
 import { cn } from "@/lib/utils";
 
 /**
@@ -42,14 +42,16 @@ function SceneImpl<E extends ElementType = "div">(
 ): ReactElement {
   const Component = (as || "div") as ElementType;
   const localRef = useRef<HTMLElement | null>(null);
-
-  useSceneReveal(localRef, scene);
+  const cleanupRef = useRef<(() => void) | null>(null);
 
   const setRef = useCallback((node: HTMLElement | null) => {
+    cleanupRef.current?.();
+    cleanupRef.current = null;
     localRef.current = node;
+    if (node) cleanupRef.current = activateSceneReveal(node, scene);
     if (typeof forwardedRef === "function") forwardedRef(node);
     else if (forwardedRef) (forwardedRef as { current: Element | null }).current = node;
-  }, [forwardedRef]);
+  }, [forwardedRef, scene]);
 
   return (
     <Component ref={setRef} className={cn(className)} {...rest}>

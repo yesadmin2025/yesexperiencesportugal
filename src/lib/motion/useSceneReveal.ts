@@ -30,6 +30,40 @@ export interface UseSceneRevealOptions {
   disabled?: boolean;
 }
 
+export function activateSceneReveal(
+  el: HTMLElement,
+  options: UseSceneRevealOptions = {},
+): () => void {
+  const { rootMargin = "0px 0px -10% 0px", threshold = 0.12, disabled = false } = options;
+  if (disabled || el.dataset.scene === "in") return () => undefined;
+
+  const prefersReduced = window.matchMedia?.("(prefers-reduced-motion: reduce)").matches;
+  if (prefersReduced || typeof IntersectionObserver === "undefined") {
+    el.dataset.scene = "in";
+    return () => undefined;
+  }
+
+  const rect = el.getBoundingClientRect();
+  const viewportH = window.innerHeight || document.documentElement.clientHeight;
+  if (rect.top < viewportH * 0.92 && rect.bottom > 0) {
+    el.dataset.scene = "in";
+    return () => undefined;
+  }
+
+  el.dataset.sceneReady = "1";
+  const io = new IntersectionObserver(
+    (entries, observer) => {
+      if (entries.some((entry) => entry.isIntersecting)) {
+        el.dataset.scene = "in";
+        observer.disconnect();
+      }
+    },
+    { rootMargin, threshold },
+  );
+  io.observe(el);
+  return () => io.disconnect();
+}
+
 export function useSceneReveal<T extends HTMLElement>(
   ref: RefObject<T | null>,
   options: UseSceneRevealOptions = {},
@@ -37,73 +71,8 @@ export function useSceneReveal<T extends HTMLElement>(
   const { rootMargin = "0px 0px -10% 0px", threshold = 0.12, disabled = false } = options;
 
   useEffect(() => {
-    if (disabled) return;
-    let io: IntersectionObserver | null = null;
-    let retryFrame = 0;
-
-    const initialise = () => {
-      const el = ref.current;
-      // Callback refs can settle immediately after this passive effect when a
-      // polymorphic Scene hydrates. Retry once rather than silently leaving an
-      // otherwise motion-enabled scene permanently static.
-      if (!el) {
-        retryFrame = window.requestAnimationFrame(() => {
-          const settled = ref.current;
-          if (settled) initialise();
-        });
-        return;
-      }
-      if (el.dataset.scene === "in") return; // StrictMode double-mount guard.
-
-    const prefersReduced =
-      typeof window !== "undefined" &&
-      window.matchMedia?.("(prefers-reduced-motion: reduce)").matches;
-
-    // Reduced-motion: reveal immediately, no hidden initial state.
-    if (prefersReduced) {
-      el.dataset.scene = "in";
-      return;
-    }
-
-    // If IntersectionObserver is missing (very old browsers / no-JS
-    // fallbacks that only got hydration this far), reveal immediately.
-    if (typeof window === "undefined" || typeof IntersectionObserver === "undefined") {
-      el.dataset.scene = "in";
-      return;
-    }
-
-    // Already visible at mount? Do not hide; paint revealed immediately.
-    const rect = el.getBoundingClientRect();
-    const viewportH = window.innerHeight || document.documentElement.clientHeight;
-    const alreadyVisible = rect.top < viewportH * 0.92 && rect.bottom > 0;
-    if (alreadyVisible) {
-      el.dataset.scene = "in";
-      return;
-    }
-
-    // Below the fold: opt in to reveal styles, then observe.
-    el.dataset.sceneReady = "1";
-
-    io = new IntersectionObserver(
-      (entries, observer) => {
-        for (const entry of entries) {
-          if (entry.isIntersecting) {
-            (entry.target as HTMLElement).dataset.scene = "in";
-            observer.disconnect();
-            break;
-          }
-        }
-      },
-      { rootMargin, threshold },
-    );
-    io.observe(el);
-    };
-
-    initialise();
-
-    return () => {
-      if (retryFrame) window.cancelAnimationFrame(retryFrame);
-      io?.disconnect();
-    };
+    const el = ref.current;
+    if (!el) return;
+    return activateSceneReveal(el, { rootMargin, threshold, disabled });
   }, [ref, rootMargin, threshold, disabled]);
 }
