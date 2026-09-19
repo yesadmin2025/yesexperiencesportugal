@@ -1,4 +1,4 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { organizationUsCaAudienceLd, createFileRoute, Link } from "@tanstack/react-router";
 import { Clock, MapPin, Phone, Mail, Star, Car } from "lucide-react";
 
 import { SiteLayout } from "@/components/SiteLayout";
@@ -9,13 +9,7 @@ import { CtaButton } from "@/components/ui/CtaButton";
 import { CTA_LABELS } from "@/content/cta-vocabulary";
 import { RealReviewsStrip } from "@/components/home/RealReviewsStrip";
 import { signatureTours } from "@/data/signatureTours";
-import {
-  breadcrumbLd,
-  faqPageLd,
-  itemListLd,
-  jsonLdScript,
-  localBusinessLd,
-} from "@/lib/jsonld";
+import { breadcrumbLd, faqPageLd, itemListLd, jsonLdScript, localBusinessLd } from "@/lib/jsonld";
 import { LISBON_REGIONS } from "@/content/lisbon-regions";
 
 /** Published pickup areas — factual, identical to every region page. */
@@ -59,7 +53,6 @@ const TITLE = "Best Day Trips from Lisbon (2026) — Compared by Locals";
 const DESCRIPTION =
   "Every day trip from Lisbon compared: drive times, miles, best season and our honest verdict on Sintra, Arrábida wine country, Évora and the coast. Private, hotel pickup, book online.";
 
-
 const crumbs = [
   { name: "Home", path: "/" },
   { name: "Day trips from Lisbon", path: PATH },
@@ -84,7 +77,6 @@ const COMPARISON = DAY_TRIP_COMPARISON.map((row) => ({
   row,
   tour: signatureTours.find((t) => t.id === row.tourId),
 })).filter((entry) => Boolean(entry.tour));
-
 
 const OPENING_HOURS = "Every day, 08:00 – 20:00 (Lisbon time)";
 
@@ -127,7 +119,6 @@ const FAQS = [
   },
 ];
 
-
 export const Route = createFileRoute("/day-trips-from-lisbon")({
   head: () => ({
     meta: [
@@ -141,6 +132,7 @@ export const Route = createFileRoute("/day-trips-from-lisbon")({
     ],
     links: [{ rel: "canonical", href: PAGE_URL }],
     scripts: [
+      jsonLdScript(organizationUsCaAudienceLd()),
       jsonLdScript(breadcrumbLd(crumbs)),
       jsonLdScript(
         localBusinessLd({
@@ -148,15 +140,7 @@ export const Route = createFileRoute("/day-trips-from-lisbon")({
           name: "YES Experiences Portugal — day trips from Lisbon",
           description: DESCRIPTION,
           pickup: PICKUP_FAQ_AREAS,
-          areaServed: [
-            "Lisbon",
-            "Sintra",
-            "Cascais",
-            "Sesimbra",
-            "Setúbal",
-            "Évora",
-            "Comporta",
-          ],
+          areaServed: ["Lisbon", "Sintra", "Cascais", "Sesimbra", "Setúbal", "Évora", "Comporta"],
         }),
       ),
       jsonLdScript(
@@ -202,7 +186,9 @@ function DayTripsFromLisbon() {
           </p>
           <div className="mt-8 flex flex-col gap-3 sm:flex-row">
             <CtaButton to="/experiences">{CTA_LABELS.signatureDiscovery}</CtaButton>
-            <CtaButton to="/studio-v3" variant="ghost">{CTA_LABELS.studio}</CtaButton>
+            <CtaButton to="/studio-v3" variant="ghost">
+              {CTA_LABELS.studio}
+            </CtaButton>
           </div>
           <p className="mt-6 flex flex-wrap items-center gap-x-5 gap-y-2 font-sans text-[11.5px] uppercase tracking-[0.18em] text-[color:var(--charcoal-soft)]">
             <span className="inline-flex items-center gap-1.5">
@@ -447,8 +433,6 @@ function DayTripsFromLisbon() {
         </div>
       </section>
 
-
-
       {/* ── Real reviews ─────────────────────────────────── */}
       <RealReviewsStrip />
 
@@ -520,7 +504,9 @@ function DayTripsFromLisbon() {
               </p>
               <div className="mt-5 flex flex-col gap-3">
                 <CtaButton to="/book">Book &amp; pay online</CtaButton>
-                <CtaButton to="/studio-v3" variant="ghost">{CTA_LABELS.studio}</CtaButton>
+                <CtaButton to="/studio-v3" variant="ghost">
+                  {CTA_LABELS.studio}
+                </CtaButton>
               </div>
             </div>
           </div>

@@ -1,4 +1,4 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { organizationUsCaAudienceLd, createFileRoute, Link } from "@tanstack/react-router";
 import { SiteLayout } from "@/components/SiteLayout";
 import { Eyebrow } from "@/components/ui/Eyebrow";
 import { SectionTitle } from "@/components/ui/SectionTitle";
@@ -40,6 +40,7 @@ export const Route = createFileRoute("/luxury-tours-portugal")({
     ],
     links: [{ rel: "canonical", href: PAGE_URL }],
     scripts: [
+      jsonLdScript(organizationUsCaAudienceLd()),
       jsonLdScript(jsonLd),
       jsonLdScript(
         breadcrumbLd([

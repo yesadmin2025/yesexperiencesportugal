@@ -1,4 +1,4 @@
-import { localeAlternateLinks } from "@/i18n/seo";
+import { organizationUsCaAudienceLd, localeAlternateLinks } from "@/i18n/seo";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { breadcrumbLd, itemListLd, jsonLdScript } from "@/lib/jsonld";
 import { SiteLayout } from "@/components/SiteLayout";
@@ -28,7 +28,10 @@ export const Route = createFileRoute("/day-tours")({
         content:
           "Private day tours from Lisbon — Arrábida wine country, Setúbal, Sintra, Évora and the Douro. Your group only, hotel pickup, instant confirmation.",
       },
-      { property: "og:title", content: "Private Day Tours in Portugal — Hotel Pickup, Book Online" },
+      {
+        property: "og:title",
+        content: "Private Day Tours in Portugal — Hotel Pickup, Book Online",
+      },
       {
         property: "og:description",
         content:
@@ -47,6 +50,7 @@ export const Route = createFileRoute("/day-tours")({
       ...localeAlternateLinks("/day-tours"),
     ],
     scripts: [
+      jsonLdScript(organizationUsCaAudienceLd()),
       jsonLdScript(
         breadcrumbLd([
           { name: "Home", path: "/" },
@@ -79,14 +83,14 @@ function DayToursPage() {
     <SiteLayout>
       <section className="reveal pt-32 pb-12 bg-[color:var(--sand)] text-center">
         <div className="container-x">
-            <SiteBreadcrumbs
-              containerClassName=""
-              className="bg-transparent pt-0 pb-6 text-left"
-              crumbs={[
-                { name: "Home", path: "/" },
-                { name: "Day Tours", path: "/day-tours" },
-              ]}
-            />
+          <SiteBreadcrumbs
+            containerClassName=""
+            className="bg-transparent pt-0 pb-6 text-left"
+            crumbs={[
+              { name: "Home", path: "/" },
+              { name: "Day Tours", path: "/day-tours" },
+            ]}
+          />
           <ParallaxLayer amount="sm">
             <Eyebrow flank>Half &amp; Full Day</Eyebrow>
             <SectionTitle as="h1" size="anchor" spacing="loose">

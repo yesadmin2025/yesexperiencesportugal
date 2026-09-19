@@ -1,4 +1,4 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { organizationUsCaAudienceLd, createFileRoute, Link } from "@tanstack/react-router";
 import { Car, Star } from "lucide-react";
 
 import { SiteLayout } from "@/components/SiteLayout";
@@ -11,13 +11,7 @@ import { RealReviewsStrip } from "@/components/home/RealReviewsStrip";
 import { HubBookingPicker } from "@/components/booking/HubBookingPicker";
 import { signatureTours } from "@/data/signatureTours";
 import { LISBON_REGIONS } from "@/content/lisbon-regions";
-import {
-  breadcrumbLd,
-  faqPageLd,
-  itemListLd,
-  jsonLdScript,
-  localBusinessLd,
-} from "@/lib/jsonld";
+import { breadcrumbLd, faqPageLd, itemListLd, jsonLdScript, localBusinessLd } from "@/lib/jsonld";
 import { LiveReviews } from "@/components/reviews/LiveReviews";
 import { areaProfilesFor } from "@/content/lisbon-regions";
 import { REVIEW_CERTIFICATE } from "@/config/trust-certificate";
@@ -100,6 +94,7 @@ export const Route = createFileRoute("/lisbon-private-tours")({
     ],
     links: [{ rel: "canonical", href: PAGE_URL }],
     scripts: [
+      jsonLdScript(organizationUsCaAudienceLd()),
       jsonLdScript(breadcrumbLd(crumbs)),
       jsonLdScript(
         localBusinessLd({
