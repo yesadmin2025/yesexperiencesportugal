@@ -122,6 +122,7 @@ import {
 import { addOnPartyAmount, addOnsPartyTotal } from "@/lib/checkout/studio-charge";
 
 import { useTourPriceTiers } from "@/hooks/use-tour-price-tiers";
+import type { ComposableStopRow } from "@/lib/studio-v3/composableStopAuthority";
 import { invokeSignatureCheckout } from "@/lib/checkout/session-request";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
@@ -4132,6 +4133,7 @@ export function StudioV3() {
               onRefine={() => jumpBackToPhase("logistics", "checkout-edit-operational")}
               pending={checkoutPending}
               tourPriceTiers={tourPriceTiers}
+              composableRows={composableRows}
               selectedAddOnIds={selectedAddOnIds}
               selectedAddOnMinutes={selectedAddOnMinutes}
               onAddOnsChange={handleAddOnsChange}
@@ -4699,6 +4701,7 @@ export function StoryboardHandoff({
   onRefine,
   pending,
   tourPriceTiers,
+  composableRows,
   selectedAddOnIds,
   selectedAddOnMinutes = 0,
   onAddOnsChange,
@@ -4718,6 +4721,7 @@ export function StoryboardHandoff({
   onRefine: () => void;
   pending?: boolean;
   tourPriceTiers?: import("@/hooks/use-tour-price-tiers").TourPriceTiersMap;
+  composableRows?: readonly ComposableStopRow[];
   selectedAddOnIds?: ReadonlyArray<string>;
   /** Minutes already committed by the CURRENT add-on basket. */
   selectedAddOnMinutes?: number;
