@@ -8239,6 +8239,7 @@ html.reveal-ready .about-story.is-visible .about-copy-sequence p:nth-child(4) { 
 .hero-cta {
   font-size: 10.5px;
   letter-spacing: 0.12em;
+  width: min(232px, 100%);
 }
 @media (min-width: 430px) {
   .hero-cta {

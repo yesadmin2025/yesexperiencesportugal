@@ -562,7 +562,6 @@ export function RecentJourney() {
           <p className="mt-4 font-[family-name:var(--font-sans)] text-[14.5px] md:text-[16px] text-[color:var(--charcoal-soft)] leading-[1.65] max-w-md mx-auto">
             Multi-day Portugal, composed by a local — delivered as a book, not a booking.
           </p>
-          <span aria-hidden="true" className="gold-rule mt-5 md:mt-6 mx-auto block max-w-[3rem]" />
         </div>
 
         {/* Proof — the book is the focal object. Enlarged slightly and
