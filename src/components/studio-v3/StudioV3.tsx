@@ -4701,7 +4701,7 @@ export function StoryboardHandoff({
   onRefine,
   pending,
   tourPriceTiers,
-  composableRows,
+  composableRows = [],
   selectedAddOnIds,
   selectedAddOnMinutes = 0,
   onAddOnsChange,
