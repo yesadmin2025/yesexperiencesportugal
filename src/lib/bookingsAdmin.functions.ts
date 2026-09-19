@@ -230,6 +230,160 @@ export const cancelAndRefundBooking = createServerFn({ method: "POST" })
     return { ok: true, status: "refunded" as const, refundStatus: refund.status ?? "submitted" };
   });
 
+/* eslint-enable @typescript-eslint/no-explicit-any */
+
+const escapeHtml = (s: string) =>
+  s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+
+const editInput = z.object({
+  id: z.string().uuid(),
+  customerName: z.string().trim().min(1).max(120).optional(),
+  customerPhone: z.string().trim().max(40).nullable().optional(),
+  preferredDate: z
+    .string()
+    .regex(/^\d{4}-\d{2}-\d{2}$/)
+    .nullable()
+    .optional(),
+  notes: z.string().trim().max(2000).nullable().optional(),
+});
+
+/**
+ * Operational edit of one reservation. Only fields the team may legitimately
+ * correct after purchase: guest name/phone, trip date, internal notes.
+ * Amounts, status and Stripe references are never touched here — money moves
+ * only through cancelAndRefundBooking. Every edit is audited in metadata.
+ */
+export const updateAdminBooking = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((input: unknown) => editInput.parse(input))
+  .handler(async ({ data, context }) => {
+    await assertAdmin(context);
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+
+    const { data: booking, error: readError } = await supabaseAdmin
+      .from("bookings")
+      .select("id, status, customer_name, customer_phone, preferred_date, notes, metadata")
+      .eq("id", data.id)
+      .maybeSingle();
+    if (readError) throw new Error(readError.message);
+    if (!booking) throw new Error("Booking not found.");
+
+    const patch: Record<string, unknown> = {};
+    const changes: Record<string, { from: unknown; to: unknown }> = {};
+    const apply = (key: "customer_name" | "customer_phone" | "preferred_date" | "notes", to: unknown) => {
+      const from = (booking as Record<string, unknown>)[key];
+      if (to !== from) {
+        patch[key] = to;
+        changes[key] = { from, to };
+      }
+    };
+    if (data.customerName !== undefined) apply("customer_name", data.customerName);
+    if (data.customerPhone !== undefined) apply("customer_phone", data.customerPhone || null);
+    if (data.preferredDate !== undefined) apply("preferred_date", data.preferredDate);
+    if (data.notes !== undefined) apply("notes", data.notes || null);
+
+    if (Object.keys(patch).length === 0) return { ok: true, changed: false };
+
+    const previousMetadata =
+      booking.metadata && typeof booking.metadata === "object" && !Array.isArray(booking.metadata)
+        ? (booking.metadata as Record<string, unknown>)
+        : {};
+    const priorEdits = Array.isArray(previousMetadata["booking_edits"])
+      ? (previousMetadata["booking_edits"] as unknown[])
+      : [];
+    patch["metadata"] = {
+      ...previousMetadata,
+      booking_edits: [
+        ...priorEdits,
+        { at: new Date().toISOString(), by: context.userId, changes },
+      ],
+    };
+
+    const { error: updateError } = await supabaseAdmin
+      .from("bookings")
+      .update(patch)
+      .eq("id", booking.id);
+    if (updateError) throw new Error(updateError.message);
+    return { ok: true, changed: true, changes };
+  });
+
+const notifyInput = z.object({
+  id: z.string().uuid(),
+  message: z.string().trim().min(10).max(2000),
+});
+
+/**
+ * Sends the guest a branded update email about their reservation. Content is
+ * written by the operator; booking facts (experience, date, reference) come
+ * from the stored record, never from the message text. Uses the pre-rendered
+ * path of the internal mail pipeline, so suppression, unsubscribe and the
+ * send log all apply as with any other transactional email.
+ */
+export const notifyBookingCustomer = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((input: unknown) => notifyInput.parse(input))
+  .handler(async ({ data, context }) => {
+    await assertAdmin(context);
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+
+    const { data: booking, error } = await supabaseAdmin
+      .from("bookings")
+      .select("id, customer_email, customer_name, preferred_date, source_tour_id, stripe_session_id, booking_details")
+      .eq("id", data.id)
+      .maybeSingle();
+    if (error) throw new Error(error.message);
+    if (!booking) throw new Error("Booking not found.");
+    if (!booking.customer_email) throw new Error("This booking has no guest email.");
+
+    const details =
+      booking.booking_details && typeof booking.booking_details === "object" && !Array.isArray(booking.booking_details)
+        ? (booking.booking_details as Record<string, unknown>)
+        : {};
+    const snapshot = details.snapshot && typeof details.snapshot === "object"
+      ? (details.snapshot as Record<string, unknown>)
+      : {};
+    const experienceName =
+      (typeof snapshot["experienceName"] === "string" && (snapshot["experienceName"] as string)) ||
+      booking.source_tour_id ||
+      "Your experience";
+    const guestName = booking.customer_name || "there";
+    const dateLine = booking.preferred_date ?? "date to confirm";
+
+    const messageHtml = escapeHtml(data.message).replace(/\n/g, "<br />");
+    const subject = `Update about your booking — ${experienceName}`;
+    const html = [
+      `<div style="font-family:Arial,sans-serif;color:#2E2E2E;max-width:560px">`,
+      `<p style="font-size:12px;letter-spacing:2px;text-transform:uppercase;color:#295B61">YES Experiences Portugal</p>`,
+      `<h1 style="font-family:Georgia,serif;font-size:22px;font-weight:normal">A note about your day with us</h1>`,
+      `<p>Hello ${escapeHtml(guestName)},</p>`,
+      `<p style="line-height:1.6">${messageHtml}</p>`,
+      `<div style="margin:20px 0;padding:14px 16px;background:#F4EFE7;border-left:3px solid #C9A96A;font-size:14px">`,
+      `<strong>${escapeHtml(experienceName)}</strong><br />Date: ${escapeHtml(dateLine)}<br />Reference: ${escapeHtml(booking.stripe_session_id ?? booking.id)}`,
+      `</div>`,
+      `<p style="font-size:13px;color:#6b6b6b">Reply to this email and it reaches our team directly.</p>`,
+      `</div>`,
+    ].join("");
+    const text = [
+      `Hello ${guestName},`,
+      "",
+      data.message,
+      "",
+      `${experienceName} — Date: ${dateLine} — Reference: ${booking.stripe_session_id ?? booking.id}`,
+      "",
+      "Reply to this email and it reaches our team directly.",
+    ].join("\n");
+
+    const { sendInternalEmail } = await import("@/lib/email/send-internal.server");
+    const idemSeed = `${booking.id}-${data.message.length}-${Date.now()}`;
+    const result = await sendInternalEmail({
+      templateName: "booking-operator-message",
+      recipientEmail: booking.customer_email,
+      idempotencyKey: `booking-notify-${idemSeed}`,
+      rendered: { subject, html, text },
+    });
+    return { ok: true, sent: result };
+  });
+
 /**
  * Calendar read: every reservation with a chosen date inside a month window.
  *
