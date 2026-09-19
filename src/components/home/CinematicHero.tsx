@@ -28,7 +28,7 @@ function storyLineStyle(delayMs: number): React.CSSProperties {
   };
 }
 
-/** The canonical stanza treatment — Fraunces 400 in champagne italic. */
+/** The historical stanza treatment — Georgia 400 in champagne italic. */
 const stanzaStyle: React.CSSProperties = {
   fontWeight: 400,
   fontStyle: "italic",
@@ -179,7 +179,7 @@ export function CinematicHero() {
 
       <p
         data-hero-field="subheadline"
-        className="hero-support mx-auto max-w-[21rem] text-center font-serif not-italic"
+        className="hero-support mx-auto max-w-[21rem] text-center font-sans not-italic"
         style={{
           opacity: 1,
           animation: `heroApprovedReveal ${CTA_FADE_MS}ms ${EASE} 820ms both`,

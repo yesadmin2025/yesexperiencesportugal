@@ -44,12 +44,12 @@
   --color-charcoal-soft: var(--charcoal-soft);
   --color-charcoal-deep: var(--charcoal-deep);
 
-  --font-display: "Fraunces", serif;
-  --font-serif: "Fraunces", serif;
+  --font-display: "Montserrat", system-ui, sans-serif;
+  --font-serif: Georgia, "Times New Roman", serif;
   --font-sans: "Inter", system-ui, sans-serif;
-  /* Canonical two-family system: Fraunces for editorial titles and Inter
-     for body copy and interface text. */
-  --font-editorial: "Fraunces", serif;
+  /* Historical YES system: Montserrat for display, Georgia italic for
+     editorial emphasis, and Inter for body copy and interface text. */
+  --font-editorial: Georgia, "Times New Roman", serif;
   --font-body: var(--font-sans);
 
   --shadow-elegant: 0 30px 60px -30px color-mix(in oklab, var(--teal) 30%, transparent);
@@ -475,7 +475,8 @@
     letter-spacing: 0;
     line-height: 1.35;
   }
-  /* Italic emphasis inside display headings uses the canonical Fraunces voice. */
+  /* Historical contrast: Georgia italic appears only as deliberate emphasis
+     inside Montserrat display headings. */
   h1 em,
   h2 em,
   h3 em,
@@ -780,10 +781,8 @@
     font-family: var(--font-serif);
   }
 
-  /* Homepage editorial title contract.
-     Fraunces is the single display voice for every visible H1–H3. Major
-     titles stay upright charcoal with one intentional teal italic phrase;
-     compact/card titles remain upright so the emphasis never becomes noise. */
+  /* Homepage editorial title contract: Montserrat is the upright display
+     voice; Georgia italic is reserved for intentional emphasis. */
   .home-energy :is(h1, h2, h3) {
     font-family: var(--font-display);
     letter-spacing: 0 !important;
@@ -812,8 +811,8 @@
      pin the sans family + readable line-height. Use mt-* for vertical
      spacing — the scale never bakes in margins.
      ───────────────────────────────────────────────────────────── */
-   /* Canonical typography — all headlines use Fraunces (--font-display).
-       Fraunces italic appears only for intentional emphasis inside headings,
+   /* Historical typography — all headlines use Montserrat (--font-display).
+       Georgia italic appears only for intentional emphasis inside headings,
      handled by the base h1/h2/h3 em rules above.
      Mobile sizes are tuned by the proportional refinement pass:
        .t-display 36px (32–36 hero band)
@@ -822,7 +821,7 @@
        .t-h3      ~23.5px (cards — 22–26 band) */
   .t-display-xl {
     font-family: var(--font-display);
-    font-weight: 500;
+    font-weight: 600;
     font-size: clamp(2.5rem, 7vw, 5.75rem);
     line-height: 1.04;
     letter-spacing: 0;
@@ -830,10 +829,10 @@
   }
   .t-display {
     font-family: var(--font-display);
-    font-weight: 500;
+    font-weight: 600;
     font-size: 2.25rem;
     line-height: 1.06;
-    letter-spacing: -0.022em;
+    letter-spacing: 0;
   }
   @media (min-width: 768px) {
     .t-display {
@@ -848,10 +847,10 @@
   }
   .t-h1 {
     font-family: var(--font-display);
-    font-weight: 500;
+    font-weight: 600;
     font-size: 2rem;
     line-height: 1.1;
-    letter-spacing: -0.018em;
+    letter-spacing: 0;
   }
   @media (min-width: 768px) {
     .t-h1 {
@@ -864,7 +863,7 @@
     font-weight: 500;
     font-size: 1.78rem;
     line-height: 1.18;
-    letter-spacing: -0.014em;
+    letter-spacing: 0;
   }
   @media (min-width: 768px) {
     .t-h2 {
@@ -877,7 +876,7 @@
     font-weight: 500;
     font-size: 1.47rem;
     line-height: 1.22;
-    letter-spacing: -0.012em;
+    letter-spacing: 0;
   }
   @media (min-width: 768px) {
     .t-h3 {
@@ -4412,7 +4411,7 @@ html[data-motion-scope="marketing"] .signature-image-settle {
   }
 
   /* Legacy bridge whisper retained for non-homepage routes. It uses the
-     canonical Fraunces italic voice; homepage transitions no longer use it. */
+     historical Georgia italic voice; homepage transitions no longer use it. */
   .bridge-whisper {
     font-family: var(--font-editorial);
     font-style: italic;
@@ -5490,7 +5489,7 @@ html[data-motion-scope="marketing"] .signature-image-settle {
     }
   }
 
-  /* Stronger editorial section headlines — Fraunces handles the voice;
+  /* Stronger editorial section headlines — Montserrat handles the voice;
      this deepens colour and balances tracking
      for h2 specifically (the most-used section headline). */
   section h2 {
@@ -6327,8 +6326,7 @@ html {
    Both share a refined arrow ramp. Used only inside .hero-cinematic.
    ──────────────────────────────────────────────────────────── */
 
-/* Hero support line: upright Fraunces in the refined editorial treatment
-   of the original film captions, separated from headline and actions. */
+/* Hero support line stays in Inter, separate from the Georgia stanza. */
 .hero-support {
   color: color-mix(in oklab, var(--gold-soft) 18%, var(--ivory));
   text-shadow:
@@ -6515,6 +6513,9 @@ html {
   min-height: calc(100svh - 64px);
 }
 .hero-cinematic .hero-cinematic-layout {
+  position: relative;
+  inset: auto;
+  min-height: inherit;
   grid-template-rows: minmax(0, 1fr) auto minmax(1.5rem, 0.24fr) auto;
   row-gap: 0;
   padding-top: clamp(2rem, 7svh, 5rem);
@@ -7882,14 +7883,14 @@ html[data-motion-scope="marketing"] .cta-breathe::after {
 }
 .motion-split-line {
   display: block;
-  /* Fraunces has generous ascenders, descenders and italic overhangs. Give
+  /* Georgia has generous ascenders, descenders and italic overhangs. Give
      the animated ink mask a small internal bleed so glyphs are never clipped
      by the line box on iOS while preserving the visual rhythm. */
   padding: 0.14em 0.12em 0.18em;
   margin: -0.14em -0.12em -0.18em;
 }
 
-/* Fraunces optical safety: protects accents, italic overhangs and descenders
+/* Georgia optical safety: protects accents, italic overhangs and descenders
    without changing the visible alignment of editorial headings. */
 .editorial-title-safe {
   padding: 0.08em 0.06em 0.12em;

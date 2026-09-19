@@ -205,11 +205,11 @@ export const Route = createRootRoute({
       // a preconnect here would open a socket nobody uses during LCP.
       { rel: "dns-prefetch", href: "https://www.googletagmanager.com" },
 
-      // Fraunces is the canonical YES editorial voice; Inter remains the
-      // body/UI voice. Load only upright title weights and italic emphasis.
+      // Historical YES typography: Montserrat display + Inter body/UI.
+      // Georgia is system-native and supplies italic editorial emphasis.
       {
         rel: "stylesheet",
-        href: "https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400..600;1,9..144,400&family=Inter:wght@300..700&display=swap",
+        href: "https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700&family=Inter:wght@300..700&display=swap",
       },
       {
         rel: "stylesheet",

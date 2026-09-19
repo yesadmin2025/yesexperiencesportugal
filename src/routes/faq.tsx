@@ -56,7 +56,7 @@ function FaqPage() {
           <Eyebrow flank>Before you book</Eyebrow>
           <SplitLines
             as="h1"
-            className="mt-4 font-serif text-[color:var(--charcoal)] font-medium tracking-normal text-[clamp(2.25rem,10vw,4.75rem)] leading-[1.02] text-balance"
+            className="mt-4 font-display text-[color:var(--charcoal)] font-semibold tracking-normal text-[clamp(2.25rem,10vw,4.75rem)] leading-[1.02] text-balance"
             lines={[
               <>Everything worth asking,</>,
               <><span className="italic font-normal text-[color:var(--teal)]">answered honestly.</span></>,

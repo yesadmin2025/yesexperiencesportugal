@@ -1,5 +1,5 @@
 /**
- * Homepage typography scale — shared PDF-canonical hierarchy.
+ * Homepage typography scale — shared historical hierarchy.
  *
  * Homepage sections now use the shared SectionTitle primitive rather than
  * carrying independent local ramps. This keeps weight, scale and spacing
@@ -14,7 +14,7 @@ const titlePath = resolve(__dirname, "../components/ui/SectionTitle.tsx");
 const src = readFileSync(indexPath, "utf8");
 const titleSrc = readFileSync(titlePath, "utf8");
 
-describe("Homepage H2 — shared PDF hierarchy", () => {
+describe("Homepage H2 — shared historical hierarchy", () => {
   it("uses SectionTitle for the key homepage headings", () => {
     for (const id of ["studio-title", "signatures-title", "final-cta-title"]) {
       expect(src).toMatch(new RegExp(`<SectionTitle[\\s\\S]{0,120}id="${id}"`));

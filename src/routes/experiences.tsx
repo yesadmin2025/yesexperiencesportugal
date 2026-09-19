@@ -209,7 +209,7 @@ function TourCard({
         </div>
 
         <h3
-          className={`experience-card-title mt-3 font-serif font-medium leading-[1.14] tracking-normal text-[color:var(--charcoal)] ${featured ? "text-[1.5rem] md:text-[1.75rem]" : "text-[1.45rem] md:text-[1.55rem]"}`}
+          className={`experience-card-title mt-3 font-display font-medium leading-[1.14] tracking-normal text-[color:var(--charcoal)] ${featured ? "text-[1.5rem] md:text-[1.75rem]" : "text-[1.45rem] md:text-[1.55rem]"}`}
         >
           <Link
             to="/tours/$tourId"
@@ -244,7 +244,7 @@ function TourCard({
         )}
 
         <div className="mt-4 flex flex-wrap items-baseline gap-x-3 gap-y-1">
-          <span className="font-serif text-[1.2rem] font-medium text-[color:var(--charcoal)]">
+          <span className="font-sans text-[1.2rem] font-medium text-[color:var(--charcoal)]">
             From <PriceEur amountEur={tour.priceFrom} role="from" /> per person
           </span>
           <span className="text-[12px] uppercase tracking-[0.12em] text-[color:var(--charcoal-soft)]">
