@@ -1,7 +1,7 @@
 import { pinBrowsersPath } from "/dev-server/scripts/playwright-env.mjs";
 pinBrowsersPath();
 const { chromium } = await import("playwright");
-const browser = await chromium.launch();
+const browser = await chromium.launch({ executablePath: "/opt/ms-playwright/chromium-1223/chrome-linux64/chrome", args: ["--no-sandbox"] });
 const page = await browser.newPage({ viewport: { width: 393, height: 852 } });
 const logs = [];
 page.on("console", (msg) => logs.push(`${msg.type()}: ${msg.text()}`));
