@@ -46,8 +46,8 @@
 - [x] Resolve the public ResizeObserver warning
 - [x] Validate 393×596, 393×852, 768×1024, 1280×800, reduced motion, slow fonts, and 200% text
 - [x] Present mobile comparison captures before publishing
-- [ ] Restore the approved reference hero without added first-screen copy
-- [ ] Restore the approved image-free Five Ways order, copy, and card composition
-- [ ] Harmonize the referenced editorial page families without changing business logic
-- [ ] Validate against the approved mobile references before publishing
+- [x] Restore the approved reference hero without added first-screen copy
+- [x] Restore the approved image-free Five Ways order, copy, and card composition
+- [x] Harmonize the referenced editorial page families without changing business logic
+- [x] Validate against the approved mobile references before publishing
 

@@ -8095,14 +8095,13 @@ html.reveal-ready .about-story.is-visible .about-copy-sequence p:nth-child(3) { 
 html.reveal-ready .about-story.is-visible .about-copy-sequence p:nth-child(4) { transition-delay: 580ms; }
 
 @media (prefers-reduced-motion: reduce) {
-  [data-scene-ready="1"] :is(.five-ways-card, .five-ways-image, .experience-editorial-card, .experience-card-content > *, .five-ways-kicker, .five-ways-title, .five-ways-body, .five-ways-action),
+  [data-scene-ready="1"] :is(.five-ways-card, .experience-editorial-card, .experience-card-content > *, .five-ways-kicker, .five-ways-title, .five-ways-body, .five-ways-action),
   html.reveal-ready .about-story .about-copy-sequence p {
     opacity: 1 !important;
     clip-path: none !important;
     filter: none !important;
     transition: none !important;
   }
-  .five-ways-image img { transform: none !important; }
 }
 
 /* Gold rule draw-in (used by ChapterLead / SectionTitle). */
