@@ -5,7 +5,7 @@ import { ArrowLeft, Check, Loader2, Upload } from "lucide-react";
 import { toast } from "sonner";
 import { SiteLayout } from "@/components/SiteLayout";
 import { Button } from "@/components/ui/button";
-import { HOME_PATH_DESTINATION_LIST, type HomePathId } from "@/content/home-path-images";
+import { HOME_PATH_DESTINATION_LIST, useHomePathDestinations, type HomePathId } from "@/content/home-path-images";
 import { supabase } from "@/integrations/supabase/client";
 import { publishOverridesBatch } from "@/lib/editorial-overrides";
 
@@ -46,6 +46,7 @@ async function preparePhoto(file: File): Promise<File> {
 }
 
 function AdminPathPhotosPage() {
+  const managedDestinations = useHomePathDestinations();
   const [authState, setAuthState] = useState<AuthState>("loading");
   const [drafts, setDrafts] = useState<Record<HomePathId, Draft>>(() =>
     Object.fromEntries(HOME_PATH_DESTINATION_LIST.map((path) => [path.id, {
@@ -74,6 +75,14 @@ function AdminPathPhotosPage() {
     };
   }, [checkAuth]);
 
+  useEffect(() => {
+    setDrafts((current) => Object.fromEntries(managedDestinations.map((path) => [path.id, {
+      ...current[path.id],
+      preview: current[path.id].file ? current[path.id].preview : path.image.src,
+      alt: current[path.id].file ? current[path.id].alt : path.image.alt,
+    }])) as Record<HomePathId, Draft>);
+  }, [managedDestinations]);
+
   function chooseFile(id: HomePathId, file?: File) {
     if (!file) return;
     const preview = URL.createObjectURL(file);
@@ -94,17 +103,14 @@ function AdminPathPhotosPage() {
         .from("editorial-photos")
         .upload(path, photo, { contentType: "image/jpeg", upsert: false });
       if (uploadError) throw uploadError;
-      const { data, error: signError } = await supabase.storage
-        .from("editorial-photos")
-        .createSignedUrl(path, 60 * 60 * 24 * 365);
-      if (signError || !data.signedUrl) throw signError ?? new Error("Could not prepare the photo URL.");
+      const stableUrl = `/api/public/editorial-photo?path=${encodeURIComponent(path)}`;
       await publishOverridesBatch("home_paths", [{
         slotIndex: index,
-        photoSrc: data.signedUrl,
+        photoSrc: stableUrl,
         alt: draft.alt.trim(),
         caption: draft.sourceUrl.trim() || null,
       }], HOME_PATH_DESTINATION_LIST.length);
-      setDrafts((current) => ({ ...current, [id]: { ...current[id], file: null, preview: data.signedUrl } }));
+      setDrafts((current) => ({ ...current, [id]: { ...current[id], file: null, preview: stableUrl } }));
       toast.success("Published on the card and homepage map.");
     } catch (error) {
       toast.error(error instanceof Error ? error.message : "Photo upload failed.");
