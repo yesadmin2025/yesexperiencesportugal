@@ -3116,10 +3116,13 @@ svg.lucide {
   }
 }
 
+/* Entrance travel is deliberately perceptible (22px desktop / 18px mobile):
+   below ~16px the eye reads the page as static. Single dominant effect —
+   opacity + vertical travel only, no blur, no scale stacking. */
 @keyframes siteRevealIn {
   from {
     opacity: 0;
-    transform: translate3d(0, 12px, 0);
+    transform: translate3d(0, 22px, 0);
   }
   to {
     opacity: 1;
@@ -3130,7 +3133,7 @@ svg.lucide {
 @keyframes siteRevealStaggerIn {
   from {
     opacity: 0;
-    transform: translate3d(0, 10px, 0);
+    transform: translate3d(0, 20px, 0);
   }
   to {
     opacity: 1;
