@@ -2108,8 +2108,12 @@ export type Database = {
         Row: {
           active: boolean
           created_at: string
+          duration_minutes: number | null
+          fixed_start_times: string[]
           min_guests: number
           notes: string | null
+          open_from: string | null
+          open_to: string | null
           price_cents: number
           pricing_unit: string
           region: string
@@ -2120,8 +2124,12 @@ export type Database = {
         Insert: {
           active?: boolean
           created_at?: string
+          duration_minutes?: number | null
+          fixed_start_times?: string[]
           min_guests?: number
           notes?: string | null
+          open_from?: string | null
+          open_to?: string | null
           price_cents?: number
           pricing_unit?: string
           region: string
@@ -2132,8 +2140,12 @@ export type Database = {
         Update: {
           active?: boolean
           created_at?: string
+          duration_minutes?: number | null
+          fixed_start_times?: string[]
           min_guests?: number
           notes?: string | null
+          open_from?: string | null
+          open_to?: string | null
           price_cents?: number
           pricing_unit?: string
           region?: string
