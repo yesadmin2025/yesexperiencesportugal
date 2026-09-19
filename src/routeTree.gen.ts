@@ -140,6 +140,7 @@ import { Route as AdminPricingRouteImport } from './routes/admin.pricing'
 import { Route as AdminPriceMapRouteImport } from './routes/admin.price-map'
 import { Route as AdminPhotosRouteImport } from './routes/admin.photos'
 import { Route as AdminPaymentsEnvRouteImport } from './routes/admin.payments-env'
+import { Route as AdminPathPhotosRouteImport } from './routes/admin.path-photos'
 import { Route as AdminLegacyScanRouteImport } from './routes/admin.legacy-scan'
 import { Route as AdminLegacyDomainsMonitorRouteImport } from './routes/admin.legacy-domains-monitor'
 import { Route as AdminLegacyDomainUnlinkRouteImport } from './routes/admin.legacy-domain-unlink'
@@ -867,6 +868,11 @@ const AdminPaymentsEnvRoute = AdminPaymentsEnvRouteImport.update({
   path: '/admin/payments-env',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AdminPathPhotosRoute = AdminPathPhotosRouteImport.update({
+  id: '/admin/path-photos',
+  path: '/admin/path-photos',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AdminLegacyScanRoute = AdminLegacyScanRouteImport.update({
   id: '/admin/legacy-scan',
   path: '/admin/legacy-scan',
@@ -1277,6 +1283,7 @@ export interface FileRoutesByFullPath {
   '/admin/legacy-domain-unlink': typeof AdminLegacyDomainUnlinkRoute
   '/admin/legacy-domains-monitor': typeof AdminLegacyDomainsMonitorRoute
   '/admin/legacy-scan': typeof AdminLegacyScanRoute
+  '/admin/path-photos': typeof AdminPathPhotosRoute
   '/admin/payments-env': typeof AdminPaymentsEnvRoute
   '/admin/photos': typeof AdminPhotosRoute
   '/admin/price-map': typeof AdminPriceMapRoute
@@ -1464,6 +1471,7 @@ export interface FileRoutesByTo {
   '/admin/legacy-domain-unlink': typeof AdminLegacyDomainUnlinkRoute
   '/admin/legacy-domains-monitor': typeof AdminLegacyDomainsMonitorRoute
   '/admin/legacy-scan': typeof AdminLegacyScanRoute
+  '/admin/path-photos': typeof AdminPathPhotosRoute
   '/admin/payments-env': typeof AdminPaymentsEnvRoute
   '/admin/photos': typeof AdminPhotosRoute
   '/admin/price-map': typeof AdminPriceMapRoute
@@ -1654,6 +1662,7 @@ export interface FileRoutesById {
   '/admin/legacy-domain-unlink': typeof AdminLegacyDomainUnlinkRoute
   '/admin/legacy-domains-monitor': typeof AdminLegacyDomainsMonitorRoute
   '/admin/legacy-scan': typeof AdminLegacyScanRoute
+  '/admin/path-photos': typeof AdminPathPhotosRoute
   '/admin/payments-env': typeof AdminPaymentsEnvRoute
   '/admin/photos': typeof AdminPhotosRoute
   '/admin/price-map': typeof AdminPriceMapRoute
@@ -1845,6 +1854,7 @@ export interface FileRouteTypes {
     | '/admin/legacy-domain-unlink'
     | '/admin/legacy-domains-monitor'
     | '/admin/legacy-scan'
+    | '/admin/path-photos'
     | '/admin/payments-env'
     | '/admin/photos'
     | '/admin/price-map'
@@ -2032,6 +2042,7 @@ export interface FileRouteTypes {
     | '/admin/legacy-domain-unlink'
     | '/admin/legacy-domains-monitor'
     | '/admin/legacy-scan'
+    | '/admin/path-photos'
     | '/admin/payments-env'
     | '/admin/photos'
     | '/admin/price-map'
@@ -2221,6 +2232,7 @@ export interface FileRouteTypes {
     | '/admin/legacy-domain-unlink'
     | '/admin/legacy-domains-monitor'
     | '/admin/legacy-scan'
+    | '/admin/path-photos'
     | '/admin/payments-env'
     | '/admin/photos'
     | '/admin/price-map'
@@ -2411,6 +2423,7 @@ export interface RootRouteChildren {
   AdminLegacyDomainUnlinkRoute: typeof AdminLegacyDomainUnlinkRoute
   AdminLegacyDomainsMonitorRoute: typeof AdminLegacyDomainsMonitorRoute
   AdminLegacyScanRoute: typeof AdminLegacyScanRoute
+  AdminPathPhotosRoute: typeof AdminPathPhotosRoute
   AdminPaymentsEnvRoute: typeof AdminPaymentsEnvRoute
   AdminPhotosRoute: typeof AdminPhotosRoute
   AdminPriceMapRoute: typeof AdminPriceMapRoute
@@ -3394,6 +3407,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminPaymentsEnvRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/admin/path-photos': {
+      id: '/admin/path-photos'
+      path: '/admin/path-photos'
+      fullPath: '/admin/path-photos'
+      preLoaderRoute: typeof AdminPathPhotosRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/admin/legacy-scan': {
       id: '/admin/legacy-scan'
       path: '/admin/legacy-scan'
@@ -3973,6 +3993,7 @@ const rootRouteChildren: RootRouteChildren = {
   AdminLegacyDomainUnlinkRoute: AdminLegacyDomainUnlinkRoute,
   AdminLegacyDomainsMonitorRoute: AdminLegacyDomainsMonitorRoute,
   AdminLegacyScanRoute: AdminLegacyScanRoute,
+  AdminPathPhotosRoute: AdminPathPhotosRoute,
   AdminPaymentsEnvRoute: AdminPaymentsEnvRoute,
   AdminPhotosRoute: AdminPhotosRoute,
   AdminPriceMapRoute: AdminPriceMapRoute,
