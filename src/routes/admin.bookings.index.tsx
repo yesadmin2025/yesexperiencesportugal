@@ -281,6 +281,7 @@ function AdminBookingsPage() {
                 {list.map((b) => {
                   const phone = phoneOf(b);
                   const time = startTimeOf(b);
+                  const duration = durationOf(b);
                   return (
                     <li key={b.id} className="py-4">
                       <Link
@@ -297,6 +298,7 @@ function AdminBookingsPage() {
                         </span>
                         <span className="text-sm text-[color:var(--charcoal-soft)]">
                           {experienceLabel(b)}
+                          {duration ? ` · ${duration}` : ""}
                         </span>
                         <span className="text-sm text-[color:var(--charcoal)]">
                           {partyOf(b)} · {money(b.amount_total, b.currency)}
