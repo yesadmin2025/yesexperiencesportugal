@@ -112,6 +112,40 @@ const cancelInput = z.object({
 });
 
 type StripeRefund = { id: string; status?: string | null };
+type StripePaymentIntent = {
+  amount_received?: number;
+  latest_charge?: {
+    amount_refunded?: number;
+    refunded?: boolean;
+  } | string | null;
+};
+type StripeErrorPayload = {
+  error?: {
+    code?: string;
+    message?: string;
+  };
+};
+
+const isFullyRefunded = (paymentIntent: StripePaymentIntent) => {
+  const charge = typeof paymentIntent.latest_charge === "object" ? paymentIntent.latest_charge : null;
+  const amountReceived = paymentIntent.amount_received ?? 0;
+  const amountRefunded = charge?.amount_refunded ?? 0;
+  return charge?.refunded === true || (amountReceived > 0 && amountRefunded >= amountReceived);
+};
+
+const readStripeError = async (response: Response) => {
+  const raw = await response.text().catch(() => "");
+  try {
+    const payload = JSON.parse(raw) as StripeErrorPayload;
+    return {
+      code: payload.error?.code ?? "",
+      message: payload.error?.message ?? raw,
+      raw,
+    };
+  } catch {
+    return { code: "", message: raw, raw };
+  }
+};
 
 /**
  * Cancels a paid booking and refunds its full captured amount. Stripe's
@@ -145,8 +179,29 @@ export const cancelAndRefundBooking = createServerFn({ method: "POST" })
       : process.env['STRIPE_SANDBOX_API_KEY'];
     if (!apiKey) throw new Error("The payment connection is not configured.");
 
+    const paymentIntentUrl = new URL(
+      `https://api.stripe.com/v1/payment_intents/${encodeURIComponent(booking.stripe_payment_intent_id)}`,
+    );
+    paymentIntentUrl.searchParams.append("expand[]", "latest_charge");
+    const paymentIntentResponse = await fetch(paymentIntentUrl, {
+      headers: { Authorization: `Bearer ${apiKey}` },
+    });
+    if (!paymentIntentResponse.ok) {
+      const stripeError = await readStripeError(paymentIntentResponse);
+      console.error("[booking-refund] Could not inspect payment", {
+        bookingId: booking.id,
+        status: paymentIntentResponse.status,
+        code: stripeError.code,
+        detail: stripeError.raw.slice(0, 300),
+      });
+      throw new Error("The payment could not be verified with Stripe. No booking details were changed. Try again shortly.");
+    }
+    let paymentIntent = (await paymentIntentResponse.json()) as StripePaymentIntent;
+    let refund: StripeRefund;
+    let alreadyRefunded = isFullyRefunded(paymentIntent);
+
     const refundBody = new URLSearchParams({ payment_intent: booking.stripe_payment_intent_id });
-    const refundResponse = await fetch("https://api.stripe.com/v1/refunds", {
+    const refundResponse = alreadyRefunded ? null : await fetch("https://api.stripe.com/v1/refunds", {
       method: "POST",
       headers: {
         Authorization: `Bearer ${apiKey}`,
@@ -155,16 +210,42 @@ export const cancelAndRefundBooking = createServerFn({ method: "POST" })
       },
       body: refundBody,
     });
-    if (!refundResponse.ok) {
-      const detail = await refundResponse.text().catch(() => "");
+    if (refundResponse && !refundResponse.ok) {
+      const stripeError = await readStripeError(refundResponse);
       console.error("[booking-refund] Stripe rejected refund", {
         bookingId: booking.id,
         status: refundResponse.status,
-        detail: detail.slice(0, 300),
+        code: stripeError.code,
+        detail: stripeError.raw.slice(0, 300),
       });
-      throw new Error("The refund could not be submitted. No booking details were changed.");
+
+      const mayAlreadyBeRefunded =
+        stripeError.code === "charge_already_refunded" ||
+        /amount\s*=\s*0|already refunded|nothing (?:left )?to refund/i.test(stripeError.message);
+      if (mayAlreadyBeRefunded) {
+        const refreshedResponse = await fetch(paymentIntentUrl, {
+          headers: { Authorization: `Bearer ${apiKey}` },
+        });
+        if (refreshedResponse.ok) {
+          paymentIntent = (await refreshedResponse.json()) as StripePaymentIntent;
+          alreadyRefunded = isFullyRefunded(paymentIntent);
+        }
+      }
+      if (!alreadyRefunded) {
+        if (
+          stripeError.code === "balance_insufficient" ||
+          /insufficient funds|insufficient.*balance/i.test(stripeError.message)
+        ) {
+          throw new Error(
+            "Stripe does not currently have enough available balance for this refund. Add funds or wait for the balance to become available, then try again. The booking remains paid.",
+          );
+        }
+        throw new Error(`Stripe could not submit the refund${stripeError.code ? ` (${stripeError.code})` : ""}. The booking remains paid.`);
+      }
     }
-    const refund = (await refundResponse.json()) as StripeRefund;
+    refund = alreadyRefunded
+      ? { id: booking.stripe_payment_intent_id, status: "succeeded" }
+      : (await (refundResponse as Response).json()) as StripeRefund;
     const previousMetadata =
       booking.metadata && typeof booking.metadata === "object" && !Array.isArray(booking.metadata)
         ? booking.metadata
@@ -178,6 +259,7 @@ export const cancelAndRefundBooking = createServerFn({ method: "POST" })
           ...previousMetadata,
           refund_id: refund.id,
           refund_status: refund.status ?? "submitted",
+          refund_reconciled: alreadyRefunded,
           cancellation_reason: data.reason || null,
           cancelled_at: updatedAt,
           cancelled_by: context.userId,
@@ -227,7 +309,12 @@ export const cancelAndRefundBooking = createServerFn({ method: "POST" })
       );
     }
 
-    return { ok: true, status: "refunded" as const, refundStatus: refund.status ?? "submitted" };
+    return {
+      ok: true,
+      status: "refunded" as const,
+      refundStatus: refund.status ?? "submitted",
+      alreadyProcessed: alreadyRefunded,
+    };
   });
 
 /* eslint-enable @typescript-eslint/no-explicit-any */
