@@ -14,7 +14,7 @@
  * actionable state immediately.
  */
 
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Link } from "@tanstack/react-router";
 import { HERO_COPY, HERO_COPY_VERSION, HERO_PHRASES } from "@/content/hero-copy";
 import { HERO_FILM } from "@/content/hero-scenes-manifest";
@@ -99,11 +99,6 @@ const ARROW = (
 );
 
 export function CinematicHero() {
-  const skipIntro = useMemo(shouldSkipIntro, []);
-  // Stages always start hidden so SSR and the client's first render agree;
-  // `mounted` flips after hydration and applies the final state (instantly
-  // for skip-intro visitors, staged otherwise).
-  const [mounted, setMounted] = useState(false);
   const [eyebrow, setEyebrow] = useState(false);
   const [line1, setLine1] = useState(false);
   const [line2, setLine2] = useState(false);
@@ -133,7 +128,7 @@ export function CinematicHero() {
   }, []);
 
   useEffect(() => {
-    setMounted(true);
+    const skipIntro = shouldSkipIntro();
     if (skipIntro) {
       setEyebrow(true);
       setLine1(true);
@@ -154,7 +149,7 @@ export function CinematicHero() {
       window.clearTimeout(ts);
       window.clearTimeout(tc);
     };
-  }, [skipIntro]);
+  }, []);
 
   return (
     <section

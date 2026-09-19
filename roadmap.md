@@ -39,11 +39,11 @@
 - [x] Restore the approved hero typography without glyph-clipping masks
 - [x] Restore Five Ways as one coherent ivory-and-sand editorial chapter
 - [x] Validate the restored branding across all public pages before publishing
-- [ ] Restore the originally approved YES typography, palette, gold motif, and spacing across public pages
-- [ ] Restore the approved cinematic homepage composition without text collisions
-- [ ] Reintegrate Five Ways into the approved editorial card language while preserving managed photos
-- [ ] Harmonize Homepage, purchase, editorial, discovery, trust, and Portuguese page families
-- [ ] Resolve the public ResizeObserver warning
-- [ ] Validate 393×596, 393×852, 768×1024, 1280×800, reduced motion, slow fonts, and 200% text
-- [ ] Present mobile comparison captures before publishing
+- [x] Restore the originally approved YES typography, palette, gold motif, and spacing across public pages
+- [x] Restore the approved cinematic homepage composition without text collisions
+- [x] Reintegrate Five Ways into the approved editorial card language while preserving managed photos
+- [x] Harmonize Homepage, purchase, editorial, discovery, trust, and Portuguese page families
+- [x] Resolve the public ResizeObserver warning
+- [x] Validate 393×596, 393×852, 768×1024, 1280×800, reduced motion, slow fonts, and 200% text
+- [x] Present mobile comparison captures before publishing
 
