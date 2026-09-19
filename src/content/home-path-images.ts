@@ -3,6 +3,7 @@ import { useEffect, useMemo, useState } from "react";
 import { premiumEditorialImage as image } from "@/content/editorial-premium-images";
 import { useEditorialOverrides } from "@/lib/editorial-overrides";
 import { supabase } from "@/integrations/supabase/client";
+import ceramicPainter from "@/assets/owner-photos/ceramic-painter-plate.jpeg.asset.json";
 
 /**
  * Homepage-only decision imagery.
@@ -12,12 +13,13 @@ import { supabase } from "@/integrations/supabase/client";
  * one place makes accidental same-page repetition testable.
  */
 export const HOME_PATH_IMAGES = {
-  studio: image("azulejo-private-workshop", {
-    alt: "Two guests painting traditional tiles together at sunset.",
-    width: 1600,
-    height: 1058,
-    objectPosition: "50% 46%",
-  }),
+  studio: {
+    src: ceramicPainter.url,
+    alt: "An artisan painting a botanical motif by hand on a ceramic plate.",
+    width: 975,
+    height: 1026,
+    objectPosition: "50% 48%",
+  },
   signature: image("tasting-flight-full", {
     alt: "A carefully prepared flight of Portuguese wines ready to taste.",
     width: 1920,
