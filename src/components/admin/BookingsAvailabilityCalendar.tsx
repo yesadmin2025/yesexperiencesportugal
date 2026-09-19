@@ -138,8 +138,12 @@ export function BookingsAvailabilityCalendar() {
 
   const filtered = useMemo(
     () =>
-      bookings.filter((b) => tourFilter === "all" || b.source_tour_id === tourFilter),
-    [bookings, tourFilter],
+      bookings.filter(
+        (b) =>
+          (tourFilter === "all" || b.source_tour_id === tourFilter) &&
+          (statusFilter === "all" || b.status === statusFilter),
+      ),
+    [bookings, tourFilter, statusFilter],
   );
 
   const byDate = useMemo(() => {
