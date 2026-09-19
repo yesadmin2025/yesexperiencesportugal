@@ -83,6 +83,28 @@ function startTimeOf(b: Row): string | null {
   return typeof hit === "string" ? hit : null;
 }
 
+/**
+ * Duration, from the frozen snapshot when the purchase captured one, otherwise
+ * the Signature catalogue's real duration. Never invented.
+ */
+function durationOf(b: Row): string | null {
+  const d = (b.booking_details ?? {}) as Record<string, unknown>;
+  const snapshot = (d["snapshot"] ?? {}) as Record<string, unknown>;
+  const label = [d["durationLabel"], snapshot["durationLabel"]].find(
+    (v) => typeof v === "string" && v.trim().length > 0,
+  );
+  if (typeof label === "string") return label.trim();
+  const minutes = [d["durationMinutes"], snapshot["durationMinutes"]].find(
+    (v) => typeof v === "number" && v > 0,
+  );
+  if (typeof minutes === "number") {
+    const h = Math.floor(minutes / 60);
+    const m = minutes % 60;
+    return m === 0 ? `${h}h` : `${h}h ${m}min`;
+  }
+  return b.source_tour_id ? (TOUR_DURATIONS.get(b.source_tour_id) ?? null) : null;
+}
+
 /** Party split comes from the frozen composition; never guessed. */
 function partyOf(b: Row): string {
   const d = (b.booking_details ?? {}) as Record<string, unknown>;
