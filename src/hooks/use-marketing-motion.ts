@@ -28,39 +28,50 @@ export function usePublicEditorialMotion(pathname: string): void {
     let firstFrame = 0;
     let secondFrame = 0;
     let settleTimer = 0;
-    let onLoad: (() => void) | undefined;
+    let quietTimer = 0;
+    let hardDeadline = 0;
+    let observer: MutationObserver | undefined;
 
-
-    // Effects run after hydration. Two frames give the routed subtree one
-    // settled paint without making visitors wait for a long mutation-free
-    // window before scroll movement becomes available.
-    const startAfterSettle = () => {
-      // A short post-hydration settle avoids adding data attributes while a
-      // lazy route subtree is still hydrating. Content remains visible during
-      // this window, so conversion actions are never delayed or blocked.
-      settleTimer = window.setTimeout(() => {
-        void import("@/lib/home-motion").then(({ startHomeMotion }) => {
-          if (!cancelled) disposeController = startHomeMotion();
-        });
-      }, 180);
+    const start = () => {
+      observer?.disconnect();
+      window.clearTimeout(quietTimer);
+      window.clearTimeout(hardDeadline);
+      void import("@/lib/home-motion").then(({ startHomeMotion }) => {
+        if (!cancelled) disposeController = startHomeMotion();
+      });
     };
 
-    // On slow loads, lazy route subtrees can still be hydrating after two
-    // frames. Waiting for `load` first keeps tagging strictly post-hydration,
-    // so the server HTML Google reads is never mutated mid-hydration.
-    const boot = () => {
-      if (document.readyState === "complete") {
-        startAfterSettle();
-        return;
-      }
-      onLoad = () => {
-        if (!cancelled) startAfterSettle();
+    // Lazily hydrated route subtrees keep mutating the DOM after the root
+    // effect runs, so tagging too early makes React compare server HTML with
+    // already-mutated attributes. Waiting for a short mutation-free window
+    // keeps auto-tagging strictly post-hydration, so the markup Google reads
+    // is never altered mid-hydration. Content stays visible throughout, so no
+    // conversion action is delayed.
+    const armQuietWindow = () => {
+      const scheduleQuiet = () => {
+        window.clearTimeout(quietTimer);
+        quietTimer = window.setTimeout(() => {
+          if (!cancelled) start();
+        }, 260);
       };
-      window.addEventListener("load", onLoad, { once: true });
+      observer = new MutationObserver(scheduleQuiet);
+      observer.observe(document.body, {
+        subtree: true,
+        childList: true,
+        attributes: true,
+      });
+      scheduleQuiet();
+      // Never wait longer than this: a page with continuous DOM activity must
+      // still get its editorial motion.
+      hardDeadline = window.setTimeout(() => {
+        if (!cancelled) start();
+      }, 2500);
     };
-    firstFrame = window.requestAnimationFrame(() => {
-      secondFrame = window.requestAnimationFrame(boot);
-    });
+
+    settleTimer = window.setTimeout(() => {
+      if (!cancelled) armQuietWindow();
+    }, 120);
+
 
 
     return () => {
