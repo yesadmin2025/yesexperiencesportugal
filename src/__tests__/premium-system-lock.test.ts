@@ -65,10 +65,13 @@ describe("Premium System Lock", () => {
     expect(hook).toContain("observer?.disconnect()");
     expect(hook).toContain("hardDeadline");
 
+    // Anchor on the base editorial reveal rule itself (the `{` guards against
+    // matching later descendant rules such as the image-settle parity block).
     const marketingMotion = css.slice(
-      css.indexOf('html.motion-ready[data-motion-scope="marketing"] [data-motion]'),
+      css.indexOf('html.motion-ready[data-motion-scope="marketing"] [data-motion] {'),
       css.indexOf("@keyframes editorialArrowCue"),
     );
+
     expect(marketingMotion).not.toContain("filter:");
     expect(marketingMotion).not.toContain("clip-path:");
     expect(marketingMotion).not.toContain("scale(");
