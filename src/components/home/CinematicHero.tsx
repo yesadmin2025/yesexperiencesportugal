@@ -43,34 +43,32 @@ function shouldSkipIntro(): boolean {
   }
 }
 
-function revealStyle(on: boolean, ms: number, distance = 14): React.CSSProperties {
+function revealStyle(on: boolean, ms: number, _distance = 14): React.CSSProperties {
   return {
     opacity: on ? 1 : 0,
-    transform: on ? "translateY(0)" : `translateY(${distance}px)`,
-    willChange: "opacity, transform",
-    transition: `opacity ${ms}ms ${EASE}, transform ${ms}ms ${EASE}`,
+    clipPath: on ? "inset(0 0 0 0)" : "inset(0 100% 0 0)",
+    willChange: "opacity, clip-path",
+    transition: `opacity ${ms}ms ${EASE}, clip-path ${ms}ms ${EASE}`,
   };
 }
 
 function storyLineStyle(on: boolean, direction: "from-left" | "from-right"): React.CSSProperties {
-  const offset = direction === "from-left" ? "-14vw" : "14vw";
+  const hiddenClip = direction === "from-left" ? "inset(0 100% 0 0)" : "inset(0 0 0 100%)";
   return {
     ...stanzaStyle,
     opacity: on ? 1 : 0,
-    transform: on ? "translate3d(0,0,0)" : `translate3d(${offset},0,0)`,
-    filter: on ? "blur(0)" : "blur(3px)",
-    willChange: "opacity, transform, filter",
-    transition: `opacity ${TEXT_FADE_MS}ms ${EASE}, transform ${TEXT_FADE_MS}ms ${EASE}, filter ${TEXT_FADE_MS}ms ${EASE}`,
+    clipPath: on ? "inset(0 0 0 0)" : hiddenClip,
+    willChange: "opacity, clip-path",
+    transition: `opacity ${TEXT_FADE_MS}ms ${EASE}, clip-path ${TEXT_FADE_MS}ms ${EASE}`,
   };
 }
 
 function supportFadeStyle(on: boolean): React.CSSProperties {
   return {
     opacity: on ? 1 : 0,
-    transform: on ? "translateY(0)" : "translateY(10px)",
-    filter: on ? "blur(0)" : "blur(4px)",
-    willChange: "opacity, transform, filter",
-    transition: `opacity ${TEXT_FADE_MS}ms ${EASE}, transform ${TEXT_FADE_MS}ms ${EASE}, filter ${TEXT_FADE_MS}ms ${EASE}`,
+    clipPath: on ? "inset(0 0 0 0)" : "inset(0 50% 0 50%)",
+    willChange: "opacity, clip-path",
+    transition: `opacity ${TEXT_FADE_MS}ms ${EASE}, clip-path ${TEXT_FADE_MS}ms ${EASE}`,
   };
 }
 
@@ -285,8 +283,7 @@ export function CinematicHero() {
         data-hero-composed={composed ? "true" : "false"}
         style={{
           opacity: composed ? 1 : 0,
-          transform: composed ? "translateY(0)" : "translateY(12px)",
-          transition: `opacity ${CTA_FADE_MS}ms ${EASE}, transform ${CTA_FADE_MS}ms ${EASE}`,
+          transition: `opacity ${CTA_FADE_MS}ms ${EASE}`,
           pointerEvents: composed ? "auto" : "none",
         }}
       >
