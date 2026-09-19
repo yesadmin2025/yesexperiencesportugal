@@ -30,11 +30,11 @@ export const HOME_PATH_IMAGES = {
     height: 1280,
     objectPosition: "50% 48%",
   }),
-  proposals: image("couple-vineyard", {
-    alt: "A couple sharing a quiet embrace between vineyard rows.",
-    width: 1280,
-    height: 1707,
-    objectPosition: "50% 44%",
+  proposals: image("troia-couple-coast", {
+    alt: "A couple sharing an unhurried conversation beside the Atlantic.",
+    width: 1600,
+    height: 1058,
+    objectPosition: "50% 42%",
   }),
   corporate: image("winery-group-orange-tree", {
     alt: "A private group gathered together in a garden after a shared day.",

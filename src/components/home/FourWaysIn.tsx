@@ -241,9 +241,8 @@ function PathCard({ path, index }: { path: Path; index: number }) {
       <p className="five-ways-body mt-3 text-[15px] md:text-[16px] leading-[1.7] text-[color:var(--charcoal-soft)]">
         {path.body}
       </p>
-      {/* Visible label + arrow — the whole card remains the action, but the
-          destination is readable at a glance before clicking. The arrow is
-          pushed to the right so every card's arrow aligns across the row. */}
+      {/* Visible label + arrow — the whole card remains the action. The arrow
+          is pushed to the right so every card's arrow aligns across the row. */}
       <span className="five-ways-action mt-auto pt-7 flex w-full min-h-[44px] items-center justify-between gap-3">
         <span className="text-[11px] uppercase tracking-[0.22em] font-semibold text-[color:var(--teal)]">
           {path.cta}
