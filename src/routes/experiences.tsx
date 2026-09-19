@@ -293,10 +293,10 @@ function CtaStrip() {
       <div className="container-x">
         <div className="mx-auto flex max-w-4xl flex-col items-start justify-between gap-7 md:flex-row md:items-center">
           <div>
-            <h2 className="serif font-medium text-3xl md:text-4xl text-[color:var(--charcoal)]">
+            <SectionTitle spacing="tight">
               None of these feels{" "}
-              <span className="italic font-normal text-[color:var(--teal)]">quite right?</span>
-            </h2>
+              <SectionTitle.Em>quite right?</SectionTitle.Em>
+            </SectionTitle>
             <p className="mt-3 text-[15px] md:text-[16px] leading-[1.65] text-[color:var(--charcoal-soft)] max-w-lg">
               Build one private day around your mood, group and rhythm, then see the route and live
               price in the Studio.

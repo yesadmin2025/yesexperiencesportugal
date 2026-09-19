@@ -102,14 +102,9 @@ function Page() {
       <section className="reveal about-story py-20">
         <div className="container-x max-w-3xl">
           <Eyebrow>Created from real travel</Eyebrow>
-          <SplitLines
-            as="h2"
-            className="about-ink-title mt-3 font-serif text-[color:var(--charcoal)] font-medium tracking-normal text-[clamp(1.875rem,7vw,2.4rem)] md:text-[3.6rem] leading-[1.14] md:leading-[1.08]"
-            lines={[
-              <>Built from the road,&nbsp;</>,
-              <><span className="italic font-normal text-[color:var(--teal)]">not a template</span>.</>,
-            ]}
-          />
+          <SectionTitle className="about-ink-title">
+            Built from the road, <SectionTitle.Em>not a template</SectionTitle.Em>.
+          </SectionTitle>
           <div className="about-copy-sequence mt-8 space-y-5 text-[color:var(--charcoal-soft)] leading-relaxed">
             <p>
               YES did not begin as an agency concept, a marketplace idea or a travel-tech trend.

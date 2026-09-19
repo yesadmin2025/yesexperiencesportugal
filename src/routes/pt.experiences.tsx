@@ -212,10 +212,10 @@ function CtaStrip() {
       <div className="container-x">
         <div className="bg-[color:var(--charcoal-deep)] text-[color:var(--ivory)] p-12 md:p-16 flex flex-col md:flex-row items-center justify-between gap-6">
           <div>
-            <h2 className="serif text-3xl md:text-4xl text-[color:var(--ivory)]">
+            <SectionTitle spacing="tight" className="text-[color:var(--ivory)]">
               Quer começar do zero?{" "}
-              <span className="italic font-normal text-[color:var(--ivory)]">Abra o Studio.</span>
-            </h2>
+              <SectionTitle.Em className="text-[color:var(--gold-soft)]">Abra o Studio.</SectionTitle.Em>
+            </SectionTitle>
             <p className="mt-3 text-[color:var(--ivory)]/80 max-w-lg">
               Comece à sua maneira — por um lugar, uma região ou um sentimento. Guiamo-lo enquanto
               constrói, dentro do que funciona melhor no terreno.
