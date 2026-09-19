@@ -386,6 +386,34 @@ export function startHomeMotion(): () => void {
   // an element into the entry zone after first paint.
   window.addEventListener("load", schedule, { passive: true });
 
+  // ── Hero parallax (homepage only) ──────────────────────────────────────
+  // Writes a capped `--hero-parallax` on the hero stage; CSS owns the
+  // transform. Capped at ±18px on phones and ±28px wider so the frame never
+  // detaches from the headline, and only while the hero is on screen.
+  const heroStage = document.querySelector<HTMLElement>(".home-energy .hero-story-stage");
+  let heroRaf = 0;
+  let heroScheduled = false;
+  const updateHeroParallax = () => {
+    heroScheduled = false;
+    if (!heroStage || !heroStage.isConnected) return;
+    const rect = heroStage.getBoundingClientRect();
+    if (rect.bottom <= 0 || rect.top > (window.innerHeight || 0)) return;
+    const cap = window.innerWidth < 768 ? 18 : 28;
+    // 0 at the top of the page, growing as the hero scrolls away.
+    const progress = Math.min(Math.max(-rect.top / Math.max(rect.height, 1), 0), 1);
+    heroStage.style.setProperty("--hero-parallax", `${(progress * cap).toFixed(1)}px`);
+  };
+  const scheduleHeroParallax = () => {
+    if (heroScheduled || !heroStage) return;
+    heroScheduled = true;
+    heroRaf = window.requestAnimationFrame(updateHeroParallax);
+  };
+  if (heroStage) {
+    scheduleHeroParallax();
+    window.addEventListener("scroll", scheduleHeroParallax, { passive: true });
+    window.addEventListener("resize", scheduleHeroParallax, { passive: true });
+  }
+
   // One-shot perf summary — logs a compact single-line diagnostic ~4s
   // after boot when the device is low-power OR `?motionDebug=1` is set.
   // Silent on fast devices in production, so this is safe to ship.
