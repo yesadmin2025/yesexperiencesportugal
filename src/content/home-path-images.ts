@@ -1,9 +1,12 @@
 import type { EditorialImageSource } from "@/components/ui/ResponsiveEditorialImage";
 import { useEffect, useMemo, useState } from "react";
-import { premiumEditorialImage as image } from "@/content/editorial-premium-images";
 import { useEditorialOverrides } from "@/lib/editorial-overrides";
 import { supabase } from "@/integrations/supabase/client";
-import ceramicPainter from "@/assets/owner-photos/ceramic-painter-plate.jpeg.asset.json";
+import pierDawn from "@/assets/owner-photos/carrasqueira-pier-dawn-landscape.jpeg.asset.json";
+import courtyardSunlight from "@/assets/owner-photos/espichel-courtyard-sunlight.jpeg.asset.json";
+import coastPanorama from "@/assets/owner-photos/arrabida-coast-panorama-landscape.jpeg.asset.json";
+import coupleEvening from "@/assets/owner-photos/cristo-rei-couple-evening.jpeg.asset.json";
+import tableCheers from "@/assets/owner-photos/winery-table-cheers-group.jpeg.asset.json";
 
 /**
  * Homepage-only decision imagery.
@@ -14,36 +17,40 @@ import ceramicPainter from "@/assets/owner-photos/ceramic-painter-plate.jpeg.ass
  */
 export const HOME_PATH_IMAGES = {
   studio: {
-    src: ceramicPainter.url,
-    alt: "An artisan painting a botanical motif by hand on a ceramic plate.",
-    width: 975,
-    height: 1026,
-    objectPosition: "50% 48%",
-  },
-  signature: image("tasting-flight-full", {
-    alt: "A carefully prepared flight of Portuguese wines ready to taste.",
-    width: 1920,
-    height: 1440,
+    src: pierDawn.url,
+    alt: "A wooden pier reaching into still water at first light.",
+    width: 1600,
+    height: 1027,
     objectPosition: "50% 52%",
-  }),
-  designer: image("moscatel-giant-vats-guide", {
-    alt: "A local host guiding a small private group through a historic wine cellar.",
-    width: 1920,
-    height: 1280,
-    objectPosition: "50% 48%",
-  }),
-  proposals: image("troia-couple-coast", {
-    alt: "A couple sharing an unhurried conversation beside the Atlantic.",
+  },
+  signature: {
+    src: courtyardSunlight.url,
+    alt: "Sunlight crossing a quiet arcaded courtyard in southern Portugal.",
+    width: 1200,
+    height: 1600,
+    objectPosition: "50% 55%",
+  },
+  designer: {
+    src: coastPanorama.url,
+    alt: "A long stretch of coastline opening beneath shifting light.",
     width: 1600,
-    height: 1058,
-    objectPosition: "50% 42%",
-  }),
-  corporate: image("winery-group-orange-tree", {
-    alt: "A private group gathered together in a garden after a shared day.",
-    width: 1600,
-    height: 1200,
-    objectPosition: "50% 48%",
-  }),
+    height: 747,
+    objectPosition: "50% 50%",
+  },
+  proposals: {
+    src: coupleEvening.url,
+    alt: "A couple celebrating together at dusk beneath a lit monument.",
+    width: 1440,
+    height: 1920,
+    objectPosition: "50% 40%",
+  },
+  corporate: {
+    src: tableCheers.url,
+    alt: "A group raising glasses around a shared table in the open air.",
+    width: 1440,
+    height: 1920,
+    objectPosition: "50% 45%",
+  },
 } satisfies Record<string, EditorialImageSource>;
 
 export const HOME_PATH_IMAGE_LIST = Object.values(HOME_PATH_IMAGES);
