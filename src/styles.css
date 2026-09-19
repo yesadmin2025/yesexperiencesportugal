@@ -3245,6 +3245,21 @@ html.reveal-ready .home-energy.reveal.is-visible {
   transform: none;
   animation: none;
 }
+/* Homepage section phrases reveal like editorial ink. The parent remains the
+   single observer target, so headings never wait for a competing controller. */
+html.reveal-ready .home-energy .reveal > :is(h1, h2),
+html.reveal-ready .home-energy .reveal > header > :is(h1, h2) {
+  clip-path: inset(0 100% 0 0);
+  opacity: 0;
+  transition:
+    clip-path 780ms cubic-bezier(0.16, 1, 0.3, 1),
+    opacity 420ms var(--ease-scene);
+}
+html.reveal-ready .home-energy .reveal.is-visible > :is(h1, h2),
+html.reveal-ready .home-energy .reveal.is-visible > header > :is(h1, h2) {
+  clip-path: inset(0 0 0 0);
+  opacity: 1;
+}
 html.reveal-ready .home-energy .reveal-stagger {
   transform: none;
   transition:
@@ -4620,8 +4635,8 @@ html[data-motion-scope="marketing"] .signature-image-settle {
   .home-energy .he-image-cinema {
     overflow: hidden;
     -webkit-mask-image: linear-gradient(#000, #000);
-    clip-path: inset(12% 0 0 0);
-    transition: clip-path 1200ms cubic-bezier(0.22, 0.61, 0.36, 1);
+    clip-path: inset(0 100% 0 0);
+    transition: clip-path 860ms cubic-bezier(0.16, 1, 0.3, 1);
   }
   .home-energy .he-image-cinema.is-visible,
   .home-energy .is-visible .he-image-cinema {
@@ -7591,7 +7606,9 @@ html[data-motion-scope="marketing"] .cta-breathe::after {
     transform: none !important;
   }
   html.motion-ready[data-motion-scope="marketing"] [data-motion="card-reveal"],
-  html.reveal-ready .reveal-stagger {
+  html.reveal-ready .reveal-stagger,
+  html.reveal-ready .home-energy .reveal > :is(h1, h2),
+  html.reveal-ready .home-energy .reveal > header > :is(h1, h2) {
     opacity: 1 !important;
     clip-path: none !important;
     filter: none !important;
