@@ -153,20 +153,15 @@ export function startHomeMotion(): () => void {
     // Cascade: every repeated card in a row gets an increasing delay so the
     // eye tracks a rhythm instead of the whole row landing at once. Includes
     // plain `.reveal-stagger` children (the CSS reads `--motion-delay`).
-    const cardParents = new WeakMap<HTMLElement, number>();
     const cards = homeScope.querySelectorAll<HTMLElement>(
       ".he-card-lift, .reveal-stagger, .fw-card, .editorial-card, [data-editorial-card]",
     );
     cards.forEach((el) => {
-      const parent = el.parentElement as HTMLElement | null;
-      if (!parent) return;
-      const idx = cardParents.get(parent) ?? 0;
-      cardParents.set(parent, idx + 1);
-      if (idx === 0) return;
-      if (el.hasAttribute("data-motion-delay")) return;
-      const delay = Math.min(idx * CARD_STEP, CARD_CAP);
-      el.setAttribute("data-motion-delay", String(delay));
-      el.style.setProperty("--motion-delay", `${delay}ms`);
+      // Legacy reveal nodes are owned by SiteLayout. Mutating their attributes
+      // during selective hydration causes React attribute mismatches.
+      if (el.matches(".reveal, .reveal-stagger, .section-enter")) return;
+      // Stagger timing is CSS-owned. Adding inline attributes here can race
+      // React's selective hydration on long pages.
     });
 
     // Give public imagery and conversion groups one calm entrance. Never tag
@@ -404,9 +399,14 @@ export function startHomeMotion(): () => void {
       if (rect.bottom > -120 && rect.top < vh) {
         const progress = Math.min(Math.max(-rect.top / Math.max(rect.height, 1), 0), 1);
         const eased = progress * progress * (3 - 2 * progress); // smoothstep
-        heroSection.style.setProperty("--scene-progress", eased.toFixed(3));
-        heroStage?.style.setProperty("--hero-zoom", (1 + eased * 0.06).toFixed(4));
-        heroStage?.style.setProperty("--hero-dim", (eased * 0.34).toFixed(3));
+        // Do not add inline styles at the initial 0 position: React may still
+        // be selectively hydrating this subtree. CSS defaults already express
+        // the same values, and real scroll updates begin once progress > 0.
+        if (eased > 0.001) {
+          heroSection.style.setProperty("--scene-progress", eased.toFixed(3));
+          heroStage?.style.setProperty("--hero-zoom", (1 + eased * 0.06).toFixed(4));
+          heroStage?.style.setProperty("--hero-dim", (eased * 0.34).toFixed(3));
+        }
       }
     }
   };

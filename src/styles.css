@@ -3190,6 +3190,7 @@ html.reveal-ready .reveal.is-visible {
 html.reveal-ready .reveal-stagger {
   opacity: 0;
   clip-path: inset(0 100% 0 0);
+  transform: none;
   transition:
     opacity 440ms var(--ease-scene),
     clip-path 680ms var(--ease-scene),
@@ -3204,6 +3205,11 @@ html.reveal-ready .reveal-stagger.is-visible {
   animation-delay: var(--motion-delay, 0ms);
   transition-delay: var(--motion-delay, 0ms);
 }
+html.reveal-ready .he-stagger > .reveal-stagger:nth-child(2) { --motion-delay: 110ms; }
+html.reveal-ready .he-stagger > .reveal-stagger:nth-child(3) { --motion-delay: 220ms; }
+html.reveal-ready .he-stagger > .reveal-stagger:nth-child(4) { --motion-delay: 330ms; }
+html.reveal-ready .he-stagger > .reveal-stagger:nth-child(5) { --motion-delay: 440ms; }
+html.reveal-ready .he-stagger > .reveal-stagger:nth-child(n + 6) { --motion-delay: 550ms; }
 
 /* Images inherit the same calm reveal without blur or a second effect. */
 html.reveal-ready .reveal img,

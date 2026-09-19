@@ -1,4 +1,5 @@
 import { useEffect } from "react";
+import { startHomeMotion } from "@/lib/home-motion";
 
 const NON_EDITORIAL_PATHS = [
   /^\/admin(?:\/|\.|$)/,
@@ -29,9 +30,7 @@ export function usePublicEditorialMotion(pathname: string): void {
     let secondFrame = 0;
 
     const start = () => {
-      void import("@/lib/home-motion").then(({ startHomeMotion }) => {
-        if (!cancelled) disposeController = startHomeMotion();
-      });
+      if (!cancelled) disposeController = startHomeMotion();
     };
 
     // Two frames keep DOM annotation post-hydration without the old mutation

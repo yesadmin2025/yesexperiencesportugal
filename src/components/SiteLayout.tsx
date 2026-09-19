@@ -482,7 +482,6 @@ export function SiteLayout({ children }: { children: ReactNode }) {
     // any inline transition delay so nothing keeps content at opacity:0.
     if (mobileRevealsDisabled || typeof IntersectionObserver === "undefined" || reducedMotion) {
       els.forEach((el) => {
-        el.style.transitionDelay = "0ms";
         el.classList.add("is-visible");
         if (revealDebug) flashDebug(el, "reduced-motion");
       });
@@ -495,35 +494,8 @@ export function SiteLayout({ children }: { children: ReactNode }) {
     // so no-JS renders, crawlers and pre-hydration paint show content.
     document.documentElement.classList.add("reveal-ready");
 
-    // Unified cadence — small enough to feel continuous, slow enough to read.
-    const STAGGER_MS = 110;
-    const MAX_STEPS = 8; // cap so late items don't drift too far behind
-
-    // Pre-assign a stagger index to every .reveal-stagger element based on
-    // its position among same-class siblings under the same parent. This
-    // guarantees a consistent rhythm without requiring inline delays.
-    const staggerEls = document.querySelectorAll<HTMLElement>(".reveal-stagger");
-    const indexByEl = new WeakMap<HTMLElement, number>();
-    const groups = new Map<HTMLElement, HTMLElement[]>();
-    staggerEls.forEach((el) => {
-      const parent = el.parentElement;
-      if (!parent) return;
-      const arr = groups.get(parent) ?? [];
-      arr.push(el);
-      groups.set(parent, arr);
-    });
-    groups.forEach((items) => {
-      items.forEach((el, i) => indexByEl.set(el, Math.min(i, MAX_STEPS)));
-    });
-
     const revealEl = (target: HTMLElement, source: RevealSource) => {
       if (target.classList.contains("is-visible")) return;
-      // Only apply our cadence when no inline delay is already set, so
-      // route-level overrides still win.
-      if (target.classList.contains("reveal-stagger") && !target.style.transitionDelay) {
-        const idx = indexByEl.get(target) ?? 0;
-        target.style.transitionDelay = `${idx * STAGGER_MS}ms`;
-      }
       target.classList.add("is-visible");
       telemetry.log("reveal", source, target, describeReveal(target));
       if (revealDebug) flashDebug(target, `reveal·${source}`);
