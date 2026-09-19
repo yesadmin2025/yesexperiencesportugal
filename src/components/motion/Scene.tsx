@@ -1,5 +1,6 @@
 import {
   forwardRef,
+  useCallback,
   useRef,
   type ElementType,
   type ComponentPropsWithoutRef,
@@ -44,11 +45,11 @@ function SceneImpl<E extends ElementType = "div">(
 
   useSceneReveal(localRef, scene);
 
-  const setRef = (node: HTMLElement | null) => {
+  const setRef = useCallback((node: HTMLElement | null) => {
     localRef.current = node;
     if (typeof forwardedRef === "function") forwardedRef(node);
     else if (forwardedRef) (forwardedRef as { current: Element | null }).current = node;
-  };
+  }, [forwardedRef]);
 
   return (
     <Component ref={setRef} className={cn(className)} {...rest}>
