@@ -8,7 +8,6 @@ import { SectionTitle } from "@/components/ui/SectionTitle";
 import { CtaButton } from "@/components/ui/CtaButton";
 import founderAsset from "@/assets/about-founder-wine-experience.jpg.asset.json";
 import { useMarketingMotion } from "@/hooks/use-marketing-motion";
-import { ParallaxLayer } from "@/components/motion/ParallaxLayer";
 
 import {
   BASED_IN_SHORT,
@@ -67,7 +66,7 @@ function Page() {
       {/* Hero */}
       <section className="reveal pt-32 pb-14 bg-[color:var(--sand)] text-center">
         <div className="container-x">
-          <ParallaxLayer amount="sm">
+          <div>
             <Eyebrow flank>Sobre a YES</Eyebrow>
             <SectionTitle as="h1" size="anchor" spacing="loose">
               Desenhamos <SectionTitle.Em>Portugal com sentido</SectionTitle.Em>.
@@ -81,7 +80,7 @@ function Page() {
               Dias privados, experiências desenhadas ao vivo e jornadas completas — criadas a partir
               de rotas reais, hóspedes reais e conhecimento local verdadeiro.
             </p>
-          </ParallaxLayer>
+          </div>
         </div>
       </section>
 

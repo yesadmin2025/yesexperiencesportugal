@@ -816,13 +816,12 @@ export function SiteLayout({ children }: { children: ReactNode }) {
     const tick = () => {
       const t = window.__yesRevealTelemetry;
       if (!t) return;
-      const pulses = document.querySelectorAll(".hero-cta-arrow-pulse").length;
       const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
       hud.innerHTML =
         `<div style="color:var(--gold)">reveal-debug · ${t.entry}</div>` +
         `<div>reveal ${t.reveal.io}/${t.reveal.sweepInitial}/${t.reveal.sweepDelayed} · pending ${t.reveal.pending}/${t.reveal.total}</div>` +
         `<div>section ${t.sectionEnter.io}/${t.sectionEnter.sweepInitial}/${t.sectionEnter.sweepDelayed} · pending ${t.sectionEnter.pending}/${t.sectionEnter.total}</div>` +
-        `<div>hero pulses: ${pulses} · reduced-motion: ${reduced ? "ON" : "off"}</div>` +
+        `<div>reduced-motion: ${reduced ? "ON" : "off"}</div>` +
         `<div style="opacity:.7">io / sweepInit / sweepDelayed</div>`;
     };
     tick();

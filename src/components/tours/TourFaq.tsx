@@ -49,7 +49,7 @@ export function TourFaq({ tourId }: { tourId: string }) {
             <AccordionItem
               key={i}
               value={`item-${i}`}
-              className="group relative border border-[color:var(--border)] hover:border-[color:var(--teal)]/40 bg-white/80 backdrop-blur-sm transition-colors duration-200 [&[data-state=open]]:border-[color:var(--teal)]/55 [&[data-state=open]]:shadow-[var(--shadow-card)]"
+              className="group relative border border-[color:var(--border)] hover:border-[color:var(--teal)]/40 bg-[color:var(--ivory)]/80 transition-colors duration-200 [&[data-state=open]]:border-[color:var(--teal)]/55 [&[data-state=open]]:shadow-[var(--shadow-card)]"
             >
               <AccordionTrigger className="px-5 md:px-6 py-4 md:py-5 text-left text-[15px] md:text-[17px] serif text-[color:var(--charcoal)] hover:no-underline hover:text-[color:var(--teal)] transition-colors duration-200 [&[data-state=open]]:text-[color:var(--teal)]">
                 {item.q}

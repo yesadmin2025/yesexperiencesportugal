@@ -17,7 +17,7 @@ import { StudioLivePreview } from "@/components/home/StudioLivePreview";
 import { CinematicHero } from "@/components/home/CinematicHero";
 import { RecentJourney } from "@/components/home/RecentJourney";
 import { ExitIntentEmailCapture } from "@/components/home/EmailCapture";
-import { FourWaysIn } from "@/components/home/FourWaysIn";
+import { FiveWaysIn } from "@/components/home/FiveWaysIn";
 
 import { getScrollDebugFlags, useScrollDebugFlags } from "@/lib/scroll-debug";
 
@@ -261,7 +261,7 @@ const baseSignatures = FEATURED_TOUR_IDS.filter((id) => isValidTourId(id))
     };
   });
 
-/* Moments and group services appear once in FourWaysIn. Their dedicated
+/* Moments and group services appear once in FiveWaysIn. Their dedicated
  * routes retain the complete service narratives without repeating the same
  * commercial choice later on this page. */
 
@@ -582,7 +582,7 @@ function HomePage() {
         {/* 3 — FIVE WAYS INTO PORTUGAL
           Concise editorial explainer so visitors instantly understand
           the paths: Signature, Studio, Travel Designer, Proposals and Corporate. */}
-        <FourWaysIn />
+        <FiveWaysIn />
 
         {/* 4 — EXPERIENCE STUDIO (promoted)
           Promoted up the page so the Builder reads as the core

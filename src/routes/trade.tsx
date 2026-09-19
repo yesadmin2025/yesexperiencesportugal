@@ -408,7 +408,7 @@ function TradePage() {
                 <AccordionItem
                   key={f.q}
                   value={`trade-faq-${i}`}
-                  className="reveal-stagger border border-[color:var(--border)] bg-white/80 transition-colors duration-200 hover:border-[color:var(--teal)]/40 [&[data-state=open]]:border-[color:var(--teal)]/55"
+                  className="reveal-stagger border border-[color:var(--border)] bg-[color:var(--ivory)]/80 transition-colors duration-200 hover:border-[color:var(--teal)]/40 [&[data-state=open]]:border-[color:var(--teal)]/55"
                 >
                   <AccordionTrigger className="px-5 md:px-6 py-5 text-left serif text-[15.5px] md:text-[17px] leading-snug text-[color:var(--charcoal)] hover:no-underline hover:text-[color:var(--teal)] [&[data-state=open]]:text-[color:var(--teal)]">
                     {f.q}

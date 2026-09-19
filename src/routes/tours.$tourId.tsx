@@ -34,7 +34,6 @@ import { Eyebrow } from "@/components/ui/Eyebrow";
 import { SectionTitle } from "@/components/ui/SectionTitle";
 import { CtaButton, CtaMotionArrow } from "@/components/ui/CtaButton";
 import { Scene } from "@/components/motion/Scene";
-import { ParallaxLayer } from "@/components/motion/ParallaxLayer";
 
 import { CtaPair } from "@/components/ui/CtaPair";
 import { breadcrumbLd, tourProductLd, faqPageLd, jsonLdScript } from "@/lib/jsonld";
@@ -426,7 +425,7 @@ function TourHero({
       <section className="pb-8">
         <div className="container-x max-w-6xl">
           {/* Cinematic hero — unified 3:2 frame, blur-up on load. */}
-          <ParallaxLayer amount="md">
+          <div>
             <TourImage
               src={heroSrc}
               srcSet={heroSrcSet}
@@ -438,7 +437,7 @@ function TourHero({
               className="shadow-[0_30px_60px_-30px_rgba(46,46,46,0.4)]"
               imgClassName="signature-image-settle"
             />
-          </ParallaxLayer>
+          </div>
 
           {/* Editorial header — title, blurb and meta sit BELOW the hero
               so the cinematic image reads as a single quiet frame. */}

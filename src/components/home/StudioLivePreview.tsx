@@ -14,7 +14,7 @@ const ROUTE_D = "M 68 58 C 78 92, 92 116, 108 136 S 138 178, 154 205";
 /**
  * Homepage Studio example.
  * This deliberately never pretends to be the visitor's own draft. A genuine
- * saved Studio draft is surfaced separately by FourWaysIn.
+ * saved Studio draft is surfaced separately by FiveWaysIn.
  */
 export function StudioLivePreview() {
   return (

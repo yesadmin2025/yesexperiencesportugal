@@ -75,7 +75,7 @@ describe("Homepage H2 — editorial tier (Signatures)", () => {
   }
 });
 
-// Informational tier (three-paths-title) lives in ThreePathsSection.tsx
+// Informational tier is covered by the shared SectionTitle contract.
 // — locked in that component's own ramp (1.7 / 1.95 / 2.4) and not
 // re-validated here because this suite scans src/routes/index.tsx.
 

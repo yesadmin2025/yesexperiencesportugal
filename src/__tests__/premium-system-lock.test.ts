@@ -106,7 +106,7 @@ describe("Premium System Lock", () => {
     expect(CTA_LABELS.studioReveal).toBe("Love this day · Reserve it");
     const publicSources = [
       "src/components/Navbar.tsx",
-      "src/components/home/FourWaysIn.tsx",
+      "src/components/home/FiveWaysIn.tsx",
       "src/routes/experiences.tsx",
       "src/routes/portugal-travel-designer.tsx",
       "src/routes/proposal-in-portugal.tsx",

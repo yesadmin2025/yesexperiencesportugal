@@ -22,7 +22,7 @@ export function SplitLines({ text, lines, as = "h2", className, lineClassName }:
     as,
     {
       ref,
-      className: cn("motion-split", inView && "is-visible", className),
+      className: cn("motion-split editorial-title-safe", inView && "is-visible", className),
     },
     parts.map((line, i) =>
       createElement(
