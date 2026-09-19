@@ -146,9 +146,108 @@ export const WINE_TOUR_FAQ_BY_ID: Record<string, FaqItem[]> = {
   ],
 };
 
-/** Returns the FAQ set for a tour page — wine overlay (if any) + SIGNATURE_FAQ. */
+/**
+ * Per-tour overlays for the remaining Signatures, written for the questions
+ * North American travelers actually type before booking a private day from
+ * Lisbon: is it private, is hotel pickup included, how long is the day, does
+ * it work from a cruise ship, is it good with kids. Every answer repeats only
+ * facts already published on the tour page — no new inclusions, no invented
+ * stops, no new pricing.
+ */
+export const DESTINATION_FAQ_BY_ID: Record<string, FaqItem[]> = {
+  "sintra-cascais": [
+    {
+      q: "Is this a private Sintra day trip from Lisbon?",
+      a: "Yes. It is a private full-day tour from Lisbon for your group only, with an English-speaking guide and driver, and hotel pickup and drop-off in the Lisbon, Cascais and Estoril area included.",
+    },
+    {
+      q: "How long is the Sintra and Cascais day tour?",
+      a: "It is a full day, normally 8 to 10 hours door to door, at a relaxed pace with real time at each stop instead of a rushed checklist.",
+    },
+    {
+      q: "Is Sintra and Cascais a good day trip for first-time visitors from the US?",
+      a: "Yes. It pairs the Sintra hills with the Atlantic coast and Cascais in one private day, so you see the region without changing hotels, renting a car or using trains.",
+    },
+  ],
+  "fatima-nazare-obidos": [
+    {
+      q: "Can I visit Fátima, Nazaré and Óbidos in one day from Lisbon?",
+      a: "Yes. This is a private full-day tour from Lisbon covering all three, normally 8 to 10 hours door to door, with hotel pickup and drop-off included.",
+    },
+    {
+      q: "Is this Fátima tour private or a shared bus tour?",
+      a: "Fully private. Only your group travels with your guide and driver — no shared coach, no other travelers, no fixed group departure time.",
+    },
+    {
+      q: "Is this day suitable for older travelers?",
+      a: "Yes. The pace is unhurried and the driving is broken up across three stops, with the vehicle waiting close by. Tell us about mobility needs when you book and we adjust the walking.",
+    },
+  ],
+  "tomar-coimbra": [
+    {
+      q: "Is Tomar and Coimbra doable as a day trip from Lisbon?",
+      a: "Yes, as a private full-day tour — normally 8 to 10 hours door to door with hotel pickup and drop-off in Lisbon included, so the driving is handled for you.",
+    },
+    {
+      q: "Is this tour good for history lovers?",
+      a: "It is built around Templar Tomar and university-city Coimbra, guided in English by someone who knows the history rather than reading a script.",
+    },
+  ],
+  "troia-comporta": [
+    {
+      q: "Is there a private tour to Comporta from Lisbon?",
+      a: "Yes. This is a private full-day tour from Lisbon to Tróia and Comporta, your group only, with hotel pickup and drop-off included and an English-speaking guide and driver.",
+    },
+    {
+      q: "How long does the Comporta day from Lisbon take?",
+      a: "A full day, usually 8 to 10 hours door to door, at a relaxed pace with time on the coast rather than a fast drive-by.",
+    },
+  ],
+  "arrabida-boat": [
+    {
+      q: "Is the boat ride private on this Arrábida tour?",
+      a: "The day is a private Signature for your group only, and the coastal boat ride along Arrábida is part of the booked day as shown in the inclusions on this page.",
+    },
+    {
+      q: "Is hotel pickup in Lisbon included?",
+      a: "Yes. Door-to-door hotel pickup and drop-off in Lisbon, Cascais and Estoril are included at no extra cost.",
+    },
+  ],
+  "wild-beaches-picnic": [
+    {
+      q: "What are the best beaches near Lisbon to visit on a private day?",
+      a: "This day follows the Arrábida and Sesimbra coast south of Lisbon — protected-park beaches and clear water about 40 minutes from the city, with a picnic included as listed on this page.",
+    },
+    {
+      q: "Is this beach day private?",
+      a: "Yes. Your group only, with an English-speaking guide and driver, hotel pickup and drop-off included, and a full day of 8 to 10 hours at a relaxed pace.",
+    },
+  ],
+  "tiles-workshop": [
+    {
+      q: "Where can I do a tile painting workshop near Lisbon?",
+      a: "This private full day pairs a hands-on Portuguese tile painting workshop with a wine tasting and time in Sesimbra, exactly as listed in the inclusions on this page.",
+    },
+    {
+      q: "Is the tile workshop good for families?",
+      a: "Yes. It is a hands-on activity that works well for couples and families up to 7 guests in one private vehicle, and everyone paints their own tile.",
+    },
+  ],
+  "southwest-vicentine-coast": [
+    {
+      q: "Can I see the Vicentine Coast on a day trip from Lisbon?",
+      a: "Yes, as a private long day. It runs longer than our standard Signatures because of the distance to the southwest coast, with hotel pickup and drop-off in Lisbon included.",
+    },
+    {
+      q: "Who is the Vicentine Coast day best for?",
+      a: "Travelers who have already seen Sintra and Cascais and want wilder Atlantic cliffs and quieter villages, with only their own group in the vehicle.",
+    },
+  ],
+};
+
+/** Returns the FAQ set for a tour page — destination overlay (if any) + SIGNATURE_FAQ. */
 export function getFaqForTour(tourId: string): FaqItem[] {
-  const overlay = WINE_TOUR_FAQ_BY_ID[tourId] ?? [];
+  const overlay = WINE_TOUR_FAQ_BY_ID[tourId] ?? DESTINATION_FAQ_BY_ID[tourId] ?? [];
   return [...overlay, ...SIGNATURE_FAQ];
 }
 

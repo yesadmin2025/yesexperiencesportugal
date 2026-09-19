@@ -1,5 +1,11 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { breadcrumbLd, faqPageLd, jsonLdScript, travelDesignerServiceLd } from "@/lib/jsonld";
+import {
+  breadcrumbLd,
+  faqPageLd,
+  jsonLdScript,
+  travelDesignerServiceLd,
+  organizationUsCaAudienceLd,
+} from "@/lib/jsonld";
 import { TRAVEL_DESIGNER_FAQ } from "@/content/seo-faq";
 import { SiteLayout } from "@/components/SiteLayout";
 import { useMarketingMotion } from "@/hooks/use-marketing-motion";
@@ -40,7 +46,10 @@ export const Route = createFileRoute("/multi-day")({
         content:
           "Private multi-day journeys through Portugal, planned one-to-one with a local travel designer — your route, your pace, your own guide and car throughout.",
       },
-      { property: "og:title", content: "Private Multi-Day Portugal Itineraries, Designed With You" },
+      {
+        property: "og:title",
+        content: "Private Multi-Day Portugal Itineraries, Designed With You",
+      },
       {
         property: "og:description",
         content:
@@ -56,6 +65,7 @@ export const Route = createFileRoute("/multi-day")({
     ],
     links: [{ rel: "canonical", href: "https://yesexperiencesportugal.com/multi-day" }],
     scripts: [
+      jsonLdScript(organizationUsCaAudienceLd()),
       jsonLdScript(
         breadcrumbLd([
           { name: "Home", path: "/" },

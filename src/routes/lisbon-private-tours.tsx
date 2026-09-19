@@ -17,6 +17,7 @@ import {
   itemListLd,
   jsonLdScript,
   localBusinessLd,
+  organizationUsCaAudienceLd,
 } from "@/lib/jsonld";
 import { LiveReviews } from "@/components/reviews/LiveReviews";
 import { areaProfilesFor } from "@/content/lisbon-regions";
@@ -100,6 +101,7 @@ export const Route = createFileRoute("/lisbon-private-tours")({
     ],
     links: [{ rel: "canonical", href: PAGE_URL }],
     scripts: [
+      jsonLdScript(organizationUsCaAudienceLd()),
       jsonLdScript(breadcrumbLd(crumbs)),
       jsonLdScript(
         localBusinessLd({

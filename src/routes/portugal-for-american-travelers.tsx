@@ -7,7 +7,13 @@ import { SectionTitle } from "@/components/ui/SectionTitle";
 import { CtaButton } from "@/components/ui/CtaButton";
 import { CTA_LABELS } from "@/content/cta-vocabulary";
 import { RealReviewsStrip } from "@/components/home/RealReviewsStrip";
-import { breadcrumbLd, faqPageLd, jsonLdScript, localBusinessLd } from "@/lib/jsonld";
+import {
+  breadcrumbLd,
+  faqPageLd,
+  jsonLdScript,
+  localBusinessLd,
+  organizationUsCaAudienceLd,
+} from "@/lib/jsonld";
 import { US_TRAVELER_NOTES } from "@/content/lisbon-day-trip-comparison";
 import { WEBSITE_URL, LICENSE_LABEL } from "@/config/business-nap";
 
@@ -106,9 +112,18 @@ const FAQS = [
 ];
 
 const FEATURED_STORIES = [
-  { slug: "lisbon-neighborhoods-guide", label: "Lisbon neighborhoods: where each part of the city feels different" },
-  { slug: "portuguese-culture-for-first-time-visitors", label: "Portuguese culture: what first-time visitors should know" },
-  { slug: "arrabida-day-trip-from-lisbon", label: "The Arrábida day trip from Lisbon, hour by hour" },
+  {
+    slug: "lisbon-neighborhoods-guide",
+    label: "Lisbon neighborhoods: where each part of the city feels different",
+  },
+  {
+    slug: "portuguese-culture-for-first-time-visitors",
+    label: "Portuguese culture: what first-time visitors should know",
+  },
+  {
+    slug: "arrabida-day-trip-from-lisbon",
+    label: "The Arrábida day trip from Lisbon, hour by hour",
+  },
 ] as const;
 
 export const Route = createFileRoute("/portugal-for-american-travelers")({
@@ -125,6 +140,7 @@ export const Route = createFileRoute("/portugal-for-american-travelers")({
     ],
     links: [{ rel: "canonical", href: PAGE_URL }],
     scripts: [
+      jsonLdScript(organizationUsCaAudienceLd()),
       jsonLdScript(breadcrumbLd(crumbs)),
       jsonLdScript(faqPageLd(FAQS)),
       jsonLdScript(
@@ -209,7 +225,9 @@ function PortugalForAmericans() {
                   className="flex min-h-[64px] items-center justify-between gap-4 py-3 font-display text-[1.05rem] leading-snug text-[color:var(--charcoal)] no-underline hover:text-[color:var(--teal)]"
                 >
                   <span>{story.label}</span>
-                  <span aria-hidden className="shrink-0 text-[color:var(--gold)]">→</span>
+                  <span aria-hidden className="shrink-0 text-[color:var(--gold)]">
+                    →
+                  </span>
                 </Link>
               </li>
             ))}
