@@ -205,10 +205,11 @@ export const Route = createRootRoute({
       // a preconnect here would open a socket nobody uses during LCP.
       { rel: "dns-prefetch", href: "https://www.googletagmanager.com" },
 
-      // Final YES typography: Newsreader editorial + Inter functional.
+      // Approved YES hierarchy: Montserrat display + Georgia editorial serif + Inter body/UI.
+      // Georgia is system-native, so only Montserrat and Inter need a web-font request.
       {
         rel: "stylesheet",
-        href: "https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&display=swap",
+        href: "https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700&family=Inter:wght@300..700&display=swap",
       },
       {
         rel: "stylesheet",
