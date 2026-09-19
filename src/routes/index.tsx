@@ -797,11 +797,10 @@ function HomePage() {
                             </span>
                           </div>
                         </div>
-                        {/* Bottom: title + meta — clean editorial stack with breathing room.
-                          line-clamp-2 keeps long Signature names ("Roman Heritage Wine & Hidden
-                          Alentejo") tidy on narrow widths without pushing the meta row off-card. */}
+                        {/* Bottom: title + meta — full factual titles remain readable rather than
+                          being clipped to fit the photographic card. */}
                         <div className="absolute inset-x-0 bottom-0 z-[3] p-5 md:p-6 text-white">
-                          <h3 className="serif text-[1.35rem] md:text-[1.5rem] leading-[1.18] text-white text-balance line-clamp-2 [text-shadow:0_2px_14px_rgba(0,0,0,0.55)]">
+                          <h3 className="serif text-[1.2rem] md:text-[1.35rem] leading-[1.2] text-white text-balance [text-shadow:0_2px_14px_rgba(0,0,0,0.55)]">
                             <span className="sm:hidden">
                               {MOBILE_TITLE_OVERRIDES[t.id] ?? t.title}
                             </span>

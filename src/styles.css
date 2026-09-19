@@ -3230,6 +3230,7 @@ html[data-conversion-overlay="compare"] .cookie-consent-card { visibility: hidde
   .hero-rhythm-microcopy-to-signature [data-hero-field="brandLine"] > span:nth-child(2) {
     animation: none !important;
     opacity: 1 !important;
+    clip-path: none !important;
     transform: none !important;
     filter: none !important;
     letter-spacing: normal !important;
