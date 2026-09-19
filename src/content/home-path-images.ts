@@ -139,7 +139,7 @@ export function useHomePathDestinations() {
     };
     void load();
     const channel = supabase
-      .channel("home-path-content-live")
+      .channel(`home-path-content-live-${crypto.randomUUID()}`)
       .on("postgres_changes", { event: "*", schema: "public", table: "home_path_content" }, () => void load())
       .subscribe();
     return () => {
