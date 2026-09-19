@@ -52,14 +52,14 @@ function revealStyle(on: boolean, ms: number, _distance = 14): React.CSSProperti
   };
 }
 
-function storyLineStyle(on: boolean, direction: "from-left" | "from-right"): React.CSSProperties {
-  const hiddenClip = direction === "from-left" ? "inset(0 100% 0 0)" : "inset(0 0 0 100%)";
+function storyLineStyle(on: boolean, delayDirection: "from-left" | "from-right"): React.CSSProperties {
+  const distance = delayDirection === "from-left" ? 12 : 16;
   return {
     ...stanzaStyle,
     opacity: on ? 1 : 0,
-    clipPath: on ? "inset(0 0 0 0)" : hiddenClip,
-    willChange: "opacity, clip-path",
-    transition: `opacity ${TEXT_FADE_MS}ms ${EASE}, clip-path ${TEXT_FADE_MS}ms ${EASE}`,
+    transform: on ? "translateY(0)" : `translateY(${distance}px)`,
+    willChange: "opacity, transform",
+    transition: `opacity ${TEXT_FADE_MS}ms ${EASE}, transform ${TEXT_FADE_MS}ms ${EASE}`,
   };
 }
 
@@ -72,11 +72,10 @@ function supportFadeStyle(on: boolean): React.CSSProperties {
   };
 }
 
-/** The original stanza treatment — clean Fraunces italic, one subtle shadow. */
+/** The approved stanza treatment — Fraunces 400 with italic reserved for gold emphasis. */
 const stanzaStyle: React.CSSProperties = {
   fontWeight: 400,
-  fontStyle: "italic",
-  lineHeight: 1.14,
+  lineHeight: 1.18,
   letterSpacing: "0",
   fontSize: "clamp(38px, 5.8vw, 66px)",
 };
@@ -246,16 +245,16 @@ export function CinematicHero() {
           data-mixed-emphasis="exempt"
           className="hero-h1 m-0 text-center font-serif"
         >
-          <span className="hero-title-mask block overflow-hidden pb-1">
+          <span className="hero-title-mask block px-[0.08em] pb-[0.12em]">
             <span
-              className="hero-title-line block font-serif font-normal italic m-0"
+              className="hero-title-line block font-serif font-normal not-italic m-0 text-[color:var(--ivory)]"
               data-hero-field="headlineLine1"
               style={storyLineStyle(line1, "from-left")}
             >
               {HERO_PHRASES[0]}
             </span>
           </span>
-          <span className="hero-title-mask mt-1 block overflow-hidden pb-1 sm:mt-1.5">
+          <span className="hero-title-mask mt-1 block px-[0.08em] pb-[0.16em] sm:mt-1.5">
             <span
               className="hero-title-line block font-serif italic font-normal text-[color:var(--gold-soft)]"
               data-hero-field="headlineLine2"

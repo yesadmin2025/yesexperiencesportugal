@@ -36,3 +36,6 @@
 - [x] Refine homepage path-card image proportions and restore the couple-toasting Moments image.
 - [x] Improve Moments and Corporate service-page imagery using approved owner photographs.
 - [x] Validate revised imagery at mobile, tablet and desktop sizes.
+- [ ] Restore the approved hero typography without glyph-clipping masks
+- [ ] Restore Five Ways as one coherent ivory-and-sand editorial chapter
+- [ ] Validate the restored branding across all public pages before publishing
