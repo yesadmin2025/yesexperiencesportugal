@@ -41,7 +41,7 @@ describe("Premium System Lock", () => {
 
     expect(cta).toContain("cta-arrow-cue");
     expect(cta).not.toContain("cta-arrow-idle");
-    expect(css).toContain("animation: ctaArrowEntranceCue var(--dur-image)");
+    expect(css).toContain("animation: ctaArrowEntranceCue 480ms");
     expect(css).not.toMatch(/\.cta-arrow-cue\s*\{[^}]*infinite/s);
     expect(checkout).toContain('behavior: "auto"');
     expect(studioShell).not.toContain("studioV3Breathe");
