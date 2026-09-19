@@ -174,6 +174,7 @@ import { Route as LovableEmailSuppressionRouteImport } from './routes/lovable/em
 import { Route as FunctionsV1StripeWebhookRouteImport } from './routes/functions.v1.stripe-webhook'
 import { Route as ApiPublicProposalRequestRouteImport } from './routes/api/public/proposal-request'
 import { Route as ApiPublicPricingSsotRouteImport } from './routes/api/public/pricing-ssot'
+import { Route as ApiPublicEditorialPhotoRouteImport } from './routes/api/public/editorial-photo'
 import { Route as ApiPublicContactRouteImport } from './routes/api/public/contact'
 import { Route as ApiPublicBookingRequestRouteImport } from './routes/api/public/booking-request'
 import { Route as ApiPublicBookingItineraryDataRouteImport } from './routes/api/public/booking-itinerary-data'
@@ -1043,6 +1044,11 @@ const ApiPublicPricingSsotRoute = ApiPublicPricingSsotRouteImport.update({
   path: '/api/public/pricing-ssot',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiPublicEditorialPhotoRoute = ApiPublicEditorialPhotoRouteImport.update({
+  id: '/api/public/editorial-photo',
+  path: '/api/public/editorial-photo',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiPublicContactRoute = ApiPublicContactRouteImport.update({
   id: '/api/public/contact',
   path: '/api/public/contact',
@@ -1342,6 +1348,7 @@ export interface FileRoutesByFullPath {
   '/api/public/booking-itinerary-data': typeof ApiPublicBookingItineraryDataRoute
   '/api/public/booking-request': typeof ApiPublicBookingRequestRoute
   '/api/public/contact': typeof ApiPublicContactRoute
+  '/api/public/editorial-photo': typeof ApiPublicEditorialPhotoRoute
   '/api/public/pricing-ssot': typeof ApiPublicPricingSsotRoute
   '/api/public/proposal-request': typeof ApiPublicProposalRequestRoute
   '/functions/v1/stripe-webhook': typeof FunctionsV1StripeWebhookRoute
@@ -1530,6 +1537,7 @@ export interface FileRoutesByTo {
   '/api/public/booking-itinerary-data': typeof ApiPublicBookingItineraryDataRoute
   '/api/public/booking-request': typeof ApiPublicBookingRequestRoute
   '/api/public/contact': typeof ApiPublicContactRoute
+  '/api/public/editorial-photo': typeof ApiPublicEditorialPhotoRoute
   '/api/public/pricing-ssot': typeof ApiPublicPricingSsotRoute
   '/api/public/proposal-request': typeof ApiPublicProposalRequestRoute
   '/functions/v1/stripe-webhook': typeof FunctionsV1StripeWebhookRoute
@@ -1721,6 +1729,7 @@ export interface FileRoutesById {
   '/api/public/booking-itinerary-data': typeof ApiPublicBookingItineraryDataRoute
   '/api/public/booking-request': typeof ApiPublicBookingRequestRoute
   '/api/public/contact': typeof ApiPublicContactRoute
+  '/api/public/editorial-photo': typeof ApiPublicEditorialPhotoRoute
   '/api/public/pricing-ssot': typeof ApiPublicPricingSsotRoute
   '/api/public/proposal-request': typeof ApiPublicProposalRequestRoute
   '/functions/v1/stripe-webhook': typeof FunctionsV1StripeWebhookRoute
@@ -1913,6 +1922,7 @@ export interface FileRouteTypes {
     | '/api/public/booking-itinerary-data'
     | '/api/public/booking-request'
     | '/api/public/contact'
+    | '/api/public/editorial-photo'
     | '/api/public/pricing-ssot'
     | '/api/public/proposal-request'
     | '/functions/v1/stripe-webhook'
@@ -2101,6 +2111,7 @@ export interface FileRouteTypes {
     | '/api/public/booking-itinerary-data'
     | '/api/public/booking-request'
     | '/api/public/contact'
+    | '/api/public/editorial-photo'
     | '/api/public/pricing-ssot'
     | '/api/public/proposal-request'
     | '/functions/v1/stripe-webhook'
@@ -2291,6 +2302,7 @@ export interface FileRouteTypes {
     | '/api/public/booking-itinerary-data'
     | '/api/public/booking-request'
     | '/api/public/contact'
+    | '/api/public/editorial-photo'
     | '/api/public/pricing-ssot'
     | '/api/public/proposal-request'
     | '/functions/v1/stripe-webhook'
@@ -2465,6 +2477,7 @@ export interface RootRouteChildren {
   ApiPublicBookingItineraryDataRoute: typeof ApiPublicBookingItineraryDataRoute
   ApiPublicBookingRequestRoute: typeof ApiPublicBookingRequestRoute
   ApiPublicContactRoute: typeof ApiPublicContactRoute
+  ApiPublicEditorialPhotoRoute: typeof ApiPublicEditorialPhotoRoute
   ApiPublicPricingSsotRoute: typeof ApiPublicPricingSsotRoute
   ApiPublicProposalRequestRoute: typeof ApiPublicProposalRequestRoute
   FunctionsV1StripeWebhookRoute: typeof FunctionsV1StripeWebhookRoute
@@ -3645,6 +3658,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicPricingSsotRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/editorial-photo': {
+      id: '/api/public/editorial-photo'
+      path: '/api/public/editorial-photo'
+      fullPath: '/api/public/editorial-photo'
+      preLoaderRoute: typeof ApiPublicEditorialPhotoRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/public/contact': {
       id: '/api/public/contact'
       path: '/api/public/contact'
@@ -4036,6 +4056,7 @@ const rootRouteChildren: RootRouteChildren = {
   ApiPublicBookingItineraryDataRoute: ApiPublicBookingItineraryDataRoute,
   ApiPublicBookingRequestRoute: ApiPublicBookingRequestRoute,
   ApiPublicContactRoute: ApiPublicContactRoute,
+  ApiPublicEditorialPhotoRoute: ApiPublicEditorialPhotoRoute,
   ApiPublicPricingSsotRoute: ApiPublicPricingSsotRoute,
   ApiPublicProposalRequestRoute: ApiPublicProposalRequestRoute,
   FunctionsV1StripeWebhookRoute: FunctionsV1StripeWebhookRoute,

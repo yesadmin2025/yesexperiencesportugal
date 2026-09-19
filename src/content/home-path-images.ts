@@ -1,4 +1,5 @@
 import type { EditorialImageSource } from "@/components/ui/ResponsiveEditorialImage";
+import { useMemo } from "react";
 import { premiumEditorialImage as image } from "@/content/editorial-premium-images";
 import { useEditorialOverrides } from "@/lib/editorial-overrides";
 
@@ -115,15 +116,19 @@ export const HOME_PATH_EDITORIAL_SLOTS = HOME_PATH_DESTINATION_LIST.map((path) =
 /** One override read powers both the Five Ways cards and the matching map panel. */
 export function useHomePathDestinations() {
   const photos = useEditorialOverrides("home_paths", HOME_PATH_EDITORIAL_SLOTS);
-  return HOME_PATH_DESTINATION_LIST.map((path, index) => ({
-    ...path,
-    image: {
-      ...path.image,
-      src: photos[index]?.src ?? path.image.src,
-      alt: photos[index]?.alt ?? path.image.alt,
-      srcSet: undefined,
-      avifSrcSet: undefined,
-      webpSrcSet: undefined,
-    },
-  }));
+  return useMemo(
+    () => HOME_PATH_DESTINATION_LIST.map((path, index) => {
+      const overridden = photos[index]?.src !== path.image.src;
+      return {
+        ...path,
+        image: {
+          ...path.image,
+          src: photos[index]?.src ?? path.image.src,
+          alt: photos[index]?.alt ?? path.image.alt,
+          ...(overridden ? { avifSrcSet: undefined, webpSrcSet: undefined } : {}),
+        },
+      };
+    }),
+    [photos],
+  );
 }
