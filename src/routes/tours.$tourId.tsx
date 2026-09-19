@@ -620,10 +620,12 @@ function SecondaryContext({ tour }: { tour: SignatureTour }) {
  * ════════════════════════════════════════════════════════════ */
 function HighlightsBlock({ tour }: { tour: SignatureTour }) {
   const content = getTourContent(tour.id);
-  const items = content.highlights.length > 0 ? content.highlights : (tour.highlights ?? []);
+  // `tour.highlights` already carries the published override or the verified
+  // Viator highlights (resolved in the route loader).
+  const items = tour.highlights?.length ? tour.highlights : content.highlights;
   if (items.length === 0) return null;
   return (
-    <section className="pb-14 md:pb-16 reveal">
+    <section className="py-14 md:py-16 reveal">
       <div className="container-x max-w-5xl">
         <div className="text-center mb-8">
           <Eyebrow flank>Highlights</Eyebrow>
