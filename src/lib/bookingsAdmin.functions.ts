@@ -262,19 +262,28 @@ export const updateAdminBooking = createServerFn({ method: "POST" })
 
     const { data: booking, error: readError } = await supabaseAdmin
       .from("bookings")
-      .select("id, status, customer_name, customer_phone, preferred_date, notes, metadata")
+      .select("id, status, customer_name, customer_phone, preferred_date, notes, metadata, booking_details")
       .eq("id", data.id)
       .maybeSingle();
     if (readError) throw new Error(readError.message);
     if (!booking) throw new Error("Booking not found.");
 
-    const patch: Record<string, unknown> = {};
-    const changes: Record<string, { from: unknown; to: unknown }> = {};
+    const patch: {
+      customer_name?: string;
+      customer_phone?: string | null;
+      preferred_date?: string | null;
+      notes?: string | null;
+      metadata?: Json;
+    } = {};
+    const changes: Record<string, { from: string | null; to: string | null }> = {};
     const apply = (key: "customer_name" | "customer_phone" | "preferred_date" | "notes", to: unknown) => {
       const from = (booking as Record<string, unknown>)[key];
       if (to !== from) {
-        patch[key] = to;
-        changes[key] = { from, to };
+        patch[key] = to as string | null;
+        changes[key] = {
+          from: from == null ? null : String(from),
+          to: to == null ? null : String(to),
+        };
       }
     };
     if (data.customerName !== undefined) apply("customer_name", data.customerName);
@@ -373,15 +382,19 @@ export const notifyBookingCustomer = createServerFn({ method: "POST" })
       "Reply to this email and it reaches our team directly.",
     ].join("\n");
 
-    const { sendInternalEmail } = await import("@/lib/email/send-internal.server");
-    const idemSeed = `${booking.id}-${data.message.length}-${Date.now()}`;
-    const result = await sendInternalEmail({
+    const { sendTransactionalInternal } = await import("@/lib/email/send-internal.server");
+    // Same message to the same booking sends once; a new message gets a new key.
+    let hash = 0;
+    for (let i = 0; i < data.message.length; i++) {
+      hash = (hash * 31 + data.message.charCodeAt(i)) >>> 0;
+    }
+    const result = await sendTransactionalInternal({
       templateName: "booking-operator-message",
       recipientEmail: booking.customer_email,
-      idempotencyKey: `booking-notify-${idemSeed}`,
+      idempotencyKey: `booking-notify-${booking.id}-${hash.toString(36)}`,
       rendered: { subject, html, text },
     });
-    return { ok: true, sent: result };
+    return { ok: true, status: result.status };
   });
 
 /**
