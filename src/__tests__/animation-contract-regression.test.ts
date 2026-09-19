@@ -6,7 +6,7 @@
  *
  *   1. `.reveal` starts at opacity:0 without positional movement.
  *   2. `.reveal.is-visible` flips opacity to 1 without bounce.
- *   3. `.reveal-stagger` has the same fixed-geometry contract.
+ *   3. `.reveal-stagger` uses a fixed-geometry horizontal editorial mask.
  *   4. `.section-enter` is opacity-only (no transform conflict).
  *   5. `.section-enter.is-visible` is opacity:1.
  *   6. Reduced-motion media query forces `.reveal` and `.reveal-stagger`
@@ -68,19 +68,21 @@ describe("reveal animation contract — CSS rules", () => {
     expect(body).toMatch(/transform:\s*none/);
   });
 
-  it(".reveal-stagger starts hidden and animates opacity without positional movement", () => {
+  it(".reveal-stagger starts hidden and uses a horizontal mask without positional movement", () => {
     const body = ruleBlock("html.reveal-ready .reveal-stagger {");
     expect(body, ".reveal-stagger rule must exist").not.toBe("");
     expect(body).toMatch(/opacity:\s*0/);
     expect(body).toMatch(/transform:\s*none/);
+    expect(body).toMatch(/clip-path:\s*inset\(0 100% 0 0\)/);
     expect(body).toMatch(/transition:[\s\S]*opacity/);
-    expect(body).not.toMatch(/transition:[\s\S]*transform/);
+    expect(body).toMatch(/transition:[\s\S]*clip-path/);
   });
 
   it(".reveal-stagger.is-visible reaches opacity:1 without movement", () => {
     const body = ruleBlock("html.reveal-ready .reveal-stagger.is-visible");
     expect(body, ".reveal-stagger.is-visible rule must exist").not.toBe("");
     expect(body).toMatch(/opacity:\s*1/);
+    expect(body).toMatch(/clip-path:\s*inset\(0 0 0 0\)/);
     expect(body).toMatch(/transform:\s*none/);
   });
 

@@ -191,7 +191,7 @@ export function startHomeMotion(): () => void {
       if (el.closest('[data-section="hero"], [aria-live], form, dialog, nav')) return;
       if (el.closest(".reveal, .reveal-stagger, .section-enter")) return;
       if (el.parentElement?.closest("[data-motion]")) return;
-      el.setAttribute("data-motion", "settle");
+      el.setAttribute("data-motion", "card-reveal");
     });
 
     // Route-specific discovery grids still share a reliable semantic shape:
@@ -213,7 +213,7 @@ export function startHomeMotion(): () => void {
         if (card.hasAttribute("data-motion")) return;
         if (card.closest(".reveal, .reveal-stagger, .section-enter")) return;
         if (card.parentElement?.closest("[data-motion]")) return;
-        card.setAttribute("data-motion", "settle");
+        card.setAttribute("data-motion", "card-reveal");
         const delay = Math.min(idx * CARD_STEP, CARD_CAP);
         if (delay > 0) {
           card.setAttribute("data-motion-delay", String(delay));

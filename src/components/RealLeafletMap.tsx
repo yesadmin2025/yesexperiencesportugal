@@ -168,9 +168,12 @@ export function RealLeafletMap({ region }: { region: string | null }) {
 
     // Wait for the container to be measurable, then fit Portugal (or the
     // remembered camera for the initial region, if any).
+    let resizeRaf = 0;
     const ro = new ResizeObserver(() => {
-      if (el.clientWidth > 0 && el.clientHeight > 0) {
-        map.invalidateSize();
+      window.cancelAnimationFrame(resizeRaf);
+      resizeRaf = window.requestAnimationFrame(() => {
+        if (el.clientWidth <= 0 || el.clientHeight <= 0) return;
+        map.invalidateSize({ pan: false });
         const key = region && REGION_CENTERS[region] ? region : PORTUGAL_KEY;
         const remembered = zoomByRegion.get(key);
         if (remembered) {
@@ -179,11 +182,12 @@ export function RealLeafletMap({ region }: { region: string | null }) {
           map.fitBounds(PORTUGAL_BOUNDS, { animate: false });
         }
         ro.disconnect();
-      }
+      });
     });
     ro.observe(el);
     return () => {
       ro.disconnect();
+      window.cancelAnimationFrame(resizeRaf);
       map.remove();
       mapRef.current = null;
       clusterRef.current = null;

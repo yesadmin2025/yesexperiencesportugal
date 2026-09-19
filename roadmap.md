@@ -173,3 +173,10 @@
 - [x] Refine Contact and FAQ presentation and metadata
 - [x] Improve admin booking status and human-readable experience labels
 - [x] Validate routes, sitemap, schema, checkout handoff, security, and publish
+
+## 27. Google snippets and visible homepage motion
+- [x] Separate overlapping US search intent across all 12 Signature experiences
+- [ ] Strengthen mobile-first phrase, card, image and arrow transitions without bounce
+- [ ] Keep visible reviews and structured review data aligned
+- [ ] Remove map resize runtime warnings
+- [ ] Validate mobile/desktop, reduced motion, SEO/schema/sitemap, publish and resubmit sitemap
