@@ -52,7 +52,7 @@ export function usePublicEditorialMotion(pathname: string): void {
         window.clearTimeout(quietTimer);
         quietTimer = window.setTimeout(() => {
           if (!cancelled) start();
-        }, 260);
+        }, 160);
       };
       observer = new MutationObserver(scheduleQuiet);
       observer.observe(document.body, {
@@ -62,10 +62,11 @@ export function usePublicEditorialMotion(pathname: string): void {
       });
       scheduleQuiet();
       // Never wait longer than this: a page with continuous DOM activity must
-      // still get its editorial motion.
+      // still get its editorial motion, and the first scroll must already
+      // find the controller live.
       hardDeadline = window.setTimeout(() => {
         if (!cancelled) start();
-      }, 2500);
+      }, 1200);
     };
 
     firstFrame = window.requestAnimationFrame(() => {

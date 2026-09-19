@@ -381,6 +381,7 @@ function flashDebug(el: HTMLElement, label: string) {
 }
 
 export function SiteLayout({ children }: { children: ReactNode }) {
+
   useEffect(() => {
     if (typeof window === "undefined") return;
     window.__yesMotionStartedAt = performance.now();
@@ -869,7 +870,13 @@ export function SiteLayout({ children }: { children: ReactNode }) {
     <CurrencyProvider>
       <div className="min-h-screen flex flex-col">
         <Navbar />
-        <main className="flex-1">{children}</main>
+        {/* SiteLayout is mounted per route, so the 300ms route fade replays on
+            every navigation without needing router state. Opacity + 8px only —
+            no layout shift; CSS neutralises it under reduced motion and
+            outside marketing pages (checkout, Studio, admin stay still). */}
+        <main className="flex-1" data-route-fade>
+          {children}
+        </main>
         <Footer />
         <FloatingActions />
         {/* WhatsAppFab intentionally not rendered — WhatsAppSupportButton (in __root.tsx)
