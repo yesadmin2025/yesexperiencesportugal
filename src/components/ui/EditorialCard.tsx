@@ -160,10 +160,6 @@ export function EditorialCard({
       {image ? <ImageSide image={image} eyebrow={eyebrow} cta={cta} reverse={reverse} /> : null}
 
       <div className={`relative z-10 flex flex-col pt-1 md:pt-0 ${textColSpan} ${textColOrder}`}>
-        <span
-          aria-hidden="true"
-          className="gold-rule mb-4 md:mb-5 max-w-[3rem] md:max-w-[3.5rem]"
-        />
         <span className="inline-flex items-center gap-2.5 text-[11px] uppercase tracking-[0.28em] font-semibold text-[color:var(--charcoal-soft)]">
           <span
             aria-hidden="true"

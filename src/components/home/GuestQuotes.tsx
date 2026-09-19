@@ -21,6 +21,7 @@ import {
 } from "@/lib/reviews.functions";
 import { ReviewSourceLink } from "@/components/ui/ReviewSourceLink";
 import { buildGuestQuotesJsonLd, SOURCE_LABEL } from "@/lib/guest-quotes-jsonld";
+import { SectionTitle } from "@/components/ui/SectionTitle";
 
 export function GuestQuotes() {
   const statsFn = useServerFn(getGlobalReviewStats);
@@ -95,12 +96,12 @@ export function GuestQuotes() {
         ))}
       </div>
 
-      <h2 className="serif mt-3 text-[1.5rem] sm:text-[2rem] md:text-[3.4rem] leading-[1.15] md:leading-[1.02] tracking-[-0.018em] text-[color:var(--charcoal)] font-medium text-balance">
+      <SectionTitle className="mt-3">
         700+ five-star reviews{" "}
-        <span className="italic font-normal text-[color:var(--teal)]">
+        <SectionTitle.Em>
           — real guests, real stories.
-        </span>
-      </h2>
+        </SectionTitle.Em>
+      </SectionTitle>
 
       {/* Platform badge row removed — each review card now carries its
           own source label ("via Tripadvisor" etc.), so the standalone
