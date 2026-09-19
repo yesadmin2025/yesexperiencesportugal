@@ -180,16 +180,20 @@ export function useResolvedJourney(
         anchorTourId: tour?.id ?? null,
       }),
     });
-    const composableLines = (liveAuthority.ledger?.actions ?? [])
+    const composableResolutionIds = (liveAuthority.ledger?.actions ?? [])
       .filter((action) => action.priceAction === "composable-stop")
-      .map((action) => action.actionId.slice("composable:".length))
+      .map((action) => action.actionId.slice("composable:".length));
+    const composableLines = composableResolutionIds
       .map((stopId) => composableStopLineFromRows(composableRows, stopId, guests))
       .filter((line): line is ComposableStopLine => line !== null);
+    // A selected owner-priced activity may never disappear into a base-only
+    // quote while its row is loading, missing, inactive, or below min guests.
+    const composablePricingComplete = composableLines.length === composableResolutionIds.length;
     const composablePartyTotalEur = Math.round(
       composableLines.reduce((sum, line) => sum + line.totalEurCents, 0) / 100,
     );
     const totalEur =
-      baseTotalEur != null
+      baseTotalEur != null && composablePricingComplete
         ? Math.round(baseTotalEur + addOnsPartyTotalEur + composablePartyTotalEur)
         : null;
     // Real adult unit price. Never a total/guests blend — averaging adults
