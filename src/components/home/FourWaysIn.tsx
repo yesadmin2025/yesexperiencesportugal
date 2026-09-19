@@ -14,6 +14,10 @@ import { Eyebrow } from "@/components/ui/Eyebrow";
 import { CtaMotionArrow } from "@/components/ui/CtaButton";
 import { Scene } from "@/components/motion/Scene";
 import { CTA_LABELS } from "@/content/cta-vocabulary";
+import { TourImage } from "@/components/tours/TourImage";
+import imgStudio from "@/assets/tours/arrabida-wine-allinclusive/lunch.jpg";
+import imgSignature from "@/assets/tours/sintra-cascais/hero.jpg";
+import imgDesigner from "@/assets/tours/troia-comporta/hero.jpg";
 
 type Path = {
   id: "signature" | "studio" | "designer" | "proposals" | "corporate";
@@ -24,6 +28,8 @@ type Path = {
   cta: string;
   href: string;
   analyticsEvent: string;
+  image?: string;
+  imageAlt?: string;
 };
 
 const PATHS: ReadonlyArray<Path> = [
@@ -36,6 +42,8 @@ const PATHS: ReadonlyArray<Path> = [
     cta: CTA_LABELS.studio,
     href: "/studio-v3",
     analyticsEvent: "home_path_studio_click",
+    image: imgStudio,
+    imageAlt: "A private Portuguese lunch shaped as part of a YES Studio day.",
   },
   {
     id: "signature",
@@ -46,6 +54,8 @@ const PATHS: ReadonlyArray<Path> = [
     cta: CTA_LABELS.signatureDiscovery,
     href: "/experiences",
     analyticsEvent: "home_path_signature_click",
+    image: imgSignature,
+    imageAlt: "A real YES Signature day in Sintra and Cascais.",
   },
   {
     id: "designer",
@@ -56,6 +66,8 @@ const PATHS: ReadonlyArray<Path> = [
     cta: CTA_LABELS.travelDesigner,
     href: "/multi-day",
     analyticsEvent: "home_path_designer_click",
+    image: imgDesigner,
+    imageAlt: "A private journey through the Tróia and Comporta coast.",
   },
   {
     id: "proposals",
@@ -148,7 +160,7 @@ export function FourWaysIn() {
     <section
       id="three-paths"
       aria-labelledby="choose-path-title"
-      className="he-section-rule section-enter section-y bg-[color:var(--ivory)] border-b border-[color:var(--border)] scroll-mt-24 md:scroll-mt-28"
+      className="section-enter section-y bg-[color:var(--ivory)] border-b border-[color:var(--border)] scroll-mt-24 md:scroll-mt-28"
     >
       <div className="container-x">
         <div className="reveal mx-auto max-w-2xl text-center">
@@ -166,15 +178,18 @@ export function FourWaysIn() {
 
         <Scene
           data-testid="home-smart-start"
-          className="five-ways-story he-stagger mx-auto mt-10 grid max-w-6xl grid-cols-1 gap-4 sm:grid-cols-2 md:mt-12 md:gap-5 lg:grid-cols-6"
+          className="five-ways-story mx-auto mt-10 max-w-6xl md:mt-14"
         >
-          {PATHS.map((path, index) => (
-            <PathCard key={path.id} path={path} featured={index < 3} />
-          ))}
+          <div className="five-ways-primary">
+            {PATHS.slice(0, 3).map((path, index) => <PathCard key={path.id} path={path} featured index={index} />)}
+          </div>
+          <div className="five-ways-secondary">
+            {PATHS.slice(3).map((path, index) => <PathCard key={path.id} path={path} featured={false} index={index + 3} />)}
+          </div>
         </Scene>
 
         {hasDraft && (
-          <div className="reveal mx-auto mt-5 max-w-6xl rounded-[6px] border border-[color:var(--gold)]/45 bg-[color:var(--sand)] px-5 py-4 sm:flex sm:items-center sm:justify-between sm:gap-6">
+          <div className="reveal mx-auto mt-5 max-w-6xl border border-[color:var(--border)] bg-[color:var(--sand)] px-5 py-4 sm:flex sm:items-center sm:justify-between sm:gap-6">
             <div>
               <p className="text-[12px] uppercase tracking-[0.2em] font-semibold text-[color:var(--teal)]">
                 Your Studio draft is waiting
@@ -201,21 +216,21 @@ export function FourWaysIn() {
   );
 }
 
-function PathCard({ path, featured }: { path: Path; featured: boolean }) {
+function PathCard({ path, featured, index }: { path: Path; featured: boolean; index: number }) {
   const Icon = path.Icon;
   return (
     <Link
       to={path.href}
       data-home-primary-path={path.id}
       data-analytics={path.analyticsEvent}
-      className={`${featured ? "lg:col-span-2" : "lg:col-span-3"} scene-item five-ways-card group flex min-h-[238px] flex-col rounded-[4px] border border-[color:var(--border)] border-t-[color:var(--gold)]/65 bg-[color:var(--sand)] p-6 no-underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)] focus-visible:ring-offset-2 md:p-7`}
+      className={`${featured ? "five-ways-card--primary" : "five-ways-card--secondary"} scene-item five-ways-card group no-underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--teal)] focus-visible:ring-offset-2`}
     >
+      {featured && path.image && <TourImage src={path.image} alt={path.imageAlt ?? ""} ratio="4/5" className="five-ways-image" imgClassName="group-hover:scale-[1.02]" />}
+      <div className="five-ways-copy">
       <div className="five-ways-kicker flex items-center justify-between gap-4">
-        <span className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-[color:var(--gold)]/45 bg-[color:var(--ivory)] text-[color:var(--teal)]">
-          <Icon size={18} aria-hidden="true" />
-        </span>
+        {!featured && <Icon size={18} aria-hidden="true" />}
         <span className="text-[11.5px] uppercase tracking-[0.18em] font-semibold text-[color:var(--teal)]">
-          {path.eyebrow}
+          {String(index + 1).padStart(2, "0")} · {path.eyebrow}
         </span>
       </div>
 
@@ -234,6 +249,7 @@ function PathCard({ path, featured }: { path: Path; featured: boolean }) {
         </span>
         <CtaMotionArrow className="home-way-arrow" />
       </span>
+      </div>
     </Link>
   );
 }
