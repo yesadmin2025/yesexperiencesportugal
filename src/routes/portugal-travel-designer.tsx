@@ -96,7 +96,6 @@ function PortugalTravelDesignerPage() {
           <SectionTitle as="h1" size="anchor" spacing="loose">
             Portugal, <SectionTitle.Em>shaped around you.</SectionTitle.Em>
           </SectionTitle>
-          <span className="gold-rule mt-6 mx-auto max-w-[80px]" aria-hidden="true" />
           <RouteThread compact className="mx-auto mt-6 max-w-xl" />
           <p className="mt-6 mx-auto max-w-2xl text-[16px] md:text-[17px] leading-[1.7] text-[color:var(--charcoal-soft)]">
             One local hand connects the route, rhythm and private experiences into a journey that

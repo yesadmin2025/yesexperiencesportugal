@@ -113,7 +113,9 @@ export function BuilderMap({
     let resizeRaf = 0;
     let lastWidth = 0;
     let lastHeight = 0;
+    let resizeSettled = false;
     const ro = new ResizeObserver((entries) => {
+      if (resizeSettled) return;
       const entry = entries[0];
       const width = Math.round(entry?.contentRect.width ?? 0);
       const height = Math.round(entry?.contentRect.height ?? 0);
@@ -129,6 +131,8 @@ export function BuilderMap({
         if (s.x > 0 && s.y > 0 && lastBoundsRef.current) {
           map.fitBounds(lastBoundsRef.current, { animate: false });
         }
+        resizeSettled = true;
+        ro.disconnect();
       });
     });
     ro.observe(ref.current);

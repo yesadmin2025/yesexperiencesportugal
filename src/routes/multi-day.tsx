@@ -175,7 +175,6 @@ function GroupCard({ title, body }: Card) {
       <h3 className="serif font-medium tracking-[-0.012em] text-[1.05rem] md:text-[1.15rem] text-[color:var(--charcoal)] leading-tight">
         {title}
       </h3>
-      <span className="gold-rule mt-3 max-w-[36px]" aria-hidden="true" />
       <p className="mt-3 text-[14.5px] md:text-[15px] text-[color:var(--charcoal-soft)] leading-relaxed">
         {body}
       </p>
@@ -194,7 +193,6 @@ function MultiDayPage() {
           <SectionTitle as="h1" size="anchor" spacing="loose">
             Full Portugal journeys, <SectionTitle.Em>designed for you.</SectionTitle.Em>
           </SectionTitle>
-          <span className="gold-rule mt-6 mx-auto max-w-[80px]" aria-hidden="true" />
           <p className="mt-6 text-[1rem] md:text-[1.1rem] text-[color:var(--charcoal-soft)] leading-relaxed">
             Portugal changes quickly as the road moves from one region to another — a private
             multi-day journey is designed around the travellers, the time available and the rhythm
@@ -245,7 +243,6 @@ function MultiDayPage() {
           <SectionTitle as="h2" size="default" spacing="loose">
             How a private multi-day journey <SectionTitle.Em>is created.</SectionTitle.Em>
           </SectionTitle>
-          <span className="gold-rule mt-5 max-w-[64px]" aria-hidden="true" />
           <div className="mt-6 space-y-5 text-[color:var(--charcoal-soft)] leading-relaxed">
             <p>
               The process begins with the travellers: dates, interests, preferred pace and the
@@ -301,7 +298,6 @@ function MultiDayPage() {
             <SectionTitle size="compact" spacing="loose">
               When the trip matters, <SectionTitle.Em>the structure matters too.</SectionTitle.Em>
             </SectionTitle>
-            <span className="gold-rule mt-5 mx-auto max-w-[64px]" aria-hidden="true" />
             <p className="mt-5 text-[color:var(--charcoal-soft)] leading-relaxed">
               Travel Designer is for guests who want Portugal planned with care from beginning to
               end — not just a hotel list, a transfer and a few tours dropped into a calendar.
@@ -324,7 +320,6 @@ function MultiDayPage() {
             <SectionTitle size="compact" spacing="loose">
               A journey with rhythm, <SectionTitle.Em>not a list of places.</SectionTitle.Em>
             </SectionTitle>
-            <span className="gold-rule mt-5 mx-auto max-w-[64px]" aria-hidden="true" />
             <p className="mt-5 text-[color:var(--charcoal-soft)] leading-relaxed">
               Portugal is small on a map, but it is not small in rhythm. A good journey depends on
               knowing what belongs together, what needs space, what is worth the drive and what
@@ -352,7 +347,6 @@ function MultiDayPage() {
             <SectionTitle size="compact" spacing="loose">
               From idea to <SectionTitle.Em>complete travel file.</SectionTitle.Em>
             </SectionTitle>
-            <span className="gold-rule mt-5 mx-auto max-w-[64px]" aria-hidden="true" />
           </div>
           <ol className="mt-10 md:mt-14 grid md:grid-cols-2 gap-5 md:gap-8">
             {PROCESS.map((s) => (
@@ -384,7 +378,6 @@ function MultiDayPage() {
             <SectionTitle size="compact" spacing="loose">
               Delivered as a <SectionTitle.Em>private travel file.</SectionTitle.Em>
             </SectionTitle>
-            <span className="gold-rule mt-5 mx-auto max-w-[64px]" aria-hidden="true" />
             <p className="mt-4 font-serif italic text-[1.05rem] md:text-[1.15rem] text-[color:var(--teal)] leading-snug">
               A journey you can understand before you live it.
             </p>
@@ -422,7 +415,6 @@ function MultiDayPage() {
               <h3 className="serif text-[1.25rem] md:text-[1.45rem] text-[color:var(--charcoal)] leading-tight">
                 What&rsquo;s inside your file
               </h3>
-              <span className="gold-rule mt-4 max-w-[48px]" aria-hidden="true" />
               <div className="mt-5 grid sm:grid-cols-2 md:grid-cols-1 gap-3 md:gap-4">
                 {FILE_GROUPS.map((c) => (
                   <div
@@ -501,7 +493,6 @@ function MultiDayPage() {
       <section className="py-14 md:py-24 reveal">
         <div className="container-x max-w-3xl">
           <Eyebrow icon={<RouteIcon strokeWidth={1.8} />}>Where it can go</Eyebrow>
-          <span className="gold-rule mt-4 max-w-[64px]" aria-hidden="true" />
           <SectionTitle size="compact" spacing="loose">
             Across Portugal, <SectionTitle.Em>shaped around your journey.</SectionTitle.Em>
           </SectionTitle>
@@ -534,7 +525,6 @@ function MultiDayPage() {
           <SectionTitle size="compact" spacing="loose">
             Supported <SectionTitle.Em>on the ground.</SectionTitle.Em>
           </SectionTitle>
-          <span className="gold-rule mt-5 mx-auto max-w-[64px]" aria-hidden="true" />
           <p className="mt-5 font-serif italic text-[1.1rem] md:text-[1.2rem] text-[color:var(--teal)] leading-snug">
             Designed before you arrive. Adjusted while you travel.
           </p>
@@ -559,7 +549,6 @@ function MultiDayPage() {
             <SectionTitle id="td-faq" size="compact" spacing="loose">
               Travel Designer, <SectionTitle.Em>answered.</SectionTitle.Em>
             </SectionTitle>
-            <span className="gold-rule mt-5 mx-auto max-w-[64px]" aria-hidden="true" />
           </div>
           <Accordion type="single" collapsible defaultValue="td-0" className="mt-8 space-y-3">
             {TRAVEL_DESIGNER_FAQ.map((item, i) => (
@@ -587,7 +576,6 @@ function MultiDayPage() {
           <SectionTitle size="compact" spacing="loose">
             Begin with <SectionTitle.Em>a designer.</SectionTitle.Em>
           </SectionTitle>
-          <span className="gold-rule mt-5 mx-auto max-w-[64px]" aria-hidden="true" />
           <p className="mt-5 text-[color:var(--charcoal-soft)] leading-relaxed">
             Tell us what you have in mind. We will shape the journey with you, day by day, route by
             route, until Portugal feels like yours.

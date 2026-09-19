@@ -117,7 +117,6 @@ function CorporatePage() {
           <SectionTitle as="h1" size="anchor" spacing="loose">
             Team building em Portugal, <SectionTitle.Em>desenhado por locais.</SectionTitle.Em>
           </SectionTitle>
-          <span className="gold-rule mt-6 mx-auto max-w-[80px]" aria-hidden="true" />
           <p className="mt-6 text-[1rem] md:text-[1.1rem] text-[color:var(--charcoal-soft)] leading-relaxed">
             Retiros corporativos privados, dias de team building, incentivos e off-sites executivos
             por Portugal — de Lisboa e Sintra à costa da Arrábida, ao Alentejo, ao Douro e além, com
@@ -161,7 +160,6 @@ function CorporatePage() {
                 </div>
                 <div>
                   <Eyebrow icon={<Icon strokeWidth={1.8} />}>{b.eyebrow}</Eyebrow>
-                  <span className="gold-rule mt-4 max-w-[64px]" aria-hidden="true" />
                   <SectionTitle size="compact" spacing="loose">
                     {b.title}
                   </SectionTitle>
@@ -207,7 +205,6 @@ function CorporatePage() {
           <SectionTitle size="compact">
             Fale-nos do <SectionTitle.Em>vosso grupo.</SectionTitle.Em>
           </SectionTitle>
-          <span className="gold-rule mt-5 mx-auto max-w-[64px]" aria-hidden="true" />
           <p className="mt-5 text-[color:var(--charcoal-soft)] leading-relaxed">
             Tempos de viagem reais, locais reais, parceiros reais. Desenhamos a proposta em torno do
             que a vossa equipa realmente precisa — nunca um template copiado.

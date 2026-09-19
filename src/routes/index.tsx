@@ -6,6 +6,7 @@ import { SiteLayout } from "@/components/SiteLayout";
 import { FAQ } from "@/components/FAQ";
 import { CtaButton } from "@/components/ui/CtaButton";
 import { Eyebrow } from "@/components/ui/Eyebrow";
+import { SectionTitle } from "@/components/ui/SectionTitle";
 import { buildResponsiveSrc } from "@/lib/responsive-image";
 
 import heroImg from "@/assets/hero-coast.jpg";
@@ -572,7 +573,7 @@ function HomePage() {
           No invented quotes, no repeated review blocks. */}
         <section
           id="reviews"
-          className="section-enter bg-[color:var(--ivory)] border-b border-[color:var(--border)] py-16 md:py-24 scroll-mt-24 md:scroll-mt-28"
+          className="section-enter section-y bg-[color:var(--ivory)] border-b border-[color:var(--border)] scroll-mt-24 md:scroll-mt-28"
         >
           <div className="container-x">
             <GuestQuotes />
@@ -618,15 +619,15 @@ function HomePage() {
                   Experience Studio
                 </Eyebrow>
 
-                <h2
+                <SectionTitle
                   id="studio-title"
-                  className="reveal-stagger serif mt-3 text-[2.1rem] sm:text-[2.5rem] lg:text-[3.8rem] leading-[1.05] lg:leading-[0.96] tracking-[-0.02em] text-[color:var(--charcoal)] font-medium"
+                  className="reveal-stagger"
                 >
                   Design your day.{" "}
-                  <span className="italic font-normal text-[color:var(--teal)]">
+                  <SectionTitle.Em>
                     Reserve in minutes.
-                  </span>
-                </h2>
+                  </SectionTitle.Em>
+                </SectionTitle>
 
                 <p className="reveal-stagger mt-4 text-[14.5px] md:text-[16px] text-[color:var(--charcoal-soft)] leading-[1.7] max-w-md font-normal">
                   The Studio draws the day as you shape it: a{" "}
@@ -694,13 +695,12 @@ function HomePage() {
           <div className="container-x">
             <div className="reveal text-center max-w-2xl mx-auto mb-10 md:mb-14">
               <Eyebrow className="mb-5">Signature</Eyebrow>
-              <h2
+               <SectionTitle
                 id="signatures-title"
-                className="serif mt-3 text-[1.8rem] sm:text-[2.1rem] lg:text-[2.95rem] leading-[1.12] lg:leading-[1.02] tracking-[-0.014em] text-[color:var(--charcoal)] font-medium"
               >
                 Signature days,{" "}
-                <span className="italic font-normal text-[color:var(--teal)]">already loved.</span>
-              </h2>
+                 <SectionTitle.Em>already loved.</SectionTitle.Em>
+               </SectionTitle>
               <p className="mt-5 text-[15px] md:text-[16px] leading-[1.65] text-[color:var(--charcoal-soft)]">
                 Every Signature can be reserved as designed, or tailored around your pace, interests and group.
               </p>
@@ -889,21 +889,20 @@ function HomePage() {
           `signatureTours` + `LOCAL_STORIES_ARTICLES` — nothing invented. */}
         <section
           id="plan-map"
-          className="he-section-rule section-enter pt-16 pb-10 md:pt-20 md:pb-12 bg-[color:var(--sand)] scroll-mt-24 md:scroll-mt-28"
+          className="he-section-rule section-enter section-y bg-[color:var(--sand)] scroll-mt-24 md:scroll-mt-28"
           aria-labelledby="plan-map-title"
         >
           <div className="container-x">
             <div className="reveal text-center max-w-2xl mx-auto mb-8 md:mb-12">
               <Eyebrow className="mb-5">Explore Portugal</Eyebrow>
-              <h2
+               <SectionTitle
                 id="plan-map-title"
-                className="serif mt-3 text-[1.8rem] sm:text-[2.1rem] lg:text-[2.95rem] leading-[1.12] lg:leading-[1.02] tracking-[-0.014em] text-[color:var(--charcoal)] font-medium"
               >
                 All of Portugal, mainland and islands —{" "}
-                <span className="italic font-normal text-[color:var(--teal)]">
+                 <SectionTitle.Em>
                   start with a place you already have in mind.
-                </span>
-              </h2>
+                 </SectionTitle.Em>
+               </SectionTitle>
               <p className="mt-5 text-[15px] leading-relaxed text-[color:var(--charcoal-soft)]">
                 From Gerês and the Douro to the Algarve, Madeira and the Azores. Tap any place and
                 see how a{" "}
@@ -927,21 +926,20 @@ function HomePage() {
 
         <section
           id="journal"
-          className="section-enter pt-10 pb-16 md:pt-12 md:pb-20 bg-[color:var(--sand)] scroll-mt-24 md:scroll-mt-28"
+          className="section-enter section-y bg-[color:var(--ivory)] scroll-mt-24 md:scroll-mt-28"
           aria-labelledby="journal-title"
         >
           <div className="container-x">
             <div className="reveal text-center max-w-2xl mx-auto mb-7 md:mb-10">
               <Eyebrow className="mb-5">Local stories</Eyebrow>
-              <h2
+               <SectionTitle
                 id="journal-title"
-                className="serif mt-3 text-[1.8rem] sm:text-[2.1rem] lg:text-[2.95rem] leading-[1.12] lg:leading-[1.02] tracking-[-0.014em] text-[color:var(--charcoal)] font-medium"
               >
                 Portugal, written{" "}
-                <span className="italic font-normal text-[color:var(--teal)]">
+                 <SectionTitle.Em>
                   by the people who drive it.
-                </span>
-              </h2>
+                 </SectionTitle.Em>
+               </SectionTitle>
             </div>
 
             <ul className="he-stagger max-w-5xl mx-auto grid gap-5 md:gap-7 md:grid-cols-3 list-none p-0">
@@ -1060,15 +1058,14 @@ function HomePage() {
                     Your next step
                   </Eyebrow>
 
-                  <h2
+                  <SectionTitle
                     id="final-cta-title"
-                    className="serif mt-3 text-[2.1rem] sm:text-[2.5rem] lg:text-[3.8rem] leading-[1.05] lg:leading-[0.96] tracking-[-0.02em] text-[color:var(--charcoal)] font-medium"
                   >
                     Begin with the way{` `}
-                    <span className="italic font-normal text-[color:var(--teal)]">
+                    <SectionTitle.Em>
                       that feels right.
-                    </span>
-                  </h2>
+                    </SectionTitle.Em>
+                  </SectionTitle>
                   <p className="mt-5 text-[14.5px] md:text-[16px] text-[color:var(--charcoal-soft)] leading-[1.7] max-w-md mx-auto">
                     Reserve a proven day, shape one in the Studio, or ask us to compose a longer Portugal journey.
                   </p>

@@ -104,7 +104,7 @@ function Page() {
           <Eyebrow>Created from real travel</Eyebrow>
           <SplitLines
             as="h2"
-            className="about-ink-title mt-3 font-serif text-[color:var(--charcoal)] font-medium tracking-normal text-[clamp(1.875rem,7vw,2.4rem)] md:text-[3.6rem] leading-[1.14] md:leading-[1.08]"
+            className="about-ink-title mt-3 font-serif text-[1.8125rem] md:text-[2.25rem] font-medium leading-[1.18] md:leading-[1.1] text-balance text-[color:var(--charcoal)]"
             lines={[
               <>Built from the road,&nbsp;</>,
               <><span className="italic font-normal text-[color:var(--teal)]">not a template</span>.</>,
