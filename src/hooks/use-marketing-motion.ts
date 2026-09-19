@@ -68,9 +68,14 @@ export function usePublicEditorialMotion(pathname: string): void {
       }, 2500);
     };
 
-    settleTimer = window.setTimeout(() => {
-      if (!cancelled) armQuietWindow();
-    }, 120);
+    firstFrame = window.requestAnimationFrame(() => {
+      secondFrame = window.requestAnimationFrame(() => {
+        settleTimer = window.setTimeout(() => {
+          if (!cancelled) armQuietWindow();
+        }, 120);
+      });
+    });
+
 
 
 
