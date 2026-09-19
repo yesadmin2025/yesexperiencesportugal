@@ -21,3 +21,7 @@
 - [x] Give all five homepage paths one factual, high-resolution photographic identity
 - [x] Reuse each path photograph at its matching homepage map destination
 - [x] Validate all five path/map states at mobile, tablet, desktop, and reduced motion
+- [x] Add one admin photo manager for the five homepage paths and matching map
+- [x] Support first-party social photo uploads without hotlinking or automated scraping
+- [x] Remove Five Paths photo repetition from Corporate and Moments editorial blocks
+- [ ] Validate photo upload and card/map synchronization while signed in as admin

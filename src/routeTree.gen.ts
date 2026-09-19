@@ -140,6 +140,7 @@ import { Route as AdminPricingRouteImport } from './routes/admin.pricing'
 import { Route as AdminPriceMapRouteImport } from './routes/admin.price-map'
 import { Route as AdminPhotosRouteImport } from './routes/admin.photos'
 import { Route as AdminPaymentsEnvRouteImport } from './routes/admin.payments-env'
+import { Route as AdminPathPhotosRouteImport } from './routes/admin.path-photos'
 import { Route as AdminLegacyScanRouteImport } from './routes/admin.legacy-scan'
 import { Route as AdminLegacyDomainsMonitorRouteImport } from './routes/admin.legacy-domains-monitor'
 import { Route as AdminLegacyDomainUnlinkRouteImport } from './routes/admin.legacy-domain-unlink'
@@ -173,6 +174,7 @@ import { Route as LovableEmailSuppressionRouteImport } from './routes/lovable/em
 import { Route as FunctionsV1StripeWebhookRouteImport } from './routes/functions.v1.stripe-webhook'
 import { Route as ApiPublicProposalRequestRouteImport } from './routes/api/public/proposal-request'
 import { Route as ApiPublicPricingSsotRouteImport } from './routes/api/public/pricing-ssot'
+import { Route as ApiPublicEditorialPhotoRouteImport } from './routes/api/public/editorial-photo'
 import { Route as ApiPublicContactRouteImport } from './routes/api/public/contact'
 import { Route as ApiPublicBookingRequestRouteImport } from './routes/api/public/booking-request'
 import { Route as ApiPublicBookingItineraryDataRouteImport } from './routes/api/public/booking-itinerary-data'
@@ -867,6 +869,11 @@ const AdminPaymentsEnvRoute = AdminPaymentsEnvRouteImport.update({
   path: '/admin/payments-env',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AdminPathPhotosRoute = AdminPathPhotosRouteImport.update({
+  id: '/admin/path-photos',
+  path: '/admin/path-photos',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AdminLegacyScanRoute = AdminLegacyScanRouteImport.update({
   id: '/admin/legacy-scan',
   path: '/admin/legacy-scan',
@@ -1035,6 +1042,11 @@ const ApiPublicProposalRequestRoute =
 const ApiPublicPricingSsotRoute = ApiPublicPricingSsotRouteImport.update({
   id: '/api/public/pricing-ssot',
   path: '/api/public/pricing-ssot',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiPublicEditorialPhotoRoute = ApiPublicEditorialPhotoRouteImport.update({
+  id: '/api/public/editorial-photo',
+  path: '/api/public/editorial-photo',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ApiPublicContactRoute = ApiPublicContactRouteImport.update({
@@ -1277,6 +1289,7 @@ export interface FileRoutesByFullPath {
   '/admin/legacy-domain-unlink': typeof AdminLegacyDomainUnlinkRoute
   '/admin/legacy-domains-monitor': typeof AdminLegacyDomainsMonitorRoute
   '/admin/legacy-scan': typeof AdminLegacyScanRoute
+  '/admin/path-photos': typeof AdminPathPhotosRoute
   '/admin/payments-env': typeof AdminPaymentsEnvRoute
   '/admin/photos': typeof AdminPhotosRoute
   '/admin/price-map': typeof AdminPriceMapRoute
@@ -1335,6 +1348,7 @@ export interface FileRoutesByFullPath {
   '/api/public/booking-itinerary-data': typeof ApiPublicBookingItineraryDataRoute
   '/api/public/booking-request': typeof ApiPublicBookingRequestRoute
   '/api/public/contact': typeof ApiPublicContactRoute
+  '/api/public/editorial-photo': typeof ApiPublicEditorialPhotoRoute
   '/api/public/pricing-ssot': typeof ApiPublicPricingSsotRoute
   '/api/public/proposal-request': typeof ApiPublicProposalRequestRoute
   '/functions/v1/stripe-webhook': typeof FunctionsV1StripeWebhookRoute
@@ -1464,6 +1478,7 @@ export interface FileRoutesByTo {
   '/admin/legacy-domain-unlink': typeof AdminLegacyDomainUnlinkRoute
   '/admin/legacy-domains-monitor': typeof AdminLegacyDomainsMonitorRoute
   '/admin/legacy-scan': typeof AdminLegacyScanRoute
+  '/admin/path-photos': typeof AdminPathPhotosRoute
   '/admin/payments-env': typeof AdminPaymentsEnvRoute
   '/admin/photos': typeof AdminPhotosRoute
   '/admin/price-map': typeof AdminPriceMapRoute
@@ -1522,6 +1537,7 @@ export interface FileRoutesByTo {
   '/api/public/booking-itinerary-data': typeof ApiPublicBookingItineraryDataRoute
   '/api/public/booking-request': typeof ApiPublicBookingRequestRoute
   '/api/public/contact': typeof ApiPublicContactRoute
+  '/api/public/editorial-photo': typeof ApiPublicEditorialPhotoRoute
   '/api/public/pricing-ssot': typeof ApiPublicPricingSsotRoute
   '/api/public/proposal-request': typeof ApiPublicProposalRequestRoute
   '/functions/v1/stripe-webhook': typeof FunctionsV1StripeWebhookRoute
@@ -1654,6 +1670,7 @@ export interface FileRoutesById {
   '/admin/legacy-domain-unlink': typeof AdminLegacyDomainUnlinkRoute
   '/admin/legacy-domains-monitor': typeof AdminLegacyDomainsMonitorRoute
   '/admin/legacy-scan': typeof AdminLegacyScanRoute
+  '/admin/path-photos': typeof AdminPathPhotosRoute
   '/admin/payments-env': typeof AdminPaymentsEnvRoute
   '/admin/photos': typeof AdminPhotosRoute
   '/admin/price-map': typeof AdminPriceMapRoute
@@ -1712,6 +1729,7 @@ export interface FileRoutesById {
   '/api/public/booking-itinerary-data': typeof ApiPublicBookingItineraryDataRoute
   '/api/public/booking-request': typeof ApiPublicBookingRequestRoute
   '/api/public/contact': typeof ApiPublicContactRoute
+  '/api/public/editorial-photo': typeof ApiPublicEditorialPhotoRoute
   '/api/public/pricing-ssot': typeof ApiPublicPricingSsotRoute
   '/api/public/proposal-request': typeof ApiPublicProposalRequestRoute
   '/functions/v1/stripe-webhook': typeof FunctionsV1StripeWebhookRoute
@@ -1845,6 +1863,7 @@ export interface FileRouteTypes {
     | '/admin/legacy-domain-unlink'
     | '/admin/legacy-domains-monitor'
     | '/admin/legacy-scan'
+    | '/admin/path-photos'
     | '/admin/payments-env'
     | '/admin/photos'
     | '/admin/price-map'
@@ -1903,6 +1922,7 @@ export interface FileRouteTypes {
     | '/api/public/booking-itinerary-data'
     | '/api/public/booking-request'
     | '/api/public/contact'
+    | '/api/public/editorial-photo'
     | '/api/public/pricing-ssot'
     | '/api/public/proposal-request'
     | '/functions/v1/stripe-webhook'
@@ -2032,6 +2052,7 @@ export interface FileRouteTypes {
     | '/admin/legacy-domain-unlink'
     | '/admin/legacy-domains-monitor'
     | '/admin/legacy-scan'
+    | '/admin/path-photos'
     | '/admin/payments-env'
     | '/admin/photos'
     | '/admin/price-map'
@@ -2090,6 +2111,7 @@ export interface FileRouteTypes {
     | '/api/public/booking-itinerary-data'
     | '/api/public/booking-request'
     | '/api/public/contact'
+    | '/api/public/editorial-photo'
     | '/api/public/pricing-ssot'
     | '/api/public/proposal-request'
     | '/functions/v1/stripe-webhook'
@@ -2221,6 +2243,7 @@ export interface FileRouteTypes {
     | '/admin/legacy-domain-unlink'
     | '/admin/legacy-domains-monitor'
     | '/admin/legacy-scan'
+    | '/admin/path-photos'
     | '/admin/payments-env'
     | '/admin/photos'
     | '/admin/price-map'
@@ -2279,6 +2302,7 @@ export interface FileRouteTypes {
     | '/api/public/booking-itinerary-data'
     | '/api/public/booking-request'
     | '/api/public/contact'
+    | '/api/public/editorial-photo'
     | '/api/public/pricing-ssot'
     | '/api/public/proposal-request'
     | '/functions/v1/stripe-webhook'
@@ -2411,6 +2435,7 @@ export interface RootRouteChildren {
   AdminLegacyDomainUnlinkRoute: typeof AdminLegacyDomainUnlinkRoute
   AdminLegacyDomainsMonitorRoute: typeof AdminLegacyDomainsMonitorRoute
   AdminLegacyScanRoute: typeof AdminLegacyScanRoute
+  AdminPathPhotosRoute: typeof AdminPathPhotosRoute
   AdminPaymentsEnvRoute: typeof AdminPaymentsEnvRoute
   AdminPhotosRoute: typeof AdminPhotosRoute
   AdminPriceMapRoute: typeof AdminPriceMapRoute
@@ -2452,6 +2477,7 @@ export interface RootRouteChildren {
   ApiPublicBookingItineraryDataRoute: typeof ApiPublicBookingItineraryDataRoute
   ApiPublicBookingRequestRoute: typeof ApiPublicBookingRequestRoute
   ApiPublicContactRoute: typeof ApiPublicContactRoute
+  ApiPublicEditorialPhotoRoute: typeof ApiPublicEditorialPhotoRoute
   ApiPublicPricingSsotRoute: typeof ApiPublicPricingSsotRoute
   ApiPublicProposalRequestRoute: typeof ApiPublicProposalRequestRoute
   FunctionsV1StripeWebhookRoute: typeof FunctionsV1StripeWebhookRoute
@@ -3394,6 +3420,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminPaymentsEnvRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/admin/path-photos': {
+      id: '/admin/path-photos'
+      path: '/admin/path-photos'
+      fullPath: '/admin/path-photos'
+      preLoaderRoute: typeof AdminPathPhotosRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/admin/legacy-scan': {
       id: '/admin/legacy-scan'
       path: '/admin/legacy-scan'
@@ -3623,6 +3656,13 @@ declare module '@tanstack/react-router' {
       path: '/api/public/pricing-ssot'
       fullPath: '/api/public/pricing-ssot'
       preLoaderRoute: typeof ApiPublicPricingSsotRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/editorial-photo': {
+      id: '/api/public/editorial-photo'
+      path: '/api/public/editorial-photo'
+      fullPath: '/api/public/editorial-photo'
+      preLoaderRoute: typeof ApiPublicEditorialPhotoRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/api/public/contact': {
@@ -3973,6 +4013,7 @@ const rootRouteChildren: RootRouteChildren = {
   AdminLegacyDomainUnlinkRoute: AdminLegacyDomainUnlinkRoute,
   AdminLegacyDomainsMonitorRoute: AdminLegacyDomainsMonitorRoute,
   AdminLegacyScanRoute: AdminLegacyScanRoute,
+  AdminPathPhotosRoute: AdminPathPhotosRoute,
   AdminPaymentsEnvRoute: AdminPaymentsEnvRoute,
   AdminPhotosRoute: AdminPhotosRoute,
   AdminPriceMapRoute: AdminPriceMapRoute,
@@ -4015,6 +4056,7 @@ const rootRouteChildren: RootRouteChildren = {
   ApiPublicBookingItineraryDataRoute: ApiPublicBookingItineraryDataRoute,
   ApiPublicBookingRequestRoute: ApiPublicBookingRequestRoute,
   ApiPublicContactRoute: ApiPublicContactRoute,
+  ApiPublicEditorialPhotoRoute: ApiPublicEditorialPhotoRoute,
   ApiPublicPricingSsotRoute: ApiPublicPricingSsotRoute,
   ApiPublicProposalRequestRoute: ApiPublicProposalRequestRoute,
   FunctionsV1StripeWebhookRoute: FunctionsV1StripeWebhookRoute,

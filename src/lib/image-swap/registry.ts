@@ -15,6 +15,7 @@ import {
   CORPORATE_SERVICE_IMAGES,
   PROPOSAL_SERVICE_IMAGES,
 } from "@/content/editorial-service-images";
+import { HOME_PATH_EDITORIAL_SLOTS } from "@/content/home-path-images";
 
 export type ModuleShape = {
   key: EditorialModuleKey;
@@ -26,6 +27,14 @@ export type ModuleShape = {
 };
 
 export const EDITORIAL_MODULES: ModuleShape[] = [
+  {
+    key: "home_paths",
+    label: "Homepage · Five paths & map",
+    kind: "moments",
+    orientation: "landscape",
+    desiredTags: ["people", "place", "wine", "culture"],
+    defaults: HOME_PATH_EDITORIAL_SLOTS,
+  },
   {
     key: "homepage_moments",
     label: "Homepage · Moments",

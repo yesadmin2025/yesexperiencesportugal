@@ -28,7 +28,7 @@ import {
 } from "@/components/ui/accordion";
 import { trackEvent } from "@/lib/analytics-events";
 
-import { premiumEditorialImage as premiumImage } from "@/content/editorial-premium-images";
+import { CORPORATE_SERVICE_IMAGES } from "@/content/editorial-service-images";
 import { useEditorialOverrides } from "@/lib/editorial-overrides";
 
 import { CORPORATE_FAQ } from "@/content/seo-faq";
@@ -49,44 +49,7 @@ const CANONICAL = "https://yesexperiencesportugal.com/corporate";
  * the previous first slot showed two guests in a market, which framed
  * the page as leisure travel rather than corporate work.
  */
-const CORPORATE_BLOCK_IMAGES = [
-  premiumImage("alentejo-group-ruins", {
-    alt: "A private company group raising a toast together during a hosted day in Alentejo.",
-    width: 1280,
-    height: 846,
-    objectPosition: "50% 44%",
-    alternate: premiumImage("winery-group-orange-tree", {
-      alt: "A large corporate group gathered at a Portuguese wine estate with their local hosts.",
-      width: 1280,
-      height: 960,
-      objectPosition: "50% 50%",
-    }),
-  }),
-  premiumImage("arrabida-viewpoint-group", {
-    alt: "A company group pausing together at a viewpoint above the Arrábida coast.",
-    width: 1280,
-    height: 960,
-    objectPosition: "50% 45%",
-    alternate: premiumImage("alentejo-group-ruins", {
-      alt: "A private group sharing a hosted cultural moment in Alentejo.",
-      width: 1280,
-      height: 846,
-      objectPosition: "50% 46%",
-    }),
-  }),
-  premiumImage("sintra-group-selfie", {
-    alt: "A large corporate group of guests arriving with their coaches and local guide in Sintra.",
-    width: 1280,
-    height: 1707,
-    objectPosition: "50% 42%",
-    alternate: premiumImage("winery-group-orange-tree", {
-      alt: "A company-wide group photographed together at a Portuguese estate.",
-      width: 1280,
-      height: 960,
-      objectPosition: "50% 50%",
-    }),
-  }),
-];
+const CORPORATE_BLOCK_IMAGES = CORPORATE_SERVICE_IMAGES;
 
 export const Route = createFileRoute("/corporate")({
   head: () => ({

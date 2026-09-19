@@ -9,6 +9,7 @@ import { CtaButton } from "@/components/ui/CtaButton";
 import imgFatimaNazare from "@/assets/tours/fatima-nazare-obidos/nazare.jpg";
 import { CinematicEditorialImage } from "@/components/ui/ResponsiveEditorialImage";
 import { CORPORATE_SERVICE_IMAGES } from "@/content/editorial-service-images";
+import { useEditorialOverrides } from "@/lib/editorial-overrides";
 
 import { useMarketingMotion } from "@/hooks/use-marketing-motion";
 
@@ -104,6 +105,10 @@ const FAQ_PT = [
 
 function CorporatePage() {
   useMarketingMotion();
+  const serviceImages = useEditorialOverrides(
+    "corporate_services",
+    CORPORATE_SERVICE_IMAGES.map((image) => ({ ...image, caption: "" })),
+  );
   return (
     <SiteLayout>
       <section className="pt-28 pb-14 bg-[color:var(--sand)] reveal">
@@ -148,7 +153,7 @@ function CorporatePage() {
               >
                 <div className="group overflow-hidden bg-[color:var(--sand)] aspect-[4/5] md:aspect-[5/6]">
                   <CinematicEditorialImage
-                    image={b.image}
+                    image={{ ...b.image, ...serviceImages[i] }}
                     priority={i === 0}
                     className="h-full w-full"
                     phase={i === 1 ? "b" : i === 2 ? "c" : "a"}

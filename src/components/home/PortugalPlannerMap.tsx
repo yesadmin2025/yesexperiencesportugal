@@ -6,6 +6,7 @@ import { ResponsiveEditorialImage } from "@/components/ui/ResponsiveEditorialIma
 import {
   HOME_PATH_DESTINATION_LIST,
   HOME_PATH_DESTINATIONS,
+  useHomePathDestinations,
   type HomePathId,
 } from "@/content/home-path-images";
 import {
@@ -38,6 +39,7 @@ function pct(value: number, span: number) {
 }
 
 export function PortugalPlannerMap() {
+  const managedDestinations = useHomePathDestinations();
   const [activeId, setActiveId] = useState<string>("arrabida");
   const [activePathId, setActivePathId] = useState<HomePathId>("signature");
 
@@ -47,7 +49,9 @@ export function PortugalPlannerMap() {
     return resolvePlannerRegion(region);
   }, [activeId]);
 
-  const activePath = HOME_PATH_DESTINATIONS[activePathId];
+  const activePath =
+    managedDestinations.find((path) => path.id === activePathId) ??
+    HOME_PATH_DESTINATIONS[activePathId];
 
   const choosePath = (pathId: HomePathId) => {
     const path = HOME_PATH_DESTINATIONS[pathId];
@@ -185,7 +189,7 @@ export function PortugalPlannerMap() {
       {/* Panel */}
       <div className="min-w-0">
         <div className="planner-path-tabs" aria-label="Five ways into Portugal">
-          {HOME_PATH_DESTINATION_LIST.map((path) => (
+          {managedDestinations.map((path) => (
             <Button
               key={path.id}
               type="button"
