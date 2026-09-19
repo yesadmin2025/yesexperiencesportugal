@@ -9,6 +9,7 @@
 // shows "Needs price" and stays invisible to guests.
 
 import { createFileRoute, useRouter } from "@tanstack/react-router";
+import { Link } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
@@ -106,6 +107,34 @@ function AdminComposableStopsPage() {
   const [saving, setSaving] = useState<string | null>(null);
   const [filter, setFilter] = useState("");
   const [regionFilter, setRegionFilter] = useState<string>("all");
+  const [authChecked, setAuthChecked] = useState(false);
+  const [isAdmin, setIsAdmin] = useState(false);
+
+  useEffect(() => {
+    let cancelled = false;
+    async function verifyAdmin() {
+      const { data } = await supabase.auth.getSession();
+      const userId = data.session?.user.id;
+      if (!userId) {
+        if (!cancelled) setAuthChecked(true);
+        return;
+      }
+      const { data: role } = await supabase
+        .from("user_roles")
+        .select("role")
+        .eq("user_id", userId)
+        .eq("role", "admin")
+        .maybeSingle();
+      if (!cancelled) {
+        setIsAdmin(Boolean(role));
+        setAuthChecked(true);
+      }
+    }
+    void verifyAdmin();
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   const stops = useMemo(
     () =>
@@ -227,8 +256,41 @@ function AdminComposableStopsPage() {
   };
 
   const pricedCount = Object.values(forms).filter(
-    (form) => form.active && Number(form.price) > 0,
+    (form) =>
+      form.active &&
+      Number(form.price) > 0 &&
+      Number(form.durationMinutes) > 0 &&
+      (Boolean(form.openFrom && form.openTo) || Boolean(form.fixedStartTimes.trim())),
   ).length;
+
+  if (!authChecked || isLoading) {
+    return (
+      <SiteLayout>
+        <section className="pt-28 pb-20 container-x max-w-5xl">
+          <p className="text-sm text-[color:var(--charcoal-soft)]">Loading…</p>
+        </section>
+      </SiteLayout>
+    );
+  }
+
+  if (!isAdmin) {
+    return (
+      <SiteLayout>
+        <section className="pt-28 pb-20 container-x max-w-2xl">
+          <h1 className="text-3xl">Admin access required</h1>
+          <p className="mt-3 text-sm text-[color:var(--charcoal-soft)]">
+            Sign in with an administrator account to manage the Studio catalogue.
+          </p>
+          <Link
+            to="/auth"
+            className="mt-6 inline-flex min-h-[44px] items-center border border-[color:var(--charcoal)] px-5 text-sm"
+          >
+            Sign in
+          </Link>
+        </section>
+      </SiteLayout>
+    );
+  }
 
   return (
     <SiteLayout>
@@ -283,10 +345,7 @@ function AdminComposableStopsPage() {
             </button>
           </div>
 
-          {isLoading ? (
-            <p className="mt-10 text-sm text-[color:var(--charcoal-soft)]">Loading…</p>
-          ) : (
-            <ul className="mt-8 space-y-4">
+          <ul className="mt-8 space-y-4">
               {visible.map((stop) => {
                 const form = formFor(stop.id);
                 const priced = Number(form.price) > 0;
@@ -304,7 +363,12 @@ function AdminComposableStopsPage() {
                             : "text-[color:var(--charcoal-soft)]"
                         }`}
                       >
-                        {priced && form.active ? "Composable" : "Needs price"}
+                         {priced && form.active && Number(form.durationMinutes) > 0 &&
+                         ((form.openFrom && form.openTo) || form.fixedStartTimes.trim())
+                           ? "Ready in Studio"
+                           : form.active
+                             ? "Incomplete"
+                             : "Inactive"}
                       </span>
                     </div>
                     <p className="mt-1 text-xs text-[color:var(--charcoal-soft)]">
@@ -416,8 +480,7 @@ function AdminComposableStopsPage() {
                   </li>
                 );
               })}
-            </ul>
-          )}
+          </ul>
         </div>
       </section>
     </SiteLayout>
