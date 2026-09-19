@@ -9,16 +9,15 @@
 
 import { useEffect, useState } from "react";
 import { Link } from "@tanstack/react-router";
+import { BookOpen, Compass, Sparkles, Users, Wand2, type LucideIcon } from "lucide-react";
 import { Eyebrow } from "@/components/ui/Eyebrow";
 import { SectionTitle } from "@/components/ui/SectionTitle";
 import { CtaMotionArrow } from "@/components/ui/CtaButton";
 import { Scene } from "@/components/motion/Scene";
-import { CTA_LABELS } from "@/content/cta-vocabulary";
-import { HOME_PATHS, useHomePaths, type HomePathId } from "@/content/home-path-images";
-import { ResponsiveEditorialImage, type EditorialImageSource } from "@/components/ui/ResponsiveEditorialImage";
 
 type Path = {
   id: "signature" | "studio" | "designer" | "proposals" | "corporate";
+  Icon: LucideIcon;
   eyebrow: string;
   title: string;
   titleLead: string;
@@ -27,69 +26,68 @@ type Path = {
   cta: string;
   href: string;
   analyticsEvent: string;
-  image: EditorialImageSource;
 };
 
 const PATHS: ReadonlyArray<Path> = [
   {
-    id: "studio",
-    eyebrow: "One custom day",
-    title: "Shape a day around you",
-    titleLead: "Shape a day",
-    titleEmphasis: "around you",
-    body: "Mood, pace and people — see the real route and live price, then confirm your private day instantly.",
-    cta: CTA_LABELS.studio,
-    href: "/studio-v3",
-    analyticsEvent: "home_path_studio_click",
-    image: HOME_PATHS.studio.image,
-  },
-  {
     id: "signature",
-    eyebrow: "Ready to book",
-    title: "A private day, ready to go",
-    titleLead: "A private day,",
-    titleEmphasis: "ready to go",
-    body: "Reserve a proven private day as it is or tailor the details — with the real price and instant confirmation.",
-    cta: CTA_LABELS.signatureDiscovery,
+    Icon: BookOpen,
+    eyebrow: "Signature experiences",
+    title: "Private days, already designed by YES.",
+    titleLead: "Private days,",
+    titleEmphasis: "already designed by YES.",
+    body: "Choose one of our private experiences and enjoy it as designed, or tailor a few details.",
+    cta: "Explore Signatures",
     href: "/experiences",
     analyticsEvent: "home_path_signature_click",
-    image: HOME_PATHS.signature.image,
   },
   {
-    id: "designer",
-    eyebrow: "Several days",
-    title: "Plan a whole Portugal journey",
-    titleLead: "Plan a whole",
-    titleEmphasis: "Portugal journey",
-    body: "A local Travel Designer shapes the route, pace, stays and logistics around the way you travel.",
-    cta: CTA_LABELS.travelDesigner,
-    href: "/multi-day",
-    analyticsEvent: "home_path_designer_click",
-    image: HOME_PATHS.designer.image,
+    id: "studio",
+    Icon: Wand2,
+    eyebrow: "Studio",
+    title: "Your day, designed by you.",
+    titleLead: "Your day,",
+    titleEmphasis: "designed by you.",
+    body: "Choose the mood, rhythm and route in real time. See the live price and reserve instantly, with local support if you need it.",
+    cta: "Open the Studio",
+    href: "/studio-v3",
+    analyticsEvent: "home_path_studio_click",
   },
   {
     id: "proposals",
-    eyebrow: "Proposals & celebrations",
-    title: "A private moment, planned discreetly",
-    titleLead: "A private moment,",
-    titleEmphasis: "planned discreetly",
-    body: "Proposals, anniversaries and milestone days shaped around the people and setting that matter.",
-    cta: CTA_LABELS.moments,
+    Icon: Sparkles,
+    eyebrow: "Moments",
+    title: "Proposals & celebrations, held with care.",
+    titleLead: "Proposals & celebrations,",
+    titleEmphasis: "held with care.",
+    body: "The proposal on the cliff, the anniversary in a vineyard, the birthday nobody forgets — quietly composed, precisely held.",
+    cta: "Share the occasion",
     href: "/proposal-in-portugal",
     analyticsEvent: "home_secondary_moments_click",
-    image: HOME_PATHS.proposals.image,
   },
   {
     id: "corporate",
-    eyebrow: "Corporate & private groups",
-    title: "Bring people together in Portugal",
-    titleLead: "Bring people together",
-    titleEmphasis: "in Portugal",
-    body: "Off-sites, incentives, client hosting and private group days with the practical details handled.",
-    cta: CTA_LABELS.corporate,
+    Icon: Users,
+    eyebrow: "Corporate & groups",
+    title: "Team days, incentives & private groups.",
+    titleLead: "Team days, incentives",
+    titleEmphasis: "& private groups.",
+    body: "From intimate boards to full incentives — transport, venues and timing handled with a single point of contact.",
+    cta: "Plan a group day",
     href: "/corporate",
     analyticsEvent: "home_secondary_corporate_click",
-    image: HOME_PATHS.corporate.image,
+  },
+  {
+    id: "designer",
+    Icon: Compass,
+    eyebrow: "Travel designer",
+    title: "Full Portugal journeys, designed for you.",
+    titleLead: "Full Portugal journeys,",
+    titleEmphasis: "designed for you.",
+    body: "From a few days to a full journey across Portugal, shaped around your time, rhythm and interests.",
+    cta: "Begin with a designer",
+    href: "/multi-day",
+    analyticsEvent: "home_path_designer_click",
   },
 ] as const;
 
@@ -123,8 +121,6 @@ const RHYTHM_LABELS: Readonly<Record<string, string>> = {
 };
 
 export function FiveWaysIn() {
-  const managedPathList = useHomePaths();
-  const managedPaths = new Map(managedPathList.map((path) => [path.id, path]));
   const [draftSummary, setDraftSummary] = useState<ReadonlyArray<string>>([]);
   const [hasDraft, setHasDraft] = useState(false);
 
@@ -170,11 +166,8 @@ export function FiveWaysIn() {
         <div className="reveal mx-auto max-w-2xl text-center">
           <Eyebrow flank className="mb-5">Where to begin</Eyebrow>
           <SectionTitle id="choose-path-title" className="five-ways-heading">
-            Five ways <SectionTitle.Em>into Portugal.</SectionTitle.Em>
+            Five ways to <SectionTitle.Em>shape your Portugal.</SectionTitle.Em>
           </SectionTitle>
-          <p className="mx-auto mt-5 max-w-xl text-[16px] md:text-[17px] leading-[1.7] text-[color:var(--charcoal-soft)]">
-            Begin with a private day, design your own, plan a full journey, or bring us a moment that matters.
-          </p>
         </div>
 
         <Scene
@@ -184,11 +177,7 @@ export function FiveWaysIn() {
           {PATHS.map((path, index) => (
             <PathCard
               key={path.id}
-              path={{
-                ...path,
-                title: managedPaths.get(path.id as HomePathId)?.title || path.title,
-                image: managedPaths.get(path.id as HomePathId)?.image ?? path.image,
-              }}
+              path={path}
               index={index}
             />
           ))}
@@ -223,6 +212,7 @@ export function FiveWaysIn() {
 }
 
 function PathCard({ path, index }: { path: Path; index: number }) {
+  const Icon = path.Icon;
   return (
     <Link
       to={path.href}
@@ -230,21 +220,13 @@ function PathCard({ path, index }: { path: Path; index: number }) {
       data-analytics={path.analyticsEvent}
       className={`five-ways-card five-ways-card--${path.id} scene-item group no-underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--teal)] focus-visible:ring-offset-2`}
     >
-      <div className="five-ways-image">
-        <ResponsiveEditorialImage
-          image={path.image}
-          sizes={path.id === "studio" ? "(min-width: 1024px) 58vw, 100vw" : "(min-width: 768px) 40vw, 100vw"}
-          className="h-full w-full object-cover"
-        />
-      </div>
       <div className="five-ways-copy">
-        <div className="five-ways-kicker flex items-center justify-between gap-4">
-          <Eyebrow>
-            {String(index + 1).padStart(2, "0")} · {path.eyebrow}
-          </Eyebrow>
+        <div className="five-ways-kicker flex items-start justify-between gap-4">
+          <span className="five-ways-icon" aria-hidden="true"><Icon size={19} strokeWidth={1.7} /></span>
+          <span className="five-ways-number">{String(index + 1).padStart(2, "0")}</span>
         </div>
-
-        <h3 className="five-ways-title editorial-title-safe mt-5 font-serif text-[1.5rem] leading-[1.2] font-normal text-[color:var(--charcoal)] md:text-[1.625rem]">
+        <p className="five-ways-eyebrow mt-6">{path.eyebrow}</p>
+        <h3 className="five-ways-title editorial-title-safe mt-4 font-serif text-[1.5rem] leading-[1.22] font-normal text-[color:var(--charcoal)] md:text-[1.625rem]">
           {path.title === `${path.titleLead} ${path.titleEmphasis}` ? (
             <>{path.titleLead} <em className="font-normal text-[color:var(--teal)]">{path.titleEmphasis}</em></>
           ) : path.title}

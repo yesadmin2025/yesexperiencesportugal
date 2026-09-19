@@ -20,11 +20,9 @@ import { HERO_COPY, HERO_COPY_VERSION, HERO_PHRASES } from "@/content/hero-copy"
 import { HERO_FILM } from "@/content/hero-scenes-manifest";
 
 /** Cinematic pace: opposing phrases cross the frame, then copy and actions settle. */
-const EYEBROW_DELAY_MS = 250;
-const LINE1_DELAY_MS = 650;
-const LINE2_DELAY_MS = 1500;
-const SUPPORT_DELAY_MS = 2550;
-const CTA_DELAY_MS = 3650;
+const LINE1_DELAY_MS = 250;
+const LINE2_DELAY_MS = 820;
+const CTA_DELAY_MS = 1500;
 const TEXT_FADE_MS = 1450;
 const CTA_FADE_MS = 1000;
 const EASE = "cubic-bezier(0.22,1,0.36,1)";
@@ -99,10 +97,8 @@ const ARROW = (
 );
 
 export function CinematicHero() {
-  const [eyebrow, setEyebrow] = useState(false);
   const [line1, setLine1] = useState(false);
   const [line2, setLine2] = useState(false);
-  const [support, setSupport] = useState(false);
   const [composed, setComposed] = useState(false);
   const videoRef = useRef<HTMLVideoElement | null>(null);
 
@@ -130,23 +126,17 @@ export function CinematicHero() {
   useEffect(() => {
     const skipIntro = shouldSkipIntro();
     if (skipIntro) {
-      setEyebrow(true);
       setLine1(true);
       setLine2(true);
-      setSupport(true);
       setComposed(true);
       return;
     }
-    const te = window.setTimeout(() => setEyebrow(true), EYEBROW_DELAY_MS);
     const t1 = window.setTimeout(() => setLine1(true), LINE1_DELAY_MS);
     const t2 = window.setTimeout(() => setLine2(true), LINE2_DELAY_MS);
-    const ts = window.setTimeout(() => setSupport(true), SUPPORT_DELAY_MS);
     const tc = window.setTimeout(() => setComposed(true), CTA_DELAY_MS);
     return () => {
-      window.clearTimeout(te);
       window.clearTimeout(t1);
       window.clearTimeout(t2);
-      window.clearTimeout(ts);
       window.clearTimeout(tc);
     };
   }, []);
@@ -220,19 +210,9 @@ export function CinematicHero() {
         />
       </div>
 
-      {/* One shared grid owns every text zone. Unlike independent percentage
-          offsets, its rows can never overlap when a line wraps or text grows. */}
+      {/* The approved composition has only two visual zones: the central
+          two-line statement and the low action pair. */}
       <div className="hero-cinematic-layout absolute inset-0 z-10 grid px-5 sm:px-10 md:px-16">
-      <div className="hero-eyebrow-zone flex justify-center self-end px-1">
-        <p
-          data-hero-field="eyebrow"
-          className="hero-promise m-0 text-center text-[11px] font-medium uppercase tracking-[0.24em] sm:text-[11px] sm:tracking-[0.26em]"
-          style={revealStyle(eyebrow, TEXT_FADE_MS)}
-        >
-          {HERO_COPY.eyebrow}
-        </p>
-      </div>
-
       <div className="hero-stanza-zone flex min-w-0 items-center justify-center">
         <h1
           data-hero-stanza="true"
@@ -241,7 +221,7 @@ export function CinematicHero() {
         >
           <span className="hero-title-mask block px-[0.08em] pb-[0.12em]">
             <span
-              className="hero-title-line block font-serif font-normal not-italic m-0 text-[color:var(--ivory)]"
+              className="hero-title-line block font-serif italic font-normal m-0 text-[color:var(--gold-soft)]"
               data-hero-field="headlineLine1"
               style={storyLineStyle(line1, "from-left")}
             >
@@ -260,19 +240,7 @@ export function CinematicHero() {
         </h1>
       </div>
 
-      <div className="hero-support-zone flex min-w-0 justify-center">
-        <p
-          data-hero-field="subheadline"
-          className="hero-support m-0 max-w-[22.5rem] text-center font-serif text-[16px] font-normal not-italic leading-[1.62] sm:max-w-[34rem] sm:text-[17px] md:text-[18px]"
-          style={supportFadeStyle(support)}
-        >
-          {HERO_COPY.subheadline}
-        </p>
-      </div>
-
-      <div aria-hidden="true" />
-
-      {/* Original low CTA anchor, now the last non-overlapping grid row. */}
+      {/* Original low CTA anchor. */}
       <div
         className="hero-cta-group z-20 flex flex-col items-center gap-3 sm:flex-row sm:justify-center sm:gap-4"
         data-hero-composed={composed ? "true" : "false"}
