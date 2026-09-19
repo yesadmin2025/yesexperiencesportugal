@@ -1,6 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
-import { CalendarDays, Euro, ArrowRight } from "lucide-react";
+import { CalendarDays, Euro, ArrowRight, Image as ImageIcon } from "lucide-react";
 import { useServerFn } from "@tanstack/react-start";
 import { SiteLayout } from "@/components/SiteLayout";
 import { supabase } from "@/integrations/supabase/client";
@@ -130,7 +130,7 @@ function AdminExperiencesHub() {
             <ToolCard
               to="/admin/photos"
               search={{ tourId }}
-              icon={<ArrowRight size={20} />}
+              icon={<ImageIcon size={20} />}
               title="Manage photos"
               eyebrow="Visuals"
               description="Upload multi-select gallery photos, set a cover image and reorder from your phone."
@@ -426,15 +426,16 @@ function ToolCard({
   eyebrow,
   description,
 }: {
-  to: "/admin/pricing" | "/admin/availability";
+  to: "/admin/pricing" | "/admin/availability" | "/admin/photos";
   icon: React.ReactNode;
   title: string;
   eyebrow: string;
   description: string;
+  search?: any;
 }) {
   return (
     <Link
-      to={to}
+      to={to} search={search}
       className="group border border-[color:var(--border)] bg-white p-5 transition-colors hover:border-[color:var(--gold)]"
     >
       <div className="flex items-start justify-between gap-4">
