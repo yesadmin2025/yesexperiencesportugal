@@ -8476,3 +8476,181 @@ html.reveal-ready .home-energy .reveal-stagger.is-visible {
 }
 
 /* HERO_SYNC_MARKER_20260920 */
+
+
+/* VISIBLE_EDITORIAL_MOTION_20260920 */
+/* Public-site movement: visible enough to register, restrained enough to
+   remain editorial. This block intentionally sits last so old "transform:
+   none" cleanup rules cannot flatten the motion again. */
+
+/* Legacy reveal system used by the majority of the public components. */
+html.reveal-ready .reveal {
+  opacity: 0;
+  transform: translate3d(0, 22px, 0);
+  transition:
+    opacity 620ms var(--ease-scene),
+    transform 620ms var(--ease-scene);
+  will-change: opacity, transform;
+}
+html.reveal-ready .reveal.is-visible {
+  opacity: 1;
+  transform: translate3d(0, 0, 0);
+}
+html.reveal-ready .reveal-stagger {
+  opacity: 0;
+  transform: translate3d(0, 22px, 0);
+  transition:
+    opacity 620ms var(--ease-scene),
+    transform 620ms var(--ease-scene),
+    filter 720ms var(--ease-scene);
+  filter: saturate(0.88) contrast(0.96);
+  will-change: opacity, transform;
+}
+html.reveal-ready .reveal-stagger.is-visible {
+  opacity: 1;
+  transform: translate3d(0, 0, 0);
+  filter: saturate(1) contrast(1);
+}
+
+/* Section wrapper fades a fraction earlier; inner content does the travel. */
+html.reveal-ready .section-enter {
+  opacity: 0;
+  transition: opacity 560ms var(--ease-scene);
+}
+html.reveal-ready .section-enter.is-visible {
+  opacity: 1;
+}
+
+/* Marketing auto-motion on headings, imagery and conversion groups. */
+html.motion-ready[data-motion-scope="marketing"] [data-motion] {
+  opacity: 0;
+  transform: translate3d(0, 20px, 0);
+  transition:
+    opacity 600ms var(--ease-scene),
+    transform 600ms var(--ease-scene);
+  will-change: opacity, transform;
+}
+html.motion-ready[data-motion-scope="marketing"] [data-motion].motion-in {
+  opacity: 1;
+  transform: translate3d(0, 0, 0);
+}
+html.motion-ready[data-motion-scope="marketing"] [data-motion="editorial-clip"] {
+  opacity: 0;
+  transform: translate3d(0, 18px, 0);
+  clip-path: inset(18% 0 0 0);
+  transition:
+    opacity 600ms var(--ease-scene),
+    transform 600ms var(--ease-scene),
+    clip-path 760ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+html.motion-ready[data-motion-scope="marketing"] [data-motion="editorial-clip"].motion-in {
+  opacity: 1;
+  transform: translate3d(0, 0, 0);
+  clip-path: inset(0 0 0 0);
+}
+html.motion-ready[data-motion-scope="marketing"] [data-motion="card-reveal"] {
+  opacity: 0;
+  transform: translate3d(0, 22px, 0);
+  clip-path: inset(3% 3% 3% 3%);
+  filter: saturate(0.86) contrast(0.96);
+  transition:
+    opacity 620ms var(--ease-scene),
+    transform 620ms var(--ease-scene),
+    clip-path 760ms cubic-bezier(0.16, 1, 0.3, 1),
+    filter 760ms var(--ease-scene);
+}
+html.motion-ready[data-motion-scope="marketing"] [data-motion="card-reveal"].motion-in {
+  opacity: 1;
+  transform: translate3d(0, 0, 0);
+  clip-path: inset(0);
+  filter: saturate(1) contrast(1);
+}
+
+/* Homepage mobile travel is slightly shorter, but still visibly animated. */
+@media (max-width: 767.98px) {
+  html.reveal-ready .reveal,
+  html.reveal-ready .reveal-stagger {
+    transform: translate3d(0, 18px, 0);
+    transition-duration: 580ms;
+  }
+  html.motion-ready[data-motion-scope="marketing"] [data-motion],
+  html.motion-ready[data-motion-scope="marketing"] [data-motion="card-reveal"] {
+    transform: translate3d(0, 18px, 0);
+    transition-duration: 580ms;
+  }
+  html.motion-ready[data-motion-scope="marketing"] [data-motion].motion-in,
+  html.motion-ready[data-motion-scope="marketing"] [data-motion="card-reveal"].motion-in {
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+/* Clear cascade: cards arrive one after another rather than as one block. */
+html.reveal-ready .he-stagger > .reveal-stagger:nth-child(1) { transition-delay: 0ms !important; }
+html.reveal-ready .he-stagger > .reveal-stagger:nth-child(2) { transition-delay: 110ms !important; }
+html.reveal-ready .he-stagger > .reveal-stagger:nth-child(3) { transition-delay: 220ms !important; }
+html.reveal-ready .he-stagger > .reveal-stagger:nth-child(4) { transition-delay: 330ms !important; }
+html.reveal-ready .he-stagger > .reveal-stagger:nth-child(5) { transition-delay: 440ms !important; }
+html.reveal-ready .he-stagger > .reveal-stagger:nth-child(6) { transition-delay: 550ms !important; }
+
+/* Images settle in with a tiny cinematic zoom. */
+html[data-motion-scope="marketing"] .reveal img,
+html[data-motion-scope="marketing"] .reveal-stagger img,
+html[data-motion-scope="marketing"] [data-motion] img {
+  transform: scale(1.03);
+  transition:
+    transform 820ms var(--ease-scene),
+    opacity 620ms var(--ease-scene);
+}
+html[data-motion-scope="marketing"] .reveal.is-visible img,
+html[data-motion-scope="marketing"] .reveal-stagger.is-visible img,
+html[data-motion-scope="marketing"] [data-motion].motion-in img {
+  transform: scale(1);
+}
+
+/* Desktop interaction: tactile, not bouncy. */
+@media (hover: hover) and (pointer: fine) {
+  html[data-motion-scope="marketing"] .he-card-lift:hover,
+  html[data-motion-scope="marketing"] .fw-card:hover,
+  html[data-motion-scope="marketing"] .editorial-card:hover,
+  html[data-motion-scope="marketing"] [data-editorial-card]:hover,
+  html[data-motion-scope="marketing"] .five-ways-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 22px 46px -30px color-mix(in oklab, var(--charcoal) 46%, transparent);
+  }
+  html[data-motion-scope="marketing"] .premium-cta:hover,
+  html[data-motion-scope="marketing"] .editorial-action:hover {
+    transform: translateY(-1px);
+  }
+}
+
+/* Small gold details visibly draw/settle as their section arrives. */
+html.reveal-ready .is-visible .he-eyebrow-bar::before,
+html.reveal-ready .is-visible .he-section-rule::before,
+html.reveal-ready .is-visible .gold-divider {
+  animation: editorialRuleDraw 720ms var(--ease-scene) both;
+  transform-origin: left center;
+}
+@keyframes editorialRuleDraw {
+  from { transform: scaleX(0.35); opacity: 0.35; }
+  to { transform: scaleX(1); opacity: 1; }
+}
+
+/* Keep accessibility contract absolute. */
+@media (prefers-reduced-motion: reduce) {
+  html.reveal-ready .reveal,
+  html.reveal-ready .reveal-stagger,
+  html.reveal-ready .section-enter,
+  html.motion-ready[data-motion-scope="marketing"] [data-motion],
+  html.motion-ready[data-motion-scope="marketing"] [data-motion="editorial-clip"],
+  html.motion-ready[data-motion-scope="marketing"] [data-motion="card-reveal"],
+  html[data-motion-scope="marketing"] .reveal img,
+  html[data-motion-scope="marketing"] .reveal-stagger img,
+  html[data-motion-scope="marketing"] [data-motion] img {
+    opacity: 1 !important;
+    transform: none !important;
+    clip-path: none !important;
+    filter: none !important;
+    transition: none !important;
+    animation: none !important;
+  }
+}
