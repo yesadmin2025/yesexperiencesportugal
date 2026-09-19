@@ -177,6 +177,7 @@ function TourCard({
   return (
     <article
       className="experience-editorial-card scene-item group flex min-w-0 flex-col text-left"
+      data-experience-position={featured ? "lead" : "collection"}
       aria-label={tour.title}
     >
       <Link
@@ -219,6 +220,10 @@ function TourCard({
           </Link>
         </h3>
 
+        <p className="experience-card-promise mt-3 text-[14px] leading-[1.6] text-[color:var(--charcoal-soft)] md:text-[15px] md:leading-[1.65]">
+          {teaser}
+        </p>
+
         {verifiedRating && verifiedReviewCount && verifiedReviewCount > 0 && (
           <div
             className="mt-3 flex items-center gap-1.5 text-[12.5px] text-[color:var(--charcoal)]"
@@ -248,7 +253,7 @@ function TourCard({
         </div>
 
         {idealFor && (
-          <p className="mt-2 text-[13px] leading-[1.5] text-[color:var(--charcoal-soft)]">
+          <p className="experience-card-ideal mt-2 text-[13px] leading-[1.5] text-[color:var(--charcoal-soft)]">
             <span className="font-medium text-[color:var(--charcoal)]">Ideal for:</span> {idealFor}
           </p>
         )}
@@ -266,10 +271,6 @@ function TourCard({
             ))}
           </ul>
         )}
-
-        <p className="mt-4 min-h-[3.2em] text-[14px] leading-[1.6] text-[color:var(--charcoal-soft)] md:text-[15px] md:leading-[1.65]">
-          {teaser}
-        </p>
 
         <div className="experience-card-action mt-auto pt-5 md:pt-6 flex flex-wrap items-center gap-x-5 gap-y-2">
           <Link

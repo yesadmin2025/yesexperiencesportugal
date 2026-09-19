@@ -9,6 +9,7 @@ import {
   HOMEPAGE_MOMENTS,
   MULTI_DAY_MOMENTS,
 } from "@/content/guest-moments";
+import { HOME_PATH_IMAGE_LIST } from "@/content/home-path-images";
 
 describe("editorial image identity", () => {
   it("does not repeat an image between public conversion surfaces", () => {
@@ -45,5 +46,12 @@ describe("editorial image identity", () => {
     );
     expect(urls.join(" ")).not.toMatch(/douro-terraces-golden|alentejo-cork-dawn/);
     expect(urls.join(" ")).not.toMatch(/\/ambient\//);
+  });
+
+  it("gives every homepage decision path a distinct real image", () => {
+    const urls = HOME_PATH_IMAGE_LIST.map((photo) => photo.src);
+    expect(urls).toHaveLength(5);
+    expect(new Set(urls).size).toBe(urls.length);
+    expect(HOME_PATH_IMAGE_LIST.every((photo) => photo.alt.length > 0)).toBe(true);
   });
 });

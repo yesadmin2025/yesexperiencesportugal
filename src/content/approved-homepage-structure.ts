@@ -1,5 +1,5 @@
 /**
- * Approved homepage structure spec (v9 — 13-block guided conversion layout).
+ * Approved homepage structure spec (v10 — 11-chapter editorial conversion layout).
  *
  * Single source of truth for what the marketing homepage MUST contain
  * at mobile widths. Consumed by:
@@ -72,7 +72,7 @@ export interface ApprovedSection {
 }
 
 /**
- * The approved 13-block structure (v9 — proof follows all service choices).
+ * The approved 11-chapter structure (v10 — each service choice appears once).
  *
  * Order:
  *   1.  Hero
@@ -81,13 +81,11 @@ export interface ApprovedSection {
  *   4.  Experience Studio (promoted)
  *   5.  Signature experiences preview
  *   6.  Travel Designer (multi-day, bespoke)
- *   7.  Proposals & Celebrations
- *   8.  Corporate & Private Groups
- *   9.  Live guest reviews
- *   10. Explore Portugal map
- *   11. Local Stories
- *   12. FAQ
- *   13. Final decision
+ *   7.  Live guest reviews
+ *   8.  Explore Portugal map
+ *   9.  Local Stories
+ *   10. FAQ
+ *   11. Final decision
  */
 export const APPROVED_HOMEPAGE_SECTIONS: readonly ApprovedSection[] = [
   {
@@ -131,44 +129,32 @@ export const APPROVED_HOMEPAGE_SECTIONS: readonly ApprovedSection[] = [
   },
   {
     order: 7,
-    name: "Proposals & Celebrations",
-    ariaLabelledBy: "proposals-title",
-    requiredSpacing: { kind: "py", minScale: 16 },
-  },
-  {
-    order: 8,
-    name: "Corporate & Private Groups",
-    ariaLabelledBy: "corporate-title",
-    requiredSpacing: { kind: "py", minScale: 16 },
-  },
-  {
-    order: 9,
     name: "Live guest reviews",
     componentTag: "LiveReviews",
     inComponent: true,
     requiredSpacing: { kind: "py", minScale: 16 },
   },
   {
-    order: 10,
+    order: 8,
     name: "Explore Portugal — interactive region map",
     ariaLabelledBy: "plan-map-title",
     requiredSpacing: { kind: "pb", minScale: 10 },
   },
   {
-    order: 11,
+    order: 9,
     name: "Local Stories — selected guides",
     ariaLabelledBy: "journal-title",
     requiredSpacing: { kind: "pb", minScale: 16 },
   },
   {
-    order: 12,
+    order: 10,
     name: "FAQ — visible helpful answers",
     componentTag: "FAQ",
     inComponent: true,
     requiredSpacing: { kind: "py", minScale: 16 },
   },
   {
-    order: 13,
+    order: 11,
     name: "Final decision — three ways forward",
     ariaLabelledBy: "final-cta-title",
     requiredSpacing: { kind: "py", minScale: 16 },

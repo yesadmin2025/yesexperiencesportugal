@@ -28,16 +28,24 @@ export function usePublicEditorialMotion(pathname: string): void {
     let disposeController: (() => void) | undefined;
     let firstFrame = 0;
     let secondFrame = 0;
+    let idleHandle = 0;
+    let fallbackHandle = 0;
 
     const start = () => {
       if (!cancelled) disposeController = startHomeMotion();
     };
 
-    // Two frames keep DOM annotation post-hydration without the old mutation
-    // quiet-window, which could postpone mobile motion for 1.2 seconds.
+    // React may selectively hydrate lazy route content after the root effect.
+    // Wait for the first idle slot before annotating that DOM so the motion
+    // controller never races React's ownership of headings and cards.
     firstFrame = window.requestAnimationFrame(() => {
       secondFrame = window.requestAnimationFrame(() => {
-        if (!cancelled) start();
+        if (cancelled) return;
+        if ("requestIdleCallback" in window) {
+          idleHandle = window.requestIdleCallback(start, { timeout: 500 });
+        } else {
+          fallbackHandle = window.setTimeout(start, 160);
+        }
       });
     });
 
@@ -48,6 +56,8 @@ export function usePublicEditorialMotion(pathname: string): void {
       cancelled = true;
       window.cancelAnimationFrame(firstFrame);
       window.cancelAnimationFrame(secondFrame);
+      if (idleHandle && "cancelIdleCallback" in window) window.cancelIdleCallback(idleHandle);
+      window.clearTimeout(fallbackHandle);
       disposeController?.();
       document.documentElement.classList.remove("motion-ready");
       delete document.documentElement.dataset.motionScope;

@@ -62,8 +62,8 @@ describe("Homepage H2 — conversion tier (Studio, Final CTA)", () => {
   }
 });
 
-describe("Homepage H2 — editorial tier (Signatures, Proposals, Corporate)", () => {
-  const EDITORIAL_IDS = ["signatures-title", "proposals-title", "corporate-title"];
+describe("Homepage H2 — editorial tier (Signatures)", () => {
+  const EDITORIAL_IDS = ["signatures-title"];
 
   for (const id of EDITORIAL_IDS) {
     it(`#${id} uses 1.8rem → 2.1rem → 2.95rem ramp`, () => {

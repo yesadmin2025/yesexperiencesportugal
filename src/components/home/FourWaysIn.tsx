@@ -9,85 +9,75 @@
 
 import { useEffect, useState } from "react";
 import { Link } from "@tanstack/react-router";
-import { BookOpen, Wand2, Compass, Sparkles, Users, ArrowRight, type LucideIcon } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import { Eyebrow } from "@/components/ui/Eyebrow";
 import { CtaMotionArrow } from "@/components/ui/CtaButton";
 import { Scene } from "@/components/motion/Scene";
 import { CTA_LABELS } from "@/content/cta-vocabulary";
-import { TourImage } from "@/components/tours/TourImage";
-import imgStudio from "@/assets/tours/arrabida-wine-allinclusive/lunch.jpg";
-import imgSignature from "@/assets/tours/sintra-cascais/hero.jpg";
-import imgDesigner from "@/assets/tours/troia-comporta/hero.jpg";
+import { HOME_PATH_IMAGES } from "@/content/home-path-images";
+import { ResponsiveEditorialImage, type EditorialImageSource } from "@/components/ui/ResponsiveEditorialImage";
 
 type Path = {
   id: "signature" | "studio" | "designer" | "proposals" | "corporate";
-  Icon: LucideIcon;
   eyebrow: string;
   title: string;
   body: string;
   cta: string;
   href: string;
   analyticsEvent: string;
-  image?: string;
-  imageAlt?: string;
+  image: EditorialImageSource;
 };
 
 const PATHS: ReadonlyArray<Path> = [
   {
     id: "studio",
-    Icon: Wand2,
     eyebrow: "One custom day",
     title: "Shape a day around you",
     body: "Mood, pace and people — see the real route and live price, then confirm your private day instantly.",
     cta: CTA_LABELS.studio,
     href: "/studio-v3",
     analyticsEvent: "home_path_studio_click",
-    image: imgStudio,
-    imageAlt: "A private Portuguese lunch shaped as part of a YES Studio day.",
+    image: HOME_PATH_IMAGES.studio,
   },
   {
     id: "signature",
-    Icon: BookOpen,
     eyebrow: "Ready to book",
     title: "A private day, ready to go",
     body: "Reserve a proven private day as it is or tailor the details — with the real price and instant confirmation.",
     cta: CTA_LABELS.signatureDiscovery,
     href: "/experiences",
     analyticsEvent: "home_path_signature_click",
-    image: imgSignature,
-    imageAlt: "A real YES Signature day in Sintra and Cascais.",
+    image: HOME_PATH_IMAGES.signature,
   },
   {
     id: "designer",
-    Icon: Compass,
     eyebrow: "Several days",
     title: "Plan a whole Portugal journey",
     body: "A local Travel Designer shapes the route, pace, stays and logistics around the way you travel.",
     cta: CTA_LABELS.travelDesigner,
     href: "/multi-day",
     analyticsEvent: "home_path_designer_click",
-    image: imgDesigner,
-    imageAlt: "A private journey through the Tróia and Comporta coast.",
+    image: HOME_PATH_IMAGES.designer,
   },
   {
     id: "proposals",
-    Icon: Sparkles,
     eyebrow: "Proposals & celebrations",
     title: "A private moment, planned discreetly",
     body: "Proposals, anniversaries and milestone days shaped around the people and setting that matter.",
     cta: CTA_LABELS.moments,
     href: "/proposal-in-portugal",
     analyticsEvent: "home_secondary_moments_click",
+    image: HOME_PATH_IMAGES.proposals,
   },
   {
     id: "corporate",
-    Icon: Users,
     eyebrow: "Corporate & private groups",
     title: "Bring people together in Portugal",
     body: "Off-sites, incentives, client hosting and private group days with the practical details handled.",
     cta: CTA_LABELS.corporate,
     href: "/corporate",
     analyticsEvent: "home_secondary_corporate_click",
+    image: HOME_PATH_IMAGES.corporate,
   },
 ] as const;
 
@@ -180,12 +170,7 @@ export function FourWaysIn() {
           data-testid="home-smart-start"
           className="five-ways-story mx-auto mt-10 max-w-6xl md:mt-14"
         >
-          <div className="five-ways-primary">
-            {PATHS.slice(0, 3).map((path, index) => <PathCard key={path.id} path={path} featured index={index} />)}
-          </div>
-          <div className="five-ways-secondary">
-            {PATHS.slice(3).map((path, index) => <PathCard key={path.id} path={path} featured={false} index={index + 3} />)}
-          </div>
+          {PATHS.map((path, index) => <PathCard key={path.id} path={path} index={index} />)}
         </Scene>
 
         {hasDraft && (
@@ -216,19 +201,24 @@ export function FourWaysIn() {
   );
 }
 
-function PathCard({ path, featured, index }: { path: Path; featured: boolean; index: number }) {
-  const Icon = path.Icon;
+function PathCard({ path, index }: { path: Path; index: number }) {
   return (
     <Link
       to={path.href}
       data-home-primary-path={path.id}
       data-analytics={path.analyticsEvent}
-      className={`${featured ? "five-ways-card--primary" : "five-ways-card--secondary"} scene-item five-ways-card group no-underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--teal)] focus-visible:ring-offset-2`}
+      className={`five-ways-card five-ways-card--${path.id} scene-item group no-underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--teal)] focus-visible:ring-offset-2`}
     >
-      {featured && path.image && <TourImage src={path.image} alt={path.imageAlt ?? ""} ratio="4/5" className="five-ways-image" imgClassName="group-hover:scale-[1.02]" />}
+      <div className="five-ways-image" aria-hidden="true">
+        <ResponsiveEditorialImage
+          image={path.image}
+          sizes={path.id === "studio" ? "(min-width: 1024px) 58vw, 100vw" : "(min-width: 768px) 40vw, 100vw"}
+          className="h-full w-full object-cover"
+          decorative
+        />
+      </div>
       <div className="five-ways-copy">
       <div className="five-ways-kicker flex items-center justify-between gap-4">
-        {!featured && <Icon size={18} aria-hidden="true" />}
         <span className="text-[11.5px] uppercase tracking-[0.18em] font-semibold text-[color:var(--teal)]">
           {String(index + 1).padStart(2, "0")} · {path.eyebrow}
         </span>
