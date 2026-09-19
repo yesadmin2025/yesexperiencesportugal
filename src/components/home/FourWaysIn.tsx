@@ -118,7 +118,7 @@ const RHYTHM_LABELS: Readonly<Record<string, string>> = {
 
 export function FourWaysIn() {
   const managedDestinations = useHomePathDestinations();
-  const managedImages = new Map(managedDestinations.map((path) => [path.id, path.image]));
+  const managedPaths = new Map(managedDestinations.map((path) => [path.id, path]));
   const [draftSummary, setDraftSummary] = useState<ReadonlyArray<string>>([]);
   const [hasDraft, setHasDraft] = useState(false);
 
@@ -181,7 +181,12 @@ export function FourWaysIn() {
           {PATHS.map((path, index) => (
             <PathCard
               key={path.id}
-              path={{ ...path, image: managedImages.get(path.id as HomePathId) ?? path.image }}
+              path={{
+                ...path,
+                title: managedPaths.get(path.id as HomePathId)?.title || path.title,
+                routeLabel: managedPaths.get(path.id as HomePathId)?.routeLabel || path.routeLabel,
+                image: managedPaths.get(path.id as HomePathId)?.image ?? path.image,
+              }}
               index={index}
             />
           ))}

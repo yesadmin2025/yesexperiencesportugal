@@ -1,13 +1,12 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useCallback, useEffect, useRef, useState } from "react";
 import imageCompression from "browser-image-compression";
-import { ArrowLeft, Check, Loader2, Upload } from "lucide-react";
+import { ArrowLeft, Check, Loader2, MapPin, Upload } from "lucide-react";
 import { toast } from "sonner";
 import { SiteLayout } from "@/components/SiteLayout";
 import { Button } from "@/components/ui/button";
 import { HOME_PATH_DESTINATION_LIST, useHomePathDestinations, type HomePathId } from "@/content/home-path-images";
 import { supabase } from "@/integrations/supabase/client";
-import { publishOverridesBatch } from "@/lib/editorial-overrides";
 
 export const Route = createFileRoute("/admin/path-photos")({
   head: () => ({
@@ -25,7 +24,15 @@ export const Route = createFileRoute("/admin/path-photos")({
 });
 
 type AuthState = "loading" | "signed-out" | "not-admin" | "ready";
-type Draft = { file: File | null; preview: string; alt: string; sourceUrl: string };
+type Draft = {
+  file: File | null;
+  preview: string;
+  title: string;
+  routeLabel: string;
+  destination: string;
+  alt: string;
+  sourceUrl: string;
+};
 
 async function preparePhoto(file: File): Promise<File> {
   let input = file;
@@ -52,6 +59,9 @@ function AdminPathPhotosPage() {
     Object.fromEntries(HOME_PATH_DESTINATION_LIST.map((path) => [path.id, {
       file: null,
       preview: path.image.src,
+      title: "",
+      routeLabel: path.routeLabel,
+      destination: path.destination,
       alt: path.image.alt,
       sourceUrl: "",
     }])) as Record<HomePathId, Draft>,
@@ -79,6 +89,9 @@ function AdminPathPhotosPage() {
     setDrafts((current) => Object.fromEntries(managedDestinations.map((path) => [path.id, {
       ...current[path.id],
       preview: current[path.id].file ? current[path.id].preview : path.image.src,
+      title: current[path.id].title || path.title,
+      routeLabel: current[path.id].routeLabel || path.routeLabel,
+      destination: current[path.id].destination || path.destination,
       alt: current[path.id].file ? current[path.id].alt : path.image.alt,
     }])) as Record<HomePathId, Draft>);
   }, [managedDestinations]);
@@ -93,25 +106,36 @@ function AdminPathPhotosPage() {
   async function publish(id: HomePathId) {
     const index = HOME_PATH_DESTINATION_LIST.findIndex((path) => path.id === id);
     const draft = drafts[id];
-    if (!draft.file || index < 0) return;
+    if (index < 0) return;
+    if (!draft.title.trim() || !draft.routeLabel.trim() || !draft.destination.trim()) {
+      return toast.error("Complete the title, route and destination first.");
+    }
     if (!draft.alt.trim()) return toast.error("Add a clear photo description first.");
     setSaving(id);
     try {
-      const photo = await preparePhoto(draft.file);
-      const path = `home-paths/${id}/${Date.now()}-${crypto.randomUUID()}.jpg`;
-      const { error: uploadError } = await supabase.storage
-        .from("editorial-photos")
-        .upload(path, photo, { contentType: "image/jpeg", upsert: false });
-      if (uploadError) throw uploadError;
-      const stableUrl = `/api/public/editorial-photo?path=${encodeURIComponent(path)}`;
-      await publishOverridesBatch("home_paths", [{
-        slotIndex: index,
-        photoSrc: stableUrl,
-        alt: draft.alt.trim(),
-        caption: draft.sourceUrl.trim() || null,
-      }], HOME_PATH_DESTINATION_LIST.length);
+      let stableUrl = draft.preview;
+      if (draft.file) {
+        const photo = await preparePhoto(draft.file);
+        const path = `home-paths/${id}/${Date.now()}-${crypto.randomUUID()}.jpg`;
+        const { error: uploadError } = await supabase.storage
+          .from("editorial-photos")
+          .upload(path, photo, { contentType: "image/jpeg", upsert: false });
+        if (uploadError) throw uploadError;
+        stableUrl = `/api/public/editorial-photo?path=${encodeURIComponent(path)}`;
+      }
+      const { error: saveError } = await supabase.from("home_path_content").upsert({
+        path_id: id,
+        title: draft.title.trim(),
+        route_label: draft.routeLabel.trim(),
+        destination: draft.destination.trim(),
+        photo_src: stableUrl,
+        photo_alt: draft.alt.trim(),
+        source_url: draft.sourceUrl.trim() || null,
+        is_published: true,
+      });
+      if (saveError) throw saveError;
       setDrafts((current) => ({ ...current, [id]: { ...current[id], file: null, preview: stableUrl } }));
-      toast.success("Published on the card and homepage map.");
+      toast.success("Card and map updated.");
     } catch (error) {
       toast.error(error instanceof Error ? error.message : "Photo upload failed.");
     } finally {
@@ -134,24 +158,32 @@ function AdminPathPhotosPage() {
   return (
     <SiteLayout><section className="pb-20 pt-24"><div className="container-x max-w-5xl">
       <Link to="/admin" className="inline-flex min-h-11 items-center gap-2 text-xs uppercase tracking-[0.18em] text-[color:var(--charcoal-soft)]"><ArrowLeft size={14} /> Admin</Link>
-      <h1 className="mt-4 text-3xl">Five paths photos</h1>
-      <p className="mt-3 max-w-2xl text-sm leading-relaxed text-[color:var(--charcoal-soft)]">Upload an original photo once. It appears on the matching homepage card and map. For a photo saved from your official Instagram or Facebook account, add the original post link for provenance.</p>
+       <h1 className="mt-4 text-3xl">Five paths</h1>
+       <p className="mt-3 max-w-2xl text-sm leading-relaxed text-[color:var(--charcoal-soft)]">Edit the photo, title, route and destination. The previews change as you type; publishing updates the matching homepage card and map together.</p>
       <div className="mt-8 grid gap-6 md:grid-cols-2">
         {HOME_PATH_DESTINATION_LIST.map((path) => {
           const draft = drafts[path.id];
           return <article key={path.id} className="border border-[color:var(--border)] bg-[color:var(--ivory)] p-4">
-            <div className="aspect-[3/2] overflow-hidden bg-[color:var(--sand)]"><img src={draft.preview} alt={draft.alt} className="h-full w-full object-cover" /></div>
+            <div className="grid gap-3 sm:grid-cols-2">
+              <div><p className="mb-2 text-[11px] font-semibold uppercase tracking-[0.16em] text-[color:var(--charcoal-soft)]">Card preview</p><div className="relative aspect-[4/5] overflow-hidden bg-[color:var(--sand)]"><img src={draft.preview} alt={draft.alt} className="h-full w-full object-cover" /><span className="five-ways-route">{draft.routeLabel}</span></div><h2 className="serif mt-3 text-xl leading-tight">{draft.title}</h2></div>
+              <div><p className="mb-2 text-[11px] font-semibold uppercase tracking-[0.16em] text-[color:var(--charcoal-soft)]">Map preview</p><figure className="planner-map-panel__image m-0"><img src={draft.preview} alt="" className="h-full w-full object-cover" /><figcaption><span>{draft.destination}</span><strong>{draft.routeLabel}</strong></figcaption></figure><p className="mt-3 flex items-center gap-2 text-sm text-[color:var(--teal)]"><MapPin size={15} /> {draft.destination}</p></div>
+            </div>
             <p className="mt-4 text-xs font-semibold uppercase tracking-[0.18em] text-[color:var(--teal)]">{path.label}</p>
-            <p className="mt-1 text-sm text-[color:var(--charcoal-soft)]">{path.routeLabel}</p>
             <label className="mt-4 block text-xs font-medium" htmlFor={`photo-${path.id}`}>Photo</label>
             <input id={`photo-${path.id}`} type="file" accept="image/*,.heic,.heif" onChange={(event) => chooseFile(path.id, event.target.files?.[0])} className="mt-2 block w-full text-sm" />
+            <label className="mt-4 block text-xs font-medium" htmlFor={`title-${path.id}`}>Title</label>
+            <input id={`title-${path.id}`} value={draft.title} onChange={(event) => setDrafts((current) => ({ ...current, [path.id]: { ...current[path.id], title: event.target.value } }))} className="mt-2 min-h-11 w-full border border-[color:var(--border)] bg-transparent px-3 text-sm" />
+            <div className="grid gap-4 sm:grid-cols-2">
+              <div><label className="mt-4 block text-xs font-medium" htmlFor={`route-${path.id}`}>Route</label><input id={`route-${path.id}`} value={draft.routeLabel} onChange={(event) => setDrafts((current) => ({ ...current, [path.id]: { ...current[path.id], routeLabel: event.target.value } }))} className="mt-2 min-h-11 w-full border border-[color:var(--border)] bg-transparent px-3 text-sm" /></div>
+              <div><label className="mt-4 block text-xs font-medium" htmlFor={`destination-${path.id}`}>Destination</label><input id={`destination-${path.id}`} value={draft.destination} onChange={(event) => setDrafts((current) => ({ ...current, [path.id]: { ...current[path.id], destination: event.target.value } }))} className="mt-2 min-h-11 w-full border border-[color:var(--border)] bg-transparent px-3 text-sm" /></div>
+            </div>
             <label className="mt-4 block text-xs font-medium" htmlFor={`alt-${path.id}`}>What is visible</label>
             <input id={`alt-${path.id}`} value={draft.alt} onChange={(event) => setDrafts((current) => ({ ...current, [path.id]: { ...current[path.id], alt: event.target.value } }))} className="mt-2 min-h-11 w-full border border-[color:var(--border)] bg-transparent px-3 text-sm" />
             <label className="mt-4 block text-xs font-medium" htmlFor={`source-${path.id}`}>Original social post link (optional)</label>
             <input id={`source-${path.id}`} type="url" inputMode="url" placeholder="https://www.instagram.com/p/…" value={draft.sourceUrl} onChange={(event) => setDrafts((current) => ({ ...current, [path.id]: { ...current[path.id], sourceUrl: event.target.value } }))} className="mt-2 min-h-11 w-full border border-[color:var(--border)] bg-transparent px-3 text-sm" />
-            <Button type="button" disabled={!draft.file || saving !== null} onClick={() => void publish(path.id)} className="mt-5 min-h-11 w-full gap-2">
+            <Button type="button" disabled={saving !== null} onClick={() => void publish(path.id)} className="mt-5 min-h-11 w-full gap-2">
               {saving === path.id ? <Loader2 size={16} className="animate-spin" /> : draft.file ? <Upload size={16} /> : <Check size={16} />}
-              {saving === path.id ? "Publishing…" : draft.file ? "Publish to card and map" : "Choose a photo"}
+              {saving === path.id ? "Publishing…" : draft.file ? "Publish photo and details" : "Publish details"}
             </Button>
           </article>;
         })}
