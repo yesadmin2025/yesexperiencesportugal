@@ -8,7 +8,12 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { useServerFn } from "@tanstack/react-start";
-import { cancelAndRefundBooking, getAdminBooking } from "@/lib/bookingsAdmin.functions";
+import {
+  cancelAndRefundBooking,
+  getAdminBooking,
+  notifyBookingCustomer,
+  updateAdminBooking,
+} from "@/lib/bookingsAdmin.functions";
 import { Button } from "@/components/ui/button";
 import {
   buildSnapshotEmailPreview,
@@ -83,14 +88,33 @@ function AdminBookingDetailPage() {
   const [loading, setLoading] = useState(true);
   const [refundBusy, setRefundBusy] = useState(false);
   const [refundMessage, setRefundMessage] = useState<string | null>(null);
+  const [editOpen, setEditOpen] = useState(false);
+  const [editName, setEditName] = useState("");
+  const [editPhone, setEditPhone] = useState("");
+  const [editDate, setEditDate] = useState("");
+  const [editNotes, setEditNotes] = useState("");
+  const [editBusy, setEditBusy] = useState(false);
+  const [editMessage, setEditMessage] = useState<string | null>(null);
+  const [notifyText, setNotifyText] = useState("");
+  const [notifyBusy, setNotifyBusy] = useState(false);
+  const [notifyMessage, setNotifyMessage] = useState<string | null>(null);
+  const saveEdit = useServerFn(updateAdminBooking);
+  const notifyGuest = useServerFn(notifyBookingCustomer);
 
   useEffect(() => {
     let active = true;
     get({ data: { id } })
       .then((r) => {
         if (!active) return;
-        setBooking((r.booking as AnyRec) ?? null);
+        const b = (r.booking as AnyRec) ?? null;
+        setBooking(b);
         setSnapshot((r.snapshot as AnyRec) ?? null);
+        if (b) {
+          setEditName(b.customer_name ?? "");
+          setEditPhone(b.customer_phone ?? "");
+          setEditDate(b.preferred_date ?? "");
+          setEditNotes(b.notes ?? "");
+        }
       })
       .catch((e: unknown) => active && setError(e instanceof Error ? e.message : String(e)))
       .finally(() => active && setLoading(false));
@@ -161,6 +185,156 @@ function AdminBookingDetailPage() {
           {refundMessage}
         </p>
       ) : null}
+
+      <section className="mt-6 rounded-lg border border-[color:var(--sand)] bg-white p-5">
+        <div className="flex flex-wrap gap-2">
+          <Button
+            type="button"
+            variant="outline"
+            className="min-h-[44px]"
+            onClick={() => setEditOpen((v) => !v)}
+            aria-expanded={editOpen}
+          >
+            {editOpen ? "Close edit" : "Edit booking"}
+          </Button>
+        </div>
+
+        {editOpen ? (
+          <div className="mt-4 space-y-3">
+            <label className="block text-sm">
+              <span className="text-[11px] uppercase tracking-[0.18em] text-[color:var(--charcoal-soft)]">
+                Guest name
+              </span>
+              <input
+                value={editName}
+                onChange={(e) => setEditName(e.target.value)}
+                className="mt-1 w-full rounded-md border border-[color:var(--sand)] px-3 py-2.5 text-base"
+              />
+            </label>
+            <label className="block text-sm">
+              <span className="text-[11px] uppercase tracking-[0.18em] text-[color:var(--charcoal-soft)]">
+                Guest phone
+              </span>
+              <input
+                value={editPhone}
+                onChange={(e) => setEditPhone(e.target.value)}
+                className="mt-1 w-full rounded-md border border-[color:var(--sand)] px-3 py-2.5 text-base"
+              />
+            </label>
+            <label className="block text-sm">
+              <span className="text-[11px] uppercase tracking-[0.18em] text-[color:var(--charcoal-soft)]">
+                Trip date
+              </span>
+              <input
+                type="date"
+                value={editDate}
+                onChange={(e) => setEditDate(e.target.value)}
+                className="mt-1 block w-full min-w-0 max-w-full rounded-md border border-[color:var(--sand)] px-3 py-2.5 text-base"
+              />
+            </label>
+            <label className="block text-sm">
+              <span className="text-[11px] uppercase tracking-[0.18em] text-[color:var(--charcoal-soft)]">
+                Internal notes
+              </span>
+              <textarea
+                value={editNotes}
+                onChange={(e) => setEditNotes(e.target.value)}
+                rows={3}
+                className="mt-1 w-full rounded-md border border-[color:var(--sand)] px-3 py-2.5 text-base"
+              />
+            </label>
+            <p className="text-xs text-[color:var(--charcoal-soft)]">
+              Only operational details. Price and payment state never change here.
+            </p>
+            <Button
+              type="button"
+              className="min-h-[44px]"
+              disabled={editBusy}
+              onClick={async () => {
+                setEditBusy(true);
+                setEditMessage(null);
+                try {
+                  const result = await saveEdit({
+                    data: {
+                      id,
+                      customerName: editName.trim() || undefined,
+                      customerPhone: editPhone.trim() || null,
+                      preferredDate: editDate || null,
+                      notes: editNotes.trim() || null,
+                    },
+                  });
+                  if (result.changed) {
+                    setBooking((current: AnyRec | null) =>
+                      current
+                        ? {
+                            ...current,
+                            customer_name: editName.trim() || current.customer_name,
+                            customer_phone: editPhone.trim() || null,
+                            preferred_date: editDate || null,
+                            notes: editNotes.trim() || null,
+                          }
+                        : current,
+                    );
+                  }
+                  setEditMessage(result.changed ? "Saved." : "Nothing changed.");
+                } catch (cause) {
+                  setEditMessage(cause instanceof Error ? cause.message : "Could not save.");
+                } finally {
+                  setEditBusy(false);
+                }
+              }}
+            >
+              {editBusy ? "Saving…" : "Save changes"}
+            </Button>
+            {editMessage ? (
+              <p role="status" className="text-sm text-[color:var(--charcoal)]">
+                {editMessage}
+              </p>
+            ) : null}
+          </div>
+        ) : null}
+
+        <div className="mt-6 border-t border-[color:var(--sand)] pt-5">
+          <h3 className="text-[11px] uppercase tracking-[0.18em] text-[color:var(--charcoal-soft)]">
+            Notify guest
+          </h3>
+          <textarea
+            value={notifyText}
+            onChange={(e) => setNotifyText(e.target.value)}
+            rows={4}
+            placeholder="Write the message the guest receives by email…"
+            aria-label="Message to the guest"
+            className="mt-2 w-full rounded-md border border-[color:var(--sand)] px-3 py-2.5 text-base"
+          />
+          <Button
+            type="button"
+            variant="outline"
+            className="mt-2 min-h-[44px]"
+            disabled={notifyBusy || notifyText.trim().length < 10}
+            onClick={async () => {
+              if (!window.confirm(`Email this message to ${booking.customer_email}?`)) return;
+              setNotifyBusy(true);
+              setNotifyMessage(null);
+              try {
+                await notifyGuest({ data: { id, message: notifyText.trim() } });
+                setNotifyMessage(`Email sent to ${booking.customer_email}.`);
+                setNotifyText("");
+              } catch (cause) {
+                setNotifyMessage(cause instanceof Error ? cause.message : "The email could not be sent.");
+              } finally {
+                setNotifyBusy(false);
+              }
+            }}
+          >
+            {notifyBusy ? "Sending…" : "Send email to guest"}
+          </Button>
+          {notifyMessage ? (
+            <p role="status" className="mt-2 text-sm text-[color:var(--charcoal)]">
+              {notifyMessage}
+            </p>
+          ) : null}
+        </div>
+      </section>
 
       <Card title="Customer">
         <Row label="Name" value={booking.customer_name ?? snapshot?.customerName} />
