@@ -10,9 +10,9 @@ import {
   MULTI_DAY_MOMENTS,
 } from "@/content/guest-moments";
 import {
-  HOME_PATH_DESTINATION_LIST,
   HOME_PATH_EDITORIAL_SLOTS,
   HOME_PATH_IMAGE_LIST,
+  HOME_PATH_LIST,
 } from "@/content/home-path-images";
 
 describe("editorial image identity", () => {
@@ -63,13 +63,13 @@ describe("editorial image identity", () => {
     expect(editorialServiceUrls.some((src) => urls.includes(src))).toBe(false);
   });
 
-  it("uses the exact card image for every matching homepage map destination", () => {
-    expect(HOME_PATH_DESTINATION_LIST).toHaveLength(5);
-    expect(HOME_PATH_DESTINATION_LIST.map((path) => path.image.src)).toEqual(
+  it("keeps path photography editorial and independent from map geography", () => {
+    expect(HOME_PATH_LIST).toHaveLength(5);
+    expect(HOME_PATH_LIST.map((path) => path.image.src)).toEqual(
       HOME_PATH_IMAGE_LIST.map((photo) => photo.src),
     );
-    expect(HOME_PATH_DESTINATION_LIST.every((path) => path.mapRegionId.length > 0)).toBe(true);
-    expect(HOME_PATH_DESTINATION_LIST.every((path) => path.routeLabel.length > 0)).toBe(true);
+    expect(HOME_PATH_LIST.every((path) => !("routeLabel" in path))).toBe(true);
+    expect(HOME_PATH_LIST.every((path) => !("destination" in path))).toBe(true);
     expect(HOME_PATH_EDITORIAL_SLOTS.map((slot) => slot.src)).toEqual(
       HOME_PATH_IMAGE_LIST.map((photo) => photo.src),
     );

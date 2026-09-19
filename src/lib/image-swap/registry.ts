@@ -29,7 +29,7 @@ export type ModuleShape = {
 export const EDITORIAL_MODULES: ModuleShape[] = [
   {
     key: "home_paths",
-    label: "Homepage · Five paths & map",
+    label: "Homepage · Five editorial paths",
     kind: "moments",
     orientation: "landscape",
     desiredTags: ["people", "place", "wine", "culture"],
