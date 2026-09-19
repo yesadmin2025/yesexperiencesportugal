@@ -243,7 +243,6 @@ function MultiDayPage() {
           <SectionTitle as="h2" size="default" spacing="loose">
             How a private multi-day journey <SectionTitle.Em>is created.</SectionTitle.Em>
           </SectionTitle>
-          <span className="gold-rule mt-5 max-w-[64px]" aria-hidden="true" />
           <div className="mt-6 space-y-5 text-[color:var(--charcoal-soft)] leading-relaxed">
             <p>
               The process begins with the travellers: dates, interests, preferred pace and the
@@ -348,7 +347,6 @@ function MultiDayPage() {
             <SectionTitle size="compact" spacing="loose">
               From idea to <SectionTitle.Em>complete travel file.</SectionTitle.Em>
             </SectionTitle>
-            <span className="gold-rule mt-5 mx-auto max-w-[64px]" aria-hidden="true" />
           </div>
           <ol className="mt-10 md:mt-14 grid md:grid-cols-2 gap-5 md:gap-8">
             {PROCESS.map((s) => (
@@ -380,7 +378,6 @@ function MultiDayPage() {
             <SectionTitle size="compact" spacing="loose">
               Delivered as a <SectionTitle.Em>private travel file.</SectionTitle.Em>
             </SectionTitle>
-            <span className="gold-rule mt-5 mx-auto max-w-[64px]" aria-hidden="true" />
             <p className="mt-4 font-serif italic text-[1.05rem] md:text-[1.15rem] text-[color:var(--teal)] leading-snug">
               A journey you can understand before you live it.
             </p>
@@ -418,7 +415,6 @@ function MultiDayPage() {
               <h3 className="serif text-[1.25rem] md:text-[1.45rem] text-[color:var(--charcoal)] leading-tight">
                 What&rsquo;s inside your file
               </h3>
-              <span className="gold-rule mt-4 max-w-[48px]" aria-hidden="true" />
               <div className="mt-5 grid sm:grid-cols-2 md:grid-cols-1 gap-3 md:gap-4">
                 {FILE_GROUPS.map((c) => (
                   <div
@@ -497,7 +493,6 @@ function MultiDayPage() {
       <section className="py-14 md:py-24 reveal">
         <div className="container-x max-w-3xl">
           <Eyebrow icon={<RouteIcon strokeWidth={1.8} />}>Where it can go</Eyebrow>
-          <span className="gold-rule mt-4 max-w-[64px]" aria-hidden="true" />
           <SectionTitle size="compact" spacing="loose">
             Across Portugal, <SectionTitle.Em>shaped around your journey.</SectionTitle.Em>
           </SectionTitle>
