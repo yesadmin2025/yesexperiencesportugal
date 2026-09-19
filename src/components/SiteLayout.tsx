@@ -1,5 +1,4 @@
 import { ReactNode, useEffect } from "react";
-import { useRouterState } from "@tanstack/react-router";
 import { Navbar } from "./Navbar";
 import { Footer } from "./Footer";
 import { FloatingActions } from "./FloatingActions";
