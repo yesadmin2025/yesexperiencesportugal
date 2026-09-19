@@ -158,4 +158,4 @@
 ## 24. Premium motion correction — no bounce
 - [x] Remove vertical entrances, automatic card lift, layered Hero rise, and returning arrow cues.
 - [x] Replace them with fixed-position editorial masks, opacity cadence, film-led depth, and one-way CTA cues.
-- [ ] Validate real scroll sequences at 393px and 1280px, reduced motion, hydration, overflow, and conversion controls.
+- [x] Validate real scroll sequences at 393px and 1280px, reduced motion, hydration, overflow, and conversion controls.
