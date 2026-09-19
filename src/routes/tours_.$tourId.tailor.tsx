@@ -1800,7 +1800,7 @@ function Group({ title, children }: { title: string; children: React.ReactNode }
     <div role="group" aria-label={title}>
       <p
         aria-hidden="true"
-        className="text-[10px] uppercase tracking-[0.28em] text-[color:var(--charcoal-soft)] mb-3"
+        className="text-[11px] uppercase tracking-[0.28em] text-[color:var(--charcoal-soft)] mb-3"
       >
         {title}
       </p>

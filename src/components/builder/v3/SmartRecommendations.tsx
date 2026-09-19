@@ -115,7 +115,7 @@ export function SmartRecommendations({ anchor, profile, locale, max = 2 }: Props
     >
       <header className="flex flex-col items-center text-center gap-2 mb-5">
         <span
-          className="text-[10.5px] uppercase tracking-[0.32em] font-semibold"
+          className="text-[11px] uppercase tracking-[0.32em] font-semibold"
           style={{ color: "var(--gold)" }}
         >
           {t.eyebrow}
@@ -171,7 +171,7 @@ export function SmartRecommendations({ anchor, profile, locale, max = 2 }: Props
                     style={{ background: "linear-gradient(180deg, transparent, rgba(0,0,0,0.45))" }}
                   />
                   <span
-                    className="absolute top-2 left-2 inline-flex items-center rounded-[2px] px-2 py-1 text-[9.5px] uppercase tracking-[0.22em] font-bold"
+                    className="absolute top-2 left-2 inline-flex items-center rounded-[2px] px-2 py-1 text-[11px] uppercase tracking-[0.22em] font-bold"
                     style={{ background: "var(--ivory)", color: "var(--teal)" }}
                   >
                     {tour.theme}
@@ -205,7 +205,7 @@ export function SmartRecommendations({ anchor, profile, locale, max = 2 }: Props
                       <span className="opacity-70"> · {t.perGuest}</span>
                     </span>
                     <span
-                      className="text-[10.5px] uppercase tracking-[0.28em] font-bold inline-flex items-center gap-1"
+                      className="text-[11px] uppercase tracking-[0.28em] font-bold inline-flex items-center gap-1"
                       style={{ color: "var(--teal)" }}
                     >
                       {t.cta} →

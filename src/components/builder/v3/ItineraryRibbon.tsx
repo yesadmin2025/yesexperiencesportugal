@@ -60,7 +60,7 @@ export function ItineraryRibbon({
       aria-label={titleLabel}
     >
       <div className="px-4 py-3 border-b border-[color:var(--charcoal)]/10 flex items-center justify-between gap-3">
-        <span className="text-[10px] uppercase tracking-[0.28em] font-bold text-[color:var(--charcoal)]">
+        <span className="text-[11px] uppercase tracking-[0.28em] font-bold text-[color:var(--charcoal)]">
           {titleLabel}
         </span>
         <span className="inline-flex items-center gap-1.5 text-[11px] font-semibold text-[color:var(--charcoal)]/70">
@@ -92,7 +92,7 @@ export function ItineraryRibbon({
                 >
                   {phrase}
                 </p>
-                <p className="mt-1 text-[10.5px] uppercase tracking-[0.18em] text-[color:var(--text-subtle)] font-semibold">
+                <p className="mt-1 text-[11px] uppercase tracking-[0.18em] text-[color:var(--text-subtle)] font-semibold">
                   {fmtMinutes(s.duration_minutes)}
                 </p>
               </div>

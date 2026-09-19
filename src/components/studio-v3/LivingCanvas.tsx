@@ -69,7 +69,7 @@ export function LivingCanvas({
         className="w-full"
       >
         <p
-          className="text-[10.5px] uppercase tracking-[0.22em] font-semibold"
+          className="text-[11px] uppercase tracking-[0.22em] font-semibold"
           style={{ color: "var(--gold)", fontFamily: "var(--font-display)" }}
         >
           {model.geography.kind === "none" ? "Assembled" : `${geographyLabel(model)} · assembled`}
@@ -118,7 +118,7 @@ export function LivingCanvas({
         />
         {model.stage !== "mood" ? (
           <figcaption
-            className="absolute left-0 bottom-0 right-0 px-4 py-3 text-[10.5px] uppercase tracking-[0.22em] font-semibold"
+            className="absolute left-0 bottom-0 right-0 px-4 py-3 text-[11px] uppercase tracking-[0.22em] font-semibold"
             style={{
               fontFamily: "var(--font-display)",
               color: "var(--ivory)",

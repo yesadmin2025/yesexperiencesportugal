@@ -65,7 +65,7 @@ export function RhythmRibbon({ stops, legMinutes, className, testId }: RhythmRib
               />
               {stop.daypart ? (
                 <span
-                  className="mt-2 text-[9px] uppercase tracking-[0.24em] font-semibold"
+                  className="mt-2 text-[11px] uppercase tracking-[0.24em] font-semibold"
                   style={{ color: "color-mix(in oklab, var(--charcoal) 55%, transparent)" }}
                 >
                   {stop.daypart}
@@ -92,7 +92,7 @@ export function RhythmRibbon({ stops, legMinutes, className, testId }: RhythmRib
                   }}
                 />
                 <span
-                  className="mt-2 text-[9.5px] uppercase tracking-[0.22em] font-semibold"
+                  className="mt-2 text-[11px] uppercase tracking-[0.22em] font-semibold"
                   style={{ color: "color-mix(in oklab, var(--charcoal) 55%, transparent)" }}
                 >
                   {legMinutes && Number.isFinite(legMinutes[i])

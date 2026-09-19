@@ -149,7 +149,7 @@ export function RefineStage({ stops, alternates, onChange, caps }: Props) {
     <section className="mt-10">
       <div className="mb-4 flex items-baseline justify-between gap-3">
         <p
-          className="text-[10.5px] uppercase tracking-[0.32em]"
+          className="text-[11px] uppercase tracking-[0.32em]"
           style={{
             color: "color-mix(in oklab, var(--gold) 80%, var(--charcoal))",
             fontWeight: 700,
@@ -210,7 +210,7 @@ export function RefineStage({ stops, alternates, onChange, caps }: Props) {
                   </p>
                 )}
                 <div
-                  className="mt-2 flex flex-wrap items-center gap-x-3 gap-y-1 text-[10.5px] uppercase tracking-[0.22em]"
+                  className="mt-2 flex flex-wrap items-center gap-x-3 gap-y-1 text-[11px] uppercase tracking-[0.22em]"
                   style={{
                     color: "color-mix(in oklab, var(--charcoal) 55%, transparent)",
                     fontWeight: 600,
@@ -258,7 +258,7 @@ export function RefineStage({ stops, alternates, onChange, caps }: Props) {
       {/* Live metrics chip — recomputed from edits */}
       <div className="mt-5 flex flex-wrap items-center justify-center gap-x-3 gap-y-1.5">
         <span
-          className="text-[10px] uppercase tracking-[0.3em]"
+          className="text-[11px] uppercase tracking-[0.3em]"
           style={{
             color: "color-mix(in oklab, var(--gold) 82%, var(--charcoal))",
             fontWeight: 700,

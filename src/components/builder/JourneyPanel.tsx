@@ -73,7 +73,7 @@ export function JourneyPanel({
     <div className="flex h-full flex-col gap-5 p-5 md:p-6">
       {/* Header */}
       <header>
-        <span className="inline-flex items-center gap-2 text-[10.5px] uppercase tracking-[0.28em] font-semibold text-[color:var(--charcoal)]">
+        <span className="inline-flex items-center gap-2 text-[11px] uppercase tracking-[0.28em] font-semibold text-[color:var(--charcoal)]">
           Your journey
         </span>
         <h3 className="serif mt-2 text-[1.5rem] md:text-[1.8rem] leading-[1.1] font-semibold text-[color:var(--charcoal)]">
@@ -103,7 +103,7 @@ export function JourneyPanel({
           />
         ) : null}
         <div className="p-4">
-          <span className="text-[10px] uppercase tracking-[0.28em] font-bold text-[color:var(--charcoal)]">
+          <span className="text-[11px] uppercase tracking-[0.28em] font-bold text-[color:var(--charcoal)]">
             Story
           </span>
           <p
@@ -121,7 +121,7 @@ export function JourneyPanel({
       {/* Stops list */}
       <section>
         <div className="flex items-baseline justify-between">
-          <span className="text-[10px] uppercase tracking-[0.28em] font-bold text-[color:var(--charcoal)]">
+          <span className="text-[11px] uppercase tracking-[0.28em] font-bold text-[color:var(--charcoal)]">
             Selected moments
           </span>
           <span className="text-[11px] text-[color:var(--charcoal)]/50 tabular-nums">
@@ -151,7 +151,7 @@ export function JourneyPanel({
                     ratio="1/1"
                     className="h-14 w-14 shrink-0"
                   >
-                    <span className="absolute left-1 top-1 inline-flex h-5 w-5 items-center justify-center rounded-full bg-[color:var(--teal)] text-[10px] font-bold text-[color:var(--ivory)] tabular-nums">
+                    <span className="absolute left-1 top-1 inline-flex h-5 w-5 items-center justify-center rounded-full bg-[color:var(--teal)] text-[11px] font-bold text-[color:var(--ivory)] tabular-nums">
                       {i + 1}
                     </span>
                   </BuilderImage>
@@ -160,7 +160,7 @@ export function JourneyPanel({
                     aria-hidden="true"
                     className="relative h-14 w-14 shrink-0 overflow-hidden rounded-[2px] bg-[color:var(--sand)]/70 animate-pulse"
                   >
-                    <span className="absolute left-1 top-1 inline-flex h-5 w-5 items-center justify-center rounded-full bg-[color:var(--teal)] text-[10px] font-bold text-[color:var(--ivory)] tabular-nums">
+                    <span className="absolute left-1 top-1 inline-flex h-5 w-5 items-center justify-center rounded-full bg-[color:var(--teal)] text-[11px] font-bold text-[color:var(--ivory)] tabular-nums">
                       {i + 1}
                     </span>
                   </div>
@@ -220,7 +220,7 @@ export function JourneyPanel({
 
         {removablePool && removablePool.length > 0 && excluded.length > 0 && (
           <div className="mt-3 rounded-[2px] border border-dashed border-[color:var(--charcoal)]/15 p-3">
-            <p className="text-[10px] uppercase tracking-[0.28em] font-bold text-[color:var(--text-muted)]">
+            <p className="text-[11px] uppercase tracking-[0.28em] font-bold text-[color:var(--text-muted)]">
               Removed — tap to add back
             </p>
             <ul className="mt-2 flex flex-wrap gap-1.5">
@@ -250,7 +250,7 @@ export function JourneyPanel({
 
       {/* Pace control */}
       <section>
-        <span className="text-[10px] uppercase tracking-[0.28em] font-bold text-[color:var(--charcoal)]">
+        <span className="text-[11px] uppercase tracking-[0.28em] font-bold text-[color:var(--charcoal)]">
           Rhythm
         </span>
         <div className="mt-2 grid grid-cols-3 gap-2">
@@ -279,7 +279,7 @@ export function JourneyPanel({
                 <span className="text-[12px] font-semibold text-[color:var(--charcoal)]">
                   {meta.label}
                 </span>
-                <span className="text-[10.5px] text-[color:var(--text-muted)] leading-snug">
+                <span className="text-[11px] text-[color:var(--text-muted)] leading-snug">
                   {meta.sub}
                 </span>
               </button>

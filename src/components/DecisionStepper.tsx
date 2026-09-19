@@ -156,7 +156,7 @@ export function DecisionStepper({ sectionId, steps }: Props) {
                 className="group flex items-center gap-2 py-1 pl-2 pr-1"
               >
                 <span
-                  className={`text-[10px] uppercase tracking-[0.22em] font-medium transition-all duration-300 ${
+                  className={`text-[11px] uppercase tracking-[0.22em] font-medium transition-all duration-300 ${
                     isActive
                       ? "opacity-100 text-[color:var(--charcoal)] translate-x-0"
                       : "opacity-0 -translate-x-1 text-[color:var(--charcoal-soft)] group-hover:opacity-70 group-hover:translate-x-0"

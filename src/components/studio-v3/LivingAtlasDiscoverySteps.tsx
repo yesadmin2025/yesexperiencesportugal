@@ -68,7 +68,7 @@ export function EntryStep({
   return (
     <div className="mx-auto max-w-4xl text-center">
       <p
-        className="text-[10px] font-bold uppercase tracking-[0.3em]"
+        className="text-[11px] font-bold uppercase tracking-[0.3em]"
         style={{ color: "var(--gold)" }}
       >
         The invitation
@@ -126,7 +126,7 @@ function ChoiceCard({
       }}
     >
       <p
-        className="text-[10px] font-bold uppercase tracking-[0.26em]"
+        className="text-[11px] font-bold uppercase tracking-[0.26em]"
         style={{ color: "var(--gold)" }}
       >
         {eyebrow}
@@ -155,7 +155,7 @@ function StepHeading({ eyebrow, title, copy }: { eyebrow: string; title: string;
   return (
     <div className="mx-auto max-w-3xl text-center">
       <p
-        className="text-[10px] font-bold uppercase tracking-[0.3em]"
+        className="text-[11px] font-bold uppercase tracking-[0.3em]"
         style={{ color: "var(--gold)" }}
       >
         {eyebrow}

@@ -145,14 +145,14 @@ export function LiveMapPreview() {
 
       {/* Live indicator + label overlays */}
       <div className="absolute top-5 left-5 right-5 flex items-center justify-between text-[color:var(--ivory)]">
-        <span className="inline-flex items-center gap-2 text-[10px] uppercase tracking-[0.32em] text-[color:var(--charcoal)]">
+        <span className="inline-flex items-center gap-2 text-[11px] uppercase tracking-[0.32em] text-[color:var(--charcoal)]">
           <span className="relative inline-flex h-1.5 w-1.5">
             <span className="absolute inline-flex h-full w-full rounded-full bg-[color:var(--gold)] opacity-70 animate-ping" />
             <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-[color:var(--gold)]" />
           </span>
           Routing
         </span>
-        <span className="text-[10px] uppercase tracking-[0.28em] text-[color:var(--text-on-dark-muted)]">
+        <span className="text-[11px] uppercase tracking-[0.28em] text-[color:var(--text-on-dark-muted)]">
           Portugal · Live
         </span>
       </div>
@@ -162,7 +162,7 @@ export function LiveMapPreview() {
         {stops.map((s) => (
           <li
             key={s.label}
-            className="absolute text-[10.5px] uppercase tracking-[0.28em] text-[color:var(--ivory)]/85 transition-opacity duration-700"
+            className="absolute text-[11px] uppercase tracking-[0.28em] text-[color:var(--ivory)]/85 transition-opacity duration-700"
             style={{
               left: `${(s.x / 200) * 100}%`,
               top: `${(s.y / 400) * 100}%`,
@@ -179,14 +179,14 @@ export function LiveMapPreview() {
       {/* Floor caption */}
       <div className="absolute left-5 bottom-5 right-5 flex items-end justify-between text-[color:var(--ivory)]/90">
         <div>
-          <p className="text-[10.5px] uppercase tracking-[0.32em] text-[color:var(--charcoal)]">
+          <p className="text-[11px] uppercase tracking-[0.32em] text-[color:var(--charcoal)]">
             Today's draft
           </p>
           <p className="serif italic text-[15px] md:text-[16px] mt-1.5 text-[color:var(--ivory)]/95 leading-tight">
             A road that opens to the sea.
           </p>
         </div>
-        <span className="text-[10px] uppercase tracking-[0.28em] text-[color:var(--text-on-dark-muted)]">
+        <span className="text-[11px] uppercase tracking-[0.28em] text-[color:var(--text-on-dark-muted)]">
           4 stops · 1 day
         </span>
       </div>

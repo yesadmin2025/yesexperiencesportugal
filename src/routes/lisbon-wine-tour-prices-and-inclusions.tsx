@@ -141,7 +141,7 @@ function PricesAndInclusions() {
           <ul className="mt-10 grid gap-5 md:grid-cols-3 list-none p-0">
             {DAYS.map((tour) => (
               <li key={tour.id} className={`${cardClass} flex flex-col`}>
-                <span className="font-sans text-[10.5px] uppercase tracking-[0.22em] font-bold text-[color:var(--gold)]">
+                <span className="font-sans text-[11px] uppercase tracking-[0.22em] font-bold text-[color:var(--gold)]">
                   {tour.region}
                 </span>
                 <h3 className="font-display mt-3 text-[1.15rem] leading-snug text-[color:var(--charcoal)]">

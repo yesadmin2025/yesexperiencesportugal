@@ -183,7 +183,7 @@ export function EmbeddedConfirmationSheet({
               <Check className="h-5 w-5" />
             </div>
             <p
-              className="text-[10.5px] uppercase tracking-[0.32em] mb-3"
+              className="text-[11px] uppercase tracking-[0.32em] mb-3"
               style={{
                 color: "color-mix(in oklab, var(--gold) 82%, var(--charcoal))",
                 fontWeight: 700,
@@ -229,7 +229,7 @@ export function EmbeddedConfirmationSheet({
         ) : (
           <>
             <p
-              className="text-[10.5px] uppercase tracking-[0.32em]"
+              className="text-[11px] uppercase tracking-[0.32em]"
               style={{
                 color: "color-mix(in oklab, var(--gold) 82%, var(--charcoal))",
                 fontWeight: 700,
@@ -377,7 +377,7 @@ function Field({ label, children }: { label: string; children: React.ReactNode }
   return (
     <label className="block">
       <span
-        className="mb-1.5 block text-[10.5px] uppercase tracking-[0.28em]"
+        className="mb-1.5 block text-[11px] uppercase tracking-[0.28em]"
         style={{ color: "color-mix(in oklab, var(--charcoal) 60%, transparent)", fontWeight: 600 }}
       >
         {label}

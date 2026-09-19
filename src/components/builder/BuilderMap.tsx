@@ -377,14 +377,14 @@ export function BuilderMap({
               : tr.stopsStatic;
           return (
             <>
-              <div className="absolute top-3 left-3 z-[400] inline-flex items-center gap-2 rounded-full bg-[color:var(--ivory)]/95 backdrop-blur px-3 py-1.5 text-[10px] uppercase tracking-[0.28em] font-bold text-[color:var(--charcoal)] shadow-sm">
+              <div className="absolute top-3 left-3 z-[400] inline-flex items-center gap-2 rounded-full bg-[color:var(--ivory)]/95 backdrop-blur px-3 py-1.5 text-[11px] uppercase tracking-[0.28em] font-bold text-[color:var(--charcoal)] shadow-sm">
                 <span className="relative inline-flex h-1.5 w-1.5">
                   <span className="absolute inset-0 animate-ping rounded-full bg-[color:var(--gold)] opacity-60" />
                   <span className="relative inline-block h-1.5 w-1.5 rounded-full bg-[color:var(--gold)]" />
                 </span>
                 {liveLabel}
               </div>
-              <div className="absolute top-3 right-3 z-[400] inline-flex items-center gap-1.5 rounded-full bg-[color:var(--ivory)]/95 backdrop-blur px-3 py-1.5 text-[10.5px] uppercase tracking-[0.22em] font-semibold text-[color:var(--charcoal)]/75 shadow-sm">
+              <div className="absolute top-3 right-3 z-[400] inline-flex items-center gap-1.5 rounded-full bg-[color:var(--ivory)]/95 backdrop-blur px-3 py-1.5 text-[11px] uppercase tracking-[0.22em] font-semibold text-[color:var(--charcoal)]/75 shadow-sm">
                 <MapPin size={11} aria-hidden="true" />
                 {n} {stopWord}
               </div>

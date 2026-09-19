@@ -68,7 +68,7 @@ export function LocaleSwitcher({ locale, onChange, tone = "light", collapsed = f
               if (collapsed) setOpen(false);
             }}
             aria-pressed={active}
-            className={`inline-flex items-center justify-center min-w-[34px] min-h-[34px] px-1.5 rounded-full text-[10.5px] uppercase tracking-[0.22em] font-bold transition-colors ${
+            className={`inline-flex items-center justify-center min-w-[34px] min-h-[34px] px-1.5 rounded-full text-[11px] uppercase tracking-[0.22em] font-bold transition-colors ${
               active
                 ? "bg-[color:var(--gold)]/85 text-[color:var(--charcoal)]"
                 : isLight

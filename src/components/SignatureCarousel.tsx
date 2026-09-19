@@ -274,7 +274,7 @@ export function SignatureCarousel({ items, autoplayMs = DEFAULT_AUTOPLAY_MS }: P
 
                 {/* Top-left pace eyebrow — sets pace before the title. */}
                 {s.pace && s.pace[0] && (
-                  <span className="absolute top-4 left-4 inline-flex items-center gap-2 text-[10px] uppercase tracking-[0.28em] text-[color:var(--gold-soft)]">
+                  <span className="absolute top-4 left-4 inline-flex items-center gap-2 text-[11px] uppercase tracking-[0.28em] text-[color:var(--gold-soft)]">
                     <span className="block h-px w-5 bg-[color:var(--gold)]/80" />
                     {s.pace[0]}
                   </span>

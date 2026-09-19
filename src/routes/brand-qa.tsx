@@ -213,7 +213,7 @@ function BrandQAPage() {
                     <code className="text-xs">--{row.name}</code>
                     <span
                       className={
-                        "rounded-full px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider " +
+                        "rounded-full px-2 py-0.5 text-[11px] font-semibold uppercase tracking-wider " +
                         (row.ok
                           ? "bg-[color:var(--sand)] text-[color:var(--teal)]"
                           : "bg-red-100 text-red-700")

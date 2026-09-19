@@ -211,7 +211,7 @@ export function MultiDayConcierge({ t, mood, who, intention, travellerName, onBa
         <button
           type="button"
           onClick={onBack}
-          className="self-start inline-flex items-center gap-1.5 text-[10.5px] uppercase tracking-[0.24em] font-semibold text-[color:var(--text-on-dark-muted)] hover:text-[color:var(--ivory)]/85 transition-colors"
+          className="self-start inline-flex items-center gap-1.5 text-[11px] uppercase tracking-[0.24em] font-semibold text-[color:var(--text-on-dark-muted)] hover:text-[color:var(--ivory)]/85 transition-colors"
           style={{ fontFamily: "var(--font-sans)" }}
         >
           <ArrowLeft size={11} />
@@ -223,7 +223,7 @@ export function MultiDayConcierge({ t, mood, who, intention, travellerName, onBa
           <div className="flex flex-col items-center gap-4 animate-in fade-in slide-in-from-bottom-2 duration-[1200ms]">
             <span aria-hidden="true" className="block h-px w-10 bg-[color:var(--gold)]/70" />
             <p
-              className="text-[10px] uppercase tracking-[0.36em] font-bold text-[color:var(--charcoal)]"
+              className="text-[11px] uppercase tracking-[0.36em] font-bold text-[color:var(--charcoal)]"
               style={{ fontFamily: "var(--font-sans)" }}
             >
               {invitationLabel(locale)}

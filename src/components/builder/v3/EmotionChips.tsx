@@ -177,7 +177,7 @@ export function EmotionChips({ t, tone = "light", active, onPick }: Props) {
         className="animate-in fade-in slide-in-from-bottom-2 duration-[600ms] ease-out"
       >
         <p
-          className={`text-center text-[9.5px] uppercase tracking-[0.32em] font-semibold mb-1 ${stepColor}`}
+          className={`text-center text-[11px] uppercase tracking-[0.32em] font-semibold mb-1 ${stepColor}`}
         >
           {stepLine}
         </p>
@@ -219,7 +219,7 @@ export function EmotionChips({ t, tone = "light", active, onPick }: Props) {
             <button
               type="button"
               onClick={goBack}
-              className={`inline-flex items-center gap-1 text-[10.5px] uppercase tracking-[0.22em] font-semibold ${hintColor} hover:opacity-100 opacity-70 transition-opacity`}
+              className={`inline-flex items-center gap-1 text-[11px] uppercase tracking-[0.22em] font-semibold ${hintColor} hover:opacity-100 opacity-70 transition-opacity`}
             >
               <ChevronLeft size={11} />
               {t.phaseBack}
@@ -228,7 +228,7 @@ export function EmotionChips({ t, tone = "light", active, onPick }: Props) {
           <button
             type="button"
             onClick={advance}
-            className={`text-[10.5px] uppercase tracking-[0.22em] font-semibold ${hintColor} hover:opacity-100 opacity-60 transition-opacity`}
+            className={`text-[11px] uppercase tracking-[0.22em] font-semibold ${hintColor} hover:opacity-100 opacity-60 transition-opacity`}
           >
             {t.phaseSkip}
           </button>

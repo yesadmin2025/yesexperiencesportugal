@@ -214,7 +214,7 @@ export function InlineEmailCapture() {
     >
       <div className="flex items-center justify-center gap-2 text-[color:var(--teal)]">
         <Mail aria-hidden="true" className="h-4 w-4" />
-        <span className="text-[10.5px] tracking-[0.22em] uppercase font-medium">Free guide</span>
+        <span className="text-[11px] tracking-[0.22em] uppercase font-medium">Free guide</span>
       </div>
       <h3 className="serif mt-2 text-center text-[20px] sm:text-[22px] leading-snug text-[color:var(--charcoal)]">
         A Local&apos;s Map:{" "}
@@ -315,7 +315,7 @@ export function ExitIntentEmailCapture() {
 
         <div className="flex items-center justify-center gap-2 text-[color:var(--teal)]">
           <Mail aria-hidden="true" className="h-4 w-4" />
-          <span className="text-[10.5px] tracking-[0.22em] uppercase font-medium">
+          <span className="text-[11px] tracking-[0.22em] uppercase font-medium">
             Before you go
           </span>
         </div>

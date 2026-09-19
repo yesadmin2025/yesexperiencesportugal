@@ -241,7 +241,7 @@ function BookingConfirmedPage() {
           </p>
 
           {session_id ? (
-            <p className="mt-4 text-[10px] uppercase tracking-[0.26em] text-[color:var(--charcoal-soft)]">
+            <p className="mt-4 text-[11px] uppercase tracking-[0.26em] text-[color:var(--charcoal-soft)]">
               Reference · {session_id.slice(-12)}
             </p>
           ) : null}
@@ -268,7 +268,7 @@ function BookingConfirmedPage() {
                 .filter(([, value]) => Boolean(value))
                 .map(([label, value]) => (
                   <div key={label} className="bg-[color:var(--ivory)] px-5 py-4">
-                    <dt className="text-[10.5px] uppercase tracking-[0.24em] text-[color:var(--charcoal-soft)]">
+                    <dt className="text-[11px] uppercase tracking-[0.24em] text-[color:var(--charcoal-soft)]">
                       {label}
                     </dt>
                     <dd className="mt-1.5 text-[14px] leading-relaxed text-[color:var(--charcoal)]">
@@ -281,7 +281,7 @@ function BookingConfirmedPage() {
 
           {session_id && paid ? (
             <div className="mt-8 border border-[color:var(--gold)]/45 bg-[color:var(--ivory)] p-6 sm:p-7 text-left">
-              <p className="text-[10.5px] uppercase tracking-[0.26em] text-[color:var(--charcoal)]">
+              <p className="text-[11px] uppercase tracking-[0.26em] text-[color:var(--charcoal)]">
                 Your day, in full
               </p>
               <p className="mt-2 text-[14px] leading-relaxed text-[color:var(--charcoal-soft)]">

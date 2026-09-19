@@ -75,7 +75,7 @@ export function StoryOpener({ profile, region, signals }: Props) {
   return (
     <div className="mx-auto mb-10 max-w-[36ch]">
       <p
-        className="text-[10.5px] font-bold uppercase tracking-[0.32em]"
+        className="text-[11px] font-bold uppercase tracking-[0.32em]"
         style={{ color: "color-mix(in oklab, var(--charcoal) 60%, transparent)" }}
       >
         Your story

@@ -1510,7 +1510,7 @@ function TextPhase({
         />
         {chapter.help && (
           <p
-            className="mt-3 text-[10.5px] uppercase text-[color:var(--text-on-dark-muted)] text-center"
+            className="mt-3 text-[11px] uppercase text-[color:var(--text-on-dark-muted)] text-center"
             style={{ fontFamily: "'Inter', system-ui, sans-serif", letterSpacing: "0.18em" }}
           >
             {chapter.help(locale)}
@@ -1854,7 +1854,7 @@ function ProgressiveBuildPreview({
           <div className="flex items-start justify-between gap-2">
             <div className="min-w-0 flex-1">
               <p
-                className="mb-0.5 text-[9px] uppercase"
+                className="mb-0.5 text-[11px] uppercase"
                 style={{
                   fontFamily: "'Inter', system-ui, sans-serif",
                   fontWeight: 700,
@@ -1895,7 +1895,7 @@ function ProgressiveBuildPreview({
             <Link
               to="/studio-v3"
               search={{ legacy: "stepper" } as never}
-              className="inline-flex shrink-0 items-center gap-1 rounded-full border border-[color:var(--gold)]/55 bg-[color:var(--gold)]/12 px-2.5 py-1 text-[9.5px] uppercase tracking-[0.18em] font-semibold text-[color:var(--charcoal)] transition-colors hover:bg-[color:var(--gold)]/22 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[color:var(--gold)]"
+              className="inline-flex shrink-0 items-center gap-1 rounded-full border border-[color:var(--gold)]/55 bg-[color:var(--gold)]/12 px-2.5 py-1 text-[11px] uppercase tracking-[0.18em] font-semibold text-[color:var(--charcoal)] transition-colors hover:bg-[color:var(--gold)]/22 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[color:var(--gold)]"
               aria-label="Continue this draft in the full builder"
             >
               Reserve →
@@ -2131,7 +2131,7 @@ function ConvergencePhase({
         <Vignette stronger />
         <div className="absolute inset-x-0 bottom-8 z-20 px-6 pointer-events-none">
           <p
-            className="mx-auto mb-3 text-center text-[9.5px] uppercase text-[color:var(--charcoal)]"
+            className="mx-auto mb-3 text-center text-[11px] uppercase text-[color:var(--charcoal)]"
             style={{
               fontFamily: "'Inter', system-ui, sans-serif",
               fontWeight: 700,
@@ -2175,7 +2175,7 @@ function ConvergencePhase({
         style={{ opacity: ready ? 1 : 0 }}
       >
         <p
-          className="text-center text-[10.5px] uppercase mb-2"
+          className="text-center text-[11px] uppercase mb-2"
           style={{
             fontFamily: "'Inter', system-ui, sans-serif",
             letterSpacing: "0.22em",
@@ -2185,7 +2185,7 @@ function ConvergencePhase({
           {tName("reveal.eyebrow", locale, profile.name)}
         </p>
         <p
-          className="text-center text-[9.5px] uppercase mb-6"
+          className="text-center text-[11px] uppercase mb-6"
           style={{
             fontFamily: "'Inter', system-ui, sans-serif",
             letterSpacing: "0.28em",
@@ -2223,7 +2223,7 @@ function ConvergencePhase({
             {serverPayload.dna.map((t, i) => (
               <span
                 key={t.key}
-                className="inline-flex items-center px-3 py-1 rounded-full text-[10px] tracking-[0.22em] uppercase motion-safe:animate-[fade-in_0.6s_ease-out_both]"
+                className="inline-flex items-center px-3 py-1 rounded-full text-[11px] tracking-[0.22em] uppercase motion-safe:animate-[fade-in_0.6s_ease-out_both]"
                 style={{
                   fontFamily: "'Inter', system-ui, sans-serif",
                   fontWeight: 600,
@@ -2350,7 +2350,7 @@ function ConvergencePhase({
                     {s.blurb}
                   </p>
                   <p
-                    className="mt-2 text-[10.5px] tracking-[0.18em] uppercase"
+                    className="mt-2 text-[11px] tracking-[0.18em] uppercase"
                     style={{
                       fontFamily: "'Inter', system-ui, sans-serif",
                       color: "color-mix(in oklab, var(--charcoal) 50%, transparent)",

@@ -91,7 +91,7 @@ export function ReviewScreen({
                   key={s.key}
                   className="inline-flex items-center gap-1.5 rounded-full bg-[color:var(--ivory)] border border-[color:var(--charcoal)]/12 px-2.5 py-1 text-[11.5px] font-semibold text-[color:var(--charcoal)] shadow-sm"
                 >
-                  <span className="inline-flex h-4 w-4 items-center justify-center rounded-full bg-[color:var(--teal)] text-[9.5px] text-[color:var(--ivory)] tabular-nums">
+                  <span className="inline-flex h-4 w-4 items-center justify-center rounded-full bg-[color:var(--teal)] text-[11px] text-[color:var(--ivory)] tabular-nums">
                     {i + 1}
                   </span>
                   {s.label}
@@ -103,7 +103,7 @@ export function ReviewScreen({
       </div>
 
       <div className="container-x py-10 md:py-16 builder-reveal">
-        <span className="inline-flex items-center gap-2 text-[10.5px] uppercase tracking-[0.28em] font-semibold text-[color:var(--charcoal)]">
+        <span className="inline-flex items-center gap-2 text-[11px] uppercase tracking-[0.28em] font-semibold text-[color:var(--charcoal)]">
           Final review
         </span>
         <h2 className="serif mt-3 text-[2rem] sm:text-[2.6rem] md:text-[3rem] leading-[1.04] tracking-[-0.01em] font-semibold">
@@ -125,7 +125,7 @@ export function ReviewScreen({
           {/* Left: details */}
           <div className="flex flex-col gap-6">
             <div className="rounded-[2px] border border-[color:var(--charcoal)]/12 bg-[color:var(--ivory)] p-5">
-              <p className="text-[10px] uppercase tracking-[0.28em] font-bold text-[color:var(--charcoal)]">
+              <p className="text-[11px] uppercase tracking-[0.28em] font-bold text-[color:var(--charcoal)]">
                 Your route
               </p>
               <p className="mt-1 serif text-[1.25rem] font-semibold leading-[1.15] text-[color:var(--charcoal)]">
@@ -179,10 +179,10 @@ export function ReviewScreen({
             {selectedElementLabels && selectedElementLabels.length > 0 && (
               <div className="rounded-[2px] border border-[color:var(--gold)]/40 bg-[color:var(--gold)]/8 p-5">
                 <div className="flex items-baseline justify-between">
-                  <p className="text-[10px] uppercase tracking-[0.28em] font-bold text-[color:var(--charcoal)]">
+                  <p className="text-[11px] uppercase tracking-[0.28em] font-bold text-[color:var(--charcoal)]">
                     Added to your day
                   </p>
-                  <p className="text-[10px] uppercase tracking-[0.22em] font-bold text-[color:var(--text-muted)]">
+                  <p className="text-[11px] uppercase tracking-[0.22em] font-bold text-[color:var(--text-muted)]">
                     Concierge confirms
                   </p>
                 </div>
@@ -219,7 +219,7 @@ export function ReviewScreen({
           {/* Right: trust + price + CTAs */}
           <aside className="flex flex-col gap-5 self-start lg:sticky lg:top-24">
             <div className="rounded-[2px] border border-[color:var(--charcoal)]/12 bg-[color:var(--sand)]/40 p-5">
-              <p className="text-[10px] uppercase tracking-[0.28em] font-bold text-[color:var(--charcoal)]">
+              <p className="text-[11px] uppercase tracking-[0.28em] font-bold text-[color:var(--charcoal)]">
                 Estimated investment
               </p>
               <p className="mt-2 serif text-[2.4rem] leading-none font-semibold tabular-nums">
@@ -280,7 +280,7 @@ export function ReviewScreen({
                   type="button"
                   onClick={onReset}
                   aria-label="Start over — clears your selections"
-                  className="inline-flex items-center gap-1.5 text-[10.5px] uppercase tracking-[0.24em] font-bold text-[color:var(--text-muted)] hover:text-[color:var(--teal)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)] rounded-sm px-1 py-0.5 transition-colors"
+                  className="inline-flex items-center gap-1.5 text-[11px] uppercase tracking-[0.24em] font-bold text-[color:var(--text-muted)] hover:text-[color:var(--teal)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)] rounded-sm px-1 py-0.5 transition-colors"
                 >
                   <X size={12} aria-hidden="true" />
                   Start over
@@ -305,7 +305,7 @@ function Stat({
 }) {
   return (
     <div className="rounded-[2px] border border-[color:var(--charcoal)]/12 bg-[color:var(--ivory)] px-3 py-2.5">
-      <p className="text-[9.5px] uppercase tracking-[0.24em] font-semibold text-[color:var(--text-muted)]">
+      <p className="text-[11px] uppercase tracking-[0.24em] font-semibold text-[color:var(--text-muted)]">
         {label}
       </p>
       <p
@@ -323,7 +323,7 @@ function Stat({
 function Block({ title, items, muted }: { title: string; items: string[]; muted?: boolean }) {
   return (
     <div className="rounded-[2px] border border-[color:var(--charcoal)]/12 bg-[color:var(--ivory)] p-5">
-      <p className="text-[10px] uppercase tracking-[0.28em] font-bold text-[color:var(--charcoal)]">
+      <p className="text-[11px] uppercase tracking-[0.28em] font-bold text-[color:var(--charcoal)]">
         {title}
       </p>
       <ul className="mt-2 flex flex-col gap-1.5">

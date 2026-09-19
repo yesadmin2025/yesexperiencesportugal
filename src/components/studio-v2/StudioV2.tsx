@@ -521,7 +521,7 @@ function OpeningScene({
       {/* Top frame: brand mark + chapter */}
       <div className="pointer-events-none absolute inset-x-0 top-0 z-10 flex items-center justify-between px-6 pt-6 sm:px-10">
         <span
-          className="text-[10px] uppercase tracking-[0.42em] transition-opacity duration-1000"
+          className="text-[11px] uppercase tracking-[0.42em] transition-opacity duration-1000"
           style={{
             opacity: stage >= 1 ? 0.85 : 0,
             color: "var(--ivory)",
@@ -531,7 +531,7 @@ function OpeningScene({
           YES · Portugal
         </span>
         <span
-          className="inline-flex items-center gap-2 text-[10px] uppercase tracking-[0.42em] transition-opacity duration-1000"
+          className="inline-flex items-center gap-2 text-[11px] uppercase tracking-[0.42em] transition-opacity duration-1000"
           style={{
             opacity: stage >= 1 ? 0.85 : 0,
             color: "color-mix(in oklab, var(--gold) 80%, var(--ivory))",
@@ -545,7 +545,7 @@ function OpeningScene({
       {/* Bottom-left editorial: phrase + author line */}
       <div className="pointer-events-none absolute inset-x-0 bottom-0 z-10 px-6 pb-[12vh] sm:px-10 sm:pb-[14vh]">
         <p
-          className="mb-5 text-[10px] uppercase tracking-[0.42em] transition-opacity duration-1000"
+          className="mb-5 text-[11px] uppercase tracking-[0.42em] transition-opacity duration-1000"
           style={{
             opacity: stage >= 1 ? 0.85 : 0,
             color: "color-mix(in oklab, var(--gold) 80%, var(--ivory))",
@@ -583,7 +583,7 @@ function OpeningScene({
               style={{ background: "color-mix(in oklab, var(--gold) 80%, var(--ivory))" }}
             />
             <span
-              className="text-[10.5px] uppercase tracking-[0.36em]"
+              className="text-[11px] uppercase tracking-[0.36em]"
               style={{
                 color: "color-mix(in oklab, var(--ivory) 80%, transparent)",
                 fontWeight: 600,
@@ -613,7 +613,7 @@ function OpeningScene({
             }}
           >
             <p
-              className="text-[10.5px] uppercase tracking-[0.36em]"
+              className="text-[11px] uppercase tracking-[0.36em]"
               style={{
                 color: "color-mix(in oklab, var(--gold) 85%, var(--ivory))",
                 fontWeight: 700,
@@ -650,7 +650,7 @@ function OpeningScene({
                   onDeclineResume?.();
                   onTap();
                 }}
-                className="h-10 px-4 text-[10.5px] uppercase tracking-[0.32em] transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)]"
+                className="h-10 px-4 text-[11px] uppercase tracking-[0.32em] transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)]"
                 style={{
                   color: "color-mix(in oklab, var(--ivory) 78%, transparent)",
                   fontWeight: 600,
@@ -720,7 +720,7 @@ function MoodSceneView({
       {/* Top frame: chapter + progress */}
       <div className="pointer-events-none absolute inset-x-0 top-0 z-10 flex items-center justify-between px-6 pt-6 sm:px-10">
         <span
-          className="inline-flex items-center gap-2 text-[10px] uppercase tracking-[0.42em]"
+          className="inline-flex items-center gap-2 text-[11px] uppercase tracking-[0.42em]"
           style={{ color: "color-mix(in oklab, var(--gold) 80%, var(--ivory))", fontWeight: 600 }}
         >
           <span className="studio-v2-rule" /> Chapter {sceneRoman} · {scene.eyebrow}
@@ -777,7 +777,7 @@ function MoodSceneView({
             }}
           >
             <span
-              className="block text-[9.5px] uppercase tracking-[0.34em]"
+              className="block text-[11px] uppercase tracking-[0.34em]"
               style={{
                 color: "color-mix(in oklab, var(--gold) 80%, var(--ivory))",
                 fontWeight: 600,
@@ -889,7 +889,7 @@ function LogisticsCard({
         <div className="studio-v2-reveal flex items-center gap-3">
           <span className="studio-v2-rule" />
           <span
-            className="text-[10px] uppercase tracking-[0.42em]"
+            className="text-[11px] uppercase tracking-[0.42em]"
             style={{
               color: "color-mix(in oklab, var(--gold) 78%, var(--charcoal))",
               fontWeight: 600,
@@ -931,7 +931,7 @@ function LogisticsCard({
         <div className="studio-v2-reveal delay-3 mt-12">
           <div className="flex items-baseline justify-between">
             <span
-              className="text-[10px] uppercase tracking-[0.36em]"
+              className="text-[11px] uppercase tracking-[0.36em]"
               style={{
                 color: "color-mix(in oklab, var(--charcoal) 60%, transparent)",
                 fontWeight: 600,
@@ -940,7 +940,7 @@ function LogisticsCard({
               Guests
             </span>
             <span
-              className="text-[10px] uppercase tracking-[0.32em]"
+              className="text-[11px] uppercase tracking-[0.32em]"
               style={{ color: "color-mix(in oklab, var(--charcoal) 40%, transparent)" }}
             >
               {pax === 1 ? "private" : pax <= 4 ? "intimate" : pax <= 8 ? "small group" : "group"}
@@ -995,7 +995,7 @@ function LogisticsCard({
         {/* Pickup */}
         <div className="studio-v2-reveal delay-4 mt-10">
           <p
-            className="mb-4 text-[10px] uppercase tracking-[0.36em]"
+            className="mb-4 text-[11px] uppercase tracking-[0.36em]"
             style={{
               color: "color-mix(in oklab, var(--charcoal) 60%, transparent)",
               fontWeight: 600,
@@ -1038,7 +1038,7 @@ function LogisticsCard({
         {/* Preferred date — optional, helps us hold the day */}
         <div className="studio-v2-reveal delay-5 mt-10">
           <p
-            className="mb-3 text-[10px] uppercase tracking-[0.36em]"
+            className="mb-3 text-[11px] uppercase tracking-[0.36em]"
             style={{
               color: "color-mix(in oklab, var(--charcoal) 60%, transparent)",
               fontWeight: 600,
@@ -1157,7 +1157,7 @@ function TastesPicker({
         <div className="studio-v2-reveal flex items-center gap-3">
           <span className="studio-v2-rule" />
           <span
-            className="text-[10px] uppercase tracking-[0.42em]"
+            className="text-[11px] uppercase tracking-[0.42em]"
             style={{
               color: "color-mix(in oklab, var(--gold) 78%, var(--charcoal))",
               fontWeight: 600,
@@ -1340,13 +1340,13 @@ function ConvictionMoment({
 
       <div className="absolute inset-x-0 top-0 z-10 flex items-center justify-between px-6 pt-6 sm:px-10">
         <span
-          className="inline-flex items-center gap-2 text-[10px] uppercase tracking-[0.42em]"
+          className="inline-flex items-center gap-2 text-[11px] uppercase tracking-[0.42em]"
           style={{ color: "color-mix(in oklab, var(--gold) 80%, var(--ivory))", fontWeight: 600 }}
         >
           <span className="studio-v2-rule" /> Your story so far
         </span>
         <span
-          className="inline-flex items-center gap-2 text-[10px] uppercase tracking-[0.36em]"
+          className="inline-flex items-center gap-2 text-[11px] uppercase tracking-[0.36em]"
           style={{ color: "color-mix(in oklab, var(--ivory) 75%, transparent)", fontWeight: 600 }}
         >
           <span
@@ -1490,7 +1490,7 @@ function IntroBeat({ onBegin }: { onBegin: () => void }) {
         }}
       />
       <p
-        className="studio-v2-reveal relative text-[10.5px] uppercase tracking-[0.36em]"
+        className="studio-v2-reveal relative text-[11px] uppercase tracking-[0.36em]"
         style={{ color: "color-mix(in oklab, var(--gold) 82%, var(--charcoal))", fontWeight: 600 }}
       >
         Portugal — designed for you
@@ -1601,7 +1601,7 @@ function StoryBeat({ line, onSkip }: { line: string; onSkip: () => void }) {
     >
       <div className="flex min-h-[60vh] flex-col justify-center">
         <p
-          className="studio-v2-reveal text-[10.5px] uppercase tracking-[0.32em]"
+          className="studio-v2-reveal text-[11px] uppercase tracking-[0.32em]"
           style={{ color: "color-mix(in oklab, var(--gold) 80%, var(--charcoal))" }}
         >
           Chapter
@@ -1637,7 +1637,7 @@ function InsightBeat({ line, onSkip }: { line: string; onSkip: () => void }) {
     >
       <div className="flex min-h-[55vh] flex-col justify-center">
         <div
-          className="studio-v2-reveal inline-flex items-center gap-2 text-[10.5px] uppercase tracking-[0.32em]"
+          className="studio-v2-reveal inline-flex items-center gap-2 text-[11px] uppercase tracking-[0.32em]"
           style={{ color: "color-mix(in oklab, var(--gold) 80%, var(--charcoal))" }}
         >
           <span className="relative inline-flex h-1.5 w-1.5">
@@ -1691,7 +1691,7 @@ function RewardImageBeat({ intent, onSkip }: { intent: IntentAtmosphere; onSkip:
         />
         <figcaption className="absolute inset-x-5 bottom-6 sm:inset-x-8">
           <p
-            className="text-[10.5px] uppercase tracking-[0.32em]"
+            className="text-[11px] uppercase tracking-[0.32em]"
             style={{ color: "color-mix(in oklab, var(--gold) 85%, var(--ivory))" }}
           >
             {INTENT_OPTIONS.find((o) => o.id === intent)?.label}
@@ -1736,7 +1736,7 @@ function RewardMapBeat({ preview, onSkip }: { preview: JourneyPreview; onSkip: (
         <Suspense
           fallback={
             <div
-              className="absolute inset-0 grid place-items-center text-[10.5px] uppercase tracking-[0.24em] font-semibold"
+              className="absolute inset-0 grid place-items-center text-[11px] uppercase tracking-[0.24em] font-semibold"
               style={{ color: "color-mix(in oklab, var(--charcoal) 55%, transparent)" }}
             >
               shaping route…
@@ -1760,7 +1760,7 @@ function RewardMapBeat({ preview, onSkip }: { preview: JourneyPreview; onSkip: (
           }}
         />
         <div
-          className="absolute top-3 left-4 inline-flex items-center gap-2 text-[10px] uppercase tracking-[0.28em] font-semibold"
+          className="absolute top-3 left-4 inline-flex items-center gap-2 text-[11px] uppercase tracking-[0.28em] font-semibold"
           style={{ color: "color-mix(in oklab, var(--gold) 80%, var(--charcoal))" }}
         >
           <span className="relative inline-flex h-1.5 w-1.5">
@@ -1803,7 +1803,7 @@ function ThinkingBeat({ topIntent }: { topIntent: IntentAtmosphere }) {
 
       <div className="relative z-10 flex h-full flex-col items-center justify-center px-8 text-center">
         <span
-          className="inline-flex items-center gap-2 text-[10px] uppercase tracking-[0.42em]"
+          className="inline-flex items-center gap-2 text-[11px] uppercase tracking-[0.42em]"
           style={{ color: "color-mix(in oklab, var(--gold) 85%, var(--ivory))", fontWeight: 600 }}
         >
           <span className="studio-v2-rule" /> Composing
@@ -1998,7 +1998,7 @@ function RevealStory({
       {/* Concrete header — the builder shows what it just built, no riddle. */}
       <div className="mb-6">
         <p
-          className="text-[10.5px] uppercase tracking-[0.32em] font-semibold"
+          className="text-[11px] uppercase tracking-[0.32em] font-semibold"
           style={{ color: "color-mix(in oklab, var(--gold) 80%, var(--charcoal))" }}
         >
           Your draft is ready
@@ -2182,7 +2182,7 @@ function RevealStory({
           }}
         >
           <p
-            className="text-[10.5px] uppercase tracking-[0.32em]"
+            className="text-[11px] uppercase tracking-[0.32em]"
             style={{
               color: "color-mix(in oklab, var(--gold) 80%, var(--charcoal))",
               fontWeight: 700,
@@ -2201,7 +2201,7 @@ function RevealStory({
       )}
 
       <p
-        className="mt-10 text-[10.5px] uppercase tracking-[0.32em]"
+        className="mt-10 text-[11px] uppercase tracking-[0.32em]"
         style={{ color: "color-mix(in oklab, var(--gold) 82%, var(--charcoal))", fontWeight: 600 }}
       >
         {who} private day · summary
@@ -2241,7 +2241,7 @@ function RevealStory({
         }}
       >
         <p
-          className="text-[10.5px] uppercase tracking-[0.32em]"
+          className="text-[11px] uppercase tracking-[0.32em]"
           style={{
             color: "color-mix(in oklab, var(--gold) 80%, var(--charcoal))",
             fontWeight: 600,
@@ -2276,7 +2276,7 @@ function RevealStory({
           (t) => (
             <span
               key={t}
-              className="text-[10.5px] uppercase tracking-[0.28em]"
+              className="text-[11px] uppercase tracking-[0.28em]"
               style={{
                 color: "color-mix(in oklab, var(--charcoal) 60%, transparent)",
                 fontWeight: 600,
@@ -2702,7 +2702,7 @@ function JourneyLayer({
       <Suspense
         fallback={
           <div
-            className="absolute inset-0 grid place-items-center text-[10.5px] uppercase tracking-[0.24em] font-semibold"
+            className="absolute inset-0 grid place-items-center text-[11px] uppercase tracking-[0.24em] font-semibold"
             style={{ color: "color-mix(in oklab, var(--charcoal) 55%, transparent)" }}
           >
             shaping route…
@@ -2736,7 +2736,7 @@ function JourneyLayer({
       />
 
       <div
-        className="absolute top-3 left-4 inline-flex items-center gap-2 text-[10px] uppercase tracking-[0.28em] font-semibold"
+        className="absolute top-3 left-4 inline-flex items-center gap-2 text-[11px] uppercase tracking-[0.28em] font-semibold"
         style={{ color: "color-mix(in oklab, var(--gold) 80%, var(--charcoal))" }}
       >
         <span className="relative inline-flex h-1.5 w-1.5">
@@ -2790,7 +2790,7 @@ function regionShort(r: string): string {
 function Eyebrow({ children }: { children: React.ReactNode }) {
   return (
     <p
-      className="text-[10.5px] uppercase tracking-[0.32em]"
+      className="text-[11px] uppercase tracking-[0.32em]"
       style={{ color: "color-mix(in oklab, var(--gold) 80%, var(--charcoal))" }}
     >
       {children}
@@ -3391,7 +3391,7 @@ function Reveal({ result }: { result: DesignResult }) {
 
           <div>
             <p
-              className="mb-2 text-[10.5px] uppercase tracking-[0.28em]"
+              className="mb-2 text-[11px] uppercase tracking-[0.28em]"
               style={{ color: "color-mix(in oklab, var(--charcoal) 60%, transparent)" }}
             >
               Day intensity
@@ -3429,7 +3429,7 @@ function Reveal({ result }: { result: DesignResult }) {
           {result.upsells.length > 0 && (
             <div>
               <p
-                className="text-[10.5px] uppercase tracking-[0.32em]"
+                className="text-[11px] uppercase tracking-[0.32em]"
                 style={{ color: "color-mix(in oklab, var(--gold) 80%, var(--charcoal))" }}
               >
                 Worth considering
@@ -3621,7 +3621,7 @@ function LogisticsStrip({
       }}
     >
       <p
-        className="text-[10.5px] uppercase tracking-[0.32em]"
+        className="text-[11px] uppercase tracking-[0.32em]"
         style={{ color: "color-mix(in oklab, var(--charcoal) 65%, transparent)", fontWeight: 600 }}
       >
         Your day, in concrete terms
@@ -3630,7 +3630,7 @@ function LogisticsStrip({
       <dl className="mt-4 grid grid-cols-2 gap-x-4 gap-y-4 sm:grid-cols-4">
         <div>
           <dt
-            className="text-[10px] uppercase tracking-[0.24em]"
+            className="text-[11px] uppercase tracking-[0.24em]"
             style={{ color: "color-mix(in oklab, var(--charcoal) 55%, transparent)" }}
           >
             Pickup
@@ -3661,7 +3661,7 @@ function LogisticsStrip({
                     key={p}
                     type="button"
                     onClick={() => commit(p)}
-                    className="rounded-full border px-2.5 py-1 text-[10.5px]"
+                    className="rounded-full border px-2.5 py-1 text-[11px]"
                     style={{
                       borderColor: "color-mix(in oklab, var(--charcoal) 18%, transparent)",
                       color: "color-mix(in oklab, var(--charcoal) 80%, transparent)",
@@ -3689,7 +3689,7 @@ function LogisticsStrip({
 
         <div>
           <dt
-            className="text-[10px] uppercase tracking-[0.24em]"
+            className="text-[11px] uppercase tracking-[0.24em]"
             style={{ color: "color-mix(in oklab, var(--charcoal) 55%, transparent)" }}
           >
             Guests
@@ -3701,7 +3701,7 @@ function LogisticsStrip({
 
         <div>
           <dt
-            className="text-[10px] uppercase tracking-[0.24em]"
+            className="text-[11px] uppercase tracking-[0.24em]"
             style={{ color: "color-mix(in oklab, var(--charcoal) 55%, transparent)" }}
           >
             Duration
@@ -3713,7 +3713,7 @@ function LogisticsStrip({
 
         <div>
           <dt
-            className="text-[10px] uppercase tracking-[0.24em]"
+            className="text-[11px] uppercase tracking-[0.24em]"
             style={{ color: "color-mix(in oklab, var(--charcoal) 55%, transparent)" }}
           >
             From

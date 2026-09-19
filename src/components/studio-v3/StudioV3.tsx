@@ -3510,7 +3510,7 @@ export function StudioV3() {
       >
         <div className="max-w-md text-center" data-testid="studio-v3-hydrate-error">
           <p
-            className="text-[10px] uppercase tracking-[0.28em] font-bold"
+            className="text-[11px] uppercase tracking-[0.28em] font-bold"
             style={{ color: "var(--gold)" }}
           >
             YES Studio
@@ -3865,7 +3865,7 @@ export function StudioV3() {
               className="mt-3 flex flex-wrap items-baseline gap-x-2 gap-y-1 self-start"
             >
               <span
-                className="text-[10.5px] uppercase tracking-[0.22em] font-semibold"
+                className="text-[11px] uppercase tracking-[0.22em] font-semibold"
                 style={{
                   fontFamily: "var(--font-display)",
                   color: "color-mix(in oklab, var(--charcoal) 55%, transparent)",
@@ -3890,7 +3890,7 @@ export function StudioV3() {
                 data-testid="studio-v3-interests-counter"
                 data-at-cap={atCap ? "true" : "false"}
                 aria-live="polite"
-                className="mt-3 inline-flex items-center gap-2 self-start px-2.5 py-1 text-[10.5px] uppercase tracking-[0.22em] font-semibold"
+                className="mt-3 inline-flex items-center gap-2 self-start px-2.5 py-1 text-[11px] uppercase tracking-[0.22em] font-semibold"
                 style={{
                   fontFamily: "var(--font-display)",
                   color:
@@ -4651,7 +4651,7 @@ function ComposerRevealPanel({ state }: { state: StudioV3State }) {
             <div className="flex items-start gap-3">
               <span
                 aria-hidden
-                className="mt-0.5 inline-flex h-5 w-5 shrink-0 items-center justify-center rounded-full text-[10px] font-semibold"
+                className="mt-0.5 inline-flex h-5 w-5 shrink-0 items-center justify-center rounded-full text-[11px] font-semibold"
                 style={{
                   background: "color-mix(in oklab, var(--gold) 25%, transparent)",
                   color: "var(--charcoal)",
@@ -5768,7 +5768,7 @@ export function StoryboardHandoff({
       >
         <BackLink onClick={onBack} />
         <p
-          className="mt-6 text-[10.5px] uppercase tracking-[0.28em] font-bold"
+          className="mt-6 text-[11px] uppercase tracking-[0.28em] font-bold"
           style={{ color: "var(--gold)" }}
         >
           — YES Studio
@@ -5863,7 +5863,7 @@ export function StoryboardHandoff({
                 }}
               />
               <p
-                className="absolute left-4 bottom-3 text-[9.5px] uppercase tracking-[0.3em] font-semibold"
+                className="absolute left-4 bottom-3 text-[11px] uppercase tracking-[0.3em] font-semibold"
                 style={{ color: "color-mix(in oklab, var(--ivory) 92%, transparent)" }}
               >
                 <span style={{ color: "var(--gold)" }}>—</span> Composing your Signature
@@ -5871,7 +5871,7 @@ export function StoryboardHandoff({
             </div>
           ) : (
             <p
-              className="text-[10.5px] uppercase tracking-[0.32em] font-semibold"
+              className="text-[11px] uppercase tracking-[0.32em] font-semibold"
               style={{ color: "color-mix(in oklab, var(--charcoal) 55%, transparent)" }}
             >
               <span style={{ color: "var(--gold)" }}>—</span> Composing your Signature
@@ -5895,7 +5895,7 @@ export function StoryboardHandoff({
 
           {/* Beat 3 — trust whisper. */}
           <p
-            className="mt-5 text-[10.5px] uppercase tracking-[0.28em] font-semibold"
+            className="mt-5 text-[11px] uppercase tracking-[0.28em] font-semibold"
             style={{
               color: "color-mix(in oklab, var(--teal) 78%, transparent)",
               opacity: composeBeat >= 3 ? 1 : 0,
@@ -6048,7 +6048,7 @@ export function StoryboardHandoff({
                   >
                     <span
                       aria-hidden
-                      className="inline-flex h-[18px] w-[18px] shrink-0 items-center justify-center rounded-full text-[10px] font-semibold"
+                      className="inline-flex h-[18px] w-[18px] shrink-0 items-center justify-center rounded-full text-[11px] font-semibold"
                       style={{
                         background: "color-mix(in oklab, var(--gold) 28%, transparent)",
                         color: "var(--charcoal)",
@@ -6106,7 +6106,7 @@ export function StoryboardHandoff({
             {refineIntents.length > 0 ? (
               <div data-testid="studio-v3-refine-intents" className="mb-4 sm:mb-5">
                 <p
-                  className="text-center text-[10px] uppercase tracking-[0.24em] font-semibold mb-2.5"
+                  className="text-center text-[11px] uppercase tracking-[0.24em] font-semibold mb-2.5"
                   style={{ color: "color-mix(in oklab, var(--charcoal) 55%, transparent)" }}
                 >
                   Shift the mood
@@ -6355,7 +6355,7 @@ export function StoryboardHandoff({
             ) : null}
 
             {state.editedRoutePoints ? (
-              <div className="mt-3 flex items-center justify-between gap-3 text-[10.5px] uppercase tracking-[0.22em] font-semibold">
+              <div className="mt-3 flex items-center justify-between gap-3 text-[11px] uppercase tracking-[0.22em] font-semibold">
                 <span
                   style={{
                     color: "color-mix(in oklab, var(--charcoal) 55%, transparent)",
@@ -6558,7 +6558,7 @@ function SummaryRow({ label, value }: { label: string; value: string }) {
       style={{ borderColor: "color-mix(in oklab, var(--charcoal) 10%, transparent)" }}
     >
       <p
-        className="text-[10px] uppercase tracking-[0.26em] font-semibold"
+        className="text-[11px] uppercase tracking-[0.26em] font-semibold"
         style={{ color: "var(--gold)" }}
       >
         {label}
@@ -6750,7 +6750,7 @@ function ReactionOverlay({
     >
       <div className="w-full max-w-[480px] text-center">
         <p
-          className="text-[10.5px] uppercase tracking-[0.28em] font-semibold inline-flex items-center gap-1.5 mx-auto"
+          className="text-[11px] uppercase tracking-[0.28em] font-semibold inline-flex items-center gap-1.5 mx-auto"
           style={{ color: "color-mix(in oklab, var(--charcoal) 58%, transparent)" }}
           data-testid="studio-v3-voice-mark"
         >
@@ -6814,7 +6814,7 @@ function ReactionOverlay({
           if (voice.eyebrow === "PORTUGAL VOICE") return null;
           return (
             <p
-              className="mt-4 inline-flex items-center justify-center gap-1.5 text-[10px] uppercase tracking-[0.26em] font-bold"
+              className="mt-4 inline-flex items-center justify-center gap-1.5 text-[11px] uppercase tracking-[0.26em] font-bold"
               style={{
                 color: "var(--teal)",
                 animation: "studioV3RiseIn 540ms ease-out 360ms both",
@@ -7060,7 +7060,7 @@ function MapPreviewPanel({ reaction, fallbackBg }: { reaction: Reaction; fallbac
         <>
           {/* Quiet "Route forming" eyebrow, top-left of the canvas. */}
           <p
-            className="absolute left-5 top-5 text-[9.5px] uppercase tracking-[0.28em] font-semibold"
+            className="absolute left-5 top-5 text-[11px] uppercase tracking-[0.28em] font-semibold"
             style={{ color: "color-mix(in oklab, var(--charcoal) 50%, transparent)" }}
           >
             Route forming
@@ -7179,7 +7179,7 @@ function MapPreviewPanel({ reaction, fallbackBg }: { reaction: Reaction; fallbac
                   }}
                 />
                 <span
-                  className="text-[10px] uppercase tracking-[0.2em] font-semibold whitespace-nowrap"
+                  className="text-[11px] uppercase tracking-[0.2em] font-semibold whitespace-nowrap"
                   style={{
                     color: "color-mix(in oklab, var(--charcoal) 82%, transparent)",
                   }}
@@ -7191,7 +7191,7 @@ function MapPreviewPanel({ reaction, fallbackBg }: { reaction: Reaction; fallbac
           })}
           {reaction.chipsTail ? (
             <p
-              className="absolute inset-x-0 bottom-2 text-center text-[10px] italic"
+              className="absolute inset-x-0 bottom-2 text-center text-[11px] italic"
               style={{
                 fontFamily: "var(--font-serif)",
                 color: "color-mix(in oklab, var(--charcoal) 55%, transparent)",
@@ -7234,7 +7234,7 @@ function MapPreviewPanel({ reaction, fallbackBg }: { reaction: Reaction; fallbac
 
           {reaction.postcardCaption ? (
             <span
-              className="ml-2 text-[10px] uppercase tracking-[0.22em] font-semibold"
+              className="ml-2 text-[11px] uppercase tracking-[0.22em] font-semibold"
               style={{ color: "color-mix(in oklab, var(--charcoal) 70%, transparent)" }}
             >
               {reaction.postcardCaption}
@@ -7247,7 +7247,7 @@ function MapPreviewPanel({ reaction, fallbackBg }: { reaction: Reaction; fallbac
       {reaction.kind === "investment" ? (
         <>
           <p
-            className="absolute left-5 top-5 text-[9.5px] uppercase tracking-[0.28em] font-semibold"
+            className="absolute left-5 top-5 text-[11px] uppercase tracking-[0.28em] font-semibold"
             style={{ color: "color-mix(in oklab, var(--charcoal) 50%, transparent)" }}
           >
             The route can take shape
@@ -7410,7 +7410,7 @@ function SaveSignatureButton({
             {copied ? "Copied" : "Copy link"}
           </CtaButton>
           <p
-            className="text-[10.5px] font-mono break-all text-center"
+            className="text-[11px] font-mono break-all text-center"
             style={{ color: "color-mix(in oklab, var(--charcoal) 55%, transparent)" }}
           >
             {link}

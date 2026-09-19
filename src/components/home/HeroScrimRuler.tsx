@@ -88,7 +88,7 @@ export function HeroScrimRuler() {
             }}
           />
           <span
-            className="px-1.5 py-0.5 text-[9px] uppercase tracking-[0.18em] text-white"
+            className="px-1.5 py-0.5 text-[11px] uppercase tracking-[0.18em] text-white"
             style={{
               background: `${edge.color}E6`,
               transform: edge.side === "bottom" ? "translateY(-50%)" : "translateY(-50%)",
@@ -114,7 +114,7 @@ export function HeroScrimRuler() {
       </div>
 
       {/* Legend pill */}
-      <div className="absolute right-2 top-2 rounded-md bg-black/75 px-2 py-1.5 text-[9px] text-white/90 leading-tight ring-1 ring-white/15">
+      <div className="absolute right-2 top-2 rounded-md bg-black/75 px-2 py-1.5 text-[11px] text-white/90 leading-tight ring-1 ring-white/15">
         <div className="font-bold tracking-[0.18em] uppercase mb-0.5 text-[8.5px]">Scrim ruler</div>
         <div className="flex items-center gap-1">
           <span className="h-1.5 w-2.5" style={{ background: "var(--gold)" }} />

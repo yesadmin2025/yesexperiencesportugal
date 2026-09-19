@@ -92,7 +92,7 @@ export function RecognisedByGuides({
             >
               <span
                 className={
-                  "self-start mb-3 inline-block px-2.5 py-1 text-[10.5px] uppercase tracking-[0.22em] " +
+                  "self-start mb-3 inline-block px-2.5 py-1 text-[11px] uppercase tracking-[0.22em] " +
                   (isBrand
                     ? "bg-[color:var(--teal)] text-[color:var(--ivory)]"
                     : "bg-[color:var(--ivory)] text-[color:var(--charcoal-soft)] border border-[color:var(--gold-soft)]/60")

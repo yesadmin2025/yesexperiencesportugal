@@ -106,7 +106,7 @@ export function MicroFictionScene({ scene, index, onSignal, topIntent }: Props) 
       </div>
 
       <div
-        className="relative z-10 mx-auto flex items-center gap-3 text-[10.5px] font-bold uppercase tracking-[0.32em]"
+        className="relative z-10 mx-auto flex items-center gap-3 text-[11px] font-bold uppercase tracking-[0.32em]"
         style={{ color: "color-mix(in oklab, var(--charcoal) 65%, transparent)" }}
       >
         <span className="h-px w-6" style={{ background: "var(--gold)" }} />
@@ -159,7 +159,7 @@ export function MicroFictionScene({ scene, index, onSignal, topIntent }: Props) 
       </div>
 
       <p
-        className="relative z-10 mx-auto mt-6 text-center text-[9.5px] uppercase tracking-[0.36em]"
+        className="relative z-10 mx-auto mt-6 text-center text-[11px] uppercase tracking-[0.36em]"
         style={{ color: "color-mix(in oklab, var(--charcoal) 50%, transparent)" }}
       >
         Finish the sentence

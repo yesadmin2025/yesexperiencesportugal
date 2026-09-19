@@ -189,7 +189,7 @@ function PageLightbox({
     >
       {/* Top bar */}
       <div className="flex items-center justify-between px-4 py-3 border-b border-[color:var(--charcoal)]/10">
-        <p className="font-sans text-[10.5px] uppercase tracking-[0.3em] font-semibold text-[color:var(--charcoal)]">
+        <p className="font-sans text-[11px] uppercase tracking-[0.3em] font-semibold text-[color:var(--charcoal)]">
           {String(index + 1).padStart(2, "0")}
           <span className="mx-1.5 text-[color:var(--charcoal-soft)]/60">/</span>
           {String(total).padStart(2, "0")}

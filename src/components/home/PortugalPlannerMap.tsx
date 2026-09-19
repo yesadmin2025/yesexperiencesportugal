@@ -110,7 +110,7 @@ export function PortugalPlannerMap() {
                 />
                 <span
                   aria-hidden="true"
-                  className={`pointer-events-none absolute top-1/2 -translate-y-1/2 whitespace-nowrap rounded-full bg-[color:var(--ivory)]/90 px-2 py-1 text-[10px] uppercase tracking-[0.18em] text-[color:var(--charcoal)] transition-opacity duration-150 ${
+                  className={`pointer-events-none absolute top-1/2 -translate-y-1/2 whitespace-nowrap rounded-full bg-[color:var(--ivory)]/90 px-2 py-1 text-[11px] uppercase tracking-[0.18em] text-[color:var(--charcoal)] transition-opacity duration-150 ${
                     isActive
                       ? "opacity-100"
                       : "opacity-0 group-hover:opacity-100 group-focus-visible:opacity-100"

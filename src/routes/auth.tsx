@@ -103,7 +103,7 @@ function AuthPage() {
     <SiteLayout>
       <section className="pt-32 pb-20 min-h-[80vh] flex items-center">
         <div className="container-x max-w-md mx-auto w-full">
-          <div className="inline-flex items-center gap-2 px-3 py-1 border border-[color:var(--gold)]/40 bg-[color:var(--gold)]/10 text-[color:var(--charcoal)] text-[10px] uppercase tracking-[0.24em]">
+          <div className="inline-flex items-center gap-2 px-3 py-1 border border-[color:var(--gold)]/40 bg-[color:var(--gold)]/10 text-[color:var(--charcoal)] text-[11px] uppercase tracking-[0.24em]">
             <span className="w-1.5 h-1.5 rounded-full bg-[color:var(--gold)]" />
             Admin area — restricted access
           </div>
@@ -171,7 +171,7 @@ function AuthPage() {
                 <span className="w-full border-t border-[color:var(--charcoal)]/10" />
               </div>
               <div className="relative flex justify-center">
-                <span className="bg-[color:var(--ivory,#FAF8F3)] px-3 text-[10px] uppercase tracking-[0.24em] text-[color:var(--charcoal-soft)]">
+                <span className="bg-[color:var(--ivory,#FAF8F3)] px-3 text-[11px] uppercase tracking-[0.24em] text-[color:var(--charcoal-soft)]">
                   ou
                 </span>
               </div>

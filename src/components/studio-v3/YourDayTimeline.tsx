@@ -55,7 +55,7 @@ export function YourDayTimeline({ moments, activeCount, activeIndex = null, clas
           >
             <span
               aria-hidden
-              className="absolute -left-10 sm:-left-8 top-0 inline-flex h-[30px] w-[30px] sm:h-[26px] sm:w-[26px] items-center justify-center rounded-full text-[10px] font-semibold tabular-nums"
+              className="absolute -left-10 sm:-left-8 top-0 inline-flex h-[30px] w-[30px] sm:h-[26px] sm:w-[26px] items-center justify-center rounded-full text-[11px] font-semibold tabular-nums"
               style={{
                 background: isActive
                   ? "var(--gold)"
@@ -77,7 +77,7 @@ export function YourDayTimeline({ moments, activeCount, activeIndex = null, clas
 
             {m.location ? (
               <p
-                className="mt-1.5 text-[10px] uppercase tracking-[0.22em] sm:tracking-[0.24em] font-semibold"
+                className="mt-1.5 text-[11px] uppercase tracking-[0.22em] sm:tracking-[0.24em] font-semibold"
                 style={{ color: "color-mix(in oklab, var(--charcoal) 55%, transparent)" }}
               >
                 {m.location}

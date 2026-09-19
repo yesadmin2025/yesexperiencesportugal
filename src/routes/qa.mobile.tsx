@@ -382,7 +382,7 @@ function QaMobilePage() {
     <SiteLayout>
       <section className="section-y bg-[color:var(--ivory)]">
         <div className="container-x max-w-3xl">
-          <span className="inline-flex items-center gap-2.5 text-[10.5px] uppercase tracking-[0.32em] font-bold text-[color:var(--charcoal)]">
+          <span className="inline-flex items-center gap-2.5 text-[11px] uppercase tracking-[0.32em] font-bold text-[color:var(--charcoal)]">
             <span
               aria-hidden="true"
               className="inline-block h-[5px] w-[5px] rounded-full bg-[color:var(--gold)]"

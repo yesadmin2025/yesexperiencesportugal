@@ -31,14 +31,14 @@ export function StepHead({ num, eyebrow, title, onBack, totalChapters, italicSub
             <ArrowLeft size={14} />
           </button>
         )}
-        <span className="inline-flex items-center gap-2 text-[10.5px] uppercase tracking-[0.28em] font-semibold text-[color:var(--charcoal)]">
+        <span className="inline-flex items-center gap-2 text-[11px] uppercase tracking-[0.28em] font-semibold text-[color:var(--charcoal)]">
           <Sparkles size={12} aria-hidden="true" />
           {eyebrow}
         </span>
         {chapterMark && (
           <span
             aria-hidden="true"
-            className="ml-auto inline-flex items-center text-[10px] uppercase tracking-[0.3em] font-semibold tabular-nums text-[color:var(--text-subtle)]"
+            className="ml-auto inline-flex items-center text-[11px] uppercase tracking-[0.3em] font-semibold tabular-nums text-[color:var(--text-subtle)]"
           >
             <span className="mr-2 h-px w-6 bg-[color:var(--charcoal)]/15" />
             {chapterMark}

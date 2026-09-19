@@ -143,7 +143,7 @@ export function MapReveal({
         {/* Editorial caption — sequenced day summary */}
         <div className="pointer-events-none absolute inset-x-0 top-8 z-10 flex flex-col items-center px-6 text-center">
           <p
-            className="text-[10.5px] uppercase tracking-[0.36em]"
+            className="text-[11px] uppercase tracking-[0.36em]"
             style={{
               color: "color-mix(in oklab, var(--gold) 88%, var(--ivory))",
               fontWeight: 700,

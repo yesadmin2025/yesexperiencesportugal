@@ -506,7 +506,7 @@ export function FinalRevealStory({
           }}
         >
           <p
-            className="text-[10px] uppercase tracking-[0.24em] font-semibold"
+            className="text-[11px] uppercase tracking-[0.24em] font-semibold"
             style={{ color: "color-mix(in oklab, var(--charcoal) 62%, transparent)" }}
           >
             {`Estimated for ${partySize} ${partySize === 1 ? "guest" : "guests"}`}
@@ -582,7 +582,7 @@ export function FinalRevealStory({
         <div className="mt-4 space-y-4">
           <div>
             <p
-              className="text-[10px] uppercase tracking-[0.22em] mb-2"
+              className="text-[11px] uppercase tracking-[0.22em] mb-2"
               style={{ color: "color-mix(in oklab, var(--charcoal) 55%, transparent)" }}
             >
               {INCLUSION_HEADER}
@@ -596,7 +596,7 @@ export function FinalRevealStory({
           {selectedAddOns.length > 0 ? (
             <div>
               <p
-                className="text-[10px] uppercase tracking-[0.22em] mb-2"
+                className="text-[11px] uppercase tracking-[0.22em] mb-2"
                 style={{ color: "color-mix(in oklab, var(--charcoal) 55%, transparent)" }}
               >
                 Your additions

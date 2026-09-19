@@ -109,7 +109,7 @@ export function DriftScene({ scene, index, onSignal }: Props) {
 
       {/* Top eyebrow */}
       <div
-        className="pointer-events-none absolute left-0 right-0 top-0 z-10 flex items-center justify-center gap-3 px-5 pt-7 text-[10.5px] font-bold uppercase tracking-[0.32em]"
+        className="pointer-events-none absolute left-0 right-0 top-0 z-10 flex items-center justify-center gap-3 px-5 pt-7 text-[11px] font-bold uppercase tracking-[0.32em]"
         style={{ color: "color-mix(in oklab, var(--ivory) 88%, transparent)" }}
       >
         <span className="h-px w-6" style={{ background: "var(--gold)" }} />
@@ -147,7 +147,7 @@ export function DriftScene({ scene, index, onSignal }: Props) {
 
       {/* Soft hint at the very bottom */}
       <div
-        className="pointer-events-none absolute inset-x-0 bottom-3 text-center text-[9.5px] uppercase tracking-[0.36em]"
+        className="pointer-events-none absolute inset-x-0 bottom-3 text-center text-[11px] uppercase tracking-[0.36em]"
         style={{ color: "color-mix(in oklab, var(--ivory) 55%, transparent)" }}
       >
         Drift toward one

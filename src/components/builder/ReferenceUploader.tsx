@@ -211,7 +211,7 @@ export function ReferenceUploader({ sessionId, onToneReady }: Props) {
     <div className="rounded-[2px] border border-[color:var(--charcoal)]/12 bg-[color:var(--ivory)] p-5">
       <div className="flex items-baseline justify-between gap-3">
         <div>
-          <p className="text-[10px] uppercase tracking-[0.28em] font-bold text-[color:var(--charcoal)]">
+          <p className="text-[11px] uppercase tracking-[0.28em] font-bold text-[color:var(--charcoal)]">
             Mood references
           </p>
           <p className="mt-1 text-[13px] text-[color:var(--charcoal)]/75 max-w-md">
@@ -250,7 +250,7 @@ export function ReferenceUploader({ sessionId, onToneReady }: Props) {
             ) : (
               <div className="absolute inset-0 flex flex-col items-center justify-center gap-1 p-2 text-center">
                 <FileText size={20} strokeWidth={1.5} className="text-[color:var(--text-muted)]" />
-                <span className="text-[10px] leading-tight text-[color:var(--charcoal)]/65 line-clamp-2">
+                <span className="text-[11px] leading-tight text-[color:var(--charcoal)]/65 line-clamp-2">
                   {r.file_name}
                 </span>
               </div>
@@ -280,7 +280,7 @@ export function ReferenceUploader({ sessionId, onToneReady }: Props) {
               ) : (
                 <>
                   <Plus size={18} strokeWidth={1.75} />
-                  <span className="text-[10.5px] uppercase tracking-[0.18em] font-semibold">
+                  <span className="text-[11px] uppercase tracking-[0.18em] font-semibold">
                     Add
                   </span>
                 </>
@@ -314,7 +314,7 @@ export function ReferenceUploader({ sessionId, onToneReady }: Props) {
 
       {tone && (
         <div className="mt-4 rounded-[2px] border border-[color:var(--gold)]/40 bg-[color:var(--gold-soft)]/30 p-4">
-          <p className="text-[10px] uppercase tracking-[0.28em] font-bold text-[color:var(--charcoal)]">
+          <p className="text-[11px] uppercase tracking-[0.28em] font-bold text-[color:var(--charcoal)]">
             Tone read
           </p>
           {tone.toneKeywords.length > 0 && (
@@ -334,7 +334,7 @@ export function ReferenceUploader({ sessionId, onToneReady }: Props) {
               “{tone.toneSummary}”
             </p>
           )}
-          <p className="mt-2 text-[10.5px] text-[color:var(--text-muted)]">
+          <p className="mt-2 text-[11px] text-[color:var(--text-muted)]">
             Used to fine-tune narration only — never to add stops or images.
           </p>
         </div>

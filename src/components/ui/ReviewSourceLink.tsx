@@ -51,7 +51,7 @@ export function ReviewSourceLink({ source, sourceUrl, reviewerName, dim = false 
         <PlatformBadge platform="tripadvisor" className="h-4 w-auto" />
       </span>
     ) : (
-      <span className="inline-flex items-center rounded-full border border-[color:var(--charcoal)]/12 bg-[color:var(--ivory)] px-2 py-0.5 text-[10px] font-medium uppercase tracking-[0.12em] text-[color:var(--charcoal)]/75 transition-[background-color,border-color,color,transform] duration-[180ms] ease-[cubic-bezier(.2,.7,.2,1)] group-hover:border-[color:var(--gold)] group-hover:text-[color:var(--charcoal)] group-hover:bg-white group-focus-visible:border-[color:var(--gold)] motion-safe:group-hover:scale-[1.03] motion-safe:group-active:scale-[.97]">
+      <span className="inline-flex items-center rounded-full border border-[color:var(--charcoal)]/12 bg-[color:var(--ivory)] px-2 py-0.5 text-[11px] font-medium uppercase tracking-[0.12em] text-[color:var(--charcoal)]/75 transition-[background-color,border-color,color,transform] duration-[180ms] ease-[cubic-bezier(.2,.7,.2,1)] group-hover:border-[color:var(--gold)] group-hover:text-[color:var(--charcoal)] group-hover:bg-white group-focus-visible:border-[color:var(--gold)] motion-safe:group-hover:scale-[1.03] motion-safe:group-active:scale-[.97]">
         {label}
       </span>
     );

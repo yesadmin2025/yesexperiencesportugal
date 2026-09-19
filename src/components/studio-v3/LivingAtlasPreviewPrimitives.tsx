@@ -81,7 +81,7 @@ export function StepHeading({
   return (
     <div className="mx-auto max-w-3xl text-center">
       <p
-        className="text-[10px] font-bold uppercase tracking-[0.3em]"
+        className="text-[11px] font-bold uppercase tracking-[0.3em]"
         style={{ color: "var(--gold)" }}
       >
         {eyebrow}
@@ -168,7 +168,7 @@ export function ReactivePortugalMap({
       <div className="relative z-10 flex h-full min-h-72 flex-col justify-between">
         <div>
           <p
-            className="text-[10px] font-bold uppercase tracking-[0.24em]"
+            className="text-[11px] font-bold uppercase tracking-[0.24em]"
             style={{ color: "var(--gold)" }}
           >
             Living Atlas
@@ -185,7 +185,7 @@ export function ReactivePortugalMap({
           </p>
         </div>
         <p
-          className="text-[9px] uppercase tracking-[0.16em]"
+          className="text-[11px] uppercase tracking-[0.16em]"
           style={{ color: "color-mix(in oklab, var(--ivory) 42%, transparent)" }}
         >
           Editorial orientation, not navigation
@@ -214,7 +214,7 @@ export function ProfileSummary({
         {profile.leads.map((id) => (
           <span
             key={id}
-            className="rounded-full px-3 py-1 text-[10px] font-bold uppercase tracking-[0.16em]"
+            className="rounded-full px-3 py-1 text-[11px] font-bold uppercase tracking-[0.16em]"
             style={{ background: "var(--gold)", color: "var(--charcoal)" }}
           >
             Leads · {dimensionLabel(id)}
@@ -225,7 +225,7 @@ export function ProfileSummary({
           .map((id) => (
             <span
               key={id}
-              className="rounded-full border px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.16em]"
+              className="rounded-full border px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.16em]"
               style={{ borderColor: "color-mix(in oklab, var(--ivory) 22%, transparent)" }}
             >
               Supports · {dimensionLabel(id)}
@@ -290,7 +290,7 @@ export function SegmentedChoice<T extends string>({
             type="button"
             aria-pressed={active}
             onClick={() => onChange(option.value)}
-            className="min-h-10 rounded-lg border px-3 text-[10px] font-bold uppercase tracking-[0.14em] focus:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)]"
+            className="min-h-10 rounded-lg border px-3 text-[11px] font-bold uppercase tracking-[0.14em] focus:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)]"
             style={{
               background: active
                 ? "color-mix(in oklab, var(--gold) 18%, transparent)"
@@ -355,7 +355,7 @@ export function EvidenceCell({ label, value }: { label: string; value: string })
   return (
     <div className="p-4" style={{ background: "var(--charcoal)" }}>
       <p
-        className="text-[9px] font-bold uppercase tracking-[0.18em]"
+        className="text-[11px] font-bold uppercase tracking-[0.18em]"
         style={{ color: "color-mix(in oklab, var(--ivory) 48%, transparent)" }}
       >
         {label}
@@ -381,7 +381,7 @@ export function StepActions({
         type="button"
         onClick={onContinue}
         disabled={disabled}
-        className="inline-flex min-h-11 items-center gap-2 rounded-full px-5 text-[10px] font-bold uppercase tracking-[0.2em] disabled:cursor-not-allowed disabled:opacity-30"
+        className="inline-flex min-h-11 items-center gap-2 rounded-full px-5 text-[11px] font-bold uppercase tracking-[0.2em] disabled:cursor-not-allowed disabled:opacity-30"
         style={{ background: "var(--ivory)", color: "var(--charcoal)" }}
       >
         Continue <ArrowRight size={14} aria-hidden />
@@ -404,7 +404,7 @@ export function BackButton({
       <button
         type="button"
         onClick={onClick}
-        className="inline-flex min-h-11 items-center gap-2 rounded-full border px-5 text-[10px] font-bold uppercase tracking-[0.2em] transition-opacity hover:opacity-80"
+        className="inline-flex min-h-11 items-center gap-2 rounded-full border px-5 text-[11px] font-bold uppercase tracking-[0.2em] transition-opacity hover:opacity-80"
         style={{ borderColor: "color-mix(in oklab, var(--ivory) 22%, transparent)" }}
       >
         <ArrowLeft size={14} aria-hidden />

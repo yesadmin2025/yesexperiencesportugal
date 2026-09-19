@@ -190,7 +190,7 @@ function PortugalItinerary() {
                 key={r.days}
                 className="rounded-[6px] border border-[color:var(--border)] bg-[color:var(--card)] p-6"
               >
-                <span className="font-sans text-[10.5px] uppercase tracking-[0.22em] font-bold text-[color:var(--gold)]">
+                <span className="font-sans text-[11px] uppercase tracking-[0.22em] font-bold text-[color:var(--gold)]">
                   {r.days}
                 </span>
                 <h3 className="font-display mt-3 text-[1.15rem] leading-snug text-[color:var(--charcoal)]">

@@ -445,7 +445,7 @@ function DiffRow({ change }: { change: FieldChange }) {
     <li className={`border-l-4 px-3 py-2 text-xs ${tone}`}>
       <div className="flex items-center justify-between gap-2">
         <code className="font-medium">{change.path}</code>
-        <span className="rounded bg-background px-1.5 py-0.5 text-[10px] font-medium uppercase">
+        <span className="rounded bg-background px-1.5 py-0.5 text-[11px] font-medium uppercase">
           {change.kind}
         </span>
       </div>

@@ -192,7 +192,7 @@ export function StudioV3ProgressStepper({
           );
           const label = (
             <span
-              className="t-eyebrow whitespace-nowrap text-[9px] sm:text-[10px]"
+              className="t-eyebrow whitespace-nowrap text-[11px] sm:text-[11px]"
               style={{
                 color: isReachable
                   ? "var(--charcoal)"
@@ -244,7 +244,7 @@ export function StudioV3ProgressStepper({
       </nav>
       <p
         data-testid="studio-v3-beat-reassurance"
-        className="hidden sm:block px-5 mb-2 text-center text-[10px] uppercase tracking-[0.22em] font-semibold"
+        className="hidden sm:block px-5 mb-2 text-center text-[11px] uppercase tracking-[0.22em] font-semibold"
         style={{ color: "color-mix(in oklab, var(--charcoal) 55%, transparent)" }}
       >
         <span style={{ color: "var(--gold)" }}>—</span>{" "}

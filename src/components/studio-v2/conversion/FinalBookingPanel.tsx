@@ -180,7 +180,7 @@ export function FinalBookingPanel({
       >
         {/* Stops */}
         <p
-          className="text-[10.5px] uppercase tracking-[0.32em]"
+          className="text-[11px] uppercase tracking-[0.32em]"
           style={{
             color: "color-mix(in oklab, var(--gold) 82%, var(--charcoal))",
             fontWeight: 700,
@@ -230,7 +230,7 @@ export function FinalBookingPanel({
         {/* Inclusions */}
         <div className="mt-6">
           <p
-            className="text-[10.5px] uppercase tracking-[0.32em]"
+            className="text-[11px] uppercase tracking-[0.32em]"
             style={{
               color: "color-mix(in oklab, var(--gold) 82%, var(--charcoal))",
               fontWeight: 700,
@@ -256,7 +256,7 @@ export function FinalBookingPanel({
         >
           <div>
             <p
-              className="text-[10.5px] uppercase tracking-[0.32em]"
+              className="text-[11px] uppercase tracking-[0.32em]"
               style={{
                 color: "color-mix(in oklab, var(--gold) 82%, var(--charcoal))",
                 fontWeight: 700,
@@ -368,7 +368,7 @@ function FactCell({ label, value }: { label: string; value: string }) {
   return (
     <div>
       <dt
-        className="text-[10px] uppercase tracking-[0.28em]"
+        className="text-[11px] uppercase tracking-[0.28em]"
         style={{
           color: "color-mix(in oklab, var(--charcoal) 55%, transparent)",
           fontWeight: 700,
@@ -423,7 +423,7 @@ function DemoCheckoutModal({
           <X className="h-4 w-4" aria-hidden />
         </button>
         <p
-          className="text-[10.5px] uppercase tracking-[0.32em]"
+          className="text-[11px] uppercase tracking-[0.32em]"
           style={{
             color: "color-mix(in oklab, var(--gold) 82%, var(--charcoal))",
             fontWeight: 700,

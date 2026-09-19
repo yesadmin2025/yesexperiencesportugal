@@ -160,7 +160,7 @@ export function RevelationScene({ profile, region, topIntent, onContinue }: Prop
       <div className="relative z-10 mx-auto flex h-full max-w-[640px] flex-col items-center justify-center px-6 text-center sm:px-10">
         <span
           className={[
-            "inline-flex items-center gap-3 text-[10.5px] font-bold uppercase tracking-[0.36em]",
+            "inline-flex items-center gap-3 text-[11px] font-bold uppercase tracking-[0.36em]",
             "transition-opacity duration-[800ms] ease-out",
             phase >= 0 ? "opacity-100" : "opacity-0",
           ].join(" ")}

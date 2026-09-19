@@ -112,7 +112,7 @@ export function ShapeStep({
         aria-live="polite"
       >
         <span
-          className="inline-flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-[9px] font-bold uppercase tracking-[0.16em]"
+          className="inline-flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-[11px] font-bold uppercase tracking-[0.16em]"
           style={{
             borderColor: "color-mix(in oklab, var(--ivory) 18%, transparent)",
             color: "color-mix(in oklab, var(--ivory) 72%, transparent)",
@@ -122,7 +122,7 @@ export function ShapeStep({
         </span>
         {isPersisted ? (
           <span
-            className="rounded-full border px-3 py-1.5 text-[9px] font-bold uppercase tracking-[0.16em]"
+            className="rounded-full border px-3 py-1.5 text-[11px] font-bold uppercase tracking-[0.16em]"
             style={{
               borderColor: "color-mix(in oklab, var(--gold) 34%, transparent)",
               color: "var(--gold)",
@@ -218,7 +218,7 @@ export function ShapeStep({
           >
             <div>
               <p
-                className="text-[10px] font-bold uppercase tracking-[0.22em]"
+                className="text-[11px] font-bold uppercase tracking-[0.22em]"
                 style={{ color: "var(--gold)" }}
               >
                 {SIGNATURE_REGION[signatureId]}
@@ -238,7 +238,7 @@ export function ShapeStep({
               </p>
             </div>
             <div
-              className="rounded-full border px-3 py-2 text-[10px] font-bold uppercase tracking-[0.18em]"
+              className="rounded-full border px-3 py-2 text-[11px] font-bold uppercase tracking-[0.18em]"
               style={{
                 borderColor: "color-mix(in oklab, var(--gold) 40%, transparent)",
                 color: "var(--gold)",
@@ -281,7 +281,7 @@ export function ShapeStep({
                   >
                     {incomingLeg ? (
                       <div
-                        className="mb-3 flex items-center gap-2 border-b pb-3 text-[9px] font-bold uppercase tracking-[0.14em]"
+                        className="mb-3 flex items-center gap-2 border-b pb-3 text-[11px] font-bold uppercase tracking-[0.14em]"
                         style={{
                           borderColor: "color-mix(in oklab, var(--ivory) 10%, transparent)",
                           color: "color-mix(in oklab, var(--ivory) 48%, transparent)",
@@ -316,7 +316,7 @@ export function ShapeStep({
                         </div>
                         {moment.originalLabel ? (
                           <p
-                            className="mt-1 text-[10px] leading-4"
+                            className="mt-1 text-[11px] leading-4"
                             style={{ color: "color-mix(in oklab, var(--ivory) 48%, transparent)" }}
                           >
                             Replaces the previous moment
@@ -328,7 +328,7 @@ export function ShapeStep({
                             .map((dimension) => (
                               <span
                                 key={dimension}
-                                className="rounded-full border px-2 py-1 text-[9px] font-semibold uppercase tracking-[0.14em]"
+                                className="rounded-full border px-2 py-1 text-[11px] font-semibold uppercase tracking-[0.14em]"
                                 style={{
                                   borderColor: "color-mix(in oklab, var(--gold) 28%, transparent)",
                                   color: "color-mix(in oklab, var(--ivory) 72%, transparent)",
@@ -343,7 +343,7 @@ export function ShapeStep({
                         </div>
                         {disclosure ? (
                           <p
-                            className="mt-2 text-[10px] leading-4"
+                            className="mt-2 text-[11px] leading-4"
                             style={{ color: "color-mix(in oklab, var(--ivory) 54%, transparent)" }}
                           >
                             {disclosure}
@@ -363,7 +363,7 @@ export function ShapeStep({
                       style={{ borderColor: "color-mix(in oklab, var(--ivory) 10%, transparent)" }}
                     >
                       <span
-                        className="text-[9px] font-semibold uppercase tracking-[0.14em]"
+                        className="text-[11px] font-semibold uppercase tracking-[0.14em]"
                         style={{ color: "color-mix(in oklab, var(--ivory) 46%, transparent)" }}
                       >
                         {alternatives.length > 0
@@ -381,7 +381,7 @@ export function ShapeStep({
                                 `${publicLabel} was removed and the original moment was restored.`,
                               );
                             }}
-                            className="inline-flex min-h-9 items-center gap-1.5 rounded-full border px-3 text-[9px] font-bold uppercase tracking-[0.14em]"
+                            className="inline-flex min-h-9 items-center gap-1.5 rounded-full border px-3 text-[11px] font-bold uppercase tracking-[0.14em]"
                             style={{
                               borderColor: "color-mix(in oklab, var(--ivory) 18%, transparent)",
                             }}
@@ -395,7 +395,7 @@ export function ShapeStep({
                             aria-expanded={expanded}
                             aria-controls={`living-atlas-alternatives-${moment.slotId}`}
                             onClick={() => setExpandedSlotId(expanded ? null : moment.slotId)}
-                            className="inline-flex min-h-9 items-center gap-1.5 rounded-full border px-3 text-[9px] font-bold uppercase tracking-[0.14em]"
+                            className="inline-flex min-h-9 items-center gap-1.5 rounded-full border px-3 text-[11px] font-bold uppercase tracking-[0.14em]"
                             style={{
                               borderColor: "color-mix(in oklab, var(--gold) 38%, transparent)",
                               color: "var(--gold)",
@@ -435,7 +435,7 @@ export function ShapeStep({
                                     {alternativeLabel}
                                   </h3>
                                   <p
-                                    className="mt-1 text-[10px] font-bold uppercase tracking-[0.13em]"
+                                    className="mt-1 text-[11px] font-bold uppercase tracking-[0.13em]"
                                     style={{ color: "var(--gold)" }}
                                   >
                                     {formatLivingAtlasDurationDelta(alternative.durationDeltaMin)}
@@ -467,7 +467,7 @@ export function ShapeStep({
                               </div>
                               {alternativeDisclosure ? (
                                 <p
-                                  className="mt-2 text-[10px] leading-4"
+                                  className="mt-2 text-[11px] leading-4"
                                   style={{
                                     color: "color-mix(in oklab, var(--ivory) 54%, transparent)",
                                   }}
@@ -486,7 +486,7 @@ export function ShapeStep({
                                     `${publicLabel} was replaced by ${alternativeLabel}. The title, duration, coverage and route were recalculated.`,
                                   );
                                 }}
-                                className="mt-3 inline-flex min-h-9 items-center gap-1.5 rounded-full px-3 text-[9px] font-bold uppercase tracking-[0.14em]"
+                                className="mt-3 inline-flex min-h-9 items-center gap-1.5 rounded-full px-3 text-[11px] font-bold uppercase tracking-[0.14em]"
                                 style={{ background: "var(--ivory)", color: "var(--charcoal)" }}
                               >
                                 Use this moment <ArrowRight size={12} aria-hidden />
@@ -507,7 +507,7 @@ export function ShapeStep({
               {LIVING_ATLAS_TIMING_DISCLOSURE}
             </p>
             <p
-              className="mt-2 text-[10px] leading-5"
+              className="mt-2 text-[11px] leading-5"
               style={{ color: "color-mix(in oklab, var(--ivory) 46%, transparent)" }}
             >
               Internal transfers are planning estimates from verified coordinates. Live traffic,

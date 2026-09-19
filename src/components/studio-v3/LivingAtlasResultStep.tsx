@@ -74,7 +74,7 @@ export function ResultStep({
                   }}
                 >
                   <p
-                    className="text-[10px] font-bold uppercase tracking-[0.22em]"
+                    className="text-[11px] font-bold uppercase tracking-[0.22em]"
                     style={{ color: "var(--gold)" }}
                   >
                     {SIGNATURE_REGION[candidate.signatureId]}
@@ -92,7 +92,7 @@ export function ResultStep({
                     {signatureDistinction(candidate.signatureId)}
                   </p>
                   <p
-                    className="mt-5 flex items-center justify-between text-[10px] font-bold uppercase tracking-[0.18em]"
+                    className="mt-5 flex items-center justify-between text-[11px] font-bold uppercase tracking-[0.18em]"
                     style={{ color: "var(--gold)" }}
                   >
                     This is my direction{" "}
@@ -120,7 +120,7 @@ export function ResultStep({
                 }}
               >
                 <p
-                  className="text-[10px] font-bold uppercase tracking-[0.24em]"
+                  className="text-[11px] font-bold uppercase tracking-[0.24em]"
                   style={{ color: "var(--gold)" }}
                 >
                   {SIGNATURE_REGION[decision.selectedSignatureId]}
@@ -140,7 +140,7 @@ export function ResultStep({
                 <button
                   type="button"
                   onClick={onCompose}
-                  className="mt-6 inline-flex min-h-11 items-center gap-2 rounded-full px-5 text-[10px] font-bold uppercase tracking-[0.2em]"
+                  className="mt-6 inline-flex min-h-11 items-center gap-2 rounded-full px-5 text-[11px] font-bold uppercase tracking-[0.2em]"
                   style={{ background: "var(--ivory)", color: "var(--charcoal)" }}
                 >
                   Shape this day <ArrowRight size={14} aria-hidden />

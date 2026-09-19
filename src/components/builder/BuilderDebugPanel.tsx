@@ -49,14 +49,14 @@ export function BuilderDebugPanel({ state, title = "Builder state" }: Props) {
       aria-label="Builder debug panel"
     >
       <div className="flex items-center justify-between gap-2 border-b border-[color:var(--charcoal)]/10 px-3 py-1.5">
-        <span className="text-[10px] uppercase tracking-[0.22em] font-bold text-[color:var(--charcoal)]">
+        <span className="text-[11px] uppercase tracking-[0.22em] font-bold text-[color:var(--charcoal)]">
           Debug · {title}
         </span>
         <div className="flex items-center gap-1">
           <button
             type="button"
             onClick={() => setOpen((o) => !o)}
-            className="text-[10px] uppercase tracking-[0.2em] font-bold text-[color:var(--charcoal)]/60 hover:text-[color:var(--charcoal)] px-1.5"
+            className="text-[11px] uppercase tracking-[0.2em] font-bold text-[color:var(--charcoal)]/60 hover:text-[color:var(--charcoal)] px-1.5"
             aria-expanded={open}
           >
             {open ? "Hide" : "Show"}

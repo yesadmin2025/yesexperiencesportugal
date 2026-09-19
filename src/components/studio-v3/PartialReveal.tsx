@@ -128,7 +128,7 @@ export function PartialReveal({
       aria-live="polite"
     >
       <div
-        className="text-[10.5px] font-medium uppercase tracking-[0.26em]"
+        className="text-[11px] font-medium uppercase tracking-[0.26em]"
         style={{ color: "var(--gold)" }}
       >
         {label}

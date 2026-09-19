@@ -172,7 +172,7 @@ export function RunningInvestmentRibbon({
             onClick={dismiss}
             aria-label="Hide investment whisper for this session"
             data-testid="studio-v3-investment-ribbon-hide"
-            className="shrink-0 text-[10.5px] uppercase tracking-[0.2em] font-semibold px-1 inline-flex items-center focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)]"
+            className="shrink-0 text-[11px] uppercase tracking-[0.2em] font-semibold px-1 inline-flex items-center focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)]"
             style={{
               color: "color-mix(in oklab, var(--charcoal) 60%, var(--ivory))",
               minHeight: 44,
@@ -190,7 +190,7 @@ export function RunningInvestmentRibbon({
         </div>
         {voice ? (
           <span
-            className="text-[9.5px] uppercase tracking-[0.26em] font-semibold inline-flex items-center gap-1.5 truncate"
+            className="text-[11px] uppercase tracking-[0.26em] font-semibold inline-flex items-center gap-1.5 truncate"
             style={{ color: "color-mix(in oklab, var(--charcoal) 55%, var(--ivory))" }}
             data-testid="studio-v3-region-voice"
           >

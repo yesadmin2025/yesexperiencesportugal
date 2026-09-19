@@ -115,7 +115,7 @@ export function AtmosphereBeat({ imageSrc, videoSrc, eyebrow, line }: Atmosphere
 
       <div className="relative z-10 w-full max-w-[480px] text-center">
         <p
-          className="text-[10.5px] uppercase tracking-[0.28em] font-semibold inline-flex items-center justify-center gap-1.5"
+          className="text-[11px] uppercase tracking-[0.28em] font-semibold inline-flex items-center justify-center gap-1.5"
           style={{ color: "var(--gold)" }}
           data-testid="studio-v3-voice-mark"
         >
@@ -291,7 +291,7 @@ export function MapBeat({
     >
       <div className="relative z-10 w-full max-w-[480px]">
         <p
-          className="text-[10.5px] uppercase tracking-[0.28em] font-semibold flex items-center justify-center gap-1.5"
+          className="text-[11px] uppercase tracking-[0.28em] font-semibold flex items-center justify-center gap-1.5"
           style={{ color: "var(--gold)" }}
           data-testid="studio-v3-voice-mark"
         >

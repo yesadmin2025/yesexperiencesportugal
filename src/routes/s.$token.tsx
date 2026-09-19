@@ -25,7 +25,7 @@ function Shell({ title }: { title: string }) {
     >
       <div className="max-w-md text-center">
         <p
-          className="text-[10px] uppercase tracking-[0.28em] font-bold"
+          className="text-[11px] uppercase tracking-[0.28em] font-bold"
           style={{ color: "var(--gold)" }}
         >
           YES Experiences

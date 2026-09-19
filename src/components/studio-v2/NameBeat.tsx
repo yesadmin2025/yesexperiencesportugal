@@ -40,7 +40,7 @@ export function NameBeat({ initial = "", onSubmit, onSkip }: Props) {
       style={{ background: "var(--ivory)", color: "var(--charcoal)" }}
     >
       <span
-        className="inline-flex items-center gap-3 text-[10.5px] font-bold uppercase tracking-[0.32em]"
+        className="inline-flex items-center gap-3 text-[11px] font-bold uppercase tracking-[0.32em]"
         style={{ color: "color-mix(in oklab, var(--charcoal) 60%, transparent)" }}
       >
         <span className="h-px w-6" style={{ background: "var(--gold)" }} />
@@ -91,7 +91,7 @@ export function NameBeat({ initial = "", onSubmit, onSkip }: Props) {
       <button
         type="button"
         onClick={onSkip}
-        className="mt-8 text-[10.5px] font-semibold uppercase tracking-[0.32em] underline-offset-4 hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)]"
+        className="mt-8 text-[11px] font-semibold uppercase tracking-[0.32em] underline-offset-4 hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)]"
         style={{ color: "color-mix(in oklab, var(--charcoal) 55%, transparent)" }}
       >
         Skip — keep it private

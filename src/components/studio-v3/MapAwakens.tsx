@@ -377,7 +377,7 @@ export function MapAwakens({
       <button
         type="button"
         onClick={onBack}
-        className="absolute left-4 top-4 z-30 inline-flex items-center gap-1.5 min-h-[44px] min-w-[44px] px-2 text-[10.5px] uppercase tracking-[0.24em] font-semibold focus:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)]"
+        className="absolute left-4 top-4 z-30 inline-flex items-center gap-1.5 min-h-[44px] min-w-[44px] px-2 text-[11px] uppercase tracking-[0.24em] font-semibold focus:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)]"
         style={{ color: "color-mix(in oklab, var(--charcoal) 60%, transparent)" }}
         aria-label="Back to rhythm"
       >
@@ -444,7 +444,7 @@ export function MapAwakens({
             >
               <PortugalSilhouette fill={1} region={silhouetteRegion} />
               <div
-                className="absolute inset-x-0 bottom-5 text-center text-[10px] uppercase tracking-[0.32em] font-semibold"
+                className="absolute inset-x-0 bottom-5 text-center text-[11px] uppercase tracking-[0.32em] font-semibold"
                 style={{ color: "color-mix(in oklab, var(--charcoal) 55%, transparent)" }}
               >
                 <span style={{ color: "var(--gold)" }}>—</span>{" "}
@@ -507,7 +507,7 @@ export function MapAwakens({
             {/* Bottom-right footnote — clarifies status without alarming */}
             {revealed >= journey.moments.length ? (
               <div
-                className="absolute right-3 bottom-3 z-10 px-2.5 py-1 text-[9.5px] uppercase tracking-[0.22em] font-semibold"
+                className="absolute right-3 bottom-3 z-10 px-2.5 py-1 text-[11px] uppercase tracking-[0.22em] font-semibold"
                 style={{
                   background: "color-mix(in oklab, var(--charcoal) 80%, transparent)",
                   color: "var(--ivory)",
@@ -578,7 +578,7 @@ export function MapAwakens({
               }}
             >
               <p
-                className="text-[10px] uppercase tracking-[0.28em] font-semibold"
+                className="text-[11px] uppercase tracking-[0.28em] font-semibold"
                 style={{ color: "color-mix(in oklab, var(--charcoal) 55%, transparent)" }}
               >
                 Moment {String(current.index + 1).padStart(2, "0")} ·{" "}
@@ -606,7 +606,7 @@ export function MapAwakens({
                   available so we never render an empty bar. */}
               {activeDriveMin !== null || activeDwellMin !== null ? (
                 <p
-                  className="mt-2 inline-flex flex-wrap items-center gap-x-2 gap-y-1 text-[10.5px] uppercase tracking-[0.22em] font-semibold"
+                  className="mt-2 inline-flex flex-wrap items-center gap-x-2 gap-y-1 text-[11px] uppercase tracking-[0.22em] font-semibold"
                   style={{ color: "color-mix(in oklab, var(--charcoal) 60%, transparent)" }}
                   data-testid="studio-v3-moment-timings"
                 >
@@ -641,7 +641,7 @@ export function MapAwakens({
               type="button"
               onClick={() => step(-1)}
               disabled={active === 0}
-              className="inline-flex items-center justify-center min-h-[44px] min-w-[44px] px-3 text-[10.5px] uppercase tracking-[0.22em] font-semibold disabled:opacity-30 focus:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)]"
+              className="inline-flex items-center justify-center min-h-[44px] min-w-[44px] px-3 text-[11px] uppercase tracking-[0.22em] font-semibold disabled:opacity-30 focus:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)]"
               style={{ color: "color-mix(in oklab, var(--charcoal) 65%, transparent)" }}
               aria-label="Previous moment"
             >
@@ -651,7 +651,7 @@ export function MapAwakens({
             <button
               type="button"
               onClick={() => setPlaying((p) => !p)}
-              className="inline-flex items-center gap-2 min-h-[44px] px-4 text-[10.5px] uppercase tracking-[0.22em] font-semibold focus:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)]"
+              className="inline-flex items-center gap-2 min-h-[44px] px-4 text-[11px] uppercase tracking-[0.22em] font-semibold focus:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)]"
               style={{ color: "color-mix(in oklab, var(--charcoal) 70%, transparent)" }}
               aria-pressed={!playing}
             >
@@ -663,7 +663,7 @@ export function MapAwakens({
               type="button"
               onClick={() => step(1)}
               disabled={active >= journey.moments.length - 1}
-              className="inline-flex items-center justify-center min-h-[44px] min-w-[44px] px-3 text-[10.5px] uppercase tracking-[0.22em] font-semibold disabled:opacity-30 focus:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)]"
+              className="inline-flex items-center justify-center min-h-[44px] min-w-[44px] px-3 text-[11px] uppercase tracking-[0.22em] font-semibold disabled:opacity-30 focus:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)]"
               style={{ color: "color-mix(in oklab, var(--charcoal) 65%, transparent)" }}
               aria-label="Next moment"
             >
@@ -722,7 +722,7 @@ export function MapAwakens({
                 reveal; all editing (including re-shape via Back → answers)
                 lives on the next screen (Refine). */}
             <p
-              className="mt-3 text-[10px] uppercase tracking-[0.24em] font-semibold"
+              className="mt-3 text-[11px] uppercase tracking-[0.24em] font-semibold"
               style={{ color: "color-mix(in oklab, var(--charcoal) 45%, transparent)" }}
             >
               Your Signature route · confirmed instantly on booking

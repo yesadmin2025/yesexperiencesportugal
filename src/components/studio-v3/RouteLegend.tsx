@@ -82,7 +82,7 @@ export function RouteLegend({
       aria-label="Route breakdown — how each leg was measured"
     >
       <figcaption className="flex items-center justify-between gap-3 mb-3">
-        <span className="inline-flex items-center gap-2 text-[10.5px] uppercase tracking-[0.24em] font-semibold text-[color:var(--charcoal)]/70">
+        <span className="inline-flex items-center gap-2 text-[11px] uppercase tracking-[0.24em] font-semibold text-[color:var(--charcoal)]/70">
           <RouteIcon size={12} aria-hidden="true" />
           Route breakdown
         </span>
@@ -131,7 +131,7 @@ export function RouteLegend({
       </ol>
 
       {!hideTotals && (
-        <p className="mt-3 text-[10.5px] uppercase tracking-[0.2em] text-[color:var(--text-muted)]">
+        <p className="mt-3 text-[11px] uppercase tracking-[0.2em] text-[color:var(--text-muted)]">
           {drivingCount > 0 && `${drivingCount} driving`}
           {drivingCount > 0 && walkingCount > 0 && " · "}
           {walkingCount > 0 && `${walkingCount} walking`}

@@ -283,7 +283,7 @@ function BookPage() {
             >
               {/* Progress indicator */}
               <div className="mb-6" data-testid="booking-progress">
-                <div className="flex items-center justify-between font-sans text-[10.5px] uppercase tracking-[0.22em] font-bold text-[color:var(--charcoal-soft)]">
+                <div className="flex items-center justify-between font-sans text-[11px] uppercase tracking-[0.22em] font-bold text-[color:var(--charcoal-soft)]">
                   <span>
                     Step {step + 1} / {STEPS.length} · {STEPS[step]}
                   </span>
@@ -306,7 +306,7 @@ function BookPage() {
                   {STEPS.map((label, i) => (
                     <li
                       key={label}
-                      className={`flex-1 text-center font-sans text-[10px] uppercase tracking-[0.16em] ${
+                      className={`flex-1 text-center font-sans text-[11px] uppercase tracking-[0.16em] ${
                         i <= step
                           ? "text-[color:var(--charcoal)] font-bold"
                           : "text-[color:var(--charcoal-soft)]"
@@ -462,7 +462,7 @@ function BookPage() {
                     </div>
 
                     <div className="rounded-[4px] border border-[color:var(--border)] bg-[color:var(--ivory)] p-4 text-[13.5px] leading-relaxed text-[color:var(--charcoal-soft)]">
-                      <p className="font-sans text-[10.5px] uppercase tracking-[0.2em] font-bold text-[color:var(--charcoal)]">
+                      <p className="font-sans text-[11px] uppercase tracking-[0.2em] font-bold text-[color:var(--charcoal)]">
                         Your request
                       </p>
                       <p className="mt-2">
@@ -522,7 +522,7 @@ function BookPage() {
                 key={item.title}
                 className="rounded-[6px] border border-[color:var(--border)] bg-[color:var(--card)] p-5"
               >
-                <span className="font-sans text-[10.5px] uppercase tracking-[0.22em] font-bold text-[color:var(--gold)]">
+                <span className="font-sans text-[11px] uppercase tracking-[0.22em] font-bold text-[color:var(--gold)]">
                   0{i + 1}
                 </span>
                 <h3 className="font-display mt-2 text-[1.1rem] leading-snug text-[color:var(--charcoal)]">

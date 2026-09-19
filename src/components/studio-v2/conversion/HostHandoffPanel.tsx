@@ -166,7 +166,7 @@ export function HostHandoffPanel({
             Mariana
           </p>
           <p
-            className="text-[10.5px] uppercase tracking-[0.26em]"
+            className="text-[11px] uppercase tracking-[0.26em]"
             style={{
               color: "color-mix(in oklab, var(--charcoal) 60%, transparent)",
               fontWeight: 600,

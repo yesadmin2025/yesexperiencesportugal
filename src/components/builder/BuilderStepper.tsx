@@ -142,7 +142,7 @@ export function BuilderStepper({ step, furthestCompleted = 0, onStepClick }: Pro
           const labelEl = (
             <span
               className={[
-                "hidden sm:inline text-[10.5px] uppercase tracking-[0.2em] font-bold transition-colors",
+                "hidden sm:inline text-[11px] uppercase tracking-[0.2em] font-bold transition-colors",
                 isActive
                   ? "text-[color:var(--charcoal)]"
                   : isComplete
