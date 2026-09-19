@@ -468,30 +468,43 @@ export function startHomeMotion(): () => void {
     });
 
     for (const el of storyTargets.slice(0, 24)) {
-      const words = (el.textContent ?? "").trim().split(/\s+/);
-      if (words.length < 2) continue;
-      // Preserve any inline emphasis by bailing out when markup is present.
-      if (el.children.length > 0) continue;
-
-      const frag = document.createDocumentFragment();
+      // Wrap every word in place, walking text nodes so inline emphasis
+      // (`<em>`, gold spans) is preserved exactly as authored.
+      const textNodes: Text[] = [];
+      const walker = document.createTreeWalker(el, NodeFilter.SHOW_TEXT);
+      let node = walker.nextNode();
+      while (node) {
+        if ((node.textContent ?? "").trim().length > 0) textNodes.push(node as Text);
+        node = walker.nextNode();
+      }
       const spans: HTMLElement[] = [];
-      words.forEach((word, i) => {
-        const span = document.createElement("span");
-        span.className = "story-word";
-        span.textContent = word;
-        frag.appendChild(span);
-        if (i < words.length - 1) frag.appendChild(document.createTextNode(" "));
-        spans.push(span);
-      });
-      el.textContent = "";
-      el.appendChild(frag);
+      for (const textNode of textNodes) {
+        const raw = textNode.textContent ?? "";
+        const leading = /^\s/.test(raw) ? " " : "";
+        const trailing = /\s$/.test(raw) ? " " : "";
+        const words = raw.trim().split(/\s+/);
+        const frag = document.createDocumentFragment();
+        if (leading) frag.appendChild(document.createTextNode(leading));
+        words.forEach((word, i) => {
+          const span = document.createElement("span");
+          span.className = "story-word";
+          span.textContent = word;
+          frag.appendChild(span);
+          spans.push(span);
+          if (i < words.length - 1) frag.appendChild(document.createTextNode(" "));
+        });
+        if (trailing) frag.appendChild(document.createTextNode(trailing));
+        textNode.parentNode?.replaceChild(frag, textNode);
+      }
+      if (spans.length < 2) continue;
 
-      // Group words into rendered lines by their vertical offset.
+      // Group words into rendered lines by their vertical position.
+      const elTop = el.getBoundingClientRect().top;
       let lineIndex = -1;
       let lastTop: number | null = null;
       for (const span of spans) {
-        const top = Math.round(span.offsetTop);
-        if (lastTop === null || Math.abs(top - lastTop) > 2) {
+        const top = Math.round(span.getBoundingClientRect().top - elTop);
+        if (lastTop === null || Math.abs(top - lastTop) > 3) {
           lineIndex += 1;
           lastTop = top;
         }
@@ -499,6 +512,7 @@ export function startHomeMotion(): () => void {
       }
       el.setAttribute("data-story-lines", String(lineIndex + 1));
     }
+
   }
 
 
