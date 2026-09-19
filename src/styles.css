@@ -8374,3 +8374,156 @@ html.reveal-ready .about-story.is-visible .about-copy-sequence p:nth-child(4) { 
     page-break-after: avoid;
   }
 }
+
+/* ============================================================
+   Public editorial motion — final unified contract
+   This block intentionally follows every legacy generation above.
+   Geometry stays fixed; masks, opacity and restrained image scale
+   create the visible narrative. Content remains visible before JS.
+   ============================================================ */
+@keyframes yesHeroFilmBreathe {
+  from { transform: scale(1.035); }
+  to { transform: scale(1); }
+}
+
+@keyframes yesHeroInkReveal {
+  from { opacity: 0; clip-path: inset(0 100% 0 0); }
+  to { opacity: 1; clip-path: inset(-0.18em -0.14em -0.22em -0.14em); }
+}
+
+@keyframes yesHeroArrowDraw {
+  from { opacity: 0; transform: translateX(-7px); }
+  to { opacity: 1; transform: translateX(5px); }
+}
+
+.hero-cinematic .hero-film-settle {
+  animation: yesHeroFilmBreathe 9s var(--motion-ease-editorial) both !important;
+  transform-origin: 57% 50%;
+}
+
+.hero-cinematic .hero-title-mask {
+  overflow: visible;
+}
+
+.hero-cinematic [data-hero-field="headlineLine1"],
+.hero-cinematic [data-hero-field="headlineLine2"] {
+  opacity: 1;
+  clip-path: inset(-0.18em -0.14em -0.22em -0.14em);
+  animation-name: yesHeroInkReveal !important;
+  animation-duration: 1100ms !important;
+  animation-timing-function: var(--motion-ease-editorial) !important;
+  animation-fill-mode: both !important;
+}
+
+.hero-cinematic [data-hero-field="headlineLine1"] { animation-delay: 140ms !important; }
+.hero-cinematic [data-hero-field="headlineLine2"] { animation-delay: 520ms !important; }
+.hero-cinematic [data-hero-field="subheadline"] {
+  animation: heroApprovedReveal 760ms var(--motion-ease-editorial) 940ms both !important;
+}
+.hero-cinematic .hero-cta-group {
+  animation: heroApprovedReveal 760ms var(--motion-ease-editorial) 1160ms both !important;
+}
+.hero-cinematic .hero-cta__arrow {
+  animation: yesHeroArrowDraw 780ms var(--motion-ease-editorial) 1540ms both;
+}
+
+/* Reviews become one composed story: proof, statement, human image, voices. */
+.guest-quotes-heading {
+  max-width: 18ch;
+  margin-inline: auto;
+}
+.guest-quotes-count {
+  display: inline-block;
+  font-variant-numeric: tabular-nums;
+  color: var(--teal);
+}
+.guest-quotes-photo {
+  height: clamp(11rem, 42vw, 22rem);
+  overflow: hidden;
+  border-radius: 4px;
+}
+.guest-quotes-photo picture,
+.guest-quotes-photo img {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+[data-scene-ready="1"].guest-quotes-story .guest-quotes-photo {
+  opacity: 0;
+  clip-path: inset(0 100% 0 0);
+  transition:
+    opacity 520ms var(--motion-ease-editorial) 180ms,
+    clip-path 820ms var(--motion-ease-editorial) 180ms;
+}
+[data-scene="in"].guest-quotes-story .guest-quotes-photo {
+  opacity: 1;
+  clip-path: inset(0);
+}
+[data-scene-ready="1"].guest-quotes-story .guest-quotes-count {
+  opacity: 0;
+  transition: opacity 520ms var(--motion-ease-editorial) 100ms;
+}
+[data-scene="in"].guest-quotes-story .guest-quotes-count { opacity: 1; }
+[data-scene-ready="1"].guest-quotes-story .review-story-card {
+  opacity: 0;
+  clip-path: inset(0 7% 0 7%);
+  filter: saturate(0.82);
+  transition:
+    opacity 520ms var(--motion-ease-editorial),
+    clip-path 760ms var(--motion-ease-editorial),
+    filter 760ms var(--motion-ease-editorial);
+}
+[data-scene="in"].guest-quotes-story .review-story-card {
+  opacity: 1;
+  clip-path: inset(0);
+  filter: saturate(1);
+}
+[data-scene="in"].guest-quotes-story .review-story-card:nth-child(2) { transition-delay: 110ms; }
+[data-scene="in"].guest-quotes-story .review-story-card:nth-child(3) { transition-delay: 220ms; }
+[data-scene="in"].guest-quotes-story .review-story-card:nth-child(4) { transition-delay: 330ms; }
+
+/* Five Ways remains image-free. Each card reads in a deliberate order and
+   alternates horizontal ink direction without moving the card itself. */
+[data-scene-ready="1"].five-ways-story .five-ways-beat {
+  opacity: 0;
+  clip-path: inset(0 100% 0 0);
+  transition:
+    opacity 460ms var(--motion-ease-editorial),
+    clip-path 720ms var(--motion-ease-editorial);
+}
+[data-scene-ready="1"].five-ways-story .five-ways-card:nth-child(even) .five-ways-beat {
+  clip-path: inset(0 0 0 100%);
+}
+[data-scene="in"].five-ways-story .five-ways-beat {
+  opacity: 1;
+  clip-path: inset(-0.12em);
+}
+[data-scene="in"].five-ways-story .five-ways-card:nth-child(even) .five-ways-beat {
+  opacity: 1;
+  clip-path: inset(-0.12em);
+}
+[data-scene="in"].five-ways-story .five-ways-kicker .five-ways-beat { transition-delay: 120ms; }
+[data-scene="in"].five-ways-story .five-ways-eyebrow { transition-delay: 230ms; }
+[data-scene="in"].five-ways-story .five-ways-title { transition-delay: 340ms; }
+[data-scene="in"].five-ways-story .five-ways-body { transition-delay: 460ms; }
+[data-scene="in"].five-ways-story .five-ways-action { transition-delay: 580ms; }
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-cinematic .hero-film-settle,
+  .hero-cinematic [data-hero-field="headlineLine1"],
+  .hero-cinematic [data-hero-field="headlineLine2"],
+  .hero-cinematic [data-hero-field="subheadline"],
+  .hero-cinematic .hero-cta-group,
+  .hero-cinematic .hero-cta__arrow,
+  [data-scene-ready="1"].guest-quotes-story .guest-quotes-count,
+  [data-scene-ready="1"].guest-quotes-story .guest-quotes-photo,
+  [data-scene-ready="1"].guest-quotes-story .review-story-card,
+  [data-scene-ready="1"].five-ways-story .five-ways-beat {
+    animation: none !important;
+    transition: none !important;
+    opacity: 1 !important;
+    transform: none !important;
+    clip-path: none !important;
+    filter: none !important;
+  }
+}

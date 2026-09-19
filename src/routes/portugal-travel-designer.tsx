@@ -74,7 +74,7 @@ function Section({
         {title && (
           <SplitLines
             as="h2"
-            className="mt-4 font-serif text-[color:var(--charcoal)] font-medium tracking-normal text-[clamp(1.875rem,7vw,2.4rem)] md:text-[3.6rem] leading-[1.1] md:leading-[1.0] text-balance"
+            className="t-h2 mt-4 font-serif text-[color:var(--charcoal)] font-medium text-balance"
             lines={[title]}
           />
         )}
