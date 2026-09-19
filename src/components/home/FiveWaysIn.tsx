@@ -251,7 +251,6 @@ function PathCard({ path, index }: { path: Path; index: number }) {
         </h3>
         <p className="five-ways-body mt-4 text-[15px] leading-[1.68] text-[color:var(--charcoal-soft)] md:text-[16px]">
           {path.body}
-        </span>
         </p>
         <span className="five-ways-action mt-auto flex min-h-[44px] w-full items-center justify-between gap-3 pt-7">
           <span className="text-[11px] uppercase tracking-[0.22em] font-semibold text-[color:var(--teal)]">

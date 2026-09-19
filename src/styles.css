@@ -7899,7 +7899,7 @@ html.reveal-ready .about-story--quiet :is(li, a) { transition-delay: 0ms; }
 }
 .five-ways-story {
   display: grid;
-  gap: 2.75rem 1rem;
+  gap: 1.5rem;
 }
 .five-ways-card {
   position: relative;
@@ -7907,6 +7907,8 @@ html.reveal-ready .about-story--quiet :is(li, a) { transition-delay: 0ms; }
   min-width: 0;
   align-content: start;
   color: var(--charcoal);
+  border: 1px solid var(--border);
+  background: var(--ivory);
 }
 .five-ways-card::before {
   content: none;
@@ -7938,15 +7940,16 @@ html.reveal-ready .about-story--quiet :is(li, a) { transition-delay: 0ms; }
   min-width: 0;
   flex-direction: column;
   margin: 0;
-  padding: 1.5rem 0 0;
+  min-height: 17.5rem;
+  padding: 1.5rem;
   background: var(--ivory);
 }
 .five-ways-card--signature .five-ways-copy,
 .five-ways-card--corporate .five-ways-copy {
   margin: 0;
-  padding: 1.5rem 0 0;
+  padding: 1.5rem;
 }
-.five-ways-title { max-width: 17ch; }
+.five-ways-title { max-width: 19ch; }
 .five-ways-body { max-width: 38ch; }
 [data-scene-ready="1"] .five-ways-card .five-ways-image {
   clip-path: inset(0 100% 0 0);
@@ -7973,16 +7976,14 @@ html.reveal-ready .about-story--quiet :is(li, a) { transition-delay: 0ms; }
 .five-ways-card:is(:hover, :focus-visible) {
   box-shadow: none;
 }
-.five-ways-card--studio .five-ways-image { aspect-ratio: 4 / 5; }
-.five-ways-card--signature .five-ways-image { aspect-ratio: 5 / 4; }
-.five-ways-card--designer .five-ways-image { aspect-ratio: 16 / 10; }
-.five-ways-card--proposals .five-ways-image { aspect-ratio: 5 / 4; }
-.five-ways-card--corporate .five-ways-image { aspect-ratio: 4 / 3; }
+.five-ways-card .five-ways-image { aspect-ratio: 4 / 3; }
 
 @media (min-width: 520px) and (max-width: 1023.98px) {
   .five-ways-story { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .five-ways-card--studio { grid-column: 1 / -1; }
+  .five-ways-card--studio { grid-template-columns: minmax(0, 1.35fr) minmax(17rem, 0.65fr); }
   .five-ways-card--studio .five-ways-image { aspect-ratio: 16 / 10; }
+  .five-ways-card--studio .five-ways-copy { min-height: 100%; }
   .five-ways-card--signature,
   .five-ways-card--designer,
   .five-ways-card--proposals,
@@ -7990,28 +7991,22 @@ html.reveal-ready .about-story--quiet :is(li, a) { transition-delay: 0ms; }
     grid-column: auto;
     margin-top: 0;
   }
-  .five-ways-card--signature .five-ways-image,
-  .five-ways-card--corporate .five-ways-image { aspect-ratio: 4 / 5; }
-  .five-ways-card--designer .five-ways-image { aspect-ratio: 16 / 10; }
-  .five-ways-card--proposals .five-ways-image { aspect-ratio: 5 / 4; }
+  .five-ways-card:not(.five-ways-card--studio) .five-ways-image { aspect-ratio: 4 / 3; }
 }
 
 @media (min-width: 1024px) {
   .five-ways-story {
-    grid-template-columns: repeat(12, minmax(0, 1fr));
-    align-items: start;
-    gap: 5rem 1.5rem;
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+    align-items: stretch;
+    gap: 1.5rem;
   }
-  .five-ways-card--studio { grid-column: 1 / span 7; }
-  .five-ways-card--studio .five-ways-image { aspect-ratio: 16 / 11; }
-  .five-ways-card--signature { grid-column: 9 / -1; margin-top: 7rem; }
-  .five-ways-card--designer { grid-column: 2 / span 4; }
-  .five-ways-card--designer .five-ways-image { aspect-ratio: 5 / 3; }
-  .five-ways-card--proposals { grid-column: 7 / span 3; margin-top: 6rem; }
-  .five-ways-card--corporate { grid-column: 10 / -1; }
-  .five-ways-card--proposals .five-ways-image { aspect-ratio: 4 / 3; }
-  .five-ways-card--corporate .five-ways-image { aspect-ratio: 3 / 4; }
-  .five-ways-card--studio .five-ways-title { font-size: 1.85rem; }
+  .five-ways-card--studio,
+  .five-ways-card--signature,
+  .five-ways-card--designer { grid-column: span 2; }
+  .five-ways-card--proposals { grid-column: 2 / span 2; }
+  .five-ways-card--corporate { grid-column: 4 / span 2; }
+  .five-ways-card .five-ways-image { aspect-ratio: 4 / 3; }
+  .five-ways-card .five-ways-copy { min-height: 20rem; }
 }
 
 [data-scene-ready="1"] .experience-card-image {
