@@ -172,4 +172,4 @@
 - [x] Apply researched US search intent to all 12 Signature metadata sets
 - [x] Refine Contact and FAQ presentation and metadata
 - [x] Improve admin booking status and human-readable experience labels
-- [ ] Validate routes, sitemap, schema, checkout handoff, security, and publish
+- [x] Validate routes, sitemap, schema, checkout handoff, security, and publish
