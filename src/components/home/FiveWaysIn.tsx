@@ -21,6 +21,8 @@ type Path = {
   id: "signature" | "studio" | "designer" | "proposals" | "corporate";
   eyebrow: string;
   title: string;
+  titleLead: string;
+  titleEmphasis: string;
   body: string;
   cta: string;
   href: string;
@@ -33,6 +35,8 @@ const PATHS: ReadonlyArray<Path> = [
     id: "studio",
     eyebrow: "One custom day",
     title: "Shape a day around you",
+    titleLead: "Shape a day",
+    titleEmphasis: "around you",
     body: "Mood, pace and people — see the real route and live price, then confirm your private day instantly.",
     cta: CTA_LABELS.studio,
     href: "/studio-v3",
@@ -43,6 +47,8 @@ const PATHS: ReadonlyArray<Path> = [
     id: "signature",
     eyebrow: "Ready to book",
     title: "A private day, ready to go",
+    titleLead: "A private day,",
+    titleEmphasis: "ready to go",
     body: "Reserve a proven private day as it is or tailor the details — with the real price and instant confirmation.",
     cta: CTA_LABELS.signatureDiscovery,
     href: "/experiences",
@@ -53,6 +59,8 @@ const PATHS: ReadonlyArray<Path> = [
     id: "designer",
     eyebrow: "Several days",
     title: "Plan a whole Portugal journey",
+    titleLead: "Plan a whole",
+    titleEmphasis: "Portugal journey",
     body: "A local Travel Designer shapes the route, pace, stays and logistics around the way you travel.",
     cta: CTA_LABELS.travelDesigner,
     href: "/multi-day",
@@ -63,6 +71,8 @@ const PATHS: ReadonlyArray<Path> = [
     id: "proposals",
     eyebrow: "Proposals & celebrations",
     title: "A private moment, planned discreetly",
+    titleLead: "A private moment,",
+    titleEmphasis: "planned discreetly",
     body: "Proposals, anniversaries and milestone days shaped around the people and setting that matter.",
     cta: CTA_LABELS.moments,
     href: "/proposal-in-portugal",
@@ -73,6 +83,8 @@ const PATHS: ReadonlyArray<Path> = [
     id: "corporate",
     eyebrow: "Corporate & private groups",
     title: "Bring people together in Portugal",
+    titleLead: "Bring people together",
+    titleEmphasis: "in Portugal",
     body: "Off-sites, incentives, client hosting and private group days with the practical details handled.",
     cta: CTA_LABELS.corporate,
     href: "/corporate",
@@ -152,7 +164,7 @@ export function FiveWaysIn() {
     <section
       id="five-paths"
       aria-labelledby="choose-path-title"
-      className="section-enter section-y bg-[color:var(--ivory)] border-b border-[color:var(--border)] scroll-mt-24 md:scroll-mt-28"
+      className="five-ways-section section-enter section-y bg-[color:var(--sand)] border-b border-[color:var(--border)] scroll-mt-24 md:scroll-mt-28"
     >
       <div className="container-x">
         <div className="reveal mx-auto max-w-2xl text-center">
@@ -226,26 +238,26 @@ function PathCard({ path, index }: { path: Path; index: number }) {
         />
       </div>
       <div className="five-ways-copy">
-      <div className="five-ways-kicker flex items-center justify-between gap-4">
-        <Eyebrow>
-          {String(index + 1).padStart(2, "0")} · {path.eyebrow}
-        </Eyebrow>
-      </div>
+        <div className="five-ways-kicker flex items-center justify-between gap-4">
+          <Eyebrow>
+            {String(index + 1).padStart(2, "0")} · {path.eyebrow}
+          </Eyebrow>
+        </div>
 
-      <h3 className="five-ways-title serif mt-7 text-[1.35rem] md:text-[1.5rem] leading-[1.18] font-medium text-[color:var(--charcoal)]">
-        {path.title}
-      </h3>
-      <p className="five-ways-body mt-3 text-[15px] md:text-[16px] leading-[1.7] text-[color:var(--charcoal-soft)]">
-        {path.body}
-      </p>
-      {/* Visible label + arrow — the whole card remains the action. The arrow
-          is pushed to the right so every card's arrow aligns across the row. */}
-      <span className="five-ways-action mt-auto pt-7 flex w-full min-h-[44px] items-center justify-between gap-3">
-        <span className="text-[11px] uppercase tracking-[0.22em] font-semibold text-[color:var(--teal)]">
-          {path.cta}
+        <h3 className="five-ways-title editorial-title-safe mt-6 font-serif text-[1.65rem] leading-[1.18] font-normal text-[color:var(--charcoal)] md:text-[1.8rem]">
+          {path.title === `${path.titleLead} ${path.titleEmphasis}` ? (
+            <>{path.titleLead} <em className="font-normal text-[color:var(--teal)]">{path.titleEmphasis}</em></>
+          ) : path.title}
+        </h3>
+        <p className="five-ways-body mt-4 text-[15px] leading-[1.68] text-[color:var(--charcoal-soft)] md:text-[16px]">
+          {path.body}
+        </p>
+        <span className="five-ways-action mt-auto flex min-h-[44px] w-full items-center justify-between gap-3 pt-7">
+          <span className="text-[11px] uppercase tracking-[0.22em] font-semibold text-[color:var(--teal)]">
+            {path.cta}
+          </span>
+          <CtaMotionArrow />
         </span>
-        <CtaMotionArrow />
-      </span>
       </div>
     </Link>
   );

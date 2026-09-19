@@ -58,7 +58,7 @@ Recuperar **apenas a apresentação visual aprovada** do hero e dos Five Ways, s
 - Testar fontes lentas, 200% de texto, movimento reduzido e carregamento progressivo das cinco imagens.
 - Confirmar zero letras cortadas, zero overflow, zero sobreposição com menu/WhatsApp e ações mínimas de 44px.
 - Comparar lado a lado com a versão aprovada recuperada do histórico.
-- Percorrer hero, Five Ways, mapa e a transição para Signature antes de publicar.
+- Percorrer hero, Five Ways, mapa e a transição para Signature e todas as páginas do website antes de publicar.
 
 ## Fora de escopo
 
