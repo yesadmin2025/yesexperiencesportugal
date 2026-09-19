@@ -11,7 +11,14 @@ import { RealReviewsStrip } from "@/components/home/RealReviewsStrip";
 import { HubBookingPicker } from "@/components/booking/HubBookingPicker";
 import { signatureTours } from "@/data/signatureTours";
 import { LISBON_REGIONS } from "@/content/lisbon-regions";
-import { breadcrumbLd, faqPageLd, itemListLd, jsonLdScript, localBusinessLd } from "@/lib/jsonld";
+import {
+  breadcrumbLd,
+  faqPageLd,
+  itemListLd,
+  jsonLdScript,
+  localBusinessLd,
+  organizationUsCaAudienceLd,
+} from "@/lib/jsonld";
 import { LiveReviews } from "@/components/reviews/LiveReviews";
 import { areaProfilesFor } from "@/content/lisbon-regions";
 import { REVIEW_CERTIFICATE } from "@/config/trust-certificate";

@@ -7,7 +7,13 @@ import { SectionTitle } from "@/components/ui/SectionTitle";
 import { CtaButton } from "@/components/ui/CtaButton";
 import { CTA_LABELS } from "@/content/cta-vocabulary";
 import { RealReviewsStrip } from "@/components/home/RealReviewsStrip";
-import { breadcrumbLd, faqPageLd, jsonLdScript, localBusinessLd } from "@/lib/jsonld";
+import {
+  breadcrumbLd,
+  faqPageLd,
+  jsonLdScript,
+  localBusinessLd,
+  organizationUsCaAudienceLd,
+} from "@/lib/jsonld";
 import { US_TRAVELER_NOTES } from "@/content/lisbon-day-trip-comparison";
 import { WEBSITE_URL, LICENSE_LABEL } from "@/config/business-nap";
 
