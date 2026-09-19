@@ -14,7 +14,7 @@ import { Eyebrow } from "@/components/ui/Eyebrow";
 import { CtaMotionArrow } from "@/components/ui/CtaButton";
 import { Scene } from "@/components/motion/Scene";
 import { CTA_LABELS } from "@/content/cta-vocabulary";
-import { HOME_PATH_IMAGES } from "@/content/home-path-images";
+import { HOME_PATH_DESTINATIONS } from "@/content/home-path-images";
 import { ResponsiveEditorialImage, type EditorialImageSource } from "@/components/ui/ResponsiveEditorialImage";
 
 type Path = {
@@ -26,6 +26,7 @@ type Path = {
   href: string;
   analyticsEvent: string;
   image: EditorialImageSource;
+  routeLabel: string;
 };
 
 const PATHS: ReadonlyArray<Path> = [
@@ -37,7 +38,8 @@ const PATHS: ReadonlyArray<Path> = [
     cta: CTA_LABELS.studio,
     href: "/studio-v3",
     analyticsEvent: "home_path_studio_click",
-    image: HOME_PATH_IMAGES.studio,
+    image: HOME_PATH_DESTINATIONS.studio.image,
+    routeLabel: HOME_PATH_DESTINATIONS.studio.routeLabel,
   },
   {
     id: "signature",
@@ -47,7 +49,8 @@ const PATHS: ReadonlyArray<Path> = [
     cta: CTA_LABELS.signatureDiscovery,
     href: "/experiences",
     analyticsEvent: "home_path_signature_click",
-    image: HOME_PATH_IMAGES.signature,
+    image: HOME_PATH_DESTINATIONS.signature.image,
+    routeLabel: HOME_PATH_DESTINATIONS.signature.routeLabel,
   },
   {
     id: "designer",
@@ -57,7 +60,8 @@ const PATHS: ReadonlyArray<Path> = [
     cta: CTA_LABELS.travelDesigner,
     href: "/multi-day",
     analyticsEvent: "home_path_designer_click",
-    image: HOME_PATH_IMAGES.designer,
+    image: HOME_PATH_DESTINATIONS.designer.image,
+    routeLabel: HOME_PATH_DESTINATIONS.designer.routeLabel,
   },
   {
     id: "proposals",
@@ -67,7 +71,8 @@ const PATHS: ReadonlyArray<Path> = [
     cta: CTA_LABELS.moments,
     href: "/proposal-in-portugal",
     analyticsEvent: "home_secondary_moments_click",
-    image: HOME_PATH_IMAGES.proposals,
+    image: HOME_PATH_DESTINATIONS.proposals.image,
+    routeLabel: HOME_PATH_DESTINATIONS.proposals.routeLabel,
   },
   {
     id: "corporate",
@@ -77,7 +82,8 @@ const PATHS: ReadonlyArray<Path> = [
     cta: CTA_LABELS.corporate,
     href: "/corporate",
     analyticsEvent: "home_secondary_corporate_click",
-    image: HOME_PATH_IMAGES.corporate,
+    image: HOME_PATH_DESTINATIONS.corporate.image,
+    routeLabel: HOME_PATH_DESTINATIONS.corporate.routeLabel,
   },
 ] as const;
 
@@ -209,13 +215,13 @@ function PathCard({ path, index }: { path: Path; index: number }) {
       data-analytics={path.analyticsEvent}
       className={`five-ways-card five-ways-card--${path.id} scene-item group no-underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--teal)] focus-visible:ring-offset-2`}
     >
-      <div className="five-ways-image" aria-hidden="true">
+      <div className="five-ways-image">
         <ResponsiveEditorialImage
           image={path.image}
           sizes={path.id === "studio" ? "(min-width: 1024px) 58vw, 100vw" : "(min-width: 768px) 40vw, 100vw"}
           className="h-full w-full object-cover"
-          decorative
         />
+        <span className="five-ways-route">{path.routeLabel}</span>
       </div>
       <div className="five-ways-copy">
       <div className="five-ways-kicker flex items-center justify-between gap-4">
