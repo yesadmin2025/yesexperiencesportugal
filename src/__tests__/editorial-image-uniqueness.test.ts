@@ -57,6 +57,10 @@ describe("editorial image identity", () => {
     expect(urls).toHaveLength(5);
     expect(new Set(urls).size).toBe(urls.length);
     expect(HOME_PATH_IMAGE_LIST.every((photo) => photo.alt.length > 0)).toBe(true);
+    const editorialServiceUrls = [...CORPORATE_SERVICE_IMAGES, ...PROPOSAL_SERVICE_IMAGES].map(
+      (photo) => photo.src,
+    );
+    expect(editorialServiceUrls.some((src) => urls.includes(src))).toBe(false);
   });
 
   it("uses the exact card image for every matching homepage map destination", () => {
