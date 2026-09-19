@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState, type ReactNode } from "react";
 import { Link } from "@tanstack/react-router";
 import { Check, Scale, X } from "lucide-react";
 import type { SignatureTour } from "@/data/signatureTours";
@@ -20,6 +20,15 @@ type Props = {
 export function ExperienceCompare({ tours, selected, onToggle, onClear }: Props) {
   const [open, setOpen] = useState(false);
   const chosen = useMemo(() => selected.map((id) => tours.find((tour) => tour.id === id)).filter((tour): tour is CompareTour => Boolean(tour)), [selected, tours]);
+  useEffect(() => {
+    if (chosen.length < 2) setOpen(false);
+  }, [chosen.length]);
+  useEffect(() => {
+    if (!open) return;
+    const onKeyDown = (event: KeyboardEvent) => { if (event.key === "Escape") setOpen(false); };
+    document.addEventListener("keydown", onKeyDown);
+    return () => document.removeEventListener("keydown", onKeyDown);
+  }, [open]);
   if (chosen.length === 0) return null;
 
   return (
@@ -58,9 +67,9 @@ export function ExperienceCompare({ tours, selected, onToggle, onClear }: Props)
               {[
                 ["Duration", (tour: CompareTour) => signatureDurationLabel(tour.id, tour.durationHours)],
                 ["From", (tour: CompareTour) => <><PriceEur amountEur={tour.priceFrom} role="from" /> per person</>],
-                ["Ideal for", (tour: CompareTour) => tour.idealFor?.[0] ?? "Private groups"],
+                ["Ideal for", (tour: CompareTour) => tour.idealFor?.[0] ?? "—"],
               ].map(([label, render]) => (
-                <section key={String(label)}><h4>{String(label)}</h4><div>{chosen.map((tour) => <p key={tour.id}>{(render as (tour: CompareTour) => React.ReactNode)(tour)}</p>)}</div></section>
+                <section key={String(label)}><h4>{String(label)}</h4><div>{chosen.map((tour) => <p key={tour.id}>{(render as (tour: CompareTour) => ReactNode)(tour)}</p>)}</div></section>
               ))}
               <section><h4>Highlights</h4><div>{chosen.map((tour) => <ul key={tour.id}>{tour.highlights.slice(0, 3).map((item) => <li key={item}>{item}</li>)}</ul>)}</div></section>
             </div>

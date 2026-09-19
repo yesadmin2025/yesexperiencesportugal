@@ -1,5 +1,6 @@
 import { localeAlternateLinks } from "@/i18n/seo";
 import { createFileRoute, Link } from "@tanstack/react-router";
+import { useState } from "react";
 import { breadcrumbLd, itemListLd, jsonLdScript, organizationUsCaAudienceLd } from "@/lib/jsonld";
 import { SiteLayout } from "@/components/SiteLayout";
 import { SiteBreadcrumbs } from "@/components/SiteBreadcrumbs";
@@ -19,8 +20,7 @@ import { CTA_LABELS } from "@/content/cta-vocabulary";
 import { getViatorMeta } from "@/data/signatureToursViator";
 import { Star } from "lucide-react";
 import { listPublishedExperienceContent } from "@/lib/experienceContent.functions";
-import { ExperienceCompare } from "@/components/experiences/ExperienceCompare";
-import { RouteThread } from "@/components/motion/RouteThread";
+import { CompareControl, ExperienceCompare } from "@/components/experiences/ExperienceCompare";
 
 export const Route = createFileRoute("/experiences")({
   loader: async () => ({ contentOverrides: await listPublishedExperienceContent() }),
@@ -79,6 +79,7 @@ function ExperiencesPage() {
   const { contentOverrides } = Route.useLoaderData();
   useMarketingMotion();
   const { resolveImg } = useImportedTourImages();
+  const [selectedTours, setSelectedTours] = useState<string[]>([]);
   const tours = signatureTours.map((tour) => {
     const canonicalContent = getTourContent(tour.id);
     const override = contentOverrides.find((row) => row.tourId === tour.id);
@@ -90,6 +91,11 @@ function ExperiencesPage() {
         }
       : { ...tour, highlights: canonicalContent.highlights };
   });
+  const toggleComparison = (id: string) => {
+    setSelectedTours((current) => current.includes(id)
+      ? current.filter((item) => item !== id)
+      : current.length < 2 ? [...current, id] : current);
+  };
 
   return (
     <SiteLayout>
@@ -114,7 +120,6 @@ function ExperiencesPage() {
           <div className="mt-7 flex justify-center">
             <PriceCurrencyChip />
           </div>
-          <RouteThread compact className="mx-auto mt-7 max-w-2xl" />
         </div>
       </section>
 
@@ -123,12 +128,12 @@ function ExperiencesPage() {
         aria-label="Signature collection"
       >
         <div className="container-x">
-          <ExperienceCompare tours={tours} />
           <Scene className="experiences-editorial-grid experiences-story grid gap-x-10 gap-y-14 md:grid-cols-2 md:gap-y-18 lg:gap-x-16 lg:gap-y-24">
             {tours.map((tour, index) => (
-              <TourCard key={tour.id} tour={tour} resolveImg={resolveImg} featured={index < 2} />
+              <TourCard key={tour.id} tour={tour} resolveImg={resolveImg} featured={index < 2} compareActive={selectedTours.includes(tour.id)} compareDisabled={selectedTours.length >= 2 && !selectedTours.includes(tour.id)} onCompare={() => toggleComparison(tour.id)} />
             ))}
           </Scene>
+          <ExperienceCompare tours={tours} selected={selectedTours} onToggle={toggleComparison} onClear={() => setSelectedTours([])} />
         </div>
       </section>
 
@@ -143,10 +148,16 @@ function TourCard({
   tour,
   resolveImg,
   featured = false,
+  compareActive,
+  compareDisabled,
+  onCompare,
 }: {
   tour: SignatureTour;
   resolveImg: ResolveImg;
   featured?: boolean;
+  compareActive: boolean;
+  compareDisabled: boolean;
+  onCompare: () => void;
 }) {
   // Teaser reads through the tour-content getter so the collection stays
   // source-of-truth with the experience detail page.
@@ -160,7 +171,7 @@ function TourCard({
   const meta = getViatorMeta(tour.id);
   const verifiedRating = meta?.rating;
   const verifiedReviewCount = meta?.reviewCount;
-  const highlights = content.highlights.slice(0, 3);
+  const highlights = tour.highlights.slice(0, 3);
   // Fourth decision fact, read straight from the tour source of truth.
   const idealFor = tour.idealFor?.[0];
   return (
@@ -185,12 +196,15 @@ function TourCard({
       </Link>
 
       <div className="experience-card-content flex flex-1 flex-col border-b border-[color:var(--border)] pb-8 pt-6 md:pb-10">
+        <div className="flex items-start justify-between gap-4">
         <div className="flex flex-wrap items-center gap-x-2 gap-y-1 text-[11px] font-medium uppercase tracking-[0.16em] text-[color:var(--teal)]">
           <span>{tour.region}</span>
           <span aria-hidden="true" className="text-[color:var(--gold)]">
             ·
           </span>
           <span>{tour.theme}</span>
+        </div>
+        <CompareControl active={compareActive} disabled={compareDisabled} onClick={onCompare} title={tour.title} />
         </div>
 
         <h3
@@ -240,12 +254,12 @@ function TourCard({
         )}
 
         {highlights.length > 0 && (
-          <ul className="mt-4 border-l border-[color:var(--gold)] pl-4 space-y-2 text-[13.5px] leading-[1.5] text-[color:var(--charcoal)]">
+          <ul className="experience-card-highlights mt-4 space-y-2 text-[13.5px] leading-[1.5] text-[color:var(--charcoal)]">
             {highlights.map((highlight) => (
               <li key={highlight} className="flex gap-2">
                 <span
                   aria-hidden="true"
-                  className="mt-[0.6em] h-1 w-1 shrink-0 rounded-full bg-[color:var(--gold)]"
+                   className="mt-[0.6em] h-1 w-1 shrink-0 rounded-full bg-[color:var(--teal)]"
                 />
                 <span>{highlight}</span>
               </li>
@@ -261,7 +275,7 @@ function TourCard({
           <Link
             to="/tours/$tourId"
             params={{ tourId: tour.id }}
-            className="editorial-action group/link relative inline-flex min-h-[44px] items-center gap-3 font-sans text-[11px] font-semibold uppercase tracking-[0.16em] text-[color:var(--charcoal)] transition-colors duration-[var(--dur-quick)] after:absolute after:bottom-1 after:left-0 after:h-px after:w-full after:origin-left after:bg-[color:var(--gold)] after:transition-transform after:duration-[var(--dur-base)] hover:text-[color:var(--teal)] hover:after:scale-x-75 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)]"
+            className="editorial-action group/link relative inline-flex min-h-[44px] items-center gap-3 font-sans text-[11px] font-semibold uppercase tracking-[0.16em] text-[color:var(--charcoal)] transition-colors duration-[var(--dur-quick)] hover:text-[color:var(--teal)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--teal)]"
             aria-label={`See dates and reserve — ${tour.title}`}
           >
             See dates &amp; reserve <CtaMotionArrow />
@@ -276,7 +290,7 @@ function CtaStrip() {
   return (
     <section className="reveal section-y bg-[color:var(--sand)] border-t border-[color:var(--border)]">
       <div className="container-x">
-        <div className="mx-auto flex max-w-4xl flex-col items-start justify-between gap-7 border-l border-[color:var(--gold)] pl-6 md:flex-row md:items-center md:pl-10">
+        <div className="mx-auto flex max-w-4xl flex-col items-start justify-between gap-7 md:flex-row md:items-center">
           <div>
             <h2 className="serif font-medium text-3xl md:text-4xl text-[color:var(--charcoal)]">
               None of these feels{" "}
