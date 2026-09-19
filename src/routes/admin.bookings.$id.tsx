@@ -15,6 +15,7 @@ import {
   updateAdminBooking,
 } from "@/lib/bookingsAdmin.functions";
 import { Button } from "@/components/ui/button";
+import { GuideBriefPanel } from "@/components/admin/GuideBriefPanel";
 import {
   buildSnapshotEmailPreview,
   validateBookingSnapshot,
