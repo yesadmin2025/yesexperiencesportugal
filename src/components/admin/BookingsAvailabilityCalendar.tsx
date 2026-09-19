@@ -13,6 +13,8 @@ import { listAdminBookingCalendar } from "@/lib/bookingsAdmin.functions";
 import { buildMonthGrid, normaliseBlackoutDates, normaliseWeekdays } from "@/lib/admin-availability-calendar";
 import { signatureTours } from "@/data/signatureTours";
 import { supabase } from "@/integrations/supabase/client";
+import { Link } from "@tanstack/react-router";
+import { GuideBriefPanel } from "@/components/admin/GuideBriefPanel";
 
 type CalendarBooking = {
   id: string;
@@ -74,12 +76,30 @@ function tourTitle(tourId: string | null): string {
   return signatureTours.find((t) => t.id === tourId)?.title ?? tourId;
 }
 
+/** Start time and pickup, only when the frozen record holds them. */
+function detailString(booking: CalendarBooking, keys: string[]): string | null {
+  const details = booking.booking_details ?? {};
+  const snapshot =
+    details["snapshot"] && typeof details["snapshot"] === "object"
+      ? (details["snapshot"] as Record<string, unknown>)
+      : {};
+  for (const key of keys) {
+    const value = (details as Record<string, unknown>)[key] ?? snapshot[key];
+    if (typeof value === "string" && value.trim()) return value.trim();
+  }
+  return null;
+}
+
+const startTimeOf = (b: CalendarBooking) => detailString(b, ["startTime"]);
+const pickupOf = (b: CalendarBooking) => detailString(b, ["pickupAddress", "pickupLabel", "pickup"]);
+
 export function BookingsAvailabilityCalendar() {
   const load = useServerFn(listAdminBookingCalendar);
   const today = new Date();
   const [year, setYear] = useState(today.getUTCFullYear());
   const [monthIndex, setMonthIndex] = useState(today.getUTCMonth());
   const [tourFilter, setTourFilter] = useState<string>("all");
+  const [statusFilter, setStatusFilter] = useState<"all" | "paid" | "pending">("all");
   const [bookings, setBookings] = useState<CalendarBooking[]>([]);
   const [rule, setRule] = useState<{ weekdays: number[]; blackoutDates: string[] } | null>(null);
   const [selected, setSelected] = useState<string | null>(null);
@@ -135,8 +155,12 @@ export function BookingsAvailabilityCalendar() {
 
   const filtered = useMemo(
     () =>
-      bookings.filter((b) => tourFilter === "all" || b.source_tour_id === tourFilter),
-    [bookings, tourFilter],
+      bookings.filter(
+        (b) =>
+          (tourFilter === "all" || b.source_tour_id === tourFilter) &&
+          (statusFilter === "all" || b.status === statusFilter),
+      ),
+    [bookings, tourFilter, statusFilter],
   );
 
   const byDate = useMemo(() => {
@@ -209,6 +233,19 @@ export function BookingsAvailabilityCalendar() {
         </select>
       </label>
 
+      <label className="mt-3 block text-[11px] uppercase tracking-[0.18em] text-[color:var(--charcoal-soft)]">
+        Status
+        <select
+          value={statusFilter}
+          onChange={(e) => setStatusFilter(e.target.value as "all" | "paid" | "pending")}
+          className="mt-1 min-h-11 w-full border border-[color:var(--sand)] bg-white px-3 text-base normal-case tracking-normal md:text-sm"
+        >
+          <option value="all">Paid &amp; pending</option>
+          <option value="paid">Paid only</option>
+          <option value="pending">Pending only</option>
+        </select>
+      </label>
+
       {error ? <p className="mt-3 text-sm text-red-700">{error}</p> : null}
 
       <div className="mt-4 grid grid-cols-7 gap-1 text-center text-[10px] uppercase tracking-[0.16em] text-[color:var(--charcoal-soft)]">
@@ -256,32 +293,60 @@ export function BookingsAvailabilityCalendar() {
 
       {selected ? (
         <div className="mt-4 border-t border-[color:var(--sand)] pt-4">
-          <h3 className="text-sm text-[color:var(--charcoal)]">{selected}</h3>
+          <h3 className="text-sm text-[color:var(--charcoal)]">
+            {selected} · {selectedBookings.length} reservation(s)
+          </h3>
           {selectedBookings.length === 0 ? (
             <p className="mt-2 text-sm text-[color:var(--charcoal-soft)]">
               No reservations on this date.
             </p>
           ) : (
-            <ul className="mt-2 space-y-3">
-              {selectedBookings.map((b) => {
-                const stops = stopLabels(b);
-                return (
-                  <li key={b.id} className="text-sm">
-                    <span className="text-[color:var(--charcoal)]">
-                      {tourTitle(b.source_tour_id)} · {b.guests} guests · {b.status}
-                    </span>
-                    <span className="block text-[color:var(--charcoal-soft)]">
-                      {b.customer_name || b.customer_email}
-                    </span>
-                    {stops.length > 0 ? (
-                      <span className="mt-1 block text-xs text-[color:var(--charcoal-soft)]">
-                        Moments booked: {stops.join(" · ")}
+            <>
+              <ul className="mt-2 divide-y divide-[color:var(--sand)]">
+                {selectedBookings.map((b) => {
+                  const stops = stopLabels(b);
+                  const startTime = startTimeOf(b);
+                  const pickup = pickupOf(b);
+                  return (
+                    <li key={b.id} className="py-3 text-sm">
+                      <span className="block text-[color:var(--charcoal)]">
+                        {startTime ? `${startTime} · ` : ""}
+                        {tourTitle(b.source_tour_id)} · {b.guests} guests · {b.status}
                       </span>
-                    ) : null}
-                  </li>
-                );
-              })}
-            </ul>
+                      <span className="block text-[color:var(--charcoal-soft)]">
+                        {b.customer_name || b.customer_email}
+                        {pickup ? ` · pickup: ${pickup}` : ""}
+                      </span>
+                      {stops.length > 0 ? (
+                        <span className="mt-1 block text-xs text-[color:var(--charcoal-soft)]">
+                          Moments booked: {stops.join(" · ")}
+                        </span>
+                      ) : null}
+                      <Link
+                        to="/admin/bookings/$id"
+                        params={{ id: b.id }}
+                        className="mt-1 inline-block text-xs text-[color:var(--teal)] underline"
+                      >
+                        Open full detail
+                      </Link>
+                      <GuideBriefPanel bookingId={b.id} />
+                    </li>
+                  );
+                })}
+              </ul>
+              {selectedBookings.length > 1 ? (
+                <div className="mt-3 border-t border-[color:var(--sand)] pt-3">
+                  <p className="text-[11px] uppercase tracking-[0.18em] text-[color:var(--charcoal-soft)]">
+                    Whole day
+                  </p>
+                  <GuideBriefPanel
+                    date={selected}
+                    {...(tourFilter !== "all" ? { tourId: tourFilter } : {})}
+                    label="Day brief for the guide"
+                  />
+                </div>
+              ) : null}
+            </>
           )}
         </div>
       ) : null}

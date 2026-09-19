@@ -222,8 +222,12 @@ function AdminBookingsPage() {
         Guest trips
       </h1>
       <p className="mt-2 text-sm text-[color:var(--charcoal-soft)]">
-        Grouped by the day the trip runs. Open one to see the frozen purchase snapshot.
+        Grouped by the day the trip runs. Open one to see the frozen purchase snapshot. Tap a date in
+        the calendar to see that day's trips and send the brief to a guide.
       </p>
+      <Link to="/admin/guides" className="mt-2 inline-block text-sm text-[color:var(--teal)] underline">
+        Manage guides
+      </Link>
 
       <BookingsAvailabilityCalendar />
 
