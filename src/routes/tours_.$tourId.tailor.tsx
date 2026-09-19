@@ -1144,12 +1144,12 @@ function TailorPage() {
               {/* Booking context — compact, not a form wall */}
               <div
                 data-testid="tailor-booking-context"
-                className="grid gap-4 border border-[color:var(--border)] bg-[color:var(--ivory)] p-3 sm:grid-cols-[minmax(0,14rem)_minmax(0,1fr)] sm:items-start"
+                className="grid min-w-0 gap-5 border-y border-[color:var(--border)] bg-[color:var(--ivory)] px-0 py-5 sm:grid-cols-[minmax(0,14rem)_minmax(0,1fr)] sm:items-start sm:gap-6 sm:border sm:px-4"
               >
                 <div className="min-w-0">
                   <label
                     htmlFor="tailor-date"
-                    className="mb-1.5 block text-[10px] uppercase tracking-[0.25em] text-[color:var(--charcoal-soft)]"
+                    className="mb-1.5 block text-[12px] font-medium uppercase tracking-[0.22em] text-[color:var(--charcoal)]"
                   >
                     Date
                   </label>
