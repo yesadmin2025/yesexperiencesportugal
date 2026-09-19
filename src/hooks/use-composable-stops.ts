@@ -22,7 +22,7 @@ export async function fetchComposableStops(): Promise<ComposableStopRow[]> {
     .from("studio_composable_stops")
     .select("stop_id, region, price_cents, pricing_unit, min_guests, active, notes");
   if (error) throw error;
-  return (data ?? []).map((row) => ({
+  const rows = (data ?? []).map((row) => ({
     stopId: row.stop_id,
     region: row.region,
     priceCents: row.price_cents,
@@ -31,6 +31,11 @@ export async function fetchComposableStops(): Promise<ComposableStopRow[]> {
     active: row.active,
     notes: row.notes,
   }));
+  // Publish before React receives the successful query result. This keeps the
+  // structural commercial ledger and the row-based visible total on the same
+  // render, rather than one effect tick apart.
+  setComposableStopAuthority(rows);
+  return rows;
 }
 
 export function useComposableStops() {

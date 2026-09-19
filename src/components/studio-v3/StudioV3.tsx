@@ -1036,7 +1036,7 @@ export function StudioV3() {
   // Owner-priced composable moments. Loading this publishes the catalogue to
   // the composer registry, which is what allows a bespoke day to hold verified
   // regional moments from outside the anchor Signature. Empty = fail closed.
-  useComposableStops();
+  const { data: composableRows = [] } = useComposableStops();
   // TURBO 1 — raw note is LOCAL DRAFT ONLY. Its semantics live in
   // `state.questionHistory`; the sentence itself is never persisted or sent.
   const [freeTextDraft, setFreeTextDraft] = useState("");
@@ -1199,7 +1199,12 @@ export function StudioV3() {
   // Single source of truth for adults/minorAges/stops/addOns/perPax/total.
   // Every UI surface (price card, reveal, checkout) reads from this — never
   // recompute pricing or stops downstream.
-  const resolvedJourney = useResolvedJourney(state, selectedAddOnItems, tourPriceTiers);
+  const resolvedJourney = useResolvedJourney(
+    state,
+    selectedAddOnItems,
+    tourPriceTiers,
+    composableRows,
+  );
 
   /**
    * EXPLICIT-PRIORITY GUARD (live flow).
@@ -1460,6 +1465,7 @@ export function StudioV3() {
           committedRoutePoints: currentState.committedRoutePoints ?? null,
           resolved: checkoutResolved,
           catalogStops: tour.stops ?? null,
+          anchorTourId: currentState.tourId ?? tour.id ?? null,
         }),
       });
       // FAIL CLOSED — any route whose current commercial truth cannot be
@@ -4133,6 +4139,7 @@ export function StudioV3() {
               resolvedTotalEur={resolvedJourney.totalEur}
               resolvedBaseTotalEur={resolvedJourney.baseTotalEur}
               resolvedAddOnsTotalEur={resolvedJourney.addOnsPartyTotalEur}
+              resolvedComposableTotalEur={resolvedJourney.composablePartyTotalEur}
               storySlot={
                 <FinalRevealStory
                   variant="inline"
@@ -4699,6 +4706,7 @@ export function StoryboardHandoff({
   resolvedTotalEur = null,
   resolvedBaseTotalEur = null,
   resolvedAddOnsTotalEur = null,
+  resolvedComposableTotalEur = null,
   storySlot = null,
   footerSlot = null,
   canvasModel = null,
@@ -4718,6 +4726,7 @@ export function StoryboardHandoff({
   resolvedTotalEur?: number | null;
   resolvedBaseTotalEur?: number | null;
   resolvedAddOnsTotalEur?: number | null;
+  resolvedComposableTotalEur?: number | null;
   /** P8 — the editorial story chapter of the unified "Your Day" surface. */
   storySlot?: React.ReactNode;
   /** P8 — quiet secondary footer (other directions). */
@@ -6400,6 +6409,7 @@ export function StoryboardHandoff({
           resolvedTotalEur={resolvedTotalEur}
           resolvedBaseTotalEur={resolvedBaseTotalEur}
           resolvedAddOnsTotalEur={resolvedAddOnsTotalEur}
+          resolvedComposableTotalEur={resolvedComposableTotalEur}
           remainingMinutes={
             revealLegsLoading
               ? null

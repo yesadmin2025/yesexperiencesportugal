@@ -22,9 +22,16 @@ import type { TourPriceTiersMap } from "@/hooks/use-tour-price-tiers";
 import { resolveStudioV3Route } from "./curation";
 import { studioComposedSupplementFromMoments } from "./studioWineryPresentation";
 import {
+  isProvablyUntouchedCanonicalAnchor,
   resolveAuthoritativeRouteStops,
   studioRouteShapingInput,
 } from "./studioRouteAuthority";
+import { rebuildLiveCommercialAuthority } from "@/lib/studio-v3/liveCommercialAuthority";
+import {
+  composableStopLineFromRows,
+  type ComposableStopLine,
+  type ComposableStopRow,
+} from "@/lib/studio-v3/composableStopAuthority";
 
 import type { StudioV3State } from "./types";
 import type { SelectedAddOnSummary } from "./SignaturePriceCard";
@@ -63,6 +70,8 @@ export interface ResolvedJourney {
   readonly baseTotalEur: number | null;
   /** Unit-aware party total of the selected additions (sum of `amount`). */
   readonly addOnsPartyTotalEur: number;
+  readonly composableLines: readonly ComposableStopLine[];
+  readonly composablePartyTotalEur: number;
   readonly totalEur: number | null;
   /**
    * THE single composed-day per-pax supplement (extra wineries beyond the
@@ -86,6 +95,7 @@ export function useResolvedJourney(
   state: StudioV3State,
   selectedAddOns: SelectedAddOnSummary["items"],
   tourPriceTiers?: TourPriceTiersMap | null,
+  composableRows: readonly ComposableStopRow[] = [],
 ): ResolvedJourney {
   return useMemo(() => {
     const tour = state.tourId ? findTour(state.tourId) : null;
@@ -101,12 +111,13 @@ export function useResolvedJourney(
     // Stops priority chain — the single authority shared with the reveal,
     // the story snapshot and checkout. `tourId` anchors pricing only; it can
     // never overwrite an edited or composed route.
+    const resolvedRoute = resolveStudioV3Route(studioRouteShapingInput(state));
     const stops: ResolvedJourneyStop[] = resolveAuthoritativeRouteStops({
       editedRoutePoints: state.editedRoutePoints,
       // PASS 4 — the frozen day shown in Your Day outranks any fresh
       // resolution triggered by logistics facts.
       committedRoutePoints: state.committedRoutePoints,
-      resolved: resolveStudioV3Route(studioRouteShapingInput(state)),
+      resolved: resolvedRoute,
       catalogStops: tour?.stops ?? null,
       anchorTourId: tour?.id ?? null,
     });
@@ -158,7 +169,33 @@ export function useResolvedJourney(
       (sum, item) => sum + (Number.isFinite(item.amount) ? item.amount : 0),
       0,
     );
-    const totalEur = baseTotalEur != null ? Math.round(baseTotalEur + addOnsPartyTotalEur) : null;
+    const liveAuthority = rebuildLiveCommercialAuthority({
+      anchorTourId: tour?.id ?? null,
+      moments: stops,
+      edited: !isProvablyUntouchedCanonicalAnchor({
+        editedRoutePoints: state.editedRoutePoints ?? null,
+        committedRoutePoints: state.committedRoutePoints ?? null,
+        resolved: resolvedRoute,
+        catalogStops: tour?.stops ?? null,
+        anchorTourId: tour?.id ?? null,
+      }),
+    });
+    const composableResolutionIds = (liveAuthority.ledger?.actions ?? [])
+      .filter((action) => action.priceAction === "composable-stop")
+      .map((action) => action.actionId.slice("composable:".length));
+    const composableLines = composableResolutionIds
+      .map((stopId) => composableStopLineFromRows(composableRows, stopId, guests))
+      .filter((line): line is ComposableStopLine => line !== null);
+    // A selected owner-priced activity may never disappear into a base-only
+    // quote while its row is loading, missing, inactive, or below min guests.
+    const composablePricingComplete = composableLines.length === composableResolutionIds.length;
+    const composablePartyTotalEur = Math.round(
+      composableLines.reduce((sum, line) => sum + line.totalEurCents, 0) / 100,
+    );
+    const totalEur =
+      baseTotalEur != null && composablePricingComplete
+        ? Math.round(baseTotalEur + addOnsPartyTotalEur + composablePartyTotalEur)
+        : null;
     // Real adult unit price. Never a total/guests blend — averaging adults
     // with discounted minors produces a per-person number that matches
     // nothing the traveller actually pays.
@@ -190,11 +227,13 @@ export function useResolvedJourney(
       perPaxEur,
       baseTotalEur,
       addOnsPartyTotalEur: Math.round(addOnsPartyTotalEur),
+      composableLines,
+      composablePartyTotalEur,
       totalEur,
       composedSupplementPerPaxEur: composedSupplementPerPax,
 
       journeyLines: journey ? journey.lines : null,
       journeyTotalEur: journey ? Math.round(journey.totalEur) : null,
     };
-  }, [state, selectedAddOns, tourPriceTiers]);
+  }, [state, selectedAddOns, tourPriceTiers, composableRows]);
 }

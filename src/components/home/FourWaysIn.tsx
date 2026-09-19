@@ -12,6 +12,7 @@ import { Link } from "@tanstack/react-router";
 import { BookOpen, Wand2, Compass, Sparkles, Users, ArrowRight, type LucideIcon } from "lucide-react";
 import { Eyebrow } from "@/components/ui/Eyebrow";
 import { CtaMotionArrow } from "@/components/ui/CtaButton";
+import { Scene } from "@/components/motion/Scene";
 import { CTA_LABELS } from "@/content/cta-vocabulary";
 
 type Path = {
@@ -163,14 +164,14 @@ export function FourWaysIn() {
           </p>
         </div>
 
-        <div
+        <Scene
           data-testid="home-smart-start"
-          className="he-stagger mx-auto mt-10 grid max-w-6xl grid-cols-1 gap-4 sm:grid-cols-2 md:mt-12 md:gap-5 lg:grid-cols-6"
+          className="five-ways-story he-stagger mx-auto mt-10 grid max-w-6xl grid-cols-1 gap-4 sm:grid-cols-2 md:mt-12 md:gap-5 lg:grid-cols-6"
         >
           {PATHS.map((path, index) => (
             <PathCard key={path.id} path={path} featured={index < 3} />
           ))}
-        </div>
+        </Scene>
 
         {hasDraft && (
           <div className="reveal mx-auto mt-5 max-w-6xl rounded-[6px] border border-[color:var(--gold)]/45 bg-[color:var(--sand)] px-5 py-4 sm:flex sm:items-center sm:justify-between sm:gap-6">
@@ -207,9 +208,9 @@ function PathCard({ path, featured }: { path: Path; featured: boolean }) {
       to={path.href}
       data-home-primary-path={path.id}
       data-analytics={path.analyticsEvent}
-      className={`${featured ? "lg:col-span-2" : "lg:col-span-3"} reveal-stagger group flex min-h-[238px] flex-col rounded-[4px] border border-[color:var(--border)] border-t-[color:var(--gold)]/65 bg-[color:var(--sand)] p-6 no-underline transition-[transform,border-color,box-shadow] duration-[var(--dur-base)] ease-[var(--ease-scene)] hover:-translate-y-px hover:border-[color:var(--gold)]/70 hover:shadow-[0_18px_40px_-30px_color-mix(in_oklab,var(--charcoal-deep)_35%,transparent)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)] focus-visible:ring-offset-2 md:p-7`}
+      className={`${featured ? "lg:col-span-2" : "lg:col-span-3"} scene-item five-ways-card group flex min-h-[238px] flex-col rounded-[4px] border border-[color:var(--border)] border-t-[color:var(--gold)]/65 bg-[color:var(--sand)] p-6 no-underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)] focus-visible:ring-offset-2 md:p-7`}
     >
-      <div className="flex items-center justify-between gap-4">
+      <div className="five-ways-kicker flex items-center justify-between gap-4">
         <span className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-[color:var(--gold)]/45 bg-[color:var(--ivory)] text-[color:var(--teal)]">
           <Icon size={18} aria-hidden="true" />
         </span>
@@ -218,16 +219,16 @@ function PathCard({ path, featured }: { path: Path; featured: boolean }) {
         </span>
       </div>
 
-      <h3 className="serif mt-7 text-[1.35rem] md:text-[1.5rem] leading-[1.18] font-medium text-[color:var(--charcoal)]">
+      <h3 className="five-ways-title serif mt-7 text-[1.35rem] md:text-[1.5rem] leading-[1.18] font-medium text-[color:var(--charcoal)]">
         {path.title}
       </h3>
-      <p className="mt-3 text-[15px] md:text-[16px] leading-[1.7] text-[color:var(--charcoal-soft)]">
+      <p className="five-ways-body mt-3 text-[15px] md:text-[16px] leading-[1.7] text-[color:var(--charcoal-soft)]">
         {path.body}
       </p>
       {/* Visible label + arrow — the whole card remains the action, but the
           destination is readable at a glance before clicking. The arrow is
           pushed to the right so every card's arrow aligns across the row. */}
-      <span className="mt-auto pt-7 flex w-full min-h-[44px] items-center justify-between gap-3">
+      <span className="five-ways-action mt-auto pt-7 flex w-full min-h-[44px] items-center justify-between gap-3">
         <span className="text-[11px] uppercase tracking-[0.22em] font-semibold text-[color:var(--teal)]">
           {path.cta}
         </span>
