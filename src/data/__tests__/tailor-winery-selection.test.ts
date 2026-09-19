@@ -102,4 +102,9 @@ describe("Tailor blueprints — pickMin/pickMax schema", () => {
       }
     }
   });
+
+  it("keeps the full Arrábida Signature default while Tailor may select one winery", () => {
+    const bp = TAILOR_BLUEPRINTS["arrabida-wine-allinclusive"];
+    expect(bp.choice?.pickMin).toBe(2);
+  });
 });

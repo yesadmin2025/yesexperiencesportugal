@@ -217,14 +217,14 @@ function TourCard({
         )}
 
         {highlights.length > 0 && (
-          <ul className="mt-4 space-y-1.5 text-[13px] leading-[1.55] text-[color:var(--charcoal)]">
+          <ul className="mt-4 border-l border-[color:var(--gold)] pl-4 space-y-2 text-[13.5px] leading-[1.5] text-[color:var(--charcoal)]">
             {highlights.map((highlight) => (
               <li key={highlight} className="flex gap-2">
                 <span
                   aria-hidden="true"
                   className="mt-[0.6em] h-1 w-1 shrink-0 rounded-full bg-[color:var(--gold)]"
                 />
-                <span className="line-clamp-1">{highlight}</span>
+                <span>{highlight}</span>
               </li>
             ))}
           </ul>

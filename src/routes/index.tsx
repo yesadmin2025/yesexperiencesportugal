@@ -877,14 +877,23 @@ function HomePage() {
                         </div>
                       </Link>
 
-                      {/* Body — calm editorial card. Short teaser + ONE quiet
-                        action. Reserving and tailoring live on the detail
-                        page, so the homepage collection reads as discovery
-                        instead of three competing buttons per card. */}
+                      {/* Body — concise factual highlights from the matching
+                        Signature source, followed by one conversion action. */}
                       <div className="flex flex-col gap-4 p-5 md:p-6">
-                        <p className="text-[13.5px] leading-[1.55] text-[color:var(--charcoal)] line-clamp-3">
-                          {t.line}
-                        </p>
+                        {t.highlights.length > 0 ? (
+                          <ul className="signature-card-highlights m-0 list-none space-y-2 p-0 text-[13px] leading-[1.45] text-[color:var(--charcoal)]">
+                            {t.highlights.map((highlight) => (
+                              <li key={highlight} className="grid grid-cols-[auto_minmax(0,1fr)] gap-2.5">
+                                <span aria-hidden="true" className="mt-[0.58em] h-1 w-1 rounded-full bg-[color:var(--gold)]" />
+                                <span>{highlight}</span>
+                              </li>
+                            ))}
+                          </ul>
+                        ) : (
+                          <p className="text-[13.5px] leading-[1.55] text-[color:var(--charcoal)]">
+                            {t.line}
+                          </p>
+                        )}
 
                         <div className="mt-auto flex flex-col gap-2 pt-1">
                           <CtaButton

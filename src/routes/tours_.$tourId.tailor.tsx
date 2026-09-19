@@ -356,17 +356,23 @@ function TailorPage() {
     const on = choiceSelected.has(id);
     const next = new Set(choiceSelected);
     if (on) {
-      // Guard against dropping below the base product's pickMin.
-      if (blueprint?.choice && next.size <= blueprint.choice.pickMin) {
+      // The full Signature keeps its published baseline by default. Arrábida
+      // Wine may be tailored down to one winery without removing any other
+      // included moment; this is a composition change, not a price credit.
+      const selectableMin = rules.wineries?.min ?? blueprint?.choice?.pickMin ?? 0;
+      if (blueprint?.choice && next.size <= selectableMin) {
         toast.error(
-          `This tour needs at least ${blueprint.choice.pickMin} — swap one instead of removing it.`,
+          selectableMin === 1
+            ? "Keep at least one winery visit in this wine day."
+            : `This tour needs at least ${selectableMin} — swap one instead of removing it.`,
         );
         return;
       }
       next.delete(id);
     } else {
       next.add(id);
-      // Canonical winery ladder: max 4, and the 4th needs a stop removed.
+       // Canonical winery ladder: max 4. The complete proposed day is then
+       // checked by the shared feasibility engine; nothing is auto-removed.
       const option0 = blueprint?.choice?.options.find((o) => o.id === id);
       // Only Signatures with an owner-approved winery supplement ladder may
       // INCREASE the winery count. Everywhere else the traveller swaps at
@@ -771,7 +777,7 @@ function TailorPage() {
 
   const canAdjustWineryCount = Boolean(rules.wineries) && wineryOptions.length > 0;
   /** Real bounds — the control is disabled, never a toast at the edges. */
-  const wineryMin = rules.wineries?.included ?? 0;
+  const wineryMin = rules.wineries?.min ?? rules.wineries?.included ?? 0;
   const wineryMax = rules.wineries?.max ?? 0;
   const canRemoveWineryVisit = canAdjustWineryCount && wineriesSelected > wineryMin;
   const canAddWineryVisit =
@@ -1426,12 +1432,13 @@ function TailorPage() {
                             Winery visits
                           </span>
                           <span className="mt-0.5 block text-[12px] text-[color:var(--charcoal-soft)]">
-                            {rules.wineries!.included} included · each extra +
+                            Starts with {rules.wineries!.included} included · choose {rules.wineries!.min}–{rules.wineries!.max}
+                            <span className="block">Each visit above {rules.wineries!.included} +
                             <PriceEur
                               amountEur={rules.wineries!.supplementEur}
                               role="per-person"
                             />{" "}
-                            pp
+                            pp</span>
                           </span>
                         </span>
                         <span className="flex shrink-0 items-center gap-1">

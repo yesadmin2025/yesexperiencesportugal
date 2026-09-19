@@ -49,6 +49,8 @@ export type TailorRules = {
   wineries?: {
     /** Wineries included in the base price. */
     included: number;
+    /** Lowest selectable count when tailoring. The base still includes `included`. */
+    min: number;
     /** Hard maximum the operation can run. */
     max: number;
     /** Per-person supplement for each winery beyond `included`. */
@@ -100,9 +102,9 @@ export const TAILOR_RULES: Record<string, TailorRules> = {
       "A seated lunch is included in this Signature. Remove it and the day continues without the table.",
     wineries: {
       included: 2,
+      min: 1,
       max: 4,
       supplementEur: TAILOR_EXTRA_WINERY_SUPPLEMENT_EUR,
-      requiresRemovalFrom: 4,
     },
   },
 };
@@ -148,7 +150,9 @@ export type WineryGateResult =
 
 /**
  * Can the guest move to `wineriesSelected` wineries right now?
- * The 4th winery on Setúbal & Arrábida requires removing another stop.
+ * Capacity is bounded here; the shared feasibility engine decides whether
+ * the complete day fits. No included moment is auto-removed or required as
+ * a commercial gate when a winery is added.
  */
 export function canSelectWineries(
   tourId: string,
@@ -164,17 +168,7 @@ export function canSelectWineries(
       message: `Maximum ${w.max} wineries in a single day.`,
     };
   }
-  if (
-    w.requiresRemovalFrom !== undefined &&
-    wineriesSelected >= w.requiresRemovalFrom &&
-    stopsRemoved < 1
-  ) {
-    return {
-      allowed: false,
-      code: "needs-removal",
-      message: "Remove another stop to make room for a fourth winery.",
-    };
-  }
+  void stopsRemoved;
   return { allowed: true };
 }
 

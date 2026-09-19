@@ -3,7 +3,7 @@
  *
  * A flat −€15 per person. NOT a −5% stop removal, NOT a negative "Add lunch"
  * supplement. It is excluded from the −15% removal cap, applied after the 70%
- * operational floor, and never unlocks the 4th winery.
+ * operational floor, and never changes winery capacity.
  */
 
 import { describe, expect, it } from "vitest";
@@ -54,10 +54,9 @@ describe("Arrábida Wine lunch removal", () => {
     expect(tailorFinalPerPax(DIRECT, 0, 0, 15)).not.toBe(tailorAdjustedPerPax(DIRECT, 1));
   });
 
-  it("does not unlock the 4th winery", () => {
-    const gate = canSelectWineries(ARRABIDA, 4, 0);
-    expect(gate.allowed).toBe(false);
-    expect(gate.allowed === false && gate.code).toBe("needs-removal");
+  it("does not change the independent winery capacity", () => {
+    expect(canSelectWineries(ARRABIDA, 4, 0).allowed).toBe(true);
+    expect(canSelectWineries(ARRABIDA, 5, 0).allowed).toBe(false);
   });
 
   it("is ignored by the removal cap and the operational floor", () => {

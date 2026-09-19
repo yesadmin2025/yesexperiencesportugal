@@ -7705,6 +7705,11 @@ html[data-motion-scope="marketing"] .cta-breathe::after {
 }
 .motion-split-line {
   display: block;
+  /* Fraunces has generous ascenders, descenders and italic overhangs. Give
+     the animated ink mask a small internal bleed so glyphs are never clipped
+     by the line box on iOS while preserving the visual rhythm. */
+  padding: 0.1em 0.08em 0.14em;
+  margin: -0.1em -0.08em -0.14em;
 }
 [data-motion-ready="1"] .motion-split.is-visible .motion-split-line {
   clip-path: inset(0 0 0 0);
@@ -7805,6 +7810,19 @@ html.reveal-ready .about-story--quiet :is(li, a) { transition-delay: 0ms; }
 [data-scene="in"] .experience-card-content > *:nth-child(1) { transition-delay: 160ms; }
 [data-scene="in"] .experience-card-content > *:nth-child(2) { transition-delay: 240ms; }
 [data-scene="in"] .experience-card-content > *:nth-child(n+3) { transition-delay: 320ms; }
+
+/* Homepage Signature cards tell the day in short, factual beats. The list
+   settles through contrast/opacity only; geometry never jumps. */
+.signature-card-highlights li {
+  opacity: 0.76;
+  transition: opacity 360ms var(--motion-ease-editorial), color 180ms ease;
+}
+.signature-card-highlights li:nth-child(2) { transition-delay: 80ms; }
+.signature-card-highlights li:nth-child(3) { transition-delay: 160ms; }
+.reveal-stagger.is-visible .signature-card-highlights li,
+.he-card-lift:is(:hover, :focus-within) .signature-card-highlights li {
+  opacity: 1;
+}
 
 html.reveal-ready .about-story .about-copy-sequence p {
   clip-path: inset(0 100% 0 0);
