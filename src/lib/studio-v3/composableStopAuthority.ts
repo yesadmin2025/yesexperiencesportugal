@@ -102,6 +102,15 @@ export function composableQuantity(unit: ComposablePricingUnit, guests: number):
 export function composableStopLine(stopId: string, guests: number): ComposableStopLine | null {
   const row = getComposableStopRow(stopId);
   if (!row) return null;
+  return composableStopLineFromRow(row, guests);
+}
+
+/** Pure resolver for render paths that already hold the current query rows. */
+export function composableStopLineFromRow(
+  row: ComposableStopRow,
+  guests: number,
+): ComposableStopLine | null {
+  if (!row.active || !Number.isFinite(row.priceCents) || row.priceCents <= 0) return null;
   const heads = Math.max(1, Math.floor(guests));
   if (heads < row.minGuests) return null;
   const quantity = composableQuantity(row.pricingUnit, heads);
@@ -112,6 +121,15 @@ export function composableStopLine(stopId: string, guests: number): ComposableSt
     totalEurCents: row.priceCents * quantity,
     pricingUnit: row.pricingUnit,
   };
+}
+
+export function composableStopLineFromRows(
+  rows: readonly ComposableStopRow[],
+  stopId: string,
+  guests: number,
+): ComposableStopLine | null {
+  const row = rows.find((candidate) => candidate.stopId === stopId);
+  return row ? composableStopLineFromRow(row, guests) : null;
 }
 
 /** Indicative supplement total for a set of composed moments, in cents. */

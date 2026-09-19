@@ -181,6 +181,7 @@ export interface SignaturePriceCardProps {
    */
   resolvedBaseTotalEur?: number | null;
   resolvedAddOnsTotalEur?: number | null;
+  resolvedComposableTotalEur?: number | null;
   /**
    * PASS 5 — Studio parity. When provided, add-on euro amounts are derived
    * ONLY from this approved runtime tier-8 anchor (exactly what the Stripe
@@ -217,6 +218,7 @@ export function SignaturePriceCard({
   resolvedTotalEur = null,
   resolvedBaseTotalEur = null,
   resolvedAddOnsTotalEur = null,
+  resolvedComposableTotalEur = null,
   addOnAnchorEur,
 }: SignaturePriceCardProps) {
 
@@ -590,7 +592,9 @@ export function SignaturePriceCard({
   // otherwise the local preview values already computed above. Never
   // reconstructed or inferred.
   const ledgerBaseEur = usingResolved ? resolvedBaseTotalEur : partyBaseEur;
-  const ledgerAdditionsEur = usingResolved ? resolvedAddOnsTotalEur : addOnsDisplayPartyEur;
+  const ledgerAdditionsEur = usingResolved
+    ? (resolvedAddOnsTotalEur ?? 0) + (resolvedComposableTotalEur ?? 0)
+    : addOnsDisplayPartyEur;
   const priceFactors = useMemo(
     () =>
       resolvePriceChangeFactors({
