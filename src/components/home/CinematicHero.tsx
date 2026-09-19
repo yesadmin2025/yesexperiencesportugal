@@ -28,12 +28,12 @@ function storyLineStyle(delayMs: number): React.CSSProperties {
   };
 }
 
-/** Final hero treatment — Newsreader 400 italic in champagne. */
+/** Approved hero treatment — Georgia 400 italic in champagne. */
 const stanzaStyle: React.CSSProperties = {
   fontWeight: 400,
   fontStyle: "italic",
-  lineHeight: 1.14,
-  letterSpacing: "0",
+  lineHeight: 1.25,
+  letterSpacing: "-0.012em",
 };
 
 const ARROW = (
@@ -160,7 +160,7 @@ export function CinematicHero() {
             <span
               className="hero-title-line block font-editorial font-normal italic m-0"
               data-hero-field="headlineLine1"
-              style={storyLineStyle(100)}
+              style={storyLineStyle(600)}
             >
               {HERO_PHRASES[0]}
             </span>
@@ -169,7 +169,7 @@ export function CinematicHero() {
             <span
               className="hero-title-line block font-editorial italic font-normal text-[color:var(--gold-soft)]"
               data-hero-field="headlineLine2"
-              style={storyLineStyle(520)}
+              style={storyLineStyle(1800)}
             >
               {HERO_PHRASES[1]}
             </span>
@@ -182,7 +182,7 @@ export function CinematicHero() {
         className="hero-support mx-auto max-w-[21rem] text-center font-sans not-italic"
         style={{
           opacity: 1,
-          animation: `heroApprovedReveal ${CTA_FADE_MS}ms ${EASE} 820ms both`,
+          animation: `heroApprovedReveal ${CTA_FADE_MS}ms ${EASE} 3000ms both`,
         }}
       >
         {HERO_COPY.subheadline}
@@ -196,7 +196,7 @@ export function CinematicHero() {
         data-hero-composed="true"
         style={{
           opacity: 1,
-          animation: `heroApprovedReveal ${CTA_FADE_MS}ms ${EASE} 980ms both`,
+          animation: `heroApprovedReveal ${CTA_FADE_MS}ms ${EASE} 4200ms both`,
           pointerEvents: "auto",
         }}
       >
