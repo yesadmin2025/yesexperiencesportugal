@@ -726,15 +726,16 @@ function ItineraryTimeline({ tour, meta }: { tour: SignatureTour; meta?: ViatorM
 }
 
 /* ════════════════════════════════════════════════════════════════
- * 7 · INCLUDED + IDEAL FOR
+ * 7 · INCLUDED / NOT INCLUDED + PRACTICAL DETAILS
  * ════════════════════════════════════════════════════════════ */
 function IncludedAndIdeal({ tour, meta }: { tour: SignatureTour; meta?: ViatorMeta }) {
   const inc = bookableIncluded(tour, meta);
+  const notIncluded = getTourContent(tour.id).notIncluded;
   const ideal = tour.idealFor ?? [];
   const notes = tour.notes ?? [];
   const hasInc = inc.items.length > 0;
   const hasIdeal = ideal.length > 0;
-  if (!hasInc && !hasIdeal && notes.length === 0) return null;
+  if (!hasInc && !hasIdeal && notes.length === 0 && notIncluded.length === 0) return null;
   return (
     <section className="py-14 md:py-20 bg-[color:var(--ivory)] border-y border-[color:var(--border)] reveal">
       <div className="container-x max-w-5xl grid md:grid-cols-2 gap-10 md:gap-14">
@@ -744,6 +745,19 @@ function IncludedAndIdeal({ tour, meta }: { tour: SignatureTour; meta?: ViatorMe
               {inc.items.map((h) => (
                 <li key={h} className="flex gap-2.5">
                   <Check size={15} className="mt-0.5 text-[color:var(--teal)] flex-shrink-0" />
+                  <span>{h}</span>
+                </li>
+              ))}
+            </ul>
+          </Block>
+        )}
+
+        {notIncluded.length > 0 && (
+          <Block icon={<Info size={14} />} title="Not included">
+            <ul className="space-y-3 text-[14.5px] leading-relaxed text-[color:var(--charcoal-soft)]">
+              {notIncluded.map((h) => (
+                <li key={h} className="flex gap-2.5">
+                  <span className="mt-2 h-px w-3 flex-shrink-0 bg-[color:var(--charcoal-soft)]" />
                   <span>{h}</span>
                 </li>
               ))}
@@ -765,18 +779,16 @@ function IncludedAndIdeal({ tour, meta }: { tour: SignatureTour; meta?: ViatorMe
         )}
 
         {notes.length > 0 && (
-          <div className="md:col-span-2">
-            <Block icon={<Info size={14} />} title="Good to know">
-              <ul className="space-y-2 text-[13.5px] leading-relaxed text-[color:var(--charcoal-soft)]">
-                {notes.map((h) => (
-                  <li key={h} className="flex gap-2.5">
-                    <span className="mt-2 w-1.5 h-1.5 rounded-full bg-[color:var(--charcoal-soft)] flex-shrink-0" />
-                    <span>{h}</span>
-                  </li>
-                ))}
-              </ul>
-            </Block>
-          </div>
+          <Block icon={<Info size={14} />} title="Good to know">
+            <ul className="space-y-2 text-[13.5px] leading-relaxed text-[color:var(--charcoal-soft)]">
+              {notes.map((h) => (
+                <li key={h} className="flex gap-2.5">
+                  <span className="mt-2 w-1.5 h-1.5 rounded-full bg-[color:var(--charcoal-soft)] flex-shrink-0" />
+                  <span>{h}</span>
+                </li>
+              ))}
+            </ul>
+          </Block>
         )}
       </div>
     </section>
