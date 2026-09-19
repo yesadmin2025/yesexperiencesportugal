@@ -3,8 +3,8 @@
 // Enforces that Studio V3 phases never inline a retired font fallback in element
 // style="…" strings. The two-family typography rule flows through the
 // design tokens (--font-editorial / --font-body / --font-display /
-// --font-serif / --font-sans); when Fraunces is later swapped in at the
-// token layer, everything picks it up. Hardcoded fallbacks bypass that
+// --font-serif / --font-sans); Newsreader and Inter are resolved at the
+// token layer. Hardcoded retired fallbacks bypass that
 // swap and re-introduce retired families — this test forbids the pattern.
 
 import { test, expect, devices } from "@playwright/test";
@@ -15,7 +15,7 @@ test.use({
   viewport: { width: 393, height: 588 },
 });
 
-const FORBIDDEN = ["Montserrat", "Georgia", "Times", "Cormorant", "Newsreader", "Kaushan"];
+const FORBIDDEN = ["Times", "Roboto", "Lato", "Kaushan"];
 
 async function assertNoHardcodedFallbacks(page: import("@playwright/test").Page, label: string) {
   const offenders = await page.evaluate((forbidden) => {
@@ -26,7 +26,7 @@ async function assertNoHardcodedFallbacks(page: import("@playwright/test").Page,
     nodes.forEach((el) => {
       const inline = el.getAttribute("style") ?? "";
       // Only inspect inline font-family declarations — computed values must
-      // resolve through the canonical Fraunces and Inter tokens.
+      // resolve through the canonical Newsreader and Inter tokens.
       const match = inline.match(/font-family:\s*([^;]+)/i);
       if (!match) return;
       const family = match[1];

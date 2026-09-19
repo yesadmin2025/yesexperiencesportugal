@@ -13,16 +13,16 @@ describe("homepage approved brand restoration", () => {
     expect(hero).not.toMatch(/hero-title-mask[^\n]*overflow-(?:hidden|clip)/);
     const storyLine = hero.match(/function storyLineStyle[\s\S]*?\n\}/)?.[0] ?? "";
     expect(storyLine).not.toContain("clipPath:");
-    expect(hero).toContain('className="hero-h1 m-0 text-center font-serif"');
+    expect(hero).toContain('className="hero-h1 m-0 text-center font-editorial"');
     expect(styles).toMatch(/\.hero-cinematic \.hero-h1\s*\{[\s\S]*?color:\s*var\(--gold-soft\)/);
   });
 
   it("uses the approved historical display and editorial treatment in Five Ways", () => {
-    expect(fiveWays).toContain("t-h3");
-    expect(styles).toMatch(/\.t-h3\s*\{[\s\S]*?font-family:\s*var\(--font-display\)/);
+    expect(fiveWays).toContain("card-editorial-title");
+    expect(styles).toMatch(/\.five-ways-title\s*\{[\s\S]*?font-family:\s*var\(--font-editorial\)/);
     expect(fiveWays).toContain("font-normal text-[color:var(--teal)]");
-    expect(styles).toContain('--font-display: "Montserrat", system-ui, sans-serif');
-    expect(styles).toContain('--font-serif: Georgia, "Times New Roman", serif');
+    expect(styles).toContain('--font-display: "Newsreader", serif');
+    expect(styles).toContain('--font-serif: "Newsreader", serif');
     expect(hero).toContain("{HERO_COPY.subheadline}");
   });
 

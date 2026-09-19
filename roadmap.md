@@ -64,3 +64,6 @@
 - [x] Recalibrate Hero, Five Ways, and editorial page spacing for the historical metrics
 - [x] Validate mobile, tablet, desktop, reduced motion, slow fonts, and 200% text
 - [x] Present mobile captures before publishing
+- [x] Apply the final Newsreader + Inter typography contract across the current website
+- [x] Remove every conflicting legacy font name and local typography override
+- [ ] Validate Hero, Five Ways, editorial pages, and Studio at required viewports

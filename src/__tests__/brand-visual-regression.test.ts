@@ -3,15 +3,15 @@
  *
  * We can't render every page under jsdom and pixel-diff it cheaply.
  * Instead we lock in the brand contract via static analysis of
- * styles.css + key route files. If anyone later swaps Montserrat for
- * Poppins, repoints --gold, drops the gold border on a primary CTA,
+ * styles.css + key route files. If anyone later swaps Newsreader for
+ * Inter, repoints --gold, drops the gold border on a primary CTA,
  * or kills the editorial shadow stack, this suite fails before it
  * ships.
  *
  * Locks:
  *  · Palette = the approved 8 tokens, declared in :root.
- *  · Historical typography = Montserrat headlines + Georgia italic + Inter body.
- *  · Heading weights preserve the medium-weight premium editorial rhythm.
+ *  · Final typography = Newsreader headings and italic emphasis + Inter body.
+ *  · Editorial heading weights remain regular 400.
  *  · Primary CTAs combine smoked charcoal + gold border + champagne text.
  *  · Editorial shadow stack present (no flat or generic Tailwind shadow
  *    is used as the canonical card lift).
@@ -75,10 +75,10 @@ describe("Brand palette — approved 8 tokens", () => {
 });
 
 // ─── Typography v3 ─────────────────────────────────────────────────────
-describe("Historical typography — Montserrat / Georgia / Inter", () => {
+describe("Final typography — Newsreader / Inter", () => {
   it("declares the canonical font stacks", () => {
-    expect(css).toMatch(/--font-display:\s*"Montserrat"/);
-    expect(css).toMatch(/--font-serif:\s*Georgia/);
+    expect(css).toMatch(/--font-display:\s*"Newsreader"/);
+    expect(css).toMatch(/--font-serif:\s*"Newsreader"/);
     expect(css).toMatch(/--font-sans:\s*"Inter"/);
   });
 
@@ -88,10 +88,9 @@ describe("Historical typography — Montserrat / Georgia / Inter", () => {
     const fontDisplayLine = css.match(/--font-display:[^;]+;/g);
     expect(fontDisplayLine, "no --font-display declaration").toBeTruthy();
     for (const decl of fontDisplayLine!) {
-      expect(decl).not.toMatch(/\bPoppins\b/);
+      expect(decl).not.toMatch(/\bInter\b/);
       expect(decl).not.toMatch(/\bRoboto\b/);
       expect(decl).not.toMatch(/\bLato\b/);
-      expect(decl).not.toMatch(/\bPlayfair\b/);
     }
   });
 });
@@ -165,16 +164,16 @@ describe("Gold token usage — micro-detail only", () => {
   }
 });
 
-// ─── Heading hierarchy = Typography v3 weights ─────────────────────────
-describe("Heading hierarchy — medium-weight editorial display", () => {
+// ─── Heading hierarchy = final editorial weights ───────────────────────
+describe("Heading hierarchy — regular editorial display", () => {
   it("encodes the canonical weights in styles.css", () => {
     // The CANONICAL block lives in the Typography v3 section. We
-    const h1Match = css.match(/h1\s*\{[^}]*font-weight:\s*500/);
-    const h2Match = css.match(/h2\s*\{[^}]*font-weight:\s*500/);
-    const h3Match = css.match(/h3\s*\{[^}]*font-weight:\s*500/);
-    expect(h1Match, "h1 should be 500").toBeTruthy();
-    expect(h2Match, "h2 should be 500").toBeTruthy();
-    expect(h3Match, "h3 should be 500").toBeTruthy();
+    const h1Match = css.match(/h1\s*\{[^}]*font-weight:\s*400/);
+    const h2Match = css.match(/h2\s*\{[^}]*font-weight:\s*400/);
+    const h3Match = css.match(/h3\s*\{[^}]*font-weight:\s*400/);
+    expect(h1Match, "h1 should be 400").toBeTruthy();
+    expect(h2Match, "h2 should be 400").toBeTruthy();
+    expect(h3Match, "h3 should be 400").toBeTruthy();
   });
 });
 

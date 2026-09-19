@@ -28,7 +28,7 @@ function storyLineStyle(delayMs: number): React.CSSProperties {
   };
 }
 
-/** The historical stanza treatment — Georgia 400 in champagne italic. */
+/** Final hero treatment — Newsreader 400 italic in champagne. */
 const stanzaStyle: React.CSSProperties = {
   fontWeight: 400,
   fontStyle: "italic",
@@ -154,11 +154,11 @@ export function CinematicHero() {
         <h1
           data-hero-stanza="true"
           data-mixed-emphasis="exempt"
-          className="hero-h1 m-0 text-center font-serif"
+          className="hero-h1 m-0 text-center font-editorial"
         >
           <span className="hero-title-mask block px-[0.08em] pb-[0.12em]">
             <span
-              className="hero-title-line block font-serif font-normal italic m-0"
+              className="hero-title-line block font-editorial font-normal italic m-0"
               data-hero-field="headlineLine1"
               style={storyLineStyle(100)}
             >
@@ -167,7 +167,7 @@ export function CinematicHero() {
           </span>
           <span className="hero-title-mask mt-1 block px-[0.08em] pb-[0.16em] sm:mt-1.5">
             <span
-              className="hero-title-line block font-serif italic font-normal text-[color:var(--gold-soft)]"
+              className="hero-title-line block font-editorial italic font-normal text-[color:var(--gold-soft)]"
               data-hero-field="headlineLine2"
               style={storyLineStyle(520)}
             >

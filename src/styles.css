@@ -44,13 +44,11 @@
   --color-charcoal-soft: var(--charcoal-soft);
   --color-charcoal-deep: var(--charcoal-deep);
 
-  --font-display: "Montserrat", system-ui, sans-serif;
-  --font-serif: Georgia, "Times New Roman", serif;
+  --font-editorial: "Newsreader", serif;
+  --font-display: "Newsreader", serif;
+  --font-serif: "Newsreader", serif;
+  --font-body: "Inter", system-ui, sans-serif;
   --font-sans: "Inter", system-ui, sans-serif;
-  /* Historical YES system: Montserrat for display, Georgia italic for
-     editorial emphasis, and Inter for body copy and interface text. */
-  --font-editorial: Georgia, "Times New Roman", serif;
-  --font-body: var(--font-sans);
 
   --shadow-elegant: 0 30px 60px -30px color-mix(in oklab, var(--teal) 30%, transparent);
   --shadow-card: 0 20px 40px -24px rgba(46, 46, 46, 0.18);
@@ -408,13 +406,10 @@
   body {
     background-color: var(--color-background);
     color: var(--color-foreground);
-    font-family: var(--font-sans);
-    /* Body weight raised from 380 → 410 — kills the "weak grey text" feel
-       on mobile while staying premium. Headings still ride lighter for
-       editorial contrast. */
-    font-weight: 410;
+    font-family: var(--font-body);
+    font-weight: 400;
     font-feature-settings: "ss01", "cv11", "kern", "calt";
-    letter-spacing: 0.005em;
+    letter-spacing: -0.005em;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     text-rendering: optimizeLegibility;
@@ -422,6 +417,17 @@
   }
   p {
     color: var(--charcoal);
+  }
+  body,
+  p,
+  button,
+  input,
+  textarea,
+  select,
+  nav,
+  .ui,
+  .body-copy {
+    font-family: var(--font-body);
   }
   /* Secondary copy weight — body inherits 410, but Tailwind utilities
      applied to leaf nodes (e.g. <span class="text-[12px] ...">) sometimes
@@ -439,10 +445,12 @@
   h3,
   h4,
   h5,
-  h6 {
-    font-family: var(--font-display);
-    font-weight: 500;
-    letter-spacing: 0;
+  h6,
+  .editorial-title,
+  .section-title,
+  .card-editorial-title {
+    font-family: var(--font-editorial);
+    font-weight: 400;
     color: var(--charcoal-deep);
     text-wrap: balance;
     font-feature-settings: "kern", "liga", "calt", "ss01";
@@ -450,42 +458,34 @@
     -moz-osx-font-smoothing: grayscale;
   }
   h1 {
-    font-weight: 500;
-    letter-spacing: 0;
-    line-height: 1.1;
+    font-weight: 400;
   }
   h2 {
-    font-weight: 500;
-    letter-spacing: 0;
-    line-height: 1.15;
+    font-weight: 400;
   }
   h3 {
-    font-weight: 500;
-    letter-spacing: 0;
-    line-height: 1.2;
+    font-weight: 400;
   }
   h4 {
-    font-weight: 500;
-    letter-spacing: 0;
-    line-height: 1.3;
+    font-weight: 400;
   }
   h5,
   h6 {
-    font-weight: 500;
-    letter-spacing: 0;
-    line-height: 1.35;
+    font-weight: 400;
   }
-  /* Historical contrast: Georgia italic appears only as deliberate emphasis
-     inside Montserrat display headings. */
   h1 em,
   h2 em,
   h3 em,
+  .editorial-title em,
+  .section-title em,
+  .card-editorial-title em,
   h1 .italic,
   h2 .italic,
   h3 .italic {
-    font-family: var(--font-serif);
+    font-family: var(--font-editorial);
     font-weight: 400;
     font-style: italic;
+    color: var(--teal);
   }
   /* Subtle, tactile link hover across the page */
   a {
@@ -565,25 +565,25 @@
      so the display sizes feel composed and editorial.
      ───────────────────────────────────────────────────────────── */
   .hero-h1 {
-    letter-spacing: -0.012em;
-    line-height: 1.08;
+    letter-spacing: -0.01em;
+    line-height: 1.28;
   }
   @media (min-width: 640px) {
     .hero-h1 {
-      letter-spacing: -0.014em;
-      line-height: 1.04;
+      letter-spacing: -0.01em;
+      line-height: 1.28;
     }
   }
   @media (min-width: 768px) {
     .hero-h1 {
-      letter-spacing: -0.018em;
-      line-height: 1.14;
+      letter-spacing: -0.01em;
+      line-height: 1.2;
     }
   }
   @media (min-width: 1024px) {
     .hero-h1 {
-      letter-spacing: -0.022em;
-      line-height: 1.1;
+      letter-spacing: -0.01em;
+      line-height: 1.16;
     }
   }
 
@@ -652,10 +652,10 @@
     min-height: 52px;
     height: auto;
     padding: 14px 20px;
-    font-size: 11.25px;
+    font-size: 0.85rem;
     line-height: 1.25;
-    font-weight: 700;
-    letter-spacing: 0.075em;
+    font-weight: 600;
+    letter-spacing: 0.2em;
     text-transform: uppercase;
     font-family: var(--font-sans);
     font-feature-settings: "ss01", "cv11", "cpsp";
@@ -680,9 +680,9 @@
       min-height: 64px;
       padding: 18px 26px 18px 24px;
       font-size: 12.5px;
-      line-height: 1.4;
-      letter-spacing: 0.095em;
-      font-weight: 700;
+      line-height: 1.25;
+      letter-spacing: 0.2em;
+      font-weight: 600;
     }
   }
 
@@ -781,11 +781,10 @@
     font-family: var(--font-serif);
   }
 
-  /* Homepage editorial title contract: Montserrat is the upright display
-     voice; Georgia italic is reserved for intentional emphasis. */
+  /* Homepage editorial title contract: Newsreader regular is the upright
+     voice; real Newsreader italic is reserved for intentional emphasis. */
   .home-energy :is(h1, h2, h3) {
-    font-family: var(--font-display);
-    letter-spacing: 0 !important;
+    font-family: var(--font-editorial);
   }
   .home-energy :is(h1, h2) .italic,
   .home-energy .hero-title-line {
@@ -811,84 +810,82 @@
      pin the sans family + readable line-height. Use mt-* for vertical
      spacing — the scale never bakes in margins.
      ───────────────────────────────────────────────────────────── */
-   /* Historical typography — all headlines use Montserrat (--font-display).
-       Georgia italic appears only for intentional emphasis inside headings,
-     handled by the base h1/h2/h3 em rules above.
-     Mobile sizes are tuned by the proportional refinement pass:
-       .t-display 36px (32–36 hero band)
-       .t-h1      32px (Builder / anchor — 30–34 band)
-       .t-h2      ~28.5px (other section titles — 28–32 band)
-       .t-h3      ~23.5px (cards — 22–26 band) */
+  /* Final YES typography: Newsreader for editorial titles and emphasis;
+     Inter for body copy, labels, controls, navigation and actions. */
   .t-display-xl {
-    font-family: var(--font-display);
-    font-weight: 600;
-    font-size: clamp(2.5rem, 7vw, 5.75rem);
+    font-family: var(--font-editorial);
+    font-weight: 400;
+    font-size: clamp(2.55rem, 10vw, 3rem);
     line-height: 1.04;
-    letter-spacing: 0;
+    letter-spacing: -0.015em;
     text-wrap: balance;
   }
   .t-display {
-    font-family: var(--font-display);
-    font-weight: 600;
-    font-size: 2.25rem;
-    line-height: 1.06;
-    letter-spacing: 0;
+    font-family: var(--font-editorial);
+    font-weight: 400;
+    font-size: clamp(2.55rem, 10vw, 3rem);
+    line-height: 1.04;
+    letter-spacing: -0.015em;
   }
   @media (min-width: 768px) {
     .t-display {
-      font-size: 4rem;
+      font-size: clamp(3.25rem, 5vw, 4.5rem);
+      line-height: 1.02;
+      letter-spacing: -0.018em;
     }
   }
   @media (min-width: 1024px) {
     .t-display {
-      font-size: 4.75rem;
-      line-height: 0.98;
+      font-size: clamp(3.25rem, 5vw, 4.5rem);
+      line-height: 1.02;
     }
   }
   .t-h1 {
-    font-family: var(--font-display);
-    font-weight: 600;
-    font-size: 2rem;
-    line-height: 1.1;
-    letter-spacing: 0;
+    font-family: var(--font-editorial);
+    font-weight: 400;
+    font-size: clamp(2.55rem, 10vw, 3rem);
+    line-height: 1.04;
+    letter-spacing: -0.015em;
   }
   @media (min-width: 768px) {
     .t-h1 {
-      font-size: 3.75rem;
-      line-height: 1.04;
+      font-size: clamp(3.25rem, 5vw, 4.5rem);
+      line-height: 1.02;
+      letter-spacing: -0.018em;
     }
   }
   .t-h2 {
-    font-family: var(--font-display);
-    font-weight: 500;
-    font-size: 1.78rem;
-    line-height: 1.18;
-    letter-spacing: 0;
+    font-family: var(--font-editorial);
+    font-weight: 400;
+    font-size: 2.5rem;
+    line-height: 1.06;
+    letter-spacing: -0.012em;
   }
   @media (min-width: 768px) {
     .t-h2 {
-      font-size: 2.25rem;
-      line-height: 1.1;
+      font-size: 3.5rem;
+      line-height: 1.03;
     }
   }
   .t-h3 {
-    font-family: var(--font-display);
-    font-weight: 500;
-    font-size: 1.47rem;
-    line-height: 1.22;
-    letter-spacing: 0;
+    font-family: var(--font-editorial);
+    font-weight: 400;
+    font-size: 1.9rem;
+    line-height: 1.08;
+    letter-spacing: -0.008em;
   }
   @media (min-width: 768px) {
     .t-h3 {
-      font-size: 1.75rem;
-      line-height: 1.18;
+      font-size: 2.075rem;
+      line-height: 1.08;
     }
   }
   .t-eyebrow {
-    font-family: var(--font-sans);
-    font-size: 11px;
-    line-height: 1;
-    letter-spacing: 0.28em;
+    font-family: var(--font-body);
+    font-size: 0.82rem;
+    line-height: 1.3;
+    font-weight: 600;
+    letter-spacing: 0.24em;
     text-transform: uppercase;
     color: var(--charcoal-soft);
   }
@@ -900,16 +897,16 @@
     color: var(--charcoal);
   }
   .t-body-lg {
-    font-family: var(--font-sans);
-    font-size: 17px;
-    line-height: 1.7;
+    font-family: var(--font-body);
+    font-size: 1.0625rem;
+    line-height: 1.6;
     font-weight: 400;
-    letter-spacing: 0;
+    letter-spacing: -0.005em;
     color: var(--charcoal);
   }
   @media (min-width: 768px) {
     .t-body-lg {
-      font-size: 18px;
+      font-size: 1.125rem;
     }
   }
   @media (min-width: 768px) {
@@ -918,15 +915,16 @@
     }
   }
   .t-body {
-    font-family: var(--font-sans);
-    font-size: 16px;
-    line-height: 1.7;
+    font-family: var(--font-body);
+    font-size: 1.0625rem;
+    line-height: 1.6;
     font-weight: 400;
+    letter-spacing: -0.005em;
     color: var(--charcoal);
   }
   @media (min-width: 768px) {
     .t-body {
-      font-size: 17px;
+      font-size: 1.125rem;
     }
   }
   .t-meta {
@@ -944,11 +942,11 @@
     color: var(--charcoal-soft);
   }
   .t-button {
-    font-family: var(--font-sans);
-    font-size: 12px;
+    font-family: var(--font-body);
+    font-size: 0.85rem;
     line-height: 1.25;
     font-weight: 600;
-    letter-spacing: 0.16em;
+    letter-spacing: 0.2em;
     text-transform: uppercase;
   }
 
@@ -2457,10 +2455,10 @@ html[data-conversion-overlay="compare"] .cookie-consent-card { visibility: hidde
 .experience-compare-sheet__body { position: relative; max-height: min(90dvh, 56rem); overflow-y: auto; background: var(--ivory); padding: 1.25rem max(1rem, env(safe-area-inset-right)) calc(1rem + env(safe-area-inset-bottom)); animation: compare-sheet-in 380ms var(--ease-out-expo) both; }
 .experience-compare-sheet__head { display: flex; align-items: start; justify-content: space-between; gap: 1rem; }
 .experience-compare-sheet__head p, .experience-compare-sheet__intro article > p { color: var(--teal); font: 600 .6875rem/1.3 var(--font-sans); letter-spacing: .14em; text-transform: uppercase; }
-.experience-compare-sheet__head h2 { margin-top: .4rem; color: var(--charcoal); font: 500 1.65rem/1.1 var(--font-editorial); }
+.experience-compare-sheet__head h2 { margin-top: .4rem; color: var(--charcoal); font: 400 1.65rem/1.1 var(--font-editorial); }
 .experience-compare-sheet__head button { min-width: 2.75rem; min-height: 2.75rem; }
 .experience-compare-sheet__intro { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .75rem; margin-top: 1.25rem; }
-.experience-compare-sheet__intro h3 { margin-top: .4rem; color: var(--charcoal); font: 500 1rem/1.2 var(--font-editorial); }
+.experience-compare-sheet__intro h3 { margin-top: .4rem; color: var(--charcoal); font: 400 1rem/1.2 var(--font-editorial); }
 .experience-compare-sheet__intro article > p { margin-top: .65rem; }
 .experience-compare-sheet__intro button { min-height: 2.75rem; margin-top: .25rem; padding-inline: 0; font-size: .6875rem; }
 .experience-compare-sheet__facts { margin-top: 1.25rem; }
@@ -4411,7 +4409,7 @@ html[data-motion-scope="marketing"] .signature-image-settle {
   }
 
   /* Legacy bridge whisper retained for non-homepage routes. It uses the
-     historical Georgia italic voice; homepage transitions no longer use it. */
+     Newsreader italic voice; homepage transitions no longer use it. */
   .bridge-whisper {
     font-family: var(--font-editorial);
     font-style: italic;
@@ -4874,12 +4872,12 @@ html[data-motion-scope="marketing"] .signature-image-settle {
     align-items: center;
     gap: 14px;
     color: var(--charcoal);
-    font-family: var(--font-sans);
-    font-size: 11px;
-    font-weight: 700;
-    letter-spacing: 0.28em;
+    font-family: var(--font-body);
+    font-size: 0.82rem;
+    font-weight: 600;
+    letter-spacing: 0.24em;
     text-transform: uppercase;
-    line-height: 1.25;
+    line-height: 1.3;
     max-width: 100%;
   }
   .he-eyebrow-bar--dark {
@@ -5002,10 +5000,11 @@ html[data-motion-scope="marketing"] .signature-image-settle {
   /* Editorial number block — for the "01–05" markers in Why YES. Larger,
      mixed serif/uppercase, with a quiet gold underline on hover. */
   .home-energy .he-num {
-    font-family: var(--font-serif);
-    font-weight: 350;
-    font-size: 2.6rem;
-    line-height: 1;
+    font-family: var(--font-editorial);
+    font-style: italic;
+    font-weight: 400;
+    font-size: 4.5rem;
+    line-height: 0.9;
     letter-spacing: -0.02em;
     color: var(--gold);
     display: inline-block;
@@ -5489,9 +5488,7 @@ html[data-motion-scope="marketing"] .signature-image-settle {
     }
   }
 
-  /* Stronger editorial section headlines — Montserrat handles the voice;
-     this deepens colour and balances tracking
-     for h2 specifically (the most-used section headline). */
+  /* Shared editorial section-title colour. */
   section h2 {
     color: var(--charcoal-deep);
   }
@@ -6326,7 +6323,7 @@ html {
    Both share a refined arrow ramp. Used only inside .hero-cinematic.
    ──────────────────────────────────────────────────────────── */
 
-/* Hero support line stays in Inter, separate from the Georgia stanza. */
+/* Hero support line stays in Inter, separate from the Newsreader stanza. */
 .hero-support {
   color: color-mix(in oklab, var(--gold-soft) 18%, var(--ivory));
   text-shadow:
@@ -6340,8 +6337,8 @@ html {
   border: 0;
   border-radius: 1px;
   background: transparent;
-  font-family: Inter, system-ui, sans-serif;
-  font-weight: 450;
+  font-family: var(--font-body);
+  font-weight: 600;
   letter-spacing: 0.2em;
   transition:
     transform 360ms cubic-bezier(0.22, 0.61, 0.36, 1),
@@ -6522,11 +6519,14 @@ html {
   padding-bottom: max(2.5rem, calc(env(safe-area-inset-bottom) + 1.75rem));
 }
 .hero-cinematic .hero-h1 {
+  font-family: var(--font-editorial);
+  font-style: italic;
   font-weight: 400;
   color: var(--gold-soft);
   text-shadow: 0 1px 2px color-mix(in oklab, var(--charcoal-deep) 30%, transparent);
-  font-size: clamp(2.375rem, 9.7vw, 4.125rem);
-  line-height: 1.14;
+  font-size: clamp(2.35rem, 8vw, 2.85rem);
+  line-height: 1.28;
+  letter-spacing: -0.01em;
 }
 .hero-cinematic .hero-cinematic-composition {
   transform: none;
@@ -6534,8 +6534,11 @@ html {
 /* Historical centred stanza: two distinct lines with the breathing room
    shown in the approved reference. Eyebrow/support remain separate zones. */
 .hero-cinematic .hero-title-line {
-  line-height: 1.14;
-  letter-spacing: 0;
+  font-family: var(--font-editorial);
+  font-style: italic;
+  font-weight: 400;
+  line-height: 1.28;
+  letter-spacing: -0.01em;
 }
 .hero-cinematic .hero-support {
   text-wrap: balance;
@@ -6601,8 +6604,8 @@ html {
     padding-bottom: max(3.5rem, calc(env(safe-area-inset-bottom) + 2.5rem));
   }
   .hero-cinematic .hero-h1 {
-    font-size: clamp(3rem, 5.8vw, 4.125rem);
-    line-height: 1.14;
+    font-size: clamp(3.75rem, 5vw, 4.5rem);
+    line-height: 1.16;
   }
 }
 
@@ -7883,14 +7886,14 @@ html[data-motion-scope="marketing"] .cta-breathe::after {
 }
 .motion-split-line {
   display: block;
-  /* Georgia has generous ascenders, descenders and italic overhangs. Give
+  /* Newsreader has generous ascenders, descenders and italic overhangs. Give
      the animated ink mask a small internal bleed so glyphs are never clipped
      by the line box on iOS while preserving the visual rhythm. */
   padding: 0.14em 0.12em 0.18em;
   margin: -0.14em -0.12em -0.18em;
 }
 
-/* Georgia optical safety: protects accents, italic overhangs and descenders
+/* Newsreader optical safety: protects accents, italic overhangs and descenders
    without changing the visible alignment of editorial headings. */
 .editorial-title-safe {
   padding: 0.08em 0.06em 0.12em;
@@ -7980,24 +7983,47 @@ html.reveal-ready .about-story--quiet :is(li, a) { transition-delay: 0ms; }
   color: var(--teal);
 }
 .five-ways-number {
-  font-family: var(--font-serif);
-  font-size: 3.25rem;
+  font-family: var(--font-editorial);
+  font-size: 4.5rem;
   font-style: italic;
   font-weight: 400;
   line-height: 0.9;
   color: color-mix(in oklab, var(--gold) 62%, var(--ivory));
 }
 .five-ways-eyebrow {
-  font-family: var(--font-sans);
-  font-size: 0.7rem;
+  font-family: var(--font-body);
+  font-size: 0.82rem;
   font-weight: 600;
-  line-height: 1.35;
-  letter-spacing: 0.22em;
+  line-height: 1.3;
+  letter-spacing: 0.24em;
   text-transform: uppercase;
   color: var(--teal);
 }
-.five-ways-title { max-width: 19ch; }
-.five-ways-body { max-width: 38ch; }
+.five-ways-title {
+  max-width: 19ch;
+  font-family: var(--font-editorial);
+  font-size: 1.9rem;
+  font-weight: 400;
+  line-height: 1.08;
+  letter-spacing: -0.008em;
+}
+.five-ways-title em {
+  font-family: var(--font-editorial);
+  font-style: italic;
+  font-weight: 400;
+  color: var(--teal);
+}
+.five-ways-body {
+  max-width: 38ch;
+  font-family: var(--font-body);
+  font-size: 1.0625rem;
+  font-weight: 400;
+  line-height: 1.6;
+  letter-spacing: -0.005em;
+}
+@media (min-width: 768px) {
+  .five-ways-title { font-size: 2.075rem; }
+}
 [data-scene-ready="1"] .five-ways-card :is(.five-ways-kicker, .five-ways-title, .five-ways-body, .five-ways-action) {
   opacity: 0;
   transition: opacity var(--dur-slow) var(--motion-ease-editorial);
@@ -8268,20 +8294,23 @@ html.reveal-ready .about-story.is-visible .about-copy-sequence p:nth-child(4) { 
    Declared outside @layer so it wins over utility classes.
    ──────────────────────────────────────────────────────────── */
 .hero-cta {
-  font-size: 10.5px;
-  letter-spacing: 0.12em;
+  font-family: var(--font-body);
+  font-size: 0.85rem;
+  font-weight: 600;
+  line-height: 1.25;
+  letter-spacing: 0.2em;
   width: min(232px, 100%);
 }
 @media (min-width: 430px) {
   .hero-cta {
-    font-size: 11px;
-    letter-spacing: 0.14em;
+    font-size: 0.85rem;
+    letter-spacing: 0.2em;
   }
 }
 @media (min-width: 1024px) {
   .hero-cta {
-    font-size: 11.5px;
-    letter-spacing: 0.18em;
+    font-size: 0.85rem;
+    letter-spacing: 0.2em;
   }
 }
 

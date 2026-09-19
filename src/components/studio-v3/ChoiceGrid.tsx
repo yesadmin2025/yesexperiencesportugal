@@ -3,7 +3,7 @@ import type { ChoiceOption } from "./types";
 /**
  * ChoiceGrid — the editorial selector used by every Studio V3 question phase.
  *
- * Renders a sentence-case label (editorial) + an Inter whisper subtitle inside a
+ * Renders an Inter label + Inter whisper subtitle inside a
  * tactile tile. No checkboxes, no dropdowns. Tiles fade-rise on mount in a
  * staggered cadence (max ~360ms total) and respect prefers-reduced-motion.
  *
@@ -93,7 +93,7 @@ export function ChoiceGrid<T extends string>({
               <span
                 className="block pr-4 text-[15.5px] leading-tight font-semibold"
                 style={{
-                  fontFamily: "var(--font-editorial)",
+                  fontFamily: "var(--font-body)",
                   color: "var(--charcoal)",
                   letterSpacing: "-0.005em",
                 }}

@@ -5196,7 +5196,7 @@ export function StoryboardHandoff({
 
   // ---------- Cinematic 3-beat composing reveal (Fase 4) ----------
   // Beat 1 (0–900ms):   hero photo of the resolved Signature fades in over ivory.
-  // Beat 2 (900–1800ms): Fraunces italic "why it fits" line lands under the photo.
+  // Beat 2 (900–1800ms): Newsreader italic "why it fits" line lands under the photo.
   // Beat 3 (1800–2600ms): trust whisper appears, then overlay dismisses and the
   //                      route map pins draw in sequence.
   // Respects prefers-reduced-motion (collapses to beat 3 instantly).
@@ -7385,7 +7385,7 @@ function SaveSignatureButton({
           />
           Saved
         </span>
-        <h3 className="serif mt-3 text-[1.6rem] leading-[1.14] tracking-[-0.014em] text-[color:var(--charcoal)] font-medium text-balance text-center">
+        <h3 className="serif mt-3 text-[1.6rem] leading-[1.14] tracking-[-0.014em] text-[color:var(--charcoal)] font-normal text-balance text-center">
           Your Signature is saved
         </h3>
         <p className="mt-3 text-[13px] leading-[1.55] text-[color:var(--charcoal-soft)] max-w-md mx-auto text-center">

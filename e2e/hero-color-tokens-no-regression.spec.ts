@@ -3,7 +3,7 @@
  *
  * The pre-v4 hero painted an eyebrow, an ivory headline line and a
  * gold-soft italic line as separate overlay fields. v4 renders a single
- * centered two-line stanza in Fraunces italic, gold-soft #F1D8AB, over
+ * centered two-line stanza in Newsreader italic, gold-soft #F1D8AB, over
  * the held clip. Everything else (eyebrow, subheadline, microcopy) now
  * lives in sr-only probes, which inherit page text color and must not
  * be color-asserted.

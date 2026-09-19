@@ -467,7 +467,7 @@ export default CheckoutReceipt;
 // Styles — Body background stays #ffffff per Lovable email rules.
 const main = {
   backgroundColor: "#ffffff",
-  fontFamily: 'Georgia, "Times New Roman", serif',
+  fontFamily: 'Newsreader, serif',
 } as const;
 const container = { padding: "32px 28px", maxWidth: "560px" } as const;
 const eyebrow = {
@@ -480,7 +480,7 @@ const eyebrow = {
   margin: "0 0 18px",
 } as const;
 const h1 = {
-  fontFamily: 'Georgia, "Times New Roman", serif',
+  fontFamily: 'Newsreader, serif',
   fontSize: "26px",
   lineHeight: 1.18,
   color: CHARCOAL,
@@ -517,7 +517,7 @@ const cardValue = {
   margin: "0 0 4px",
 } as const;
 const cardValueLg = {
-  fontFamily: 'Georgia, "Times New Roman", serif',
+  fontFamily: 'Newsreader, serif',
   fontSize: "17px",
   color: CHARCOAL,
   fontWeight: 700 as const,
@@ -584,7 +584,7 @@ const footer = {
 } as const;
 const link = { color: TEAL, textDecoration: "underline" } as const;
 const signoff = {
-  fontFamily: 'Georgia, "Times New Roman", serif',
+  fontFamily: 'Newsreader, serif',
   fontSize: "14px",
   fontStyle: "italic" as const,
   color: TEAL,

@@ -90,14 +90,14 @@ export function StudioV3Intro({ onComplete }: Props) {
         {step === "welcome" ? (
           <div className="animate-in fade-in slide-in-from-bottom-2 duration-[700ms] motion-reduce:animate-none">
             <p
-              className="text-[11px] uppercase font-bold"
+              className="text-[11px] uppercase font-semibold"
               style={{ color: "var(--gold)", letterSpacing: "0.28em" }}
             >
               — Studio
             </p>
             <h2
               data-testid="studio-v3-intro-headline"
-              className="mt-5 text-[28px] sm:text-[34px] leading-[1.12] tracking-[-0.01em] font-medium"
+               className="mt-5 text-[28px] sm:text-[34px] leading-[1.12] tracking-[-0.01em] font-normal"
               style={{
                 fontFamily: "var(--font-editorial)",
                 color: "var(--ivory)",
@@ -152,7 +152,7 @@ export function StudioV3Intro({ onComplete }: Props) {
               — Before we begin
             </p>
             <h2
-              className="mt-5 text-[24px] sm:text-[30px] leading-[1.15] tracking-[-0.01em] font-medium"
+               className="mt-5 text-[24px] sm:text-[30px] leading-[1.15] tracking-[-0.01em] font-normal"
               style={{
                 fontFamily: "var(--font-editorial)",
                 color: "var(--ivory)",
@@ -187,9 +187,9 @@ export function StudioV3Intro({ onComplete }: Props) {
               placeholder="Your first name"
               maxLength={32}
               aria-label="Your first name (optional)"
-              className="mt-7 w-full border-0 border-b bg-transparent py-3 text-center text-[20px] italic outline-none transition-colors"
+               className="mt-7 w-full border-0 border-b bg-transparent py-3 text-center text-[20px] outline-none transition-colors"
               style={{
-                fontFamily: "var(--font-editorial)",
+                 fontFamily: "var(--font-body)",
                 color: "var(--ivory)",
                 borderColor: "color-mix(in oklab, var(--gold) 45%, transparent)",
               }}
@@ -198,11 +198,11 @@ export function StudioV3Intro({ onComplete }: Props) {
             <button
               type="submit"
               data-phase-cta="intro-name"
-              className="mt-8 inline-flex min-h-[48px] w-full items-center justify-center gap-2 rounded-full px-7 py-3 text-[11px] uppercase font-bold transition-colors hover:opacity-90"
+               className="mt-8 inline-flex min-h-[48px] w-full items-center justify-center gap-2 rounded-full px-7 py-3 text-[0.85rem] uppercase font-semibold transition-colors hover:opacity-90"
               style={{
                 background: "var(--ivory)",
                 color: "var(--charcoal)",
-                letterSpacing: "0.24em",
+                 letterSpacing: "0.2em",
               }}
             >
               Continue
@@ -213,10 +213,10 @@ export function StudioV3Intro({ onComplete }: Props) {
               type="button"
               onClick={() => onComplete(null, "guided")}
               data-phase-cta="intro-skip"
-              className="mt-4 inline-flex min-h-[44px] items-center justify-center px-3 text-[11px] uppercase font-semibold transition-colors hover:opacity-100"
+               className="mt-4 inline-flex min-h-[44px] items-center justify-center px-3 text-[0.85rem] uppercase font-semibold transition-colors hover:opacity-100"
               style={{
                 color: "color-mix(in oklab, var(--ivory) 55%, transparent)",
-                letterSpacing: "0.24em",
+                 letterSpacing: "0.2em",
               }}
             >
               Skip

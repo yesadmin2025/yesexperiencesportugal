@@ -12,7 +12,7 @@
  *   • Reduced-motion safe (controller auto-visible).
  *   • Mobile: horizontal snap-scroll of 76%-wide cards.
  *     Desktop: 3–4 column responsive grid, 4:5 aspect.
- *   • Captions in Fraunces italic teal (Editorial v3), body in Inter.
+ *   • Captions in Newsreader italic teal (Editorial v3), body in Inter.
  */
 import { useEffect, useRef, type ReactNode } from "react";
 import { buildResponsiveSrc } from "@/lib/responsive-image";

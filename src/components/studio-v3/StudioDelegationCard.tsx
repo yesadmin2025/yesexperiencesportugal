@@ -4,7 +4,7 @@
  * Presentational only: it renders an editorial invitation to hand the
  * remaining taste decisions to YES. All decision logic lives in the pure
  * `studioDelegation.ts` module. Brand rules: existing teal/gold/ivory tokens
- * only, Fraunces headline + Inter body, sentence case, 393px-safe single
+ * only, Newsreader headline + Inter body, sentence case, 393px-safe single
  * column, ≥44px target, visible focus, reduced-motion safe (no animation).
  */
 

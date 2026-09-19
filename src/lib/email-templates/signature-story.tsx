@@ -142,7 +142,7 @@ export default SignatureStory;
 
 const main = {
   backgroundColor: "#ffffff",
-  fontFamily: 'Georgia, "Times New Roman", serif',
+  fontFamily: 'Newsreader, serif',
 } as const;
 const container = { padding: "32px 28px", maxWidth: "560px" } as const;
 const eyebrow = {
@@ -155,7 +155,7 @@ const eyebrow = {
   margin: "0 0 18px",
 } as const;
 const h1 = {
-  fontFamily: 'Georgia, "Times New Roman", serif',
+  fontFamily: 'Newsreader, serif',
   fontSize: "28px",
   lineHeight: 1.15,
   color: CHARCOAL,
@@ -163,7 +163,7 @@ const h1 = {
   margin: "0 0 14px",
 } as const;
 const lede = {
-  fontFamily: 'Georgia, "Times New Roman", serif',
+  fontFamily: 'Newsreader, serif',
   fontSize: "15.5px",
   lineHeight: 1.6,
   fontStyle: "italic" as const,
@@ -205,14 +205,14 @@ const chapterIndex = {
   margin: "0 0 4px",
 } as const;
 const chapterTitle = {
-  fontFamily: 'Georgia, "Times New Roman", serif',
+  fontFamily: 'Newsreader, serif',
   fontSize: "17px",
   color: CHARCOAL,
   fontWeight: 700 as const,
   margin: "0 0 6px",
 } as const;
 const chapterBody = {
-  fontFamily: 'Georgia, "Times New Roman", serif',
+  fontFamily: 'Newsreader, serif',
   fontSize: "14.5px",
   lineHeight: 1.55,
   color: `${CHARCOAL}cc`,
@@ -234,7 +234,7 @@ const footer = {
   margin: "0 0 12px",
 } as const;
 const signoff = {
-  fontFamily: 'Georgia, "Times New Roman", serif',
+  fontFamily: 'Newsreader, serif',
   fontSize: "14px",
   fontStyle: "italic" as const,
   color: TEAL,

@@ -44,7 +44,7 @@ export function Navbar() {
   useEffect(() => setOpen(false), [pathname]);
 
   const linkClass =
-    "link-hairline tap inline-flex min-h-[44px] items-center font-sans font-semibold text-[color:var(--charcoal)] hover:text-[color:var(--teal)] transition-colors duration-[var(--dur-quick)] rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--teal)] focus-visible:ring-offset-4 focus-visible:ring-offset-[color:var(--ivory,#FAF8F3)]";
+    "link-hairline tap inline-flex min-h-[44px] items-center font-sans font-medium tracking-[0.03em] text-[color:var(--charcoal)] hover:text-[color:var(--teal)] transition-colors duration-[var(--dur-quick)] rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--teal)] focus-visible:ring-offset-4 focus-visible:ring-offset-[color:var(--ivory,#FAF8F3)]";
 
   return (
     <header
@@ -133,7 +133,7 @@ export function Navbar() {
                   key={item.to}
                   to={item.to}
                   onClick={() => setOpen(false)}
-                  className="tap inline-flex min-h-[50px] items-center font-sans text-[15.5px] font-semibold text-[color:var(--charcoal)] hover:text-[color:var(--teal)]"
+                  className="tap inline-flex min-h-[50px] items-center font-sans text-[15.5px] font-medium tracking-[0.03em] text-[color:var(--charcoal)] hover:text-[color:var(--teal)]"
                   activeProps={{ className: "text-[color:var(--teal)]" }}
                 >
                   {item.label}

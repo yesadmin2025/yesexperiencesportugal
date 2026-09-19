@@ -8,7 +8,7 @@
  *   - The unit test guards the source: every qualifying heading wraps
  *     emphasised words in the canonical `italic font-normal text-[var(--teal)]`
  *     span, or uses <SectionTitle.Em>.
- *   - This spec guards the rendered pixels: Fraunces loaded, italic
+ *   - This spec guards the rendered pixels: Newsreader loaded, italic
  *     glyphs swapping in, teal applied, weight = normal — drift in any
  *     of those fails the diff.
  *
@@ -22,8 +22,8 @@
  *
  * Pixel-diff budget is intentionally moderate (maxDiffPixelRatio 0.02)
  * — sub-pixel font jitter across CI runs is normal; a real regression
- * (italic dropped, color drift to charcoal, Fraunces instead of
- * Fraunces) is far above that floor.
+ * (italic dropped, color drift to charcoal, Newsreader instead of
+ * Newsreader) is far above that floor.
  */
 
 import { test, expect, type Page } from "@playwright/test";
@@ -63,7 +63,7 @@ async function prep(page: Page) {
     `,
   });
 
-  // Wait for web fonts so italic glyphs are Fraunces, not the system
+  // Wait for web fonts so italic glyphs are Newsreader, not the system
   // fallback. Then disable animations / hide the hero film, which
   // would otherwise dominate any pixel diff on routes that include it.
   await page.evaluate(async () => {
@@ -84,8 +84,8 @@ async function prep(page: Page) {
 }
 
 // Budget tuned for cross-run font/anti-alias jitter on heading element
-// screenshots. A real regression (italic dropped, teal lost, Fraunces
-// swapped for Fraunces) shifts well over 30% of pixels and trips this
+// screenshots. A real regression (italic dropped, teal lost, Newsreader
+// swapped for Newsreader) shifts well over 30% of pixels and trips this
 // easily; routine sub-pixel drift across runners does not.
 const SNAPSHOT_OPTS = {
   maxDiffPixelRatio: 0.12,

@@ -36,7 +36,7 @@ interface Props {
   onContinue: () => void;
   /** Hero atmosphere image — real photography from INTENT_IMAGE. */
   hero?: { src: string; alt: string };
-  /** Eyebrow + sequenced lines + closer (Fraunces italic). */
+  /** Eyebrow + sequenced lines + closer (Newsreader italic). */
   eyebrow?: string;
   headlineOwner?: string; // "Your" | "Maria's"
   headlineWhisper: string; // "Arrábida, the Atlantic close enough to taste"

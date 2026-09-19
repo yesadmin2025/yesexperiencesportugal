@@ -5,7 +5,7 @@
  *
  * Step 6 of the post-builder plan. Content-only, presentational.
  * Notes are produced upstream by curation logic; this component enforces
- * only the cap and the tone treatment (Fraunces italic pull, muted body).
+ * only the cap and the tone treatment (Newsreader italic pull, muted body).
  * No invented curator name — attribution is a generic "— YES curator" so
  * we never fabricate an individual.
  */

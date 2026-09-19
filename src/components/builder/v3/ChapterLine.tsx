@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 
 /**
  * Editorial chapter line that fades in at the top of the scene.
- * Fraunces italic, ivory on charcoal veil.
+ * Newsreader italic, ivory on charcoal veil.
  */
 interface Props {
   text: string | null;

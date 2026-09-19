@@ -70,7 +70,7 @@ export const AuthShell = ({
 
 export const main = {
   backgroundColor: "#ffffff",
-  fontFamily: 'Georgia, "Times New Roman", serif',
+  fontFamily: 'Newsreader, serif',
 } as const;
 
 export const container = { padding: "32px 28px", maxWidth: "560px" } as const;
@@ -86,7 +86,7 @@ export const eyebrowStyle = {
 } as const;
 
 export const h1 = {
-  fontFamily: 'Georgia, "Times New Roman", serif',
+  fontFamily: 'Newsreader, serif',
   fontSize: "26px",
   lineHeight: 1.18,
   color: CHARCOAL,
@@ -149,7 +149,7 @@ export const footer = {
 } as const;
 
 export const signoff = {
-  fontFamily: 'Georgia, "Times New Roman", serif',
+  fontFamily: 'Newsreader, serif',
   fontSize: "14px",
   fontStyle: "italic" as const,
   color: TEAL,

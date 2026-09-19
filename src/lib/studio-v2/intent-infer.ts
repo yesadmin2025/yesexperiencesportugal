@@ -29,7 +29,7 @@ export interface MoodFragment {
   /** Real Portugal image (reuses curated INTENT_IMAGE assets). */
   image: string;
   alt: string;
-  /** Short whisper, Fraunces italic, no question framing. */
+  /** Short whisper, Newsreader italic, no question framing. */
   whisper: string;
   /** Atmosphere this fragment leans toward. */
   intent: IntentAtmosphere;

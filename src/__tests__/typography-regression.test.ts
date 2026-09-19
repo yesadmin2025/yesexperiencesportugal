@@ -389,14 +389,14 @@ const HEADLINES: HeadlineSpec[] = [
     // The visible stanza is the semantic <h1>; each line is a block-level
     // <span> inside it so the two-line cadence and animation are unchanged.
     pattern:
-      /<span\s+className="(hero-title-line block font-serif font-normal italic m-0)"[^>]*>\s*\n[\s\S]*?HERO_PHRASES\[0\]/,
+      /<span\s+className="(hero-title-line block font-editorial font-normal italic m-0)"[^>]*>\s*\n[\s\S]*?HERO_PHRASES\[0\]/,
   },
   {
     page: "home",
     role: "hero stanza line 2",
     file: "src/components/home/CinematicHero.tsx",
     pattern:
-      /<span\s+className="(hero-title-line block font-serif italic font-normal text-\[color:var\(--gold-soft\)\])"[^>]*>\s*\n[\s\S]*?HERO_PHRASES\[1\]/,
+      /<span\s+className="(hero-title-line block font-editorial italic font-normal text-\[color:var\(--gold-soft\)\])"[^>]*>\s*\n[\s\S]*?HERO_PHRASES\[1\]/,
   },
   {
     page: "home",
@@ -517,7 +517,7 @@ describe("Typography regression — headline class strings", () => {
  * ───────────────────────────────────────────────────────────────── */
 
 // Note: home, /multi-day and /proposals use the historical display system
-// (Montserrat display + Georgia italic + direct sizing) and intentionally
+// (Newsreader display + Newsreader italic + direct sizing) and intentionally
 // no longer use the legacy serif-based t-h* tokens. The homepage uses
 // `he-eyebrow-bar` and direct `font-display font-bold` per the v3 canon.
 // Hero fields are covered by the explicit HEADLINES patterns above; section
