@@ -32,7 +32,7 @@ export function usePublicEditorialMotion(pathname: string): void {
     // Effects run after hydration. Two frames give the routed subtree one
     // settled paint without making visitors wait for a long mutation-free
     // window before scroll movement becomes available.
-    const boot = () => {
+    const startAfterSettle = () => {
       // A short post-hydration settle avoids adding data attributes while a
       // lazy route subtree is still hydrating. Content remains visible during
       // this window, so conversion actions are never delayed or blocked.
@@ -42,9 +42,24 @@ export function usePublicEditorialMotion(pathname: string): void {
         });
       }, 180);
     };
+
+    // On slow loads, lazy route subtrees can still be hydrating after two
+    // frames. Waiting for `load` first keeps tagging strictly post-hydration,
+    // so the server HTML Google reads is never mutated mid-hydration.
+    const boot = () => {
+      if (document.readyState === "complete") {
+        startAfterSettle();
+        return;
+      }
+      onLoad = () => {
+        if (!cancelled) startAfterSettle();
+      };
+      window.addEventListener("load", onLoad, { once: true });
+    };
     firstFrame = window.requestAnimationFrame(() => {
       secondFrame = window.requestAnimationFrame(boot);
     });
+
 
     return () => {
       cancelled = true;
