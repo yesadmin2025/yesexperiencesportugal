@@ -3190,6 +3190,7 @@ html.reveal-ready .reveal.is-visible {
 html.reveal-ready .reveal-stagger {
   opacity: 0;
   clip-path: inset(0 100% 0 0);
+  transform: none;
   transition:
     opacity 440ms var(--ease-scene),
     clip-path 680ms var(--ease-scene),
