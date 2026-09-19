@@ -167,9 +167,9 @@
 - [x] Validate representative public pages at 393px and 1280px before release.
 
 ## 26. Mobile readability, visible premium motion, US SEO and booking operations
-- [ ] Fix Signature booking alignment and readability at 393px
-- [ ] Strengthen one-shot mobile arrow and editorial phrase reveals without bounce
-- [ ] Apply researched US search intent to all 12 Signature metadata sets
-- [ ] Refine Contact and FAQ presentation and metadata
-- [ ] Improve admin booking status and human-readable experience labels
-- [ ] Validate routes, sitemap, schema, checkout handoff, security, and publish
+- [x] Fix Signature booking alignment and readability at 393px
+- [x] Strengthen one-shot mobile arrow and editorial phrase reveals without bounce
+- [x] Apply researched US search intent to all 12 Signature metadata sets
+- [x] Refine Contact and FAQ presentation and metadata
+- [x] Improve admin booking status and human-readable experience labels
+- [x] Validate routes, sitemap, schema, checkout handoff, security, and publish
