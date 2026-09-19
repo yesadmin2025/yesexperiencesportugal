@@ -38,6 +38,8 @@ type RowForm = {
   openFrom: string;
   openTo: string;
   fixedStartTimes: string;
+  durationOptionsMinutes: string;
+  quantityOptions: string;
   active: boolean;
   notes: string;
 };
@@ -50,6 +52,8 @@ const emptyForm: RowForm = {
   openFrom: "",
   openTo: "",
   fixedStartTimes: "",
+  durationOptionsMinutes: "",
+  quantityOptions: "1",
   active: false,
   notes: "",
 };
@@ -161,6 +165,8 @@ function AdminComposableStopsPage() {
         openFrom: row.openFrom ?? "",
         openTo: row.openTo ?? "",
         fixedStartTimes: row.fixedStartTimes.join(", "),
+        durationOptionsMinutes: row.durationOptionsMinutes.join(", "),
+        quantityOptions: row.quantityOptions.join(", "),
         active: row.active,
         notes: row.notes ?? "",
       };
@@ -200,6 +206,11 @@ function AdminComposableStopsPage() {
       .split(",")
       .map((value) => value.trim())
       .filter(Boolean);
+    const parseIntegerOptions = (value: string) =>
+      [...new Set(value.split(",").map((part) => Number.parseInt(part.trim(), 10)).filter(Number.isFinite))]
+        .sort((a, b) => a - b);
+    const durationOptions = parseIntegerOptions(form.durationOptionsMinutes);
+    const quantityOptions = parseIntegerOptions(form.quantityOptions);
     const timePattern = /^([01]\d|2[0-3]):[0-5]\d$/;
     if (!Number.isFinite(durationMinutes) || durationMinutes < 15 || durationMinutes > 720) {
       toast.error("Enter a duration between 15 and 720 minutes.");
@@ -219,6 +230,14 @@ function AdminComposableStopsPage() {
     }
     if (!form.openFrom && sessions.length === 0) {
       toast.error("Add an operating window, fixed sessions, or both.");
+      return;
+    }
+    if (durationOptions.length === 0 || durationOptions.some((value) => value < 15 || value > 720)) {
+      toast.error("Add at least one duration option between 15 and 720 minutes.");
+      return;
+    }
+    if (quantityOptions.length === 0 || quantityOptions.some((value) => value < 1 || value > 12)) {
+      toast.error("Add at least one quantity option between 1 and 12.");
       return;
     }
     if (
@@ -241,6 +260,8 @@ function AdminComposableStopsPage() {
         open_from: form.openFrom || null,
         open_to: form.openTo || null,
         fixed_start_times: [...new Set(sessions)].sort(),
+        duration_options_minutes: durationOptions,
+        quantity_options: quantityOptions,
         active: form.active,
         notes: form.notes.trim() || null,
       },

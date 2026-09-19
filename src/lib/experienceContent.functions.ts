@@ -103,7 +103,7 @@ const saveInput = z.object({
   blurb: z.string().max(400).nullable(),
   intro: z.string().max(2000).nullable(),
   fitsBest: z.string().max(240).nullable(),
-  highlights: z.array(z.string()).nullable(),
+  highlights: z.array(z.string().min(1).max(180)).max(8).nullable(),
   isPublished: z.boolean().default(true),
 });
 
@@ -123,7 +123,7 @@ export const saveExperienceContent = createServerFn({ method: "POST" })
       blurb: clean(data.blurb),
       intro: clean(data.intro),
       fits_best: clean(data.fitsBest),
-      highlights: data.highlights,
+      highlights: data.highlights?.map((value) => value.trim()).filter(Boolean) ?? null,
       is_published: data.isPublished,
       updated_by: context.userId,
       updated_at: new Date().toISOString(),

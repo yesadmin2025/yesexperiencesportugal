@@ -129,7 +129,6 @@ function AdminExperiencesHub() {
           <div className="mt-10 grid gap-4 md:grid-cols-3">
             <ToolCard
               to="/admin/photos"
-              search={{ tourId }}
               icon={<ImageIcon size={20} />}
               title="Manage photos"
               eyebrow="Visuals"
@@ -208,7 +207,7 @@ function ExperienceCopyEditor() {
       blurb: o?.blurb ?? tour.blurb,
       intro: o?.intro ?? tour.intro,
       fitsBest: o?.fitsBest ?? tour.fitsBest,
-      highlights: o?.highlights?.join(", ") ?? tour.highlights.join(", ")
+      highlights: (o?.highlights ?? tour.highlights).join("\n"),
       isPublished: o?.isPublished ?? true,
     });
     setStatus(null);
@@ -236,7 +235,10 @@ function ExperienceCopyEditor() {
           blurb: draft.blurb,
           intro: draft.intro,
           fitsBest: draft.fitsBest,
-          highlights: draft.highlights.split(",").map(s => s.trim()).filter(Boolean),
+          highlights: draft.highlights
+            .split("\n")
+            .map((value) => value.trim())
+            .filter(Boolean),
           isPublished: draft.isPublished,
         },
       });
@@ -254,7 +256,7 @@ function ExperienceCopyEditor() {
       blurb: rev.blurb ?? "",
       intro: rev.intro ?? "",
       fitsBest: rev.fitsBest ?? "",
-      highlights: rev.highlights?.join(", ") ?? "",
+      highlights: rev.highlights?.join("\n") ?? "",
       isPublished: rev.isPublished,
     });
     setStatus("Earlier version loaded. Save to publish it again.");
@@ -286,13 +288,6 @@ function ExperienceCopyEditor() {
       </label>
 
       <Field
-        label="Highlights"
-        hint="Comma-separated list (e.g. wine tasting, historic tiles, beach lunch)."
-        value={draft.highlights}
-        rows={2}
-        onChange={(v) => setDraft((d) => ({ ...d, highlights: v }))}
-      />
-      <Field
         label="Card teaser"
         hint="One sentence, used on cards and in search results."
         value={draft.blurb}
@@ -301,9 +296,9 @@ function ExperienceCopyEditor() {
       />
       <Field
         label="Highlights"
-        hint="Comma-separated list (e.g. wine tasting, historic tiles, beach lunch)."
+        hint="One factual highlight per line, up to eight. These appear on the experience page and cards."
         value={draft.highlights}
-        rows={2}
+        rows={6}
         onChange={(v) => setDraft((d) => ({ ...d, highlights: v }))}
       />
       <Field
@@ -312,13 +307,6 @@ function ExperienceCopyEditor() {
         value={draft.intro}
         rows={6}
         onChange={(v) => setDraft((d) => ({ ...d, intro: v }))}
-      />
-      <Field
-        label="Highlights"
-        hint="Comma-separated list (e.g. wine tasting, historic tiles, beach lunch)."
-        value={draft.highlights}
-        rows={2}
-        onChange={(v) => setDraft((d) => ({ ...d, highlights: v }))}
       />
       <Field
         label="Who it fits"
@@ -351,10 +339,16 @@ function ExperienceCopyEditor() {
           to="/tours/$tourId"
           params={{ tourId: tour.id }}
           target="_blank"
-          target="_blank"
           className="inline-flex min-h-11 items-center border border-[color:var(--border)] px-5 text-sm"
         >
           View live page
+        </Link>
+        <Link
+          to="/admin/photos"
+          search={{ tourId: tour.id }}
+          className="inline-flex min-h-11 items-center gap-2 border border-[color:var(--border)] px-5 text-sm"
+        >
+          <ImageIcon size={15} aria-hidden /> Edit photos &amp; cover
         </Link>
       </div>
 
@@ -431,11 +425,10 @@ function ToolCard({
   title: string;
   eyebrow: string;
   description: string;
-  search?: any;
 }) {
   return (
     <Link
-      to={to} search={search}
+      to={to}
       className="group border border-[color:var(--border)] bg-white p-5 transition-colors hover:border-[color:var(--gold)]"
     >
       <div className="flex items-start justify-between gap-4">

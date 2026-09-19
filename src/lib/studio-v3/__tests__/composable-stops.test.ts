@@ -28,6 +28,8 @@ const row = (over: Partial<ComposableStopRow> & { stopId: string }): ComposableS
   openFrom: "10:00",
   openTo: "17:00",
   fixedStartTimes: [],
+  durationOptionsMinutes: [60],
+  quantityOptions: [1],
   ...over,
 });
 

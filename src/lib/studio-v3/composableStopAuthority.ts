@@ -38,6 +38,10 @@ export interface ComposableStopRow {
   readonly openTo: string | null;
   /** Optional fixed sessions. Values are normalized HH:MM strings. */
   readonly fixedStartTimes: readonly string[];
+  /** Owner-approved duration choices for this moment. */
+  readonly durationOptionsMinutes: readonly number[];
+  /** Owner-approved selectable visit/session quantities. */
+  readonly quantityOptions: readonly number[];
 }
 
 /** Guests per vehicle used for `per_vehicle` quantities. Matches add-on rules. */

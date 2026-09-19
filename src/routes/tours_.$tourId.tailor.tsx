@@ -446,8 +446,7 @@ function TailorPage() {
   // geographic sanity: Viator's passBy list includes hub cities used
   // as orientation (e.g. "Lisbon" on a Southwest Coast tour). Drop
   // anything > ~120 km from this tour's own centre so we never offer
-  // a nonsensical add-on. Capped at MAX_EDITS combined add/remove.
-  const MAX_EDITS = 3;
+  // a nonsensical add-on. There is no arbitrary global edit counter.
   const optionalStops = useMemo(() => {
     const raw = (meta?.stops ?? []).filter((s) => s.passBy).map((s) => s.name);
     // Resolve this tour's geographic anchor from its own real stops.
@@ -472,8 +471,6 @@ function TailorPage() {
       return distanceKm(anchorHit, hit) <= 120;
     });
   }, [meta, tour.stops]);
-  const editsUsed = skipped.size + added.size;
-  const editsLeft = Math.max(0, MAX_EDITS - editsUsed);
 
   /**
    * Accessibility / dietary / free-form notes are collected in the shared
@@ -1298,12 +1295,10 @@ function TailorPage() {
                   <ol data-testid="tailor-moments" className="m-0 list-none space-y-2 p-0">
                     {(tour.stops ?? []).map((s: TourStop, i: number) => {
                       const kept = !skipped.has(s.label);
-                      const disabled = kept && editsLeft === 0;
                       return (
                         <li key={s.label + i}>
                           <button
                             type="button"
-                            disabled={disabled}
                             onClick={() => toggle(setSkipped, skipped, s.label)}
                             aria-pressed={!kept}
                             data-testid="tailor-moment-toggle"
@@ -1312,7 +1307,6 @@ function TailorPage() {
                               kept
                                 ? "border-[color:var(--teal)]/40 bg-[color:var(--teal)]/5"
                                 : "border-[color:var(--border)]",
-                              disabled ? "cursor-not-allowed opacity-60" : "",
                             ].join(" ")}
                           >
                             <span className="shrink-0 text-[11px] tabular-nums text-[color:var(--charcoal-soft)]">
@@ -1358,12 +1352,10 @@ function TailorPage() {
                           .filter((o) => o.category !== "winery")
                           .map((o) => {
                             const on = choiceSelected.has(o.id);
-                            const atLimit = !on && choiceSelected.size >= blueprint.choice!.pickMax;
                             return (
                               <li key={o.id}>
                                 <button
                                   type="button"
-                                  disabled={atLimit}
                                   onClick={() => tryToggleChoice(o.id)}
                                   aria-pressed={on}
                                   className={[
@@ -1371,7 +1363,6 @@ function TailorPage() {
                                     on
                                       ? "border-[color:var(--gold)] bg-[color:var(--gold)]/10"
                                       : "border-[color:var(--border)]",
-                                    atLimit ? "cursor-not-allowed opacity-50" : "",
                                   ].join(" ")}
                                 >
                                   <span className="min-w-0 text-[13.5px] leading-snug text-[color:var(--charcoal)]">
