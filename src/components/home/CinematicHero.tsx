@@ -14,7 +14,7 @@
  * actionable state immediately.
  */
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Link } from "@tanstack/react-router";
 import { HERO_COPY, HERO_COPY_VERSION, HERO_PHRASES } from "@/content/hero-copy";
 import { HERO_FILM } from "@/content/hero-scenes-manifest";
@@ -59,13 +59,20 @@ const ARROW = (
 
 export function CinematicHero() {
   const videoRef = useRef<HTMLVideoElement | null>(null);
+  const [videoStarted, setVideoStarted] = useState(false);
 
   useEffect(() => {
     const v = videoRef.current;
     if (!v) return;
-    // Chromium ignores `media` on <video><source>, so phones would otherwise
-    // download the 1080p master. Re-point to the light mobile encode on small
-    // screens before the first play attempt.
+
+    // iOS/Safari can refuse autoplay in Low Power Mode even for muted inline
+    // video. Keep the poster underneath, hide the browser's native play
+    // overlay until playback genuinely starts, and retry on the first user
+    // gesture. This keeps the hero cinematic instead of looking broken.
+    v.muted = true;
+    v.defaultMuted = true;
+    v.playsInline = true;
+
     try {
       const small = window.matchMedia?.("(max-width: 767px)").matches;
       if (small && !v.currentSrc.includes(HERO_FILM.src720)) {
@@ -75,10 +82,39 @@ export function CinematicHero() {
     } catch {
       /* keep the declarative sources */
     }
-    const kick = () => void v.play().catch(() => {});
+
+    const markPlaying = () => setVideoStarted(true);
+    const kick = () => {
+      const attempt = v.play();
+      if (attempt && typeof attempt.catch === "function") {
+        void attempt.catch(() => {
+          // Poster remains visible. A real user gesture below retries play.
+        });
+      }
+    };
+    const retryOnIntent = () => kick();
+    const retryOnVisible = () => {
+      if (document.visibilityState === "visible") kick();
+    };
+
     kick();
+    v.addEventListener("playing", markPlaying);
     v.addEventListener("loadeddata", kick);
-    return () => v.removeEventListener("loadeddata", kick);
+    v.addEventListener("canplay", kick);
+    window.addEventListener("pointerdown", retryOnIntent, { passive: true, once: true });
+    window.addEventListener("touchstart", retryOnIntent, { passive: true, once: true });
+    window.addEventListener("scroll", retryOnIntent, { passive: true, once: true });
+    document.addEventListener("visibilitychange", retryOnVisible);
+
+    return () => {
+      v.removeEventListener("playing", markPlaying);
+      v.removeEventListener("loadeddata", kick);
+      v.removeEventListener("canplay", kick);
+      window.removeEventListener("pointerdown", retryOnIntent);
+      window.removeEventListener("touchstart", retryOnIntent);
+      window.removeEventListener("scroll", retryOnIntent);
+      document.removeEventListener("visibilitychange", retryOnVisible);
+    };
   }, []);
 
   return (
@@ -102,7 +138,7 @@ export function CinematicHero() {
             aria-hidden="true"
             fetchPriority="high"
             decoding="async"
-            className="h-full w-full object-cover"
+            className={`hero-film-fallback h-full w-full object-cover ${videoStarted ? "" : "hero-film-fallback--active"}`}
           />
         </picture>
 
@@ -113,9 +149,12 @@ export function CinematicHero() {
           muted
           loop
           playsInline
-          preload="metadata"
+          preload="auto"
           poster={HERO_FILM.poster}
-          className="absolute inset-0 h-full w-full object-cover"
+          controls={false}
+          disablePictureInPicture
+          disableRemotePlayback
+          className={`hero-film-video absolute inset-0 h-full w-full object-cover transition-opacity duration-700 ${videoStarted ? "opacity-100" : "opacity-0"}`}
           aria-hidden="true"
         >
           <source
@@ -163,7 +202,7 @@ export function CinematicHero() {
             <span
               className="hero-title-line block font-serif italic font-normal m-0 text-[color:var(--gold-soft)]"
               data-hero-field="headlineLine1"
-              style={storyLineStyle(100)}
+              style={storyLineStyle(500)}
             >
               {HERO_PHRASES[0]}
             </span>
@@ -172,7 +211,7 @@ export function CinematicHero() {
             <span
               className="hero-title-line block font-serif italic font-normal text-[color:var(--gold-soft)]"
               data-hero-field="headlineLine2"
-              style={storyLineStyle(520)}
+              style={storyLineStyle(1700)}
             >
               {HERO_PHRASES[1]}
             </span>
@@ -186,7 +225,7 @@ export function CinematicHero() {
         data-hero-composed="true"
         style={{
           opacity: 1,
-          animation: `heroApprovedReveal ${CTA_FADE_MS}ms ${EASE} 980ms both`,
+          animation: `heroApprovedReveal ${CTA_FADE_MS}ms ${EASE} 3100ms both`,
           pointerEvents: "auto",
         }}
       >
