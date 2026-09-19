@@ -3156,31 +3156,45 @@ svg.lucide {
    visible for no-JS renders, crawlers and pre-hydration paint. */
 html.reveal-ready .reveal {
   opacity: 0;
-  transform: translateY(14px);
+  transform: translateY(22px);
   transition:
-    opacity 420ms var(--ease-scene),
-    transform 440ms var(--ease-scene);
+    opacity 560ms var(--ease-scene),
+    transform 580ms var(--ease-scene);
   will-change: opacity, transform;
 }
 html.reveal-ready .reveal.is-visible {
   opacity: 1;
   transform: translateY(0);
-  animation: siteRevealIn 440ms var(--ease-scene) both;
+  animation: siteRevealIn 580ms var(--ease-scene) both;
 }
 
-/* Stagger child — opt-in reveal for individual items inside a parent. */
+/* Stagger child — opt-in reveal for individual items inside a parent.
+   `--motion-delay` is set by the motion controller so a row of cards
+   resolves in cascade instead of all at once. */
 html.reveal-ready .reveal-stagger {
   opacity: 0;
-  transform: translateY(12px);
+  transform: translateY(20px);
   transition:
-    opacity 400ms var(--ease-scene),
-    transform 420ms var(--ease-scene);
+    opacity 540ms var(--ease-scene),
+    transform 560ms var(--ease-scene);
   will-change: opacity, transform;
 }
 html.reveal-ready .reveal-stagger.is-visible {
   opacity: 1;
   transform: translateY(0);
-  animation: siteRevealStaggerIn 420ms var(--ease-scene) both;
+  animation: siteRevealStaggerIn 560ms var(--ease-scene) both;
+  animation-delay: var(--motion-delay, 0ms);
+  transition-delay: var(--motion-delay, 0ms);
+}
+
+/* Phones get slightly shorter travel so the cascade never feels heavy. */
+@media (max-width: 767.98px) {
+  html.reveal-ready .reveal {
+    transform: translateY(18px);
+  }
+  html.reveal-ready .reveal-stagger {
+    transform: translateY(16px);
+  }
 }
 
 /* Images inherit the same calm reveal without blur or a second effect. */
