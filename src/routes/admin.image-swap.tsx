@@ -336,6 +336,7 @@ function AdminImageSwapPage() {
           </p>
           <Link
             to="/admin/photos"
+            search={{ tourId: undefined }}
             className="inline-block border border-[color:var(--border)] px-4 py-2 text-sm"
           >
             Ir para /admin/photos para autenticar
@@ -352,6 +353,7 @@ function AdminImageSwapPage() {
           <div className="flex items-center justify-between mb-6">
             <Link
               to="/admin/photos"
+              search={{ tourId: undefined }}
               className="inline-flex items-center gap-1.5 text-[11px] uppercase tracking-[0.22em] text-[color:var(--charcoal-soft)] hover:text-[color:var(--charcoal)]"
             >
               <ArrowLeft size={12} /> Admin

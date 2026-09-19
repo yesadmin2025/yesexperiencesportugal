@@ -442,6 +442,28 @@ function AdminComposableStopsPage() {
                           className="mt-1 min-h-[44px] w-full border border-[color:var(--border)] bg-[color:var(--ivory)] px-3 text-base normal-case tracking-normal outline-none focus:border-[color:var(--gold)] md:text-sm"
                         />
                       </label>
+                      <label className="block text-xs uppercase tracking-[0.18em] text-[color:var(--charcoal-soft)] sm:col-span-2">
+                        Duration options (minutes, comma separated)
+                        <input
+                          inputMode="numeric"
+                          value={form.durationOptionsMinutes}
+                          onChange={(event) =>
+                            patch(stop.id, { durationOptionsMinutes: event.target.value })
+                          }
+                          placeholder="60, 90, 120"
+                          className="mt-1 min-h-[44px] w-full border border-[color:var(--border)] bg-[color:var(--ivory)] px-3 text-base normal-case tracking-normal outline-none focus:border-[color:var(--gold)] md:text-sm"
+                        />
+                      </label>
+                      <label className="block text-xs uppercase tracking-[0.18em] text-[color:var(--charcoal-soft)] sm:col-span-2">
+                        Quantity options (comma separated)
+                        <input
+                          inputMode="numeric"
+                          value={form.quantityOptions}
+                          onChange={(event) => patch(stop.id, { quantityOptions: event.target.value })}
+                          placeholder="1, 2, 3"
+                          className="mt-1 min-h-[44px] w-full border border-[color:var(--border)] bg-[color:var(--ivory)] px-3 text-base normal-case tracking-normal outline-none focus:border-[color:var(--gold)] md:text-sm"
+                        />
+                      </label>
                       <label className="block text-xs uppercase tracking-[0.18em] text-[color:var(--charcoal-soft)]">
                         Opens
                         <input

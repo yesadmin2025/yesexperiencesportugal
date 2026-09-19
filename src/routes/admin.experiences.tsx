@@ -129,6 +129,7 @@ function AdminExperiencesHub() {
           <div className="mt-10 grid gap-4 md:grid-cols-3">
             <ToolCard
               to="/admin/photos"
+              search={{ tourId: undefined }}
               icon={<ImageIcon size={20} />}
               title="Manage photos"
               eyebrow="Visuals"
@@ -419,16 +420,19 @@ function ToolCard({
   title,
   eyebrow,
   description,
+  search,
 }: {
   to: "/admin/pricing" | "/admin/availability" | "/admin/photos";
   icon: React.ReactNode;
   title: string;
   eyebrow: string;
   description: string;
+  search?: { tourId?: string };
 }) {
   return (
     <Link
       to={to}
+      search={to === "/admin/photos" ? (search ?? { tourId: undefined }) : undefined}
       className="group border border-[color:var(--border)] bg-white p-5 transition-colors hover:border-[color:var(--gold)]"
     >
       <div className="flex items-start justify-between gap-4">
