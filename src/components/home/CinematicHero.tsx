@@ -3,15 +3,12 @@
  *
  * The held coastal-road film is the dominant element. Copy lives in
  * separate vertical zones with real negative space between them:
- *   eyebrow  → open sky above the stanza
- *   stanza   → upper-middle, at the historical ~30vh position
+ *   stanza   → upper-middle
  *   support  → its own breathing room below the stanza
+ *   spacer   → keeps the actions anchored low
  *   CTAs     → anchored low, as in the original composition
  *
- * The eyebrow and support line are independent overlays inside space the
- * original composition already left empty — they never reflow the original
- * stanza or low CTA block. Reduced motion and `?hero=last` render the final
- * actionable state immediately.
+ * Reduced motion and `?hero=last` render the final actionable state immediately.
  */
 
 import { useEffect, useRef } from "react";
@@ -31,7 +28,7 @@ function storyLineStyle(delayMs: number): React.CSSProperties {
   };
 }
 
-/** The approved stanza treatment — Fraunces 400 with italic reserved for gold emphasis. */
+/** The restored stanza treatment — Newsreader 400 in champagne italic. */
 const stanzaStyle: React.CSSProperties = {
   fontWeight: 400,
   lineHeight: 1.12,
@@ -150,8 +147,7 @@ export function CinematicHero() {
         />
       </div>
 
-      {/* The approved composition has only two visual zones: the central
-          two-line statement and the low action pair. */}
+      {/* Four stable zones: statement, explanation, breathing room, actions. */}
       <div className="hero-cinematic-layout absolute inset-0 z-10 grid px-5 sm:px-10 md:px-16">
       <div className="hero-stanza-zone flex min-w-0 items-center justify-center">
         <h1
@@ -179,6 +175,19 @@ export function CinematicHero() {
           </span>
         </h1>
       </div>
+
+      <p
+        data-hero-field="subheadline"
+        className="hero-support mx-auto max-w-[21rem] text-center font-serif not-italic"
+        style={{
+          opacity: 1,
+          animation: `heroApprovedReveal ${CTA_FADE_MS}ms ${EASE} 820ms both`,
+        }}
+      >
+        {HERO_COPY.subheadline}
+      </p>
+
+      <div aria-hidden="true" />
 
       {/* Original low CTA anchor. */}
       <div

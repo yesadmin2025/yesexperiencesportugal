@@ -44,12 +44,12 @@
   --color-charcoal-soft: var(--charcoal-soft);
   --color-charcoal-deep: var(--charcoal-deep);
 
-  --font-display: "Fraunces", serif;
-  --font-serif: "Fraunces", serif;
+  --font-display: "Newsreader", serif;
+  --font-serif: "Newsreader", serif;
   --font-sans: "Inter", system-ui, sans-serif;
-  /* Canonical two-family system: Fraunces for editorial titles and Inter
+  /* Original two-family system: Newsreader for editorial titles and Inter
      for body copy and interface text. */
-  --font-editorial: "Fraunces", serif;
+  --font-editorial: "Newsreader", serif;
   --font-body: var(--font-sans);
 
   --shadow-elegant: 0 30px 60px -30px color-mix(in oklab, var(--teal) 30%, transparent);
@@ -359,9 +359,9 @@
 
 @media (min-width: 768px) {
   :root {
-    --section-y: 8rem;
-    --section-y-lg: 11rem;
-    --section-y-sm: 4.5rem;
+    --section-y: 6rem;
+    --section-y-lg: 7rem;
+    --section-y-sm: 4rem;
     --section-y-app: 3rem;
   }
 }
@@ -475,7 +475,7 @@
     letter-spacing: 0;
     line-height: 1.35;
   }
-  /* Italic emphasis inside display headings uses the canonical Fraunces editorial voice. */
+  /* Italic emphasis inside display headings uses the original Newsreader voice. */
   h1 em,
   h2 em,
   h3 em,
@@ -540,20 +540,20 @@
     padding-top: var(--section-y-app);
     padding-bottom: var(--section-y-app);
   }
-  /* Batch 3 — shared rhythm normalized to 56–64px mobile / 88–96px desktop.
-     Immersive wrappers (.section-y-lg) keep their larger, intentional scale. */
+  /* Original editorial rhythm: 64px mobile / 96px desktop, with taller
+     anchor chapters and quieter supporting bands. */
   @media (min-width: 768px) {
     .section-y {
-      padding-top: 92px;
-      padding-bottom: 92px;
+      padding-top: var(--section-y);
+      padding-bottom: var(--section-y);
     }
     .section-y-lg {
-      padding-top: 112px;
-      padding-bottom: 112px;
+      padding-top: var(--section-y-lg);
+      padding-bottom: var(--section-y-lg);
     }
     .section-y-sm {
-      padding-top: 64px;
-      padding-bottom: 64px;
+      padding-top: var(--section-y-sm);
+      padding-bottom: var(--section-y-sm);
     }
   }
 
@@ -812,8 +812,8 @@
      pin the sans family + readable line-height. Use mt-* for vertical
      spacing — the scale never bakes in margins.
      ───────────────────────────────────────────────────────────── */
-  /* Typography v3 — all headlines use Fraunces (--font-display).
-     Fraunces italic appears only for intentional emphasis inside headings,
+   /* Restored typography — all headlines use Newsreader (--font-display).
+      Newsreader italic appears only for intentional emphasis inside headings,
      handled by the base h1/h2/h3 em rules above.
      Mobile sizes are tuned by the proportional refinement pass:
        .t-display 36px (32–36 hero band)
@@ -823,7 +823,7 @@
   .t-display-xl {
     font-family: var(--font-display);
     font-weight: 500;
-    font-size: clamp(2.5rem, 7vw, 5.75rem);
+    font-size: clamp(2.375rem, 7vw, 5.25rem);
     line-height: 1.08;
     letter-spacing: 0;
     text-wrap: balance;
@@ -831,39 +831,39 @@
   .t-display {
     font-family: var(--font-display);
     font-weight: 500;
-    font-size: 2.25rem;
-    line-height: 1.06;
+    font-size: 2.125rem;
+    line-height: 1.08;
     letter-spacing: 0;
   }
   @media (min-width: 768px) {
     .t-display {
-      font-size: 4rem;
+      font-size: 3.75rem;
     }
   }
   @media (min-width: 1024px) {
     .t-display {
-      font-size: 4.75rem;
-      line-height: 1.06;
+      font-size: 4.5rem;
+      line-height: 1.08;
     }
   }
   .t-h1 {
     font-family: var(--font-display);
     font-weight: 500;
-    font-size: 2rem;
-    line-height: 1.1;
+    font-size: 1.9375rem;
+    line-height: 1.12;
     letter-spacing: 0;
   }
   @media (min-width: 768px) {
     .t-h1 {
-      font-size: 3.75rem;
-      line-height: 1.08;
+      font-size: 3.5rem;
+      line-height: 1.1;
     }
   }
   .t-h2 {
     font-family: var(--font-display);
     font-weight: 500;
-    font-size: 1.78rem;
-    line-height: 1.18;
+    font-size: 1.75rem;
+    line-height: 1.2;
     letter-spacing: 0;
   }
   @media (min-width: 768px) {
@@ -875,8 +875,8 @@
   .t-h3 {
     font-family: var(--font-display);
     font-weight: 500;
-    font-size: 1.47rem;
-    line-height: 1.22;
+    font-size: 1.4375rem;
+    line-height: 1.24;
     letter-spacing: 0;
   }
   @media (min-width: 768px) {
@@ -2113,6 +2113,10 @@
 /* Stanza line gap — restored "One Breath" cadence (was mt-3 / sm:mt-4). */
 .hero-cinematic [data-hero-field="headlineLine2"] {
   margin-top: 0.75rem;
+}
+.hero-cinematic [data-hero-field="subheadline"] {
+  opacity: 1;
+  animation: heroApprovedReveal 1000ms cubic-bezier(0.22, 1, 0.36, 1) 820ms both !important;
 }
 @media (min-width: 640px) {
   .hero-cinematic [data-hero-field="headlineLine2"] {
@@ -6511,7 +6515,7 @@ html {
   min-height: calc(100svh - 64px);
 }
 .hero-cinematic .hero-cinematic-layout {
-  grid-template-rows: minmax(0, 1fr) auto minmax(3.5rem, 0.62fr) auto;
+  grid-template-rows: minmax(0, 1fr) auto minmax(1.5rem, 0.24fr) auto;
   row-gap: 0;
   padding-top: clamp(2rem, 7svh, 5rem);
   padding-bottom: max(2.5rem, calc(env(safe-area-inset-bottom) + 1.75rem));
@@ -6520,7 +6524,7 @@ html {
   font-weight: 400;
   color: var(--gold-soft);
   text-shadow: 0 1px 2px color-mix(in oklab, var(--charcoal-deep) 30%, transparent);
-  font-size: 2.125rem;
+  font-size: 2rem;
   line-height: 1.16;
 }
 .hero-cinematic .hero-cinematic-composition {
@@ -6538,6 +6542,8 @@ html {
   letter-spacing: 0;
   word-spacing: 0;
   text-shadow: 0 1px 3px color-mix(in oklab, var(--charcoal-deep) 42%, transparent);
+  font-size: 0.9375rem;
+  line-height: 1.5;
 }
 .hero-cinematic .hero-cta-group {
   gap: 12px;
@@ -6589,18 +6595,19 @@ html {
     transform: none;
   }
   .hero-cinematic .hero-cinematic-layout {
-    grid-template-rows: minmax(0, 1fr) auto minmax(4rem, 0.55fr) auto;
+    grid-template-rows: minmax(0, 1fr) auto minmax(2rem, 0.2fr) auto;
     padding-top: clamp(2.5rem, 6svh, 5rem);
     padding-bottom: max(3.5rem, calc(env(safe-area-inset-bottom) + 2.5rem));
   }
   .hero-cinematic .hero-h1 {
-    font-size: 3.5rem;
+    font-size: 3.375rem;
     line-height: 1.1;
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
   .hero-cinematic .hero-title-line,
+  .hero-cinematic .hero-support,
   .hero-cinematic .hero-cta-group {
     animation: none !important;
     opacity: 1 !important;
@@ -7873,14 +7880,14 @@ html[data-motion-scope="marketing"] .cta-breathe::after {
 }
 .motion-split-line {
   display: block;
-  /* Fraunces has generous ascenders, descenders and italic overhangs. Give
+  /* Newsreader has generous ascenders, descenders and italic overhangs. Give
      the animated ink mask a small internal bleed so glyphs are never clipped
      by the line box on iOS while preserving the visual rhythm. */
   padding: 0.14em 0.12em 0.18em;
   margin: -0.14em -0.12em -0.18em;
 }
 
-/* Fraunces optical safety: protects accents, italic overhangs and descenders
+/* Newsreader optical safety: protects accents, italic overhangs and descenders
    without changing the visible alignment of editorial headings. */
 .editorial-title-safe {
   padding: 0.08em 0.06em 0.12em;
