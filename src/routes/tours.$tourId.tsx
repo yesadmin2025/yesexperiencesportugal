@@ -349,6 +349,11 @@ function TourDetailPage() {
         priceFrom={(tour as { priceFrom?: number }).priceFrom}
       />
 
+      {/* ── H · REVIEWS — proof right after the decision ───────── */}
+      <section className="container-x py-6">
+        <TourReviews tourId={tour.id} />
+      </section>
+
       <FinalCta tour={tour} />
 
       {/* ── H · LONG-FORM CONTEXT + FAQ — quiet, below the decision ── */}
