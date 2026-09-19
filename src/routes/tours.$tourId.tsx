@@ -83,14 +83,21 @@ export const Route = createFileRoute("/tours/$tourId")({
     // Owner-edited editorial copy, when published. Falls back silently to the
     // code copy so the page can never render an empty teaser or intro.
     let tour = base;
+    // Verified highlights (Viator source of truth) are the default; the
+    // owner's published list wins when it exists.
+    const verifiedHighlights = getTourContent(params.tourId).highlights;
+    tour = {
+      ...base,
+      highlights: verifiedHighlights.length > 0 ? verifiedHighlights : base.highlights,
+    };
     try {
       const override = await getPublishedExperienceContent({ data: { tourId: params.tourId } });
       if (override) {
         tour = {
-          ...base,
+          ...tour,
           blurb: override.blurb ?? base.blurb,
           intro: override.intro ?? base.intro,
-          highlights: override.highlights ?? base.highlights,
+          highlights: override.highlights ?? tour.highlights,
           fitsBest: override.fitsBest ?? base.fitsBest,
         };
       }
@@ -305,10 +312,16 @@ function TourDetailPage() {
       {/* ── A · WHY THIS DAY ────────────────────────────────────── */}
       <IntroBlock tour={tour} />
 
-      {/* ── B · YOUR DAY — itinerary (real Viator stops only) ───── */}
+      {/* ── B · HIGHLIGHTS — verified, what the day actually is ─── */}
+      <HighlightsBlock tour={tour} />
+
+      {/* ── C · INCLUDED / NOT INCLUDED + PRACTICAL DETAILS ────── */}
+      <IncludedAndIdeal tour={tour} meta={meta} />
+
+      {/* ── D · THE ROUTE — real stops, in order ───────────────── */}
       <ItineraryTimeline tour={tour} meta={meta} />
 
-      {/* ── B2 · MAP — real geographic route (lazy) ───────────────
+      {/* ── E · MAP — real geographic route (lazy) ────────────────
           The reveal class lives on THIS wrapper, not inside the lazy
           component: the reveal sweep adds `.is-visible` before the lazy
           chunk hydrates, which made React report an attribute mismatch. */}
@@ -318,19 +331,8 @@ function TourDetailPage() {
         </Suspense>
       </div>
 
-      {/* ── C · HIGHLIGHTS ─────────────────────────────────────── */}
-      <HighlightsBlock tour={tour} />
-
-      {/* ── D/E · INCLUDED + PRACTICAL DETAILS ─────────────────── */}
-      <IncludedAndIdeal tour={tour} meta={meta} />
-
-      {/* ── B3 · GALLERY (real photos) ─────────────────────────── */}
+      {/* ── F · GALLERY (real photos) ─────────────────────────── */}
       <GalleryStrip tour={tour} resolveImg={resolveImg} meta={meta} adminPhotos={adminPhotos} />
-
-      {/* ── F · REVIEWS / TRUST ────────────────────────────────── */}
-      <section className="container-x py-6">
-        <TourReviews tourId={tour.id} />
-      </section>
 
       {/* Editorial mentions — shown ONLY on Arrábida-region signatures
           (the dataset's `arrabida-tour` placement) so other tours don't
@@ -346,6 +348,11 @@ function TourDetailPage() {
         tourId={tour.id}
         priceFrom={(tour as { priceFrom?: number }).priceFrom}
       />
+
+      {/* ── H · REVIEWS — proof right after the decision ───────── */}
+      <section className="container-x py-6">
+        <TourReviews tourId={tour.id} />
+      </section>
 
       <FinalCta tour={tour} />
 
@@ -401,8 +408,6 @@ function TourHero({
     adminCover?.src ?? meta?.localGallery?.[0]?.src ?? meta?.gallery?.[0] ?? heroResolved.src;
   const heroSrcSet = adminCover?.srcSet ?? heroResolved.srcSet;
   const heroAlt = adminCover?.alt || getHeroAlt(tour, meta);
-  // Existing source-of-truth inclusions, trimmed for an at-a-glance row.
-  const heroIncluded: string[] = bookableIncluded(tour, meta).items.slice(0, 3);
   return (
     <>
       {/* Breadcrumb */}
@@ -473,23 +478,8 @@ function TourHero({
               )}
             </div>
 
-            {/* Included at a glance — first inclusions from the existing
-                source-of-truth list, so the offer is understandable above
-                the fold without opening anything. Full list stays below. */}
-            {heroIncluded.length > 0 && (
-              <ul className="mt-4 flex flex-wrap items-center gap-x-4 gap-y-1.5 text-[13px] leading-[1.5] text-[color:var(--charcoal-soft)]">
-                {heroIncluded.map((item) => (
-                  <li key={item} className="flex items-start gap-1.5">
-                    <Check
-                      size={13}
-                      className="mt-[3px] flex-shrink-0 text-[color:var(--gold)]"
-                      aria-hidden="true"
-                    />
-                    <span>{item}</span>
-                  </li>
-                ))}
-              </ul>
-            )}
+            {/* Inclusions are NOT repeated here — the full "What's included"
+                list sits in one place further down the page. */}
           </div>
 
 
@@ -613,10 +603,12 @@ function SecondaryContext({ tour }: { tour: SignatureTour }) {
  * ════════════════════════════════════════════════════════════ */
 function HighlightsBlock({ tour }: { tour: SignatureTour }) {
   const content = getTourContent(tour.id);
-  const items = content.highlights.length > 0 ? content.highlights : (tour.highlights ?? []);
+  // `tour.highlights` already carries the published override or the verified
+  // Viator highlights (resolved in the route loader).
+  const items = tour.highlights?.length ? tour.highlights : content.highlights;
   if (items.length === 0) return null;
   return (
-    <section className="pb-14 md:pb-16 reveal">
+    <section className="py-14 md:py-16 reveal">
       <div className="container-x max-w-5xl">
         <div className="text-center mb-8">
           <Eyebrow flank>Highlights</Eyebrow>
@@ -641,7 +633,7 @@ function HighlightsBlock({ tour }: { tour: SignatureTour }) {
 }
 
 /* ════════════════════════════════════════════════════════════════
- * 5 · ITINERARY — visual timeline (Viator stops when available)
+ * 5 · THE ROUTE — plain numbered list of the real stops, in order
  * ════════════════════════════════════════════════════════════ */
 function ItineraryTimeline({ tour, meta }: { tour: SignatureTour; meta?: ViatorMeta }) {
   // Source of truth (in order of preference):
@@ -649,7 +641,7 @@ function ItineraryTimeline({ tour, meta }: { tour: SignatureTour; meta?: ViatorM
   //   2. Tailor blueprint, projected to editorial chapters
   //   3. Raw Viator stops (passBy excluded)
   //   4. Internal tour.stops — last resort
-  type Chapter = { label: string; story?: string; optional?: boolean };
+  type Stop = { label: string; story?: string; optional?: boolean };
   const sot = projectPublicSotItinerary(tour.id) ?? [];
   const fromSot = sot
     .filter((c) => c.stopType !== "pass-by")
@@ -657,7 +649,7 @@ function ItineraryTimeline({ tour, meta }: { tour: SignatureTour; meta?: ViatorM
 
   const fromBlueprint = toEditorialChapters(tour.id);
   const viator = meta?.stops?.filter((s) => !s.passBy) ?? [];
-  const chapters: Chapter[] =
+  const stops: Stop[] =
     fromSot.length > 0
       ? fromSot
       : fromBlueprint && fromBlueprint.length > 0
@@ -666,53 +658,44 @@ function ItineraryTimeline({ tour, meta }: { tour: SignatureTour; meta?: ViatorM
           ? viator.map((s) => ({ label: s.name, story: s.desc }))
           : (tour.stops ?? []).map((s) => ({ label: s.label, story: s.story }));
 
-  if (chapters.length === 0) return null;
+  if (stops.length === 0) return null;
 
   return (
     <section className="py-14 md:py-20 bg-[color:var(--sand)]/40 border-y border-[color:var(--border)] reveal">
-      <div className="container-x max-w-5xl">
-        <div className="flex items-end justify-between mb-10 flex-wrap gap-3">
-          <div>
-            <Eyebrow>Itinerary</Eyebrow>
-            <SectionTitle size="compact">
-              The day, <SectionTitle.Em>chapter by chapter</SectionTitle.Em>
-            </SectionTitle>
-          </div>
-          <span className="text-[12px] uppercase tracking-[0.12em] text-[color:var(--charcoal-soft)]">
-            {chapters.length} chapters · in this order
-          </span>
+      <div className="container-x max-w-3xl">
+        <div className="mb-8">
+          <Eyebrow>Itinerary</Eyebrow>
+          <SectionTitle size="compact">
+            Your day, <SectionTitle.Em>stop by stop</SectionTitle.Em>
+          </SectionTitle>
+          <p className="mt-2 text-[13px] text-[color:var(--charcoal-soft)]">
+            {stops.length} stops, in this order · {signatureDurationLabel(tour.id, tour.durationHours)}
+          </p>
         </div>
 
-        <Scene as="ol" className="relative space-y-7">
-          <span
-            className="absolute left-[15px] top-2 bottom-2 w-px bg-gradient-to-b from-[color:var(--gold)]/60 via-[color:var(--gold)]/30 to-transparent md:left-[19px]"
-            aria-hidden
-          />
-          {chapters.map((s, i) => (
-            <li key={s.label + i} className="scene-item relative pl-12 md:pl-16">
-              <span className="absolute left-0 top-1 w-8 h-8 md:w-10 md:h-10 flex items-center justify-center rounded-full bg-[color:var(--ivory)] border border-[color:var(--gold)] text-[12px] md:text-[13px] text-[color:var(--teal)] shadow-[0_2px_8px_-2px_rgba(0,0,0,0.15)]">
-                {i + 1}
+        <Scene as="ol" className="m-0 list-none space-y-5 p-0">
+          {stops.map((s, i) => (
+            <li
+              key={s.label + i}
+              className="scene-item grid grid-cols-[2rem_minmax(0,1fr)] gap-x-3 border-t border-[color:var(--border)] pt-5 first:border-t-0 first:pt-0"
+            >
+              <span className="serif mt-[2px] text-[15px] tabular-nums text-[color:var(--gold-ink)]">
+                {String(i + 1).padStart(2, "0")}
               </span>
-
-              <div className="pt-1 pb-1">
-                <div className="flex items-center gap-2 flex-wrap">
-                  <span className="text-[12px] uppercase tracking-[0.26em] text-[color:var(--charcoal)]">
-                    Chapter {i + 1}
-                  </span>
-                  {s.optional && (
-                    <span className="text-[12px] uppercase tracking-[0.12em] px-2 py-[3px] rounded-full border border-[color:var(--gold)]/40 text-[color:var(--charcoal)] bg-[color:var(--gold)]/[0.06]">
-                      Optional
-                    </span>
-                  )}
-                </div>
+              <div className="min-w-0">
                 <h3
-                  className="serif text-[17px] md:text-[19px] leading-snug mt-2 text-[color:var(--charcoal)] font-normal"
+                  className="serif text-[17px] md:text-[19px] leading-snug text-[color:var(--charcoal)] font-medium"
                   data-mixed-emphasis="exempt"
                 >
                   {s.label}
+                  {s.optional && (
+                    <span className="ml-2 align-middle text-[11px] uppercase tracking-[0.16em] text-[color:var(--charcoal-soft)]">
+                      Optional
+                    </span>
+                  )}
                 </h3>
                 {s.story && (
-                  <p className="mt-2 text-[13.5px] md:text-[14px] text-[color:var(--charcoal-soft)] leading-relaxed max-w-2xl">
+                  <p className="mt-1.5 text-[14px] leading-relaxed text-[color:var(--charcoal-soft)]">
                     {s.story}
                   </p>
                 )}
@@ -726,15 +709,16 @@ function ItineraryTimeline({ tour, meta }: { tour: SignatureTour; meta?: ViatorM
 }
 
 /* ════════════════════════════════════════════════════════════════
- * 7 · INCLUDED + IDEAL FOR
+ * 7 · INCLUDED / NOT INCLUDED + PRACTICAL DETAILS
  * ════════════════════════════════════════════════════════════ */
 function IncludedAndIdeal({ tour, meta }: { tour: SignatureTour; meta?: ViatorMeta }) {
   const inc = bookableIncluded(tour, meta);
+  const notIncluded = getTourContent(tour.id).notIncluded;
   const ideal = tour.idealFor ?? [];
   const notes = tour.notes ?? [];
   const hasInc = inc.items.length > 0;
   const hasIdeal = ideal.length > 0;
-  if (!hasInc && !hasIdeal && notes.length === 0) return null;
+  if (!hasInc && !hasIdeal && notes.length === 0 && notIncluded.length === 0) return null;
   return (
     <section className="py-14 md:py-20 bg-[color:var(--ivory)] border-y border-[color:var(--border)] reveal">
       <div className="container-x max-w-5xl grid md:grid-cols-2 gap-10 md:gap-14">
@@ -744,6 +728,19 @@ function IncludedAndIdeal({ tour, meta }: { tour: SignatureTour; meta?: ViatorMe
               {inc.items.map((h) => (
                 <li key={h} className="flex gap-2.5">
                   <Check size={15} className="mt-0.5 text-[color:var(--teal)] flex-shrink-0" />
+                  <span>{h}</span>
+                </li>
+              ))}
+            </ul>
+          </Block>
+        )}
+
+        {notIncluded.length > 0 && (
+          <Block icon={<Info size={14} />} title="Not included">
+            <ul className="space-y-3 text-[14.5px] leading-relaxed text-[color:var(--charcoal-soft)]">
+              {notIncluded.map((h) => (
+                <li key={h} className="flex gap-2.5">
+                  <span className="mt-2 h-px w-3 flex-shrink-0 bg-[color:var(--charcoal-soft)]" />
                   <span>{h}</span>
                 </li>
               ))}
@@ -765,18 +762,16 @@ function IncludedAndIdeal({ tour, meta }: { tour: SignatureTour; meta?: ViatorMe
         )}
 
         {notes.length > 0 && (
-          <div className="md:col-span-2">
-            <Block icon={<Info size={14} />} title="Good to know">
-              <ul className="space-y-2 text-[13.5px] leading-relaxed text-[color:var(--charcoal-soft)]">
-                {notes.map((h) => (
-                  <li key={h} className="flex gap-2.5">
-                    <span className="mt-2 w-1.5 h-1.5 rounded-full bg-[color:var(--charcoal-soft)] flex-shrink-0" />
-                    <span>{h}</span>
-                  </li>
-                ))}
-              </ul>
-            </Block>
-          </div>
+          <Block icon={<Info size={14} />} title="Good to know">
+            <ul className="space-y-2 text-[13.5px] leading-relaxed text-[color:var(--charcoal-soft)]">
+              {notes.map((h) => (
+                <li key={h} className="flex gap-2.5">
+                  <span className="mt-2 w-1.5 h-1.5 rounded-full bg-[color:var(--charcoal-soft)] flex-shrink-0" />
+                  <span>{h}</span>
+                </li>
+              ))}
+            </ul>
+          </Block>
         )}
       </div>
     </section>

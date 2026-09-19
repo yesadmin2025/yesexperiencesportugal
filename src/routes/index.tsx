@@ -260,11 +260,13 @@ const baseSignatures = FEATURED_TOUR_IDS.filter((id) => isValidTourId(id))
       durationHours: signatureDurationLabel(t.id, t.durationHours),
       rating: meta?.rating ?? null,
       reviewCount: meta?.reviewCount ?? 0,
-      // First 3 real bookable stops from the matching Viator product page
-      // (pass-bys excluded). Falls back to SoT-aware highlights via
-      // getTourContent when no Viator meta exists. Never fabricated.
+      // Verified highlights for this experience — the SAME list the
+      // experience page and the Viator product page show. Stop names are
+      // NOT highlights, so they are no longer used here. Never fabricated.
       highlights: (
-        meta?.stops?.filter((s) => !s.passBy).map((s) => s.name) ?? getTourContent(t.id).highlights
+        getTourContent(t.id).highlights.length > 0
+          ? getTourContent(t.id).highlights
+          : (t.highlights ?? [])
       ).slice(0, 3),
     };
   });

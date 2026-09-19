@@ -171,10 +171,9 @@ export function CompositionField({ value, onChange, maxParty, compact }: Props) 
               return (
                 <li
                   key={i}
-                  className="grid grid-cols-[minmax(0,1fr)_44px] items-center gap-x-2 gap-y-1.5 border-y px-1 py-2.5 sm:grid-cols-[52px_minmax(0,1fr)_44px] sm:gap-3 sm:border sm:px-3"
+                  className="grid grid-cols-[minmax(0,1fr)_44px] items-center gap-x-2 gap-y-1.5 px-3 py-3 sm:grid-cols-[52px_minmax(0,1fr)_44px] sm:gap-3"
                   style={{
-                    background: "var(--ivory)",
-                    borderColor: "color-mix(in oklab, var(--charcoal) 28%, transparent)",
+                    background: "var(--sand)",
                   }}
                 >
                   <span

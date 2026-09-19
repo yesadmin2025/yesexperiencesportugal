@@ -443,9 +443,11 @@ export function SimpleBookingForm({ tour }: { tour: SignatureTour }) {
       </div>
 
       {/* Who's travelling */}
-      <div className="mt-4">
+      <div className="mt-5">
         <Field label="Who's travelling">
-          <div className="bg-[color:var(--ivory)] pt-2 sm:border sm:border-[color:var(--border)] sm:p-3">
+          {/* One frame per group: the booking card already provides the box,
+              so the traveller control does not add a second border. */}
+          <div className="bg-[color:var(--ivory)] pt-1">
             <CompositionField value={composition} onChange={setComposition} compact />
           </div>
           {!compositionReady ? (
