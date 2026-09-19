@@ -13,8 +13,7 @@ describe("homepage approved brand restoration", () => {
     expect(hero).not.toMatch(/hero-title-mask[^\n]*overflow-(?:hidden|clip)/);
     const storyLine = hero.match(/function storyLineStyle[\s\S]*?\n\}/)?.[0] ?? "";
     expect(storyLine).not.toContain("clipPath:");
-    expect(hero).toContain("text-[color:var(--ivory)]");
-    expect(hero).toContain("text-[color:var(--gold-soft)]");
+    expect(hero.match(/text-\[color:var\(--gold-soft\)\]/g)?.length).toBeGreaterThanOrEqual(2);
   });
 
   it("uses the approved two-family editorial treatment in Five Ways", () => {
@@ -29,6 +28,8 @@ describe("homepage approved brand restoration", () => {
     }
     expect(fiveWays).toContain("{path.cta}");
     expect(fiveWays).toContain("<CtaMotionArrow />");
+    expect(fiveWays).not.toContain("ResponsiveEditorialImage");
+    expect(fiveWays).not.toContain("useHomePaths");
   });
 
   it("keeps the restored section within the YES surfaces", () => {

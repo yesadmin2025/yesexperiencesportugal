@@ -5,6 +5,7 @@
 As capturas `IMG_6804–6811`, `IMG_6835` e `IMG_6838` passam a ser a referência visual aprovada para esta reposição. Esta direção será registada como regra permanente do projeto para impedir novas reinterpretações.
 
 Elementos bloqueados:
+
 - fundo dominante ivory, alternância sand e texto charcoal;
 - teal como ênfase editorial e ação;
 - dourado apenas em riscos, estrelas, numeração, setas e detalhes finos;
@@ -57,12 +58,14 @@ Elementos bloqueados:
 ## 6. Validação visual obrigatória
 
 Comparar lado a lado com as capturas aprovadas em:
+
 - 393×596;
 - 393×852;
 - 768×1024;
 - 1280×800.
 
 Validar:
+
 - hero, Reviews, Five Ways, mapa, Experiences, uma Signature, Studio, Travel Designer, Corporate e Moments;
 - todas as restantes páginas editoriais EN/PT por escala, fundos, eyebrow, itálico, CTAs e cortes;
 - texto a 200%, fontes lentas/fallback, movimento reduzido e navegação por teclado;
@@ -76,3 +79,5 @@ Não alterar preços, inventário, itinerários, tour facts, fotografias de prod
 ## Resultado esperado
 
 O site volta a reconhecer-se imediatamente como a versão aprovada nas capturas: cinematográfico no hero, editorial e leve no conteúdo, ivory/sand, Fraunces + Inter, teal com contenção e dourado apenas como assinatura.
+
+Podes utilizar as fotos editoriais que enviei onde fizer sentido, desde que não se perca a essência da marca 
