@@ -158,6 +158,9 @@ export function startHomeMotion(): () => void {
       ".he-card-lift, .reveal-stagger, .fw-card, .editorial-card, [data-editorial-card]",
     );
     cards.forEach((el) => {
+      // Legacy reveal nodes are owned by SiteLayout. Mutating their attributes
+      // during selective hydration causes React attribute mismatches.
+      if (el.matches(".reveal, .reveal-stagger, .section-enter")) return;
       const parent = el.parentElement as HTMLElement | null;
       if (!parent) return;
       const idx = cardParents.get(parent) ?? 0;
