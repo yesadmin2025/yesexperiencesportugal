@@ -14,7 +14,7 @@ import { Eyebrow } from "@/components/ui/Eyebrow";
 import { CtaMotionArrow } from "@/components/ui/CtaButton";
 import { Scene } from "@/components/motion/Scene";
 import { CTA_LABELS } from "@/content/cta-vocabulary";
-import { HOME_PATH_DESTINATIONS } from "@/content/home-path-images";
+import { HOME_PATH_DESTINATIONS, useHomePathDestinations, type HomePathId } from "@/content/home-path-images";
 import { ResponsiveEditorialImage, type EditorialImageSource } from "@/components/ui/ResponsiveEditorialImage";
 
 type Path = {
@@ -117,6 +117,8 @@ const RHYTHM_LABELS: Readonly<Record<string, string>> = {
 };
 
 export function FourWaysIn() {
+  const managedDestinations = useHomePathDestinations();
+  const managedImages = new Map(managedDestinations.map((path) => [path.id, path.image]));
   const [draftSummary, setDraftSummary] = useState<ReadonlyArray<string>>([]);
   const [hasDraft, setHasDraft] = useState(false);
 
@@ -176,7 +178,13 @@ export function FourWaysIn() {
           data-testid="home-smart-start"
           className="five-ways-story mx-auto mt-10 max-w-6xl md:mt-14"
         >
-          {PATHS.map((path, index) => <PathCard key={path.id} path={path} index={index} />)}
+          {PATHS.map((path, index) => (
+            <PathCard
+              key={path.id}
+              path={{ ...path, image: managedImages.get(path.id as HomePathId) ?? path.image }}
+              index={index}
+            />
+          ))}
         </Scene>
 
         {hasDraft && (

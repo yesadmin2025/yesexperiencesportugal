@@ -11,6 +11,7 @@ import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 
 export type EditorialModuleKey =
+  | "home_paths"
   | "homepage_moments"
   | "about_moments"
   | "corporate_moments"
@@ -19,6 +20,7 @@ export type EditorialModuleKey =
   | "proposal_services";
 
 export const EDITORIAL_MODULE_LABELS: Record<EditorialModuleKey, string> = {
+  home_paths: "Homepage · Five paths & map",
   homepage_moments: "Homepage · Moments",
   about_moments: "About · Moments",
   corporate_moments: "Corporate · Moments",

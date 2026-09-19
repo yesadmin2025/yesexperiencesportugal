@@ -11,6 +11,7 @@ import {
 } from "@/content/guest-moments";
 import {
   HOME_PATH_DESTINATION_LIST,
+  HOME_PATH_EDITORIAL_SLOTS,
   HOME_PATH_IMAGE_LIST,
 } from "@/content/home-path-images";
 
@@ -65,5 +66,8 @@ describe("editorial image identity", () => {
     );
     expect(HOME_PATH_DESTINATION_LIST.every((path) => path.mapRegionId.length > 0)).toBe(true);
     expect(HOME_PATH_DESTINATION_LIST.every((path) => path.routeLabel.length > 0)).toBe(true);
+    expect(HOME_PATH_EDITORIAL_SLOTS.map((slot) => slot.src)).toEqual(
+      HOME_PATH_IMAGE_LIST.map((photo) => photo.src),
+    );
   });
 });

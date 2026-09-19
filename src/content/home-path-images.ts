@@ -1,5 +1,6 @@
 import type { EditorialImageSource } from "@/components/ui/ResponsiveEditorialImage";
 import { premiumEditorialImage as image } from "@/content/editorial-premium-images";
+import { useEditorialOverrides } from "@/lib/editorial-overrides";
 
 /**
  * Homepage-only decision imagery.
@@ -104,3 +105,25 @@ export const HOME_PATH_DESTINATIONS = {
 >;
 
 export const HOME_PATH_DESTINATION_LIST = Object.values(HOME_PATH_DESTINATIONS);
+
+export const HOME_PATH_EDITORIAL_SLOTS = HOME_PATH_DESTINATION_LIST.map((path) => ({
+  src: path.image.src,
+  alt: path.image.alt,
+  caption: path.routeLabel,
+}));
+
+/** One override read powers both the Five Ways cards and the matching map panel. */
+export function useHomePathDestinations() {
+  const photos = useEditorialOverrides("home_paths", HOME_PATH_EDITORIAL_SLOTS);
+  return HOME_PATH_DESTINATION_LIST.map((path, index) => ({
+    ...path,
+    image: {
+      ...path.image,
+      src: photos[index]?.src ?? path.image.src,
+      alt: photos[index]?.alt ?? path.image.alt,
+      srcSet: undefined,
+      avifSrcSet: undefined,
+      webpSrcSet: undefined,
+    },
+  }));
+}
