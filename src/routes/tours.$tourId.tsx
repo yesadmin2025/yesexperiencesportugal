@@ -312,10 +312,16 @@ function TourDetailPage() {
       {/* ── A · WHY THIS DAY ────────────────────────────────────── */}
       <IntroBlock tour={tour} />
 
-      {/* ── B · YOUR DAY — itinerary (real Viator stops only) ───── */}
+      {/* ── B · HIGHLIGHTS — verified, what the day actually is ─── */}
+      <HighlightsBlock tour={tour} />
+
+      {/* ── C · INCLUDED / NOT INCLUDED + PRACTICAL DETAILS ────── */}
+      <IncludedAndIdeal tour={tour} meta={meta} />
+
+      {/* ── D · THE ROUTE — real stops, in order ───────────────── */}
       <ItineraryTimeline tour={tour} meta={meta} />
 
-      {/* ── B2 · MAP — real geographic route (lazy) ───────────────
+      {/* ── E · MAP — real geographic route (lazy) ────────────────
           The reveal class lives on THIS wrapper, not inside the lazy
           component: the reveal sweep adds `.is-visible` before the lazy
           chunk hydrates, which made React report an attribute mismatch. */}
@@ -325,19 +331,8 @@ function TourDetailPage() {
         </Suspense>
       </div>
 
-      {/* ── C · HIGHLIGHTS ─────────────────────────────────────── */}
-      <HighlightsBlock tour={tour} />
-
-      {/* ── D/E · INCLUDED + PRACTICAL DETAILS ─────────────────── */}
-      <IncludedAndIdeal tour={tour} meta={meta} />
-
-      {/* ── B3 · GALLERY (real photos) ─────────────────────────── */}
+      {/* ── F · GALLERY (real photos) ─────────────────────────── */}
       <GalleryStrip tour={tour} resolveImg={resolveImg} meta={meta} adminPhotos={adminPhotos} />
-
-      {/* ── F · REVIEWS / TRUST ────────────────────────────────── */}
-      <section className="container-x py-6">
-        <TourReviews tourId={tour.id} />
-      </section>
 
       {/* Editorial mentions — shown ONLY on Arrábida-region signatures
           (the dataset's `arrabida-tour` placement) so other tours don't
