@@ -3,12 +3,15 @@
  *
  * The held coastal-road film is the dominant element. Copy lives in
  * separate vertical zones with real negative space between them:
- *   stanza   → upper-middle
+ *   eyebrow  → open sky above the stanza
+ *   stanza   → upper-middle, at the historical ~30vh position
  *   support  → its own breathing room below the stanza
- *   spacer   → keeps the actions anchored low
  *   CTAs     → anchored low, as in the original composition
  *
- * Reduced motion and `?hero=last` render the final actionable state immediately.
+ * The eyebrow and support line are independent overlays inside space the
+ * original composition already left empty — they never reflow the original
+ * stanza or low CTA block. Reduced motion and `?hero=last` render the final
+ * actionable state immediately.
  */
 
 import { useEffect, useRef } from "react";
@@ -28,12 +31,11 @@ function storyLineStyle(delayMs: number): React.CSSProperties {
   };
 }
 
-/** Approved hero treatment — Georgia 400 italic in champagne. */
+/** The approved stanza treatment — Fraunces 400 with italic reserved for gold emphasis. */
 const stanzaStyle: React.CSSProperties = {
   fontWeight: 400,
-  fontStyle: "italic",
-  lineHeight: 1.25,
-  letterSpacing: "-0.012em",
+  lineHeight: 1.12,
+  letterSpacing: "0",
 };
 
 const ARROW = (
@@ -148,28 +150,29 @@ export function CinematicHero() {
         />
       </div>
 
-      {/* Four stable zones: statement, explanation, breathing room, actions. */}
+      {/* The approved composition has only two visual zones: the central
+          two-line statement and the low action pair. */}
       <div className="hero-cinematic-layout absolute inset-0 z-10 grid px-5 sm:px-10 md:px-16">
       <div className="hero-stanza-zone flex min-w-0 items-center justify-center">
         <h1
           data-hero-stanza="true"
           data-mixed-emphasis="exempt"
-          className="hero-h1 m-0 text-center font-editorial"
+          className="hero-h1 m-0 text-center font-serif"
         >
           <span className="hero-title-mask block px-[0.08em] pb-[0.12em]">
             <span
-              className="hero-title-line block font-editorial font-normal italic m-0"
+              className="hero-title-line block font-serif italic font-normal m-0 text-[color:var(--gold-soft)]"
               data-hero-field="headlineLine1"
-              style={storyLineStyle(600)}
+              style={storyLineStyle(100)}
             >
               {HERO_PHRASES[0]}
             </span>
           </span>
           <span className="hero-title-mask mt-1 block px-[0.08em] pb-[0.16em] sm:mt-1.5">
             <span
-              className="hero-title-line block font-editorial italic font-normal text-[color:var(--gold-soft)]"
+              className="hero-title-line block font-serif italic font-normal text-[color:var(--gold-soft)]"
               data-hero-field="headlineLine2"
-              style={storyLineStyle(1800)}
+              style={storyLineStyle(520)}
             >
               {HERO_PHRASES[1]}
             </span>
@@ -177,26 +180,13 @@ export function CinematicHero() {
         </h1>
       </div>
 
-      <p
-        data-hero-field="subheadline"
-        className="hero-support mx-auto max-w-[21rem] text-center font-sans not-italic"
-        style={{
-          opacity: 1,
-          animation: `heroApprovedReveal ${CTA_FADE_MS}ms ${EASE} 3000ms both`,
-        }}
-      >
-        {HERO_COPY.subheadline}
-      </p>
-
-      <div aria-hidden="true" />
-
       {/* Original low CTA anchor. */}
       <div
         className="hero-cta-group z-20 flex flex-col items-center gap-3 sm:flex-row sm:justify-center sm:gap-4"
         data-hero-composed="true"
         style={{
           opacity: 1,
-          animation: `heroApprovedReveal ${CTA_FADE_MS}ms ${EASE} 4200ms both`,
+          animation: `heroApprovedReveal ${CTA_FADE_MS}ms ${EASE} 980ms both`,
           pointerEvents: "auto",
         }}
       >
@@ -205,7 +195,7 @@ export function CinematicHero() {
           data-hero-field="primaryCta"
           data-analytics="hero_open_studio"
           data-analytics-placement="hero"
-        className="hero-cta hero-cta--primary group inline-flex min-h-[44px] min-w-[196px] items-center justify-center whitespace-nowrap px-7 text-[0.85rem] font-semibold uppercase tracking-[0.2em] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)] focus-visible:ring-offset-4 focus-visible:ring-offset-transparent sm:min-w-[206px]"
+        className="hero-cta hero-cta--primary group inline-flex min-h-[44px] min-w-[196px] items-center justify-center whitespace-nowrap px-7 text-[11px] uppercase tracking-[0.18em] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)] focus-visible:ring-offset-4 focus-visible:ring-offset-transparent sm:min-w-[206px] sm:text-[11px]"
         >
           <span className="hero-cta__sheen" aria-hidden="true" />
           <span className="relative z-10 inline-flex items-center gap-2.5">
@@ -218,7 +208,7 @@ export function CinematicHero() {
           data-hero-field="secondaryCta"
           data-analytics="hero_choose_experience"
           data-analytics-placement="hero"
-          className="hero-cta hero-cta--ghost group inline-flex min-h-[44px] min-w-[196px] items-center justify-center whitespace-nowrap px-7 text-[0.85rem] font-semibold uppercase tracking-[0.2em] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)] focus-visible:ring-offset-4 focus-visible:ring-offset-transparent sm:min-w-[206px]"
+          className="hero-cta hero-cta--ghost group inline-flex min-h-[44px] min-w-[196px] items-center justify-center whitespace-nowrap px-7 text-[11px] uppercase tracking-[0.18em] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)] focus-visible:ring-offset-4 focus-visible:ring-offset-transparent sm:min-w-[206px] sm:text-[11px]"
         >
           <span className="hero-cta__sheen" aria-hidden="true" />
           <span className="relative z-10">{HERO_COPY.secondaryCta}</span>
