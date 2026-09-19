@@ -2439,6 +2439,8 @@
 .experience-card-compare svg { width: .875rem; height: .875rem; }
 .experience-card-highlights { padding-top: 1rem; border-top: 1px solid var(--border); }
 .experience-compare-dock { position: fixed; z-index: 42; right: max(1rem, env(safe-area-inset-right)); bottom: calc(1rem + env(safe-area-inset-bottom)); left: max(1rem, env(safe-area-inset-left)); display: flex; align-items: center; justify-content: space-between; gap: .75rem; padding: .65rem; border: 1px solid var(--border); background: var(--ivory); box-shadow: 0 18px 44px -28px var(--charcoal); }
+html:has(.cookie-consent-card) .experience-compare-dock { bottom: calc(7.75rem + env(safe-area-inset-bottom)); }
+html[data-conversion-overlay="compare"] .cookie-consent-card { visibility: hidden; pointer-events: none; }
 .experience-compare-dock__summary { display: flex; min-width: 0; align-items: center; gap: .65rem; color: var(--teal); }
 .experience-compare-dock__summary span { min-width: 0; }
 .experience-compare-dock__summary strong, .experience-compare-dock__summary small { display: block; }

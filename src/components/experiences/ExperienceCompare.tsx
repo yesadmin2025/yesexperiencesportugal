@@ -25,15 +25,19 @@ export function ExperienceCompare({ tours, selected, onToggle, onClear }: Props)
   }, [chosen.length]);
   useEffect(() => {
     if (!open) return;
+    document.documentElement.dataset.conversionOverlay = "compare";
     const onKeyDown = (event: KeyboardEvent) => { if (event.key === "Escape") setOpen(false); };
     document.addEventListener("keydown", onKeyDown);
-    return () => document.removeEventListener("keydown", onKeyDown);
+    return () => {
+      document.removeEventListener("keydown", onKeyDown);
+      delete document.documentElement.dataset.conversionOverlay;
+    };
   }, [open]);
   if (chosen.length === 0) return null;
 
   return (
     <>
-      <aside className="experience-compare-dock" aria-live="polite" aria-label="Experience comparison">
+      <aside className="experience-compare-dock" aria-live="polite" aria-label="Experience comparison" data-conversion-dock="compare">
         <div className="experience-compare-dock__summary">
           <Scale size={17} aria-hidden="true" />
           <span><strong>{chosen.length}/2 selected</strong><small>{chosen.length === 1 ? "Choose another experience" : "Ready to compare"}</small></span>
