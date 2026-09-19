@@ -106,7 +106,7 @@ function Page() {
             as="h2"
             className="about-ink-title mt-3 font-serif text-[1.8125rem] md:text-[2.25rem] font-medium leading-[1.18] md:leading-[1.1] text-balance text-[color:var(--charcoal)]"
             lines={[
-              <>Built from the road,&nbsp;</>,
+              <>Built from the road,</>,
               <><span className="italic font-normal text-[color:var(--teal)]">not a template</span>.</>,
             ]}
           />
