@@ -304,7 +304,7 @@ export function ShapeStep({
                           <p className="text-[15px] font-semibold">{publicLabel}</p>
                           {changed ? (
                             <span
-                              className="rounded-full px-2 py-1 text-[8px] font-bold uppercase tracking-[0.16em]"
+                              className="rounded-full px-2 py-1 text-[11px] font-bold uppercase tracking-[0.16em]"
                               style={{
                                 background: "color-mix(in oklab, var(--gold) 18%, transparent)",
                                 color: "var(--gold)",
@@ -442,7 +442,7 @@ export function ShapeStep({
                                   </p>
                                 </div>
                                 <span
-                                  className="rounded-full border px-2 py-1 text-[8px] font-bold uppercase tracking-[0.12em]"
+                                  className="rounded-full border px-2 py-1 text-[11px] font-bold uppercase tracking-[0.12em]"
                                   style={{
                                     borderColor:
                                       "color-mix(in oklab, var(--ivory) 16%, transparent)",

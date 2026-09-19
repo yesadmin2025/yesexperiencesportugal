@@ -127,7 +127,7 @@ function Metric({ icon, label, value }: { icon: React.ReactNode; label: string; 
       style={{ borderColor: "color-mix(in oklab, var(--ivory) 12%, transparent)" }}
     >
       <div
-        className="flex items-center gap-1.5 text-[8px] font-bold uppercase tracking-[0.12em]"
+        className="flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-[0.12em]"
         style={{ color: "color-mix(in oklab, var(--ivory) 46%, transparent)" }}
       >
         {icon}

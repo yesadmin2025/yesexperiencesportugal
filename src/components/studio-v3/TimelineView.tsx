@@ -109,7 +109,7 @@ export function TimelineView({
           <li key={`${m.label}-${i}`} className="relative pb-3 last:pb-0">
             <span
               aria-hidden
-              className="absolute -left-5 top-[5px] grid h-3.5 w-3.5 place-items-center rounded-full text-[8px] font-bold tabular-nums"
+              className="absolute -left-5 top-[5px] grid h-3.5 w-3.5 place-items-center rounded-full text-[11px] font-bold tabular-nums"
               style={{
                 background: "var(--gold)",
                 color: "var(--ivory)",

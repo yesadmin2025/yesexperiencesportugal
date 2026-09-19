@@ -131,7 +131,7 @@ export function InvestmentTierPicker({
                 {isFlagged ? (
                   <span
                     aria-hidden
-                    className="absolute -top-2 right-3 inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[8.5px] uppercase tracking-[0.24em] font-bold"
+                    className="absolute -top-2 right-3 inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[11px] uppercase tracking-[0.24em] font-bold"
                     style={{
                       background: "var(--gold)",
                       color: "var(--charcoal)",

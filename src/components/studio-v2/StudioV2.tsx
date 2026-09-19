@@ -822,7 +822,7 @@ function MoodSceneView({
             />
             <span className="relative flex h-full flex-col justify-between p-2.5">
               <span
-                className="text-[8.5px] uppercase tracking-[0.32em]"
+                className="text-[11px] uppercase tracking-[0.32em]"
                 style={{
                   color: "color-mix(in oklab, var(--gold) 85%, var(--ivory))",
                   fontWeight: 600,

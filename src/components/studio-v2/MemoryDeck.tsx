@@ -123,7 +123,7 @@ export function MemoryDeck({
           aria-label={`${c.label}: ${c.value} — tap to revisit`}
         >
           <span
-            className="block text-[8px] uppercase tracking-[0.2em]"
+            className="block text-[11px] uppercase tracking-[0.2em]"
             style={{
               color: "color-mix(in oklab, var(--charcoal) 55%, transparent)",
               fontWeight: 600,

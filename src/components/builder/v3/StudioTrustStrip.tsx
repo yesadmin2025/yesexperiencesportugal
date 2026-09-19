@@ -25,7 +25,7 @@ export function StudioTrustStrip({ reviewsLabel: _r = "reviews" }: Props) {
       className="absolute bottom-[108px] inset-x-0 z-[44] flex items-center justify-center px-3 pointer-events-none motion-safe:animate-[fade-in_1.1s_ease-out_both]"
     >
       <span
-        className="inline-flex items-center gap-1.5 rounded-full px-2.5 py-[3px] text-[8.5px] tracking-[0.14em] uppercase font-semibold whitespace-nowrap"
+        className="inline-flex items-center gap-1.5 rounded-full px-2.5 py-[3px] text-[11px] tracking-[0.14em] uppercase font-semibold whitespace-nowrap"
         style={{
           color: "color-mix(in oklab, var(--ivory) 92%, transparent)",
           background: "color-mix(in oklab, var(--charcoal) 58%, transparent)",
