@@ -399,9 +399,14 @@ export function startHomeMotion(): () => void {
       if (rect.bottom > -120 && rect.top < vh) {
         const progress = Math.min(Math.max(-rect.top / Math.max(rect.height, 1), 0), 1);
         const eased = progress * progress * (3 - 2 * progress); // smoothstep
-        heroSection.style.setProperty("--scene-progress", eased.toFixed(3));
-        heroStage?.style.setProperty("--hero-zoom", (1 + eased * 0.06).toFixed(4));
-        heroStage?.style.setProperty("--hero-dim", (eased * 0.34).toFixed(3));
+        // Do not add inline styles at the initial 0 position: React may still
+        // be selectively hydrating this subtree. CSS defaults already express
+        // the same values, and real scroll updates begin once progress > 0.
+        if (eased > 0.001) {
+          heroSection.style.setProperty("--scene-progress", eased.toFixed(3));
+          heroStage?.style.setProperty("--hero-zoom", (1 + eased * 0.06).toFixed(4));
+          heroStage?.style.setProperty("--hero-dim", (eased * 0.34).toFixed(3));
+        }
       }
     }
   };
