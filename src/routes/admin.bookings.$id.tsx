@@ -334,6 +334,16 @@ function AdminBookingDetailPage() {
             </p>
           ) : null}
         </div>
+
+        <div className="mt-6 border-t border-[color:var(--sand)] pt-5">
+          <h3 className="text-[11px] uppercase tracking-[0.18em] text-[color:var(--charcoal-soft)]">
+            Send to the guide
+          </h3>
+          <p className="mt-1 text-sm text-[color:var(--charcoal-soft)]">
+            Operational summary without any prices.
+          </p>
+          <GuideBriefPanel bookingId={booking.id} />
+        </div>
       </section>
 
       <Card title="Customer">
