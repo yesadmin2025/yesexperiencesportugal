@@ -1054,13 +1054,8 @@
   /* One-shot conversion cue. The arrow settles once after the CTA appears,
      then stays quiet until the visitor hovers, focuses, or presses it. */
   @keyframes ctaArrowEntranceCue {
-    0%,
-    100% {
-      transform: translateX(0);
-    }
-    55% {
-      transform: translateX(6px);
-    }
+    from { transform: translateX(0); }
+    to { transform: translateX(6px); }
   }
   .cta-arrow-cue {
     animation: ctaArrowEntranceCue var(--dur-image) var(--ease-scene) 420ms both;
@@ -6181,6 +6176,13 @@ html {
 .hero-cta-group[data-hero-composed="true"] .hero-cta--ghost .hero-cta__sheen {
   animation: heroCtaSheenOnce 1050ms var(--ease-scene) 760ms 1;
 }
+.hero-cta-group[data-hero-composed="true"] .hero-cta--primary .hero-cta__arrow {
+  animation: heroArrowSettle 460ms var(--ease-scene) 980ms both;
+}
+@keyframes heroArrowSettle {
+  from { transform: translateX(0); }
+  to { transform: translateX(5px); }
+}
 .hero-cta:hover .hero-cta__sheen,
 .hero-cta:focus-visible .hero-cta__sheen {
   transform: translateX(120%);
@@ -6352,6 +6354,9 @@ html {
 
 @media (prefers-reduced-motion: reduce) {
   .hero-cta-group[data-hero-composed="true"] .hero-cta__sheen {
+    animation: none;
+  }
+  .hero-cta-group[data-hero-composed="true"] .hero-cta__arrow {
     animation: none;
   }
 }
@@ -7358,11 +7363,9 @@ html {
 [data-scene-ready="1"] .scene-cta,
 [data-scene-ready="1"] .scene-item {
   opacity: 0;
-  transform: translate3d(0, 8px, 0);
-  transition:
-    opacity var(--dur-text) var(--ease-scene),
-    transform var(--dur-text) var(--ease-scene);
-  will-change: opacity, transform;
+  transform: none;
+  transition: opacity var(--dur-text) var(--ease-scene);
+  will-change: opacity;
 }
 
 [data-scene-ready="1"] .scene-atmosphere {
@@ -7378,8 +7381,43 @@ html {
 [data-scene="in"] .scene-cta,
 [data-scene="in"] .scene-item {
   opacity: 1;
-  transform: translate3d(0, 0, 0);
+  transform: none;
   will-change: auto;
+}
+
+/* Final public-motion contract: geometry stays fixed. Movement comes from
+   film framing, editorial masks, opacity cadence, image depth and one-way
+   directional cues — never vertical lift, oscillation or bounce. */
+html[data-motion-scope="marketing"] :is(
+  .he-card-lift,
+  .fw-card,
+  .editorial-card,
+  [data-editorial-card],
+  .decision-scene,
+  .premium-cta,
+  .editorial-action,
+  .hero-cta
+):is(:hover, :focus-visible) {
+  transform: none;
+}
+
+html[data-motion-scope="marketing"] :is(.he-card-lift, .fw-card, .editorial-card, [data-editorial-card]):is(:hover, :focus-visible) {
+  border-color: color-mix(in oklab, var(--gold) 54%, transparent);
+  box-shadow: 0 20px 44px -30px color-mix(in oklab, var(--charcoal) 38%, transparent);
+}
+
+html[data-motion-scope="marketing"] :is(.premium-cta, .editorial-action, .hero-cta):active {
+  transform: scale(0.985);
+}
+
+html[data-motion-scope="marketing"] :is(.hero-cta-arrow-pulse, .cta-breathe)::after {
+  animation: none !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html[data-motion-scope="marketing"] [data-motion="editorial-clip"] {
+    clip-path: none !important;
+  }
 }
 
 /* Section-level stagger — title first, then body, then CTA. */

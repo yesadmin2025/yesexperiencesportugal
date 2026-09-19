@@ -73,8 +73,9 @@ describe("Premium System Lock", () => {
     );
 
     expect(marketingMotion).not.toContain("filter:");
-    expect(marketingMotion).not.toContain("clip-path:");
+    expect(marketingMotion).toContain("clip-path:");
     expect(marketingMotion).not.toContain("scale(");
+    expect(marketingMotion).not.toMatch(/translate(?:Y|3d)\([^)]*[1-9]/);
   });
 
   it("uses Inter for public micro-labels and controls", () => {

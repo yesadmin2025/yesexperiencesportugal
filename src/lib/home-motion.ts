@@ -17,7 +17,7 @@
  *      visible (no opacity:0). CSS only hides them once `html.motion-ready`
  *      is set. If JS fails, content stays visible.
  *   2. After boot, we add `html.motion-ready`. CSS now hides untriggered
- *      `[data-motion]` elements at opacity:0 + translateY(22px).
+ *      `[data-motion]` elements with opacity or a horizontal editorial mask.
  *   3. On every animation frame during scroll/resize, we check each
  *      pending element with `getBoundingClientRect()`:
  *        rect.top  < window.innerHeight * 0.88
@@ -28,8 +28,7 @@
  *   5. `prefers-reduced-motion: reduce` short-circuits everything: we
  *      mark every element `motion-in` immediately and never add
  *      `motion-ready`.
- *   6. Pure vertical check. No horizontal intersection. No scroll
- *      animation. No hash-sync. No autoplay. No parallax wiring.
+ *   6. Pure viewport check. No hash-sync or repeating decorative motion.
  *
  * The controller also auto-tags legacy reveal classes
  * (`.reveal`, `.reveal-stagger`, `.section-enter`) with `data-motion` so
