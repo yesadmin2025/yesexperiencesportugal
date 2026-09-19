@@ -13,13 +13,14 @@ describe("homepage approved brand restoration", () => {
     expect(hero).not.toMatch(/hero-title-mask[^\n]*overflow-(?:hidden|clip)/);
     const storyLine = hero.match(/function storyLineStyle[\s\S]*?\n\}/)?.[0] ?? "";
     expect(storyLine).not.toContain("clipPath:");
-    expect(hero.match(/text-\[color:var\(--gold-soft\)\]/g)?.length).toBeGreaterThanOrEqual(2);
+    expect(hero).toContain('className="hero-h1 m-0 text-center font-serif"');
+    expect(styles).toMatch(/\.hero-cinematic \.hero-h1\s*\{[\s\S]*?color:\s*var\(--gold-soft\)/);
   });
 
   it("uses the approved two-family editorial treatment in Five Ways", () => {
     expect(fiveWays).toContain("font-serif");
     expect(fiveWays).toContain("font-normal text-[color:var(--teal)]");
-    expect(fiveWays).not.toMatch(/Montserrat|Georgia|Cormorant|Fraunces|Kaushan/i);
+    expect(fiveWays).not.toMatch(/Montserrat|Georgia|Cormorant|Newsreader|Kaushan/i);
     expect(hero).toContain("{HERO_COPY.subheadline}");
   });
 

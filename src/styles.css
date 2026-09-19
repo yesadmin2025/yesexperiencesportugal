@@ -44,12 +44,12 @@
   --color-charcoal-soft: var(--charcoal-soft);
   --color-charcoal-deep: var(--charcoal-deep);
 
-  --font-display: "Newsreader", serif;
-  --font-serif: "Newsreader", serif;
+  --font-display: "Fraunces", serif;
+  --font-serif: "Fraunces", serif;
   --font-sans: "Inter", system-ui, sans-serif;
-  /* Original two-family system: Newsreader for editorial titles and Inter
+  /* Canonical two-family system: Fraunces for editorial titles and Inter
      for body copy and interface text. */
-  --font-editorial: "Newsreader", serif;
+  --font-editorial: "Fraunces", serif;
   --font-body: var(--font-sans);
 
   --shadow-elegant: 0 30px 60px -30px color-mix(in oklab, var(--teal) 30%, transparent);
@@ -475,7 +475,7 @@
     letter-spacing: 0;
     line-height: 1.35;
   }
-  /* Italic emphasis inside display headings uses the original Newsreader voice. */
+  /* Italic emphasis inside display headings uses the canonical Fraunces voice. */
   h1 em,
   h2 em,
   h3 em,
@@ -812,8 +812,8 @@
      pin the sans family + readable line-height. Use mt-* for vertical
      spacing — the scale never bakes in margins.
      ───────────────────────────────────────────────────────────── */
-   /* Restored typography — all headlines use Newsreader (--font-display).
-      Newsreader italic appears only for intentional emphasis inside headings,
+   /* Canonical typography — all headlines use Fraunces (--font-display).
+       Fraunces italic appears only for intentional emphasis inside headings,
      handled by the base h1/h2/h3 em rules above.
      Mobile sizes are tuned by the proportional refinement pass:
        .t-display 36px (32–36 hero band)
@@ -823,48 +823,48 @@
   .t-display-xl {
     font-family: var(--font-display);
     font-weight: 500;
-    font-size: clamp(2.375rem, 7vw, 5.25rem);
-    line-height: 1.08;
+    font-size: clamp(2.5rem, 7vw, 5.75rem);
+    line-height: 1.04;
     letter-spacing: 0;
     text-wrap: balance;
   }
   .t-display {
     font-family: var(--font-display);
     font-weight: 500;
-    font-size: 2.125rem;
-    line-height: 1.08;
-    letter-spacing: 0;
+    font-size: 2.25rem;
+    line-height: 1.06;
+    letter-spacing: -0.022em;
   }
   @media (min-width: 768px) {
     .t-display {
-      font-size: 3.75rem;
+      font-size: 4rem;
     }
   }
   @media (min-width: 1024px) {
     .t-display {
-      font-size: 4.5rem;
-      line-height: 1.08;
+      font-size: 4.75rem;
+      line-height: 0.98;
     }
   }
   .t-h1 {
     font-family: var(--font-display);
     font-weight: 500;
-    font-size: 1.9375rem;
-    line-height: 1.12;
-    letter-spacing: 0;
+    font-size: 2rem;
+    line-height: 1.1;
+    letter-spacing: -0.018em;
   }
   @media (min-width: 768px) {
     .t-h1 {
-      font-size: 3.5rem;
-      line-height: 1.1;
+      font-size: 3.75rem;
+      line-height: 1.04;
     }
   }
   .t-h2 {
     font-family: var(--font-display);
     font-weight: 500;
-    font-size: 1.75rem;
-    line-height: 1.2;
-    letter-spacing: 0;
+    font-size: 1.78rem;
+    line-height: 1.18;
+    letter-spacing: -0.014em;
   }
   @media (min-width: 768px) {
     .t-h2 {
@@ -875,9 +875,9 @@
   .t-h3 {
     font-family: var(--font-display);
     font-weight: 500;
-    font-size: 1.4375rem;
-    line-height: 1.24;
-    letter-spacing: 0;
+    font-size: 1.47rem;
+    line-height: 1.22;
+    letter-spacing: -0.012em;
   }
   @media (min-width: 768px) {
     .t-h3 {
@@ -6524,8 +6524,8 @@ html {
   font-weight: 400;
   color: var(--gold-soft);
   text-shadow: 0 1px 2px color-mix(in oklab, var(--charcoal-deep) 30%, transparent);
-  font-size: 2rem;
-  line-height: 1.16;
+  font-size: clamp(2.375rem, 9.7vw, 4.125rem);
+  line-height: 1.14;
 }
 .hero-cinematic .hero-cinematic-composition {
   transform: none;
@@ -6600,8 +6600,8 @@ html {
     padding-bottom: max(3.5rem, calc(env(safe-area-inset-bottom) + 2.5rem));
   }
   .hero-cinematic .hero-h1 {
-    font-size: 3.375rem;
-    line-height: 1.1;
+    font-size: clamp(3rem, 5.8vw, 4.125rem);
+    line-height: 1.14;
   }
 }
 
@@ -7882,14 +7882,14 @@ html[data-motion-scope="marketing"] .cta-breathe::after {
 }
 .motion-split-line {
   display: block;
-  /* Newsreader has generous ascenders, descenders and italic overhangs. Give
+  /* Fraunces has generous ascenders, descenders and italic overhangs. Give
      the animated ink mask a small internal bleed so glyphs are never clipped
      by the line box on iOS while preserving the visual rhythm. */
   padding: 0.14em 0.12em 0.18em;
   margin: -0.14em -0.12em -0.18em;
 }
 
-/* Newsreader optical safety: protects accents, italic overhangs and descenders
+/* Fraunces optical safety: protects accents, italic overhangs and descenders
    without changing the visible alignment of editorial headings. */
 .editorial-title-safe {
   padding: 0.08em 0.06em 0.12em;
