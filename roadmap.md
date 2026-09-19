@@ -154,3 +154,8 @@
 - [x] Audit all public pages for central editorial motion coverage and missing reveal targets.
 - [x] Apply calm site-wide transitions without changing checkout, Studio, routes, copy, or business logic.
 - [x] Validate motion budget, reduced motion, mobile overflow, and representative public pages.
+
+## 24. Premium motion correction — no bounce
+- [x] Remove vertical entrances, automatic card lift, layered Hero rise, and returning arrow cues.
+- [x] Replace them with fixed-position editorial masks, opacity cadence, film-led depth, and one-way CTA cues.
+- [ ] Validate real scroll sequences at 393px and 1280px, reduced motion, hydration, overflow, and conversion controls.

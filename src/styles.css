@@ -3156,16 +3156,14 @@ svg.lucide {
    visible for no-JS renders, crawlers and pre-hydration paint. */
 html.reveal-ready .reveal {
   opacity: 0;
-  transform: translateY(22px);
-  transition:
-    opacity 560ms var(--ease-scene),
-    transform 580ms var(--ease-scene);
-  will-change: opacity, transform;
+  transform: none;
+  transition: opacity 480ms var(--ease-scene);
+  will-change: opacity;
 }
 html.reveal-ready .reveal.is-visible {
   opacity: 1;
-  transform: translateY(0);
-  animation: siteRevealIn 580ms var(--ease-scene) both;
+  transform: none;
+  animation: none;
 }
 
 /* Stagger child — opt-in reveal for individual items inside a parent.
@@ -3173,28 +3171,16 @@ html.reveal-ready .reveal.is-visible {
    resolves in cascade instead of all at once. */
 html.reveal-ready .reveal-stagger {
   opacity: 0;
-  transform: translateY(20px);
-  transition:
-    opacity 540ms var(--ease-scene),
-    transform 560ms var(--ease-scene);
-  will-change: opacity, transform;
+  transform: none;
+  transition: opacity 460ms var(--ease-scene);
+  will-change: opacity;
 }
 html.reveal-ready .reveal-stagger.is-visible {
   opacity: 1;
-  transform: translateY(0);
-  animation: siteRevealStaggerIn 560ms var(--ease-scene) both;
+  transform: none;
+  animation: none;
   animation-delay: var(--motion-delay, 0ms);
   transition-delay: var(--motion-delay, 0ms);
-}
-
-/* Phones get slightly shorter travel so the cascade never feels heavy. */
-@media (max-width: 767.98px) {
-  html.reveal-ready .reveal {
-    transform: translateY(18px);
-  }
-  html.reveal-ready .reveal-stagger {
-    transform: translateY(16px);
-  }
 }
 
 /* Images inherit the same calm reveal without blur or a second effect. */
@@ -3214,16 +3200,8 @@ html.reveal-ready .reveal-stagger.is-visible [data-reveal-image] {
 /* Five Ways arrow cue — one-time rightward nudge when the card reveals.
    Slightly longer arrow, aligned to the right of every card, same direction. */
 @keyframes homeWayArrowNudge {
-  0%,
-  100% {
-    transform: translateX(0);
-  }
-  45% {
-    transform: translateX(5px);
-  }
-  80% {
-    transform: translateX(1px);
-  }
+  from { transform: translateX(0); }
+  to { transform: translateX(6px); }
 }
 html.reveal-ready .reveal-stagger.is-visible .home-way-arrow {
   animation: homeWayArrowNudge 520ms cubic-bezier(0.22, 0.61, 0.36, 1) both;
@@ -3235,55 +3213,24 @@ html.reveal-ready .reveal-stagger.is-visible .home-way-arrow {
   }
 }
 
-/* =========================================================================
-   Homepage editorial reveal — editorial, clearly perceptible
-   -------------------------------------------------------------------------
-   Scoped to the homepage wrapper (.home-energy). Travel is 22px (18px on
-   phones) over 580ms: enough for the eye to register a settle, still one
-   single dominant effect (opacity + travel), never a bounce. Cards cascade
-   via `--motion-delay`. One-time only; disabled under reduced motion.
-   ====================================================================== */
-@keyframes homeEditorialSettle {
-  from {
-    opacity: 0;
-    transform: translate3d(0, 22px, 0);
-  }
-  to {
-    opacity: 1;
-    transform: translate3d(0, 0, 0);
-  }
-}
 html.reveal-ready .home-energy .reveal,
 html.reveal-ready .home-energy.reveal {
-  transform: translate3d(0, 22px, 0);
-  transition:
-    opacity 560ms var(--ease-scene),
-    transform 580ms var(--ease-scene);
+  transform: none;
+  transition: opacity 480ms var(--ease-scene);
 }
 html.reveal-ready .home-energy .reveal.is-visible,
 html.reveal-ready .home-energy.reveal.is-visible {
-  transform: translate3d(0, 0, 0);
-  animation: homeEditorialSettle 580ms var(--ease-scene) both;
+  transform: none;
+  animation: none;
 }
 html.reveal-ready .home-energy .reveal-stagger {
-  transform: translate3d(0, 20px, 0);
-  transition:
-    opacity 540ms var(--ease-scene),
-    transform 560ms var(--ease-scene);
+  transform: none;
+  transition: opacity 460ms var(--ease-scene);
 }
 html.reveal-ready .home-energy .reveal-stagger.is-visible {
-  transform: translate3d(0, 0, 0);
-  animation: homeEditorialSettle 560ms var(--ease-scene) both;
+  transform: none;
+  animation: none;
   animation-delay: var(--motion-delay, 0ms);
-}
-@media (max-width: 767.98px) {
-  html.reveal-ready .home-energy .reveal,
-  html.reveal-ready .home-energy.reveal {
-    transform: translate3d(0, 18px, 0);
-  }
-  html.reveal-ready .home-energy .reveal-stagger {
-    transform: translate3d(0, 16px, 0);
-  }
 }
 @media (prefers-reduced-motion: reduce) {
   html.reveal-ready .home-energy .reveal,
@@ -3323,11 +3270,11 @@ html.reveal-ready .home-energy .reveal-stagger.is-visible {
 }
 .group:hover .lift-layer,
 .lift-layer:hover {
-  transform: translate3d(0, -4px, 0);
+  transform: none;
 }
 .group:hover .lift-layer-sm,
 .lift-layer-sm:hover {
-  transform: translate3d(0, -3px, 0);
+  transform: none;
 }
 
 /* =========================================================================
@@ -3351,7 +3298,7 @@ html[data-motion-scope="marketing"] [data-editorial-card] {
   html[data-motion-scope="marketing"] .fw-card:hover,
   html[data-motion-scope="marketing"] .editorial-card:hover,
   html[data-motion-scope="marketing"] [data-editorial-card]:hover {
-    transform: translate3d(0, -4px, 0);
+    transform: none;
     box-shadow: 0 18px 40px -26px color-mix(in oklab, var(--charcoal) 42%, transparent);
   }
 
@@ -3362,12 +3309,6 @@ html[data-motion-scope="marketing"] [data-editorial-card] {
   html[data-motion-scope="marketing"] .group:not(form):not([role="dialog"]):hover img {
     transform: scale(1.035);
   }
-}
-
-/* Touch parity 1 — the card centred in the viewport lifts slightly. */
-html[data-motion-scope="marketing"] .is-focus-card {
-  transform: translate3d(0, -3px, 0);
-  box-shadow: 0 16px 36px -26px color-mix(in oklab, var(--charcoal) 38%, transparent);
 }
 
 /* Touch parity 2 — images settle out of a soft zoom when the card enters. */
@@ -3388,16 +3329,11 @@ html[data-motion-scope="marketing"] .motion-in .cta-arrow,
 html[data-motion-scope="marketing"] .is-visible .cta-arrow,
 html[data-motion-scope="marketing"] .motion-in [data-cta-arrow],
 html[data-motion-scope="marketing"] .is-visible [data-cta-arrow] {
-  animation: ctaArrowCue 1600ms var(--ease-scene) 320ms 2 both;
+  animation: ctaArrowCue 480ms var(--ease-scene) 220ms 1 both;
 }
 @keyframes ctaArrowCue {
-  0%,
-  100% {
-    transform: translate3d(0, 0, 0);
-  }
-  45% {
-    transform: translate3d(7px, 0, 0);
-  }
+  from { transform: translate3d(0, 0, 0); }
+  to { transform: translate3d(7px, 0, 0); }
 }
 
 /* Touch parity 4 — immediate press response on every public action. */
@@ -3451,18 +3387,9 @@ html.motion-ready .hero-cinematic .hero-story-stage::after {
   background: #14110e;
   opacity: var(--hero-dim, 0);
 }
-html.motion-ready .hero-cinematic .hero-stanza-zone {
-  transform: translate3d(0, calc(var(--scene-progress, 0) * -34px), 0);
-  opacity: calc(1 - var(--scene-progress, 0) * 0.85);
-}
-html.motion-ready .hero-cinematic .hero-support-zone {
-  transform: translate3d(0, calc(var(--scene-progress, 0) * -74px), 0);
-  opacity: calc(1 - var(--scene-progress, 0) * 1.05);
-}
-html.motion-ready .hero-cinematic .hero-eyebrow-zone {
-  transform: translate3d(0, calc(var(--scene-progress, 0) * -18px), 0);
-  opacity: calc(1 - var(--scene-progress, 0) * 1.2);
-}
+html.motion-ready .hero-cinematic .hero-stanza-zone { opacity: calc(1 - var(--scene-progress, 0) * 0.72); }
+html.motion-ready .hero-cinematic .hero-support-zone { opacity: calc(1 - var(--scene-progress, 0) * 0.9); }
+html.motion-ready .hero-cinematic .hero-eyebrow-zone { opacity: calc(1 - var(--scene-progress, 0) * 0.82); }
 @media (prefers-reduced-motion: reduce) {
   html.motion-ready .hero-cinematic .hero-story-stage,
   html.motion-ready .hero-cinematic .hero-stanza-zone,
@@ -3477,54 +3404,15 @@ html.motion-ready .hero-cinematic .hero-eyebrow-zone {
 }
 
 /* =========================================================================
-   Line-by-line storytelling — `home-motion.ts` splits marked headings into
-   rendered lines after hydration and sets `--line-index` per word. Each
-   line arrives from below, 110ms apart, one phrase per section.
-   ====================================================================== */
-@keyframes storyLineIn {
-  from {
-    opacity: 0;
-    transform: translate3d(0, 0.5em, 0);
-  }
-  to {
-    opacity: 1;
-    transform: translate3d(0, 0, 0);
-  }
-}
-html.motion-ready [data-story-lines] .story-word {
-  display: inline-block;
-}
-html.motion-ready [data-story-lines][data-motion]:not(.motion-in) .story-word,
-html.motion-ready [data-story-lines].reveal:not(.is-visible) .story-word {
-  opacity: 0;
-}
-html.motion-ready [data-story-lines][data-motion].motion-in .story-word,
-html.motion-ready [data-story-lines].reveal.is-visible .story-word,
-html.motion-ready [data-story-lines]:not([data-motion]):not(.reveal) .story-word {
-  animation: storyLineIn 460ms var(--ease-scene) both;
-  animation-delay: calc(var(--line-index, 0) * 110ms);
-}
-@media (prefers-reduced-motion: reduce) {
-  html.motion-ready [data-story-lines] .story-word {
-    animation: none !important;
-    opacity: 1 !important;
-    transform: none !important;
-  }
-}
-
-
-/* =========================================================================
    Route transition — public pages fade in on navigation so a new page
    arrives instead of snapping. 300ms, opacity only, no layout shift.
    ====================================================================== */
 @keyframes routeFadeIn {
   from {
     opacity: 0;
-    transform: translate3d(0, 8px, 0);
   }
   to {
     opacity: 1;
-    transform: translate3d(0, 0, 0);
   }
 }
 html[data-motion-scope="marketing"] [data-route-fade] {
@@ -3569,15 +3457,13 @@ html[data-motion-scope="marketing"] [data-route-fade] {
    ───────────────────────────────────────────────────────────── */
 html.motion-ready [data-motion] {
   opacity: 0;
-  transform: translateY(22px);
-  transition:
-    opacity 620ms cubic-bezier(0.22, 1, 0.36, 1),
-    transform 620ms cubic-bezier(0.22, 1, 0.36, 1);
-  will-change: opacity, transform;
+  transform: none;
+  transition: opacity 480ms var(--ease-scene);
+  will-change: opacity;
 }
 html.motion-ready [data-motion].motion-in {
   opacity: 1;
-  transform: translateY(0);
+  transform: none;
 }
 
 /* Optional per-element delay via `style="--motion-delay:120ms"` or
@@ -3592,10 +3478,10 @@ html.motion-ready [data-motion="fade"] {
   transform: none;
 }
 html.motion-ready [data-motion="fade-up"] {
-  transform: translateY(22px);
+  transform: none;
 }
 html.motion-ready [data-motion="fade-up-sm"] {
-  transform: translateY(14px);
+  transform: none;
 }
 html.motion-ready [data-motion].motion-in {
   transform: translateY(0);
@@ -3604,28 +3490,29 @@ html.motion-ready [data-motion].motion-in {
 /* Marketing-scoped editorial motion. Public storytelling pages use one clear
    language: opacity plus a short vertical transition. No blur, mask or scale. */
 html.motion-ready[data-motion-scope="marketing"] [data-motion] {
-  transform: translate3d(0, 14px, 0);
-  transition:
-    opacity 420ms var(--ease-scene),
-    transform 440ms var(--ease-scene);
+  transform: none;
+  transition: opacity 460ms var(--ease-scene);
   animation: none;
 }
 html.motion-ready[data-motion-scope="marketing"] [data-motion].motion-in {
   transform: translate3d(0, 0, 0);
 }
 html.motion-ready[data-motion-scope="marketing"] [data-motion="editorial-clip"] {
-  transform: translate3d(0, 12px, 0);
+  transform: none;
+  clip-path: inset(0 100% 0 0);
+  transition: opacity 460ms var(--ease-scene), clip-path 520ms var(--ease-scene);
 }
 html.motion-ready[data-motion-scope="marketing"] [data-motion="editorial-clip"].motion-in {
   transform: translate3d(0, 0, 0);
+  clip-path: inset(0 0 0 0);
 }
 html.motion-ready[data-motion-scope="marketing"] [data-motion="fade"] {
   transform: none;
 }
 
 @keyframes editorialArrowCue {
-  0%, 100% { transform: translateX(0); }
-  55% { transform: translateX(8px); }
+  from { transform: translateX(0); }
+  to { transform: translateX(7px); }
 }
 html.motion-ready[data-motion-scope="marketing"] .motion-in .editorial-arrow {
   animation: editorialArrowCue 560ms var(--ease-scene) 240ms both;
@@ -3668,11 +3555,11 @@ html[data-motion-scope="marketing"] .premium-cta:hover,
 html[data-motion-scope="marketing"] .premium-cta:focus-visible,
 html[data-motion-scope="marketing"] .editorial-action:hover,
 html[data-motion-scope="marketing"] .editorial-action:focus-visible {
-  transform: translateY(-3px);
+  transform: none;
 }
 html[data-motion-scope="marketing"] .premium-cta:active,
 html[data-motion-scope="marketing"] .editorial-action:active {
-  transform: translateY(0) scale(0.985);
+  transform: scale(0.985);
   transition-duration: var(--dur-tap);
 }
 
@@ -3732,7 +3619,7 @@ html[data-motion-scope="marketing"] .signature-image-settle {
   box-shadow: 0 1px 2px -1px rgba(46, 46, 46, 0.06);
 }
 .editorial-card:hover {
-  transform: translate3d(0, -2px, 0) scale(1.02);
+  transform: none;
   box-shadow: 0 22px 50px -24px rgba(46, 46, 46, 0.22);
 }
 .editorial-card [data-card-image] {
