@@ -56,7 +56,7 @@ export function GuideBriefPanel({
     loadBrief({ data: selection() })
       .then((res) => active && setBrief(res))
       .catch((e: unknown) => active && setError(e instanceof Error ? e.message : String(e)));
-    loadGuides({ data: {} })
+    loadGuides({})
       .then((res) => active && setGuides((res.guides ?? []) as Guide[]))
       .catch(() => undefined);
     return () => {
