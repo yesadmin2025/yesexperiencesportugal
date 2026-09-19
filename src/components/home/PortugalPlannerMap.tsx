@@ -55,9 +55,9 @@ export function PortugalPlannerMap() {
     setActiveId(path.mapRegionId);
   };
 
-  const chooseRegion = (regionId: string) => {
+  const chooseRegion = (regionId: string, sourcePathId: HomePathId = activePathId) => {
     setActiveId(regionId);
-    if (activePath.mapRegionId !== regionId) {
+    if (HOME_PATH_DESTINATIONS[sourcePathId].mapRegionId !== regionId) {
       const matchingPath = HOME_PATH_DESTINATION_LIST.find((path) => path.mapRegionId === regionId);
       if (matchingPath) setActivePathId(matchingPath.id);
     }
