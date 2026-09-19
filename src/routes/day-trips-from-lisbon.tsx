@@ -1,4 +1,4 @@
-import { organizationUsCaAudienceLd, createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { Clock, MapPin, Phone, Mail, Star, Car } from "lucide-react";
 
 import { SiteLayout } from "@/components/SiteLayout";
@@ -9,7 +9,14 @@ import { CtaButton } from "@/components/ui/CtaButton";
 import { CTA_LABELS } from "@/content/cta-vocabulary";
 import { RealReviewsStrip } from "@/components/home/RealReviewsStrip";
 import { signatureTours } from "@/data/signatureTours";
-import { breadcrumbLd, faqPageLd, itemListLd, jsonLdScript, localBusinessLd } from "@/lib/jsonld";
+import {
+  breadcrumbLd,
+  faqPageLd,
+  itemListLd,
+  jsonLdScript,
+  localBusinessLd,
+  organizationUsCaAudienceLd,
+} from "@/lib/jsonld";
 import { LISBON_REGIONS } from "@/content/lisbon-regions";
 
 /** Published pickup areas — factual, identical to every region page. */

@@ -1,4 +1,4 @@
-import { organizationUsCaAudienceLd, createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { Car, Star } from "lucide-react";
 
 import { SiteLayout } from "@/components/SiteLayout";
