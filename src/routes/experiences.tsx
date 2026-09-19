@@ -11,6 +11,8 @@ import ogImg from "@/assets/hero-coast.jpg";
 import { Eyebrow } from "@/components/ui/Eyebrow";
 import { SectionTitle } from "@/components/ui/SectionTitle";
 import { CtaButton, CtaMotionArrow } from "@/components/ui/CtaButton";
+import { Scene } from "@/components/motion/Scene";
+import { SplitLines } from "@/components/motion/SplitLines";
 import { useMarketingMotion } from "@/hooks/use-marketing-motion";
 import { PriceCurrencyChip } from "@/components/PriceCurrencyChip";
 import { PriceEur } from "@/components/ui/PriceEur";
@@ -87,9 +89,14 @@ function ExperiencesPage() {
             ]}
           />
           <Eyebrow flank>Signature Collection</Eyebrow>
-          <SectionTitle as="h1" size="anchor" spacing="loose">
-            Private days, <SectionTitle.Em>ready when you are.</SectionTitle.Em>
-          </SectionTitle>
+          <SplitLines
+            as="h1"
+            className="mx-auto font-serif text-[clamp(2.4rem,10vw,4.75rem)] font-medium leading-[1.02] text-[color:var(--charcoal)]"
+            lines={[
+              <>Private days,</>,
+              <span className="italic font-normal text-[color:var(--teal)]">ready when you are.</span>,
+            ]}
+          />
           <p className="mt-6 max-w-[58ch] mx-auto text-[16px] md:text-[17px] leading-[1.7] text-[color:var(--charcoal-soft)]">
             Every Signature can be reserved as designed, or tailored around your pace, interests and
             group.
@@ -105,11 +112,11 @@ function ExperiencesPage() {
         aria-label="Signature collection"
       >
         <div className="container-x">
-          <div className="experiences-editorial-grid grid gap-x-10 gap-y-14 md:grid-cols-2 md:gap-y-18 lg:gap-x-16 lg:gap-y-24">
+          <Scene className="experiences-editorial-grid experiences-story grid gap-x-10 gap-y-14 md:grid-cols-2 md:gap-y-18 lg:gap-x-16 lg:gap-y-24">
             {signatureTours.map((tour, index) => (
               <TourCard key={tour.id} tour={tour} resolveImg={resolveImg} featured={index < 2} />
             ))}
-          </div>
+          </Scene>
         </div>
       </section>
 
@@ -141,13 +148,13 @@ function TourCard({
   const idealFor = tour.idealFor?.[0];
   return (
     <article
-      className="experience-editorial-card reveal-stagger group flex min-w-0 flex-col text-left"
+      className="experience-editorial-card scene-item group flex min-w-0 flex-col text-left"
       aria-label={tour.title}
     >
       <Link
         to="/tours/$tourId"
         params={{ tourId: tour.id }}
-        className="relative block overflow-hidden rounded-[4px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--teal)]"
+        className="experience-card-image relative block overflow-hidden rounded-[4px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--teal)]"
         aria-label={`Open ${tour.title}`}
       >
         <TourImage
@@ -160,7 +167,7 @@ function TourCard({
         />
       </Link>
 
-      <div className="flex flex-1 flex-col border-b border-[color:var(--border)] pb-8 pt-6 md:pb-10">
+      <div className="experience-card-content flex flex-1 flex-col border-b border-[color:var(--border)] pb-8 pt-6 md:pb-10">
         <div className="flex flex-wrap items-center gap-x-2 gap-y-1 text-[10.5px] font-medium uppercase tracking-[0.18em] text-[color:var(--teal)]">
           <span>{tour.region}</span>
           <span aria-hidden="true" className="text-[color:var(--gold)]">
@@ -170,7 +177,7 @@ function TourCard({
         </div>
 
         <h3
-          className={`mt-3 font-serif font-medium leading-[1.14] tracking-normal text-[color:var(--charcoal)] ${featured ? "text-[1.5rem] md:text-[1.75rem]" : "text-[1.45rem] md:text-[1.55rem]"}`}
+          className={`experience-card-title mt-3 font-serif font-medium leading-[1.14] tracking-normal text-[color:var(--charcoal)] ${featured ? "text-[1.5rem] md:text-[1.75rem]" : "text-[1.45rem] md:text-[1.55rem]"}`}
         >
           <Link
             to="/tours/$tourId"
@@ -233,7 +240,7 @@ function TourCard({
           {teaser}
         </p>
 
-        <div className="mt-auto pt-5 md:pt-6 flex flex-wrap items-center gap-x-5 gap-y-2">
+        <div className="experience-card-action mt-auto pt-5 md:pt-6 flex flex-wrap items-center gap-x-5 gap-y-2">
           <Link
             to="/tours/$tourId"
             params={{ tourId: tour.id }}

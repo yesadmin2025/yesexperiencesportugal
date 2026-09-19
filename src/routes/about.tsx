@@ -108,7 +108,7 @@ function Page() {
               <><span className="italic font-normal text-[color:var(--teal)]">not a template</span>.</>,
             ]}
           />
-          <div className="mt-8 space-y-5 text-[color:var(--charcoal-soft)] leading-relaxed">
+          <div className="about-copy-sequence mt-8 space-y-5 text-[color:var(--charcoal-soft)] leading-relaxed">
             <p>
               YES did not begin as an agency concept, a marketplace idea or a travel-tech trend.
             </p>
@@ -132,7 +132,7 @@ function Page() {
             <SectionTitle as="h2" size="default">
               Built by the person <SectionTitle.Em>who saw the problem</SectionTitle.Em>.
             </SectionTitle>
-            <div className="mt-8 space-y-5 text-[color:var(--charcoal-soft)] leading-relaxed">
+            <div className="about-copy-sequence mt-8 space-y-5 text-[color:var(--charcoal-soft)] leading-relaxed">
               <p>
                 The Experience Studio was not added because "custom travel" sounded good on a
                 website.
@@ -161,7 +161,7 @@ function Page() {
               </figcaption>
             </MaskReveal>
 
-            <div className="mt-8 space-y-5 text-[color:var(--charcoal-soft)] leading-relaxed">
+            <div className="about-copy-sequence mt-8 space-y-5 text-[color:var(--charcoal-soft)] leading-relaxed">
               <p>
                 To make it real, the founder learned to translate travel experience into product
                 structure, booking logic and digital flow — how a guest chooses, how a route
@@ -204,7 +204,7 @@ function Page() {
           <SectionTitle as="h2" size="default">
             Designed with care. <SectionTitle.Em>Delivered by trusted locals</SectionTitle.Em>.
           </SectionTitle>
-          <div className="mt-8 space-y-5 text-[color:var(--charcoal-soft)] leading-relaxed">
+          <div className="about-copy-sequence mt-8 space-y-5 text-[color:var(--charcoal-soft)] leading-relaxed">
             <p>
               YES was created by Nídia Almeida, a Portuguese host and experience designer, after
               years of designing and leading private experiences across Portugal.

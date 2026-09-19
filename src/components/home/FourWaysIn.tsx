@@ -164,14 +164,14 @@ export function FourWaysIn() {
           </p>
         </div>
 
-        <div
+        <Scene
           data-testid="home-smart-start"
-          className="he-stagger mx-auto mt-10 grid max-w-6xl grid-cols-1 gap-4 sm:grid-cols-2 md:mt-12 md:gap-5 lg:grid-cols-6"
+          className="five-ways-story he-stagger mx-auto mt-10 grid max-w-6xl grid-cols-1 gap-4 sm:grid-cols-2 md:mt-12 md:gap-5 lg:grid-cols-6"
         >
           {PATHS.map((path, index) => (
             <PathCard key={path.id} path={path} featured={index < 3} />
           ))}
-        </div>
+        </Scene>
 
         {hasDraft && (
           <div className="reveal mx-auto mt-5 max-w-6xl rounded-[6px] border border-[color:var(--gold)]/45 bg-[color:var(--sand)] px-5 py-4 sm:flex sm:items-center sm:justify-between sm:gap-6">
