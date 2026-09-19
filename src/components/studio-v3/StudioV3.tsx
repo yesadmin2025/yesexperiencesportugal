@@ -1465,6 +1465,7 @@ export function StudioV3() {
           committedRoutePoints: currentState.committedRoutePoints ?? null,
           resolved: checkoutResolved,
           catalogStops: tour.stops ?? null,
+          anchorTourId: currentState.tourId ?? tour.id ?? null,
         }),
       });
       // FAIL CLOSED — any route whose current commercial truth cannot be
