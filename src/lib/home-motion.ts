@@ -151,9 +151,12 @@ export function startHomeMotion(): () => void {
       }
     });
 
+    // Cascade: every repeated card in a row gets an increasing delay so the
+    // eye tracks a rhythm instead of the whole row landing at once. Includes
+    // plain `.reveal-stagger` children (the CSS reads `--motion-delay`).
     const cardParents = new WeakMap<HTMLElement, number>();
     const cards = homeScope.querySelectorAll<HTMLElement>(
-      ".he-card-lift, .reveal-stagger[class*='rounded'], .fw-card",
+      ".he-card-lift, .reveal-stagger, .fw-card, .editorial-card, [data-editorial-card]",
     );
     cards.forEach((el) => {
       const parent = el.parentElement as HTMLElement | null;
