@@ -43,6 +43,10 @@ type Row = {
 };
 
 const TOUR_LABELS = new Map(signatureTours.map((tour) => [tour.id, tour.title]));
+/** Real catalogue durations — used only when the snapshot has none. */
+const TOUR_DURATIONS = new Map(
+  signatureTours.map((tour) => [tour.id, tour.durationHours || tour.duration]),
+);
 
 function experienceLabel(row: Row): string {
   if (row.source_tour_id) return TOUR_LABELS.get(row.source_tour_id) ?? row.source_tour_id;
