@@ -88,6 +88,18 @@ function AdminBookingDetailPage() {
   const [loading, setLoading] = useState(true);
   const [refundBusy, setRefundBusy] = useState(false);
   const [refundMessage, setRefundMessage] = useState<string | null>(null);
+  const [editOpen, setEditOpen] = useState(false);
+  const [editName, setEditName] = useState("");
+  const [editPhone, setEditPhone] = useState("");
+  const [editDate, setEditDate] = useState("");
+  const [editNotes, setEditNotes] = useState("");
+  const [editBusy, setEditBusy] = useState(false);
+  const [editMessage, setEditMessage] = useState<string | null>(null);
+  const [notifyText, setNotifyText] = useState("");
+  const [notifyBusy, setNotifyBusy] = useState(false);
+  const [notifyMessage, setNotifyMessage] = useState<string | null>(null);
+  const saveEdit = useServerFn(updateAdminBooking);
+  const notifyGuest = useServerFn(notifyBookingCustomer);
 
   useEffect(() => {
     let active = true;
