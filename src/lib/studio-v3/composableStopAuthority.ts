@@ -113,6 +113,7 @@ export function composableStopLineFromRow(
   if (!row.active || !Number.isFinite(row.priceCents) || row.priceCents <= 0) return null;
   const heads = Math.max(1, Math.floor(guests));
   if (heads < row.minGuests) return null;
+  if (heads < row.minGuests) return null;
   const quantity = composableQuantity(row.pricingUnit, heads);
   return {
     stopId: row.stopId,
