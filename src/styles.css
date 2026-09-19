@@ -2121,9 +2121,8 @@
 }
 
 .hero-cinematic .hero-title-mask {
-  overflow: hidden;
-  overflow: clip;
-  padding: 0.03em 0 0.11em;
+  overflow: visible;
+  padding: 0.08em 0.08em 0.18em;
 }
 
 /* Short phone viewports (iPhone with browser chrome visible): tighten the

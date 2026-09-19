@@ -11,7 +11,8 @@ describe("homepage approved brand restoration", () => {
 
   it("keeps the hero headline free from glyph-clipping masks", () => {
     expect(hero).not.toMatch(/hero-title-mask[^\n]*overflow-(?:hidden|clip)/);
-    expect(hero).not.toMatch(/function storyLineStyle[\s\S]*?clipPath:/);
+    const storyLine = hero.match(/function storyLineStyle[\s\S]*?\n\}/)?.[0] ?? "";
+    expect(storyLine).not.toContain("clipPath:");
     expect(hero).toContain("text-[color:var(--ivory)]");
     expect(hero).toContain("text-[color:var(--gold-soft)]");
   });
