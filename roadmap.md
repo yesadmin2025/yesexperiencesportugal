@@ -24,4 +24,5 @@
 - [x] Add one admin photo manager for the five homepage paths and matching map
 - [x] Support first-party social photo uploads without hotlinking or automated scraping
 - [x] Remove Five Paths photo repetition from Corporate and Moments editorial blocks
+- [x] Add live title, route, destination, card and map previews to the five-path manager
 - [ ] Validate photo upload and card/map synchronization while signed in as admin

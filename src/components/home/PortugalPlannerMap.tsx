@@ -212,7 +212,7 @@ export function PortugalPlannerMap() {
               className="h-full w-full object-cover"
             />
             <figcaption>
-              <span>{activePath.label}</span>
+              <span>{activePath.destination}</span>
               <strong>{activePath.routeLabel}</strong>
             </figcaption>
           </figure>

@@ -1,7 +1,8 @@
 import type { EditorialImageSource } from "@/components/ui/ResponsiveEditorialImage";
-import { useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { premiumEditorialImage as image } from "@/content/editorial-premium-images";
 import { useEditorialOverrides } from "@/lib/editorial-overrides";
+import { supabase } from "@/integrations/supabase/client";
 
 /**
  * Homepage-only decision imagery.
@@ -113,22 +114,58 @@ export const HOME_PATH_EDITORIAL_SLOTS = HOME_PATH_DESTINATION_LIST.map((path) =
   caption: path.routeLabel,
 }));
 
+type HomePathContentRow = {
+  path_id: HomePathId;
+  title: string;
+  route_label: string;
+  destination: string;
+  photo_src: string;
+  photo_alt: string;
+};
+
 /** One override read powers both the Five Ways cards and the matching map panel. */
 export function useHomePathDestinations() {
   const photos = useEditorialOverrides("home_paths", HOME_PATH_EDITORIAL_SLOTS);
+  const [content, setContent] = useState<HomePathContentRow[]>([]);
+
+  useEffect(() => {
+    let cancelled = false;
+    const load = async () => {
+      const { data } = await supabase
+        .from("home_path_content")
+        .select("path_id, title, route_label, destination, photo_src, photo_alt")
+        .eq("is_published", true);
+      if (!cancelled && data) setContent(data as HomePathContentRow[]);
+    };
+    void load();
+    const channel = supabase
+      .channel("home-path-content-live")
+      .on("postgres_changes", { event: "*", schema: "public", table: "home_path_content" }, () => void load())
+      .subscribe();
+    return () => {
+      cancelled = true;
+      void supabase.removeChannel(channel);
+    };
+  }, []);
+
   return useMemo(
     () => HOME_PATH_DESTINATION_LIST.map((path, index) => {
-      const overridden = photos[index]?.src !== path.image.src;
+      const managed = content.find((row) => row.path_id === path.id);
+      const photoSrc = managed?.photo_src ?? photos[index]?.src ?? path.image.src;
+      const overridden = photoSrc !== path.image.src;
       return {
         ...path,
+        title: managed?.title ?? "",
+        destination: managed?.destination ?? path.destination,
+        routeLabel: managed?.route_label ?? path.routeLabel,
         image: {
           ...path.image,
-          src: photos[index]?.src ?? path.image.src,
-          alt: photos[index]?.alt ?? path.image.alt,
+          src: photoSrc,
+          alt: managed?.photo_alt ?? photos[index]?.alt ?? path.image.alt,
           ...(overridden ? { avifSrcSet: undefined, webpSrcSet: undefined } : {}),
         },
       };
     }),
-    [photos],
+    [content, photos],
   );
 }
