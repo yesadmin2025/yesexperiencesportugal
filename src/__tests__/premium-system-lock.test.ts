@@ -82,7 +82,7 @@ describe("Premium System Lock", () => {
       css.indexOf("@keyframes editorialArrowCue"),
     );
 
-    expect(marketingMotion).not.toContain("filter:");
+    expect(marketingMotion).toContain("filter: saturate(0.72) contrast(0.9)");
     expect(marketingMotion).toContain("clip-path:");
     expect(marketingMotion).not.toContain("scale(");
     expect(marketingMotion).not.toMatch(/translate(?:Y|3d)\([^)]*[1-9]/);
