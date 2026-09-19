@@ -150,8 +150,8 @@ describe("home-motion controller", () => {
     await flushRaf();
 
     expect(document.querySelector("h1")?.getAttribute("data-motion")).toBe("editorial-clip");
-    expect(document.querySelector("figure")?.getAttribute("data-motion")).toBe("settle");
-    expect(document.querySelector("a")?.getAttribute("data-motion")).toBe("settle");
+    expect(document.querySelector("figure")?.getAttribute("data-motion")).toBe("card-reveal");
+    expect(document.querySelector("a")?.getAttribute("data-motion")).toBe("card-reveal");
   });
 
   it("auto-tags supporting copy and repeated discovery cards", async () => {
@@ -174,7 +174,7 @@ describe("home-motion controller", () => {
 
     expect(document.querySelector("p")?.getAttribute("data-motion")).toBe("editorial-clip");
     const cards = document.querySelectorAll("li");
-    expect(cards[0]?.getAttribute("data-motion")).toBe("settle");
+    expect(cards[0]?.getAttribute("data-motion")).toBe("card-reveal");
     expect(cards[1]?.getAttribute("data-motion-delay")).toBe("100");
   });
 

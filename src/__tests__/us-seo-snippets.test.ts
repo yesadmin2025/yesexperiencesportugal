@@ -28,6 +28,7 @@ describe("Every Signature has a unique US purchase-intent target", () => {
     expect(Object.keys(SIGNATURE_SEO).sort()).toEqual([...ids].sort());
     expect(new Set(ids.map((id) => SIGNATURE_SEO[id]?.title)).size).toBe(ids.length);
     expect(new Set(ids.map((id) => SIGNATURE_SEO[id]?.description)).size).toBe(ids.length);
+    expect(new Set(ids.map((id) => SIGNATURE_SEO[id]?.primaryKeyword)).size).toBe(ids.length);
   });
 
   for (const tour of signatureTours) {

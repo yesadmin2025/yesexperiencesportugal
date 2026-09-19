@@ -3189,12 +3189,16 @@ html.reveal-ready .reveal.is-visible {
    resolves in cascade instead of all at once. */
 html.reveal-ready .reveal-stagger {
   opacity: 0;
-  transform: none;
-  transition: opacity 460ms var(--ease-scene);
-  will-change: opacity;
+  clip-path: inset(0 100% 0 0);
+  transition:
+    opacity 440ms var(--ease-scene),
+    clip-path 680ms var(--ease-scene),
+    border-color 440ms var(--ease-scene);
+  will-change: opacity, clip-path;
 }
 html.reveal-ready .reveal-stagger.is-visible {
   opacity: 1;
+  clip-path: inset(0 0 0 0);
   transform: none;
   animation: none;
   animation-delay: var(--motion-delay, 0ms);
@@ -3218,12 +3222,12 @@ html.reveal-ready .reveal-stagger.is-visible [data-reveal-image] {
 /* Five Ways arrow cue — one-time rightward nudge when the card reveals.
    Slightly longer arrow, aligned to the right of every card, same direction. */
 @keyframes homeWayArrowNudge {
-  from { transform: translateX(0); }
-  to { transform: translateX(6px); }
+  from { opacity: 0.35; transform: translateX(-10px); }
+  to { opacity: 1; transform: translateX(8px); }
 }
 html.reveal-ready .reveal-stagger.is-visible .home-way-arrow {
-  animation: homeWayArrowNudge 520ms cubic-bezier(0.22, 0.61, 0.36, 1) both;
-  animation-delay: 220ms;
+  animation: homeWayArrowNudge 820ms cubic-bezier(0.16, 1, 0.3, 1) both;
+  animation-delay: calc(var(--motion-delay, 0ms) + 260ms);
 }
 @media (prefers-reduced-motion: reduce) {
   html.reveal-ready .reveal-stagger.is-visible .home-way-arrow {
@@ -3241,9 +3245,26 @@ html.reveal-ready .home-energy.reveal.is-visible {
   transform: none;
   animation: none;
 }
+/* Homepage section phrases reveal like editorial ink. The parent remains the
+   single observer target, so headings never wait for a competing controller. */
+html.reveal-ready .home-energy .reveal > :is(h1, h2),
+html.reveal-ready .home-energy .reveal > header > :is(h1, h2) {
+  clip-path: inset(0 100% 0 0);
+  opacity: 0;
+  transition:
+    clip-path 780ms cubic-bezier(0.16, 1, 0.3, 1),
+    opacity 420ms var(--ease-scene);
+}
+html.reveal-ready .home-energy .reveal.is-visible > :is(h1, h2),
+html.reveal-ready .home-energy .reveal.is-visible > header > :is(h1, h2) {
+  clip-path: inset(0 0 0 0);
+  opacity: 1;
+}
 html.reveal-ready .home-energy .reveal-stagger {
   transform: none;
-  transition: opacity 460ms var(--ease-scene);
+  transition:
+    opacity 440ms var(--ease-scene),
+    clip-path 680ms var(--ease-scene);
 }
 html.reveal-ready .home-energy .reveal-stagger.is-visible {
   transform: none;
@@ -3520,6 +3541,20 @@ html.motion-ready[data-motion-scope="marketing"] [data-motion="editorial-clip"] 
   clip-path: inset(0 100% 0 0);
   transition: opacity 460ms var(--ease-scene), clip-path 520ms var(--ease-scene);
 }
+html.motion-ready[data-motion-scope="marketing"] [data-motion="card-reveal"] {
+  opacity: 0;
+  clip-path: inset(0 100% 0 0);
+  filter: saturate(0.72) contrast(0.9);
+  transition:
+    opacity 440ms var(--ease-scene),
+    clip-path 720ms cubic-bezier(0.16, 1, 0.3, 1),
+    filter 720ms var(--ease-scene);
+}
+html.motion-ready[data-motion-scope="marketing"] [data-motion="card-reveal"].motion-in {
+  opacity: 1;
+  clip-path: inset(0 0 0 0);
+  filter: saturate(1) contrast(1);
+}
 html.motion-ready[data-motion-scope="marketing"] [data-motion="editorial-clip"].motion-in {
   transform: translate3d(0, 0, 0);
   clip-path: inset(0 0 0 0);
@@ -3533,7 +3568,7 @@ html.motion-ready[data-motion-scope="marketing"] [data-motion="fade"] {
   to { transform: translateX(7px); }
 }
 html.motion-ready[data-motion-scope="marketing"] .motion-in .editorial-arrow {
-  animation: editorialArrowCue 720ms var(--ease-scene) 240ms both;
+  animation: editorialArrowCue 820ms cubic-bezier(0.16, 1, 0.3, 1) 260ms both;
 }
 .editorial-arrow {
   transition: transform var(--dur-base) var(--ease-scene);
@@ -4557,10 +4592,11 @@ html[data-motion-scope="marketing"] .signature-image-settle {
      Children animate from 14px down + 0 opacity over ~420ms. */
   .home-energy .he-seq > * {
     opacity: 0;
-    transform: translateY(14px);
+    clip-path: inset(0 100% 0 0);
+    transform: none;
     transition:
       opacity 420ms cubic-bezier(0.22, 0.61, 0.36, 1),
-      transform 420ms cubic-bezier(0.22, 0.61, 0.36, 1);
+      clip-path 620ms cubic-bezier(0.16, 1, 0.3, 1);
   }
   .home-energy .he-seq.is-visible > *:nth-child(1) {
     transition-delay: 0ms;
@@ -4573,6 +4609,7 @@ html[data-motion-scope="marketing"] .signature-image-settle {
   }
   .home-energy .he-seq.is-visible > * {
     opacity: 1;
+    clip-path: inset(0 0 0 0);
     transform: translateY(0);
   }
 
@@ -4598,8 +4635,8 @@ html[data-motion-scope="marketing"] .signature-image-settle {
   .home-energy .he-image-cinema {
     overflow: hidden;
     -webkit-mask-image: linear-gradient(#000, #000);
-    clip-path: inset(12% 0 0 0);
-    transition: clip-path 1200ms cubic-bezier(0.22, 0.61, 0.36, 1);
+    clip-path: inset(0 100% 0 0);
+    transition: clip-path 860ms cubic-bezier(0.16, 1, 0.3, 1);
   }
   .home-energy .he-image-cinema.is-visible,
   .home-energy .is-visible .he-image-cinema {
@@ -7567,6 +7604,16 @@ html[data-motion-scope="marketing"] .cta-breathe::after {
     animation: none !important;
     opacity: 1 !important;
     transform: none !important;
+  }
+  html.motion-ready[data-motion-scope="marketing"] [data-motion="card-reveal"],
+  html.reveal-ready .reveal-stagger,
+  html.reveal-ready .home-energy .reveal > :is(h1, h2),
+  html.reveal-ready .home-energy .reveal > header > :is(h1, h2) {
+    opacity: 1 !important;
+    clip-path: none !important;
+    filter: none !important;
+    transition: none !important;
+    animation: none !important;
   }
 }
 

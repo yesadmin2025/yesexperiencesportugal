@@ -126,8 +126,8 @@ export const SIGNATURE_SEO: Record<string, SignatureSeoEntry> = {
       "Follow 2,000 years of Alentejo wine through Roman ruins, clay talhas, a family cellar and a whitewashed village.",
   },
   "southwest-vicentine-coast": {
-    primaryKeyword: "day trips from lisbon",
-    supportingKeywords: ["portugal private tours", "luxury portugal tours"],
+    primaryKeyword: "vicentine coast tour from lisbon",
+    supportingKeywords: ["southwest portugal coast tour", "private portugal coastal tour"],
     title: "Vicentine Coast Day Trip from Lisbon — Private Tour",
     description:
       "Private day trip from Lisbon along the Vicentine Coast through Porto Covo, Milfontes, protected Atlantic cliffs, Odeceixe and Aljezur.",

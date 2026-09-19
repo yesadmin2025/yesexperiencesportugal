@@ -110,12 +110,16 @@ export function BuilderMap({
     mapRef.current = map;
     layerRef.current = L.layerGroup().addTo(map);
 
+    let resizeRaf = 0;
     const ro = new ResizeObserver(() => {
-      map.invalidateSize();
-      const s = map.getSize();
-      if (s.x > 0 && s.y > 0 && lastBoundsRef.current) {
-        map.fitBounds(lastBoundsRef.current);
-      }
+      window.cancelAnimationFrame(resizeRaf);
+      resizeRaf = window.requestAnimationFrame(() => {
+        map.invalidateSize({ pan: false });
+        const s = map.getSize();
+        if (s.x > 0 && s.y > 0 && lastBoundsRef.current) {
+          map.fitBounds(lastBoundsRef.current, { animate: false });
+        }
+      });
     });
     ro.observe(ref.current);
 
@@ -130,6 +134,7 @@ export function BuilderMap({
 
     return () => {
       ro.disconnect();
+      window.cancelAnimationFrame(resizeRaf);
       map.remove();
       mapRef.current = null;
       layerRef.current = null;
