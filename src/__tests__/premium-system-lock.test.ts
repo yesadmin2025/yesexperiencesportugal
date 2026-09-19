@@ -58,7 +58,13 @@ describe("Premium System Lock", () => {
     expect(hook).toContain('document.documentElement.dataset.motionScope = "marketing"');
     expect(hook).toContain('import("@/lib/home-motion")');
     expect(hook).toContain("requestAnimationFrame");
-    expect(hook).not.toContain("MutationObserver");
+    // Auto-tagging must wait for a bounded mutation-free window so React never
+    // sees mutated attributes while a lazy route subtree hydrates. The observer
+    // is required to be disconnected and capped by a hard deadline.
+    expect(hook).toContain("new MutationObserver");
+    expect(hook).toContain("observer?.disconnect()");
+    expect(hook).toContain("hardDeadline");
+
     const marketingMotion = css.slice(
       css.indexOf('html.motion-ready[data-motion-scope="marketing"] [data-motion]'),
       css.indexOf("@keyframes editorialArrowCue"),

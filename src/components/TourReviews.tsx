@@ -71,12 +71,18 @@ export function TourReviews({ tourId }: { tourId: string }) {
   // Fallback: when the DB has no reviews yet, surface the curated
   // Viator/Tripadvisor reviews from VIATOR_META so every Signature
   // page still shows real guest voices (source-linked, non-first-party).
+  //
+  // This block renders during SSR as well (not gated behind `loading`):
+  // Google only grants review stars when the rating declared in the page's
+  // Product schema is visible in the server-rendered HTML. The curated set is
+  // real, source-linked data, so it is safe to render before the DB responds;
+  // once first-party rows load they replace it.
   const meta = getViatorMeta(tourId);
-  const dbEmpty = !loading && (!stats || stats.total_reviews === 0);
-  const useFallback = dbEmpty && meta && meta.topReviews.length > 0;
+  const hasDbReviews = !!stats && stats.total_reviews > 0;
+  const canFallback = !!meta && meta.topReviews.length > 0;
+  const useFallback = !hasDbReviews && canFallback;
 
-  if (loading) return null;
-  if (!useFallback && (!stats || stats.total_reviews === 0)) return null;
+  if (!hasDbReviews && !canFallback) return null;
 
   const displayRating = useFallback ? meta!.rating : (stats?.average_rating ?? 5);
   const displayTotal = useFallback ? meta!.reviewCount : (stats?.total_reviews ?? 0);

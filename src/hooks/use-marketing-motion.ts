@@ -28,29 +28,67 @@ export function usePublicEditorialMotion(pathname: string): void {
     let firstFrame = 0;
     let secondFrame = 0;
     let settleTimer = 0;
+    let quietTimer = 0;
+    let hardDeadline = 0;
+    let observer: MutationObserver | undefined;
 
-    // Effects run after hydration. Two frames give the routed subtree one
-    // settled paint without making visitors wait for a long mutation-free
-    // window before scroll movement becomes available.
-    const boot = () => {
-      // A short post-hydration settle avoids adding data attributes while a
-      // lazy route subtree is still hydrating. Content remains visible during
-      // this window, so conversion actions are never delayed or blocked.
-      settleTimer = window.setTimeout(() => {
-        void import("@/lib/home-motion").then(({ startHomeMotion }) => {
-          if (!cancelled) disposeController = startHomeMotion();
-        });
-      }, 180);
+    const start = () => {
+      observer?.disconnect();
+      window.clearTimeout(quietTimer);
+      window.clearTimeout(hardDeadline);
+      void import("@/lib/home-motion").then(({ startHomeMotion }) => {
+        if (!cancelled) disposeController = startHomeMotion();
+      });
     };
+
+    // Lazily hydrated route subtrees keep mutating the DOM after the root
+    // effect runs, so tagging too early makes React compare server HTML with
+    // already-mutated attributes. Waiting for a short mutation-free window
+    // keeps auto-tagging strictly post-hydration, so the markup Google reads
+    // is never altered mid-hydration. Content stays visible throughout, so no
+    // conversion action is delayed.
+    const armQuietWindow = () => {
+      const scheduleQuiet = () => {
+        window.clearTimeout(quietTimer);
+        quietTimer = window.setTimeout(() => {
+          if (!cancelled) start();
+        }, 260);
+      };
+      observer = new MutationObserver(scheduleQuiet);
+      observer.observe(document.body, {
+        subtree: true,
+        childList: true,
+        attributes: true,
+      });
+      scheduleQuiet();
+      // Never wait longer than this: a page with continuous DOM activity must
+      // still get its editorial motion.
+      hardDeadline = window.setTimeout(() => {
+        if (!cancelled) start();
+      }, 2500);
+    };
+
     firstFrame = window.requestAnimationFrame(() => {
-      secondFrame = window.requestAnimationFrame(boot);
+      secondFrame = window.requestAnimationFrame(() => {
+        settleTimer = window.setTimeout(() => {
+          if (!cancelled) armQuietWindow();
+        }, 120);
+      });
     });
+
+
+
 
     return () => {
       cancelled = true;
       window.cancelAnimationFrame(firstFrame);
       window.cancelAnimationFrame(secondFrame);
       window.clearTimeout(settleTimer);
+      window.clearTimeout(quietTimer);
+      window.clearTimeout(hardDeadline);
+      observer?.disconnect();
+
+
       disposeController?.();
       document.documentElement.classList.remove("motion-ready");
       delete document.documentElement.dataset.motionScope;
