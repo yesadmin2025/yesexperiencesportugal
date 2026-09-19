@@ -9,8 +9,8 @@
 
 import { useEffect, useState } from "react";
 import { Link } from "@tanstack/react-router";
-import { ArrowRight } from "lucide-react";
 import { Eyebrow } from "@/components/ui/Eyebrow";
+import { SectionTitle } from "@/components/ui/SectionTitle";
 import { CtaMotionArrow } from "@/components/ui/CtaButton";
 import { Scene } from "@/components/motion/Scene";
 import { CTA_LABELS } from "@/content/cta-vocabulary";
@@ -110,7 +110,7 @@ const RHYTHM_LABELS: Readonly<Record<string, string>> = {
   immersive: "Immersive",
 };
 
-export function FourWaysIn() {
+export function FiveWaysIn() {
   const managedPathList = useHomePaths();
   const managedPaths = new Map(managedPathList.map((path) => [path.id, path]));
   const [draftSummary, setDraftSummary] = useState<ReadonlyArray<string>>([]);
@@ -150,19 +150,16 @@ export function FourWaysIn() {
 
   return (
     <section
-      id="three-paths"
+      id="five-paths"
       aria-labelledby="choose-path-title"
       className="section-enter section-y bg-[color:var(--ivory)] border-b border-[color:var(--border)] scroll-mt-24 md:scroll-mt-28"
     >
       <div className="container-x">
         <div className="reveal mx-auto max-w-2xl text-center">
-          <Eyebrow className="mb-5">Where to begin</Eyebrow>
-          <h2
-            id="choose-path-title"
-            className="serif text-[1.8rem] sm:text-[2.1rem] lg:text-[2.95rem] leading-[1.12] lg:leading-[1.02] tracking-[-0.014em] text-[color:var(--charcoal)] font-medium text-balance"
-          >
-            Five ways <span className="italic font-normal text-[color:var(--teal)]">into Portugal.</span>
-          </h2>
+          <Eyebrow flank className="mb-5">Where to begin</Eyebrow>
+          <SectionTitle id="choose-path-title">
+            Five ways <SectionTitle.Em>into Portugal.</SectionTitle.Em>
+          </SectionTitle>
           <p className="mx-auto mt-5 max-w-xl text-[16px] md:text-[17px] leading-[1.7] text-[color:var(--charcoal-soft)]">
             Begin with a private day, design your own, plan a full journey, or bring us a moment that matters.
           </p>
@@ -203,7 +200,7 @@ export function FourWaysIn() {
               data-smart-start-recommended="true"
               className="mt-4 inline-flex min-h-[44px] items-center gap-2 text-[12px] uppercase tracking-[0.16em] font-semibold text-[color:var(--teal)] underline decoration-[color:var(--gold)]/70 underline-offset-4 sm:mt-0"
             >
-              Resume your draft <ArrowRight size={14} aria-hidden="true" />
+              Resume your draft <CtaMotionArrow />
             </Link>
           </div>
         )}
@@ -230,9 +227,9 @@ function PathCard({ path, index }: { path: Path; index: number }) {
       </div>
       <div className="five-ways-copy">
       <div className="five-ways-kicker flex items-center justify-between gap-4">
-        <span className="text-[11.5px] uppercase tracking-[0.18em] font-semibold text-[color:var(--teal)]">
+        <Eyebrow>
           {String(index + 1).padStart(2, "0")} · {path.eyebrow}
-        </span>
+        </Eyebrow>
       </div>
 
       <h3 className="five-ways-title serif mt-7 text-[1.35rem] md:text-[1.5rem] leading-[1.18] font-medium text-[color:var(--charcoal)]">
@@ -247,7 +244,7 @@ function PathCard({ path, index }: { path: Path; index: number }) {
         <span className="text-[11px] uppercase tracking-[0.22em] font-semibold text-[color:var(--teal)]">
           {path.cta}
         </span>
-        <CtaMotionArrow className="home-way-arrow" />
+        <CtaMotionArrow />
       </span>
       </div>
     </Link>
