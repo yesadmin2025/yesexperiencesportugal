@@ -386,33 +386,121 @@ export function startHomeMotion(): () => void {
   // an element into the entry zone after first paint.
   window.addEventListener("load", schedule, { passive: true });
 
-  // ── Hero parallax (homepage only) ──────────────────────────────────────
-  // Writes a capped `--hero-parallax` on the hero stage; CSS owns the
-  // transform. Capped at ±18px on phones and ±28px wider so the frame never
-  // detaches from the headline, and only while the hero is on screen.
-  const heroStage = document.querySelector<HTMLElement>(".home-energy .hero-story-stage");
+  // ── Scroll scene (hero) + in-focus card tracking ───────────────────────
+  // ONE rAF loop writes CSS custom properties; CSS owns every transform.
+  // `--scene-progress` runs 0 → 1 while the hero leaves the viewport and
+  // drives a slow push-in (1 → 1.08), a gradual dim, and copy that rises at
+  // two different speeds (title slower than support) for real depth.
+  // The CTA block is deliberately excluded so it never leaves finger reach.
+  const heroSection = document.querySelector<HTMLElement>('[data-hero-cinematic="true"]');
+  const heroStage = heroSection?.querySelector<HTMLElement>(".hero-story-stage") ?? null;
+  // On phones there is no pointer, so the card centred in the viewport gets a
+  // light emphasis while the list scrolls — the touch equivalent of hover.
+  const focusCards = Array.from(
+    document.querySelectorAll<HTMLElement>(
+      ".he-card-lift, .fw-card, .editorial-card, [data-editorial-card]",
+    ),
+  );
   let heroRaf = 0;
   let heroScheduled = false;
-  const updateHeroParallax = () => {
+  let focusedCard: HTMLElement | null = null;
+
+  const updateScene = () => {
     heroScheduled = false;
-    if (!heroStage || !heroStage.isConnected) return;
-    const rect = heroStage.getBoundingClientRect();
-    if (rect.bottom <= 0 || rect.top > (window.innerHeight || 0)) return;
-    const cap = window.innerWidth < 768 ? 18 : 28;
-    // 0 at the top of the page, growing as the hero scrolls away.
-    const progress = Math.min(Math.max(-rect.top / Math.max(rect.height, 1), 0), 1);
-    heroStage.style.setProperty("--hero-parallax", `${(progress * cap).toFixed(1)}px`);
+    const vh = window.innerHeight || 1;
+
+    if (heroSection?.isConnected) {
+      const rect = heroSection.getBoundingClientRect();
+      if (rect.bottom > -120 && rect.top < vh) {
+        const progress = Math.min(Math.max(-rect.top / Math.max(rect.height, 1), 0), 1);
+        const eased = progress * progress * (3 - 2 * progress); // smoothstep
+        heroSection.style.setProperty("--scene-progress", eased.toFixed(3));
+        heroStage?.style.setProperty("--hero-zoom", (1 + eased * 0.08).toFixed(4));
+        heroStage?.style.setProperty("--hero-dim", (eased * 0.42).toFixed(3));
+      }
+    }
+
+    if (focusCards.length && window.innerWidth < 900) {
+      const centre = vh * 0.52;
+      let best: HTMLElement | null = null;
+      let bestDist = Number.POSITIVE_INFINITY;
+      for (const card of focusCards) {
+        if (!card.isConnected) continue;
+        const r = card.getBoundingClientRect();
+        if (r.bottom < 0 || r.top > vh) continue;
+        const dist = Math.abs(r.top + r.height / 2 - centre);
+        if (dist < bestDist && dist < vh * 0.34) {
+          bestDist = dist;
+          best = card;
+        }
+      }
+      if (best !== focusedCard) {
+        focusedCard?.classList.remove("is-focus-card");
+        best?.classList.add("is-focus-card");
+        focusedCard = best;
+      }
+    }
   };
-  const scheduleHeroParallax = () => {
-    if (heroScheduled || !heroStage) return;
+  const scheduleScene = () => {
+    if (heroScheduled) return;
     heroScheduled = true;
-    heroRaf = window.requestAnimationFrame(updateHeroParallax);
+    heroRaf = window.requestAnimationFrame(updateScene);
   };
-  if (heroStage) {
-    scheduleHeroParallax();
-    window.addEventListener("scroll", scheduleHeroParallax, { passive: true });
-    window.addEventListener("resize", scheduleHeroParallax, { passive: true });
+  if (!reduced && (heroSection || focusCards.length)) {
+    scheduleScene();
+    window.addEventListener("scroll", scheduleScene, { passive: true });
+    window.addEventListener("resize", scheduleScene, { passive: true });
   }
+
+  // ── Line-by-line storytelling ──────────────────────────────────────────
+  // Headline text is split into its rendered lines AFTER hydration (the
+  // server HTML keeps the full sentence, so Google and no-JS visitors read
+  // the same copy). Each line gets `--line-index`; CSS staggers 90–140ms.
+  if (!reduced && homeScope) {
+    const storyTargets = Array.from(
+      homeScope.querySelectorAll<HTMLElement>("h2[data-motion], h2.he-title, h2"),
+    ).filter((el) => {
+      if (el.hasAttribute("data-story-lines")) return false;
+      if (el.closest('[data-section="hero"], form, dialog, nav, [aria-live]')) return false;
+      if (el.querySelector("svg, img, button, a, input")) return false;
+      const text = (el.textContent ?? "").trim();
+      return text.length > 0 && text.length <= 120;
+    });
+
+    for (const el of storyTargets.slice(0, 24)) {
+      const words = (el.textContent ?? "").trim().split(/\s+/);
+      if (words.length < 2) continue;
+      // Preserve any inline emphasis by bailing out when markup is present.
+      if (el.children.length > 0) continue;
+
+      const frag = document.createDocumentFragment();
+      const spans: HTMLElement[] = [];
+      words.forEach((word, i) => {
+        const span = document.createElement("span");
+        span.className = "story-word";
+        span.textContent = word;
+        frag.appendChild(span);
+        if (i < words.length - 1) frag.appendChild(document.createTextNode(" "));
+        spans.push(span);
+      });
+      el.textContent = "";
+      el.appendChild(frag);
+
+      // Group words into rendered lines by their vertical offset.
+      let lineIndex = -1;
+      let lastTop: number | null = null;
+      for (const span of spans) {
+        const top = Math.round(span.offsetTop);
+        if (lastTop === null || Math.abs(top - lastTop) > 2) {
+          lineIndex += 1;
+          lastTop = top;
+        }
+        span.style.setProperty("--line-index", String(lineIndex));
+      }
+      el.setAttribute("data-story-lines", String(lineIndex + 1));
+    }
+  }
+
 
   // One-shot perf summary — logs a compact single-line diagnostic ~4s
   // after boot when the device is low-power OR `?motionDebug=1` is set.
