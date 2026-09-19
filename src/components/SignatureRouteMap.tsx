@@ -311,7 +311,7 @@ export function SignatureRouteMap({ tour }: Props) {
             >
               <span
                 aria-hidden
-                className="shrink-0 text-[11px] font-semibold text-[color:var(--gold)] tabular-nums w-4"
+                className="w-6 shrink-0 text-[11.5px] font-semibold tabular-nums text-[color:var(--gold)]"
               >
                 {i + 1}.
               </span>
