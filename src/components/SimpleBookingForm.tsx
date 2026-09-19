@@ -431,6 +431,17 @@ export function SimpleBookingForm({ tour }: { tour: SignatureTour }) {
                 : "border-[color:var(--border)] focus:border-[color:var(--gold)]"
             }`}
           />
+          {/* Written-out echo of the chosen day. Native date inputs render in the
+              phone's own short format, which leaves travellers unsure which day
+              they picked; this states it in words without changing the value. */}
+          {!blockMessage && date.length === 10 ? (
+            <p
+              data-testid="signature-date-readable"
+              className="mt-2 text-[13px] leading-[1.5] text-[color:var(--charcoal)]"
+            >
+              {readableDateLabel(date)}
+            </p>
+          ) : null}
           {blockMessage && (
             <p
               id="signature-date-error"
