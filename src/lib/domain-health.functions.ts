@@ -21,9 +21,9 @@ const CANONICAL_HOSTS = ["yesexperiencesportugal.com", "www.yesexperiencesportug
 /** Paths sampled on every host. Legacy paths must 410; canonical must 200 + indexable. */
 const CANONICAL_PATHS = [
   "/",
-  "/signature",
-  "/studio",
-  "/travel-designer",
+  "/experiences",
+  "/studio-v3",
+  "/multi-day",
   "/reviews",
   "/sitemap.xml",
   "/robots.txt",
