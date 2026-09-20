@@ -106,13 +106,23 @@ export const Route = createFileRoute("/sitemap.xml")({
           priority: path === "/pt" ? "0.8" : "0.5",
         }));
 
-        const entries = [
+        const rawEntries = [
           ...staticEntries,
           ...tourEntries,
           ...staticArticleEntries,
           ...dedupedDbPosts,
           ...ptEntries,
         ];
+
+        // Final belt-and-braces dedupe by canonical path. Source collections
+        // are already designed not to overlap, but sitemap.xml must never
+        // advertise the same <loc> twice if a future editorial/database
+        // change accidentally reuses a slug.
+        const entriesByPath = new Map<string, SitemapEntry>();
+        for (const entry of rawEntries) {
+          if (!entriesByPath.has(entry.path)) entriesByPath.set(entry.path, entry);
+        }
+        const entries = Array.from(entriesByPath.values());
 
         const urls = entries.map((e) =>
           [
