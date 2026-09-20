@@ -33,6 +33,7 @@ const REQUIRED_CANONICAL_PATHS = [
   "/portugal-tours",
   "/luxury-tours-portugal",
   "/terms",
+  "/pt/contact",
   "/faq",
 ];
 
@@ -67,7 +68,6 @@ const FORBIDDEN_PATHS = [
   "/cookies",
   "/pt/privacy",
   "/pt/cookies",
-  "/pt/contact",
 ];
 
 // Robots Disallow entries that MUST be present.
