@@ -17,7 +17,12 @@ export type SignatureSeoEntry = {
 export const SIGNATURE_SEO: Record<string, SignatureSeoEntry> = {
   "arrabida-wine-allinclusive": {
     primaryKeyword: "lisbon wine tour",
-    supportingKeywords: ["arrabida wine tour", "private wine tour lisbon"],
+    supportingKeywords: [
+      "arrabida wine tour",
+      "private wine tour lisbon",
+      "private arrabida wine tour from lisbon",
+      "azeitao wine tasting",
+    ],
     title: "Lisbon Wine Tour — Private Arrábida Day | YES",
     description:
       "Private Lisbon wine tour to Arrábida with 2–3 family wineries, Setúbal Moscatel, Livramento Market, Azeitão lunch and hotel pickup.",
