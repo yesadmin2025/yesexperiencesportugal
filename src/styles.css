@@ -7658,20 +7658,25 @@ html {
  * ========================================================== */
 
 /* Hidden initial state — scoped to opted-in scenes only. */
-[data-scene-ready="1"] .scene-atmosphere,
 [data-scene-ready="1"] .scene-title,
 [data-scene-ready="1"] .scene-body,
 [data-scene-ready="1"] .scene-cta,
 [data-scene-ready="1"] .scene-item {
   opacity: 0;
-  transform: none;
-  transition: opacity var(--dur-text) var(--ease-scene);
-  will-change: opacity;
+  transform: translate3d(0, 16px, 0);
+  transition:
+    opacity 600ms var(--ease-scene),
+    transform 600ms var(--ease-scene);
+  will-change: opacity, transform;
 }
 
 [data-scene-ready="1"] .scene-atmosphere {
-  transform: translate3d(0, 0, 0);
-  transition: opacity var(--dur-image) var(--ease-scene);
+  opacity: 0;
+  transform: scale(1.015);
+  transition:
+    opacity var(--dur-image) var(--ease-scene),
+    transform var(--dur-image) var(--ease-scene);
+  will-change: opacity, transform;
 }
 
 /* Revealed state — added by useSceneReveal when the Scene enters the
@@ -7682,24 +7687,33 @@ html {
 [data-scene="in"] .scene-cta,
 [data-scene="in"] .scene-item {
   opacity: 1;
-  transform: none;
+  transform: translate3d(0, 0, 0);
   will-change: auto;
 }
+[data-scene="in"] .scene-atmosphere {
+  transform: scale(1);
+}
 
-/* Final public-motion contract: geometry stays fixed. Movement comes from
-   film framing, editorial masks, opacity cadence, image depth and one-way
-   directional cues — never vertical lift, oscillation or bounce. */
-html[data-motion-scope="marketing"] :is(
-  .he-card-lift,
-  .fw-card,
-  .editorial-card,
-  [data-editorial-card],
-  .decision-scene,
-  .premium-cta,
-  .editorial-action,
-  .hero-cta
-):is(:hover, :focus-visible) {
-  transform: none;
+/* Final public-motion contract: one restrained interaction language.
+   Cards lift 4px on pointer devices, editorial actions 1px, with no bounce. */
+@media (hover: hover) and (pointer: fine) {
+  html[data-motion-scope="marketing"] :is(
+    .he-card-lift,
+    .fw-card,
+    .editorial-card,
+    [data-editorial-card],
+    .decision-scene
+  ):is(:hover, :focus-visible) {
+    transform: translateY(-4px);
+  }
+
+  html[data-motion-scope="marketing"] :is(
+    .premium-cta,
+    .editorial-action,
+    .hero-cta
+  ):is(:hover, :focus-visible) {
+    transform: translateY(-1px);
+  }
 }
 
 html[data-motion-scope="marketing"] :is(.he-card-lift, .fw-card, .editorial-card, [data-editorial-card]):is(:hover, :focus-visible) {
@@ -7718,6 +7732,15 @@ html[data-motion-scope="marketing"] .cta-breathe::after {
 @media (prefers-reduced-motion: reduce) {
   html[data-motion-scope="marketing"] [data-motion="editorial-clip"] {
     clip-path: none !important;
+  }
+  [data-scene-ready="1"] .scene-atmosphere,
+  [data-scene-ready="1"] .scene-title,
+  [data-scene-ready="1"] .scene-body,
+  [data-scene-ready="1"] .scene-cta,
+  [data-scene-ready="1"] .scene-item {
+    opacity: 1 !important;
+    transform: none !important;
+    transition: none !important;
   }
 }
 
