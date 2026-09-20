@@ -32,12 +32,14 @@ export function isPtReady(path: string): boolean {
 export const PT_READY_PATHS: readonly string[] = Array.from(READY_PATHS);
 
 /**
- * Paths with a genuine, indexable page on BOTH sides (EN and PT).
+ * Paths with a genuine page on BOTH sides (EN and PT).
  *
- * This is the hreflang + bilingual-sitemap allow-list. It deliberately
- * excludes `/faq`, `/moments` and `/proposals`: those are 301 redirect
- * stubs in both locales, and hreflang must never point at a redirect.
- * They stay in READY_PATHS so the language switcher keeps working.
+ * This is the locale-pair allow-list used for hreflang/sitemap policy.
+ * Privacy/cookie twins are genuine pages but intentionally noindex, so
+ * `ptSitemapPaths()` removes them from sitemap.xml. It deliberately excludes
+ * `/faq`, `/moments` and `/proposals`: those are 301 redirect stubs in
+ * both locales, and hreflang must never point at a redirect. They stay in
+ * READY_PATHS so the language switcher keeps working.
  */
 const PAIRED = new Set<string>([
   "/",
