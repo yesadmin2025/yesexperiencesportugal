@@ -33,6 +33,7 @@ import { useEditorialOverrides } from "@/lib/editorial-overrides";
 import { CORPORATE_FAQ } from "@/content/seo-faq";
 import imgFatimaNazare from "@/assets/tours/fatima-nazare-obidos/nazare.jpg";
 import { CTA_LABELS } from "@/content/cta-vocabulary";
+import { whatsappUrl } from "@/config/business-nap";
 
 const TITLE = "Corporate Events & Team Building in Portugal | YES";
 const DESCRIPTION =
@@ -210,6 +211,7 @@ function CorporatePage() {
           <div className="mt-9 flex flex-col sm:flex-row gap-3 justify-center">
             <CtaButton
               to="/contact"
+              search={{ type: "corporate" }}
               variant="primary"
               onClick={() =>
                 trackEvent("corporate_hero_proposal_click", {
@@ -221,7 +223,9 @@ function CorporatePage() {
               {CTA_LABELS.corporate}
             </CtaButton>
             <CtaButton
-              to="/contact"
+              href={whatsappUrl()}
+              target="_blank"
+              rel="noopener noreferrer"
               variant="ghost"
               icon={null}
               iconLeading={<MessageCircle size={14} aria-hidden="true" />}
@@ -444,6 +448,7 @@ function CorporatePage() {
             <div className="mt-8 flex flex-col sm:flex-row gap-3">
               <CtaButton
                 to="/contact"
+                search={{ type: "corporate" }}
                 variant="primary"
                 onClick={() =>
                   trackEvent("corporate_form_started", {
@@ -455,7 +460,9 @@ function CorporatePage() {
                 {CTA_LABELS.corporate}
               </CtaButton>
               <CtaButton
-                to="/contact"
+                href={whatsappUrl()}
+                target="_blank"
+                rel="noopener noreferrer"
                 variant="ghost"
                 icon={null}
                 iconLeading={<MessageCircle size={14} aria-hidden="true" />}
