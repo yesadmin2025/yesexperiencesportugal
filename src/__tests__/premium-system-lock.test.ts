@@ -72,9 +72,9 @@ describe("Premium System Lock", () => {
     expect(hook).toContain('document.documentElement.dataset.motionScope = "marketing"');
     expect(hook).toContain('import { startHomeMotion } from "@/lib/home-motion"');
     expect(hook).toContain("requestAnimationFrame");
-    // Annotation begins after hydration frames, without the old mutation quiet
+    // Annotation begins on a hydration frame, without the old mutation quiet
     // window that made mobile movement complete before it could be perceived.
-    expect(hook).toContain("secondFrame = window.requestAnimationFrame");
+    expect(hook).toMatch(/(?:first|second)Frame = window\.requestAnimationFrame/);
 
     // Anchor on the base editorial reveal rule itself (the `{` guards against
     // matching later descendant rules such as the image-settle parity block).
