@@ -30,13 +30,12 @@ test.describe("SEO conversion and index-quality guardrails", () => {
     await expect(page.getByText(/hands-on Azeitão cheese-making workshop/i).first()).toBeVisible();
   });
 
-  test("Portuguese contact soft-404 target is deliberately utility noindex", async ({ page }) => {
+  test("Portuguese contact is indexable and self-canonical for reciprocal hreflang", async ({ page }) => {
     const path = "/pt/contact";
     const response = await page.goto(path);
     expect(response?.status()).toBe(200);
     await expect(page.locator('link[rel="canonical"]')).toHaveAttribute("href", canonicalHref(path));
-    expect(await robotsContent(page)).toContain("noindex");
-    expect(await robotsContent(page)).toContain("follow");
+    expect(await robotsContent(page)).not.toContain("noindex");
     await expect(page.locator("h1")).toBeVisible();
   });
 
