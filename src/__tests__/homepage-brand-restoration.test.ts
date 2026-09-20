@@ -18,7 +18,7 @@ describe("homepage approved brand restoration", () => {
   });
 
   it("uses the approved historical display and editorial treatment in Five Ways", () => {
-    expect(fiveWays).toContain("t-h3");
+    expect(fiveWays).toContain("five-ways-title editorial-title-safe");
     expect(styles).toContain(".five-ways-title");
     expect(fiveWays).toContain("font-normal text-[color:var(--teal)]");
     expect(styles).toContain('--font-display: "Fraunces", serif');
