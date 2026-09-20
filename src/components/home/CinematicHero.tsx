@@ -149,7 +149,7 @@ export function CinematicHero() {
           muted
           loop
           playsInline
-          preload="auto"
+          preload="metadata"
           poster={HERO_FILM.poster}
           controls={false}
           disablePictureInPicture
