@@ -103,9 +103,10 @@ const REQUIRED_DISALLOWS = [
 ];
 
 const CANONICAL_ORIGIN = "https://yesexperiencesportugal.com";
+const CANONICAL_HOST = "yesexperiencesportugal.com";
 
 async function fetchText(url: string): Promise<string> {
-  const ctx = await request.newContext();
+  const ctx = await request.newContext({ extraHTTPHeaders: { Host: CANONICAL_HOST } });
   const res = await ctx.get(url);
   expect(res.status(), `GET ${url}`).toBe(200);
   const body = await res.text();
