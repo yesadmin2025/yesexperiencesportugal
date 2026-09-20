@@ -68,7 +68,6 @@ const OVERRIDES = {
   "/local-stories": { changefreq: "weekly", priority: "0.7" },
   "/portugal-travel-designer": { changefreq: "monthly", priority: "0.85" },
   "/luxury-tours-portugal": { changefreq: "monthly", priority: "0.85" },
-  "/private-tours-portugal": { changefreq: "monthly", priority: "0.85" },
   "/itineraries/10-day-private-portugal-tour": { changefreq: "monthly", priority: "0.8" },
   "/proposal-in-portugal": { changefreq: "monthly", priority: "0.8" },
   "/corporate": { changefreq: "monthly", priority: "0.7" },
