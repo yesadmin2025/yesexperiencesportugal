@@ -9,9 +9,20 @@ import { SITEMAP_STATIC_ROUTES } from "../src/generated/sitemap-routes";
  *    never be silently missing from it.
  * 2. Every <loc> in sitemap.xml resolves to a direct HTTP 200 on the running
  *    app — no redirects, no 404s, no noindex pages.
+ * 3. Every HTML <loc> is self-canonical on the production origin.
  */
 
 const CANONICAL_ORIGIN = "https://yesexperiencesportugal.com";
+
+function canonicalFromHtml(html: string): string | null {
+  const tags = html.match(/<link\b[^>]*>/gi) ?? [];
+  for (const tag of tags) {
+    const rel = tag.match(/\brel=["']([^"']+)["']/i)?.[1]?.toLowerCase() ?? "";
+    if (!rel.split(/\s+/).includes("canonical")) continue;
+    return tag.match(/\bhref=["']([^"']+)["']/i)?.[1] ?? null;
+  }
+  return null;
+}
 
 async function fetchSitemapPaths(baseURL: string): Promise<string[]> {
   const api = await request.newContext({ baseURL });
@@ -46,6 +57,32 @@ test.describe("sitemap route coverage", () => {
         try {
           const res = await api.get(p, { maxRedirects: 0 });
           status = res.status();
+
+          if (status === 200) {
+            const xRobots = (res.headers()["x-robots-tag"] ?? "").toLowerCase();
+            if (xRobots.includes("noindex")) bad.push(`${p} → X-Robots-Tag noindex`);
+
+            const contentType = res.headers()["content-type"] ?? "";
+            if (contentType.includes("text/html")) {
+              const html = await res.text();
+              const metaRobots =
+                html.match(/<meta\b[^>]*name=["']robots["'][^>]*content=["']([^"']+)["'][^>]*>/i)?.[1] ??
+                html.match(/<meta\b[^>]*content=["']([^"']+)["'][^>]*name=["']robots["'][^>]*>/i)?.[1] ??
+                "";
+              if (metaRobots.toLowerCase().includes("noindex")) {
+                bad.push(`${p} → meta robots noindex`);
+              }
+
+              const canonical = canonicalFromHtml(html);
+              const expectedCanonical =
+                p === "/" ? `${CANONICAL_ORIGIN}/` : `${CANONICAL_ORIGIN}${p}`;
+              if (canonical !== expectedCanonical) {
+                bad.push(
+                  `${p} → canonical ${canonical ?? "(missing)"}; expected ${expectedCanonical}`,
+                );
+              }
+            }
+          }
           break;
         } catch (err) {
           if (attempt === 1) {
