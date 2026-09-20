@@ -141,6 +141,16 @@ describe("reveal animation contract — CSS rules", () => {
   });
 });
 
+describe("motion ownership stays consolidated", () => {
+  it("keeps one canonical reveal rule instead of stacking emergency overrides", () => {
+    expect(CSS.match(/html\.reveal-ready \.reveal \{/g)?.length ?? 0).toBe(1);
+    expect(
+      CSS.match(/html\.motion-ready\[data-motion-scope="marketing"\] \[data-motion\] \{/g)?.length ?? 0,
+    ).toBe(1);
+    expect(CSS).not.toContain("VISIBLE_EDITORIAL_MOTION_20260920");
+  });
+});
+
 describe("reveal hidden states are progressively enhanced", () => {
   it("no ungated .reveal / .reveal-stagger / .section-enter rule sets opacity: 0", () => {
     for (const sel of [".reveal {", ".reveal-stagger {", ".section-enter {"]) {
