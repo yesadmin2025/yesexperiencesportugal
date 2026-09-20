@@ -21,11 +21,14 @@ export const Route = createFileRoute("/pt/contact")({
     const raw = typeof search.type === "string" && search.type.length > 0 ? search.type : undefined;
     return raw ? { type: raw } : {};
   },
-  head: () => ({
+  head: (ctx) => {
+    const search = (ctx.match?.search ?? {}) as { type?: string };
+    const isParamVariant = typeof search.type === "string" && search.type.length > 0;
+    return {
     meta: [
-      // PT twin is intentionally indexable so the reciprocal hreflang pair
-      // with /contact is valid and both language versions can consolidate
-      // their own locale-specific signals.
+      // Clean /pt/contact is indexable. Query variants only preselect the
+      // enquiry type, so keep those crawlable but out of the index.
+      ...(isParamVariant ? [{ name: "robots", content: "noindex, follow" }] : []),
       { title: "Contactos — YES Experiences Portugal" },
       {
         name: "description",
@@ -44,7 +47,8 @@ export const Route = createFileRoute("/pt/contact")({
       { rel: "canonical", href: "https://yesexperiencesportugal.com/pt/contact" },
       ...localeAlternateLinks("/contact"),
     ],
-  }),
+    };
+  },
   component: PtContactPage,
 });
 
