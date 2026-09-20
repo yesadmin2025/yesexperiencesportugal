@@ -57,7 +57,8 @@ export function usePublicEditorialMotion(pathname: string): void {
  * Contract (matches the approved bounded plan):
  *   • Reuses the single `[data-motion]` / `.motion-in` primitive — no
  *     second animation system is introduced.
- *   • Marketing scope caps translateY at 8px and duration at 220ms
+ *   • Marketing scope uses visible but restrained vertical travel: 18px on
+ *     mobile, 20–22px on larger screens, with ~580–620ms easing.
  *     (see `html[data-motion-scope="marketing"]` rules in `styles.css`).
  *   • Runs once per element (controller contract).
  *   • `prefers-reduced-motion: reduce` short-circuits everything.
