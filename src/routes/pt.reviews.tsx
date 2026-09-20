@@ -29,8 +29,6 @@ export const Route = createFileRoute("/pt/reviews")({
   // Server-rendered: every card is in the initial HTML.
   loader: async () => getReviewsPageData(),
   head: ({ loaderData }) => {
-    const fpCount = loaderData?.global.first_party_count ?? 0;
-    const fpAvg = loaderData?.global.first_party_avg ?? null;
     const title = "Avaliações de clientes — Tours privados em Portugal pela YES";
     const description =
       "Avaliações verificadas de clientes no Viator, Tripadvisor, GetYourGuide e submissões diretas para os nossos tours privados a partir de Lisboa.";
@@ -77,21 +75,6 @@ export const Route = createFileRoute("/pt/reviews")({
           inLanguage: "pt-PT",
           isPartOf: { "@id": `${SITE_URL}/#website` },
           about: { "@id": `${SITE_URL}/#organization` },
-          ...(fpCount >= 10 && fpAvg
-            ? {
-                mainEntity: {
-                  "@type": "Organization",
-                  "@id": `${SITE_URL}/#organization`,
-                  aggregateRating: {
-                    "@type": "AggregateRating",
-                    ratingValue: Number(fpAvg.toFixed(2)),
-                    reviewCount: fpCount,
-                    bestRating: 5,
-                    worstRating: 1,
-                  },
-                },
-              }
-            : {}),
         }),
       },
     ];
