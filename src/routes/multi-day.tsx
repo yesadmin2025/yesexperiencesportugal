@@ -489,6 +489,38 @@ function MultiDayPage() {
         </div>
       </section>
 
+      {/* Conversion bridge: ask for the enquiry immediately after the strongest proof. */}
+      <section className="py-10 md:py-14 bg-[color:var(--sand)] reveal" aria-label="Start a Travel Designer enquiry">
+        <div className="container-x max-w-3xl text-center">
+          <p className="font-serif italic text-[1.15rem] md:text-[1.35rem] leading-[1.45] text-[color:var(--teal)]">
+            Ready to see what your Portugal could look like?
+          </p>
+          <p className="mt-3 mx-auto max-w-[52ch] text-[14.5px] md:text-[15.5px] leading-[1.75] text-[color:var(--charcoal-soft)]">
+            Tell us your dates, group and the shape of the journey. A local Travel Designer will
+            turn that into a realistic first route.
+          </p>
+          <div className="mt-6 flex flex-col items-center justify-center gap-3 sm:flex-row">
+            <CtaButton
+              to="/contact"
+              search={{ type: "multi_day" }}
+              variant="primary"
+            >
+              {CTA_LABELS.travelDesigner}
+            </CtaButton>
+            <CtaButton
+              href={whatsappHref}
+              target="_blank"
+              rel="noopener noreferrer"
+              variant="ghost"
+              icon={null}
+              iconLeading={<MessageCircle size={14} aria-hidden="true" />}
+            >
+              Talk to a local
+            </CtaButton>
+          </div>
+        </div>
+      </section>
+
       {/* ── Where it can go ──────────────────────────────── */}
       <section className="py-14 md:py-24 reveal">
         <div className="container-x max-w-3xl">
