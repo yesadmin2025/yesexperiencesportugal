@@ -38,8 +38,6 @@ export const Route = createFileRoute("/reviews")({
   // cards and their schema ship inside the initial HTML.
   loader: async () => getReviewsPageData(),
   head: ({ loaderData }) => {
-    const fpCount = loaderData?.global.first_party_count ?? 0;
-    const fpAvg = loaderData?.global.first_party_avg ?? null;
     const tours = loaderData?.tours ?? [];
     const meta = [
       {
@@ -104,21 +102,6 @@ export const Route = createFileRoute("/reviews")({
           inLanguage: "en",
           isPartOf: { "@id": `${SITE_URL}/#website` },
           about: { "@id": `${SITE_URL}/#organization` },
-          ...(fpCount >= 10 && fpAvg
-            ? {
-                mainEntity: {
-                  "@type": "Organization",
-                  "@id": `${SITE_URL}/#organization`,
-                  aggregateRating: {
-                    "@type": "AggregateRating",
-                    ratingValue: Number(fpAvg.toFixed(2)),
-                    reviewCount: fpCount,
-                    bestRating: 5,
-                    worstRating: 1,
-                  },
-                },
-              }
-            : {}),
         }),
       },
     ];
