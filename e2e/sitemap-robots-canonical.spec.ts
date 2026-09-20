@@ -33,7 +33,14 @@ const REQUIRED_CANONICAL_PATHS = [
   "/portugal-tours",
   "/luxury-tours-portugal",
   "/terms",
+  "/pt",
+  "/pt/about",
   "/pt/contact",
+  "/pt/corporate",
+  "/pt/day-tours",
+  "/pt/experiences",
+  "/pt/reviews",
+  "/pt/terms",
   "/faq",
 ];
 
