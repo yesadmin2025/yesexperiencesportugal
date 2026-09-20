@@ -149,6 +149,7 @@ export function CinematicHero() {
           muted
           loop
           playsInline
+          // Metadata preload keeps LCP light; autoplay recovery retries on real user intent.
           preload="metadata"
           poster={HERO_FILM.poster}
           controls={false}
