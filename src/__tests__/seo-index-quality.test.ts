@@ -96,6 +96,21 @@ describe("indexable lead-gen and trust pages", () => {
   });
 });
 
+describe("self-serving Organization review markup stays off owned pages", () => {
+  it("keeps visible homepage reviews but emits no Organization AggregateRating", () => {
+    const src = readFileSync(join(SRC_ROOT, "components", "home", "GuestQuotes.tsx"), "utf8");
+    expect(src).not.toMatch(/buildGuestQuotesJsonLd/);
+    expect(src).not.toMatch(/AggregateRating/);
+    expect(src).toMatch(/700\+ five-star reviews/);
+  });
+
+  it.each(["reviews.tsx", "pt.reviews.tsx"])("%s has no Organization aggregateRating", (file) => {
+    const src = routeSource(file);
+    expect(src).not.toMatch(/aggregateRating/);
+    expect(src).not.toMatch(/"@type":\s*"AggregateRating"/);
+  });
+});
+
 describe("Tailor pages stay intentionally noindex, follow", () => {
   it("tours_.$tourId.tailor.tsx", () => {
     const src = routeSource("tours_.$tourId.tailor.tsx");
