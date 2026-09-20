@@ -74,6 +74,9 @@ const FORBIDDEN_PATHS = [
 const REQUIRED_DISALLOWS = [
   "/admin",
   "/.lovable",
+  "/.mcp",
+  "/mcp",
+  "/mcp-signin",
   "/auth",
   "/booking-confirmed",
   "/brand-qa",
@@ -138,6 +141,23 @@ test.describe("robots.txt + sitemap.xml canonical guardrails", () => {
     expect(disallows, "robots.txt must not block the whole site").not.toContain("/");
     expect(sitemaps).toContain(`${CANONICAL_ORIGIN}/sitemap.xml`);
     expect(sitemaps).toContain(`${CANONICAL_ORIGIN}/sitemap-images.xml`);
+  });
+
+
+  test("sitemap-images.xml only advertises canonical Signature tour pages", async () => {
+    const xml = await fetchText("/sitemap-images.xml");
+    const locs = parseSitemapLocs(xml);
+    expect(locs.length, "image sitemap has tour entries").toBeGreaterThan(0);
+
+    const dupes = locs.filter((l, i) => locs.indexOf(l) !== i);
+    expect(dupes, `duplicate image-sitemap <loc> entries: ${dupes.join(", ")}`).toEqual([]);
+
+    for (const loc of locs) {
+      expect(
+        loc.startsWith(`${CANONICAL_ORIGIN}/tours/`),
+        `image sitemap must only attach images to canonical Signature tour pages: ${loc}`,
+      ).toBe(true);
+    }
   });
 
   test("sitemap.xml includes all canonical routes and excludes disallowed or noindex utilities", async () => {
