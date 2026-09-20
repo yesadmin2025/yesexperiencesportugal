@@ -23,9 +23,9 @@ export const Route = createFileRoute("/pt/contact")({
   },
   head: () => ({
     meta: [
-      // Utility page: keep it accessible and crawlable for links, but do not
-      // spend search index budget on a contact-only destination.
-      { name: "robots", content: "noindex, follow" },
+      // PT twin is intentionally indexable so the reciprocal hreflang pair
+      // with /contact is valid and both language versions can consolidate
+      // their own locale-specific signals.
       { title: "Contactos — YES Experiences Portugal" },
       {
         name: "description",
