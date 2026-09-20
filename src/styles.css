@@ -6648,6 +6648,7 @@ html {
 
 @media (prefers-reduced-motion: reduce) {
   .hero-cinematic .hero-title-line,
+  .hero-cinematic [data-hero-field="subheadline"],
   .hero-cinematic .hero-cta-group {
     animation: none !important;
     opacity: 1 !important;
