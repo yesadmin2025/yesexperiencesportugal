@@ -77,9 +77,13 @@ describe("indexable lead-gen and trust pages", () => {
     expect(src).toContain('localeAlternateLinks("/contact")');
   });
 
-  it("/pt/contact is an indexable reciprocal hreflang twin", () => {
+  it("/pt/contact is indexable cleanly and only noindexes its query variant", () => {
     const src = routeSource("pt.contact.tsx");
-    expect(src).not.toMatch(/content:\s*["'][^"']*noindex/);
+    const robots = robotsLines(src);
+    expect(robots.length).toBeGreaterThan(0);
+    for (const line of robots) {
+      expect(isConditional(line), `unconditional noindex on /pt/contact: ${line.trim()}`).toBe(true);
+    }
     expect(src).toContain(`${ORIGIN}/pt/contact`);
     expect(src).toContain('localeAlternateLinks("/contact")');
   });
