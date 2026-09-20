@@ -10,7 +10,7 @@
  * 3. Trust line: "Based on verified guest reviews across major booking
  *    platforms." — visible, non-decorative.
  */
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { Star, ChevronLeft, ChevronRight, Quote } from "lucide-react";
 import { useServerFn } from "@tanstack/react-start";
 import {
@@ -20,6 +20,7 @@ import {
   type PublicReview,
 } from "@/lib/reviews.functions";
 import { ReviewSourceLink } from "@/components/ui/ReviewSourceLink";
+import { buildGuestQuotesJsonLd, SOURCE_LABEL } from "@/lib/guest-quotes-jsonld";
 import { SectionTitle } from "@/components/ui/SectionTitle";
 
 export function GuestQuotes() {
@@ -46,10 +47,46 @@ export function GuestQuotes() {
   const count = hasReal ? stats!.total_reviews : null;
   const avg = hasReal && stats!.average_rating ? stats!.average_rating : null;
 
-
+  /**
+   * JSON-LD — AggregateRating + Review nodes attached to the sitewide
+   * Organization. Built by the pure `buildGuestQuotesJsonLd` module so
+   * the exact shape shipped to browsers is guarded by
+   * `src/__tests__/guest-quotes-jsonld.test.ts` — schema regressions
+   * (missing author, missing itemReviewed.name, invalid rating range,
+   * malformed datePublished, non-absolute review URL) fail the build.
+   *
+   * `<script>` renders no visible box, so it can never cause CLS.
+   */
+  const structuredData = useMemo(
+    () =>
+      buildGuestQuotesJsonLd(
+        quotes.map((q) => ({
+          id: q.id,
+          source: q.source,
+          rating: q.rating,
+          body: q.body,
+          reviewer_name: q.reviewer_name,
+          reviewer_country: q.reviewer_country,
+          source_url: q.source_url,
+          published_at: q.published_at ?? null,
+        })),
+        { count, avg },
+      ),
+    [quotes, avg, count],
+  );
 
   return (
     <div className="mt-6 md:mt-8 text-center">
+      {/* Structured data — AggregateRating + Review nodes, attached to
+          the sitewide Organization. `<script>` renders no visible box so
+          it cannot cause layout shift. Emitted only once real reviews
+          are rendered on the page (visible-parity requirement). */}
+      {structuredData && (
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
+        />
+      )}
       <div
         className="inline-flex items-center gap-1 mb-5 text-[color:var(--gold)]"
         aria-hidden="true"
@@ -60,7 +97,7 @@ export function GuestQuotes() {
       </div>
 
       <SectionTitle className="mt-3">
-        Five-star reviews{" "}
+        700+ five-star reviews{" "}
         <SectionTitle.Em>
           — real guests, real stories.
         </SectionTitle.Em>
