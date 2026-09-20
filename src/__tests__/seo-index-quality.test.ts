@@ -3,9 +3,9 @@
  *
  * Locks the crawl / index strategy that the live e2e spec
  * (e2e/seo-conversion-index-quality.spec.ts) verifies over HTTP:
- *   - utility pages are unconditional `noindex, follow`, self-canonical,
- *     hreflang-paired and absent from the sitemap
- *   - EN /contact, /reviews and /pt/reviews stay indexable and in the sitemap
+ *   - privacy/cookie utility pages are unconditional `noindex, follow`,
+ *     self-canonical, hreflang-paired and absent from the sitemap
+ *   - EN + PT contact, /reviews and /pt/reviews stay indexable and in the sitemap
  *   - Tailor pages stay intentionally `noindex, follow`
  *   - the 10-day Travel Designer sample stays substantive and indexable
  *   - the Azeitão Signature FAQ tells the full-day truth
@@ -35,7 +35,6 @@ function robotsLines(source: string): string[] {
 const isConditional = (line: string) => /\.\.\.\(|\?/.test(line);
 
 const NOINDEX_UTILITIES: Array<{ file: string; path: string; pair: string }> = [
-  { file: "pt.contact.tsx", path: "/pt/contact", pair: "/contact" },
   { file: "privacy.tsx", path: "/privacy", pair: "/privacy" },
   { file: "pt.privacy.tsx", path: "/pt/privacy", pair: "/privacy" },
   { file: "cookies.tsx", path: "/cookies", pair: "/cookies" },
@@ -75,6 +74,13 @@ describe("indexable lead-gen and trust pages", () => {
       expect(isConditional(line), `unconditional noindex on /contact: ${line.trim()}`).toBe(true);
     }
     expect(src).toContain(`${ORIGIN}/contact"`);
+    expect(src).toContain('localeAlternateLinks("/contact")');
+  });
+
+  it("/pt/contact is an indexable reciprocal hreflang twin", () => {
+    const src = routeSource("pt.contact.tsx");
+    expect(src).not.toMatch(/content:\s*["'][^"']*noindex/);
+    expect(src).toContain(`${ORIGIN}/pt/contact`);
     expect(src).toContain('localeAlternateLinks("/contact")');
   });
 
@@ -167,12 +173,12 @@ describe("sitemap exclusions", () => {
     }
   });
 
-  it("drops the PT twins of noindex utilities while keeping them hreflang-paired", () => {
+  it("drops PT privacy/cookie noindex twins while keeping indexable PT contact", () => {
     for (const en of PT_NOINDEX_UTILITY_PATHS) {
       expect(PT_PAIRED_PATHS, `${en} must stay bilingual`).toContain(en);
       expect(ptPaths.has(`/pt${en}`), `sitemap advertises /pt${en}`).toBe(false);
     }
-    expect(ptPaths.has("/pt/contact")).toBe(false);
+    expect(ptPaths.has("/pt/contact")).toBe(true);
     expect(ptPaths.has("/pt/privacy")).toBe(false);
     expect(ptPaths.has("/pt/cookies")).toBe(false);
   });
