@@ -8,14 +8,13 @@
  * Google reports them as "crawled – currently not indexed" / soft-404 noise
  * and they dilute the crawl budget of the pages that convert.
  *
- * EN `/contact` stays indexable (substantial lead-gen page); only its PT twin
- * is noindex. `/reviews` and `/pt/reviews` are first-party review pages and
- * remain indexable in both languages.
+ * `/contact` and `/pt/contact` both stay indexable (substantial lead-gen page;
+ * only the `?type=` / `?place=` param variants are noindex). `/reviews` and
+ * `/pt/reviews` are first-party review pages and remain indexable too.
  */
 
 /** EN paths whose PT twin is `noindex, follow` and excluded from sitemap.xml. */
 export const PT_NOINDEX_UTILITY_PATHS: ReadonlySet<string> = new Set([
-  "/contact",
   "/privacy",
   "/cookies",
 ]);

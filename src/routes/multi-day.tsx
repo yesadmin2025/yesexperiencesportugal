@@ -503,7 +503,7 @@ function MultiDayPage() {
               {CTA_LABELS.travelDesigner}
             </CtaButton>
             <CtaButton
-              href={whatsappHref}
+              href={whatsappHref("Hi YES — I'd like to plan a multi-day Portugal journey.")}
               target="_blank"
               rel="noopener noreferrer"
               variant="ghost"

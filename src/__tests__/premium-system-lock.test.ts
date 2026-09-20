@@ -7,9 +7,9 @@ const read = (path: string) => readFileSync(resolve(process.cwd(), path), "utf8"
 const css = read("src/styles.css");
 
 describe("Premium System Lock", () => {
-  it("defines the final semantic typography scale with Newsreader and Inter", () => {
-    expect(css).toContain('--font-display: "Newsreader", serif');
-    expect(css).toContain('--font-serif: "Newsreader", serif');
+  it("defines the final semantic typography scale with Fraunces and Inter", () => {
+    expect(css).toContain('--font-display: "Fraunces", serif');
+    expect(css).toContain('--font-serif: "Fraunces", serif');
     expect(css).toContain('--font-sans: "Inter", system-ui, sans-serif');
     for (const token of [
       ".t-display-xl",
@@ -72,9 +72,9 @@ describe("Premium System Lock", () => {
     expect(hook).toContain('document.documentElement.dataset.motionScope = "marketing"');
     expect(hook).toContain('import { startHomeMotion } from "@/lib/home-motion"');
     expect(hook).toContain("requestAnimationFrame");
-    // Annotation begins after hydration frames, without the old mutation quiet
+    // Annotation begins on a hydration frame, without the old mutation quiet
     // window that made mobile movement complete before it could be perceived.
-    expect(hook).toContain("secondFrame = window.requestAnimationFrame");
+    expect(hook).toMatch(/(?:first|second)Frame = window\.requestAnimationFrame/);
 
     // Anchor on the base editorial reveal rule itself (the `{` guards against
     // matching later descendant rules such as the image-settle parity block).

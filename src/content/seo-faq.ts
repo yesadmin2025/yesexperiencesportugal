@@ -97,6 +97,14 @@ export const WINE_TOUR_FAQ_BY_ID: Record<string, FaqItem[]> = {
       q: "Which wines will I taste on this Lisbon wine tour?",
       a: "Moscatel de Setúbal at a historic Azeitão cellar, and Castelão / Syrah / Fernão Pires reds at a second family estate. Every tasting is guided by someone who works with the wine, not a hostess reading from a script.",
     },
+    {
+      q: "Why Azeitão for a private wine tour from Lisbon?",
+      a: "Azeitão sits between the Arrábida hills and the Setúbal estuary, so a single private day covers cellars, market and coast without long drives. The wineries here are family houses rather than visitor centres, which is why we build the day around them.",
+    },
+    {
+      q: "Is the Arrábida wine day private to my group?",
+      a: "Yes. The vehicle, the guide and the pace belong only to your group, so tastings, lunch and time in the Arrábida Natural Park follow how your day is going rather than a shared schedule.",
+    },
   ],
   "azeitao-cheese": [
     {

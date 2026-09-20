@@ -218,14 +218,19 @@ export function CinematicHero() {
                 {HERO_PHRASES[1]}
               </span>
             </span>
+            {/* The descriptive service line lives inside the <h1> so the page's
+                main heading states what we actually sell — private Portugal
+                days, journeys and special moments — while the approved
+                two-line brand statement and the on-screen composition stay
+                byte-for-byte unchanged. */}
+            <span
+              data-hero-field="subheadline"
+              className="hero-support mx-auto mt-5 block max-w-[39rem] px-2 font-sans text-[13px] font-normal not-italic leading-[1.65] tracking-[0.025em] text-[color:var(--ivory)]/88 sm:text-[14px] md:mt-6 md:text-[15px]"
+              style={{ animation: `heroApprovedReveal 1000ms ${EASE} 2850ms both` }}
+            >
+              {HERO_COPY.subheadline}
+            </span>
           </h1>
-          <p
-            data-hero-field="subheadline"
-            className="hero-support mx-auto mt-5 max-w-[39rem] px-2 font-sans text-[13px] leading-[1.65] tracking-[0.025em] text-[color:var(--ivory)]/88 sm:text-[14px] md:mt-6 md:text-[15px]"
-            style={{ animation: `heroApprovedReveal 1000ms ${EASE} 2850ms both` }}
-          >
-            {HERO_COPY.subheadline}
-          </p>
         </div>
       </div>
 
