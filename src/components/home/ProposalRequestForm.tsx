@@ -161,6 +161,13 @@ export function ProposalRequestForm({ id = "proposal-request" }: { id?: string }
         </div>
 
         <div>
+          <label className={labelClass} htmlFor="pr-company">
+            Company <span className="font-normal normal-case tracking-normal">(optional)</span>
+          </label>
+          <input id="pr-company" name="company" className={fieldClass} autoComplete="organization" />
+        </div>
+
+        <div>
           <label className={labelClass} htmlFor="pr-dates">
             Dates or month
           </label>
