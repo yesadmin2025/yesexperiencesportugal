@@ -194,85 +194,64 @@ export function CinematicHero() {
           two-line statement and the low action pair. */}
       <div className="hero-cinematic-layout absolute inset-0 z-10 grid px-5 sm:px-10 md:px-16">
       <div className="hero-stanza-zone flex min-w-0 items-center justify-center">
-        <div className="w-full text-center">
-          <h1
-            data-hero-stanza="true"
-            data-mixed-emphasis="exempt"
-            className="hero-h1 m-0 text-center font-serif"
-          >
-            <span className="hero-title-mask block px-[0.08em] pb-[0.12em]">
-              <span
-                className="hero-title-line block font-serif italic font-normal m-0 text-[color:var(--gold-soft)]"
-                data-hero-field="headlineLine1"
-                style={storyLineStyle(500)}
-              >
-                {HERO_PHRASES[0]}
-              </span>
+        <h1
+          data-hero-stanza="true"
+          data-mixed-emphasis="exempt"
+          className="hero-h1 m-0 text-center font-serif"
+        >
+          <span className="hero-title-mask block px-[0.08em] pb-[0.12em]">
+            <span
+              className="hero-title-line block font-serif italic font-normal m-0 text-[color:var(--gold-soft)]"
+              data-hero-field="headlineLine1"
+              style={storyLineStyle(500)}
+            >
+              {HERO_PHRASES[0]}
             </span>
-            <span className="hero-title-mask mt-1 block px-[0.08em] pb-[0.16em] sm:mt-1.5">
-              <span
-                className="hero-title-line block font-serif italic font-normal text-[color:var(--gold-soft)]"
-                data-hero-field="headlineLine2"
-                style={storyLineStyle(1700)}
-              >
-                {HERO_PHRASES[1]}
-              </span>
+          </span>
+          <span className="hero-title-mask mt-1 block px-[0.08em] pb-[0.16em] sm:mt-1.5">
+            <span
+              className="hero-title-line block font-serif italic font-normal text-[color:var(--gold-soft)]"
+              data-hero-field="headlineLine2"
+              style={storyLineStyle(1700)}
+            >
+              {HERO_PHRASES[1]}
             </span>
-          </h1>
-          <p
-            data-hero-field="subheadline"
-            className="mx-auto mt-5 max-w-[39rem] px-2 font-sans text-[13px] leading-[1.65] tracking-[0.025em] text-[color:var(--ivory)]/88 sm:text-[14px] md:mt-6 md:text-[15px]"
-            style={{
-              animation: `heroApprovedReveal 1000ms ${EASE} 2850ms both`,
-            }}
-          >
-            Private days, journeys and special moments across Portugal, guided by local knowledge.
-          </p>
-        </div>
+          </span>
+        </h1>
       </div>
 
       {/* Original low CTA anchor. */}
       <div
-        className="hero-cta-group z-20 flex flex-col items-center gap-3"
+        className="hero-cta-group z-20 flex flex-col items-center gap-3 sm:flex-row sm:justify-center sm:gap-4"
         data-hero-composed="true"
         style={{
           opacity: 1,
-          animation: `heroApprovedReveal ${CTA_FADE_MS}ms ${EASE} 4000ms both`,
+          animation: `heroApprovedReveal ${CTA_FADE_MS}ms ${EASE} 3100ms both`,
           pointerEvents: "auto",
         }}
       >
-        <div className="flex flex-col items-center gap-3 sm:flex-row sm:justify-center sm:gap-4">
-          <Link
-            to="/studio-v3"
-            data-hero-field="primaryCta"
-            data-analytics="hero_open_studio"
-            data-analytics-placement="hero"
-            className="hero-cta hero-cta--primary group inline-flex min-h-[44px] min-w-[196px] items-center justify-center whitespace-nowrap px-7 text-[11px] uppercase tracking-[0.18em] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)] focus-visible:ring-offset-4 focus-visible:ring-offset-transparent sm:min-w-[206px] sm:text-[11px]"
-          >
-            <span className="hero-cta__sheen" aria-hidden="true" />
-            <span className="relative z-10 inline-flex items-center gap-2.5">
-              {HERO_COPY.primaryCta}
-              {ARROW}
-            </span>
-          </Link>
-          <Link
-            to="/experiences"
-            data-hero-field="secondaryCta"
-            data-analytics="hero_choose_experience"
-            data-analytics-placement="hero"
-            className="hero-cta hero-cta--ghost group inline-flex min-h-[44px] min-w-[196px] items-center justify-center whitespace-nowrap px-7 text-[11px] uppercase tracking-[0.18em] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)] focus-visible:ring-offset-4 focus-visible:ring-offset-transparent sm:min-w-[206px] sm:text-[11px]"
-          >
-            <span className="hero-cta__sheen" aria-hidden="true" />
-            <span className="relative z-10">{HERO_COPY.secondaryCta}</span>
-          </Link>
-        </div>
         <Link
-          to="/portugal-travel-designer"
-          data-analytics="hero_travel_designer"
+          to="/studio-v3"
+          data-hero-field="primaryCta"
+          data-analytics="hero_open_studio"
           data-analytics-placement="hero"
-          className="mt-1 inline-flex min-h-[36px] items-center justify-center rounded-sm px-2 font-sans text-[10.5px] font-medium tracking-[0.08em] text-[color:var(--ivory)]/82 underline decoration-[color:var(--gold-soft)]/55 underline-offset-4 transition-colors hover:text-[color:var(--gold-soft)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)]"
+        className="hero-cta hero-cta--primary group inline-flex min-h-[44px] min-w-[196px] items-center justify-center whitespace-nowrap px-7 text-[11px] uppercase tracking-[0.18em] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)] focus-visible:ring-offset-4 focus-visible:ring-offset-transparent sm:min-w-[206px] sm:text-[11px]"
         >
-          Planning a full Portugal journey? Work with a Travel Designer →
+          <span className="hero-cta__sheen" aria-hidden="true" />
+          <span className="relative z-10 inline-flex items-center gap-2.5">
+            {HERO_COPY.primaryCta}
+            {ARROW}
+          </span>
+        </Link>
+        <Link
+          to="/experiences"
+          data-hero-field="secondaryCta"
+          data-analytics="hero_choose_experience"
+          data-analytics-placement="hero"
+          className="hero-cta hero-cta--ghost group inline-flex min-h-[44px] min-w-[196px] items-center justify-center whitespace-nowrap px-7 text-[11px] uppercase tracking-[0.18em] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)] focus-visible:ring-offset-4 focus-visible:ring-offset-transparent sm:min-w-[206px] sm:text-[11px]"
+        >
+          <span className="hero-cta__sheen" aria-hidden="true" />
+          <span className="relative z-10">{HERO_COPY.secondaryCta}</span>
         </Link>
       </div>
       </div>
