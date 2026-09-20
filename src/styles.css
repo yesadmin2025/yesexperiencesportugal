@@ -5224,7 +5224,7 @@ html[data-motion-scope="marketing"] .signature-image-settle {
     transform: translate3d(0, 0, 0);
   }
   .home-energy .section-enter {
-    transition: opacity 520ms cubic-bezier(0.22, 1, 0.36, 1);
+    transition: opacity 560ms cubic-bezier(0.22, 1, 0.36, 1);
   }
 
   /* Sharper homepage stagger rhythm (within 80–120ms band) so cards
@@ -5234,24 +5234,24 @@ html[data-motion-scope="marketing"] .signature-image-settle {
     animation-delay: 0ms !important;
   }
   .home-energy .he-stagger > .reveal-stagger:nth-child(2) {
-    transition-delay: 130ms !important;
-    animation-delay: 130ms !important;
+    transition-delay: 110ms !important;
+    animation-delay: 110ms !important;
   }
   .home-energy .he-stagger > .reveal-stagger:nth-child(3) {
-    transition-delay: 260ms !important;
-    animation-delay: 260ms !important;
+    transition-delay: 220ms !important;
+    animation-delay: 220ms !important;
   }
   .home-energy .he-stagger > .reveal-stagger:nth-child(4) {
-    transition-delay: 390ms !important;
-    animation-delay: 390ms !important;
+    transition-delay: 330ms !important;
+    animation-delay: 330ms !important;
   }
   .home-energy .he-stagger > .reveal-stagger:nth-child(5) {
-    transition-delay: 520ms !important;
-    animation-delay: 520ms !important;
+    transition-delay: 440ms !important;
+    animation-delay: 440ms !important;
   }
   .home-energy .he-stagger > .reveal-stagger:nth-child(6) {
-    transition-delay: 650ms !important;
-    animation-delay: 650ms !important;
+    transition-delay: 550ms !important;
+    animation-delay: 550ms !important;
   }
 
   html.motion-visible-test .home-energy .reveal,
