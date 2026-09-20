@@ -24,6 +24,9 @@ Disallow: /email
 Disallow: /hero-verify
 Disallow: /lovable
 Disallow: /.lovable
+Disallow: /.mcp
+Disallow: /mcp
+Disallow: /mcp-signin
 Disallow: /preview-check
 Disallow: /qa
 Disallow: /s/
