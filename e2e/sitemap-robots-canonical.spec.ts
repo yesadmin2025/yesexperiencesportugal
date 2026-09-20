@@ -32,7 +32,6 @@ const REQUIRED_CANONICAL_PATHS = [
   "/portugal-for-american-travelers",
   "/portugal-tours",
   "/luxury-tours-portugal",
-  "/private-tours-portugal",
   "/terms",
   "/faq",
 ];
@@ -58,6 +57,7 @@ const FORBIDDEN_PATHS = [
   "/typography-audit",
   "/unsubscribe",
   "/moments",
+  "/private-tours-portugal",
   "/arrabida-wine-tour",
   "/arrabida-day-trip-from-lisbon",
   "/alentejo-wine-tour-from-lisbon",
@@ -137,6 +137,7 @@ test.describe("robots.txt + sitemap.xml canonical guardrails", () => {
     }
     expect(disallows, "robots.txt must not block the whole site").not.toContain("/");
     expect(sitemaps).toContain(`${CANONICAL_ORIGIN}/sitemap.xml`);
+    expect(sitemaps).toContain(`${CANONICAL_ORIGIN}/sitemap-images.xml`);
   });
 
   test("sitemap.xml includes all canonical routes and excludes disallowed or noindex utilities", async () => {
