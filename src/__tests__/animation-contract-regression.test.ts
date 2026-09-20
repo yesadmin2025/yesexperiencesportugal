@@ -4,10 +4,10 @@
  * Beyond "visibility lands within 2.5s", this suite proves the
  * animation primitives still exist and behave the way the UI relies on:
  *
- *   1. `.reveal` starts at opacity:0 without positional movement.
- *   2. `.reveal.is-visible` flips opacity to 1 without bounce.
- *   3. `.reveal-stagger` uses a fixed-geometry horizontal editorial mask.
- *   4. `.section-enter` is opacity-only (no transform conflict).
+ *   1. `.reveal` starts at opacity:0 with a visible 22px vertical entrance.
+ *   2. `.reveal.is-visible` settles at translateY(0) without bounce.
+ *   3. `.reveal-stagger` combines 22px travel with restrained tonal settling.
+ *   4. `.section-enter` remains opacity-only (no parent/child transform conflict).
  *   5. `.section-enter.is-visible` is opacity:1.
  *   6. Reduced-motion media query forces `.reveal` and `.reveal-stagger`
  *      to opacity:1 with `transition:none`.
@@ -52,38 +52,39 @@ function ruleBlock(selector: string): string {
 }
 
 describe("reveal animation contract — CSS rules", () => {
-  it(".reveal starts hidden and animates opacity without positional movement", () => {
+  it(".reveal starts hidden and animates with visible vertical travel", () => {
     const body = ruleBlock("html.reveal-ready .reveal {");
     expect(body, "gated .reveal rule must exist").not.toBe("");
     expect(body).toMatch(/opacity:\s*0/);
-    expect(body).toMatch(/transform:\s*none/);
+    expect(body).toMatch(/transform:\s*translate3d\(0,\s*22px,\s*0\)/);
     expect(body).toMatch(/transition:[\s\S]*opacity/);
-    expect(body).not.toMatch(/transition:[\s\S]*transform/);
+    expect(body).toMatch(/transition:[\s\S]*transform/);
   });
 
-  it(".reveal.is-visible reaches opacity:1 without movement", () => {
+  it(".reveal.is-visible reaches opacity:1 and final position", () => {
     const body = ruleBlock("html.reveal-ready .reveal.is-visible");
     expect(body, ".reveal.is-visible rule must exist").not.toBe("");
     expect(body).toMatch(/opacity:\s*1/);
-    expect(body).toMatch(/transform:\s*none/);
+    expect(body).toMatch(/transform:\s*translate3d\(0,\s*0,\s*0\)/);
   });
 
-  it(".reveal-stagger starts hidden and uses contrast cadence without positional movement", () => {
+  it(".reveal-stagger starts hidden with vertical travel and contrast cadence", () => {
     const body = ruleBlock("html.reveal-ready .reveal-stagger {");
     expect(body, ".reveal-stagger rule must exist").not.toBe("");
     expect(body).toMatch(/opacity:\s*0/);
-    expect(body).toMatch(/transform:\s*none/);
-    expect(body).toMatch(/filter:\s*saturate\(0\.76\) contrast\(0\.92\)/);
+    expect(body).toMatch(/transform:\s*translate3d\(0,\s*22px,\s*0\)/);
+    expect(body).toMatch(/filter:\s*saturate\(0\.88\) contrast\(0\.96\)/);
     expect(body).toMatch(/transition:[\s\S]*opacity/);
+    expect(body).toMatch(/transition:[\s\S]*transform/);
     expect(body).toMatch(/transition:[\s\S]*filter/);
   });
 
-  it(".reveal-stagger.is-visible reaches opacity:1 without movement", () => {
+  it(".reveal-stagger.is-visible reaches opacity:1 and final position", () => {
     const body = ruleBlock("html.reveal-ready .reveal-stagger.is-visible");
     expect(body, ".reveal-stagger.is-visible rule must exist").not.toBe("");
     expect(body).toMatch(/opacity:\s*1/);
     expect(body).toMatch(/filter:\s*saturate\(1\) contrast\(1\)/);
-    expect(body).toMatch(/transform:\s*none/);
+    expect(body).toMatch(/transform:\s*translate3d\(0,\s*0,\s*0\)/);
   });
 
   it(".section-enter is opacity-only (never adds a transform that would fight inner reveals)", () => {
@@ -98,6 +99,23 @@ describe("reveal animation contract — CSS rules", () => {
     const body = ruleBlock("html.reveal-ready .section-enter.is-visible");
     expect(body, ".section-enter.is-visible rule must exist").not.toBe("");
     expect(body).toMatch(/opacity:\s*1/);
+  });
+
+  it("marketing motion keeps a visible vertical entrance", () => {
+    const body = ruleBlock('html.motion-ready[data-motion-scope="marketing"] [data-motion] {');
+    expect(body, "marketing data-motion rule must exist").not.toBe("");
+    expect(body).toMatch(/opacity:\s*0/);
+    expect(body).toMatch(/transform:\s*translate3d\(0,\s*20px,\s*0\)/);
+    expect(body).toMatch(/transition:[\s\S]*transform/);
+  });
+
+  it("card reveal uses 22px travel and a restrained crop", () => {
+    const body = ruleBlock(
+      'html.motion-ready[data-motion-scope="marketing"] [data-motion="card-reveal"] {',
+    );
+    expect(body, "marketing card-reveal rule must exist").not.toBe("");
+    expect(body).toMatch(/transform:\s*translate3d\(0,\s*22px,\s*0\)/);
+    expect(body).toMatch(/clip-path:\s*inset\(3% 3% 3% 3%\)/);
   });
 
   it("prefers-reduced-motion forces .reveal and .reveal-stagger to opacity:1", () => {
