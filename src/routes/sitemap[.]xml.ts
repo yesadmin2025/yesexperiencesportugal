@@ -4,6 +4,7 @@ import { signatureTours } from "@/data/signatureTours";
 import {
   LOCAL_STORIES_ARTICLES,
   PUBLISHED_LOCAL_STORIES_ARTICLES,
+  isRetiredLocalStorySlug,
 } from "@/content/local-stories-articles";
 import { supabase } from "@/integrations/supabase/client";
 import { PT_PAIRED_PATHS } from "@/i18n/pt-ready";
@@ -79,7 +80,10 @@ export const Route = createFileRoute("/sitemap.xml")({
             .limit(500);
           postEntries =
             data
-              ?.filter((p: { slug: string | null }) => isRealSlug(p.slug))
+              ?.filter(
+                (p: { slug: string | null }) =>
+                  isRealSlug(p.slug) && !isRetiredLocalStorySlug(p.slug),
+              )
               .map((p: { slug: string; published_at: string | null }) => ({
                 path: `/local-stories/${p.slug}`,
                 lastmod: p.published_at ?? undefined,
