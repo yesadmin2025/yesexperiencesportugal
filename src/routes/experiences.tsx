@@ -170,6 +170,9 @@ function ExperiencesPage() {
         aria-label="Signature collection"
       >
         <div className="container-x">
+          {/* Keeps the heading order h1 → h2 → h3 without adding visible chrome
+              to the conversion-first collection layout. */}
+          <h2 className="sr-only">Signature Experiences</h2>
           <Scene className="experiences-editorial-grid experiences-story grid gap-6 md:grid-cols-2 md:gap-7 lg:gap-8">
             {visibleTours.map((tour, index) => (
               <TourCard key={tour.id} tour={tour} resolveImg={resolveImg} featured={index < 2} compareActive={selectedTours.includes(tour.id)} compareDisabled={selectedTours.length >= 2 && !selectedTours.includes(tour.id)} onCompare={() => toggleComparison(tour.id)} />

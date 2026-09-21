@@ -348,13 +348,17 @@ function Field({
   autoComplete?: string;
   defaultValue?: string;
 }) {
+  // Explicit id/htmlFor pairing alongside the wrapping label so assistive
+  // technology and automated checks both resolve the accessible name.
+  const fieldId = `contact-${name}`;
   return (
-    <label className="block">
+    <label className="block" htmlFor={fieldId}>
       <span className="text-xs uppercase tracking-[0.25em] text-[color:var(--charcoal-soft)]">
         {label}
       </span>
       {textarea ? (
         <textarea
+          id={fieldId}
           name={name}
           rows={5}
           required={required}
@@ -365,6 +369,7 @@ function Field({
         />
       ) : (
         <input
+          id={fieldId}
           type={type}
           name={name}
           required={required}
@@ -389,12 +394,14 @@ function SelectField({
   options: ReadonlyArray<{ value: string; label: string }>;
   defaultValue?: string;
 }) {
+  const fieldId = `contact-${name}`;
   return (
-    <label className="block">
+    <label className="block" htmlFor={fieldId}>
       <span className="text-xs uppercase tracking-[0.25em] text-[color:var(--charcoal-soft)]">
         {label}
       </span>
       <select
+        id={fieldId}
         name={name}
         required
         defaultValue={defaultValue ?? ""}
