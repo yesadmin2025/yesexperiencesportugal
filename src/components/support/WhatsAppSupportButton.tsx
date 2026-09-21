@@ -26,7 +26,7 @@ const WA_DEFAULT_MESSAGE = "Hi YES Experiences Portugal — I'd like a hand with
 const HIDE_PATTERNS: RegExp[] = [
   /^\/checkout(\/|$)/i,
   /^\/studio-v3(\/|$)/i,
-  /^\/studio-v3(\/|$)/i,
+  /^\/admin(\/|$)/i,
 ];
 
 declare global {
