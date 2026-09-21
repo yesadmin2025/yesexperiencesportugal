@@ -180,7 +180,7 @@ function DayTripsFromLisbon() {
       <section className="bg-[color:var(--sand)] py-14 md:py-20">
         <div className="container-x max-w-3xl">
           <Eyebrow flank>Lisbon · Setúbal · Alentejo</Eyebrow>
-          <h1 className="font-display mt-5 text-[2rem] sm:text-[2.4rem] md:text-[3rem] font-medium leading-[1.08] tracking-[-0.02em] text-[color:var(--charcoal)]">
+          <h1 className="font-serif mt-4 text-[2.25rem] md:text-[3.25rem] font-medium leading-[1.12] md:leading-[1.08] tracking-normal text-[color:var(--charcoal)]">
             Day trips from Lisbon,{" "}
             <span className="italic font-normal text-[color:var(--teal)]">
               designed by people who live here.
