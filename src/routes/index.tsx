@@ -57,10 +57,10 @@ const LIVE_REVIEW_FALLBACK_TOURS = [
  * Google snippet and shared cards read like the premium opening screen.
  * Keeps the primary keyword ("private day trips from Lisbon") intact.
  */
-const HOME_SEO_TITLE = "Private Experiences in Portugal · Book a Private Tour | YES";
+const HOME_SEO_TITLE = "YES Experiences Portugal | Private Tours & Journeys";
 const HOME_SEO_SOCIAL_TITLE = `${HERO_COPY.headlineLine1} ${HERO_COPY.headlineLine2} | YES Experiences Portugal`;
 const HOME_SEO_DESCRIPTION =
-  "Private experiences across Portugal with a local host — Sintra, Arrábida, Évora. See the real route and price, then book your private tour with instant confirmation.";
+  "Private tours and tailor-made journeys across Portugal, designed by local experts. Reserve a Signature day, design your own, or plan a full journey.";
 
 
 /** Homepage Journal row — three evergreen Local Stories guides.
