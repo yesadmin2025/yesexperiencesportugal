@@ -890,10 +890,8 @@ function HomePage() {
                  </SectionTitle.Em>
                </SectionTitle>
               <p className="mt-5 text-[15px] leading-relaxed text-[color:var(--charcoal-soft)]">
-                From Gerês and the Douro to the Algarve, Madeira and the Azores. Tap any place and
-                see how a{" "}
-                <strong className="font-medium text-[color:var(--charcoal)]">private day</strong>{" "}
-                can be designed around it.
+                From Gerês and the Douro to the Algarve, Madeira and the Azores. Choose a place and
+                see how your Portugal can take shape around it.
               </p>
 
             </div>
