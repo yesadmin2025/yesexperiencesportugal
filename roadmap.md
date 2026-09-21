@@ -86,6 +86,6 @@
 - [x] Compare after captures and run focused tests
 
 ## Mobile header and Experiences consistency
-- [ ] Audit requested page headers at 393px and 430px
-- [ ] Unify every Experiences card structure and metadata order
-- [ ] Validate five viewports and run focused checks
+- [x] Audit requested page headers at 393px and 430px
+- [x] Unify every Experiences card structure and metadata order
+- [x] Validate five viewports and run focused checks
