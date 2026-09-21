@@ -131,7 +131,7 @@ const SIGNATURE_TOURS: FooterLink[] = [
 const POPULAR_SEARCHES: FooterLink[] = [
   { to: "/portugal-tours", label: "Portugal tours" },
   { to: "/luxury-tours-portugal", label: "Luxury Portugal tours" },
-  { to: "/portugal-tours", label: "Private tours Portugal" },
+  { to: "/lisbon-private-tours", label: "Private tours from Lisbon" },
   {
     to: "/local-stories/$slug",
     params: { slug: "best-wine-tours-from-lisbon" },
