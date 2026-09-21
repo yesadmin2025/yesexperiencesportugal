@@ -432,7 +432,7 @@ function TourHero({
               srcSet={heroSrcSet}
               alt={heroAlt}
               ratio="16/9"
-              className="aspect-[2/1] lg:aspect-[16/9]"
+              className="!aspect-[2/1] lg:!aspect-[16/9]"
               priority
               focal={tour.focal ?? "50% 50%"}
               sizes="(min-width: 1024px) 576px, 100vw"
