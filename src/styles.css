@@ -8159,17 +8159,9 @@ html.reveal-ready .about-story--quiet :is(li, a) { transition-delay: 0ms; }
   }
 }
 
-[data-scene-ready="1"] .experience-card-image {
-  clip-path: inset(0 100% 0 0);
-  transition: clip-path 820ms var(--motion-ease-editorial);
-}
-[data-scene="in"] .experience-card-image { clip-path: inset(0); }
-.experience-editorial-card:nth-child(even) .experience-card-image {
-  clip-path: inset(0 0 0 100%);
-}
-[data-scene="in"] .experience-editorial-card:nth-child(even) .experience-card-image {
-  clip-path: inset(0);
-}
+/* Conversion-first grid: the card is the single dominant motion idea.
+   The former alternating clip-path wipe stacked a second reveal on the
+   image and could leave a masked/blank frame, so it is retired. */
 .experience-card-image { aspect-ratio: 3 / 2; }
 .experience-card-image > * { height: 100%; aspect-ratio: auto; }
 .experience-card-content { position: relative; }
