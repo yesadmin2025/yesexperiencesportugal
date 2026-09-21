@@ -538,13 +538,15 @@ function BookPage() {
                 </div>
 
                 <p className="text-center text-[12.5px] leading-snug text-[color:var(--charcoal-soft)]">
-                  A person replies within 24 hours — never an autoresponder. No payment is taken in this form; to pay now, choose a Signature day and use instant confirmation above.
+                  A person replies within 24 hours — never an autoresponder. No payment is taken in
+                  this form.
                 </p>
               </div>
             </form>
           )}
         </div>
       </section>
+      ) : null}
 
       <section className="pb-16 md:pb-20">
         <div className="container-x max-w-4xl">
