@@ -20,7 +20,7 @@ const baseClasses = "editorial-title-safe font-serif text-[color:var(--charcoal)
 
 const sizeClasses = {
   default:
-    "text-[1.75rem] md:text-[2.25rem] leading-[1.18] md:leading-[1.1] text-balance",
+    "text-[1.8125rem] md:text-[2.25rem] leading-[1.18] md:leading-[1.1] text-balance",
   anchor:
     "text-[2.25rem] md:text-[3.25rem] leading-[1.12] md:leading-[1.08] text-balance",
   compact:
