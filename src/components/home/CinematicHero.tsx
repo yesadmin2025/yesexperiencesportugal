@@ -270,7 +270,7 @@ export function CinematicHero() {
         </Link>
         </div>
         <Link
-          to="/portugal-travel-designer"
+          to="/multi-day"
           data-analytics="hero_travel_designer"
           data-analytics-placement="hero"
           className="mt-1 inline-flex min-h-[36px] items-center justify-center rounded-sm px-2 font-sans text-[10.5px] font-medium tracking-[0.08em] text-[color:var(--ivory)]/82 underline decoration-[color:var(--gold-soft)]/55 underline-offset-4 transition-colors hover:text-[color:var(--gold-soft)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)]"
