@@ -6611,8 +6611,29 @@ html {
 }
 @media (max-width: 767px) {
   .hero-cinematic {
-    height: calc(100svh - 64px);
-    min-height: calc(100svh - 64px);
+    /* Full-bleed first screen on mobile. `vh` is the legacy fallback,
+       `svh` avoids Safari chrome gaps, and `dvh` tracks the visible viewport
+       where supported. The fixed navigation sits over the film rather than
+       consuming a separate 64px band. */
+    height: 100vh;
+    min-height: 100vh;
+    border-radius: 0;
+  }
+  @supports (height: 100svh) {
+    .hero-cinematic {
+      height: 100svh;
+      min-height: 100svh;
+    }
+  }
+  @supports (height: 100dvh) {
+    .hero-cinematic {
+      height: 100dvh;
+      min-height: 100dvh;
+    }
+  }
+  .hero-cinematic .hero-cinematic-layout {
+    padding-top: max(calc(64px + env(safe-area-inset-top)), 5rem);
+    padding-bottom: max(1.75rem, calc(env(safe-area-inset-bottom) + 1rem));
   }
   .hero-cinematic .hero-story-stage,
   .hero-cinematic .hero-story-stage picture,
