@@ -99,7 +99,7 @@ function ExperiencesPage() {
 
   return (
     <SiteLayout>
-      <section className="pt-32 pb-14 md:pb-20 bg-[color:var(--sand)] text-center">
+      <section className="pt-28 pb-12 md:pt-32 md:pb-16 bg-[color:var(--sand)] text-center">
         <div className="container-x">
           <SiteBreadcrumbs
             containerClassName=""
@@ -113,11 +113,11 @@ function ExperiencesPage() {
           <SectionTitle as="h1" size="anchor" spacing="loose">
             Private days, <SectionTitle.Em>ready when you are.</SectionTitle.Em>
           </SectionTitle>
-          <p className="mt-6 max-w-[58ch] mx-auto text-[16px] md:text-[17px] leading-[1.7] text-[color:var(--charcoal-soft)]">
+          <p className="mt-4 max-w-[54ch] mx-auto text-[15px] md:text-[16px] leading-[1.65] text-[color:var(--charcoal-soft)]">
             Every Signature can be reserved as designed, or tailored around your pace, interests and
             group.
           </p>
-          <div className="mt-7 flex justify-center">
+          <div className="mt-5 flex justify-center">
             <PriceCurrencyChip />
           </div>
         </div>
@@ -128,7 +128,7 @@ function ExperiencesPage() {
         aria-label="Signature collection"
       >
         <div className="container-x">
-          <Scene className="experiences-editorial-grid experiences-story grid gap-x-10 gap-y-14 md:grid-cols-2 md:gap-y-18 lg:gap-x-16 lg:gap-y-24">
+          <Scene className="experiences-editorial-grid experiences-story grid gap-8 md:grid-cols-2 md:gap-10 lg:gap-12">
             {tours.map((tour, index) => (
               <TourCard key={tour.id} tour={tour} resolveImg={resolveImg} featured={index < 2} compareActive={selectedTours.includes(tour.id)} compareDisabled={selectedTours.length >= 2 && !selectedTours.includes(tour.id)} onCompare={() => toggleComparison(tour.id)} />
             ))}
@@ -171,12 +171,12 @@ function TourCard({
   const meta = getViatorMeta(tour.id);
   const verifiedRating = meta?.rating;
   const verifiedReviewCount = meta?.reviewCount;
-  const highlights = tour.highlights.slice(0, 3);
+  const highlights = tour.highlights.slice(0, 2);
   // Fourth decision fact, read straight from the tour source of truth.
   const idealFor = tour.idealFor?.[0];
   return (
     <article
-      className="experience-editorial-card scene-item group flex min-w-0 flex-col text-left"
+      className="experience-editorial-card scene-item group flex min-w-0 flex-col overflow-hidden rounded-[4px] border border-[color:var(--border)] bg-[color:var(--ivory)] text-left shadow-[var(--shadow-card)]"
       data-experience-position={featured ? "lead" : "collection"}
       aria-label={tour.title}
     >
@@ -196,7 +196,7 @@ function TourCard({
         />
       </Link>
 
-      <div className="experience-card-content flex flex-1 flex-col border-b border-[color:var(--border)] pb-8 pt-6 md:pb-10">
+      <div className="experience-card-content flex flex-1 flex-col px-5 pb-5 pt-5 md:px-6 md:pb-6 md:pt-6">
         <div className="flex items-start justify-between gap-4">
         <div className="flex flex-wrap items-center gap-x-2 gap-y-1 text-[11px] font-medium uppercase tracking-[0.16em] text-[color:var(--teal)]">
           <span>{tour.region}</span>
@@ -272,15 +272,26 @@ function TourCard({
           </ul>
         )}
 
-        <div className="experience-card-action mt-auto pt-5 md:pt-6 flex flex-wrap items-center gap-x-5 gap-y-2">
-          <Link
+        <div className="experience-card-action mt-auto pt-5 md:pt-6">
+          <CtaButton
             to="/tours/$tourId"
             params={{ tourId: tour.id }}
-            className="editorial-action group/link relative inline-flex min-h-[44px] items-center gap-3 font-sans text-[11px] font-semibold uppercase tracking-[0.16em] text-[color:var(--charcoal)] transition-colors duration-[var(--dur-quick)] hover:text-[color:var(--teal)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--teal)]"
+            variant="primary"
+            size="sm"
+            className="w-full"
             aria-label={`See dates and reserve — ${tour.title}`}
           >
-            See dates &amp; reserve <CtaMotionArrow />
-          </Link>
+            {CTA_LABELS.signatureCardBooking}
+          </CtaButton>
+          <CtaButton
+            to="/tours/$tourId/tailor"
+            params={{ tourId: tour.id }}
+            variant="hairline"
+            className="mt-2 w-full justify-between"
+            aria-label={`Tailor this day — ${tour.title}`}
+          >
+            {CTA_LABELS.tailor}
+          </CtaButton>
         </div>
       </div>
     </article>
