@@ -63,7 +63,7 @@ export function TrustindexBadge() {
       target="_blank"
       rel="noopener noreferrer nofollow"
       aria-label={`Excellent rating ${RATING} out of 5 from ${REVIEW_COUNT} customer reviews — open the Trustindex certificate (opens in a new tab)`}
-      className="tap inline-flex min-h-[44px] shrink-0 items-center gap-1.5 rounded-[6px] bg-[#FFFFFF] px-2 py-1.5 transition-opacity duration-[var(--dur-quick)] hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)] focus-visible:ring-offset-2 focus-visible:ring-offset-[color:var(--charcoal)] sm:gap-2.5 sm:px-3"
+      className="tap inline-flex min-h-[44px] shrink-0 items-center gap-1 rounded-[6px] bg-[#FFFFFF] px-1.5 py-1.5 transition-opacity duration-[var(--dur-quick)] hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)] focus-visible:ring-offset-2 focus-visible:ring-offset-[color:var(--charcoal)] sm:gap-2.5 sm:px-3"
     >
       {/* Rating block */}
       <span className="flex flex-col gap-[2px] font-[family-name:var(--font-sans)] leading-none text-[#1A1A1A]">

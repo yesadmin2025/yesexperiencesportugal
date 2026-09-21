@@ -79,4 +79,4 @@
 - [x] Normalize confirmed visual-system gaps across remaining public and editorial routes.
 - [x] Resolve confirmed mobile, form, Studio, checkout, image, and accessibility issues without changing behavior.
 - [x] Verify technical SEO safety and repair objective defects only.
-- [ ] Validate representative routes at 393px and 1280px plus focused automated checks; do not publish.
+- [x] Validate representative routes at 393px and 1280px plus focused automated checks; do not publish.
