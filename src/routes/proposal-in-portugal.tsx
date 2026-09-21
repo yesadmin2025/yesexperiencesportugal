@@ -110,7 +110,7 @@ export function ProposalInPortugalPage() {
   return (
     <SiteLayout>
       {/* Hero */}
-      <section className="pt-28 pb-14 bg-[color:var(--sand)] reveal">
+      <section className="page-hero reveal">
         <div className="container-x max-w-3xl text-center">
           <Eyebrow flank>Proposal in Portugal</Eyebrow>
           <SectionTitle as="h1" size="anchor" spacing="loose">
