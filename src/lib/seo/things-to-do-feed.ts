@@ -84,7 +84,7 @@ function productFor(tour: SignatureTour): ThingsToDoProduct {
     durationIso: isoDuration(tour.durationHours),
     region: tour.region,
     highlights: highlights.slice(0, 8),
-    included: tour.included.slice(0, 12),
+    included: content.included.slice(0, 12),
     privateTour: true,
     language: "en",
     country: "PT",
