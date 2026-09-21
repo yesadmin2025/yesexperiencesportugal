@@ -970,10 +970,10 @@ function Block({
 }) {
   return (
     <div>
-      <div className="flex items-center gap-2 text-[12px] uppercase tracking-[0.26em] text-[color:var(--charcoal-soft)]">
+      <h3 className="flex items-center gap-2 text-[12px] uppercase tracking-[0.26em] text-[color:var(--charcoal-soft)]">
         <span className="text-[color:var(--gold)]">{icon}</span>
         {title}
-      </div>
+      </h3>
       <div className="mt-4">{children}</div>
     </div>
   );
