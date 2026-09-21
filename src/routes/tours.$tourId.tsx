@@ -411,7 +411,7 @@ function TourHero({
   return (
     <>
       {/* Breadcrumb */}
-      <section className="pt-24 pb-3">
+      <section className="pt-20 pb-3 lg:pt-24">
         <div className="container-x max-w-6xl">
           <Link
             to="/experiences"
@@ -423,27 +423,26 @@ function TourHero({
       </section>
 
       <section className="pb-8">
-        <div className="container-x max-w-6xl">
-          {/* Cinematic hero — unified 3:2 frame, blur-up on load. */}
+        <div className="container-x max-w-6xl lg:grid lg:grid-cols-2 lg:items-center lg:gap-12">
+          {/* The detail hero stays image-led while keeping the reserve decision
+              visible in the first viewport on both mobile and desktop. */}
           <div>
             <TourImage
               src={heroSrc}
               srcSet={heroSrcSet}
               alt={heroAlt}
-              ratio="3/2"
+              ratio="16/9"
+              className="!aspect-[12/5] lg:!aspect-[16/9]"
               priority
               focal={tour.focal ?? "50% 50%"}
-              sizes="(min-width: 1024px) 1152px, 100vw"
-              className="shadow-[0_30px_60px_-30px_rgba(46,46,46,0.4)]"
+              sizes="(min-width: 1024px) 576px, 100vw"
               imgClassName="signature-image-settle"
             />
           </div>
 
-          {/* Editorial header — title, blurb and meta sit BELOW the hero
-              so the cinematic image reads as a single quiet frame. */}
-          <div className="mt-6 sm:mt-8">
+          <div className="mt-5 sm:mt-8 lg:mt-0">
             <Eyebrow>Private Signature Experience</Eyebrow>
-            <h1 className="serif mt-3 text-[2rem] font-medium sm:text-4xl md:text-5xl lg:text-6xl leading-[1.08] sm:leading-[1.02] tracking-normal max-w-3xl text-[color:var(--charcoal)]">
+            <h1 className="serif mt-3 max-w-3xl text-[40px] font-medium leading-[1.08] tracking-normal text-[color:var(--charcoal)] md:text-[60px] md:leading-[1.02]">
               {tour.title}
             </h1>
             <p className="serif font-normal not-italic mt-4 text-[16px] sm:text-lg md:text-xl text-[color:var(--teal)] max-w-2xl leading-snug">
@@ -561,10 +560,10 @@ function TrustStrip({ meta }: { meta?: ViatorMeta }) {
  * ════════════════════════════════════════════════════════════ */
 function IntroBlock({ tour }: { tour: SignatureTour }) {
   return (
-    <section className="py-14 md:py-20 reveal">
+    <section className="py-16 md:py-24 reveal">
       <div className="container-x max-w-3xl text-center">
         <Eyebrow flank>The day, in short</Eyebrow>
-        <p className="serif mt-5 text-[1.5rem] sm:text-2xl md:text-[1.85rem] leading-snug text-[color:var(--charcoal)]">
+        <p className="serif mt-5 text-[24px] leading-[1.25] text-[color:var(--charcoal)] md:text-[30px]">
           {tour.intro}
         </p>
       </div>
@@ -608,7 +607,7 @@ function HighlightsBlock({ tour }: { tour: SignatureTour }) {
   const items = tour.highlights?.length ? tour.highlights : content.highlights;
   if (items.length === 0) return null;
   return (
-    <section className="py-14 md:py-16 reveal">
+    <section className="py-16 md:py-24 reveal">
       <div className="container-x max-w-5xl">
         <div className="text-center mb-8">
           <Eyebrow flank>Highlights</Eyebrow>
@@ -661,7 +660,7 @@ function ItineraryTimeline({ tour, meta }: { tour: SignatureTour; meta?: ViatorM
   if (stops.length === 0) return null;
 
   return (
-    <section className="py-14 md:py-20 bg-[color:var(--sand)]/40 border-y border-[color:var(--border)] reveal">
+    <section className="py-16 md:py-24 bg-[color:var(--sand)]/40 border-y border-[color:var(--border)] reveal">
       <div className="container-x max-w-3xl">
         <div className="mb-8">
           <Eyebrow>Itinerary</Eyebrow>
@@ -685,7 +684,7 @@ function ItineraryTimeline({ tour, meta }: { tour: SignatureTour; meta?: ViatorM
               </span>
               <div className="min-w-0">
                 <h3
-                  className="serif text-[17px] md:text-[19px] leading-snug text-[color:var(--charcoal)] font-medium"
+                  className="serif text-[24px] leading-[1.08] text-[color:var(--charcoal)] font-medium md:text-[26px]"
                   data-mixed-emphasis="exempt"
                 >
                   {s.label}
@@ -721,7 +720,7 @@ function IncludedAndIdeal({ tour, meta }: { tour: SignatureTour; meta?: ViatorMe
   const hasIdeal = ideal.length > 0;
   if (!hasInc && !hasIdeal && notes.length === 0 && notIncluded.length === 0) return null;
   return (
-    <section className="py-14 md:py-20 bg-[color:var(--ivory)] border-y border-[color:var(--border)] reveal">
+    <section className="py-16 md:py-24 bg-[color:var(--ivory)] border-y border-[color:var(--border)] reveal">
       <div className="container-x max-w-5xl grid md:grid-cols-2 gap-10 md:gap-14">
         {hasInc && (
           <Block icon={<Check size={14} />} title="What's included">
@@ -809,7 +808,7 @@ function GalleryStrip({
   if (photos.length < 3) return null;
 
   return (
-    <section className="py-14 md:py-20 reveal">
+    <section className="py-16 md:py-24 reveal">
       <div className="container-x max-w-6xl">
         <div className="flex items-end justify-between mb-8 flex-wrap gap-3">
           <div>
@@ -867,7 +866,7 @@ function BookingBlock({ tour }: { tour: SignatureTour }) {
   return (
     <section
       id="book"
-      className="py-14 md:py-20 bg-[color:var(--sand)]/50 scroll-mt-24 md:scroll-mt-28"
+      className="py-16 md:py-24 bg-[color:var(--sand)]/50 scroll-mt-24 md:scroll-mt-28"
     >
       <div className="container-x max-w-3xl">
         <SimpleBookingForm tour={tour} />
@@ -992,7 +991,7 @@ function RelatedTours({ currentId }: { currentId: string }) {
   const { resolveImg } = useImportedTourImages();
   if (others.length === 0) return null;
   return (
-    <section className="py-16 bg-[color:var(--ivory)] border-t border-[color:var(--border)] reveal">
+    <section className="py-16 md:py-24 bg-[color:var(--ivory)] border-t border-[color:var(--border)] reveal">
       <div className="container-x max-w-5xl">
         <Eyebrow>More like this</Eyebrow>
         <SectionTitle size="compact">
@@ -1014,7 +1013,7 @@ function RelatedTours({ currentId }: { currentId: string }) {
                 className="mb-3"
                 imgClassName="transition-transform duration-700 group-hover:scale-105"
               />
-              <h3 className="serif text-lg">{t.title}</h3>
+              <h3 className="serif text-[24px] leading-[1.08] md:text-[26px]">{t.title}</h3>
               <p className="text-xs uppercase tracking-[0.12em] text-[color:var(--charcoal-soft)] mt-1">
                 {t.region}
               </p>

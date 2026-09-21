@@ -12,7 +12,7 @@ import { WhatsAppIcon, InstagramIcon, TripadvisorIcon } from "@/components/Brand
 function usePrimaryLinks() {
   const t = useT();
   return [
-    { to: "/experiences", label: t("nav.experiences") },
+    { to: "/experiences", label: `Signature ${t("nav.experiences")}` },
     { to: "/studio-v3", label: t("nav.studio") },
     { to: "/portugal-travel-designer", label: t("nav.travel_designer") },
   ];
@@ -117,7 +117,7 @@ export function Navbar() {
           id="mobile-nav"
           className="flex flex-col overflow-hidden border-t border-[color:var(--charcoal)]/[0.06] lg:hidden"
           style={{
-            height: "calc(100vh - 64px)",
+            height: "calc(100dvh - 64px)",
             background: "rgba(247, 243, 236, 0.98)",
             backdropFilter: "blur(14px) saturate(1.05)",
             WebkitBackdropFilter: "blur(14px) saturate(1.05)",
@@ -133,7 +133,7 @@ export function Navbar() {
                   key={item.to}
                   to={item.to}
                   onClick={() => setOpen(false)}
-                  className="tap inline-flex min-h-[50px] items-center font-sans text-[15.5px] font-medium tracking-[0.03em] text-[color:var(--charcoal)] hover:text-[color:var(--teal)]"
+                   className="tap inline-flex min-h-[50px] items-center rounded-sm font-sans text-[15.5px] font-medium tracking-[0.03em] text-[color:var(--charcoal)] transition-colors duration-[var(--dur-quick)] hover:text-[color:var(--teal)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--teal)]"
                   activeProps={{ className: "text-[color:var(--teal)]" }}
                 >
                   {item.label}
@@ -149,7 +149,7 @@ export function Navbar() {
                   key={item.to}
                   to={item.to}
                   onClick={() => setOpen(false)}
-                  className="tap inline-flex min-h-[46px] items-center font-sans text-[14.5px] font-medium text-[color:var(--charcoal)] hover:text-[color:var(--teal)]"
+                   className="tap inline-flex min-h-[46px] items-center rounded-sm font-sans text-[14.5px] font-medium text-[color:var(--charcoal)] transition-colors duration-[var(--dur-quick)] hover:text-[color:var(--teal)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--teal)]"
                   activeProps={{ className: "text-[color:var(--teal)]" }}
                 >
                   {item.label}
