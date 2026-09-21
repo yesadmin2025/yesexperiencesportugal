@@ -560,7 +560,7 @@ function HomePage() {
           No invented quotes, no repeated review blocks. */}
         <section
           id="reviews"
-          className="section-enter section-y bg-[color:var(--ivory)] border-b border-[color:var(--border)] scroll-mt-24 md:scroll-mt-28"
+          className="section-enter section-y-sm bg-[color:var(--ivory)] border-b border-[color:var(--border)] scroll-mt-24 md:scroll-mt-28"
         >
           <div className="container-x">
             <GuestQuotes />
