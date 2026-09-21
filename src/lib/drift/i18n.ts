@@ -148,7 +148,7 @@ const PT: Dict = {
   "hint.tier.2": "Bespoke — anfitrião dedicado, tudo orquestrado",
 
   // Trust (contextual)
-  "trust.midflow": "700+ avaliações 5★ · Google · Tripadvisor · Viator",
+  "trust.midflow": "4,9/5 · 1.000 avaliações · Google · Tripadvisor · Viator",
 };
 
 const EN: Dict = {
@@ -267,7 +267,7 @@ const EN: Dict = {
   "hint.tier.2": "Bespoke — dedicated host, fully orchestrated",
 
   // Trust (contextual)
-  "trust.midflow": "700+ five-star reviews · Google · Tripadvisor · Viator",
+  "trust.midflow": "4.9/5 · 1,000 reviews · Google · Tripadvisor · Viator",
 };
 
 const DICTS: Record<DriftLocale, Dict> = { pt: PT, en: EN };
