@@ -41,10 +41,6 @@ export function Navbar() {
   const primaryLinks = usePrimaryLinks();
   const secondaryLinks = useSecondaryLinks();
 
-  useEffect(() => {
-    setOpen(false);
-  }, [pathname]);
-
   const linkClass =
     "link-hairline tap inline-flex min-h-[44px] items-center font-sans font-medium tracking-[0.03em] text-[color:var(--charcoal)] hover:text-[color:var(--teal)] transition-colors duration-[var(--dur-quick)] rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--teal)] focus-visible:ring-offset-4 focus-visible:ring-offset-[color:var(--ivory,#FAF8F3)]";
 
