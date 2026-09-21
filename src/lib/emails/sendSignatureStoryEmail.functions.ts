@@ -117,7 +117,7 @@ export const sendSignatureStoryEmail = createServerFn({ method: "POST" })
         rateLimit({
           sessionId: recipientKey,
           bucket: "signature-story-recipient",
-          limit: 3,
+          limit: 6,
           windowSec: 86_400,
         }),
       ];
