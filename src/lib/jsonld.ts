@@ -550,7 +550,7 @@ export function tourTailorProductLd(args: {
       name: args.title,
       url: parent,
     },
-    brand: { "@id": `${SITE_URL}/#organization` },
+    brand: { "@type": "Brand", name: "YES Experiences Portugal" },
     provider: { "@id": `${SITE_URL}/#organization` },
     category: "Private customizable day tour",
     ...(args.region ? { touristType: args.region } : {}),
@@ -565,6 +565,8 @@ export function tourTailorProductLd(args: {
 
             availability: "https://schema.org/InStock",
             seller: { "@id": `${SITE_URL}/#organization` },
+            doesNotShip: true,
+            hasMerchantReturnPolicy: SIGNATURE_CANCELLATION_POLICY_LD,
           },
         }
       : {}),
