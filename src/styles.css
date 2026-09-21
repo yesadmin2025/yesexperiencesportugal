@@ -4986,12 +4986,16 @@ html[data-motion-scope="marketing"] .signature-image-settle {
     color: var(--gold);
     text-shadow: none;
   }
+  /* Neutral hairline (21 Sep 2026): the leading rule is structure, not
+     ornament. Gold framing around every public eyebrow read as cheap
+     decoration, so both rules are a low-opacity charcoal hairline. Gold
+     stays for CTA arrows, icons, bullets and selected states. */
   .he-eyebrow-bar::before {
     content: "";
     width: 28px;
     height: 1px;
     flex: 0 0 28px;
-    background: var(--gold-deep);
+    background: color-mix(in oklab, var(--charcoal) 26%, transparent);
     transform: scaleX(1);
     transform-origin: right center;
   }
@@ -5014,9 +5018,9 @@ html[data-motion-scope="marketing"] .signature-image-settle {
   .he-eyebrow-bar.flank::after {
     content: "";
     width: 32px;
-    height: 1.5px;
+    height: 1px;
     flex: 0 0 32px;
-    background: var(--gold-deep);
+    background: color-mix(in oklab, var(--charcoal) 26%, transparent);
     transform: scaleX(1);
     transform-origin: left center;
   }
@@ -8775,3 +8779,124 @@ html.reveal-ready .cinematic-editorial--single.is-playing img {
 }
 
 /* EDITORIAL_CALM_SYNC_20260921 */
+
+/* ─────────────────────────────────────────────────────────────
+   VISUAL STORYTELLING SYSTEM — 21 Sep 2026
+   (1) one public label→title breath contract, (2) one story-intro
+   motion contract for major homepage chapters. Extends the existing
+   Scene / SplitLines / reveal system; no new animation library.
+   ───────────────────────────────────────────────────────────── */
+
+/* 1. LABEL → MAJOR TITLE BREATH — 24px on mobile AND desktop.
+      Owned by shared selectors so routes never patch this with mt-*.
+      Adjacent-sibling margins collapse, so this wins over the eyebrow's
+      own mb-4/mb-5 and the title's mt-3 without touching SectionTitle. */
+:is(
+    .public-page-header,
+    .page-hero,
+    .section-y,
+    .home-major-intro,
+    .home-story-intro,
+    .section-seq,
+    .editorial-label-stack,
+    .editorial-chapter-open
+  )
+  :is(.he-eyebrow-bar, .scene-atmosphere, [data-eyebrow])
+  + :is(h1, h2, h3, .motion-split) {
+  margin-top: 1.5rem;
+}
+
+/* The eyebrow label is inline-flex, so its own mb-4/mb-5 does NOT collapse
+   into the title's margin and would stack into a 44px+ gap. Neutralise it
+   only where the label directly opens a major editorial title. */
+:is(
+    .public-page-header,
+    .page-hero,
+    .section-y,
+    .home-major-intro,
+    .home-story-intro,
+    .section-seq,
+    .editorial-label-stack,
+    .editorial-chapter-open
+  )
+  .he-eyebrow-bar:has(+ :is(h1, h2, h3, .motion-split)) {
+  margin-bottom: 0;
+}
+:is(
+    .public-page-header,
+    .page-hero,
+    .section-y,
+    .home-major-intro,
+    .home-story-intro,
+    .section-seq,
+    .editorial-label-stack,
+    .editorial-chapter-open
+  )
+  :is(.scene-atmosphere, [data-eyebrow]):has(+ :is(h1, h2, h3, .motion-split))
+  > .he-eyebrow-bar {
+  margin-bottom: 0;
+}
+
+/* 2. STORY INTRO — eyebrow, then title line by line, then body beats.
+      Values are intentionally perceptible on a handset. */
+.home-story-intro .motion-split-line {
+  transition-duration: 780ms;
+  transition-delay: calc(130ms + var(--split-index, 0) * 140ms);
+}
+[data-motion-ready="1"] .home-story-intro .motion-split-line {
+  transform: translate3d(0, 26px, 0);
+  transition-property: clip-path, opacity, transform;
+}
+[data-motion-ready="1"] .home-story-intro .motion-split.is-visible .motion-split-line {
+  transform: translate3d(0, 0, 0);
+}
+@media (min-width: 768px) {
+  [data-motion-ready="1"] .home-story-intro .motion-split-line {
+    transform: translate3d(0, 32px, 0);
+  }
+}
+[data-scene-ready="1"].home-story-intro :is(.scene-atmosphere, .scene-body) {
+  transform: translate3d(0, 18px, 0);
+  transition-duration: 600ms;
+}
+[data-scene="in"].home-story-intro .scene-atmosphere {
+  transition-delay: 0ms;
+}
+[data-scene="in"].home-story-intro .story-beat:nth-of-type(1) {
+  transition-delay: 400ms;
+}
+[data-scene="in"].home-story-intro .story-beat:nth-of-type(2) {
+  transition-delay: 520ms;
+}
+
+/* 3. TRAVEL FILE ARRIVAL — the dossier settles onto the page once the
+      copy has resolved. One-shot, no floating loop. */
+[data-scene-ready="1"].travel-file-settle .scene-item {
+  transform: translate3d(0, 24px, 0) scale(1.025);
+  transition-duration: 820ms;
+}
+[data-scene="in"].travel-file-settle .scene-item {
+  transform: translate3d(0, 0, 0) scale(1);
+  transition-delay: 240ms;
+}
+
+/* 4. PILLARS — one-by-one, 120ms apart. */
+[data-scene="in"].home-pillars .scene-item:nth-child(1) { transition-delay: 0ms; }
+[data-scene="in"].home-pillars .scene-item:nth-child(2) { transition-delay: 120ms; }
+[data-scene="in"].home-pillars .scene-item:nth-child(3) { transition-delay: 240ms; }
+
+/* 5. REDUCED MOTION — final state immediately, no delay, no clip mask. */
+@media (prefers-reduced-motion: reduce) {
+  [data-motion-ready="1"] .home-story-intro .motion-split-line,
+  [data-scene-ready="1"].home-story-intro :is(.scene-atmosphere, .scene-body),
+  [data-scene-ready="1"].travel-file-settle .scene-item,
+  [data-scene="in"].home-pillars .scene-item {
+    opacity: 1 !important;
+    clip-path: none !important;
+    transform: none !important;
+    transition: none !important;
+    transition-delay: 0ms !important;
+  }
+}
+
+/* VISUAL_STORYTELLING_SYNC_20260921 */

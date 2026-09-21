@@ -13,15 +13,18 @@ interface SplitLinesProps {
   as?: "h1" | "h2" | "h3" | "h4" | "p" | "span";
   className?: string;
   lineClassName?: string;
+  /** Optional id so a heading can be referenced by aria-labelledby. */
+  id?: string;
 }
 
-export function SplitLines({ text, lines, as = "h2", className, lineClassName }: SplitLinesProps) {
+export function SplitLines({ text, lines, as = "h2", className, lineClassName, id }: SplitLinesProps) {
   const [ref, inView] = useInView<HTMLElement>();
   const parts = lines ?? (text ? text.split(/\n+/) : []);
   return createElement(
     as,
     {
       ref,
+      id,
       className: cn("motion-split editorial-title-safe", inView && "is-visible", className),
     },
     parts.map((line, i) =>

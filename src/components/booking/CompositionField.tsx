@@ -249,7 +249,7 @@ export function CompositionField({ value, onChange, maxParty, compact }: Props) 
           type="button"
           onClick={addMinor}
           disabled={!canAddMinor}
-          className="mt-3 inline-flex min-h-[44px] items-center gap-2 border-b border-[color:var(--gold)] px-1 transition-colors disabled:opacity-40 focus:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)]"
+          className="mt-3 inline-flex min-h-[44px] items-center gap-2 border-b border-[color:var(--teal)]/45 px-1 transition-colors disabled:opacity-40 focus:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)]"
           style={{
             background: "transparent",
             color: "var(--charcoal)",

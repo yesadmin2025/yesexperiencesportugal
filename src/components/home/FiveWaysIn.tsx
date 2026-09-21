@@ -163,7 +163,7 @@ export function FiveWaysIn() {
       className="five-ways-section section-enter pt-16 pb-10 md:pt-20 md:pb-14 bg-[color:var(--sand)] border-b border-[color:var(--border)] scroll-mt-24 md:scroll-mt-28"
     >
       <div className="container-x">
-        <Scene className="home-major-intro mx-auto max-w-2xl text-center">
+        <Scene className="home-major-intro home-story-intro mx-auto max-w-2xl text-center">
           <div className="scene-atmosphere"><Eyebrow flank className="mb-5">Where to begin</Eyebrow></div>
           <SectionTitle id="choose-path-title" className="five-ways-heading scene-title">
             Five ways to <SectionTitle.Em>shape your Portugal.</SectionTitle.Em>

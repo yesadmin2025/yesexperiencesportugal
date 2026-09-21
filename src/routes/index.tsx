@@ -7,6 +7,7 @@ import { FAQ } from "@/components/FAQ";
 import { CtaButton, CtaMotionArrow } from "@/components/ui/CtaButton";
 import { Eyebrow } from "@/components/ui/Eyebrow";
 import { SectionTitle } from "@/components/ui/SectionTitle";
+import { SplitLines } from "@/components/motion/SplitLines";
 import { buildResponsiveSrc } from "@/lib/responsive-image";
 
 import heroImg from "@/assets/hero-coast.jpg";
@@ -678,15 +679,18 @@ function HomePage() {
           aria-labelledby="signatures-title"
         >
           <div className="container-x">
-            <Scene className="home-major-intro text-center max-w-2xl mx-auto mb-10 md:mb-14">
+            <Scene className="home-major-intro home-story-intro text-center max-w-2xl mx-auto mb-10 md:mb-14">
               <div className="scene-atmosphere"><Eyebrow className="mb-5">Signature</Eyebrow></div>
-               <SectionTitle
+              <SplitLines
+                as="h2"
                 id="signatures-title"
-                 className="scene-title"
-              >
-                Signature days,{" "}
-                 <SectionTitle.Em>already loved.</SectionTitle.Em>
-               </SectionTitle>
+                className="editorial-title-safe font-serif text-[color:var(--charcoal)] font-medium tracking-normal text-[1.8125rem] md:text-[2.25rem] leading-[1.18] md:leading-[1.1] mx-auto"
+                lineClassName="mx-auto"
+                lines={[
+                  "Signature days,",
+                  <SectionTitle.Em key="loved">already loved.</SectionTitle.Em>,
+                ]}
+              />
               <p className="scene-body mt-5 text-[15px] md:text-[16px] leading-[1.65] text-[color:var(--charcoal-soft)]">
                 Every Signature can be reserved as designed, or tailored around your pace, interests and group.
               </p>

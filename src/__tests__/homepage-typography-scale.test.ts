@@ -16,9 +16,17 @@ const titleSrc = readFileSync(titlePath, "utf8");
 
 describe("Homepage H2 — shared historical hierarchy", () => {
   it("uses SectionTitle for the key homepage headings", () => {
-    for (const id of ["studio-title", "signatures-title", "final-cta-title"]) {
+    for (const id of ["studio-title", "final-cta-title"]) {
       expect(src).toMatch(new RegExp(`<SectionTitle[\\s\\S]{0,120}id="${id}"`));
     }
+  });
+
+  // The Signature title is a narrative SplitLines heading (approved story
+  // motion pass) and keeps the same canonical ramp via its own classes.
+  it("keeps the Signature title on the canonical ramp through SplitLines", () => {
+    const block = src.slice(src.indexOf('id="signatures-title"') - 200);
+    expect(block).toMatch(/<SplitLines[\s\S]{0,200}id="signatures-title"/);
+    expect(block).toContain("text-[1.8125rem] md:text-[2.25rem]");
   });
 
   it("keeps one canonical default ramp and medium editorial weight", () => {

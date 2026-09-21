@@ -53,7 +53,6 @@ import { PriceEur } from "@/components/ui/PriceEur";
 import { useAdminTourPhotos } from "@/lib/useAdminTourPhotos";
 // Lazy-loaded below the fold — keeps Leaflet (~140KB) out of the initial tour bundle
 import { SignatureRouteMapShell } from "@/components/SignatureRouteMapShell";
-import { RouteThread } from "@/components/motion/RouteThread";
 
 const SignatureRouteMap = lazy(() =>
   import("@/components/SignatureRouteMap").then((m) => ({ default: m.SignatureRouteMap })),
@@ -609,7 +608,7 @@ function HighlightsBlock({ tour }: { tour: SignatureTour }) {
   return (
     <section className="py-16 md:py-24 reveal">
       <div className="container-x max-w-5xl">
-        <div className="text-center mb-8">
+        <div className="editorial-chapter-open text-center mb-8">
           <Eyebrow flank>Highlights</Eyebrow>
           <SectionTitle size="compact">
             What you'll <SectionTitle.Em>actually do</SectionTitle.Em>
@@ -662,7 +661,7 @@ function ItineraryTimeline({ tour, meta }: { tour: SignatureTour; meta?: ViatorM
   return (
     <section className="py-16 md:py-24 bg-[color:var(--sand)]/40 border-y border-[color:var(--border)] reveal">
       <div className="container-x max-w-3xl">
-        <div className="mb-8">
+        <div className="editorial-chapter-open mb-8">
           <Eyebrow>Itinerary</Eyebrow>
           <SectionTitle size="compact">
             Your day, <SectionTitle.Em>stop by stop</SectionTitle.Em>
@@ -670,7 +669,6 @@ function ItineraryTimeline({ tour, meta }: { tour: SignatureTour; meta?: ViatorM
           <p className="mt-2 text-[13px] text-[color:var(--charcoal-soft)]">
             {stops.length} places across the day · {signatureDurationLabel(tour.id, tour.durationHours)}
           </p>
-          <RouteThread labels={stops.map((stop) => stop.label)} className="mt-6" />
         </div>
 
         <Scene as="ol" className="m-0 list-none space-y-5 p-0">
@@ -679,7 +677,7 @@ function ItineraryTimeline({ tour, meta }: { tour: SignatureTour; meta?: ViatorM
               key={s.label + i}
               className="scene-item grid grid-cols-[2rem_minmax(0,1fr)] gap-x-3 border-t border-[color:var(--border)] pt-5 first:border-t-0 first:pt-0"
             >
-              <span className="serif mt-[2px] text-[15px] tabular-nums text-[color:var(--gold-ink)]">
+              <span className="serif mt-[2px] text-[15px] tabular-nums text-[color:var(--charcoal-soft)]/75">
                 {String(i + 1).padStart(2, "0")}
               </span>
               <div className="min-w-0">
@@ -811,7 +809,7 @@ function GalleryStrip({
     <section className="py-16 md:py-24 reveal">
       <div className="container-x max-w-6xl">
         <div className="flex items-end justify-between mb-8 flex-wrap gap-3">
-          <div>
+          <div className="editorial-chapter-open">
             <Eyebrow>Gallery</Eyebrow>
             <SectionTitle size="compact">
               Inside <SectionTitle.Em>the day</SectionTitle.Em>
@@ -992,7 +990,7 @@ function RelatedTours({ currentId }: { currentId: string }) {
   if (others.length === 0) return null;
   return (
     <section className="py-16 md:py-24 bg-[color:var(--ivory)] border-t border-[color:var(--border)] reveal">
-      <div className="container-x max-w-5xl">
+      <div className="editorial-chapter-open container-x max-w-5xl">
         <Eyebrow>More like this</Eyebrow>
         <SectionTitle size="compact">
           Other <SectionTitle.Em>Signature Experiences</SectionTitle.Em>
