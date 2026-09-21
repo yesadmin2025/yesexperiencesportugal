@@ -190,6 +190,70 @@ export const getFirstPartyTourStats = createServerFn({ method: "GET" })
     };
   });
 
+/**
+ * First-party-only bundle for Product review structured data.
+ *
+ * Returns the first-party aggregate plus the published first-party review
+ * rows. External-platform reviews are deliberately excluded — Google forbids
+ * aggregating reviews collected on other websites in review snippets.
+ */
+export const getFirstPartyReviewBundle = createServerFn({ method: "GET" })
+  .inputValidator((d: { tourId: string }) => d)
+  .handler(
+    async ({
+      data,
+    }): Promise<{
+      count: number;
+      average: number | null;
+      reviews: {
+        id: string;
+        rating: number;
+        title: string | null;
+        body: string;
+        reviewer_name: string | null;
+        reviewer_country: string | null;
+        published_at: string;
+      }[];
+    }> => {
+      const sb = publicClient();
+      const [stats, rows] = await Promise.all([
+        sb
+          .from("tour_review_stats")
+          .select("first_party_count, first_party_avg")
+          .eq("tour_id", data.tourId)
+          .maybeSingle(),
+        sb
+          .from("tour_reviews")
+          .select(
+            "id, rating, title, body, reviewer_name, reviewer_country, published_at",
+          )
+          .eq("tour_id", data.tourId)
+          .eq("is_published", true)
+          .eq("is_first_party", true)
+          .order("published_at", { ascending: false })
+          .limit(5),
+      ]);
+
+      const count = Number(stats.data?.first_party_count ?? 0);
+      const average =
+        stats.data?.first_party_avg != null ? Number(stats.data.first_party_avg) : null;
+
+      return {
+        count,
+        average,
+        reviews: (rows.data ?? []).map((r) => ({
+          id: r.id,
+          rating: Number(r.rating),
+          title: r.title,
+          body: r.body,
+          reviewer_name: r.reviewer_name,
+          reviewer_country: r.reviewer_country,
+          published_at: r.published_at,
+        })),
+      };
+    },
+  );
+
 /* ─────────────────────────────────────────────────────────────────────────
  * /reviews + /pt/reviews page bundle — one server round-trip, resolved in
  * the route loader so every card ships inside the initial HTML (previously

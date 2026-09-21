@@ -206,7 +206,7 @@ export function Footer() {
             <Link
               to="/"
                className="inline-block rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)] focus-visible:ring-offset-2 focus-visible:ring-offset-[color:var(--charcoal)]"
-              aria-label="YES experiences PORTUGAL — Home"
+              aria-label="YES Experiences Portugal — Home"
             >
               <Logo
                 theme="gold-on-charcoal"

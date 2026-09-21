@@ -45,7 +45,31 @@ function Stars({ rating }: { rating: number }) {
   );
 }
 
-export function TourReviews({ tourId }: { tourId: string }) {
+export type InitialFirstParty = {
+  count: number;
+  average: number | null;
+  reviews: {
+    id: string;
+    rating: number;
+    title: string | null;
+    body: string;
+    reviewer_name: string | null;
+    reviewer_country: string | null;
+    published_at: string;
+  }[];
+} | null;
+
+export function TourReviews({
+  tourId,
+  initialFirstParty = null,
+}: {
+  tourId: string;
+  /**
+   * Server-rendered first-party rows — the exact rows used in the page's
+   * Product review structured data, so schema and visible content match.
+   */
+  initialFirstParty?: InitialFirstParty;
+}) {
   const statsFn = useServerFn(getTourReviewStats);
   const reviewsFn = useServerFn(getTourReviews);
   const [stats, setStats] = useState<TourStats | null>(null);
@@ -68,24 +92,45 @@ export function TourReviews({ tourId }: { tourId: string }) {
     };
   }, [tourId, statsFn, reviewsFn]);
 
-  // Fallback: when the DB has no reviews yet, surface the curated
-  // Viator/Tripadvisor reviews from VIATOR_META so every Signature
-  // page still shows real guest voices (source-linked, non-first-party).
-  //
-  // This block renders during SSR as well (not gated behind `loading`):
-  // Google only grants review stars when the rating declared in the page's
-  // Product schema is visible in the server-rendered HTML. The curated set is
-  // real, source-linked data, so it is safe to render before the DB responds;
-  // once first-party rows load they replace it.
+  // Server-rendered first-party rows: the exact reviews used in this page's
+  // Product review structured data, so the schema is always matched by
+  // visible, crawlable content in the initial HTML.
+  const ssrFirstParty = filterVisibleReviews(initialFirstParty?.reviews ?? []).map((r) => ({
+    id: r.id,
+    rating: r.rating,
+    title: r.title,
+    body: r.body,
+    reviewer_name: r.reviewer_name,
+    reviewer_country: r.reviewer_country,
+    published_at: r.published_at,
+    source: "first_party",
+    is_first_party: true,
+    source_url: null as string | null,
+  }));
+
+  // Fallback: when the DB has no reviews at all, surface the curated
+  // Viator/Tripadvisor reviews from VIATOR_META so every Signature page still
+  // shows real guest voices (source-linked, attributed, non-first-party).
+  // These external reviews are visible social proof only — they never feed the
+  // page's review structured data.
   const meta = getViatorMeta(tourId);
-  const hasDbReviews = !!stats && stats.total_reviews > 0;
+  const clientReviews = filterVisibleReviews(reviews);
+  const hasDbReviews = (!!stats && stats.total_reviews > 0) || ssrFirstParty.length > 0;
   const canFallback = !!meta && meta.topReviews.length > 0;
   const useFallback = !hasDbReviews && canFallback;
 
   if (!hasDbReviews && !canFallback) return null;
 
-  const displayRating = useFallback ? meta!.rating : (stats?.average_rating ?? 5);
-  const displayTotal = useFallback ? meta!.reviewCount : (stats?.total_reviews ?? 0);
+  const fpAverage =
+    initialFirstParty && initialFirstParty.count > 0 && initialFirstParty.average != null
+      ? initialFirstParty.average
+      : null;
+  const displayRating = useFallback
+    ? meta!.rating
+    : (stats?.average_rating ?? fpAverage ?? 5);
+  const displayTotal = useFallback
+    ? meta!.reviewCount
+    : (stats?.total_reviews ?? initialFirstParty?.count ?? 0);
   const perSource = useFallback ? [] : (stats?.per_source ?? []);
   const displayReviews: Array<{
     id: string;
@@ -109,7 +154,15 @@ export function TourReviews({ tourId }: { tourId: string }) {
         is_first_party: false,
         source_url: canonicalViatorUrl(tourId) ?? meta!.viatorUrl,
       }))
-    : filterVisibleReviews(reviews).map((r) => ({ ...r, source_url: null }));
+    : [
+        // Schema-backed first-party rows always stay visible, then any other
+        // stored quotes the DB returns after hydration.
+        ...ssrFirstParty,
+        ...clientReviews
+          .filter((r) => !ssrFirstParty.some((f) => f.id === r.id))
+          .map((r) => ({ ...r, source_url: null })),
+      ];
+
 
   const sortedReviews = [...displayReviews].sort((a, b) => {
     if (sortBy === "highest" && b.rating !== a.rating) return b.rating - a.rating;

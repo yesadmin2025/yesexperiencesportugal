@@ -76,17 +76,17 @@ export const Route = createFileRoute("/contact")({
       meta: [
         ...(isParamVariant ? [{ name: "robots", content: "noindex, follow" }] : []),
 
-        { title: "Contact — YES Experiences Portugal" },
+        { title: "Contact YES Experiences Portugal | Tours & Travel Design" },
         {
           name: "description",
           content:
-            "Reach the YES team directly — quiet, human replies from local travel designers in Portugal. WhatsApp, email or a short call.",
+            "Contact YES Experiences Portugal for private tours, tailor-made journeys, proposals and corporate experiences. WhatsApp, email or a short call.",
         },
-        { property: "og:title", content: "Contact — YES Experiences Portugal" },
+        { property: "og:title", content: "Contact YES Experiences Portugal | Tours & Travel Design" },
         {
           property: "og:description",
           content:
-            "Reach the YES team directly — quiet, human replies from local travel designers in Portugal. WhatsApp, email or a short call.",
+            "Contact YES Experiences Portugal for private tours, tailor-made journeys, proposals and corporate experiences. WhatsApp, email or a short call.",
         },
         { property: "og:url", content: "https://yesexperiencesportugal.com/contact" },
         { property: "og:type", content: "website" },
@@ -120,7 +120,7 @@ export const Route = createFileRoute("/contact")({
           url: "https://yesexperiencesportugal.com/contact",
           name: "Contact — YES Experiences Portugal",
           description:
-            "Reach the YES team directly — quiet, human replies from local travel designers in Portugal. WhatsApp, email or a short call.",
+            "Contact YES Experiences Portugal for private tours, tailor-made journeys, proposals and corporate experiences. WhatsApp, email or a short call.",
           inLanguage: "en",
           isPartOf: { "@id": "https://yesexperiencesportugal.com/#website" },
           about: { "@id": "https://yesexperiencesportugal.com/#organization" },

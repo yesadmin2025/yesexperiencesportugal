@@ -153,7 +153,7 @@ export const Route = createRootRoute({
       { name: "theme-color", content: "var(--teal)" },
       { name: "mobile-web-app-capable", content: "yes" },
       { name: "apple-mobile-web-app-capable", content: "yes" },
-      { name: "apple-mobile-web-app-title", content: "YES experiences" },
+      { name: "apple-mobile-web-app-title", content: "YES Experiences" },
       { name: "apple-mobile-web-app-status-bar-style", content: "black-translucent" },
       {
         name: "google-site-verification",
@@ -166,13 +166,13 @@ export const Route = createRootRoute({
       // Sitewide defaults only — page-specific title/description/og:* live
       // on leaf routes. Root keeps site_name, type, locale, twitter card/site,
       // geo, robots, verification. See head-meta rules.
-      { name: "author", content: "YES experiences Portugal" },
+      { name: "author", content: "YES Experiences Portugal" },
       { name: "robots", content: "index,follow,max-image-preview:large" },
       { name: "geo.region", content: "PT" },
       { name: "geo.placename", content: "Sesimbra, Setúbal, Portugal" },
       { name: "geo.position", content: "38.4451;-9.1018" },
       { name: "ICBM", content: "38.4451, -9.1018" },
-      { property: "og:site_name", content: "YES experiences Portugal" },
+      { property: "og:site_name", content: "YES Experiences Portugal" },
       { property: "og:type", content: "website" },
       { property: "og:locale", content: "en_US" },
       { property: "og:locale:alternate", content: "en_GB" },
