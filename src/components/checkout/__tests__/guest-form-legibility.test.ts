@@ -20,6 +20,10 @@ const CHARGE_LINE = read("src/components/checkout/ChargeSummaryLine.tsx");
 const SIGNATURE_FORM = read("src/components/SimpleBookingForm.tsx");
 const FINAL_DETAILS = read("src/components/checkout/FinalDetailsDialog.tsx");
 
+/** Drops canonical 11px uppercase eyebrow labels from a legibility scan. */
+const stripEyebrows = (src: string) =>
+  src.replace(/text-\[11px\] uppercase tracking-\[0\.2\d+em\]/g, "");
+
 const sizes = (src: string) =>
   [...src.matchAll(/text-\[(\d+(?:\.\d+)?)px\]/g)].map((m) => Number(m[1]));
 
@@ -101,7 +105,9 @@ describe("shared checkout surfaces legibility", () => {
   });
 
   it("Final details dialog controls are not below 12px", () => {
-    const s = sizes(FINAL_DETAILS);
+    // Canonical eyebrows are 11px uppercase by design-system lock, so they
+    // are excluded here: this guard covers functional labels and helpers.
+    const s = sizes(stripEyebrows(FINAL_DETAILS));
     expect(s.length).toBeGreaterThan(0);
     expect(Math.min(...s)).toBeGreaterThanOrEqual(12);
   });

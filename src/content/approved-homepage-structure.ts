@@ -72,20 +72,23 @@ export interface ApprovedSection {
 }
 
 /**
- * The approved 11-chapter structure (v10 — each service choice appears once).
+ * The approved 10-chapter structure (v11 — single social-proof surface).
+ *
+ * v11 change: the second, duplicate reviews block was removed and the
+ * remaining guest proof lives inside the compact trust strip (#2), which
+ * is intentionally a compact reassurance band, not a full chapter.
  *
  * Order:
  *   1.  Hero
- *   2.  Trust strip (reviews + private guide line)
+ *   2.  Trust strip (compact guest proof + private guide line)
  *   3.  Five ways in (Signature / Studio / Designer / Occasions …)
  *   4.  Experience Studio (promoted)
  *   5.  Signature experiences preview
  *   6.  Travel Designer (multi-day, bespoke)
- *   7.  Live guest reviews
- *   8.  Explore Portugal map
- *   9.  Local Stories
- *   10. FAQ
- *   11. Final decision
+ *   7.  Explore Portugal map
+ *   8.  Local Stories
+ *   9.  FAQ
+ *   10. Final decision
  */
 export const APPROVED_HOMEPAGE_SECTIONS: readonly ApprovedSection[] = [
   {
@@ -99,7 +102,9 @@ export const APPROVED_HOMEPAGE_SECTIONS: readonly ApprovedSection[] = [
     order: 2,
     name: "Trust strip — reviews + private guide line",
     marker: "TRUST STRIP",
-    requiredSpacing: { kind: "py", minScale: 12 },
+    // Compact reassurance band (py-7 mobile / py-9 desktop), deliberately
+    // subordinate to the commercial chapters.
+    requiredSpacing: { kind: "py", minScale: 7 },
   },
   {
     order: 3,
@@ -129,32 +134,25 @@ export const APPROVED_HOMEPAGE_SECTIONS: readonly ApprovedSection[] = [
   },
   {
     order: 7,
-    name: "Live guest reviews",
-    componentTag: "LiveReviews",
-    inComponent: true,
-    requiredSpacing: { kind: "py", minScale: 16 },
-  },
-  {
-    order: 8,
     name: "Explore Portugal — interactive region map",
     ariaLabelledBy: "plan-map-title",
     requiredSpacing: { kind: "pb", minScale: 10 },
   },
   {
-    order: 9,
+    order: 8,
     name: "Local Stories — selected guides",
     ariaLabelledBy: "journal-title",
     requiredSpacing: { kind: "pb", minScale: 16 },
   },
   {
-    order: 10,
+    order: 9,
     name: "FAQ — visible helpful answers",
     componentTag: "FAQ",
     inComponent: true,
     requiredSpacing: { kind: "py", minScale: 16 },
   },
   {
-    order: 11,
+    order: 10,
     name: "Final decision — three ways forward",
     ariaLabelledBy: "final-cta-title",
     requiredSpacing: { kind: "py", minScale: 16 },

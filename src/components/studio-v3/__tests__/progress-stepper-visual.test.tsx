@@ -51,11 +51,11 @@ describe("StudioV3ProgressStepper — visual contract", () => {
     const bars = nav.querySelectorAll<HTMLSpanElement>("span[aria-hidden]");
     expect(bars.length).toBe(3);
 
-    // Done steps use a transparent gold mix.
-    expect(bars[0].style.background).toContain("var(--gold)");
-    expect(bars[0].style.background).toContain("55%");
-    // Active step uses pure gold.
-    expect(bars[1].style.background).toBe("var(--gold)");
+    // Done steps use a transparent teal mix.
+    expect(bars[0].style.background).toContain("var(--teal)");
+    expect(bars[0].style.background).toContain("62%");
+    // Active step uses pure teal (gold stays a micro-detail accent).
+    expect(bars[1].style.background).toBe("var(--teal)");
 
     // Upcoming step uses charcoal mix.
     expect(bars[2].style.background).toContain("var(--charcoal)");
