@@ -99,4 +99,4 @@ variants, the source is `/tmp/brand-build/build.py` + `render.py`.
 
 ---
 
-© YES experiences Portugal. All rights reserved.
+© YES Experiences Portugal. All rights reserved.
