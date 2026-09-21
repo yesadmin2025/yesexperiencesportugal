@@ -1,32 +1,37 @@
 import { describe, expect, it } from "vitest";
 import { readFileSync } from "node:fs";
 import { resolve } from "node:path";
-import { REVIEW_CERTIFICATE } from "@/config/trust-certificate";
-import { organizationLd } from "@/lib/jsonld";
+import { organizationLd, localBusinessLd } from "@/lib/jsonld";
 
 /**
- * Google requires the rating in markup to be visible on the page.
- * The footer badge and the Organization aggregateRating must therefore
- * always read the same single source of truth.
+ * Review certificate guard.
+ *
+ * Owned pages may show the verified Trustindex certificate in UI, but the
+ * site's own Organization/LocalBusiness entities must not carry a
+ * self-serving aggregateRating. Tour/Product ratings are guarded elsewhere.
  */
-describe("review certificate ↔ JSON-LD sync", () => {
-  it("organization aggregateRating mirrors the certificate constants", () => {
+describe("review certificate policy", () => {
+  it("organizationLd emits no self-serving aggregateRating", () => {
     const ld = organizationLd() as Record<string, unknown>;
-    expect(ld.aggregateRating).toMatchObject({
-      "@type": "AggregateRating",
-      ratingValue: REVIEW_CERTIFICATE.ratingValue,
-      bestRating: REVIEW_CERTIFICATE.bestRating,
-      worstRating: REVIEW_CERTIFICATE.worstRating,
-      reviewCount: REVIEW_CERTIFICATE.reviewCount,
-    });
+    expect(ld.aggregateRating).toBeUndefined();
   });
 
-  it("footer badge hard-codes no rating of its own", () => {
+  it("localBusinessLd emits no self-serving aggregateRating", () => {
+    const ld = localBusinessLd({
+      path: "/day-trips-from-lisbon",
+      name: "YES Experiences Portugal — day trips from Lisbon",
+      description: "Private day trips from Lisbon.",
+      areaServed: ["Lisbon", "Sesimbra"],
+    }) as Record<string, unknown>;
+    expect(ld.aggregateRating).toBeUndefined();
+  });
+
+  it("footer badge reads the shared visible certificate source", () => {
     const src = readFileSync(
       resolve(process.cwd(), "src/components/trust/TrustindexBadge.tsx"),
       "utf8",
     );
     expect(src).toContain("@/config/trust-certificate");
-    expect(src).not.toMatch(/const RATING = "\d/);
+    expect(src).not.toMatch(/const RATING = "\\d/);
   });
 });
