@@ -2,10 +2,10 @@
  * LandingTourCredibility — visible rating + real review snippets for
  * SEO landing pages that map to a Signature parent tour.
  *
- * Displays verified platform ratings as attributed social proof. These
- * sees the rating + reviews in JSON-LD AND on the page (rich-snippet
- * policy requirement). All content is sourced from the verified
- * Viator meta — never invented.
+ * Displays verified platform ratings as attributed social proof only.
+ * External-platform ratings are NEVER emitted in Product review
+ * structured data (Google forbids aggregating other sites' reviews).
+ * All content is sourced from the verified Viator meta — never invented.
  */
 import { Star } from "lucide-react";
 import { getViatorMeta } from "@/data/signatureToursViator";
