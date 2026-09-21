@@ -424,7 +424,6 @@ const SIGNATURE_CANCELLATION_POLICY_LD = {
   applicableCountry: "PT",
   returnPolicyCategory: "https://schema.org/MerchantReturnFiniteReturnWindow",
   merchantReturnDays: 1,
-  returnMethod: "https://schema.org/ReturnByMail",
   returnFees: "https://schema.org/FreeReturn",
   refundType: "https://schema.org/FullRefund",
 } as const;
