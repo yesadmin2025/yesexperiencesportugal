@@ -5,7 +5,6 @@ import { Eyebrow } from "@/components/ui/Eyebrow";
 import { SectionTitle } from "@/components/ui/SectionTitle";
 import { CtaButton } from "@/components/ui/CtaButton";
 import { SplitLines } from "@/components/motion/SplitLines";
-import { RouteThread } from "@/components/motion/RouteThread";
 import { breadcrumbLd, jsonLdScript, travelDesignerServiceLd } from "@/lib/jsonld";
 import { ServiceCrossLinks } from "@/components/entity/ServiceCrossLinks";
 import ogImg from "@/assets/hero-coast.jpg";
@@ -67,7 +66,7 @@ function Section({
 }) {
   return (
     <section
-      className={`reveal section-y chapter-flow ${tone === "sand" ? "bg-[color:var(--sand)]" : "bg-[color:var(--ivory)]"}`}
+      className={`reveal section-y-major chapter-flow ${tone === "sand" ? "bg-[color:var(--sand)]" : "bg-[color:var(--ivory)]"}`}
     >
       <div className="container-x max-w-3xl">
         {eyebrow && <Eyebrow>{eyebrow}</Eyebrow>}
@@ -91,12 +90,11 @@ function PortugalTravelDesignerPage() {
   return (
     <SiteLayout>
       <section className="page-hero public-page-header reveal">
-        <div className="container-x max-w-3xl text-center">
+        <div className="container-x max-w-3xl text-center header-seq">
           <Eyebrow flank>Portugal Travel Designer</Eyebrow>
            <SectionTitle as="h1" size="anchor" spacing="loose" className="text-[40px] leading-[1.08] md:text-[60px] md:leading-[1.02]">
             Portugal, <SectionTitle.Em>shaped around you.</SectionTitle.Em>
           </SectionTitle>
-          <RouteThread compact className="page-header-thread mx-auto mt-6 max-w-xl" />
           <p className="page-header-support mt-6 mx-auto max-w-2xl text-[16px] md:text-[17px] text-[color:var(--charcoal-soft)]">
             One local hand connects the route, rhythm and private experiences into a journey that
             feels entirely your own.

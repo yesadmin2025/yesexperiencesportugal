@@ -18,7 +18,6 @@ import { Eyebrow } from "@/components/ui/Eyebrow";
 import { SectionTitle } from "@/components/ui/SectionTitle";
 import { CtaButton } from "@/components/ui/CtaButton";
 import { CinematicEditorialImage } from "@/components/ui/ResponsiveEditorialImage";
-import { RouteThread } from "@/components/motion/RouteThread";
 import {
   Accordion,
   AccordionContent,
@@ -193,20 +192,16 @@ function CorporatePage() {
     <SiteLayout>
       {/* ── Hero ─────────────────────────────────────────── */}
       <section className="page-hero public-page-header reveal">
-        <div className="container-x max-w-3xl text-center">
+        <div className="container-x max-w-3xl text-center header-seq">
           <Eyebrow flank>Corporate &amp; incentives</Eyebrow>
            <SectionTitle as="h1" size="anchor" spacing="loose" className="text-[40px] leading-[1.08] md:text-[60px] md:leading-[1.02]">
             Corporate experiences in Portugal,{" "}
             <SectionTitle.Em>designed by locals.</SectionTitle.Em>
           </SectionTitle>
-          <RouteThread compact className="page-header-thread mx-auto mt-6 max-w-xl" />
           <p className="page-header-support mt-6 mx-auto max-w-[46ch] md:max-w-[62ch] text-[1rem] md:text-[1.1rem] text-[color:var(--charcoal-soft)]">
-            Private team-building days, incentive programmes, corporate retreats, executive
-            off-sites, client hosting and company celebrations{" "}
-            <strong className="font-medium text-[color:var(--charcoal)]">across Portugal</strong>.
-            From leadership teams to{" "}
-            <strong className="font-medium text-[color:var(--charcoal)]">groups of 100+</strong>,
-            transport, venues, activities and timing are coordinated from brief to delivery.
+            Private team days, incentives and company celebrations{" "}
+            <strong className="font-medium text-[color:var(--charcoal)]">across Portugal</strong> —
+            coordinated from brief to delivery.
           </p>
           <div className="mt-9 flex flex-col sm:flex-row gap-3 justify-center">
             <CtaButton
@@ -243,7 +238,7 @@ function CorporatePage() {
       </section>
 
       {/* ── Positioning: built around the team ───────────── */}
-      <section className="section-y chapter-flow">
+      <section className="section-y-major chapter-flow">
         <div className="container-x grid lg:grid-cols-2 gap-10 md:gap-14 items-center reveal-stagger">
           <div className="group overflow-hidden bg-[color:var(--sand)] aspect-[5/4] sm:aspect-[4/3] lg:aspect-[5/6]">
             <CinematicEditorialImage
@@ -254,7 +249,7 @@ function CorporatePage() {
             />
           </div>
 
-          <div>
+          <div className="section-seq">
             <Eyebrow>Designed for the purpose</Eyebrow>
             <SectionTitle size="compact" spacing="loose">
               Built around the team. <SectionTitle.Em>Scaled around the group.</SectionTitle.Em>
@@ -265,9 +260,10 @@ function CorporatePage() {
             </p>
             <p className="mt-5 text-[15px] md:text-[16px] leading-[1.8] text-[color:var(--charcoal-soft)]">
               We design each corporate experience around the people, objective and pace of the
-              group. From leadership sessions and client hosting to team celebrations and full
-              incentive programmes, every route is grounded in real timings, suitable venues, local
-              knowledge and practical delivery.
+              group — team-building days, incentive programmes, corporate retreats, executive
+              off-sites, client hosting and company celebrations, from leadership teams to groups of
+              100+. Every route is grounded in real timings, suitable venues, local knowledge and
+              practical delivery.
             </p>
             <div className="mt-6 pl-4 border-l-2 border-[color:var(--gold)] text-[14.5px] md:text-[15px] text-[color:var(--charcoal-soft)] leading-relaxed">
               Transport, venues, activities, guides, staffing and on-the-ground coordination are
@@ -278,7 +274,7 @@ function CorporatePage() {
       </section>
 
       {/* ── Nationwide reach ─────────────────────────────── */}
-      <section className="section-y chapter-flow bg-[color:var(--ivory)]">
+      <section className="section-y-major chapter-flow bg-[color:var(--ivory)]">
         <div className="container-x grid lg:grid-cols-2 gap-10 md:gap-14 items-center reveal-stagger lg:[&>*:first-child]:order-2">
           <div className="group overflow-hidden bg-[color:var(--sand)] aspect-[5/4] sm:aspect-[4/3] lg:aspect-[5/6]">
             <CinematicEditorialImage
@@ -289,7 +285,7 @@ function CorporatePage() {
             />
           </div>
 
-          <div>
+          <div className="section-seq">
             <Eyebrow>Beyond the meeting room</Eyebrow>
             <SectionTitle size="compact" spacing="loose">
               Local knowledge, <SectionTitle.Em>across the country.</SectionTitle.Em>

@@ -8,7 +8,6 @@ import { Eyebrow } from "@/components/ui/Eyebrow";
 import { SectionTitle } from "@/components/ui/SectionTitle";
 import { CtaButton } from "@/components/ui/CtaButton";
 import { CinematicEditorialImage } from "@/components/ui/ResponsiveEditorialImage";
-import { RouteThread } from "@/components/motion/RouteThread";
 import { ProposalRequestForm } from "@/components/home/ProposalRequestForm";
 
 import { PROPOSAL_SERVICE_IMAGES } from "@/content/editorial-service-images";
@@ -111,12 +110,11 @@ export function ProposalInPortugalPage() {
     <SiteLayout>
       {/* Hero */}
       <section className="page-hero public-page-header reveal">
-        <div className="container-x max-w-3xl text-center">
+        <div className="container-x max-w-3xl text-center header-seq">
           <Eyebrow flank>Proposal in Portugal</Eyebrow>
            <SectionTitle as="h1" size="anchor" spacing="loose" className="text-[40px] leading-[1.08] md:text-[60px] md:leading-[1.02]">
             A proposal in Portugal, <SectionTitle.Em>planned discreetly.</SectionTitle.Em>
           </SectionTitle>
-          <RouteThread compact className="page-header-thread mx-auto mt-6 max-w-xl" />
           <p className="page-header-support mt-6 text-[1rem] md:text-[1.1rem] text-[color:var(--charcoal-soft)]">
             Anywhere in Portugal — coastline, vineyard, palace garden or a quiet city terrace. A
             private moment shaped end to end by a local team, with the setting, timing and surprise
@@ -131,8 +129,8 @@ export function ProposalInPortugalPage() {
       </section>
 
       {/* Service blocks */}
-      <section className="section-y chapter-flow">
-        <div className="container-x space-y-16 md:space-y-24">
+      <section className="section-y-major chapter-flow">
+        <div className="container-x alt-chapters space-y-16 md:space-y-24">
           {BLOCKS.map((b, i) => {
             const Icon = b.icon;
             const reverse = i % 2 === 1;
@@ -160,7 +158,7 @@ export function ProposalInPortugalPage() {
                   )}
                 </div>
 
-                <div>
+                <div className="section-seq">
                   <Eyebrow icon={<Icon strokeWidth={1.8} />}>{b.eyebrow}</Eyebrow>
                    <h3 className="mt-4 font-serif text-[24px] font-medium leading-[1.08] text-[color:var(--charcoal)] md:text-[26px]">
                      {b.title}

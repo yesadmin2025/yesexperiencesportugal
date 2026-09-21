@@ -256,6 +256,7 @@
   --section-y-lg: 5rem;
   --section-y-sm: 3rem;
   --section-y-app: 1.5rem; /* compact rhythm for interactive workspaces */
+  --section-y-major: 4.75rem; /* major editorial chapter: 76px mobile */
 
   /* ─────────────────────────────────────────────────────────────
      CTA LABEL GLOW API
@@ -362,6 +363,7 @@
     --section-y-lg: 7rem;
     --section-y-sm: 4rem;
     --section-y-app: 3rem;
+    --section-y-major: 6.875rem; /* major editorial chapter: 110px desktop */
   }
 }
 
@@ -8626,3 +8628,119 @@ html.reveal-ready .about-story.is-visible .about-copy-sequence p:nth-child(4) { 
 /* CONVERSION_SYNC_MARKER_20260920 */
 
 /* VISUAL_CONVERSION_NORMALIZATION_SYNC_20260921 */
+
+/* ─────────────────────────────────────────────────────────────
+   EDITORIAL CALM PASS — 21 Sep 2026
+   One shared grammar for public page headers, chapter separation and
+   varied editorial choreography. Extends the existing reveal system
+   (IntersectionObserver + .reveal / .reveal-stagger); no second
+   animation framework, no one-off margin hacks.
+   ───────────────────────────────────────────────────────────── */
+
+/* 1. HEADER GRAMMAR — eyebrow → H1 → ONE support line → optional CTA. */
+.public-page-header h1 {
+  max-width: 24ch;
+}
+.public-page-header .page-header-support {
+  max-width: 34rem;
+}
+/* Decorative threads are retired from ordinary public headers. */
+.public-page-header .page-header-thread {
+  display: none;
+}
+
+/* 2. CHAPTER SEPARATION — measured major-chapter rhythm.
+      Baseline stays .section-y (64/96); .section-y-major is used only where
+      consecutive editorial chapters previously blurred together. */
+.section-y-major {
+  padding-top: var(--section-y-major);
+  padding-bottom: var(--section-y-major);
+}
+/* A clearer breath between the page hero and the first content chapter. */
+.public-page-header + section,
+.public-page-header + .section-y,
+.public-page-header + .section-y-major {
+  padding-top: calc(var(--section-y-major) + 0.5rem);
+}
+
+/* 3. INTRO SEQUENCING — eyebrow → title → support → CTA, 90–130ms apart.
+      Hidden states are gated behind html.reveal-ready so no-JS renders and
+      pre-hydration paint always show the final state. */
+html.reveal-ready .header-seq > *,
+html.reveal-ready .section-seq > * {
+  opacity: 0;
+  transform: translate3d(0, 10px, 0);
+  transition:
+    opacity 520ms var(--ease-scene),
+    transform 520ms var(--ease-scene);
+}
+html.reveal-ready :is(.reveal, .reveal-stagger).is-visible .header-seq > *,
+html.reveal-ready .header-seq.is-visible > *,
+html.reveal-ready :is(.reveal, .reveal-stagger).is-visible .section-seq > *,
+html.reveal-ready .section-seq.is-visible > * {
+  opacity: 1;
+  transform: translate3d(0, 0, 0);
+}
+html.reveal-ready :is(.reveal, .reveal-stagger).is-visible .header-seq > *:nth-child(2),
+html.reveal-ready .header-seq.is-visible > *:nth-child(2),
+html.reveal-ready :is(.reveal, .reveal-stagger).is-visible .section-seq > *:nth-child(2),
+html.reveal-ready .section-seq.is-visible > *:nth-child(2) {
+  transition-delay: 100ms;
+}
+html.reveal-ready :is(.reveal, .reveal-stagger).is-visible .header-seq > *:nth-child(3),
+html.reveal-ready .header-seq.is-visible > *:nth-child(3),
+html.reveal-ready :is(.reveal, .reveal-stagger).is-visible .section-seq > *:nth-child(3),
+html.reveal-ready .section-seq.is-visible > *:nth-child(3) {
+  transition-delay: 220ms;
+}
+html.reveal-ready :is(.reveal, .reveal-stagger).is-visible .header-seq > *:nth-child(n + 4),
+html.reveal-ready .header-seq.is-visible > *:nth-child(n + 4),
+html.reveal-ready :is(.reveal, .reveal-stagger).is-visible .section-seq > *:nth-child(n + 4),
+html.reveal-ready .section-seq.is-visible > *:nth-child(n + 4) {
+  transition-delay: 330ms;
+}
+
+/* 4. ALTERNATING IMAGE CHAPTERS — image enters differently from text, and
+      alternate chapters drift from opposite sides on desktop only. */
+@media (min-width: 1024px) {
+  html.reveal-ready .alt-chapters > .reveal-stagger:nth-child(odd) {
+    transform: translate3d(-14px, 16px, 0);
+  }
+  html.reveal-ready .alt-chapters > .reveal-stagger:nth-child(even) {
+    transform: translate3d(14px, 16px, 0);
+  }
+  html.reveal-ready .alt-chapters > .reveal-stagger.is-visible {
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+/* 5. SINGLE-IMAGE EDITORIAL REVEAL — one restrained settle, no Ken Burns. */
+.cinematic-editorial--single {
+  overflow: clip;
+}
+html.reveal-ready .cinematic-editorial--single img {
+  transform: scale(1.03) translate3d(0, 12px, 0);
+  opacity: 0.92;
+  transition:
+    transform 940ms var(--ease-scene),
+    opacity 640ms var(--ease-scene);
+  will-change: transform;
+}
+html.reveal-ready .cinematic-editorial--single.is-playing img {
+  transform: scale(1) translate3d(0, 0, 0);
+  opacity: 1;
+}
+
+/* 6. REDUCED MOTION — final state immediately, everywhere in this block. */
+@media (prefers-reduced-motion: reduce) {
+  html.reveal-ready .header-seq > *,
+  html.reveal-ready .section-seq > *,
+  html.reveal-ready .alt-chapters > .reveal-stagger,
+  html.reveal-ready .cinematic-editorial--single img {
+    opacity: 1 !important;
+    transform: none !important;
+    transition: none !important;
+  }
+}
+
+/* EDITORIAL_CALM_SYNC_20260921 */

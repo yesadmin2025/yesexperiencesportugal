@@ -162,7 +162,7 @@ function LisbonWineTours() {
               Ask about a cellar
             </CtaButton>
           </div>
-          <p className="mt-6 flex flex-wrap items-center gap-x-5 gap-y-2 font-sans text-[11.5px] uppercase tracking-[0.18em] text-[color:var(--charcoal-soft)]">
+          <p className="page-header-secondary mt-6 flex flex-wrap items-center gap-x-5 gap-y-2 font-sans text-[11.5px] uppercase tracking-[0.18em] text-[color:var(--charcoal-soft)]">
             <span className="inline-flex items-center gap-1.5">
               <Star size={13} className="text-[color:var(--gold)]" aria-hidden />
               {REVIEW_CERTIFICATE.ratingValue} / {REVIEW_CERTIFICATE.bestRating} ·{" "}

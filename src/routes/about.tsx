@@ -6,7 +6,6 @@ import { ServiceCrossLinks } from "@/components/entity/ServiceCrossLinks";
 import { Scene } from "@/components/motion/Scene";
 import { MaskReveal } from "@/components/motion/MaskReveal";
 import { SplitLines } from "@/components/motion/SplitLines";
-import { RouteThread } from "@/components/motion/RouteThread";
 import { Eyebrow } from "@/components/ui/Eyebrow";
 import { SectionTitle } from "@/components/ui/SectionTitle";
 import { CtaButton } from "@/components/ui/CtaButton";
@@ -84,23 +83,18 @@ function Page() {
                   About YES Experiences Portugal:{" "}
                   <SectionTitle.Em>local travel designers</SectionTitle.Em>.
                 </SectionTitle>
-                <RouteThread compact className="page-header-thread mx-auto mt-7 max-w-xl" />
               </div>
               <p className="page-header-support scene-body mt-6 max-w-2xl mx-auto text-[color:var(--charcoal-soft)] leading-relaxed">
                 YES Experiences Portugal is a licensed Portuguese private tour operator, founder-led
                 since 2022 and built around one idea: Portugal should feel personal, local and
                 genuinely yours.
               </p>
-              <p className="page-header-secondary scene-body mt-4 max-w-2xl mx-auto text-sm text-[color:var(--charcoal-soft)]/85 leading-relaxed">
-                Private days, live-designed experiences and full journeys, created from real routes,
-                real guests and real local knowledge.
-              </p>
           </Scene>
         </div>
       </section>
 
       {/* Created from real travel */}
-      <section className="reveal about-story section-y chapter-flow">
+      <section className="reveal about-story section-y-major chapter-flow">
         <div className="container-x max-w-3xl">
           <Eyebrow>Created from real travel</Eyebrow>
           <SplitLines
@@ -111,7 +105,7 @@ function Page() {
               <><span className="italic font-normal text-[color:var(--teal)]">not a template</span>.</>,
             ]}
           />
-          <div className="about-copy-sequence mt-8 space-y-5 text-[color:var(--charcoal-soft)] leading-relaxed">
+          <div className="about-copy-sequence mt-9 max-w-[62ch] space-y-6 text-[color:var(--charcoal-soft)] leading-relaxed">
             <p>
               YES did not begin as an agency concept, a marketplace idea or a travel-tech trend.
             </p>
@@ -128,7 +122,7 @@ function Page() {
       </section>
 
       {/* Founder-built */}
-      <section className="reveal about-story section-y chapter-flow bg-[color:var(--sand)]">
+      <section className="reveal about-story section-y-major chapter-flow bg-[color:var(--sand)]">
         <div className="container-x grid lg:grid-cols-[1.15fr_1fr] gap-14 items-start">
           <div>
             <Eyebrow>Founder-built</Eyebrow>

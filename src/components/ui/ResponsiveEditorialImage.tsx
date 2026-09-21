@@ -86,7 +86,7 @@ export function CinematicEditorialImage({
   const [ready, setReady] = useState(false);
   useEffect(() => {
     const node = rootRef.current;
-    if (!node || !image.alternate) return;
+    if (!node) return;
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
     const observer = new IntersectionObserver(([entry]) => setVisible(entry.isIntersecting), {
       threshold: 0.16,
@@ -100,7 +100,7 @@ export function CinematicEditorialImage({
     // sequence is actually visible instead of racing with the decode.
     const node = rootRef.current;
     if (!node) return;
-    const img = node.querySelector<HTMLImageElement>(".cinematic-editorial__frame--primary img");
+    const img = node.querySelector<HTMLImageElement>("img");
     if (!img) return;
     if (img.complete && img.naturalWidth > 0) {
       setReady(true);
@@ -110,15 +110,26 @@ export function CinematicEditorialImage({
     img.addEventListener("load", done, { once: true });
     return () => img.removeEventListener("load", done);
   }, [image.src]);
+  // SINGLE-IMAGE MODE — no alternate frame, so no crossfade/Ken Burns. The
+  // block still gets one restrained settle (scale + small vertical drift)
+  // driven by the same observer, so editorial photos never look frozen.
   if (!image.alternate)
     return (
-      <ResponsiveEditorialImage
-        image={image}
-        priority={priority}
-        sizes={sizes}
-        className={imageClassName}
-      />
+      <div
+        ref={rootRef}
+        className={`cinematic-editorial cinematic-editorial--single${visible && ready ? " is-playing" : ""} ${className}`}
+        data-cinematic-editorial="single"
+        data-cinematic-playing={visible && ready ? "true" : "false"}
+      >
+        <ResponsiveEditorialImage
+          image={image}
+          priority={priority}
+          sizes={sizes}
+          className={imageClassName}
+        />
+      </div>
     );
+
   const playing = visible && ready;
   return (
     <div

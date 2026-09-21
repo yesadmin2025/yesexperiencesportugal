@@ -112,7 +112,7 @@ function CorporatePage() {
   return (
     <SiteLayout>
       <section className="page-hero public-page-header reveal">
-        <div className="container-x max-w-3xl text-center">
+        <div className="container-x max-w-3xl text-center header-seq">
           <Eyebrow flank>Retiros corporativos</Eyebrow>
           <SectionTitle as="h1" size="anchor" spacing="loose">
             Team building em Portugal, <SectionTitle.Em>desenhado por locais.</SectionTitle.Em>
@@ -141,7 +141,7 @@ function CorporatePage() {
       </section>
 
       <section className="py-16 md:py-24">
-        <div className="container-x space-y-16 md:space-y-24">
+        <div className="container-x alt-chapters space-y-16 md:space-y-24">
           {BLOCKS.map((b, i) => {
             const Icon = b.icon;
             const reverse = i % 2 === 1;
