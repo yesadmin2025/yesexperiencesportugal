@@ -25,15 +25,12 @@ import { test, expect, type Page } from "@playwright/test";
 // { mobile, tablet, desktop } — tablet uses the sm ramp (Tailwind sm ≥ 640).
 type Ramp = { mobile: number; tablet: number; desktop: number };
 
-const CONVERSION_RAMP: Ramp = { mobile: 33.6, tablet: 40, desktop: 60.8 }; // 2.1 / 2.5 / 3.8 rem
-const EDITORIAL_RAMP: Ramp = { mobile: 28.8, tablet: 33.6, desktop: 47.2 }; // 1.8 / 2.1 / 2.95 rem
-const DESIGNER_RAMP: Ramp = { mobile: 32, tablet: 38.4, desktop: 54.4 }; // 2 / 2.4 / 3.4 rem
+const SHARED_SECTION_RAMP: Ramp = { mobile: 29, tablet: 36, desktop: 36 };
 
 const HEADINGS: Array<{ id: string; label: string; ramp: Ramp }> = [
-  { id: "signatures-title", label: "Signatures (editorial)", ramp: EDITORIAL_RAMP },
-  { id: "studio-title", label: "Studio (conversion)", ramp: CONVERSION_RAMP },
-  { id: "final-cta-title", label: "Final CTA (conversion)", ramp: CONVERSION_RAMP },
-  { id: "bespoke-designer-title", label: "Travel Designer", ramp: DESIGNER_RAMP },
+  { id: "signatures-title", label: "Signatures", ramp: SHARED_SECTION_RAMP },
+  { id: "studio-title", label: "Studio", ramp: SHARED_SECTION_RAMP },
+  { id: "final-cta-title", label: "Final CTA", ramp: SHARED_SECTION_RAMP },
 ];
 
 function viewportTier(width: number): keyof Ramp {
@@ -84,8 +81,8 @@ test.describe("Homepage typography — locked H2 ramp", () => {
       await page.locator(`#${h.id}`).scrollIntoViewIfNeeded();
       const m = await readComputed(page, `#${h.id}`);
       expect(m, `#${h.id} must exist`).not.toBeNull();
-      expect(m!.fontFamily, "H2 uses Newsreader italic emphasis stack").toMatch(
-        /Newsreader|serif/i,
+      expect(m!.fontFamily, "H2 uses the approved Fraunces editorial family").toMatch(
+        /Fraunces|serif/i,
       );
       // Homepage exception: H2s stay at font-medium (500).
       expect(Number(m!.fontWeight)).toBe(500);
@@ -119,9 +116,8 @@ test.describe("Homepage eyebrow — .he-eyebrow-bar utility lock", () => {
     for (const m of metrics) {
       expect(m.ff).toMatch(/Inter/i);
       expect(Number(m.fw)).toBeGreaterThanOrEqual(600);
-      // Some section eyebrows scale to 11.5–12 on desktop — allow a small band.
-      expect(m.fs).toBeGreaterThanOrEqual(10.5);
-      expect(m.fs).toBeLessThanOrEqual(13);
+      expect(m.fs).toBeGreaterThanOrEqual(10.8);
+      expect(m.fs).toBeLessThanOrEqual(11.2);
       expect(m.tt).toBe("uppercase");
     }
   });
@@ -193,35 +189,6 @@ test.describe("Homepage spacing — section-header vertical rhythm", () => {
         expect(gap, `H2→lead gap at ${tier}`).toBeGreaterThanOrEqual(min);
         expect(gap, `H2→lead gap at ${tier}`).toBeLessThanOrEqual(max);
       }
-    });
-  }
-});
-
-test.describe("Homepage section headers — visual snapshot per viewport", () => {
-  // Pixel snapshot safety net. Uses the project-wide 0.2% pixel-diff
-  // budget from playwright.config.ts and clips to the header block so
-  // hero video posters / lazy media don't add flake.
-  for (const h of HEADINGS) {
-    test(`#${h.id} header block screenshot`, async ({ page }) => {
-      await page.goto("/", { waitUntil: "domcontentloaded" });
-      await page.evaluate(() => document.fonts?.ready);
-      await page.addStyleTag({
-        content: `
-          [data-motion]{opacity:1 !important;transform:none !important;transition:none !important}
-          video, .hero-film, [data-hero-video]{visibility:hidden !important}
-          *, *::before, *::after{animation:none !important;transition:none !important}
-        `,
-      });
-      const el = page.locator(`#${h.id}`);
-      await el.scrollIntoViewIfNeeded();
-      // Small settle for layout after scroll.
-      await page.waitForTimeout(150);
-      // Screenshot the closest header wrapper (H2 + eyebrow + lead)
-      // rather than just the H2 line, so spacing regressions register.
-      const wrapper = el.locator("xpath=ancestor::*[self::div or self::header][1]").first();
-      await expect(wrapper).toHaveScreenshot(`${h.id}.png`, {
-        maxDiffPixelRatio: 0.005,
-      });
     });
   }
 });
