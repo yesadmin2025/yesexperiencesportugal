@@ -192,10 +192,10 @@ function CorporatePage() {
   return (
     <SiteLayout>
       {/* ── Hero ─────────────────────────────────────────── */}
-      <section className="pt-24 md:pt-28 pb-16 md:pb-20 bg-[color:var(--sand)] reveal">
+      <section className="page-hero reveal">
         <div className="container-x max-w-3xl text-center">
           <Eyebrow flank>Corporate &amp; incentives</Eyebrow>
-          <SectionTitle as="h1" size="anchor" spacing="loose" className="mt-6">
+          <SectionTitle as="h1" size="anchor" spacing="loose">
             Corporate experiences in Portugal,{" "}
             <SectionTitle.Em>designed by locals.</SectionTitle.Em>
           </SectionTitle>
