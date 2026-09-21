@@ -8,6 +8,7 @@ import { SectionTitle } from "@/components/ui/SectionTitle";
 import { CtaButton } from "@/components/ui/CtaButton";
 import { CTA_LABELS } from "@/content/cta-vocabulary";
 import { RealReviewsStrip } from "@/components/home/RealReviewsStrip";
+import { ExitIntentEmailCapture } from "@/components/home/EmailCapture";
 import { HubBookingPicker } from "@/components/booking/HubBookingPicker";
 import { signatureTours } from "@/data/signatureTours";
 import { LISBON_REGIONS } from "@/content/lisbon-regions";
@@ -365,6 +366,7 @@ function LisbonPrivateTours() {
           </p>
         </div>
       </section>
+      <ExitIntentEmailCapture />
     </SiteLayout>
   );
 }
