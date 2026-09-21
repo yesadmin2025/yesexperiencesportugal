@@ -413,6 +413,21 @@ interface StopForLd {
  * an itinerary ItemList when stops are supplied — these are the fields
  * that drive richer experience cards on Google.
  */
+/**
+ * MerchantReturnPolicy mirroring the published Signature cancellation
+ * truth (src/config/business-nap.ts: "Free cancellation up to 24h
+ * before, when applicable."). Mapped to Google's merchant-listing
+ * fields: a 1-day finite window with a full refund and no fees.
+ */
+const SIGNATURE_CANCELLATION_POLICY_LD = {
+  "@type": "MerchantReturnPolicy",
+  applicableCountry: "PT",
+  returnPolicyCategory: "https://schema.org/MerchantReturnFiniteReturnWindow",
+  merchantReturnDays: 1,
+  returnFees: "https://schema.org/FreeReturn",
+  refundType: "https://schema.org/FullRefund",
+} as const;
+
 export function tourProductLd(args: {
   id: string;
   title: string;
@@ -438,7 +453,7 @@ export function tourProductLd(args: {
     description: args.blurb,
     image,
     url,
-    brand: { "@id": `${SITE_URL}/#organization` },
+    brand: { "@type": "Brand", name: "YES Experiences Portugal" },
     provider: { "@id": `${SITE_URL}/#organization` },
     category: "Private day tour",
     ...(args.region ? { touristType: args.region } : {}),
@@ -470,6 +485,13 @@ export function tourProductLd(args: {
             price: args.priceFrom,
             availability: "https://schema.org/InStock",
             seller: { "@id": `${SITE_URL}/#organization` },
+            // Experiences are not shipped — Google accepts doesNotShip in
+            // place of shippingDetails so no fake shipping data is emitted.
+            doesNotShip: true,
+            // Mirrors the published Signature cancellation truth
+            // (src/config/business-nap.ts): free cancellation up to 24h
+            // before the experience.
+            hasMerchantReturnPolicy: SIGNATURE_CANCELLATION_POLICY_LD,
           },
         }
       : {}),
@@ -528,7 +550,7 @@ export function tourTailorProductLd(args: {
       name: args.title,
       url: parent,
     },
-    brand: { "@id": `${SITE_URL}/#organization` },
+    brand: { "@type": "Brand", name: "YES Experiences Portugal" },
     provider: { "@id": `${SITE_URL}/#organization` },
     category: "Private customizable day tour",
     ...(args.region ? { touristType: args.region } : {}),
@@ -543,6 +565,8 @@ export function tourTailorProductLd(args: {
 
             availability: "https://schema.org/InStock",
             seller: { "@id": `${SITE_URL}/#organization` },
+            doesNotShip: true,
+            hasMerchantReturnPolicy: SIGNATURE_CANCELLATION_POLICY_LD,
           },
         }
       : {}),

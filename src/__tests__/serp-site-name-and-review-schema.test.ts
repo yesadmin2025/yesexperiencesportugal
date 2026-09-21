@@ -115,6 +115,27 @@ describe("review structured data is first-party only", () => {
     expect(ld.review).toBeUndefined();
   });
 
+  it("tour offers are experience-truthful: named Brand, no shipping, real cancellation policy", () => {
+    const ld = tourProductLd({
+      id: "arrabida-wine-allinclusive",
+      title: "Arrábida Wine",
+      blurb: "A private wine day.",
+      img: "/img.jpg",
+      priceFrom: 100,
+    }) as unknown as Record<string, unknown>;
+    expect(ld.brand).toEqual({ "@type": "Brand", name: "YES Experiences Portugal" });
+    const offers = ld.offers as Record<string, unknown>;
+    expect(offers.doesNotShip).toBe(true);
+    expect(offers).not.toHaveProperty("shippingDetails");
+    expect(offers.hasMerchantReturnPolicy).toMatchObject({
+      "@type": "MerchantReturnPolicy",
+      returnPolicyCategory: "https://schema.org/MerchantReturnFiniteReturnWindow",
+      merchantReturnDays: 1,
+      returnFees: "https://schema.org/FreeReturn",
+      refundType: "https://schema.org/FullRefund",
+    });
+  });
+
   it("no Viator meta rating/reviewCount is passed into tour Product schema", () => {
     const route = read("src/routes/tours.$tourId.tsx");
     expect(route).not.toMatch(/rating:\s*getViatorMeta/);
