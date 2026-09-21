@@ -44,7 +44,6 @@ export function ProposalRequestForm({ id = "proposal-request" }: { id?: string }
       name: String(form.get("name") ?? "").trim(),
       email: String(form.get("email") ?? "").trim(),
       phone: String(form.get("phone") ?? "").trim() || null,
-      company: String(form.get("company") ?? "").trim() || null,
       occasion: String(form.get("occasion") ?? "proposal"),
       dates: String(form.get("dates") ?? "").trim() || null,
       groupSize: Number(form.get("groupSize") ?? 2) || 2,
@@ -196,6 +195,7 @@ export function ProposalRequestForm({ id = "proposal-request" }: { id?: string }
             id="pr-message"
             name="message"
             rows={4}
+            maxLength={1500}
             className={fieldClass}
             placeholder="The moment, the mood, where you are staying, anything that matters."
             required

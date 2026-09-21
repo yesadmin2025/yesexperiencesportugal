@@ -67,7 +67,7 @@ function Section({
 }) {
   return (
     <section
-      className={`reveal py-16 md:py-24 ${tone === "sand" ? "bg-[color:var(--sand)]" : "bg-[color:var(--ivory)]"}`}
+      className={`reveal section-y chapter-flow ${tone === "sand" ? "bg-[color:var(--sand)]" : "bg-[color:var(--ivory)]"}`}
     >
       <div className="container-x max-w-3xl">
         {eyebrow && <Eyebrow>{eyebrow}</Eyebrow>}
@@ -102,7 +102,7 @@ function PortugalTravelDesignerPage() {
             feels entirely your own.
           </p>
           <div className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
-            <CtaButton to="/multi-day" variant="primary">
+            <CtaButton to="/contact" search={{ type: "multi_day" }} variant="primary">
               {CTA_LABELS.travelDesigner}
             </CtaButton>
             <CtaButton to="/experiences" variant="ghost">
@@ -267,10 +267,10 @@ function PortugalTravelDesignerPage() {
         ]}
       />
 
-       <section className="reveal py-16 md:py-24 bg-[color:var(--sand)]">
+       <section className="reveal section-y chapter-flow bg-[color:var(--sand)]">
         <div className="container-x max-w-2xl text-center">
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-             <CtaButton to="/multi-day" variant="primary">
+             <CtaButton to="/contact" search={{ type: "multi_day" }} variant="primary">
                {CTA_LABELS.travelDesigner}
             </CtaButton>
             <CtaButton to="/experiences" variant="ghost">

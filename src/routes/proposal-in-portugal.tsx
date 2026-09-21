@@ -131,7 +131,7 @@ export function ProposalInPortugalPage() {
       </section>
 
       {/* Service blocks */}
-      <section className="py-16 md:py-24">
+      <section className="section-y chapter-flow">
         <div className="container-x space-y-16 md:space-y-24">
           {BLOCKS.map((b, i) => {
             const Icon = b.icon;
@@ -185,7 +185,7 @@ export function ProposalInPortugalPage() {
       </section>
 
       {/* Where — national scope */}
-       <section className="py-16 md:py-24 bg-[color:var(--ivory)] reveal" aria-labelledby="proposal-where-title">
+       <section className="section-y chapter-flow bg-[color:var(--ivory)] reveal" aria-labelledby="proposal-where-title">
         <div className="container-x max-w-3xl">
           <Eyebrow flank>Anywhere in Portugal</Eyebrow>
           <SectionTitle id="proposal-where-title" size="compact" spacing="loose">
@@ -206,7 +206,7 @@ export function ProposalInPortugalPage() {
       </section>
 
       <section
-        className="py-16 md:py-24 bg-[color:var(--sand)]"
+        className="section-y chapter-flow bg-[color:var(--sand)] reveal"
         aria-labelledby="proposal-request-title"
       >
         <div className="container-x max-w-3xl">
@@ -224,7 +224,7 @@ export function ProposalInPortugalPage() {
       </section>
 
       {/* FAQ */}
-       <section className="py-16 md:py-24 bg-[color:var(--ivory)] reveal">
+       <section className="section-y chapter-flow bg-[color:var(--ivory)] reveal">
         <div className="container-x max-w-2xl">
           <Eyebrow className="mb-4">Questions couples ask</Eyebrow>
           <SectionTitle size="compact" spacing="normal" className="mb-8">

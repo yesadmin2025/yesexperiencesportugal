@@ -88,6 +88,14 @@ export interface FinalDetailsInitial {
   startTime?: string | null;
 }
 
+export interface BookingProductRecap {
+  title: string;
+  flowLabel: "Signature" | "Tailored Signature";
+  duration?: string | number | null;
+  region?: string | null;
+  beats?: readonly string[];
+}
+
 /** The only start times the operation runs. */
 const START_TIMES = ["08:00", "09:00", "10:00"] as const;
 
@@ -108,6 +116,8 @@ interface Props {
   priceQuote?: (c: { adults: number; minorAges: number[] }) => ChargeQuote | null;
   /** The same live operating rule used by the date picker before this step. */
   dateRule?: OperatingRule | null;
+  /** Canonical product context shown while the guest completes their details. */
+  productRecap?: BookingProductRecap;
 }
 
 const isEmail = (v: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v.trim());
@@ -120,6 +130,7 @@ export function FinalDetailsDialog({
   submitting = false,
   priceQuote,
   dateRule = null,
+  productRecap,
 }: Props) {
   const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
@@ -242,6 +253,14 @@ export function FinalDetailsDialog({
           </DialogHeader>
 
           <div className="overflow-y-auto px-5 sm:px-7 py-5 space-y-5">
+            {productRecap ? (
+              <ProductRecap
+                recap={productRecap}
+                date={tourDate}
+                composition={composition}
+                compositionComplete={compositionComplete}
+              />
+            ) : null}
             {/* Errors live in the form itself, not only in a floating toast. */}
             {missingSummary.length > 0 ? (
               <div
@@ -520,6 +539,72 @@ export function FinalDetailsDialog({
       </DialogContent>
     </Dialog>
   );
+}
+
+function ProductRecap({
+  recap,
+  date,
+  composition,
+  compositionComplete,
+}: {
+  recap: BookingProductRecap;
+  date: string;
+  composition: TravellerComposition;
+  compositionComplete: boolean;
+}) {
+  const [includedOpen, setIncludedOpen] = useState(false);
+  const context = [
+    recap.duration != null ? formatDuration(recap.duration) : null,
+    recap.region || null,
+  ].filter(Boolean);
+  const beats = (recap.beats ?? []).filter(Boolean).slice(0, 4);
+
+  return (
+    <section
+      aria-label="Your Signature"
+      data-testid="final-details-product-recap"
+      className="border-y border-[color:var(--border)] py-3"
+    >
+      <p className="text-[11px] uppercase tracking-[0.22em] text-[color:var(--charcoal-soft)]">
+        Your Signature · {recap.flowLabel}
+      </p>
+      <h3 className="mt-1.5 font-serif text-[18px] font-medium leading-snug text-[color:var(--charcoal)]">
+        {recap.title}
+      </h3>
+      {context.length > 0 ? (
+        <p className="mt-1 text-[12.5px] leading-snug text-[color:var(--charcoal-soft)]">
+          {context.join(" · ")}
+        </p>
+      ) : null}
+      <p className="mt-1 text-[12.5px] leading-snug text-[color:var(--charcoal)]">
+        {date ? formatKnownDate(date) : "Date not set"}
+        <span className="mx-1.5 text-[color:var(--charcoal-soft)]">·</span>
+        {compositionComplete ? formatCompositionSummary(composition) : "Party details incomplete"}
+      </p>
+      {beats.length > 0 ? (
+        <Disclosure
+          label="What's included"
+          open={includedOpen}
+          onToggle={() => setIncludedOpen((value) => !value)}
+          testId="final-details-product-inclusions"
+        >
+          <ul className="space-y-1 pb-1 pt-2">
+            {beats.map((beat) => (
+              <li key={beat} className="flex gap-2 text-[12.5px] leading-snug text-[color:var(--charcoal)]">
+                <span aria-hidden className="mt-1.5 h-1 w-1 shrink-0 rounded-full bg-[color:var(--gold)]" />
+                <span>{beat}</span>
+              </li>
+            ))}
+          </ul>
+        </Disclosure>
+      ) : null}
+    </section>
+  );
+}
+
+function formatDuration(value: string | number): string {
+  if (typeof value === "number") return `${value} hours`;
+  return /(?:h|hour)/i.test(value) ? value : `${value} hours`;
 }
 
 function formatKnownDate(iso: string): string {

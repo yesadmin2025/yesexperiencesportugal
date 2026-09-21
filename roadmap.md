@@ -94,3 +94,10 @@
 - [x] Normalize confirmed remaining public header and section-intro divergences
 - [x] Standardize related card families and action/proof hierarchy where inconsistent
 - [x] Validate representative public routes across five viewports and focused checks; do not publish
+
+## Booking context, enquiry journeys, and chapter flow
+- [ ] Keep canonical Signature context visible through guest details and payment
+- [ ] Route Travel Designer actions directly to the preselected enquiry
+- [ ] Verify Moments, Corporate, Contact, and WhatsApp journeys without sending live enquiries
+- [ ] Refine shared public chapter spacing and motion where confirmed inconsistent
+- [ ] Validate booking and enquiry journeys across five viewports and 200% text; do not publish

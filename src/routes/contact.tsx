@@ -169,7 +169,7 @@ function Page() {
         </Scene>
       </section>
 
-      <section className="reveal py-16 md:py-24">
+      <section className="reveal section-y chapter-flow">
         <div className="container-x grid lg:grid-cols-3 gap-12">
           <div className="lg:col-span-2">
             {sent ? (

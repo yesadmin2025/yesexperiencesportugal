@@ -548,6 +548,26 @@
     padding-bottom: var(--section-y-app);
   }
 
+  /* Public chapters retain the 64/96 rhythm while their repeated content
+     resolves in sequence. This extends the existing reveal owner rather than
+     introducing another observer or animation system. */
+  html.reveal-ready[data-motion-scope="marketing"] .chapter-flow .grid > .reveal-stagger:nth-child(2),
+  html.reveal-ready[data-motion-scope="marketing"] .chapter-flow [role="list"] > .reveal-stagger:nth-child(2) {
+    --motion-delay: 110ms;
+  }
+  html.reveal-ready[data-motion-scope="marketing"] .chapter-flow .grid > .reveal-stagger:nth-child(3),
+  html.reveal-ready[data-motion-scope="marketing"] .chapter-flow [role="list"] > .reveal-stagger:nth-child(3) {
+    --motion-delay: 220ms;
+  }
+  html.reveal-ready[data-motion-scope="marketing"] .chapter-flow .grid > .reveal-stagger:nth-child(4),
+  html.reveal-ready[data-motion-scope="marketing"] .chapter-flow [role="list"] > .reveal-stagger:nth-child(4) {
+    --motion-delay: 330ms;
+  }
+  html.reveal-ready[data-motion-scope="marketing"] .chapter-flow .grid > .reveal-stagger:nth-child(n + 5),
+  html.reveal-ready[data-motion-scope="marketing"] .chapter-flow [role="list"] > .reveal-stagger:nth-child(n + 5) {
+    --motion-delay: 440ms;
+  }
+
   /* Canonical public page hero spacing. Marketing pages should use this
      instead of inventing route-specific pt/pb values. */
   .page-hero {

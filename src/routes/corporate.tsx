@@ -243,7 +243,7 @@ function CorporatePage() {
       </section>
 
       {/* ── Positioning: built around the team ───────────── */}
-      <section className="py-16 md:py-24">
+      <section className="section-y chapter-flow">
         <div className="container-x grid lg:grid-cols-2 gap-10 md:gap-14 items-center reveal-stagger">
           <div className="group overflow-hidden bg-[color:var(--sand)] aspect-[5/4] sm:aspect-[4/3] lg:aspect-[5/6]">
             <CinematicEditorialImage
@@ -278,7 +278,7 @@ function CorporatePage() {
       </section>
 
       {/* ── Nationwide reach ─────────────────────────────── */}
-      <section className="py-16 md:py-24 bg-[color:var(--ivory)]">
+      <section className="section-y chapter-flow bg-[color:var(--ivory)]">
         <div className="container-x grid lg:grid-cols-2 gap-10 md:gap-14 items-center reveal-stagger lg:[&>*:first-child]:order-2">
           <div className="group overflow-hidden bg-[color:var(--sand)] aspect-[5/4] sm:aspect-[4/3] lg:aspect-[5/6]">
             <CinematicEditorialImage
@@ -323,7 +323,7 @@ function CorporatePage() {
       </section>
 
       {/* ── Corporate formats ────────────────────────────── */}
-      <section className="py-16 md:py-24">
+      <section className="section-y chapter-flow">
         <div className="container-x">
           <div className="max-w-2xl reveal">
             <Eyebrow>What we design</Eyebrow>
@@ -372,7 +372,7 @@ function CorporatePage() {
       </section>
 
       {/* ── FAQ ──────────────────────────────────────────── */}
-      <section className="py-16 md:py-24 bg-[color:var(--ivory)] reveal">
+      <section className="section-y chapter-flow bg-[color:var(--ivory)] reveal">
         <div className="container-x max-w-3xl">
           <Eyebrow>Corporate FAQ</Eyebrow>
           <SectionTitle as="h2" size="compact" spacing="loose">
@@ -418,7 +418,7 @@ function CorporatePage() {
       </section>
 
       {/* ── Final conversion ─────────────────────────────── */}
-      <section className="py-16 md:py-24 bg-[color:var(--sand)] reveal">
+      <section className="section-y chapter-flow bg-[color:var(--sand)] reveal">
         <div className="container-x grid lg:grid-cols-2 gap-10 md:gap-14 items-center">
           <div className="group overflow-hidden bg-[color:var(--ivory)] aspect-[5/4] sm:aspect-[4/3] lg:aspect-[5/6] order-2 lg:order-1">
             <CinematicEditorialImage
