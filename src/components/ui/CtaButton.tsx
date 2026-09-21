@@ -16,8 +16,8 @@ import {
  *   primary: smoked charcoal, warm-gold keyline, champagne text and arrow
  *   ghost:   transparent warm-gold hairline with charcoal text
  *
- * Both variants share spacing (px-7 py-3.5, min-h-[48px]), Inter 12.5/13px
- * uppercase 0.18em, rounded-[2px], focus ring on --gold offset --ivory,
+ * Both variants share a restrained Inter 12px uppercase scale, compact
+ * tracking and the same material treatment across public conversion surfaces.
  * subtle hover -1px lift, 300ms editorial easing, group/translate-x-1 on the arrow.
  *
  * `to` renders a TanStack <Link>; `href` renders an <a>. Pass `icon` to
@@ -73,8 +73,8 @@ export type CtaButtonProps = LinkCtaProps | AnchorCtaProps | ButtonCtaProps;
 // Restrained editorial scale, matched to the homepage hero CTAs:
 // smaller type, wider tracking, generous horizontal breathing room.
 const sizeClasses: Record<Size, string> = {
-  md: "px-7 py-[15px] min-h-[54px] text-[0.85rem] tracking-[0.2em]",
-  sm: "px-6 py-3 min-h-[46px] text-[0.85rem] tracking-[0.2em]",
+  md: "px-7 py-[14px] min-h-[50px] text-[12px] tracking-[0.17em]",
+  sm: "px-6 py-3 min-h-[46px] text-[11.5px] tracking-[0.17em]",
 };
 
 const baseClasses =
@@ -83,7 +83,7 @@ const baseLayoutWithTrailing = "justify-between gap-6";
 const baseLayoutNoTrailing = "justify-center gap-2.5";
 
 const hairlineBaseClasses =
-  "group relative inline-flex items-center gap-3 rounded-[2px] font-sans uppercase font-semibold text-[0.85rem] leading-[1.25] tracking-[0.2em] py-2.5 min-h-[44px] text-[color:var(--charcoal)] transition-opacity duration-[var(--dur-quick)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)] focus-visible:ring-offset-4 focus-visible:ring-offset-[color:var(--ivory)] active:scale-[0.985] active:transition-transform active:duration-[var(--dur-tap)] disabled:pointer-events-none disabled:opacity-40 before:content-[''] before:absolute before:left-0 before:right-0 before:-bottom-0.5 before:h-px before:bg-[color:var(--gold)] before:opacity-60 before:transition-opacity before:duration-[var(--dur-quick)] hover:before:opacity-100 focus-visible:before:opacity-100 active:before:opacity-100";
+  "group relative inline-flex items-center gap-3 rounded-[2px] font-sans uppercase font-semibold text-[11.5px] leading-[1.25] tracking-[0.17em] py-2.5 min-h-[44px] text-[color:var(--charcoal)] transition-opacity duration-[var(--dur-quick)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)] focus-visible:ring-offset-4 focus-visible:ring-offset-[color:var(--ivory)] active:scale-[0.985] active:transition-transform active:duration-[var(--dur-tap)] disabled:pointer-events-none disabled:opacity-40 before:content-[''] before:absolute before:left-0 before:right-0 before:-bottom-0.5 before:h-px before:bg-[color:var(--gold)] before:opacity-60 before:transition-opacity before:duration-[var(--dur-quick)] hover:before:opacity-100 focus-visible:before:opacity-100 active:before:opacity-100";
 
 const variantClasses: Record<Variant, string> = {
   primary:
