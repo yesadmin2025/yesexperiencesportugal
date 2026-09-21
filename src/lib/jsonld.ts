@@ -438,7 +438,7 @@ export function tourProductLd(args: {
     description: args.blurb,
     image,
     url,
-    brand: { "@id": `${SITE_URL}/#organization` },
+    brand: { "@type": "Brand", name: "YES Experiences Portugal" },
     provider: { "@id": `${SITE_URL}/#organization` },
     category: "Private day tour",
     ...(args.region ? { touristType: args.region } : {}),
