@@ -335,7 +335,7 @@ function Page() {
               <div className="text-xs uppercase tracking-[0.22em] text-[color:var(--charcoal)]">
                 Reviews
               </div>
-              <p className="mt-2 font-display text-lg">700+ five-star</p>
+              <p className="mt-2 font-display text-lg">4.9 / 5 · 1,000 reviews</p>
               <p className="mt-1 text-sm text-[color:var(--charcoal-soft)]">
                 Verified guest reviews across Tripadvisor, Viator, Google, GetYourGuide and other
                 major travel platforms.
