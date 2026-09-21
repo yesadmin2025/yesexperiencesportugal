@@ -57,10 +57,11 @@ const LIVE_REVIEW_FALLBACK_TOURS = [
  * Google snippet and shared cards read like the premium opening screen.
  * Keeps the primary keyword ("private day trips from Lisbon") intact.
  */
-const HOME_SEO_TITLE = "YES Experiences Portugal | Private Tours & Journeys";
+const HOME_SEO_TITLE =
+  "YES Experiences Portugal | Private Portugal Tours & Day Trips from Lisbon";
 const HOME_SEO_SOCIAL_TITLE = `${HERO_COPY.headlineLine1} ${HERO_COPY.headlineLine2} | YES Experiences Portugal`;
 const HOME_SEO_DESCRIPTION =
-  "Private tours and tailor-made journeys across Portugal, designed by local experts. Reserve a Signature day, design your own, or plan a full journey.";
+  "Private Portugal tours with local guides: day trips from Lisbon to Sintra, Arrábida and Alentejo wine country, plus tailor-made multi-day Portugal itineraries.";
 
 
 /** Homepage Journal row — three evergreen Local Stories guides.
@@ -332,9 +333,9 @@ export const Route = createFileRoute("/")({
       jsonLdScript(
         studioServiceLd({
           path: "/",
-          name: "YES Experiences Portugal — private, personalized local Portugal days & journeys",
+          name: "YES Experiences Portugal — private Portugal tours, day trips from Lisbon & tailor-made journeys",
           description:
-            "Private, personalized Portugal experiences with local hidden gems — Signature day tours, a real-time Studio to design your own day, and a human Travel Designer for full multi-day journeys across Lisbon, Sintra, Arrábida, Sesimbra, Alentejo and the Vicentine Coast.",
+            "Private Portugal tours and day trips from Lisbon with local guides — Signature day tours, a real-time Studio to design your own day, and a human Travel Designer for tailor-made multi-day Portugal itineraries across Lisbon, Sintra, Cascais, Arrábida, Sesimbra, Comporta, Alentejo wine country and the Vicentine Coast.",
         }),
       ),
     ],
