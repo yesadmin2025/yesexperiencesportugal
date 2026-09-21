@@ -17,7 +17,7 @@ type State =
 export const Route = createFileRoute("/unsubscribe")({
   head: () => ({
     meta: [
-      { title: "Unsubscribe — YES experiences Portugal" },
+      { title: "Unsubscribe — YES Experiences Portugal" },
       { name: "robots", content: "noindex, nofollow" },
     ],
   }),

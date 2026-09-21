@@ -9,7 +9,7 @@ import { Eyebrow } from "@/components/ui/Eyebrow";
 export const Route = createFileRoute("/auth")({
   head: () => ({
     meta: [
-      { title: "Admin — YES experiences Portugal" },
+      { title: "Admin — YES Experiences Portugal" },
       { name: "robots", content: "noindex, nofollow" },
       { property: "og:url", content: "https://yesexperiencesportugal.com/auth" },
     ],

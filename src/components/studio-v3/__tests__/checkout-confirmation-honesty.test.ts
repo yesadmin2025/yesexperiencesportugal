@@ -19,7 +19,7 @@ const checkoutSummary = readFileSync(
 
 describe("checkout confirmation honesty and recovery", () => {
   it("keeps the confirmation route neutral until Stripe verifies a paid session", () => {
-    expect(bookingConfirmed).toContain("Booking status — YES experiences Portugal");
+    expect(bookingConfirmed).toContain("Booking status — YES Experiences Portugal");
     expect(bookingConfirmed).toContain(
       'const paid = state.kind === "ok" && state.data.paymentStatus === "paid";',
     );

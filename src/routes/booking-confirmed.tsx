@@ -69,7 +69,7 @@ export const Route = createFileRoute("/booking-confirmed")({
   }),
   head: () => ({
     meta: [
-      { title: "Booking status — YES experiences Portugal" },
+      { title: "Booking status — YES Experiences Portugal" },
       { name: "robots", content: "noindex,nofollow" },
     ],
   }),

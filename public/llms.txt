@@ -1,10 +1,10 @@
-# YES experiences Portugal
+# YES Experiences Portugal
 
 > Private, premium experiences in Portugal — Signature day tours, an Experience Studio that designs and reserves in minutes, bespoke multi-day journeys with a Travel Designer, private moments and celebrations, and corporate or private-group experiences across Portugal. Licensed Portuguese tour operator (RNAAT nº 31/2023), based in Sesimbra, Portugal. 4.9/5 across 1,000 guest reviews on major booking and review platforms.
 
 ## Pages
 
-- [Home](/): Overview of YES experiences Portugal and the five ways to begin.
+- [Home](/): Overview of YES Experiences Portugal and the five ways to begin.
 - [Signature Experiences](/experiences): Complete private day experiences, reservable instantly.
 - [Day Tours](/day-tours): Half- and full-day private tours across Portugal.
 - [Experience Studio](/studio-v3): Design your own private day with live pricing and instant reservation.

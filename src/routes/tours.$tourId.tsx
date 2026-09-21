@@ -125,7 +125,7 @@ export const Route = createFileRoute("/tours/$tourId")({
     if (!t)
       return {
         meta: [
-          { title: "Signature not found — YES experiences Portugal" },
+          { title: "Signature not found — YES Experiences Portugal" },
           { name: "robots", content: "noindex, nofollow" },
         ],
       };
@@ -141,7 +141,7 @@ export const Route = createFileRoute("/tours/$tourId")({
     // an explicit `seoTitle` (Phase 2 SEO focus tours) use it verbatim.
     // Otherwise auto-build: full brand suffix → short suffix → raw → truncated.
     const SUFFIX_PRIVATE = " · Private Tour Portugal | YES";
-    const SUFFIX_FULL = " — YES experiences Portugal";
+    const SUFFIX_FULL = " — YES Experiences Portugal";
     const SUFFIX_SHORT = " | YES Portugal";
     const hasPrivate = /private/i.test(t.title);
     const seo = getSignatureSeo(t.id);

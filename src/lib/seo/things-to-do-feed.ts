@@ -17,7 +17,7 @@ import { signatureTours, type SignatureTour } from "@/data/signatureTours";
 import { getTourContent } from "@/lib/tourContent";
 import { abs } from "@/lib/seo";
 
-export const FEED_BRAND = "YES experiences Portugal";
+export const FEED_BRAND = "YES Experiences Portugal";
 export const FEED_CURRENCY = "EUR";
 
 export type ThingsToDoProduct = {

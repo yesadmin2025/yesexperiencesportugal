@@ -36,7 +36,7 @@ export function canonicalFor(path: string) {
 export const BRAND_SOCIAL_IMAGE = abs(brandSocialImage);
 
 export const BRAND_SOCIAL_IMAGE_ALT =
-  "YES experiences Portugal — the Portuguese Atlantic coast";
+  "YES Experiences Portugal — the Portuguese Atlantic coast";
 
 /**
  * og:image + twitter:image meta entries for a route.

@@ -34,14 +34,14 @@ export const Route = createFileRoute("/search")({
   component: SearchPage,
   head: () => ({
     meta: [
-      { title: "Search — YES experiences Portugal" },
+      { title: "Search — YES Experiences Portugal" },
       {
         name: "description",
         content:
           "Search private experiences, multi-day journeys and local stories across Portugal by YES experiences.",
       },
       { name: "robots", content: "noindex, follow" },
-      { property: "og:title", content: "Search — YES experiences Portugal" },
+      { property: "og:title", content: "Search — YES Experiences Portugal" },
       {
         property: "og:description",
         content:
@@ -97,7 +97,7 @@ function SearchPage() {
             }}
           >
             <label htmlFor="site-search-input" className="sr-only">
-              Search YES experiences Portugal
+              Search YES Experiences Portugal
             </label>
             <div className="flex items-center gap-2 rounded-full border border-[color:var(--sand)] bg-[color:var(--ivory)] px-5 py-1.5 shadow-[var(--shadow-soft)] focus-within:border-[color:var(--teal)]">
               <SearchIcon

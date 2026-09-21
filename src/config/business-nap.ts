@@ -9,7 +9,7 @@
  * this contract on every build.
  */
 
-export const BUSINESS_NAME = "YES experiences Portugal" as const;
+export const BUSINESS_NAME = "YES Experiences Portugal" as const;
 export const BUSINESS_LEGAL_NAME = "YES Experiences Portugal" as const;
 
 export const LICENSE_SHORT = "RNAAT" as const;

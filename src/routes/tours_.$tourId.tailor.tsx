@@ -110,7 +110,7 @@ export const Route = createFileRoute("/tours_/$tourId/tailor")({
     if (!t)
       return {
         meta: [
-          { title: "Tailor a Signature — YES experiences Portugal" },
+          { title: "Tailor a Signature — YES Experiences Portugal" },
           // Same directive as the resolved branch: out of the SERPs, but
           // crawlable and link-following.
           { name: "robots", content: "noindex, follow" },
