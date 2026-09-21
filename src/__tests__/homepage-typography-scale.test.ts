@@ -22,7 +22,9 @@ describe("Homepage H2 — shared historical hierarchy", () => {
   });
 
   it("keeps one canonical default ramp and medium editorial weight", () => {
-    expect(titleSrc).toContain("text-[clamp(1.875rem,7vw,2.4rem)] md:text-[3.6rem]");
+    expect(titleSrc).toContain(
+      "text-[1.8125rem] md:text-[2.25rem] leading-[1.18] md:leading-[1.1] text-balance",
+    );
     expect(titleSrc).toContain("font-medium tracking-normal");
   });
 });
