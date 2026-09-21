@@ -34,6 +34,7 @@ const COPY = {
       "Your review has been sent to our team. Once checked, it will appear on this page.",
     note: "We publish reviews as written. Please only review an experience you actually took.",
     genericError: "Could not submit your review",
+    reviewing: "You are reviewing",
   },
   pt: {
     eyebrow: "Viajou connosco?",
@@ -55,6 +56,7 @@ const COPY = {
       "A sua avaliação foi enviada para a nossa equipa. Depois de verificada, aparecerá nesta página.",
     note: "Publicamos as avaliações tal como são escritas. Avalie apenas uma experiência que tenha realizado.",
     genericError: "Não foi possível enviar a sua avaliação",
+    reviewing: "Está a avaliar",
   },
 } as const;
 
