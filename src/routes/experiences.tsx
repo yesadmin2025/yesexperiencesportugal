@@ -248,7 +248,7 @@ function TourCard({
         </div>
 
         <h3
-          className="experience-card-title mt-2.5 font-display text-[1.375rem] font-medium leading-[1.16] tracking-normal text-[color:var(--charcoal)] md:text-[1.5rem]"
+          className="experience-card-title t-h3 mt-2.5 text-[color:var(--charcoal)]"
         >
           <Link
             to="/tours/$tourId"

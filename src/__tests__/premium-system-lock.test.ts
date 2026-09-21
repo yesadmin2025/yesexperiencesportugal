@@ -30,7 +30,8 @@ describe("Premium System Lock", () => {
     const cta = read("src/components/ui/CtaButton.tsx");
 
     expect(sectionTitle).toContain(
-      "text-[1.75rem] md:text-[2.25rem] leading-[1.18] md:leading-[1.1]",
+      // 21 Sep 2026 visual hierarchy lock: section H2 is 29px / 36px.
+      "text-[1.8125rem] md:text-[2.25rem] leading-[1.18] md:leading-[1.1]",
     );
     expect(css).toMatch(/\.he-eyebrow-bar\s*\{[\s\S]*?font-size:\s*11px;/);
     expect(cta).toContain('text-[12px] tracking-[0.17em]');
@@ -95,10 +96,12 @@ describe("Premium System Lock", () => {
       css.indexOf("@keyframes editorialArrowCue"),
     );
 
-    expect(marketingMotion).toContain("filter: saturate(0.72) contrast(0.9)");
+    // 21 Sep 2026 motion implementation lock supersedes the earlier
+    // opacity-only grammar: reveals must carry visible movement
+    // (18px mobile / 22px larger screens) with ~580–620ms easing.
     expect(marketingMotion).toContain("clip-path:");
-    expect(marketingMotion).toContain("transform: scale(1.018)");
-    expect(marketingMotion).not.toMatch(/translate(?:Y|3d)\([^)]*[1-9]/);
+    expect(marketingMotion).toMatch(/transform: translate3d\(0, (?:18|20|22)px, 0\)/);
+    expect(marketingMotion).toMatch(/transform 6[0-2]0ms/);
   });
 
   it("uses Inter for public micro-labels and controls", () => {

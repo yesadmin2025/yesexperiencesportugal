@@ -226,7 +226,7 @@ function PathCard({ path, index }: { path: Path; index: number }) {
           <span className="five-ways-number">{String(index + 1).padStart(2, "0")}</span>
         </div>
         <p className="five-ways-eyebrow mt-5">{path.eyebrow}</p>
-        <h3 className="five-ways-title editorial-title-safe mt-3 font-serif text-[1.375rem] leading-[1.22] font-normal text-[color:var(--charcoal)] md:text-[1.5rem]">
+        <h3 className="five-ways-title editorial-title-safe t-h3 mt-3 font-normal text-[color:var(--charcoal)]">
           {path.title === `${path.titleLead} ${path.titleEmphasis}` ? (
             <>{path.titleLead} <em className="font-normal text-[color:var(--teal)]">{path.titleEmphasis}</em></>
           ) : path.title}
