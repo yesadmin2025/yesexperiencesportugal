@@ -27,6 +27,16 @@ export function MobileReserveBar({
   const [visible, setVisible] = useState(false);
 
   useEffect(() => {
+    // Keep the floating WhatsApp support affordance clear of this conversion
+    // bar. The FAB already reads --fab-lift; only set it while the reserve bar
+    // is actually visible so the primary booking action remains unobstructed.
+    const root = document.documentElement;
+    if (visible) root.style.setProperty("--fab-lift", "72px");
+    else root.style.removeProperty("--fab-lift");
+    return () => root.style.removeProperty("--fab-lift");
+  }, [visible]);
+
+  useEffect(() => {
     const onScroll = () => {
       const pastHero = window.scrollY > window.innerHeight * 0.7;
       const book = document.getElementById("book");
