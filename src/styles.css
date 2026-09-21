@@ -2621,18 +2621,12 @@ html[data-conversion-overlay="compare"] .cookie-consent-card { visibility: hidde
   }
 }
 
-/* Video → poster fallback. Poster <img> stays painted only when autoplay
-   fails or the file errors; otherwise the live video covers it. */
+/* Video → poster fallback. The poster is the safe first paint and remains
+   visible underneath until the live video has genuinely started. */
 .hero-cinematic .hero-film-fallback {
-  opacity: 0;
+  opacity: 1;
   transition: opacity 280ms var(--ease-premium);
   pointer-events: none;
-}
-.hero-cinematic[data-video-fallback="true"] .hero-film-video {
-  opacity: 0;
-}
-.hero-cinematic[data-video-fallback="true"] .hero-film-fallback {
-  opacity: 1;
 }
 
 @keyframes heroRevealFromLeftStable {

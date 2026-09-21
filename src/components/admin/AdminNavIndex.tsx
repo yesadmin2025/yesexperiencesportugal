@@ -50,11 +50,6 @@ export const ADMIN_GROUPS: AdminGroup[] = [
     title: "Experiences & content",
     links: [
       { to: "/admin/experiences", label: "Experiences & operations" },
-      {
-        to: "/admin/path-photos",
-        label: "Five paths photos",
-        hint: "Upload once for the homepage cards and map",
-      },
       { to: "/admin/photos", label: "Photos" },
       { to: "/admin/image-swap", label: "Swap an image" },
       { to: "/admin/builder-images", label: "Builder images" },
