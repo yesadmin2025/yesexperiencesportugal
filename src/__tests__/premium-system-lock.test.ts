@@ -25,6 +25,18 @@ describe("Premium System Lock", () => {
     ]) expect(css).toContain(token);
   });
 
+  it("locks the shared public typography and compact control scale", () => {
+    const sectionTitle = read("src/components/ui/SectionTitle.tsx");
+    const cta = read("src/components/ui/CtaButton.tsx");
+
+    expect(sectionTitle).toContain(
+      "text-[1.8125rem] md:text-[2.25rem] leading-[1.18] md:leading-[1.1]",
+    );
+    expect(css).toMatch(/\.he-eyebrow-bar\s*\{[\s\S]*?font-size:\s*11px;/);
+    expect(cta).toContain('text-[12px] tracking-[0.17em]');
+    expect(cta).toContain('text-[11.5px] tracking-[0.17em]');
+  });
+
   it("locks the three motion tiers inside the approved ranges", () => {
     const value = (name: string) => Number(css.match(new RegExp(`${name}:\\s*(\\d+)ms`))?.[1]);
     expect(value("--dur-tap")).toBeGreaterThanOrEqual(140);
