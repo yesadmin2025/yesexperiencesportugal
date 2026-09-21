@@ -13,8 +13,6 @@
 // traveller — it never blocks the flow and never reaches the backend.
 
 import { useEffect, useState, type FormEvent } from "react";
-import { ArrowRight } from "lucide-react";
-
 import atmCoastal from "@/assets/studio/atm-coastal-cinematic.jpg";
 import { CtaButton } from "@/components/ui/CtaButton";
 
@@ -97,7 +95,7 @@ export function StudioV3Intro({ onComplete }: Props) {
             </p>
             <h1
               data-testid="studio-v3-intro-headline"
-               className="mt-5 text-[28px] sm:text-[34px] leading-[1.12] tracking-[-0.01em] font-normal"
+               className="mt-5 text-[40px] leading-[1.08] tracking-normal font-normal md:text-[60px] md:leading-[1.02]"
               style={{
                 fontFamily: "var(--font-editorial)",
                 color: "var(--ivory)",
@@ -136,7 +134,7 @@ export function StudioV3Intro({ onComplete }: Props) {
               variant="ghostDark"
               className="mt-10"
             >
-              Begin
+               Design your day
             </CtaButton>
           </div>
         ) : (
@@ -152,7 +150,7 @@ export function StudioV3Intro({ onComplete }: Props) {
               — Before we begin
             </p>
             <h2
-               className="mt-5 text-[24px] sm:text-[30px] leading-[1.15] tracking-[-0.01em] font-normal"
+               className="mt-5 text-[29px] leading-[1.15] tracking-normal font-normal md:text-[36px] md:leading-[1.1]"
               style={{
                 fontFamily: "var(--font-editorial)",
                 color: "var(--ivory)",
@@ -195,19 +193,14 @@ export function StudioV3Intro({ onComplete }: Props) {
               }}
             />
 
-            <button
+            <CtaButton
               type="submit"
               data-phase-cta="intro-name"
-               className="mt-8 inline-flex min-h-[48px] w-full items-center justify-center gap-2 rounded-full px-7 py-3 text-[0.85rem] uppercase font-semibold transition-colors hover:opacity-90"
-              style={{
-                background: "var(--ivory)",
-                color: "var(--charcoal)",
-                 letterSpacing: "0.2em",
-              }}
+               variant="primary"
+               className="mt-8 w-full"
             >
               Continue
-              <ArrowRight className="h-3.5 w-3.5" strokeWidth={2.4} aria-hidden />
-            </button>
+            </CtaButton>
 
             <button
               type="button"

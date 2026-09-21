@@ -164,7 +164,7 @@ function FormatCard({ format }: { format: (typeof FORMATS)[number] }) {
         aria-hidden="true"
         className="text-[color:var(--gold-deep,var(--gold))]"
       />
-      <h3 className="serif mt-4 text-[1.25rem] md:text-[1.5rem] leading-[1.2] text-[color:var(--charcoal)]">
+       <h3 className="serif mt-4 text-[24px] leading-[1.08] text-[color:var(--charcoal)] md:text-[26px]">
         {format.title}
       </h3>
       <p className="mt-3 text-[15px] md:text-[16px] leading-[1.75] text-[color:var(--charcoal-soft)]">
@@ -195,7 +195,7 @@ function CorporatePage() {
       <section className="page-hero reveal">
         <div className="container-x max-w-3xl text-center">
           <Eyebrow flank>Corporate &amp; incentives</Eyebrow>
-          <SectionTitle as="h1" size="anchor" spacing="loose">
+           <SectionTitle as="h1" size="anchor" spacing="loose" className="text-[40px] leading-[1.08] md:text-[60px] md:leading-[1.02]">
             Corporate experiences in Portugal,{" "}
             <SectionTitle.Em>designed by locals.</SectionTitle.Em>
           </SectionTitle>
@@ -339,7 +339,7 @@ function CorporatePage() {
           </div>
 
           {/* Scale statement — visible above the FAQ */}
-          <p className="mt-14 md:mt-20 text-center serif text-[1.25rem] md:text-[1.7rem] leading-[1.3] text-[color:var(--charcoal)] reveal">
+           <p className="mt-14 md:mt-20 text-center serif text-[24px] leading-[1.25] text-[color:var(--charcoal)] md:text-[30px] reveal">
             From small leadership teams to{" "}
             <span className="italic font-normal text-[color:var(--teal)]">
               corporate groups of 100+.

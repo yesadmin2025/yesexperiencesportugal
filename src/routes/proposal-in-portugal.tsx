@@ -113,7 +113,7 @@ export function ProposalInPortugalPage() {
       <section className="page-hero reveal">
         <div className="container-x max-w-3xl text-center">
           <Eyebrow flank>Proposal in Portugal</Eyebrow>
-          <SectionTitle as="h1" size="anchor" spacing="loose">
+           <SectionTitle as="h1" size="anchor" spacing="loose" className="text-[40px] leading-[1.08] md:text-[60px] md:leading-[1.02]">
             A proposal in Portugal, <SectionTitle.Em>planned discreetly.</SectionTitle.Em>
           </SectionTitle>
           <RouteThread compact className="mx-auto mt-6 max-w-xl" />
@@ -162,9 +162,9 @@ export function ProposalInPortugalPage() {
 
                 <div>
                   <Eyebrow icon={<Icon strokeWidth={1.8} />}>{b.eyebrow}</Eyebrow>
-                  <SectionTitle size="compact" spacing="loose">
-                    {b.title}
-                  </SectionTitle>
+                   <h3 className="mt-4 font-serif text-[24px] font-medium leading-[1.08] text-[color:var(--charcoal)] md:text-[26px]">
+                     {b.title}
+                   </h3>
                   <p className="mt-4 font-serif italic text-[1.1rem] md:text-[1.2rem] text-[color:var(--teal)] leading-snug">
                     {b.emotional}
                   </p>
@@ -185,7 +185,7 @@ export function ProposalInPortugalPage() {
       </section>
 
       {/* Where — national scope */}
-      <section className="py-16 md:py-20 bg-[color:var(--ivory)] reveal" aria-labelledby="proposal-where-title">
+       <section className="py-16 md:py-24 bg-[color:var(--ivory)] reveal" aria-labelledby="proposal-where-title">
         <div className="container-x max-w-3xl">
           <Eyebrow flank>Anywhere in Portugal</Eyebrow>
           <SectionTitle id="proposal-where-title" size="compact" spacing="loose">
@@ -224,7 +224,7 @@ export function ProposalInPortugalPage() {
       </section>
 
       {/* FAQ */}
-      <section className="py-16 md:py-20 bg-[color:var(--ivory)] reveal">
+       <section className="py-16 md:py-24 bg-[color:var(--ivory)] reveal">
         <div className="container-x max-w-2xl">
           <Eyebrow className="mb-4">Questions couples ask</Eyebrow>
           <SectionTitle size="compact" spacing="normal" className="mb-8">
@@ -233,7 +233,7 @@ export function ProposalInPortugalPage() {
           <dl className="space-y-8">
             {PROPOSAL_FAQ.map((f) => (
               <div key={f.q}>
-                <dt className="font-display font-medium text-[1.05rem] md:text-[1.15rem] text-[color:var(--charcoal)] mb-3">
+                 <dt className="font-display mb-3 text-[24px] font-medium leading-[1.08] text-[color:var(--charcoal)] md:text-[26px]">
                   {f.q}
                 </dt>
                 <dd className="text-[15px] md:text-[16px] text-[color:var(--charcoal-soft)] leading-[1.75]">

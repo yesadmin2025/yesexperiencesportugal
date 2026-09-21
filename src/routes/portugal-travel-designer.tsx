@@ -67,14 +67,14 @@ function Section({
 }) {
   return (
     <section
-      className={`reveal py-14 md:py-20 ${tone === "sand" ? "bg-[color:var(--sand)]" : "bg-[color:var(--ivory)]"}`}
+      className={`reveal py-16 md:py-24 ${tone === "sand" ? "bg-[color:var(--sand)]" : "bg-[color:var(--ivory)]"}`}
     >
       <div className="container-x max-w-3xl">
         {eyebrow && <Eyebrow>{eyebrow}</Eyebrow>}
         {title && (
           <SplitLines
             as="h2"
-            className="mt-4 font-display text-[color:var(--charcoal)] font-medium tracking-normal text-[clamp(1.875rem,7vw,2.4rem)] md:text-[3.6rem] leading-[1.1] md:leading-[1.0] text-balance"
+            className="mt-4 font-display text-[29px] font-medium leading-[1.15] tracking-normal text-balance text-[color:var(--charcoal)] md:text-[36px] md:leading-[1.1]"
             lines={[title]}
           />
         )}
@@ -93,7 +93,7 @@ function PortugalTravelDesignerPage() {
       <section className="reveal pt-28 md:pt-36 pb-10 bg-[color:var(--sand)]">
         <div className="container-x max-w-3xl text-center">
           <Eyebrow flank>Portugal Travel Designer</Eyebrow>
-          <SectionTitle as="h1" size="anchor" spacing="loose">
+           <SectionTitle as="h1" size="anchor" spacing="loose" className="text-[40px] leading-[1.08] md:text-[60px] md:leading-[1.02]">
             Portugal, <SectionTitle.Em>shaped around you.</SectionTitle.Em>
           </SectionTitle>
           <RouteThread compact className="mx-auto mt-6 max-w-xl" />
@@ -267,24 +267,16 @@ function PortugalTravelDesignerPage() {
         ]}
       />
 
-      <section className="reveal py-16 md:py-20 bg-[color:var(--sand)]">
+       <section className="reveal py-16 md:py-24 bg-[color:var(--sand)]">
         <div className="container-x max-w-2xl text-center">
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-            <CtaButton to="/studio-v3" variant="primary">
-              {CTA_LABELS.studio}
+             <CtaButton to="/multi-day" variant="primary">
+               {CTA_LABELS.travelDesigner}
             </CtaButton>
             <CtaButton to="/experiences" variant="ghost">
               {CTA_LABELS.signatureDiscovery}
             </CtaButton>
           </div>
-          <p className="mt-6 text-[13px] tracking-[0.02em] text-[color:var(--charcoal-soft)]">
-            <Link
-              to="/multi-day"
-              className="underline decoration-[color:var(--gold)]/60 underline-offset-4 hover:text-[color:var(--teal)] transition-colors"
-            >
-              Plan a multi-day journey →
-            </Link>
-          </p>
         </div>
       </section>
     </SiteLayout>

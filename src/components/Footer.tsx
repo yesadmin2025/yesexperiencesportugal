@@ -67,11 +67,11 @@ const NAV_COLUMNS: { title: string; links: FooterLink[] }[] = [
   {
     title: "Experiences",
     links: [
-      { to: "/experiences", label: "All Experiences" },
+      { to: "/experiences", label: "Signature Experiences" },
+      { to: "/studio-v3", label: "Experience Studio" },
       { to: "/day-tours", label: "Day Experiences" },
       { to: "/portugal-travel-designer", label: "Travel Designer" },
       { to: "/multi-day", label: "Multi-Day Journeys" },
-      { to: "/studio-v3", label: "Experience Studio" },
     ],
   },
   {
@@ -255,7 +255,7 @@ export function Footer() {
         </div>
 
         {/* ── ZONE B — NAVIGATE ──────────────────────────────────────── */}
-        <div className="mt-10 pt-10 border-t border-[color:var(--gold-warm)]/15">
+        <div className="mt-8 pt-8 border-t border-[color:var(--gold-warm)]/15 md:mt-10 md:pt-10">
           <div className="grid grid-cols-2 gap-x-6 gap-y-9 md:grid-cols-4">
             {NAV_COLUMNS.map((col) => (
               <FooterCol key={col.title} title={col.title} links={col.links} />
@@ -270,7 +270,7 @@ export function Footer() {
         </div>
 
         {/* ── ZONE C — TRUST & LEGAL ─────────────────────────────────── */}
-        <div className="mt-10 pt-10 border-t border-[color:var(--gold-warm)]/15">
+        <div className="mt-8 pt-8 border-t border-[color:var(--gold-warm)]/15 md:mt-10 md:pt-10">
           <div className="grid gap-8 md:grid-cols-[minmax(0,1fr)_auto] md:items-start">
             {/* Credentials */}
             <ul
