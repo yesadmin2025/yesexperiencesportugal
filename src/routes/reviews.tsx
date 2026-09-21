@@ -19,6 +19,7 @@ import ogSocialImg from "@/assets/hero-coast.jpg";
 import { useMarketingMotion } from "@/hooks/use-marketing-motion";
 import { getReviewsPageData } from "@/lib/reviews.functions";
 import { GuestReviewForm } from "@/components/reviews/GuestReviewForm";
+import { REVIEW_CERTIFICATE, REVIEW_COUNT_DISPLAY } from "@/config/trust-certificate";
 
 import { SITE_URL } from "@/lib/seo";
 
@@ -146,7 +147,7 @@ function Stars({ rating }: { rating: number }) {
 
 function ReviewsPage() {
   useMarketingMotion();
-  const { global, tours } = Route.useLoaderData();
+  const { tours } = Route.useLoaderData();
 
   return (
     <SiteLayout>
@@ -162,26 +163,11 @@ function ReviewsPage() {
                   What guests <SectionTitle.Em>actually</SectionTitle.Em> say.
                 </SectionTitle>
               </div>
-              {global.total_reviews >= 25 && (
-                <p className="scene-body mt-6 font-serif italic text-[1.1rem] md:text-[1.25rem] leading-[1.55] text-[color:var(--charcoal-soft)]">
-                  <span className="tabular-nums">
-                    {global.total_reviews.toLocaleString("en-US")}
-                  </span>{" "}
-                  reviews
-                  {global.average_rating && (
-                    <>
-                      {" "}
-                      · <span className="tabular-nums">{global.average_rating.toFixed(1)}</span>★
-                    </>
-                  )}{" "}
-                  across platforms.
-                </p>
-              )}
-              {global.total_reviews < 25 && (
-                <p className="page-header-support scene-body mt-5 font-sans text-[12.5px] text-[color:var(--charcoal-soft)]">
-                  Based on verified guest reviews across major booking platforms.
-                </p>
-              )}
+              <p className="scene-body mt-6 font-serif italic text-[1.1rem] md:text-[1.25rem] leading-[1.55] text-[color:var(--charcoal-soft)]">
+                <span className="tabular-nums">{REVIEW_COUNT_DISPLAY}</span> reviews ·{" "}
+                <span className="tabular-nums">{REVIEW_CERTIFICATE.ratingValue}</span>★ across
+                platforms.
+              </p>
             </Scene>
           </div>
         </header>

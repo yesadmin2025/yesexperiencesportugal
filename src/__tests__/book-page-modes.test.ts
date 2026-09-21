@@ -23,6 +23,21 @@ describe("/book mode separation", () => {
     expect(src).toMatch(/\{!instantMode \? \(/);
   });
 
+  it("does not render the generic all-tour price catalogue in instant mode", () => {
+    expect(src).toMatch(/\{!instantMode \? \(\s*<section\s+id="prices"/);
+    expect(src).toContain('data-testid="booking-price-list"');
+  });
+
+  it("uses discovery language for the generic /book route link to experiences", () => {
+    expect(src).not.toContain("Book instantly");
+    expect(src).toContain("CTA_LABELS.signatureDiscovery");
+  });
+
+  it("uses canonical reserve language for specific price-list tour actions", () => {
+    expect(src).toContain("Reserve this day →");
+    expect(src).not.toContain("Book →");
+  });
+
   it("offers a quiet private-day enquiry fallback in instant mode", () => {
     expect(src).toContain('data-testid="instant-enquiry-fallback"');
     expect(src).toMatch(/search=\{\{ type: "private_day" \}\}/);
