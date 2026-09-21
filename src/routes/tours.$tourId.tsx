@@ -423,24 +423,23 @@ function TourHero({
       </section>
 
       <section className="pb-8">
-        <div className="container-x max-w-6xl">
-          {/* Cinematic hero — unified 3:2 frame, blur-up on load. */}
+        <div className="container-x max-w-6xl lg:grid lg:grid-cols-2 lg:items-center lg:gap-12">
+          {/* The detail hero stays image-led while keeping the reserve decision
+              visible in the first viewport on both mobile and desktop. */}
           <div>
             <TourImage
               src={heroSrc}
               srcSet={heroSrcSet}
               alt={heroAlt}
-              ratio="3/2"
+              ratio="16/9"
               priority
               focal={tour.focal ?? "50% 50%"}
-              sizes="(min-width: 1024px) 1152px, 100vw"
+              sizes="(min-width: 1024px) 576px, 100vw"
               imgClassName="signature-image-settle"
             />
           </div>
 
-          {/* Editorial header — title, blurb and meta sit BELOW the hero
-              so the cinematic image reads as a single quiet frame. */}
-          <div className="mt-6 sm:mt-8">
+          <div className="mt-6 sm:mt-8 lg:mt-0">
             <Eyebrow>Private Signature Experience</Eyebrow>
             <h1 className="serif mt-3 max-w-3xl text-[40px] font-medium leading-[1.08] tracking-normal text-[color:var(--charcoal)] md:text-[60px] md:leading-[1.02]">
               {tour.title}
