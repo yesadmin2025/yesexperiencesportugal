@@ -57,13 +57,13 @@ export function AreaLandingPage({ page }: { page: ServiceAreaPage }) {
         ]}
       />
 
-      <section className="bg-[color:var(--sand)] py-14 md:py-20">
+      <section className="bg-[color:var(--sand)] py-16 md:py-24">
         <div className="container-x max-w-3xl">
           <Eyebrow flank>{page.eyebrow}</Eyebrow>
-          <h1 className="font-display mt-5 text-[2rem] sm:text-[2.4rem] md:text-[3rem] font-medium leading-[1.08] tracking-[-0.02em] text-[color:var(--charcoal)]">
+          <SectionTitle as="h1" size="anchor" spacing="loose">
             {page.h1Lead}{" "}
-            <span className="italic font-normal text-[color:var(--teal)]">{page.h1Em}</span>
-          </h1>
+            <SectionTitle.Em>{page.h1Em}</SectionTitle.Em>
+          </SectionTitle>
           <p className="mt-6 text-[16px] md:text-[17px] leading-[1.8] text-[color:var(--charcoal-soft)]">
             {page.standfirst}
           </p>
@@ -100,7 +100,7 @@ export function AreaLandingPage({ page }: { page: ServiceAreaPage }) {
         </div>
       </section>
 
-      <section className="py-14 md:py-20" aria-labelledby="area-local-title">
+      <section className="py-16 md:py-24" aria-labelledby="area-local-title">
         <div className="container-x max-w-3xl">
           <Eyebrow>Local knowledge</Eyebrow>
           <SectionTitle as="h2" id="area-local-title" spacing="tight">
@@ -120,7 +120,7 @@ export function AreaLandingPage({ page }: { page: ServiceAreaPage }) {
       </section>
 
       <section
-        className="border-t border-[color:var(--border)] py-14 md:py-20"
+        className="border-t border-[color:var(--border)] py-16 md:py-24"
         aria-labelledby="area-tours-title"
       >
         <div className="container-x">
@@ -135,7 +135,7 @@ export function AreaLandingPage({ page }: { page: ServiceAreaPage }) {
                 <span className="font-sans text-[11px] uppercase tracking-[0.22em] font-bold text-[color:var(--gold)]">
                   {tour.region}
                 </span>
-                <h3 className="font-display mt-3 text-[1.2rem] leading-snug text-[color:var(--charcoal)]">
+                <h3 className="mt-3 font-serif text-[24px] leading-[1.2] text-[color:var(--charcoal)] md:text-[26px]">
                   {tour.title}
                 </h3>
                 <p className="mt-3 flex-1 text-[14.5px] leading-[1.75] text-[color:var(--charcoal-soft)]">
@@ -198,7 +198,7 @@ export function AreaLandingPage({ page }: { page: ServiceAreaPage }) {
         className="bg-[color:var(--sand)]"
       />
 
-      <section className="py-14 md:py-20" aria-labelledby="area-practical-title">
+      <section className="py-16 md:py-24" aria-labelledby="area-practical-title">
         <div className="container-x max-w-4xl">
           <Eyebrow>Practical details</Eyebrow>
           <SectionTitle as="h2" id="area-practical-title" spacing="tight">
@@ -277,7 +277,7 @@ export function AreaLandingPage({ page }: { page: ServiceAreaPage }) {
       </section>
 
       <section
-        className="border-t border-[color:var(--border)] py-14 md:py-20"
+        className="border-t border-[color:var(--border)] py-16 md:py-24"
         aria-labelledby="area-network-title"
       >
         <div className="container-x max-w-4xl">

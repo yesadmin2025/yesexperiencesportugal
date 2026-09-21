@@ -5,7 +5,6 @@ import { SiteBreadcrumbs } from "@/components/SiteBreadcrumbs";
 import { Eyebrow } from "@/components/ui/Eyebrow";
 import { SectionTitle } from "@/components/ui/SectionTitle";
 import { CtaButton } from "@/components/ui/CtaButton";
-import { SplitLines } from "@/components/motion/SplitLines";
 import { useMarketingMotion } from "@/hooks/use-marketing-motion";
 import {
   Accordion,
@@ -54,14 +53,9 @@ function FaqPage() {
       <section className="pt-10 pb-14 md:pb-16 bg-[color:var(--sand)] text-center">
         <div className="container-x max-w-3xl">
           <Eyebrow flank>Before you book</Eyebrow>
-          <SplitLines
-            as="h1"
-            className="mt-4 font-display text-[color:var(--charcoal)] font-semibold tracking-normal text-[clamp(2.25rem,10vw,4.75rem)] leading-[1.02] text-balance"
-            lines={[
-              <>Everything worth asking,</>,
-              <><span className="italic font-normal text-[color:var(--teal)]">answered honestly.</span></>,
-            ]}
-          />
+          <SectionTitle as="h1" size="anchor" spacing="loose">
+            Everything worth asking, <SectionTitle.Em>answered honestly.</SectionTitle.Em>
+          </SectionTitle>
           <p className="mt-6 text-[15.5px] md:text-[17px] leading-[1.75] text-[color:var(--charcoal-soft)]">
             How our private days are designed, what they cost, where you stand if plans change, and
             the two ways to book. If your question isn&apos;t here, a local answers it personally.
@@ -71,7 +65,7 @@ function FaqPage() {
       </section>
 
       {/* Grouped questions */}
-      <section className="py-14 md:py-16">
+      <section className="py-16 md:py-24">
         <div className="container-x max-w-3xl">
           {FAQ_PAGE_GROUPS.map((group, gi) => (
             <div
@@ -107,7 +101,7 @@ function FaqPage() {
       </section>
 
       {/* Closing */}
-      <section className="pb-16 md:pb-20">
+      <section className="pb-16 md:pb-24">
         <div className="container-x max-w-3xl">
           <div className="rounded-[6px] border border-[color:var(--gold)]/45 bg-[color:var(--sand)] p-7 md:p-10 text-center">
             <Eyebrow flank>Still deciding?</Eyebrow>

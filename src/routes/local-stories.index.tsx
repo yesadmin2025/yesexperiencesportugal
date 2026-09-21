@@ -100,7 +100,7 @@ function Page() {
         </div>
       </section>
 
-      <section className="py-24 md:py-32 bg-[color:var(--ivory)]">
+      <section className="py-16 md:py-24 bg-[color:var(--ivory)]">
         <div className="container-x">
           <div className="grid md:grid-cols-2 gap-10 md:gap-14">
             {LOCAL_STORIES_ARTICLES.map((article) => (
@@ -114,7 +114,7 @@ function Page() {
                     <span className="block font-sans text-[12px] uppercase tracking-[0.28em] text-[color:var(--gold-ink)] mb-3">
                       {article.eyebrow}
                     </span>
-                    <h2 className="font-display text-[1.5rem] md:text-[1.7rem] leading-[1.2] text-[color:var(--charcoal)] mb-3 group-hover:text-[color:var(--teal)] transition-colors duration-300">
+                    <h2 className="mb-3 font-serif text-[24px] leading-[1.2] text-[color:var(--charcoal)] transition-colors duration-300 group-hover:text-[color:var(--teal)] md:text-[26px]">
                       {article.h1}
                     </h2>
                     <p className="text-[15.5px] text-[color:var(--charcoal-soft)] leading-[1.75] max-w-[52ch]">
@@ -135,7 +135,7 @@ function Page() {
 
           <div className="reveal mt-20 text-center">
             <CtaButton to="/studio-v3" variant="primary">
-              Design &amp; Secure Your Experience
+              Design your day
             </CtaButton>
           </div>
         </div>

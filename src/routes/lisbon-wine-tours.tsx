@@ -140,17 +140,17 @@ function LisbonWineTours() {
     <SiteLayout>
       <SiteBreadcrumbs crumbs={crumbs} />
 
-      <section className="bg-[color:var(--sand)] py-14 md:py-20">
+      <section className="bg-[color:var(--sand)] py-16 md:py-24">
         <div className="container-x max-w-3xl">
           <Eyebrow flank icon={<Grape aria-hidden />}>
             Azeitão · Arrábida · Alentejo
           </Eyebrow>
-          <h1 className="font-display mt-5 text-[2rem] sm:text-[2.4rem] md:text-[3rem] font-medium leading-[1.08] tracking-[-0.02em] text-[color:var(--charcoal)]">
+          <SectionTitle as="h1" size="anchor" spacing="loose">
             Lisbon wine tours,{" "}
-            <span className="italic font-normal text-[color:var(--teal)]">
+            <SectionTitle.Em>
               at the tables of the families who make it.
-            </span>
-          </h1>
+            </SectionTitle.Em>
+          </SectionTitle>
           <p className="mt-6 text-[16px] md:text-[17px] leading-[1.8] text-[color:var(--charcoal-soft)]">
             The wine country nearest Lisbon is not a marketing region — it is our own. We live forty
             minutes from the Azeitão cellars, and the people pouring are people we know. Every day
@@ -173,7 +173,7 @@ function LisbonWineTours() {
         </div>
       </section>
 
-      <section className="py-14 md:py-20">
+      <section className="py-16 md:py-24">
         <div className="container-x">
           <Eyebrow>The wine days</Eyebrow>
           <SectionTitle as="h2" spacing="tight">
@@ -186,7 +186,7 @@ function LisbonWineTours() {
                 <span className="font-sans text-[11px] uppercase tracking-[0.22em] font-bold text-[color:var(--gold)]">
                   {tour.region}
                 </span>
-                <h3 className="font-display mt-3 text-[1.2rem] leading-snug text-[color:var(--charcoal)]">
+                <h3 className="mt-3 font-serif text-[24px] leading-[1.2] text-[color:var(--charcoal)] md:text-[26px]">
                   {tour.title}
                 </h3>
                 <p className="mt-3 flex-1 text-[14.5px] leading-[1.75] text-[color:var(--charcoal-soft)]">
@@ -211,7 +211,7 @@ function LisbonWineTours() {
         </div>
       </section>
 
-      <section className="bg-[color:var(--sand)] py-14 md:py-20">
+      <section className="bg-[color:var(--sand)] py-16 md:py-24">
         <div className="container-x max-w-4xl">
           <Eyebrow>Three wine countries</Eyebrow>
           <SectionTitle as="h2" spacing="tight">
@@ -235,7 +235,7 @@ function LisbonWineTours() {
         </div>
       </section>
 
-      <section id="reserve" className="scroll-mt-24 py-14 md:py-20">
+      <section id="reserve" className="scroll-mt-24 py-16 md:py-24">
         <div className="container-x max-w-3xl">
           <Eyebrow>Reserve online</Eyebrow>
           <SectionTitle as="h2" spacing="tight">

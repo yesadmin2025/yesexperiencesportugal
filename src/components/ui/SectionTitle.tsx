@@ -8,7 +8,7 @@ import { cn } from "@/lib/utils";
  *
  * Variants follow the canonical ramp consolidated in the home page:
  *   • "default" — 28px mobile / 36px desktop (most sections)
- *   • "anchor"  — 36px mobile / 52px desktop (page anchors)
+ *   • "anchor"  — 40px mobile / 60px desktop (page anchors)
  *   • "compact" — 24px mobile / 30px desktop (dense / trust sections)
  *
  * Italic emphasis: pass JSX inside `children` and wrap the emphasised words
@@ -22,7 +22,7 @@ const sizeClasses = {
   default:
     "text-[1.8125rem] md:text-[2.25rem] leading-[1.18] md:leading-[1.1] text-balance",
   anchor:
-    "text-[2.25rem] md:text-[3.25rem] leading-[1.12] md:leading-[1.08] text-balance",
+    "text-[2.5rem] md:text-[3.75rem] leading-[1.08] md:leading-[1.02] text-balance",
   compact:
     "text-[1.5rem] md:text-[1.875rem] leading-[1.2] md:leading-[1.12] text-balance",
 } as const;

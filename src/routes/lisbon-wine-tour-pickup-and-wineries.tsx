@@ -131,12 +131,12 @@ function PickupAndWineries() {
     <SiteLayout>
       <SiteBreadcrumbs crumbs={crumbs} />
 
-      <section className="bg-[color:var(--sand)] py-14 md:py-20">
+      <section className="bg-[color:var(--sand)] py-16 md:py-24">
         <div className="container-x max-w-3xl">
           <Eyebrow flank icon={<MapPin aria-hidden />}>
             Pickup · Timings · Cellars
           </Eyebrow>
-          <h1 className="font-display mt-5 text-[2rem] sm:text-[2.4rem] md:text-[2.9rem] font-medium leading-[1.08] tracking-[-0.02em] text-[color:var(--charcoal)]">
+          <h1 className="mt-5 font-serif text-[40px] font-medium leading-[1.08] tracking-normal text-[color:var(--charcoal)] md:text-[60px] md:leading-[1.02]">
             Wine tour from Lisbon:{" "}
             <span className="italic font-normal text-[color:var(--teal)]">
               where we collect you, and whose cellar you sit in.
@@ -161,7 +161,7 @@ function PickupAndWineries() {
         </div>
       </section>
 
-      <section className="py-14 md:py-20">
+      <section className="py-16 md:py-24">
         <div className="container-x max-w-4xl">
           <Eyebrow>Pickup</Eyebrow>
           <SectionTitle as="h2" spacing="tight">
@@ -182,7 +182,7 @@ function PickupAndWineries() {
         </div>
       </section>
 
-      <section className="bg-[color:var(--sand)] py-14 md:py-20">
+      <section className="bg-[color:var(--sand)] py-16 md:py-24">
         <div className="container-x max-w-3xl">
           <Eyebrow flank icon={<Grape aria-hidden />}>
             The cellars

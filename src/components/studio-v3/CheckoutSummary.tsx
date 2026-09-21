@@ -265,7 +265,7 @@ export function CheckoutSummary({
         <Eyebrow>Almost yours</Eyebrow>
         <h2
           id="studio-v3-checkout-summary-title"
-          className="mt-3 text-[22px] leading-[1.25] [text-wrap:balance]"
+           className="mt-3 text-[24px] leading-[1.2] [text-wrap:balance] md:text-[30px] md:leading-[1.12]"
           style={{
             fontFamily: "var(--font-editorial)",
             color: "var(--charcoal)",
@@ -480,7 +480,7 @@ export function CheckoutSummary({
               nobody types a card without the total in view. */}
           <div
             data-testid="studio-v3-checkout-sticky-total"
-            className="sticky top-0 z-30 -mx-5 mb-2 flex items-baseline justify-between gap-3 px-5 py-2 backdrop-blur-sm sm:mx-0 sm:rounded-sm sm:px-4"
+             className="sticky top-0 z-30 -mx-5 mb-2 flex items-baseline justify-between gap-3 px-5 py-2 sm:mx-0 sm:rounded-sm sm:px-4"
             style={{
               background: "color-mix(in oklab, var(--ivory) 92%, transparent)",
               borderBottom: "1px solid color-mix(in oklab, var(--gold) 35%, transparent)",
@@ -541,7 +541,7 @@ export function CheckoutSummary({
         </div>
       ) : (
         <div
-          className="fixed inset-x-0 bottom-0 z-40 border-t border-[color:var(--border)] bg-[color:var(--ivory)]/95 backdrop-blur-sm px-5 pt-3 pb-[calc(env(safe-area-inset-bottom)+0.75rem)]"
+          className="fixed inset-x-0 bottom-0 z-40 border-t border-[color:var(--border)] bg-[color:var(--ivory)] px-5 pt-3 pb-[calc(env(safe-area-inset-bottom)+0.75rem)]"
           data-testid="studio-v3-checkout-summary-cta-bar"
         >
           <div className="max-w-[560px] mx-auto">

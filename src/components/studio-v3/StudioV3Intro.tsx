@@ -54,7 +54,7 @@ export function StudioV3Intro({ onComplete }: Props) {
       aria-label="Studio intro"
       data-testid="studio-v3-root"
       data-phase="intro"
-      className="relative min-h-[100dvh] w-full overflow-hidden"
+      className="relative min-h-screen min-h-[100svh] min-h-[100dvh] w-full overflow-hidden"
       style={{ background: "var(--charcoal)" }}
     >
       {/* Atmospheric still — reused asset, heavily darkened. */}
@@ -84,7 +84,7 @@ export function StudioV3Intro({ onComplete }: Props) {
         style={{ background: "var(--gold)" }}
       />
 
-      <div className="relative z-10 mx-auto flex min-h-[100dvh] w-full max-w-md flex-col items-center justify-center px-6 py-16 text-center">
+      <div className="relative z-10 mx-auto flex min-h-screen min-h-[100svh] min-h-[100dvh] w-full max-w-md flex-col items-center justify-center px-6 pt-[max(4rem,env(safe-area-inset-top))] pb-[max(4rem,env(safe-area-inset-bottom))] text-center">
         {step === "welcome" ? (
           <div className="animate-in fade-in slide-in-from-bottom-2 duration-[700ms] motion-reduce:animate-none">
             <p
@@ -208,7 +208,7 @@ export function StudioV3Intro({ onComplete }: Props) {
               data-phase-cta="intro-skip"
                className="mt-4 inline-flex min-h-[44px] items-center justify-center px-3 text-[0.85rem] uppercase font-semibold transition-colors hover:opacity-100"
               style={{
-                color: "color-mix(in oklab, var(--ivory) 55%, transparent)",
+                color: "color-mix(in oklab, var(--ivory) 78%, transparent)",
                  letterSpacing: "0.2em",
               }}
             >

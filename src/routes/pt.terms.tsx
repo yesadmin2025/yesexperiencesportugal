@@ -2,6 +2,7 @@ import { localeAlternateLinks } from "@/i18n/seo";
 import { createFileRoute } from "@tanstack/react-router";
 import { SiteLayout } from "@/components/SiteLayout";
 import { Eyebrow } from "@/components/ui/Eyebrow";
+import { SectionTitle } from "@/components/ui/SectionTitle";
 import { CANCELLATION } from "@/config/business-nap";
 import ogImg from "@/assets/hero-coast.jpg";
 
@@ -41,12 +42,12 @@ export const Route = createFileRoute("/pt/terms")({
 function TermsPage() {
   return (
     <SiteLayout>
-      <section className="bg-[color:var(--ivory)] py-20 md:py-28">
+      <section className="bg-[color:var(--ivory)] py-16 md:py-24">
         <div className="container-x max-w-2xl mx-auto">
           <Eyebrow className="mb-5">Legal</Eyebrow>
-          <h1 className="serif mt-3 text-[2rem] md:text-[2.8rem] leading-[1.1] tracking-[-0.018em] text-[color:var(--charcoal)] font-medium">
-            Termos e <span className="italic font-normal text-[color:var(--teal)]">condições.</span>
-          </h1>
+          <SectionTitle as="h1" size="anchor" spacing="normal">
+            Termos e <SectionTitle.Em>condições.</SectionTitle.Em>
+          </SectionTitle>
           <span aria-hidden="true" className="gold-rule mt-8 block max-w-[3rem]" />
 
           <div className="mt-10 space-y-7 text-[15px] leading-[1.75] text-[color:var(--charcoal-soft)]">

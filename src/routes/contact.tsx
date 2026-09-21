@@ -12,7 +12,6 @@ import { Eyebrow } from "@/components/ui/Eyebrow";
 import { SectionTitle } from "@/components/ui/SectionTitle";
 import { CtaButton } from "@/components/ui/CtaButton";
 import { Scene } from "@/components/motion/Scene";
-import { SplitLines } from "@/components/motion/SplitLines";
 import { RouteThread } from "@/components/motion/RouteThread";
 import { useMarketingMotion } from "@/hooks/use-marketing-motion";
 import {
@@ -160,14 +159,9 @@ function Page() {
             <Eyebrow flank>Talk to a Designer</Eyebrow>
           </div>
           <div className="scene-title">
-            <SplitLines
-              as="h1"
-              className="mt-4 font-serif text-[color:var(--charcoal)] font-medium tracking-normal text-[2.25rem] md:text-[3.25rem] leading-[1.12] md:leading-[1.08] text-balance"
-              lines={[
-                <>Begin your&nbsp;</>,
-                <><span className="italic font-normal text-[color:var(--teal)]">Portugal story.</span></>,
-              ]}
-            />
+            <SectionTitle as="h1" size="anchor" spacing="loose">
+              Begin your <SectionTitle.Em>Portugal story.</SectionTitle.Em>
+            </SectionTitle>
           </div>
           <p className="scene-body mt-5 max-w-xl mx-auto text-[color:var(--charcoal-soft)]">
             Tell us a little about who you are and what you'd love to experience. A local replies
@@ -177,12 +171,12 @@ function Page() {
         </Scene>
       </section>
 
-      <section className="reveal py-20">
+      <section className="reveal py-16 md:py-24">
         <div className="container-x grid lg:grid-cols-3 gap-12">
           <div className="lg:col-span-2">
             {sent ? (
               <div className="border-l-4 border-[color:var(--gold)] bg-[color:var(--sand)] p-10">
-                <h3 className="serif text-3xl text-[color:var(--teal)]">Thank you.</h3>
+                <h3 className="font-serif text-[24px] leading-[1.2] text-[color:var(--teal)] md:text-[26px]">Thank you.</h3>
                 <p className="mt-3 text-[color:var(--charcoal-soft)]">
                   Your message has reached our experience designers. We'll be in touch shortly.
                 </p>
@@ -371,7 +365,7 @@ function Field({
           maxLength={4000}
           defaultValue={defaultValue}
           autoComplete={autoComplete}
-          className="mt-2 min-h-11 w-full bg-transparent border-b border-[color:var(--charcoal)]/30 focus:border-[color:var(--teal)] outline-none py-2 text-base resize-none transition-colors"
+          className="mt-2 min-h-11 w-full bg-transparent border-b border-[color:var(--charcoal)]/30 py-2 text-base resize-none transition-colors focus-visible:border-[color:var(--teal)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)]/45 focus-visible:ring-offset-2"
         />
       ) : (
         <input
@@ -381,7 +375,7 @@ function Field({
           min={min}
           maxLength={type === "email" ? 254 : 80}
           autoComplete={autoComplete}
-          className="mt-2 min-h-11 w-full bg-transparent border-b border-[color:var(--charcoal)]/30 focus:border-[color:var(--teal)] outline-none py-2 text-base transition-colors"
+          className="mt-2 min-h-11 w-full bg-transparent border-b border-[color:var(--charcoal)]/30 py-2 text-base transition-colors focus-visible:border-[color:var(--teal)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)]/45 focus-visible:ring-offset-2"
         />
       )}
     </label>
@@ -408,7 +402,7 @@ function SelectField({
         name={name}
         required
         defaultValue={defaultValue ?? ""}
-        className="mt-2 min-h-11 w-full bg-transparent border-b border-[color:var(--charcoal)]/30 focus:border-[color:var(--teal)] outline-none py-2 text-base transition-colors appearance-none"
+        className="mt-2 min-h-11 w-full appearance-none bg-transparent border-b border-[color:var(--charcoal)]/30 py-2 text-base transition-colors focus-visible:border-[color:var(--teal)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)]/45 focus-visible:ring-offset-2"
       >
         <option value="" disabled>
           Choose one…

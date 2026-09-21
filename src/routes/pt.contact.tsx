@@ -3,6 +3,7 @@ import { createFileRoute } from "@tanstack/react-router";
 
 import { SiteLayout } from "@/components/SiteLayout";
 import { Eyebrow } from "@/components/ui/Eyebrow";
+import { SectionTitle } from "@/components/ui/SectionTitle";
 import { useMarketingMotion } from "@/hooks/use-marketing-motion";
 
 import {
@@ -56,11 +57,11 @@ function PtContactPage() {
   useMarketingMotion();
   return (
     <SiteLayout>
-      <section className="mx-auto max-w-2xl px-6 py-20 md:py-28">
+      <section className="mx-auto max-w-2xl px-6 py-16 md:py-24">
         <Eyebrow>Contactos</Eyebrow>
-        <h1 className="mt-5 font-[family-name:var(--font-editorial)] text-4xl md:text-5xl leading-[1.05] text-[color:var(--charcoal)]">
+        <SectionTitle as="h1" size="anchor" spacing="loose">
           Estamos a um recado de distância.
-        </h1>
+        </SectionTitle>
         <p className="mt-6 text-[15px] leading-relaxed text-[color:var(--charcoal-soft)]">
           Escreva-nos com o que tem em mente — datas, número de pessoas, região ou ocasião.
           Respondemos em português ou em inglês, todos os dias, com propostas concretas e claras.

@@ -104,12 +104,12 @@ function PricesAndInclusions() {
     <SiteLayout>
       <SiteBreadcrumbs crumbs={crumbs} />
 
-      <section className="bg-[color:var(--sand)] py-14 md:py-20">
+      <section className="bg-[color:var(--sand)] py-16 md:py-24">
         <div className="container-x max-w-3xl">
           <Eyebrow flank icon={<Receipt aria-hidden />}>
             Prices · Inclusions · Cancellation
           </Eyebrow>
-          <h1 className="font-display mt-5 text-[2rem] sm:text-[2.4rem] md:text-[2.9rem] font-medium leading-[1.08] tracking-[-0.02em] text-[color:var(--charcoal)]">
+          <h1 className="mt-5 font-serif text-[40px] font-medium leading-[1.08] tracking-normal text-[color:var(--charcoal)] md:text-[60px] md:leading-[1.02]">
             Lisbon wine tour prices,{" "}
             <span className="italic font-normal text-[color:var(--teal)]">
               and exactly what the price covers.
@@ -132,7 +132,7 @@ function PricesAndInclusions() {
         </div>
       </section>
 
-      <section className="py-14 md:py-20">
+      <section className="py-16 md:py-24">
         <div className="container-x">
           <Eyebrow>Per person, from</Eyebrow>
           <SectionTitle as="h2" spacing="tight">
@@ -176,7 +176,7 @@ function PricesAndInclusions() {
         </div>
       </section>
 
-      <section id="reserve" className="scroll-mt-24 bg-[color:var(--sand)] py-14 md:py-20">
+      <section id="reserve" className="scroll-mt-24 bg-[color:var(--sand)] py-16 md:py-24">
         <div className="container-x max-w-3xl">
           <Eyebrow>Reserve online</Eyebrow>
           <SectionTitle as="h2" spacing="tight">
