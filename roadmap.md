@@ -69,3 +69,8 @@
 - [x] Apply the final Newsreader + Inter typography contract across the current website
 - [x] Remove every conflicting legacy font name and local typography override
 - [x] Validate Hero, Five Ways, editorial pages, and Studio at required viewports
+
+## Current preview — mobile homepage film
+- [x] Make the homepage film fill the mobile viewport safely at 393px.
+- [x] Keep both approved actions visible, safe-area protected, with fallback and reduced-motion behavior intact.
+- [x] Validate no gap, clipping, rounding, or horizontal overflow; do not publish.
