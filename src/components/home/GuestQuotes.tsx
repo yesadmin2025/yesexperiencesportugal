@@ -50,7 +50,7 @@ export function GuestQuotes() {
       <p className="font-sans text-[11px] font-semibold uppercase tracking-[0.18em] text-[color:var(--charcoal-soft)]">
         {REVIEW_CERTIFICATE.ratingValue}/5 · {REVIEW_COUNT_DISPLAY} guest reviews
       </p>
-      <h2 className="editorial-title-safe mt-2 font-serif text-[1.5rem] font-medium leading-[1.2] text-[color:var(--charcoal)] md:text-[1.875rem]">
+      <h2 className="editorial-title-safe mt-1.5 font-serif text-[1.375rem] font-medium leading-[1.2] text-[color:var(--charcoal)] md:text-[1.625rem]">
         Real guests. <em className="font-normal text-[color:var(--teal)]">Real Portugal.</em>
       </h2>
 
@@ -98,7 +98,7 @@ function ReviewCarousel({ quotes }: { quotes: PublicReview[] }) {
   };
 
   return (
-    <div className="relative mt-6 md:mt-7 -mx-5 sm:mx-0 min-h-[13.5rem] sm:min-h-[14.5rem]">
+    <div className="relative mt-5 md:mt-6 -mx-5 sm:mx-0 min-h-[12rem] sm:min-h-[13rem]">
       {quotes.length === 0 ? null : (
         <>
           {/* Edge fade masks — premium editorial cue that content continues */}
@@ -119,11 +119,11 @@ function ReviewCarousel({ quotes }: { quotes: PublicReview[] }) {
             {quotes.map((q, idx) => (
               <li
                 key={q.id}
-                className="he-card-lift shrink-0 snap-start w-[82vw] sm:w-[46%] lg:w-[31.5%] flex flex-col min-h-[13.5rem] sm:min-h-[14.5rem] rounded-[2px] border border-[color:var(--charcoal)]/10 bg-[color:var(--ivory)] p-5 md:p-6 relative shadow-[var(--shadow-card)]"
+                className="he-card-lift shrink-0 snap-start w-[82vw] sm:w-[46%] lg:w-[31.5%] flex flex-col min-h-[12rem] sm:min-h-[13rem] rounded-[2px] border border-[color:var(--charcoal)]/10 bg-[color:var(--ivory)] p-4 md:p-5 relative shadow-[var(--shadow-card)]"
               >
                 <Quote
                   aria-hidden="true"
-                  size={38}
+                  size={32}
                   className="absolute -top-2 right-4 text-[color:var(--gold)]/15 rotate-180"
                   strokeWidth={1}
                   fill="currentColor"
@@ -143,7 +143,7 @@ function ReviewCarousel({ quotes }: { quotes: PublicReview[] }) {
                 </div>
                 {/* No line clamp: the excerpt already ends naturally with an
                     ellipsis, so clamping only cut a visible line mid-word. */}
-                <p className="mt-3 font-serif italic text-[14px] md:text-[15px] leading-[1.65] text-[color:var(--charcoal)]/90">
+                <p className="mt-2.5 font-serif italic text-[13.5px] md:text-[14px] leading-[1.62] text-[color:var(--charcoal)]/88">
                   “{q.body.length > 200 ? `${q.body.slice(0, 197).trimEnd()}…` : q.body}”
                 </p>
                 <div className="mt-auto pt-4 flex items-center justify-between gap-3 border-t border-[color:var(--charcoal)]/8">
@@ -189,7 +189,7 @@ function ReviewCarousel({ quotes }: { quotes: PublicReview[] }) {
           {/* Dots */}
           {quotes.length > 1 && (
             <div
-              className="mt-5 flex items-center justify-center gap-1.5"
+              className="mt-4 flex items-center justify-center gap-1.5"
               role="tablist"
               aria-label="Review pagination"
             >
