@@ -117,13 +117,13 @@ export const APPROVED_HOMEPAGE_SECTIONS: readonly ApprovedSection[] = [
     order: 4,
     name: "Experience Studio (promoted)",
     ariaLabelledBy: "studio-title",
-    requiredSpacing: { kind: "py", minScale: 20 },
+    requiredSpacing: { kind: "pb", minScale: 12 },
   },
   {
     order: 5,
     name: "Signature experiences preview",
     ariaLabelledBy: "signatures-title",
-    requiredSpacing: { kind: "py", minScale: 16 },
+    requiredSpacing: { kind: "py", minScale: 12 },
   },
   {
     order: 6,

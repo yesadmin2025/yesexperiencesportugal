@@ -5,6 +5,7 @@ import { Eyebrow } from "@/components/ui/Eyebrow";
 import { CtaButton } from "@/components/ui/CtaButton";
 import { CtaPair } from "@/components/ui/CtaPair";
 import { CTA_LABELS } from "@/content/cta-vocabulary";
+import { Scene } from "@/components/motion/Scene";
 
 /**
  * Bespoke Travel Designer — proof block.
@@ -323,7 +324,7 @@ function BookFlip() {
   const currentLoaded = loaded.has(current.src);
 
   return (
-    <div className="reveal mx-auto max-w-3xl">
+    <div className="mx-auto max-w-3xl">
       {/* Screen-reader page announcer */}
       <p className="sr-only" aria-live="polite" aria-atomic="true">
         Page {index + 1} of {total}: {current.label}
@@ -548,33 +549,33 @@ export function RecentJourney() {
   return (
     <section
       id="multi-day"
-      className="he-section-rule section-enter py-14 md:py-20 bg-[color:var(--ivory)] border-b border-[color:var(--border)] scroll-mt-24 md:scroll-mt-28"
+      className="he-section-rule section-enter py-12 md:py-16 bg-[color:var(--ivory)] border-b border-[color:var(--border)] scroll-mt-24 md:scroll-mt-28"
       aria-labelledby="bespoke-designer-title"
     >
       <div className="container-x">
         {/* Header — tightened. The book itself carries the proof, so we
             keep one headline + one supporting line and let the object
             below do the talking. */}
-        <div className="reveal text-center max-w-2xl mx-auto mb-6 md:mb-8">
-          <Eyebrow className="mb-4">Travel Designer</Eyebrow>
+        <Scene className="home-major-intro text-center max-w-2xl mx-auto mb-6 md:mb-8">
+          <div className="scene-atmosphere"><Eyebrow className="mb-4">Travel Designer</Eyebrow></div>
           <h2
             id="bespoke-designer-title"
-            className="serif mt-3 text-[2rem] sm:text-[2.4rem] lg:text-[3.4rem] leading-[1.1] lg:leading-[1.02] tracking-[-0.018em] text-[color:var(--charcoal)] font-medium text-balance"
+            className="scene-title serif mt-3 text-[2rem] sm:text-[2.4rem] lg:text-[3.4rem] leading-[1.1] lg:leading-[1.02] tracking-normal text-[color:var(--charcoal)] font-medium text-balance"
           >
             A Portugal{" "}
             <span className="italic font-normal text-[color:var(--teal)]">written around you.</span>
           </h2>
-          <p className="mt-4 font-[family-name:var(--font-sans)] text-[14.5px] md:text-[16px] text-[color:var(--charcoal-soft)] leading-[1.65] max-w-md mx-auto">
+          <p className="scene-body mt-4 font-[family-name:var(--font-sans)] text-[14.5px] md:text-[16px] text-[color:var(--charcoal-soft)] leading-[1.65] max-w-md mx-auto">
             Multi-day Portugal, composed by a local — delivered as a book, not a booking.
           </p>
-        </div>
+        </Scene>
 
         {/* Proof — the book is the focal object. Enlarged slightly and
             given a deeper, warmer dossier shadow so it reads as a luxury
             travel file, not a flat image. */}
-        <div id="travel-file-book" className="bespoke-book-stage">
-          <BookFlip />
-        </div>
+        <Scene className="travel-file-settle">
+          <div id="travel-file-book" className="bespoke-book-stage scene-item"><BookFlip /></div>
+        </Scene>
 
         <p className="reveal mt-5 font-sans text-center text-[11px] uppercase tracking-[0.28em] text-[color:var(--charcoal-soft)] font-semibold">
           A real example
@@ -583,10 +584,10 @@ export function RecentJourney() {
         {/* Three pillars — editorial centred rhythm. Upright Newsreader
             keeps italics reserved for emphasis inside major titles; hairline gold rule
             separates the block from the book above. */}
-        <div className="reveal mt-9 md:mt-10 max-w-2xl mx-auto text-center border-t border-[color:var(--border)] pt-7 md:pt-8">
+        <Scene className="mt-9 md:mt-10 max-w-2xl mx-auto text-center border-t border-[color:var(--border)] pt-7 md:pt-8">
           <ul className="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-10 list-none p-0">
             {PILLARS.map((p) => (
-              <li key={p.label} className="he-card-lift px-2">
+              <li key={p.label} className="scene-item he-card-lift px-2">
                 <h3 className="font-[family-name:var(--font-editorial)] font-normal text-[color:var(--charcoal)] text-[18px] md:text-[19px] leading-[1.25] tracking-normal">
                   {p.label}
                 </h3>
@@ -600,7 +601,7 @@ export function RecentJourney() {
               </li>
             ))}
           </ul>
-        </div>
+        </Scene>
 
         {/* Signature CTA ramp — matches homepage canonical voice:
             Inter 11px 0.25em uppercase with a gold hairline that

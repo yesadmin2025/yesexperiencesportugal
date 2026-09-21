@@ -11,6 +11,7 @@ import { SectionTitle } from "@/components/ui/SectionTitle";
 import { CtaButton } from "@/components/ui/CtaButton";
 import { TeamEnquiriesLink } from "@/components/team/TeamEnquiriesLink";
 import { REVIEW_CERTIFICATE, REVIEW_COUNT_DISPLAY } from "@/config/trust-certificate";
+import { CTA_LABELS } from "@/content/cta-vocabulary";
 
 import founderAsset from "@/assets/about-founder-wine-experience.jpg.asset.json";
 import { useMarketingMotion } from "@/hooks/use-marketing-motion";
@@ -95,7 +96,7 @@ function Page() {
 
       {/* Created from real travel */}
       <section className="reveal about-story section-y-major chapter-flow">
-        <div className="container-x max-w-3xl">
+        <div className="container-x max-w-3xl editorial-label-stack">
           <Eyebrow>Created from real travel</Eyebrow>
           <SplitLines
             as="h2"
@@ -124,7 +125,7 @@ function Page() {
       {/* Founder-built */}
       <section className="reveal about-story section-y-major chapter-flow bg-[color:var(--sand)]">
         <div className="container-x grid lg:grid-cols-[1.15fr_1fr] gap-14 items-start">
-          <div>
+          <div className="editorial-label-stack">
             <Eyebrow>Founder-built</Eyebrow>
             <SectionTitle as="h2" size="default">
               Built by the person <SectionTitle.Em>who saw the problem</SectionTitle.Em>.
@@ -196,7 +197,7 @@ function Page() {
 
       {/* Founder-led */}
       <section className="reveal about-story section-y chapter-flow">
-        <div className="container-x max-w-3xl">
+        <div className="container-x max-w-3xl editorial-label-stack">
           <Eyebrow>Founder-led</Eyebrow>
           <SectionTitle as="h2" size="default">
             Designed with care. <SectionTitle.Em>Delivered by trusted locals</SectionTitle.Em>.
@@ -248,7 +249,7 @@ function Page() {
 
       {/* What we create */}
       <section className="reveal about-story section-y chapter-flow bg-[color:var(--sand)]">
-        <div className="container-x">
+        <div className="container-x editorial-label-stack">
           <Eyebrow flank>What we create</Eyebrow>
           <SectionTitle as="h2" size="default">
             Private days, live-designed experiences{" "}
@@ -300,7 +301,7 @@ function Page() {
 
       {/* Credentials & trust */}
       <section className="reveal about-story section-y-sm chapter-flow">
-        <div className="container-x">
+        <div className="container-x editorial-label-stack">
           <Eyebrow flank>Credentials &amp; trust</Eyebrow>
           <SectionTitle as="h2" size="default">
             Licensed, insured <SectionTitle.Em>and personally accountable</SectionTitle.Em>.
@@ -352,7 +353,7 @@ function Page() {
       {/* How we work + policies */}
       <section className="reveal about-story about-story--quiet section-y chapter-flow bg-[color:var(--sand)]">
         <div className="container-x grid lg:grid-cols-2 gap-14">
-          <div>
+          <div className="editorial-label-stack">
             <Eyebrow>How we work</Eyebrow>
             <SectionTitle as="h2" size="compact" spacing="normal">
               Private, local and <SectionTitle.Em>accountable.</SectionTitle.Em>
@@ -389,7 +390,7 @@ function Page() {
             </ul>
           </div>
 
-          <div>
+          <div className="editorial-label-stack">
             <Eyebrow>Policies, briefly</Eyebrow>
             <SectionTitle as="h2" size="compact" spacing="normal">
               Clear, fair, <SectionTitle.Em>written down.</SectionTitle.Em>
@@ -429,9 +430,23 @@ function Page() {
         </div>
       </section>
 
+      <ServiceCrossLinks
+        tone="ivory"
+        eyebrow="What we do"
+        title="Six distinct services, one local team."
+        links={[
+          { to: "/experiences", label: "Signature Experiences across Portugal", description: "Curated private days, ready to reserve with a dedicated guide and vehicle." },
+          { to: "/studio-v3", label: "Experience Studio — build your own Portugal experience", description: "Design a private day online and watch the route and pricing evolve before you reserve." },
+          { to: "/portugal-travel-designer", label: "Portugal travel designer for complete journeys", description: "Custom multi-day private itineraries across the country, not a single day trip." },
+          { to: "/proposal-in-portugal", label: "Moments — proposals, anniversaries and celebrations", description: "Private occasions planned discreetly, anywhere we operate." },
+          { to: "/corporate", label: "Corporate events, incentives and retreats", description: "From leadership teams to corporate groups of 100+, coordinated across Portugal." },
+          { to: "/trade", label: "Travel advisors, designers and agency partners", description: "Local Portugal supplier and destination support for FIT travel and private guiding." },
+        ]}
+      />
+
       {/* Final CTA */}
       <section className="reveal about-story section-y chapter-flow text-center">
-        <div className="container-x max-w-2xl mx-auto">
+        <div className="container-x max-w-2xl mx-auto editorial-label-stack">
           <Eyebrow flank>Talk to YES</Eyebrow>
           <SectionTitle as="h2" size="default">
             Talk directly to <SectionTitle.Em>a local designer</SectionTitle.Em>.
@@ -453,11 +468,11 @@ function Page() {
             Portugal, designed around you.
           </p>
           <div className="mt-8 flex flex-col sm:flex-row gap-4 justify-center">
-            <CtaButton to="/experiences" variant="primary">
-              Start Your Private Experience
+            <CtaButton to="/contact" variant="primary">
+              Talk to a local
             </CtaButton>
-            <CtaButton to="/studio-v3" variant="ghost">
-              Design your day
+            <CtaButton to="/experiences" variant="ghost">
+              {CTA_LABELS.signatureDiscovery}
             </CtaButton>
           </div>
           <p className="mt-6 text-[14px] text-[color:var(--charcoal-soft)]">
@@ -473,48 +488,6 @@ function Page() {
         </div>
       </section>
 
-      <ServiceCrossLinks
-        tone="ivory"
-        eyebrow="What we do"
-        title="Six distinct services, one local team."
-        links={[
-          {
-            to: "/experiences",
-            label: "Signature Experiences across Portugal",
-            description:
-              "Curated private days, ready to reserve with a dedicated guide and vehicle.",
-          },
-          {
-            to: "/studio-v3",
-            label: "Experience Studio — build your own Portugal experience",
-            description:
-              "Design a private day online and watch the route and pricing evolve before you reserve.",
-          },
-          {
-            to: "/portugal-travel-designer",
-            label: "Portugal travel designer for complete journeys",
-            description:
-              "Custom multi-day private itineraries across the country, not a single day trip.",
-          },
-          {
-            to: "/proposal-in-portugal",
-            label: "Moments — proposals, anniversaries and celebrations",
-            description: "Private occasions planned discreetly, anywhere we operate.",
-          },
-          {
-            to: "/corporate",
-            label: "Corporate events, incentives and retreats",
-            description:
-              "From leadership teams to corporate groups of 100+, coordinated across Portugal.",
-          },
-          {
-            to: "/trade",
-            label: "Travel advisors, designers and agency partners",
-            description:
-              "Local Portugal supplier and destination support for FIT travel and private guiding.",
-          },
-        ]}
-      />
     </SiteLayout>
   );
 }
