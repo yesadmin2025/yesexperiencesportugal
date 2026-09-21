@@ -7998,17 +7998,55 @@ html.reveal-ready .about-story.is-visible .about-sequence-item:nth-child(3) { tr
 html.reveal-ready .about-story.is-visible .about-sequence-item:nth-child(4) { transition-delay: 520ms; }
 html.reveal-ready .about-story--quiet :is(li, a) { transition-delay: 0ms; }
 
-/* Approved Five Ways: a quiet editorial index, deliberately without images. */
+/* Approved Five Ways: a quiet editorial index, deliberately without images.
+   Motion lock (21 Sep 2026): visible movement — 18px mobile / 22px larger
+   screens, ~600ms editorial easing, 110ms card stagger. Never opacity-only. */
 [data-scene-ready="1"].five-ways-story .five-ways-card,
 [data-scene-ready="1"].experiences-story .experience-editorial-card {
   opacity: 0;
-  transition: opacity var(--dur-slow) var(--motion-ease-editorial),
+  transform: translate3d(0, 18px, 0);
+  transition: opacity 600ms var(--motion-ease-editorial),
+    transform 600ms var(--motion-ease-editorial),
     border-color 200ms ease,
     box-shadow 200ms ease;
+}
+@media (min-width: 768px) {
+  [data-scene-ready="1"].five-ways-story .five-ways-card,
+  [data-scene-ready="1"].experiences-story .experience-editorial-card {
+    transform: translate3d(0, 22px, 0);
+  }
 }
 [data-scene="in"].five-ways-story .five-ways-card,
 [data-scene="in"].experiences-story .experience-editorial-card {
   opacity: 1;
+  transform: translate3d(0, 0, 0);
+}
+[data-scene="in"].five-ways-story .five-ways-card:nth-child(2),
+[data-scene="in"].experiences-story .experience-editorial-card:nth-child(2) {
+  transition-delay: 110ms;
+}
+[data-scene="in"].five-ways-story .five-ways-card:nth-child(3),
+[data-scene="in"].experiences-story .experience-editorial-card:nth-child(3) {
+  transition-delay: 220ms;
+}
+[data-scene="in"].five-ways-story .five-ways-card:nth-child(4),
+[data-scene="in"].experiences-story .experience-editorial-card:nth-child(4) {
+  transition-delay: 330ms;
+}
+[data-scene="in"].five-ways-story .five-ways-card:nth-child(n + 5),
+[data-scene="in"].experiences-story .experience-editorial-card:nth-child(n + 5) {
+  transition-delay: 440ms;
+}
+@media (prefers-reduced-motion: reduce) {
+  [data-scene-ready="1"].five-ways-story .five-ways-card,
+  [data-scene-ready="1"].experiences-story .experience-editorial-card,
+  [data-scene="in"].five-ways-story .five-ways-card,
+  [data-scene="in"].experiences-story .experience-editorial-card {
+    opacity: 1 !important;
+    transform: none !important;
+    transition: none !important;
+    transition-delay: 0ms !important;
+  }
 }
 .five-ways-story {
   display: grid;
