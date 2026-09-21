@@ -94,7 +94,7 @@ export function CompareControl({ active, disabled, onClick, title }: { active: b
       aria-pressed={active}
       disabled={disabled}
       onClick={onClick}
-      className="experience-card-compare inline-flex min-h-[36px] items-center gap-1.5 rounded-sm px-1.5 font-sans text-[10.5px] font-semibold uppercase tracking-[0.14em] text-[color:var(--charcoal-soft)] transition-colors hover:text-[color:var(--teal)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)] disabled:opacity-35"
+      className="experience-card-compare inline-flex min-h-[36px] items-center gap-1.5 rounded-sm px-1.5 font-sans text-[11px] font-semibold uppercase tracking-[0.14em] text-[color:var(--charcoal-soft)] transition-colors hover:text-[color:var(--teal)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)] disabled:opacity-35"
       aria-label={`${active ? "Remove" : "Compare"} ${title}`}
     >
       {active ? <Check size={13} aria-hidden="true" /> : <Scale size={13} aria-hidden="true" />}
