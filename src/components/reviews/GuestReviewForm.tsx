@@ -148,25 +148,34 @@ export function GuestReviewForm({
               {t.intro}
             </p>
             <form onSubmit={onSubmit} className="mt-6 space-y-5">
-              <div>
-                <label className={label} htmlFor="gr-tour">
-                  {t.experience}
-                </label>
-                <select
-                  id="gr-tour"
-                  required
-                  value={tourId}
-                  onChange={(e) => setTourId(e.target.value)}
-                  className={field}
-                >
-                  <option value="">{t.choose}</option>
-                  {tours.map((o) => (
-                    <option key={o.tour_id} value={o.tour_id}>
-                      {o.title}
-                    </option>
-                  ))}
-                </select>
-              </div>
+              {lockedTour ? (
+                <p className="text-[13px] leading-[1.6] text-[color:var(--charcoal-soft)]">
+                  {t.reviewing}{" "}
+                  <span className="font-medium text-[color:var(--charcoal)]">
+                    {lockedTour.title}
+                  </span>
+                </p>
+              ) : (
+                <div>
+                  <label className={label} htmlFor="gr-tour">
+                    {t.experience}
+                  </label>
+                  <select
+                    id="gr-tour"
+                    required
+                    value={tourId}
+                    onChange={(e) => setTourId(e.target.value)}
+                    className={field}
+                  >
+                    <option value="">{t.choose}</option>
+                    {options.map((o) => (
+                      <option key={o.tour_id} value={o.tour_id}>
+                        {o.title}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              )}
 
               <div>
                 <span className={label}>{t.rating}</span>
