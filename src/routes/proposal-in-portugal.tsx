@@ -111,7 +111,7 @@ export function ProposalInPortugalPage() {
       {/* Hero */}
       <section className="page-hero public-page-header reveal">
         <div className="container-x max-w-3xl text-center header-seq">
-          <Eyebrow flank>Proposal in Portugal</Eyebrow>
+          <Eyebrow>Proposal in Portugal</Eyebrow>
            <SectionTitle as="h1" size="anchor" spacing="loose" className="text-[40px] leading-[1.08] md:text-[60px] md:leading-[1.02]">
             A proposal in Portugal, <SectionTitle.Em>planned discreetly.</SectionTitle.Em>
           </SectionTitle>
@@ -169,7 +169,7 @@ export function ProposalInPortugalPage() {
                   <p className="mt-4 text-[color:var(--charcoal-soft)] leading-relaxed">
                     {b.practical}
                   </p>
-                  <div className="mt-5 pl-4 border-l-2 border-[color:var(--gold)] text-sm text-[color:var(--charcoal-soft)] leading-relaxed">
+                  <div className="mt-5 pl-4 border-l-2 border-[color:var(--border)] text-sm text-[color:var(--charcoal-soft)] leading-relaxed">
                     {b.local}
                   </div>
                   <CtaButton href="#proposal-request" variant="ghost" size="sm" className="mt-6">

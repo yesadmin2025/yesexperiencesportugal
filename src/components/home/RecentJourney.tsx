@@ -6,6 +6,7 @@ import { CtaButton } from "@/components/ui/CtaButton";
 import { CtaPair } from "@/components/ui/CtaPair";
 import { CTA_LABELS } from "@/content/cta-vocabulary";
 import { Scene } from "@/components/motion/Scene";
+import { SplitLines } from "@/components/motion/SplitLines";
 
 /**
  * Bespoke Travel Designer — proof block.
@@ -556,17 +557,28 @@ export function RecentJourney() {
         {/* Header — tightened. The book itself carries the proof, so we
             keep one headline + one supporting line and let the object
             below do the talking. */}
-        <Scene className="home-major-intro text-center max-w-2xl mx-auto mb-6 md:mb-8">
+        <Scene className="home-major-intro home-story-intro text-center max-w-2xl mx-auto mb-6 md:mb-8">
           <div className="scene-atmosphere"><Eyebrow className="mb-4">Travel Designer</Eyebrow></div>
-          <h2
+          <SplitLines
+            as="h2"
             id="bespoke-designer-title"
-            className="scene-title serif mt-3 text-[2rem] sm:text-[2.4rem] lg:text-[3.4rem] leading-[1.1] lg:leading-[1.02] tracking-normal text-[color:var(--charcoal)] font-medium text-balance"
-          >
-            A Portugal{" "}
-            <span className="italic font-normal text-[color:var(--teal)]">written around you.</span>
-          </h2>
-          <p className="scene-body mt-4 font-[family-name:var(--font-sans)] text-[14.5px] md:text-[16px] text-[color:var(--charcoal-soft)] leading-[1.65] max-w-md mx-auto">
-            Multi-day Portugal, composed by a local — delivered as a book, not a booking.
+            className="serif text-[2rem] sm:text-[2.4rem] lg:text-[3.4rem] leading-[1.1] lg:leading-[1.02] tracking-normal text-[color:var(--charcoal)] font-medium mx-auto"
+            lineClassName="mx-auto"
+            lines={[
+              "A Portugal",
+              <span key="written" className="italic font-normal text-[color:var(--teal)]">
+                written around you.
+              </span>,
+            ]}
+          />
+          {/* One semantic sentence, revealed in two visual beats. */}
+          <p className="mt-4 font-[family-name:var(--font-sans)] text-[14.5px] md:text-[16px] text-[color:var(--charcoal-soft)] leading-[1.65] max-w-md mx-auto">
+            <span className="scene-body story-beat block">
+              Multi-day Portugal, composed by a local —
+            </span>{" "}
+            <span className="scene-body story-beat block">
+              delivered as a book, not a booking.
+            </span>
           </p>
         </Scene>
 
@@ -584,7 +596,7 @@ export function RecentJourney() {
         {/* Three pillars — editorial centred rhythm. Upright Newsreader
             keeps italics reserved for emphasis inside major titles; hairline gold rule
             separates the block from the book above. */}
-        <Scene className="mt-9 md:mt-10 max-w-2xl mx-auto text-center border-t border-[color:var(--border)] pt-7 md:pt-8">
+        <Scene className="home-pillars mt-9 md:mt-10 max-w-2xl mx-auto text-center border-t border-[color:var(--border)] pt-7 md:pt-8">
           <ul className="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-10 list-none p-0">
             {PILLARS.map((p) => (
               <li key={p.label} className="scene-item he-card-lift px-2">

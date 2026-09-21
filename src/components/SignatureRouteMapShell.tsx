@@ -22,7 +22,7 @@ export function SignatureRouteMapShell() {
   return (
     <section className="py-14 md:py-20" aria-busy="true">
       <div className="container-x max-w-5xl">
-        <div className="text-center mb-8">
+        <div className="editorial-chapter-open text-center mb-8">
           <Eyebrow flank>The route</Eyebrow>
           <SectionTitle size="compact">
             Where the <SectionTitle.Em>day goes</SectionTitle.Em>
