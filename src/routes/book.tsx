@@ -361,9 +361,23 @@ function BookPage() {
                         ))}
                       </select>
                       {chosenTour ? (
-                        <p className="mt-2 text-[13px] leading-relaxed text-[color:var(--charcoal-soft)]">
-                          From €{chosenTour.priceFrom} per person · private, hotel pickup included.
-                        </p>
+                        <>
+                          <p className="mt-2 text-[13px] leading-relaxed text-[color:var(--charcoal-soft)]">
+                            From €{chosenTour.priceFrom} per person · private, hotel pickup included.
+                          </p>
+                          <p className="mt-1.5 text-[13px] leading-relaxed text-[color:var(--charcoal-soft)]">
+                            Prefer instant confirmation?{" "}
+                            <Link
+                              to="/book"
+                              search={{ tour: chosenTour.id }}
+                              className="underline decoration-[color:var(--gold)] underline-offset-4 hover:text-[color:var(--teal)]"
+                              data-testid="request-to-instant-link"
+                            >
+                              See live dates &amp; reserve
+                            </Link>
+                            .
+                          </p>
+                        </>
                       ) : null}
                     </div>
 
