@@ -6633,7 +6633,9 @@ html {
   }
   .hero-cinematic .hero-cinematic-layout {
     padding-top: max(calc(64px + env(safe-area-inset-top)), 5rem);
-    padding-bottom: max(1.75rem, calc(env(safe-area-inset-bottom) + 1rem));
+    /* Keep both actions above the mobile consent notice as well as the
+       home-indicator safe area on a visitor's first screen. */
+    padding-bottom: max(8.5rem, calc(env(safe-area-inset-bottom) + 7.5rem));
   }
   .hero-cinematic .hero-story-stage,
   .hero-cinematic .hero-story-stage picture,
