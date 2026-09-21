@@ -91,7 +91,7 @@ const variantClasses: Record<Variant, string> = {
   ghost:
     "premium-cta--ghost bg-transparent text-[color:var(--charcoal)]",
   ghostDark:
-    "premium-cta--dark bg-transparent text-[color:var(--gold-soft)]",
+    "premium-cta--dark bg-transparent text-[color:var(--gold-soft)] focus-visible:ring-[color:var(--gold-soft)] focus-visible:ring-offset-[color:var(--charcoal)]",
   hairline: "opacity-100",
 };
 
