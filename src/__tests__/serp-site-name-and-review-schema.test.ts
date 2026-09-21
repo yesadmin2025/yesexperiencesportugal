@@ -75,9 +75,9 @@ describe("brand-critical SERP snippets", () => {
   });
 
   it("wine guide title/description are locked and never describe YES as small-group", async () => {
-    const { LOCAL_STORIES } = await import("@/content/local-stories-articles");
+    const { LOCAL_STORIES_ARTICLES } = await import("@/content/local-stories-articles");
     const article = (
-      LOCAL_STORIES as Array<{
+      LOCAL_STORIES_ARTICLES as Array<{
         slug: string;
         title: string;
         metaDescription: string;
