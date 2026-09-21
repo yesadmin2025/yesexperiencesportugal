@@ -548,6 +548,7 @@ function BookPage() {
       </section>
       ) : null}
 
+      {!instantMode ? (
       <section className="pb-16 md:pb-20">
         <div className="container-x max-w-4xl">
           <Eyebrow>What happens next</Eyebrow>
