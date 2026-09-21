@@ -96,8 +96,8 @@
 - [x] Validate representative public routes across five viewports and focused checks; do not publish
 
 ## Booking context, enquiry journeys, and chapter flow
-- [ ] Keep canonical Signature context visible through guest details and payment
-- [ ] Route Travel Designer actions directly to the preselected enquiry
-- [ ] Verify Moments, Corporate, Contact, and WhatsApp journeys without sending live enquiries
-- [ ] Refine shared public chapter spacing and motion where confirmed inconsistent
-- [ ] Validate booking and enquiry journeys across five viewports and 200% text; do not publish
+- [x] Keep canonical Signature context visible through guest details and payment
+- [x] Route Travel Designer actions directly to the preselected enquiry
+- [x] Verify Moments, Corporate, Contact, and WhatsApp journeys without sending live enquiries
+- [x] Refine shared public chapter spacing and motion where confirmed inconsistent
+- [x] Validate booking and enquiry journeys across five viewports and 200% text; do not publish
