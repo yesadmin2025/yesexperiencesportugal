@@ -30,7 +30,7 @@ describe("Premium System Lock", () => {
     const cta = read("src/components/ui/CtaButton.tsx");
 
     expect(sectionTitle).toContain(
-      "text-[1.8125rem] md:text-[2.25rem] leading-[1.18] md:leading-[1.1]",
+      "text-[1.75rem] md:text-[2.25rem] leading-[1.18] md:leading-[1.1]",
     );
     expect(css).toMatch(/\.he-eyebrow-bar\s*\{[\s\S]*?font-size:\s*11px;/);
     expect(cta).toContain('text-[12px] tracking-[0.17em]');
