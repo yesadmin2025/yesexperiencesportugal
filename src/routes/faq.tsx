@@ -60,7 +60,6 @@ function FaqPage() {
             How our private days are designed, what they cost, where you stand if plans change, and
             the two ways to book. If your question isn&apos;t here, a local answers it personally.
           </p>
-          <div className="gold-divider mt-8 mx-auto w-20" />
         </div>
       </section>
 

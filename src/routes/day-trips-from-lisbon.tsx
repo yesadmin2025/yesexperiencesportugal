@@ -214,7 +214,7 @@ function DayTripsFromLisbon() {
       </section>
 
       {/* ── The days ─────────────────────────────────────── */}
-      <section className="py-16 md:py-24">
+      <section id="signature-days" className="py-16 md:py-24">
         <div className="container-x">
           <Eyebrow>The days we run most</Eyebrow>
           <SectionTitle as="h2" spacing="tight">
@@ -242,7 +242,7 @@ function DayTripsFromLisbon() {
                     search={{ tour: tour.id }}
                     className="inline-flex min-h-[44px] items-center gap-2 font-sans text-[12px] uppercase tracking-[0.18em] font-semibold text-[color:var(--teal)] no-underline hover:text-[color:var(--charcoal)]"
                   >
-                    Book this day · from €{tour.priceFrom}
+                    Reserve this day · from €{tour.priceFrom}
                     <span aria-hidden className="text-[color:var(--gold)]">
                       →
                     </span>
@@ -506,12 +506,11 @@ function DayTripsFromLisbon() {
                 Reserve your day
               </h3>
               <p className="mt-3 text-[15px] leading-[1.75] text-[color:var(--charcoal-soft)]">
-                Choose your day, your date and your pickup address, see the final price for your
-                party, and confirm by card — the confirmation appears on screen and arrives by
-                email.
+                Choose a Signature day first, then see live dates, your final price and confirm by
+                card — the confirmation appears on screen and arrives by email.
               </p>
               <div className="mt-5 flex flex-col gap-3">
-                <CtaButton to="/book">Book &amp; pay online</CtaButton>
+                <CtaButton href="#signature-days">{CTA_LABELS.signatureDiscoveryCompact}</CtaButton>
                 <CtaButton to="/studio-v3" variant="ghost">
                   {CTA_LABELS.studio}
                 </CtaButton>

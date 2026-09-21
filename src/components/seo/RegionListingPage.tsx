@@ -44,9 +44,6 @@ export function regionTours(region: LisbonRegion) {
  */
 export function RegionListingPage({ region }: { region: LisbonRegion }) {
   const tours = regionTours(region);
-  // Region CTAs open the booking page already set to this region's first day,
-  // so the real price, dates and pickup fields are visible immediately.
-  const bookSearch = tours[0] ? { tour: tours[0].id } : {};
   const crumbs = [
     { name: "Home", path: "/" },
     { name: "Day trips from Lisbon", path: "/day-trips-from-lisbon" },
@@ -69,17 +66,15 @@ export function RegionListingPage({ region }: { region: LisbonRegion }) {
           </p>
           <div className="mt-8 flex flex-col gap-3 sm:flex-row">
             <CtaButton
-              to="/book"
-              search={bookSearch}
+              href="#signature-days"
               onClick={() =>
                 trackEvent("booking_cta_click", {
                   placement: `region:${region.path}:hero`,
-                  experience_id: tours[0]?.id ?? null,
                   experience_type: "signature",
                 })
               }
             >
-              Book &amp; pay online
+              {CTA_LABELS.signatureDiscoveryCompact}
             </CtaButton>
             <CtaButton to="/contact" variant="ghost">
               Ask a local
@@ -100,7 +95,7 @@ export function RegionListingPage({ region }: { region: LisbonRegion }) {
         </div>
       </section>
 
-      <section className="py-16 md:py-24">
+      <section id="signature-days" className="py-16 md:py-24">
         <div className="container-x">
           <Eyebrow>The days we run here</Eyebrow>
           <SectionTitle as="h2" spacing="tight">
@@ -135,7 +130,7 @@ export function RegionListingPage({ region }: { region: LisbonRegion }) {
                     }
                     className="inline-flex min-h-[44px] items-center gap-2 font-sans text-[12px] uppercase tracking-[0.18em] font-semibold text-[color:var(--teal)] no-underline hover:text-[color:var(--charcoal)]"
                   >
-                    Book this day · from €{tour.priceFrom}
+                    Reserve this day · from €{tour.priceFrom}
                     <span aria-hidden className="text-[color:var(--gold)]">
                       →
                     </span>
@@ -291,23 +286,21 @@ export function RegionListingPage({ region }: { region: LisbonRegion }) {
                 Reserve your day
               </h3>
               <p className="mt-3 text-[15px] leading-[1.75] text-[color:var(--charcoal-soft)]">
-                Choose your day, your date and your pickup address, see the final price for your
-                party, and confirm by card — you get the confirmation on screen and by email.
+                Choose a Signature day first, then see live dates, your final price and confirm by
+                card — you get the confirmation on screen and by email.
                 {tours[0] ? ` ${tours[0].title.split(" — ")[0]} starts from €${tours[0].priceFrom} per person.` : ""}
               </p>
               <div className="mt-5 flex flex-col gap-3">
                 <CtaButton
-                  to="/book"
-                  search={bookSearch}
+                  href="#signature-days"
                   onClick={() =>
                     trackEvent("booking_cta_click", {
                       placement: `region:${region.path}:reserve-panel`,
-                      experience_id: tours[0]?.id ?? null,
                       experience_type: "signature",
                     })
                   }
                 >
-                  Book &amp; pay online
+                  {CTA_LABELS.signatureDiscoveryCompact}
                 </CtaButton>
                 <CtaButton to="/studio-v3" variant="ghost">{CTA_LABELS.studio}</CtaButton>
               </div>

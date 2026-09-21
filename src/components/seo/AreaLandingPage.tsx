@@ -7,6 +7,7 @@ import { Eyebrow } from "@/components/ui/Eyebrow";
 import { trackEvent } from "@/lib/analytics-events";
 import { SectionTitle } from "@/components/ui/SectionTitle";
 import { CtaButton } from "@/components/ui/CtaButton";
+import { CTA_LABELS } from "@/content/cta-vocabulary";
 import { LiveReviews } from "@/components/reviews/LiveReviews";
 import { signatureTours } from "@/data/signatureTours";
 import { REVIEW_CERTIFICATE } from "@/config/trust-certificate";
@@ -45,7 +46,6 @@ const cardClass =
  */
 export function AreaLandingPage({ page }: { page: ServiceAreaPage }) {
   const tours = areaTours(page);
-  const bookSearch = tours[0] ? { tour: tours[0].id } : {};
 
   return (
     <SiteLayout>
@@ -69,17 +69,15 @@ export function AreaLandingPage({ page }: { page: ServiceAreaPage }) {
           </p>
           <div className="mt-8 flex flex-col gap-3 sm:flex-row">
             <CtaButton
-              to="/book"
-              search={bookSearch}
+              href="#signature-days"
               onClick={() =>
                 trackEvent("booking_cta_click", {
                   placement: `area:${page.area}:hero`,
-                  experience_id: tours[0]?.id ?? null,
                   experience_type: "signature",
                 })
               }
             >
-              Book &amp; pay online
+              {CTA_LABELS.signatureDiscoveryCompact}
             </CtaButton>
             <CtaButton to="/contact" variant="ghost">
               Ask a local
@@ -120,6 +118,7 @@ export function AreaLandingPage({ page }: { page: ServiceAreaPage }) {
       </section>
 
       <section
+        id="signature-days"
         className="border-t border-[color:var(--border)] py-16 md:py-24"
         aria-labelledby="area-tours-title"
       >
@@ -157,7 +156,7 @@ export function AreaLandingPage({ page }: { page: ServiceAreaPage }) {
                     }
                     className="inline-flex min-h-[44px] items-center gap-2 font-sans text-[12px] uppercase tracking-[0.18em] font-semibold text-[color:var(--teal)] no-underline hover:text-[color:var(--charcoal)]"
                   >
-                    Book this day · from €{tour.priceFrom}
+                    Reserve this day · from €{tour.priceFrom}
                     <span aria-hidden className="text-[color:var(--gold)]">
                       →
                     </span>

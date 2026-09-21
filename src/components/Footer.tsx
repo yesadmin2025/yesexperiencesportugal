@@ -81,7 +81,6 @@ const NAV_COLUMNS: { title: string; links: FooterLink[] }[] = [
     links: [
       { to: "/proposal-in-portugal", label: "Moments" },
       { to: "/corporate", label: "Corporate" },
-      { to: "/contact", search: { type: "corporate" }, label: "Private Groups" },
     ],
   },
   {

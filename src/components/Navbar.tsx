@@ -13,7 +13,6 @@ function usePrimaryLinks() {
   const t = useT();
   return [
     { to: "/experiences", label: `Signature ${t("nav.experiences")}` },
-    { to: "/studio-v3", label: t("nav.studio") },
     { to: "/portugal-travel-designer", label: t("nav.travel_designer") },
   ];
 }
