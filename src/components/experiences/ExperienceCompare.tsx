@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState, type ReactNode } from "react";
 import { Link } from "@tanstack/react-router";
 import { Check, Scale, X } from "lucide-react";
 import type { SignatureTour } from "@/data/signatureTours";
-import { signatureDurationLabel } from "@/lib/tourContent";
+import { getTourContent, signatureDurationLabel } from "@/lib/tourContent";
 import { PriceEur } from "@/components/ui/PriceEur";
 import { Button } from "@/components/ui/button";
 import { CtaMotionArrow } from "@/components/ui/CtaButton";
@@ -75,7 +75,7 @@ export function ExperienceCompare({ tours, selected, onToggle, onClear }: Props)
               ].map(([label, render]) => (
                 <section key={String(label)}><h4>{String(label)}</h4><div>{chosen.map((tour) => <p key={tour.id}>{(render as (tour: CompareTour) => ReactNode)(tour)}</p>)}</div></section>
               ))}
-              <section><h4>Highlights</h4><div>{chosen.map((tour) => <ul key={tour.id}>{tour.highlights.slice(0, 3).map((item) => <li key={item}>{item}</li>)}</ul>)}</div></section>
+              <section><h4>Highlights</h4><div>{chosen.map((tour) => <ul key={tour.id}>{getTourContent(tour.id).highlights.slice(0, 3).map((item) => <li key={item}>{item}</li>)}</ul>)}</div></section>
             </div>
             <div className="experience-compare-sheet__ctas">
               {chosen.map((tour) => <Link key={tour.id} to="/tours/$tourId" params={{ tourId: tour.id }}>See dates &amp; reserve <CtaMotionArrow /></Link>)}

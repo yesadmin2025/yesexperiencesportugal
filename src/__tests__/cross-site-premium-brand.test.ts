@@ -26,7 +26,10 @@ describe("cross-site premium brand contract", () => {
 
     expect(experiences).toContain("Private days, <SectionTitle.Em>ready when you are.</SectionTitle.Em>");
     expect(designer).toContain("Portugal, <SectionTitle.Em>shaped around you.</SectionTitle.Em>");
-    expect(multiDay).toContain('to="/portugal-travel-designer"');
+    // Multi-day's primary action is the private-day enquiry
+    // (/contact?type=multi_day); the Travel Designer link stays as an
+    // editorial destination, rendered as a plain href.
+    expect(multiDay).toMatch(/(to|href)="\/portugal-travel-designer"/);
     expect(heroCopy).toContain('brandLine: "Continue the story across Portugal →"');
     expect(ways).toContain('"/proposal-in-portugal"');
     expect(ways).toContain('"/corporate"');

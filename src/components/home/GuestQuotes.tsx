@@ -55,7 +55,7 @@ export function GuestQuotes() {
         {REVIEW_CERTIFICATE.ratingValue}/5 · {REVIEW_COUNT_DISPLAY} guest reviews
       </p>
       <h2 className="editorial-title-safe mt-1.5 font-serif text-[1.25rem] font-medium leading-[1.2] text-[color:var(--charcoal)] md:text-[1.5rem]">
-        Real guests. <em className="font-normal text-[color:var(--teal)]">Real Portugal.</em>
+        Real guests. <span className="italic font-normal text-[color:var(--teal)]">Real Portugal.</span>
       </h2>
 
       {/* Platform badge row removed — each review card now carries its
