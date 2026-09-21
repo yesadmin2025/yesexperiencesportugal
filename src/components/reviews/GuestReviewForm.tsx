@@ -63,13 +63,17 @@ const COPY = {
 export function GuestReviewForm({
   tours,
   locale = "en",
+  lockedTour,
 }: {
-  tours: TourOption[];
+  tours?: TourOption[];
   locale?: "en" | "pt";
+  /** When set, the form reviews exactly this experience — no picker. */
+  lockedTour?: TourOption;
 }) {
   const t = COPY[locale];
   const submit = useServerFn(submitPublicReview);
-  const [tourId, setTourId] = useState(tours[0]?.tour_id ?? "");
+  const options = lockedTour ? [lockedTour] : (tours ?? []);
+  const [tourId, setTourId] = useState(lockedTour?.tour_id ?? options[0]?.tour_id ?? "");
   const [rating, setRating] = useState(5);
   const [hover, setHover] = useState(0);
   const [title, setTitle] = useState("");
