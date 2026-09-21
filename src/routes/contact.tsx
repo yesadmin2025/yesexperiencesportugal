@@ -3,7 +3,7 @@ import { trackEvent } from "@/lib/analytics-events";
 import { createFileRoute } from "@tanstack/react-router";
 import { breadcrumbLd, jsonLdScript } from "@/lib/jsonld";
 import { SiteLayout } from "@/components/SiteLayout";
-import { Mail, Phone, MapPin } from "lucide-react";
+import { Mail, Phone, MapPin, MessageCircle } from "lucide-react";
 import { useState } from "react";
 import { z } from "zod";
 import ogImg from "@/assets/why-image.jpg";
@@ -23,6 +23,7 @@ import {
   EMAIL_HREF,
   PHONE_DISPLAY,
   PHONE_HREF,
+  whatsappUrl,
 } from "@/config/business-nap";
 
 const REQUEST_TYPES = [
@@ -169,8 +170,8 @@ function Page() {
             />
           </div>
           <p className="scene-body mt-5 max-w-xl mx-auto text-[color:var(--charcoal-soft)]">
-            Tell us a little about who you are and what you'd love to experience. A local usually
-            replies within a few hours.
+            Tell us a little about who you are and what you'd love to experience. A local replies
+            personally, usually within one working day.
           </p>
           <RouteThread compact className="scene-body mx-auto mt-7 max-w-xl" />
         </Scene>
@@ -314,6 +315,12 @@ function Page() {
               label="Phone"
               value={PHONE_DISPLAY}
               href={PHONE_HREF}
+            />
+            <Info
+              icon={<MessageCircle size={16} />}
+              label="WhatsApp"
+              value={PHONE_DISPLAY}
+              href={whatsappUrl("Hello! I’d like to plan a private Portugal experience with YES.")}
             />
             <Info
               icon={<MapPin size={16} />}
