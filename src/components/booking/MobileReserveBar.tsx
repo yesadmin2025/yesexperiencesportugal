@@ -33,7 +33,9 @@ export function MobileReserveBar({
     const root = document.documentElement;
     if (visible) root.style.setProperty("--fab-lift", "72px");
     else root.style.removeProperty("--fab-lift");
-    return () => root.style.removeProperty("--fab-lift");
+    return () => {
+      root.style.removeProperty("--fab-lift");
+    };
   }, [visible]);
 
   useEffect(() => {
