@@ -95,7 +95,7 @@ export function StudioV3Intro({ onComplete }: Props) {
             >
               — Studio
             </p>
-            <h2
+            <h1
               data-testid="studio-v3-intro-headline"
                className="mt-5 text-[28px] sm:text-[34px] leading-[1.12] tracking-[-0.01em] font-normal"
               style={{
@@ -114,7 +114,7 @@ export function StudioV3Intro({ onComplete }: Props) {
                 Portugal
               </span>{" "}
               is the stage. You write the story.
-            </h2>
+            </h1>
             <p
               className="mt-5 text-[13px] leading-[1.6]"
               style={{
@@ -146,7 +146,7 @@ export function StudioV3Intro({ onComplete }: Props) {
             className="w-full animate-in fade-in slide-in-from-bottom-2 duration-[700ms] motion-reduce:animate-none"
           >
             <p
-              className="text-[11px] uppercase font-bold"
+              className="text-[11px] uppercase font-semibold"
               style={{ color: "var(--gold)", letterSpacing: "0.28em" }}
             >
               — Before we begin
