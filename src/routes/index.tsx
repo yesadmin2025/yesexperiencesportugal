@@ -663,7 +663,7 @@ function HomePage() {
                 <p className="reveal-stagger mt-4 text-[13px] text-[color:var(--charcoal-soft)]">
                   Prefer a human hand?{" "}
                   <a
-                    href="/portugal-travel-designer"
+                    href="/multi-day"
                     className="inline-flex min-h-11 items-center text-[color:var(--teal)] underline underline-offset-4 decoration-[color:var(--gold)]/60 hover:decoration-[color:var(--gold)] transition-colors"
                   >
                     Portugal Travel Designer →
