@@ -8,6 +8,7 @@ import { SectionTitle } from "@/components/ui/SectionTitle";
 import { CtaButton } from "@/components/ui/CtaButton";
 import founderAsset from "@/assets/about-founder-wine-experience.jpg.asset.json";
 import { useMarketingMotion } from "@/hooks/use-marketing-motion";
+import { REVIEW_CERTIFICATE, REVIEW_COUNT_DISPLAY } from "@/config/trust-certificate";
 
 import {
   BASED_IN_SHORT,
@@ -64,19 +65,19 @@ function Page() {
   return (
     <SiteLayout>
       {/* Hero */}
-      <section className="reveal pt-32 pb-14 bg-[color:var(--sand)] text-center">
+      <section className="page-hero public-page-header reveal text-center">
         <div className="container-x">
           <div>
             <Eyebrow flank>Sobre a YES</Eyebrow>
             <SectionTitle as="h1" size="anchor" spacing="loose">
               Desenhamos <SectionTitle.Em>Portugal com sentido</SectionTitle.Em>.
             </SectionTitle>
-            <p className="mt-6 max-w-2xl mx-auto text-[color:var(--charcoal-soft)] leading-relaxed">
+            <p className="page-header-support mt-6 max-w-2xl mx-auto text-[color:var(--charcoal-soft)] leading-relaxed">
               A YES Experiences Portugal é um operador turístico privado e licenciado, fundado em
               2022 em torno de uma ideia simples: Portugal deve ser pessoal, local e genuinamente
               seu.
             </p>
-            <p className="mt-4 max-w-2xl mx-auto text-sm text-[color:var(--charcoal-soft)]/85 leading-relaxed">
+            <p className="page-header-secondary mt-4 max-w-2xl mx-auto text-sm text-[color:var(--charcoal-soft)]/85 leading-relaxed">
               Dias privados, experiências desenhadas ao vivo e jornadas completas — criadas a partir
               de rotas reais, hóspedes reais e conhecimento local verdadeiro.
             </p>
@@ -291,7 +292,7 @@ function Page() {
               <div className="text-xs uppercase tracking-[0.22em] text-[color:var(--charcoal)]">
                 Avaliações
               </div>
-              <p className="mt-2 font-display text-lg">Mais de 700 cinco-estrelas</p>
+              <p className="mt-2 font-display text-lg">{REVIEW_CERTIFICATE.ratingValue}/5 · {REVIEW_COUNT_DISPLAY} avaliações</p>
               <p className="mt-1 text-sm text-[color:var(--charcoal-soft)]">
                 Avaliações verificadas de hóspedes em Tripadvisor, Viator, Google, GetYourGuide e
                 outras plataformas de viagens.

@@ -81,18 +81,18 @@ function ExperiencesPage() {
     <SiteLayout>
       <section
         data-audit="experiences-hero"
-        className="pt-32 pb-[var(--section-y-sm)] bg-[color:var(--sand)] text-center"
+        className="page-hero public-page-header reveal text-center"
       >
         <div className="container-x">
           <Eyebrow flank>Coleção Signature</Eyebrow>
           <SectionTitle as="h1" size="anchor" spacing="loose">
             Signature <SectionTitle.Em>Tours</SectionTitle.Em>
           </SectionTitle>
-          <p className="mt-5 max-w-xl mx-auto text-[color:var(--charcoal-soft)]">
+          <p className="page-header-support mt-5 max-w-xl mx-auto text-[color:var(--charcoal-soft)]">
             Uma coleção editada de dias privados em Portugal — Sintra, Arrábida, Évora e mais.
             Reserve como desenhado, ou ajuste discretamente alguns detalhes.
           </p>
-          <p className="mt-4 mx-auto max-w-xl text-[12px] uppercase tracking-[0.16em] text-[color:var(--charcoal-soft)]">
+          <p className="page-header-secondary mt-4 mx-auto max-w-xl text-[12px] uppercase tracking-[0.16em] text-[color:var(--charcoal-soft)]">
             As páginas detalhadas de cada tour estão, para já, disponíveis em inglês. A tradução
             editorial está em curso.
           </p>

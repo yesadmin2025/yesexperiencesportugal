@@ -84,24 +84,26 @@ function PtHomePage() {
   return (
     <SiteLayout>
       {/* Hero */}
-      <section className="mx-auto max-w-3xl px-6 pt-24 pb-16 md:pt-32 md:pb-20 text-center">
-        <Eyebrow flank>Bem-vindo</Eyebrow>
-        <SectionTitle as="h1" size="anchor" spacing="loose">
-          Portugal privado,{" "}
-          <SectionTitle.Em>mostrado como um local mostra a um amigo.</SectionTitle.Em>
-        </SectionTitle>
-        <p className="mt-7 mx-auto max-w-xl text-[15px] md:text-[17px] leading-relaxed text-[color:var(--charcoal-soft)]">
-          Desenhamos viagens privadas por Portugal — do vinho da Arrábida às planícies do Alentejo,
-          de Sintra à costa vicentina — com guias locais, mesas verdadeiras e tempo para respirar.
-          Sem grupos, sem guiões prontos, sem pressa.
-        </p>
-        <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-3">
-          <CtaButton to="/pt/experiences" variant="primary">
-            Ver experiências Signature
-          </CtaButton>
-          <CtaButton to="/pt/day-tours" variant="ghost">
-            Experiências de um dia
-          </CtaButton>
+      <section className="page-hero public-page-header text-center reveal">
+        <div className="container-x max-w-3xl">
+          <Eyebrow flank>Bem-vindo</Eyebrow>
+          <SectionTitle as="h1" size="anchor" spacing="loose">
+            Portugal privado,{" "}
+            <SectionTitle.Em>mostrado como um local mostra a um amigo.</SectionTitle.Em>
+          </SectionTitle>
+          <p className="page-header-support mt-7 mx-auto max-w-xl text-[15px] md:text-[17px] leading-relaxed text-[color:var(--charcoal-soft)]">
+            Desenhamos viagens privadas por Portugal — do vinho da Arrábida às planícies do Alentejo,
+            de Sintra à costa vicentina — com guias locais, mesas verdadeiras e tempo para respirar.
+            Sem grupos, sem guiões prontos, sem pressa.
+          </p>
+          <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-3">
+            <CtaButton to="/pt/experiences" variant="primary">
+              Ver experiências Signature
+            </CtaButton>
+            <CtaButton to="/pt/day-tours" variant="ghost">
+              Experiências de um dia
+            </CtaButton>
+          </div>
         </div>
       </section>
 

@@ -89,3 +89,8 @@
 - [x] Audit requested page headers at 393px and 430px
 - [x] Unify every Experiences card structure and metadata order
 - [x] Validate five viewports and run focused checks
+
+## Site-wide public consistency
+- [ ] Normalize confirmed remaining public header and section-intro divergences
+- [ ] Standardize related card families and action/proof hierarchy where inconsistent
+- [ ] Validate representative public routes across five viewports and focused checks; do not publish

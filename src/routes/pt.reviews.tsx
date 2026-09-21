@@ -107,14 +107,14 @@ function ReviewsPage() {
   return (
     <SiteLayout>
       <article>
-        <header className="reveal pt-32 md:pt-40 pb-12 md:pb-16 bg-[color:var(--sand)]">
+        <header className="page-hero public-page-header reveal">
           <div className="container-x max-w-3xl text-center">
             <Eyebrow flank>Avaliações reais de clientes</Eyebrow>
             <SectionTitle as="h1" size="anchor" spacing="loose">
               O que os clientes <SectionTitle.Em>realmente</SectionTitle.Em> dizem.
             </SectionTitle>
             {global.total_reviews >= 25 && (
-              <p className="mt-6 font-serif italic text-[1.1rem] md:text-[1.25rem] leading-[1.55] text-[color:var(--charcoal-soft)]">
+              <p className="page-header-support mt-6 font-serif italic text-[1.1rem] md:text-[1.25rem] leading-[1.55] text-[color:var(--charcoal-soft)]">
                 <span className="tabular-nums">{global.total_reviews.toLocaleString("pt-PT")}</span>{" "}
                 avaliações
                 {global.average_rating && (
@@ -126,7 +126,7 @@ function ReviewsPage() {
                 em várias plataformas.
               </p>
             )}
-            <p className="mt-4 font-sans text-[12.5px] text-[color:var(--charcoal-soft)]">
+            <p className="page-header-secondary mt-4 font-sans text-[12.5px] text-[color:var(--charcoal-soft)]">
               Baseado em avaliações verificadas de clientes nas principais plataformas de reservas.
             </p>
           </div>

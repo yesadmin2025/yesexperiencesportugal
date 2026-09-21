@@ -153,7 +153,7 @@ function HowManyDays() {
     <SiteLayout>
       <SiteBreadcrumbs crumbs={crumbs} />
 
-      <section className="bg-[color:var(--sand)] py-16 md:py-24">
+      <section className="public-page-header bg-[color:var(--sand)] py-16 md:py-24">
         <div className="container-x max-w-3xl">
           <Eyebrow flank>Trip planning · Portugal</Eyebrow>
           <SectionTitle as="h1" size="anchor" spacing="loose">
@@ -162,7 +162,7 @@ function HowManyDays() {
               Seven, if you are asking.
             </SectionTitle.Em>
           </SectionTitle>
-          <p className="mt-6 text-[16px] md:text-[17px] leading-[1.8] text-[color:var(--charcoal-soft)]">
+          <p className="page-header-support mt-6 text-[16px] md:text-[17px] leading-[1.8] text-[color:var(--charcoal-soft)]">
             Below is what genuinely fits in five, seven, ten and fourteen days, what we would cut
             first, and which private days are worth the drive. We are a licensed Portuguese
             operator based south of Lisbon, and these are the trips we build for guests every week.

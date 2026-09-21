@@ -123,14 +123,14 @@ function Page() {
   return (
     <SiteLayout>
       <article>
-        <header className="reveal pt-32 md:pt-40 pb-12 md:pb-16 bg-[color:var(--sand)]">
+        <header className="page-hero public-page-header reveal">
           <div className="container-x max-w-3xl text-center">
             <Eyebrow flank>Portugal · Private Tours</Eyebrow>
             <SectionTitle as="h1" size="anchor" spacing="loose">
               Portugal tours,{" "}
               <SectionTitle.Em>shown the way a local shows a friend.</SectionTitle.Em>
             </SectionTitle>
-            <p className="mt-6 max-w-2xl mx-auto font-serif italic text-[1.1rem] md:text-[1.25rem] leading-[1.55] text-[color:var(--charcoal-soft)]">
+            <p className="page-header-support mt-6 max-w-2xl mx-auto font-serif italic text-[1.1rem] md:text-[1.25rem] leading-[1.55] text-[color:var(--charcoal-soft)]">
               Private, paced, and designed by the operator on the ground — not a reseller in another
               country.
             </p>

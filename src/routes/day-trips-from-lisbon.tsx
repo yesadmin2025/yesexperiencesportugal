@@ -177,7 +177,7 @@ function DayTripsFromLisbon() {
       <SiteBreadcrumbs crumbs={crumbs} />
 
       {/* ── Hero ─────────────────────────────────────────── */}
-      <section className="bg-[color:var(--sand)] py-16 md:py-24">
+      <section className="public-page-header bg-[color:var(--sand)] py-16 md:py-24">
         <div className="container-x max-w-3xl">
           <Eyebrow flank>Lisbon · Setúbal · Alentejo</Eyebrow>
           <h1 className="mt-4 font-serif text-[40px] font-medium leading-[1.08] tracking-normal text-[color:var(--charcoal)] md:text-[60px] md:leading-[1.02]">
@@ -186,7 +186,7 @@ function DayTripsFromLisbon() {
               designed by people who live here.
             </span>
           </h1>
-          <p className="mt-6 text-[16px] md:text-[17px] leading-[1.8] text-[color:var(--charcoal-soft)]">
+          <p className="page-header-support mt-6 text-[16px] md:text-[17px] leading-[1.8] text-[color:var(--charcoal-soft)]">
             We are a licensed Portuguese operator based in Sesimbra, forty minutes south of Lisbon.
             Every day below is private to your party, starts at your Lisbon address, and is hosted
             by someone from the region you are visiting — wine in Arrábida, palaces in Sintra, empty

@@ -97,13 +97,13 @@ function Page() {
   return (
     <SiteLayout>
       <article>
-        <header className="reveal pt-32 md:pt-40 pb-12 md:pb-16 bg-[color:var(--sand)]">
+        <header className="page-hero public-page-header reveal">
           <div className="container-x max-w-3xl text-center">
             <Eyebrow flank>Portugal · Luxury Private Tours</Eyebrow>
             <SectionTitle as="h1" size="anchor" spacing="loose">
               Luxury Portugal tours, <SectionTitle.Em>quietly done.</SectionTitle.Em>
             </SectionTitle>
-            <p className="mt-6 max-w-2xl mx-auto font-serif italic text-[1.1rem] md:text-[1.25rem] leading-[1.55] text-[color:var(--charcoal-soft)]">
+            <p className="page-header-support mt-6 max-w-2xl mx-auto font-serif italic text-[1.1rem] md:text-[1.25rem] leading-[1.55] text-[color:var(--charcoal-soft)]">
               Private, all-inclusive, and paced around you — designed by the operator on the ground.
             </p>
             <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-4">

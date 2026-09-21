@@ -133,7 +133,7 @@ function PortugalItinerary() {
     <SiteLayout>
       <SiteBreadcrumbs crumbs={crumbs} />
 
-      <section className="bg-[color:var(--sand)] py-16 md:py-24">
+      <section className="public-page-header bg-[color:var(--sand)] py-16 md:py-24">
         <div className="container-x max-w-3xl">
           <Eyebrow flank>Planning · written in Portugal</Eyebrow>
           <SectionTitle as="h1" size="anchor" spacing="loose">
@@ -142,7 +142,7 @@ function PortugalItinerary() {
               without spending the trip in the car.
             </SectionTitle.Em>
           </SectionTitle>
-          <p className="mt-6 text-[16px] md:text-[17px] leading-[1.8] text-[color:var(--charcoal-soft)]">
+          <p className="page-header-support mt-6 text-[16px] md:text-[17px] leading-[1.8] text-[color:var(--charcoal-soft)]">
             This is the advice we give on the phone, written down: how long the country really
             takes, where to base yourself, and what a five, seven or ten-day route looks like when
             it is built by people who drive these roads every week.

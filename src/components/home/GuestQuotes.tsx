@@ -135,7 +135,7 @@ function ReviewCarousel({
             {quotes.map((q, idx) => (
               <li
                 key={q.id}
-                className="he-card-lift shrink-0 snap-start w-[82vw] sm:w-[46%] lg:w-[31.5%] flex flex-col min-h-[10.75rem] sm:min-h-[11.5rem] rounded-[2px] border border-[color:var(--charcoal)]/10 bg-[color:var(--ivory)] p-4 md:p-[18px] relative shadow-[var(--shadow-card)]"
+                className="he-card-lift shrink-0 snap-start w-[82vw] sm:w-[46%] lg:w-[31.5%] flex flex-col min-h-[10.75rem] sm:min-h-[11.5rem] rounded-[6px] border border-[color:var(--border)] bg-[color:var(--ivory)] p-5 md:p-6 relative shadow-[var(--shadow-card)]"
               >
                 <Quote
                   aria-hidden="true"

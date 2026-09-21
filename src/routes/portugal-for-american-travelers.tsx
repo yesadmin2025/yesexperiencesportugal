@@ -161,7 +161,7 @@ function PortugalForAmericans() {
     <SiteLayout>
       <SiteBreadcrumbs crumbs={crumbs} />
 
-      <section className="bg-[color:var(--sand)] py-16 md:py-24">
+      <section className="public-page-header bg-[color:var(--sand)] py-16 md:py-24">
         <div className="container-x max-w-3xl">
           <Eyebrow flank>Planning from the United States</Eyebrow>
           <SectionTitle as="h1" size="anchor" spacing="loose">
@@ -170,7 +170,7 @@ function PortugalForAmericans() {
               explained by people who live here.
             </SectionTitle.Em>
           </SectionTitle>
-          <p className="mt-6 text-[16px] md:text-[17px] leading-[1.8] text-[color:var(--charcoal-soft)]">
+          <p className="page-header-support mt-6 text-[16px] md:text-[17px] leading-[1.8] text-[color:var(--charcoal-soft)]">
             Flight times, jet lag, money, tipping, driving, the months worth flying for, and how
             long to stay. Everything below is what we tell American guests before they arrive — we
             are a licensed operator based forty minutes south of Lisbon, and we host these days
