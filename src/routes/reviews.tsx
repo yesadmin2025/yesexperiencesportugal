@@ -1,10 +1,9 @@
 /**
  * /reviews — public reviews aggregator.
  *
- * Groups visible reviews per tour and emits a single first-party-only
- * AggregateRating block (Google policy: schema values must match what is
- * displayed and be first-party). Trust copy is explicit: "Based on
- * verified guest reviews across major booking platforms."
+ * Groups visible reviews per tour and emits breadcrumb, collection and
+ * reviewed-experience list data. It intentionally emits no self-serving
+ * Organization AggregateRating or Review schema.
  *
  * Read-only. No external review links — guests stay on site.
  */
@@ -187,7 +186,7 @@ function ReviewsPage() {
           </div>
         </header>
 
-        <section className="reveal py-20 md:py-28 bg-[color:var(--ivory)]">
+        <section className="reveal py-16 md:py-24 bg-[color:var(--ivory)]">
           <div className="container-x max-w-5xl">
             <div className="space-y-16 md:space-y-20">
               {tours.map((b) => {
@@ -198,7 +197,7 @@ function ReviewsPage() {
                       <Link
                         to="/tours/$tourId"
                         params={{ tourId: id }}
-                        className="font-display font-medium text-[1.4rem] md:text-[1.7rem] leading-[1.25] text-[color:var(--charcoal)] hover:text-[color:var(--teal)] transition-colors"
+                        className="font-serif font-medium text-[24px] leading-[1.2] text-[color:var(--charcoal)] transition-colors hover:text-[color:var(--teal)] md:text-[26px]"
                       >
                         {b.title}
                       </Link>

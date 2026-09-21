@@ -267,7 +267,7 @@ export function GuestDetailsStep({
       data-testid={testId ?? "studio-v3-guest-details"}
       aria-labelledby="studio-v3-guest-details-title"
       className={cn(
-        "w-full max-w-[560px] mx-auto px-5 pt-8 pb-[calc(env(safe-area-inset-bottom)+7rem)]",
+        "w-full max-w-[560px] mx-auto px-5 pt-8 pb-[calc(env(safe-area-inset-bottom)+8.5rem)]",
         className,
       )}
     >
@@ -285,7 +285,7 @@ export function GuestDetailsStep({
         <Eyebrow>Make it yours</Eyebrow>
         <h2
           id="studio-v3-guest-details-title"
-          className="mt-3 text-[22px] leading-[1.25] [text-wrap:balance]"
+           className="mt-3 text-[24px] leading-[1.2] [text-wrap:balance] md:text-[30px] md:leading-[1.12]"
           style={{
             fontFamily: "var(--font-editorial)",
             color: "var(--charcoal)",
@@ -574,7 +574,7 @@ export function GuestDetailsStep({
         {/* Sticky CTA — sits above the virtual keyboard via safe-area padding
             on the wrapper. */}
         <div
-          className="fixed inset-x-0 bottom-0 z-40 border-t border-[color:var(--border)] bg-[color:var(--ivory)]/95 backdrop-blur-sm px-5 pt-3 pb-[calc(env(safe-area-inset-bottom)+0.75rem)]"
+          className="fixed inset-x-0 bottom-0 z-40 border-t border-[color:var(--border)] bg-[color:var(--ivory)] px-5 pt-3 pb-[calc(env(safe-area-inset-bottom)+0.75rem)]"
           data-testid="studio-v3-guest-details-cta-bar"
         >
           <div className="max-w-[560px] mx-auto">

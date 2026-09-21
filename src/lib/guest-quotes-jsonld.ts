@@ -9,6 +9,7 @@
  * from tests and from any surface.
  */
 import { SITE_URL } from "@/lib/jsonld";
+import { REVIEW_CERTIFICATE } from "@/config/trust-certificate";
 
 export type ReviewSource = "viator" | "tripadvisor" | "getyourguide" | "google" | "first_party";
 
@@ -38,9 +39,9 @@ export const SOURCE_LABEL: Record<string, string> = {
   first_party: "Verified guest",
 };
 
-/** Fallbacks match the verified public aggregate on Tripadvisor/Viator. */
-export const FALLBACK_RATING = 4.9;
-export const FALLBACK_COUNT = 700;
+/** Fallbacks share the verified public certificate source of truth. */
+export const FALLBACK_RATING = REVIEW_CERTIFICATE.ratingValue;
+export const FALLBACK_COUNT = REVIEW_CERTIFICATE.reviewCount;
 
 /**
  * Build the `@graph` payload rendered inside the GuestQuotes

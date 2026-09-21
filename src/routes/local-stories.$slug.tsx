@@ -273,7 +273,7 @@ function StaticArticleView({ article }: { article: LocalStoryArticle }) {
             <span className="block font-sans text-[12px] uppercase tracking-[0.28em] text-[color:var(--gold-ink)] mb-5">
               {article.eyebrow}
             </span>
-            <h1 className="font-display font-bold text-[2rem] md:text-[2.6rem] leading-[1.15] tracking-[-0.01em] text-[color:var(--charcoal)]">
+            <h1 className="font-serif font-medium text-[40px] leading-[1.08] tracking-normal text-[color:var(--charcoal)] md:text-[60px] md:leading-[1.02]">
               {article.h1}
             </h1>
             {article.standfirst && (
@@ -284,12 +284,12 @@ function StaticArticleView({ article }: { article: LocalStoryArticle }) {
           </div>
         </header>
 
-        <section className="py-20 md:py-28 bg-[color:var(--ivory)] reveal">
+        <section className="py-16 md:py-24 bg-[color:var(--ivory)] reveal">
           <div className="container-x prose-longform">
             <div className="prose-yes">
               {article.sections.map((section, index) => (
                 <div key={index} className="mb-12">
-                  <h2 className="font-display font-semibold text-[1.4rem] md:text-[1.6rem] leading-[1.25] text-[color:var(--charcoal)] mb-5">
+                  <h2 className="mb-5 font-serif font-medium text-[29px] leading-[1.18] text-[color:var(--charcoal)] md:text-[36px] md:leading-[1.1]">
                     {section.heading}
                   </h2>
                   <p className="text-[16px] md:text-[17px] text-[color:var(--charcoal)] leading-[1.85]">

@@ -70,7 +70,7 @@ export function MobileReserveBar({
       aria-hidden={!visible}
       className={[
         "sm:hidden fixed inset-x-0 bottom-0 z-40",
-        "border-t border-[color:var(--charcoal)]/10 bg-[color:var(--ivory)]/97 backdrop-blur-sm",
+        "border-t border-[color:var(--charcoal)]/10 bg-[color:var(--ivory)]",
         "px-4 pt-2.5 pb-[max(0.625rem,env(safe-area-inset-bottom))]",
         "transition-opacity duration-200",
         visible ? "opacity-100" : "pointer-events-none opacity-0",
