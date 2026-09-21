@@ -1,10 +1,11 @@
 /**
  * Public review certificate — single source of truth.
  *
- * The footer badge (`TrustindexBadge`) and the Organization JSON-LD
- * `aggregateRating` MUST read these constants so the visible seal and the
- * structured data can never drift apart (a Google rich-results requirement:
- * the rating in markup has to be visible on the page).
+ * Single source of truth for VISIBLE review proof (Trustindex badge,
+ * homepage trust line and other owned-page UI). Do not attach this aggregate
+ * to the site's own Organization/LocalBusiness JSON-LD: Google treats those
+ * self-serving review snippets as ineligible. Product-specific tour ratings
+ * remain separate and must use their own tour-level source.
  *
  * Update here when the public certificate changes.
  */
