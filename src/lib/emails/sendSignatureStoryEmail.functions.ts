@@ -40,12 +40,16 @@ const chapterSchema = z.object({
 });
 
 const snapshotSchema = z.object({
-  title: z.string().min(1).max(200),
-  dateLabel: z.string().max(80).nullable(),
+  title: safeText(200),
+  dateLabel: z
+    .string()
+    .max(80)
+    .nullable()
+    .transform((v) => (v === null ? null : sanitizeText(v) || null)),
   guests: z.number().int().min(1).max(24),
-  pickupLabel: z.string().min(1).max(200),
+  pickupLabel: safeText(200),
   chapters: z.array(chapterSchema).max(6),
-  inclusions: z.array(z.string().min(1).max(200)).max(10),
+  inclusions: z.array(safeText(200)).max(10),
 });
 
 const inputSchema = z.object({
