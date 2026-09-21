@@ -56,7 +56,7 @@ export function PlatformBadge({
       style={{
         height: `${scale * 100}%`,
         filter: MONO_FILTER,
-        transition: "filter 600ms ease, opacity 600ms ease",
+        transition: "filter var(--dur-quick) ease, opacity var(--dur-quick) ease",
         opacity: 0.7,
       }}
       onMouseEnter={(e) => {
