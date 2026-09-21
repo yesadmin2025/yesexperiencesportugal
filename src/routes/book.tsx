@@ -586,6 +586,7 @@ function BookPage() {
           </div>
         </div>
       </section>
+      ) : null}
 
       <section
         id="prices"
