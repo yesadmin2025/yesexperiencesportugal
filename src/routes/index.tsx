@@ -1071,7 +1071,7 @@ function HomePage() {
                       Design one private day
                     </Link>
                     <Link
-                      to="/portugal-travel-designer"
+                      to="/multi-day"
                       className="inline-flex min-h-11 items-center text-[color:var(--charcoal)] underline decoration-[color:var(--gold)]/60 underline-offset-4 hover:decoration-[color:var(--gold)]"
                     >
                       Plan a Portugal journey
