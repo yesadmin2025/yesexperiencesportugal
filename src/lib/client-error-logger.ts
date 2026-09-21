@@ -64,8 +64,6 @@ export async function reportClientError(input: ReportInput): Promise<void> {
   const signature = `${input.severity ?? "error"}::${message.slice(0, 200)}`;
   if (shouldDedupe(signature)) return;
 
-  sentCount += 1;
-
   // P0 privacy: never persist the raw href or raw query string. Path plus a
   // value-redacted, allowlisted query object only.
   const { path, query } = sanitizeLocation(window.location.href);
@@ -76,6 +74,13 @@ export async function reportClientError(input: ReportInput): Promise<void> {
     route: path,
     hostname: window.location.hostname,
   });
+
+  // Local preview/e2e browsers intentionally cancel media and image requests
+  // while reloading routes. Those events were flooding production diagnostics
+  // with tens of thousands of "dev_noise" rows and hiding real visitor errors.
+  if (category === "dev_noise") return;
+
+  sentCount += 1;
 
   try {
     await supabase.from("client_error_logs").insert({
