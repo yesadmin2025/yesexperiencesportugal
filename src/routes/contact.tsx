@@ -154,7 +154,7 @@ function Page() {
 
   return (
     <SiteLayout>
-      <section className="reveal pt-32 pb-12 bg-[color:var(--sand)]">
+      <section className="page-hero reveal">
         <Scene className="container-x text-center">
           <div className="scene-atmosphere">
             <Eyebrow flank>Talk to a Designer</Eyebrow>
@@ -162,7 +162,7 @@ function Page() {
           <div className="scene-title">
             <SplitLines
               as="h1"
-              className="mt-4 font-display text-[color:var(--charcoal)] font-semibold tracking-normal text-[clamp(2.25rem,10vw,4.75rem)] leading-[1.1] text-balance"
+              className="mt-4 font-serif text-[color:var(--charcoal)] font-medium tracking-normal text-[2.25rem] md:text-[3.25rem] leading-[1.12] md:leading-[1.08] text-balance"
               lines={[
                 <>Begin your&nbsp;</>,
                 <><span className="italic font-normal text-[color:var(--teal)]">Portugal story.</span></>,
