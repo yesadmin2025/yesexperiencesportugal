@@ -5,11 +5,38 @@
  * blurs of the same field deduplicate at the email_send_log layer.
  */
 import { createServerFn } from "@tanstack/react-start";
+import { getRequest } from "@tanstack/react-start/server";
 import { z } from "zod";
 
+/**
+ * Free-text coming from the browser is rendered inside a branded email, so it
+ * must never be able to carry links, markup or injected headers. We strip URLs,
+ * angle brackets and control characters before anything reaches a template.
+ */
+const URL_LIKE =
+  /((https?:\/\/|www\.)\S+|\b[\w.-]+\.(com|net|org|io|co|pt|es|ru|xyz|info|biz|link|top|cn)\b\S*)/gi;
+
+function sanitizeText(value: string): string {
+  return value
+    .replace(/[\r\n\t]+/g, " ")
+    // eslint-disable-next-line no-control-regex
+    .replace(/[\u0000-\u001f\u007f]/g, "")
+    .replace(URL_LIKE, "")
+    .replace(/[<>]/g, "")
+    .replace(/\s{2,}/g, " ")
+    .trim();
+}
+
+const safeText = (max: number) =>
+  z
+    .string()
+    .max(max)
+    .transform(sanitizeText)
+    .refine((v) => v.length > 0, "Required");
+
 const chapterSchema = z.object({
-  title: z.string().min(1).max(200),
-  body: z.string().min(1).max(600),
+  title: safeText(200),
+  body: safeText(600),
 });
 
 const snapshotSchema = z.object({
