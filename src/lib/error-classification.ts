@@ -23,6 +23,7 @@ const THIRD_PARTY_HINTS = [
   "google-analytics",
   "gtag",
   "vercel-insights",
+  "vercel-scripts.com",
   "vitals.vercel",
   "/_vercel/insights",
   "doubleclick",
@@ -55,7 +56,12 @@ export function classifyClientError(input: {
 }): ErrorCategory {
   const haystack = `${input.message ?? ""} ${input.source ?? ""}`.toLowerCase();
   const host = (input.hostname ?? "").toLowerCase();
-  const isLocal = host === "localhost" || host === "127.0.0.1" || host.endsWith(".local");
+  const isLocal =
+    host === "localhost" ||
+    host === "127.0.0.1" ||
+    host.endsWith(".local") ||
+    host.startsWith("id-preview") ||
+    host.includes("-preview--");
 
   if (THIRD_PARTY_HINTS.some((h) => haystack.includes(h))) return "third_party_blocked";
   if (DEV_HINTS.some((h) => haystack.includes(h))) return "dev_noise";
