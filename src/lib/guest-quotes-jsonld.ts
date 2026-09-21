@@ -40,7 +40,7 @@ export const SOURCE_LABEL: Record<string, string> = {
 };
 
 /** Fallbacks share the verified public certificate source of truth. */
-export const FALLBACK_RATING = REVIEW_CERTIFICATE.ratingValue;
+export const FALLBACK_RATING = Number(REVIEW_CERTIFICATE.ratingValue);
 export const FALLBACK_COUNT = REVIEW_CERTIFICATE.reviewCount;
 
 /**
