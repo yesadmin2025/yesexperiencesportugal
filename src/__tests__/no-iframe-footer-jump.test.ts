@@ -179,9 +179,13 @@ describe("Homepage scrollToHash — static contract", () => {
 
   it("only scrolls inside the page when a tracked id is resolved", () => {
     const src = readFileSync(resolve(__dirname, "../routes/index.tsx"), "utf8");
-    // Tracked ids include studio + final-cta. Footer is NOT tracked.
-    expect(src).toMatch(/TRACKED_IDS\s*=\s*\[[^\]]*"studio"[^\]]*\]/s);
-    expect(src).not.toMatch(/TRACKED_IDS\s*=\s*\[[^\]]*"footer"[^\]]*\]/s);
-    expect(src).not.toMatch(/TRACKED_IDS\s*=\s*\[[^\]]*"site-footer"[^\]]*\]/s);
+    // The tracked-id list is now the HASH_ALIASES map. It resolves
+    // studio + final-cta; footer ids are NOT resolvable targets.
+    const aliases = src.match(/HASH_ALIASES:\s*Record<string,\s*string>\s*=\s*\{[\s\S]*?\n {2}\};/);
+    expect(aliases, "HASH_ALIASES missing in routes/index.tsx").toBeTruthy();
+    expect(aliases![0]).toMatch(/studio:\s*"studio"/);
+    expect(aliases![0]).toMatch(/"final-cta":\s*"final-cta"/);
+    expect(aliases![0]).not.toMatch(/footer/);
+    expect(aliases![0]).not.toMatch(/site-footer/);
   });
 });

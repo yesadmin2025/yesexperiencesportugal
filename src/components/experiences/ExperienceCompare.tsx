@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState, type ReactNode } from "react";
 import { Link } from "@tanstack/react-router";
 import { Check, Scale, X } from "lucide-react";
 import type { SignatureTour } from "@/data/signatureTours";
-import { signatureDurationLabel } from "@/lib/tourContent";
+import { getTourContent, signatureDurationLabel } from "@/lib/tourContent";
 import { PriceEur } from "@/components/ui/PriceEur";
 import { Button } from "@/components/ui/button";
 import { CtaMotionArrow } from "@/components/ui/CtaButton";
@@ -75,7 +75,7 @@ export function ExperienceCompare({ tours, selected, onToggle, onClear }: Props)
               ].map(([label, render]) => (
                 <section key={String(label)}><h4>{String(label)}</h4><div>{chosen.map((tour) => <p key={tour.id}>{(render as (tour: CompareTour) => ReactNode)(tour)}</p>)}</div></section>
               ))}
-              <section><h4>Highlights</h4><div>{chosen.map((tour) => <ul key={tour.id}>{tour.highlights.slice(0, 3).map((item) => <li key={item}>{item}</li>)}</ul>)}</div></section>
+              <section><h4>Highlights</h4><div>{chosen.map((tour) => <ul key={tour.id}>{getTourContent(tour.id).highlights.slice(0, 3).map((item) => <li key={item}>{item}</li>)}</ul>)}</div></section>
             </div>
             <div className="experience-compare-sheet__ctas">
               {chosen.map((tour) => <Link key={tour.id} to="/tours/$tourId" params={{ tourId: tour.id }}>See dates &amp; reserve <CtaMotionArrow /></Link>)}
@@ -94,7 +94,7 @@ export function CompareControl({ active, disabled, onClick, title }: { active: b
       aria-pressed={active}
       disabled={disabled}
       onClick={onClick}
-      className="experience-card-compare inline-flex min-h-[36px] items-center gap-1.5 rounded-sm px-1.5 font-sans text-[10.5px] font-semibold uppercase tracking-[0.14em] text-[color:var(--charcoal-soft)] transition-colors hover:text-[color:var(--teal)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)] disabled:opacity-35"
+      className="experience-card-compare inline-flex min-h-[36px] items-center gap-1.5 rounded-sm px-1.5 font-sans text-[11px] font-semibold uppercase tracking-[0.14em] text-[color:var(--charcoal-soft)] transition-colors hover:text-[color:var(--teal)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)] disabled:opacity-35"
       aria-label={`${active ? "Remove" : "Compare"} ${title}`}
     >
       {active ? <Check size={13} aria-hidden="true" /> : <Scale size={13} aria-hidden="true" />}

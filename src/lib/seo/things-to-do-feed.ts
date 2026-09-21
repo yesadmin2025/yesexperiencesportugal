@@ -66,7 +66,9 @@ export function isoDuration(durationHours: string): string | null {
 
 function productFor(tour: SignatureTour): ThingsToDoProduct {
   const content = getTourContent(tour.id);
-  const highlights = content.highlights.length > 0 ? content.highlights : (tour.highlights ?? []);
+  // Canonical content only — getTourContent() already falls back to the
+  // legacy tour fields internally, so the output is unchanged.
+  const highlights = content.highlights;
   const images = Array.from(new Set([tour.img, ...(tour.gallery ?? [])].filter(Boolean))).map(
     (src) => abs(src),
   );
@@ -82,7 +84,7 @@ function productFor(tour: SignatureTour): ThingsToDoProduct {
     durationIso: isoDuration(tour.durationHours),
     region: tour.region,
     highlights: highlights.slice(0, 8),
-    included: tour.included.slice(0, 12),
+    included: content.included.slice(0, 12),
     privateTour: true,
     language: "en",
     country: "PT",

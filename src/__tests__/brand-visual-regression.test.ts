@@ -75,10 +75,12 @@ describe("Brand palette — approved 8 tokens", () => {
 });
 
 // ─── Typography v3 ─────────────────────────────────────────────────────
-describe("Final typography — Newsreader / Inter", () => {
+describe("Final typography — Fraunces / Inter", () => {
   it("declares the canonical font stacks", () => {
-    expect(css).toMatch(/--font-display:\s*"Newsreader"/);
-    expect(css).toMatch(/--font-serif:\s*"Newsreader"/);
+    // Approved two-family system: Fraunces (editorial/display) + Inter (body/UI).
+    expect(css).toMatch(/--font-display:\s*"Fraunces"/);
+    expect(css).toMatch(/--font-serif:\s*"Fraunces"/);
+    expect(css).toMatch(/--font-editorial:\s*"Fraunces"/);
     expect(css).toMatch(/--font-sans:\s*"Inter"/);
   });
 
@@ -165,15 +167,19 @@ describe("Gold token usage — micro-detail only", () => {
 });
 
 // ─── Heading hierarchy = final editorial weights ───────────────────────
-describe("Heading hierarchy — regular editorial display", () => {
+describe("Heading hierarchy — editorial display weight", () => {
   it("encodes the canonical weights in styles.css", () => {
-    // The CANONICAL block lives in the Typography v3 section. We
-    const h1Match = css.match(/h1\s*\{[^}]*font-weight:\s*400/);
-    const h2Match = css.match(/h2\s*\{[^}]*font-weight:\s*400/);
-    const h3Match = css.match(/h3\s*\{[^}]*font-weight:\s*400/);
-    expect(h1Match, "h1 should be 400").toBeTruthy();
-    expect(h2Match, "h2 should be 400").toBeTruthy();
-    expect(h3Match, "h3 should be 400").toBeTruthy();
+    // Approved Fraunces editorial scale: headings render at 500, and
+    // italic emphasis inside a heading drops back to 400.
+    const h1Match = css.match(/h1\s*\{[^}]*font-weight:\s*500/);
+    const h2Match = css.match(/h2\s*\{[^}]*font-weight:\s*500/);
+    const h3Match = css.match(/h3\s*\{[^}]*font-weight:\s*500/);
+    expect(h1Match, "h1 should be 500").toBeTruthy();
+    expect(h2Match, "h2 should be 500").toBeTruthy();
+    expect(h3Match, "h3 should be 500").toBeTruthy();
+    expect(css, "heading italic emphasis should be 400").toMatch(
+      /h1 \.italic,[\s\S]{0,120}font-weight:\s*400/,
+    );
   });
 });
 

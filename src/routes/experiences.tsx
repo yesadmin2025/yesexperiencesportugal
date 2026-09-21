@@ -213,7 +213,7 @@ function TourCard({
   const meta = getViatorMeta(tour.id);
   const verifiedRating = meta?.rating;
   const verifiedReviewCount = meta?.reviewCount;
-  const highlights = tour.highlights.slice(0, 2);
+  const highlights = content.highlights.slice(0, 2);
   // Fourth decision fact, read straight from the tour source of truth.
   const idealFor = tour.idealFor?.[0];
   return (
