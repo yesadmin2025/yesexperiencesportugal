@@ -174,7 +174,7 @@ export function ProposalInPortugalPage() {
                   <div className="mt-5 pl-4 border-l-2 border-[color:var(--gold)] text-sm text-[color:var(--charcoal-soft)] leading-relaxed">
                     {b.local}
                   </div>
-                  <CtaButton to="/contact" variant="ghost" size="sm" className="mt-6">
+                  <CtaButton href="#proposal-request" variant="ghost" size="sm" className="mt-6">
                     {b.cta}
                   </CtaButton>
                 </div>
