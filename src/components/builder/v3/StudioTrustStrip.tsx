@@ -4,10 +4,10 @@ import { REVIEW_CERTIFICATE, REVIEW_COUNT_DISPLAY } from "@/config/trust-certifi
  * conversion HUD inside the cinematic Studio.
  *
  * Studio v4 / Fase 6: gives the traveller a permanent, low-noise reminder
- * that YES is rated across 4 real platforms with 700+ five-star reviews,
+ * that YES carries a verified 4.9 rating across 1,000 guest reviews,
  * without breaking the cinematic atmosphere.
  *
- *   ★★★★★ 700+ reviews · Google · Tripadvisor · GetYourGuide
+ *   ★★★★★ 4.9 · 1,000 reviews · Google · Tripadvisor · GetYourGuide
  *
  * - Ivory 55% on the existing charcoal backdrop, no extra surfaces.
  * - Single line, no icons / no logos — keeps weight under 18px.
