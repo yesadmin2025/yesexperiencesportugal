@@ -35,7 +35,6 @@ import { getViatorMeta } from "@/data/signatureToursViator";
 import { getTourContent, signatureDurationLabel } from "@/lib/tourContent";
 import { LOCAL_STORIES_ARTICLES } from "@/content/local-stories-articles";
 import { PortugalPlannerMap } from "@/components/home/PortugalPlannerMap";
-import { LiveReviews } from "@/components/reviews/LiveReviews";
 import { RouteThread } from "@/components/motion/RouteThread";
 import { CTA_LABELS } from "@/content/cta-vocabulary";
 
@@ -881,19 +880,6 @@ function HomePage() {
           and the bespoke narrative deepens desire for higher-value
           Travel Designer journeys. */}
         <RecentJourney />
-
-        {/* 9 — LIVE GUEST REVIEWS
-          Reassurance follows the service choices, just before discovery. */}
-        <LiveReviews
-          id="live-reviews"
-          ariaLabelledBy="live-reviews-title"
-          tourIds={undefined}
-          fallbackTourIds={LIVE_REVIEW_FALLBACK_TOURS}
-          titleLead="In the words of"
-          titleEm="recent guests"
-          standfirst="Every quote below comes from a guest who travelled with us — nothing is written by us."
-          className="bg-[color:var(--ivory)]"
-        />
 
         {/* 10 — EXPLORE PORTUGAL: interactive map
           Region pins link the real Signature days and the real Local
