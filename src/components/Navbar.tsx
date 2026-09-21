@@ -48,7 +48,7 @@ export function Navbar() {
 
   return (
     <header
-      className="fixed top-0 inset-x-0 z-50 border-b border-[color:var(--charcoal)]/[0.06] bg-[rgb(247,243,236)] opacity-0 animate-[headerFade_900ms_ease-out_forwards]"
+      className="fixed top-0 inset-x-0 z-50 border-b border-[color:var(--charcoal)]/[0.06] bg-[rgb(247,243,236)] opacity-0 animate-[headerFade_600ms_ease-out_forwards]"
     >
       <div className="container-x relative">
         <div className="flex h-[64px] items-center justify-between md:h-[84px] lg:h-[96px]">
@@ -118,7 +118,7 @@ export function Navbar() {
           className="flex flex-col overflow-hidden border-t border-[color:var(--charcoal)]/[0.06] lg:hidden"
           style={{
             height: "calc(100dvh - 64px)",
-            background: "rgba(247, 243, 236, 0.98)",
+            background: "rgba(247, 243, 236, 0.92)",
             backdropFilter: "blur(14px) saturate(1.05)",
             WebkitBackdropFilter: "blur(14px) saturate(1.05)",
           }}
@@ -133,14 +133,14 @@ export function Navbar() {
                   key={item.to}
                   to={item.to}
                   onClick={() => setOpen(false)}
-                   className="tap inline-flex min-h-[50px] items-center rounded-sm font-sans text-[15.5px] font-medium tracking-[0.03em] text-[color:var(--charcoal)] transition-colors duration-[var(--dur-quick)] hover:text-[color:var(--teal)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--teal)]"
+                   className="tap inline-flex min-h-[48px] items-center rounded-sm font-sans text-[15.5px] font-medium tracking-[0.03em] text-[color:var(--charcoal)] transition-colors duration-[var(--dur-quick)] hover:text-[color:var(--teal)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--teal)]"
                   activeProps={{ className: "text-[color:var(--teal)]" }}
                 >
                   {item.label}
                 </Link>
               ))}
 
-              <div className="my-3 border-t border-[color:var(--charcoal)]/[0.08]" />
+              <div className="my-4 border-t border-[color:var(--charcoal)]/[0.08]" />
               <p className="mb-1 text-[11px] uppercase tracking-[0.22em] font-semibold text-[color:var(--charcoal-soft)]">
                 More
               </p>
@@ -149,14 +149,14 @@ export function Navbar() {
                   key={item.to}
                   to={item.to}
                   onClick={() => setOpen(false)}
-                   className="tap inline-flex min-h-[46px] items-center rounded-sm font-sans text-[14.5px] font-medium text-[color:var(--charcoal)] transition-colors duration-[var(--dur-quick)] hover:text-[color:var(--teal)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--teal)]"
+                   className="tap inline-flex min-h-[48px] items-center rounded-sm font-sans text-[14.5px] font-medium text-[color:var(--charcoal)] transition-colors duration-[var(--dur-quick)] hover:text-[color:var(--teal)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--teal)]"
                   activeProps={{ className: "text-[color:var(--teal)]" }}
                 >
                   {item.label}
                 </Link>
               ))}
 
-              <div className="my-3 border-t border-[color:var(--charcoal)]/[0.08]" />
+              <div className="my-4 border-t border-[color:var(--charcoal)]/[0.08]" />
               <div className="flex flex-wrap items-center gap-3">
                 {mobileSocialLinks.map((item) => (
                   <AccessibleIconLink

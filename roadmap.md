@@ -80,3 +80,7 @@
 - [x] Resolve confirmed mobile, form, Studio, checkout, image, and accessibility issues without changing behavior.
 - [x] Verify technical SEO safety and repair objective defects only.
 - [x] Validate representative routes at 393px and 1280px plus focused automated checks; do not publish.
+## Final micro-polish pass
+- [x] Capture and inspect required surfaces at five viewports
+- [x] Apply only clearly superior visual refinements
+- [x] Compare after captures and run focused tests

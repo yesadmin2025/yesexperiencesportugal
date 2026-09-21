@@ -21,6 +21,7 @@ import { ReviewSourceLink } from "@/components/ui/ReviewSourceLink";
 export function GuestQuotes() {
   const quotesFn = useServerFn(getCuratedHomepageReviews);
   const [quotes, setQuotes] = useState<PublicReview[]>([]);
+  const [quotesSettled, setQuotesSettled] = useState(false);
 
   useEffect(() => {
     let cancelled = false;
@@ -28,8 +29,11 @@ export function GuestQuotes() {
       .then((q) => {
         if (cancelled) return;
         setQuotes(q);
+        setQuotesSettled(true);
       })
-      .catch(() => undefined);
+      .catch(() => {
+        if (!cancelled) setQuotesSettled(true);
+      });
     return () => {
       cancelled = true;
     };
@@ -58,7 +62,7 @@ export function GuestQuotes() {
           own source label ("via Tripadvisor" etc.), so the standalone
           badge strip was redundant. */}
 
-      <ReviewCarousel quotes={quotes} />
+      <ReviewCarousel quotes={quotes} settled={quotesSettled} />
     </div>
   );
 }
@@ -69,7 +73,13 @@ export function GuestQuotes() {
  * arrow controls on ≥md. Uses native scroll-snap for buttery inertia.
  * Reserves min-height BEFORE data arrives so there is no CLS.
  */
-function ReviewCarousel({ quotes }: { quotes: PublicReview[] }) {
+function ReviewCarousel({
+  quotes,
+  settled,
+}: {
+  quotes: PublicReview[];
+  settled: boolean;
+}) {
   const trackRef = useRef<HTMLUListElement | null>(null);
   const [activeIndex, setActiveIndex] = useState(0);
 
@@ -98,7 +108,13 @@ function ReviewCarousel({ quotes }: { quotes: PublicReview[] }) {
   };
 
   return (
-    <div className="relative mt-4 md:mt-5 -mx-5 sm:mx-0 min-h-[10.75rem] sm:min-h-[11.5rem]">
+    <div
+      className={`relative -mx-5 sm:mx-0 ${
+        quotes.length > 0 || !settled
+          ? "mt-4 min-h-[10.75rem] sm:min-h-[11.5rem] md:mt-5"
+          : "mt-0 min-h-0"
+      }`}
+    >
       {quotes.length === 0 ? null : (
         <>
           {/* Edge fade masks — premium editorial cue that content continues */}

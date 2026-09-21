@@ -360,7 +360,7 @@ export function Footer() {
             {/* Trust seals — review certificate + official complaints book,
                 side by side on one line at every width (scaled down on very
                 narrow phones instead of wrapping). */}
-            <div className="mt-6 flex w-full min-w-0 flex-nowrap items-center justify-center gap-x-3 text-center max-[359px]:scale-[0.86] sm:gap-x-6">
+            <div className="mt-6 flex w-full min-w-0 flex-nowrap items-center justify-center gap-x-3 text-center max-[359px]:scale-[0.86] sm:gap-x-6 md:justify-start">
               <TrustindexBadge />
               <LivroReclamacoesBadge />
             </div>
@@ -427,7 +427,7 @@ function FooterLinkGroup({ title, links }: { title: string; links: FooterLink[] 
       </button>
       <ul
         id={id}
-        className={`mt-3 grid-cols-1 gap-x-6 gap-y-2 font-[family-name:var(--font-sans)] text-[13px] sm:grid-cols-2 md:grid ${
+        className={`mt-4 grid-cols-1 gap-x-6 gap-y-2 font-[family-name:var(--font-sans)] text-[13px] sm:grid-cols-2 md:grid ${
           open ? "grid" : "hidden"
         }`}
         style={{ fontWeight: 400 }}
