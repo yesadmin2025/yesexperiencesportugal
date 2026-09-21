@@ -344,20 +344,19 @@ export const Route = createFileRoute("/")({
 });
 
 /* ════════════════════════════════════════════════════════════════
- * HOMEPAGE — 13 sections (calm, conversion-led sequence)
+ * HOMEPAGE — calm, conversion-led sequence
  * 1. Hero
- * 2. Trust strip
+ * 2. Guest proof
  * 3. Five ways into YES
  * 4. Experience Studio
  * 5. Signature Experiences
- * 6. Travel Designer
- * 7. Proposals & Celebrations
- * 8. Corporate & Private Groups
- * 9. Guest reviews
- * 10. Explore Portugal map
- * 11. Local Stories
- * 12. FAQ
- * 13. Final decision
+ * 6. Travel Designer proof
+ * 7. Explore Portugal map
+ * 8. Local Stories
+ * 9. FAQ
+ * 10. Final decision
+ * Moments and Corporate live in Five Ways and their dedicated routes rather
+ * than repeating full sales sections on the homepage.
  * ════════════════════════════════════════════════════════════ */
 function HomePage() {
   const { contentOverrides } = Route.useLoaderData();
@@ -396,41 +395,31 @@ function HomePage() {
   // The lock is a module-scoped `useRef` shared between effects via a
   // closure variable in component scope.
 
-  const TRACKED_IDS = [
-    "reviews",
-    "three-paths",
-    "builder",
-    "studio",
-    "signatures",
-    "multi-day",
-    "proposals",
-    "corporate-groups",
-    "faq",
-    "final-cta",
-  ] as const;
-
   const HASH_ALIASES: Record<string, string> = {
     // Builder / Studio — Studio is its own anchor inside the builder section
     build: "builder",
     builder: "builder",
     studio: "studio",
     "studio-v3": "studio",
-    // Signatures
+    // Service chapters
+    "three-paths": "five-paths",
+    "five-paths": "five-paths",
     signature: "signatures",
     signatures: "signatures",
     "multi-day": "multi-day",
     multiday: "multi-day",
     journey: "multi-day",
     journeys: "multi-day",
-    occasion: "proposals",
-    occasions: "proposals",
-    proposal: "proposals",
-    proposals: "proposals",
-    celebration: "proposals",
-    celebrations: "proposals",
-    groups: "corporate-groups",
-    group: "corporate-groups",
-    corporate: "corporate-groups",
+    // Moments and Corporate are represented inside Five Ways on the homepage.
+    occasion: "five-paths",
+    occasions: "five-paths",
+    proposal: "five-paths",
+    proposals: "five-paths",
+    celebration: "five-paths",
+    celebrations: "five-paths",
+    groups: "five-paths",
+    group: "five-paths",
+    corporate: "five-paths",
     // Reviews / trust
     review: "reviews",
     reviews: "reviews",
