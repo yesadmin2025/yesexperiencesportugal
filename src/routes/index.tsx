@@ -838,15 +838,28 @@ function HomePage() {
                           </p>
                         )}
 
-                        <div className="mt-auto flex flex-col gap-2 pt-1">
+                        <div className="mt-auto flex flex-col gap-2.5 pt-1">
                           <CtaButton
                             to="/tours/$tourId"
                             params={{ tourId: t.id }}
-                            variant="hairline"
+                            variant="primary"
+                            size="sm"
+                            className="w-full"
                             aria-label={`See dates and reserve — ${t.title}`}
                           >
                             See dates &amp; reserve
                           </CtaButton>
+                          <Link
+                            to="/tours/$tourId/tailor"
+                            params={{ tourId: t.id }}
+                            data-analytics="signature_tailor_click"
+                            data-analytics-placement="home-card"
+                            data-analytics-experience-id={t.id}
+                            data-analytics-experience-type="signature"
+                            className="editorial-action inline-flex min-h-[44px] items-center justify-between gap-3 font-sans text-[11px] font-semibold uppercase tracking-[0.18em] text-[color:var(--charcoal)] underline decoration-[color:var(--gold)]/60 underline-offset-4 transition-colors hover:text-[color:var(--teal)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)]"
+                          >
+                            Tailor this day <CtaMotionArrow />
+                          </Link>
                         </div>
                       </div>
                     </article>
