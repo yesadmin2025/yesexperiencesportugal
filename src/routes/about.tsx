@@ -72,7 +72,7 @@ function Page() {
   return (
     <SiteLayout>
       {/* Hero */}
-      <section className="reveal about-story pt-32 pb-14 bg-[color:var(--sand)] text-center">
+      <section className="page-hero reveal about-story text-center">
         <div className="container-x">
           <Scene>
               <div className="scene-atmosphere">
@@ -104,7 +104,7 @@ function Page() {
           <Eyebrow>Created from real travel</Eyebrow>
           <SplitLines
             as="h2"
-            className="about-ink-title mt-3 font-display text-[1.8125rem] md:text-[2.25rem] font-medium leading-[1.18] md:leading-[1.1] text-balance text-[color:var(--charcoal)]"
+            className="about-ink-title mt-3 font-serif text-[1.75rem] md:text-[2.25rem] font-medium leading-[1.18] md:leading-[1.1] text-balance text-[color:var(--charcoal)]"
             lines={[
               <>Built from the road,</>,
               <><span className="italic font-normal text-[color:var(--teal)]">not a template</span>.</>,
