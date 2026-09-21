@@ -84,13 +84,13 @@ export const Route = createFileRoute("/contact")({
         {
           name: "description",
           content:
-            "Reach the YES team directly — quiet, human replies from local experience designers in Lisbon. WhatsApp, email or a short call.",
+            "Reach the YES team directly — quiet, human replies from local travel designers in Portugal. WhatsApp, email or a short call.",
         },
         { property: "og:title", content: "Contact — YES Experiences Portugal" },
         {
           property: "og:description",
           content:
-            "Reach the YES team directly — quiet, human replies from local experience designers in Lisbon. WhatsApp, email or a short call.",
+            "Reach the YES team directly — quiet, human replies from local travel designers in Portugal. WhatsApp, email or a short call.",
         },
         { property: "og:url", content: "https://yesexperiencesportugal.com/contact" },
         { property: "og:type", content: "website" },
@@ -124,7 +124,7 @@ export const Route = createFileRoute("/contact")({
           url: "https://yesexperiencesportugal.com/contact",
           name: "Contact — YES Experiences Portugal",
           description:
-            "Reach the YES team directly — quiet, human replies from local experience designers in Lisbon. WhatsApp, email or a short call.",
+            "Reach the YES team directly — quiet, human replies from local travel designers in Portugal. WhatsApp, email or a short call.",
           inLanguage: "en",
           isPartOf: { "@id": "https://yesexperiencesportugal.com/#website" },
           about: { "@id": "https://yesexperiencesportugal.com/#organization" },
