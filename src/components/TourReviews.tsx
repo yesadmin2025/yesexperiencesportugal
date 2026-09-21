@@ -45,7 +45,31 @@ function Stars({ rating }: { rating: number }) {
   );
 }
 
-export function TourReviews({ tourId }: { tourId: string }) {
+export type InitialFirstParty = {
+  count: number;
+  average: number | null;
+  reviews: {
+    id: string;
+    rating: number;
+    title: string | null;
+    body: string;
+    reviewer_name: string | null;
+    reviewer_country: string | null;
+    published_at: string;
+  }[];
+} | null;
+
+export function TourReviews({
+  tourId,
+  initialFirstParty = null,
+}: {
+  tourId: string;
+  /**
+   * Server-rendered first-party rows — the exact rows used in the page's
+   * Product review structured data, so schema and visible content match.
+   */
+  initialFirstParty?: InitialFirstParty;
+}) {
   const statsFn = useServerFn(getTourReviewStats);
   const reviewsFn = useServerFn(getTourReviews);
   const [stats, setStats] = useState<TourStats | null>(null);
