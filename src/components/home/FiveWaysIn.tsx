@@ -172,7 +172,7 @@ export function FiveWaysIn() {
 
         <Scene
           data-testid="home-smart-start"
-          className="five-ways-story mx-auto mt-10 max-w-6xl md:mt-12"
+          className="five-ways-story mx-auto mt-8 max-w-6xl md:mt-10"
         >
           {PATHS.map((path, index) => (
             <PathCard
@@ -225,16 +225,16 @@ function PathCard({ path, index }: { path: Path; index: number }) {
           <span className="five-ways-icon" aria-hidden="true"><Icon size={19} strokeWidth={1.7} /></span>
           <span className="five-ways-number">{String(index + 1).padStart(2, "0")}</span>
         </div>
-        <p className="five-ways-eyebrow mt-6">{path.eyebrow}</p>
-        <h3 className="five-ways-title editorial-title-safe mt-4 font-serif text-[1.5rem] leading-[1.22] font-normal text-[color:var(--charcoal)] md:text-[1.625rem]">
+        <p className="five-ways-eyebrow mt-5">{path.eyebrow}</p>
+        <h3 className="five-ways-title editorial-title-safe mt-3 font-serif text-[1.375rem] leading-[1.22] font-normal text-[color:var(--charcoal)] md:text-[1.5rem]">
           {path.title === `${path.titleLead} ${path.titleEmphasis}` ? (
             <>{path.titleLead} <em className="font-normal text-[color:var(--teal)]">{path.titleEmphasis}</em></>
           ) : path.title}
         </h3>
-        <p className="five-ways-body mt-4 text-[15px] leading-[1.68] text-[color:var(--charcoal-soft)] md:text-[16px]">
+        <p className="five-ways-body mt-3 text-[14px] leading-[1.65] text-[color:var(--charcoal-soft)] md:text-[15px]">
           {path.body}
         </p>
-        <span className="five-ways-action mt-auto flex min-h-[44px] w-full items-center justify-between gap-3 pt-7">
+        <span className="five-ways-action mt-auto flex min-h-[44px] w-full items-center justify-between gap-3 pt-5">
           <span className="text-[11px] uppercase tracking-[0.22em] font-semibold text-[color:var(--teal)]">
             {path.cta}
           </span>
