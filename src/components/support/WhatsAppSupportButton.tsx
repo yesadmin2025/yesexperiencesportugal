@@ -67,13 +67,13 @@ export function WhatsAppSupportButton() {
         bottom-[calc(max(1rem,env(safe-area-inset-bottom)+0.75rem)+var(--fab-lift,0px))]
         right-4 md:right-6
         inline-flex items-center justify-center
-        h-12 w-12 md:h-14 md:w-14
+        h-[48px] w-[48px] md:h-[56px] md:w-[56px]
         rounded-full
         bg-[color:var(--teal,#295B61)] text-[color:var(--ivory,#FAF8F3)]
         shadow-[0_10px_28px_-12px_rgba(46,46,46,0.55)]
         ring-1 ring-[color:var(--gold,#C9A96A)]/35
         hover:ring-[color:var(--gold,#C9A96A)]/70 hover:scale-[1.04]
-        focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold,#C9A96A)]
+         focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--ivory,#FAF8F3)] focus-visible:ring-offset-2 focus-visible:ring-offset-[color:var(--teal,#295B61)]
         transition-all duration-300
       "
         data-testid="whatsapp-support-button"

@@ -202,13 +202,13 @@ export function Footer() {
           <div className="min-w-0 max-w-md">
             <Link
               to="/"
-              className="inline-block rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)] focus-visible:ring-offset-2 focus-visible:ring-offset-[color:var(--charcoal)]"
+               className="inline-block rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)] focus-visible:ring-offset-2 focus-visible:ring-offset-[color:var(--charcoal)]"
               aria-label="YES experiences PORTUGAL — Home"
             >
               <Logo
                 theme="gold-on-charcoal"
                 loading="lazy"
-                className="block h-[46px] md:h-[52px] w-auto select-none"
+                 className="block h-[46px] w-[115px] object-contain md:h-[52px] md:w-[130px] select-none"
               />
             </Link>
             <p
@@ -263,7 +263,7 @@ export function Footer() {
             <FooterCol title="Legal" links={LEGAL_LINKS} />
           </div>
 
-          <div className="mt-9 grid gap-6 md:mt-10 md:grid-cols-2 md:gap-10">
+          <div className="mt-6 grid gap-6 md:grid-cols-2 md:gap-10">
             <FooterLinkGroup title="Signature Experiences" links={SIGNATURE_TOURS} />
             <FooterLinkGroup title="Popular searches" links={POPULAR_SEARCHES} />
           </div>

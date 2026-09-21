@@ -78,12 +78,12 @@ const sizeClasses: Record<Size, string> = {
 };
 
 const baseClasses =
-  "premium-cta t-button group relative isolate inline-flex items-center rounded-[2px] overflow-hidden transition-[background-color,color,border-color,transform,box-shadow] duration-[var(--dur-base)] ease-[var(--ease-scene)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)] focus-visible:ring-offset-2 focus-visible:ring-offset-[color:var(--ivory)] active:scale-[0.985] active:transition-transform active:duration-[var(--dur-tap)] disabled:cursor-not-allowed disabled:pointer-events-none disabled:opacity-55 disabled:shadow-none aria-busy:cursor-progress data-[cta-error]:animate-[ctaNudge_360ms_ease-in-out]";
+  "premium-cta t-button group relative isolate inline-flex items-center rounded-[2px] overflow-hidden transition-[background-color,color,border-color,transform,box-shadow] duration-[var(--dur-base)] ease-[var(--ease-scene)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--teal)] focus-visible:ring-offset-2 focus-visible:ring-offset-[color:var(--ivory)] active:scale-[0.985] active:transition-transform active:duration-[var(--dur-tap)] disabled:cursor-not-allowed disabled:pointer-events-none disabled:opacity-55 disabled:shadow-none aria-busy:cursor-progress data-[cta-error]:animate-[ctaNudge_360ms_ease-in-out]";
 const baseLayoutWithTrailing = "justify-between gap-6";
 const baseLayoutNoTrailing = "justify-center gap-2.5";
 
 const hairlineBaseClasses =
-  "group relative inline-flex items-center gap-3 rounded-[2px] font-sans uppercase font-semibold text-[11.5px] leading-[1.25] tracking-[0.17em] py-2.5 min-h-[44px] text-[color:var(--charcoal)] transition-opacity duration-[var(--dur-quick)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)] focus-visible:ring-offset-4 focus-visible:ring-offset-[color:var(--ivory)] active:scale-[0.985] active:transition-transform active:duration-[var(--dur-tap)] disabled:pointer-events-none disabled:opacity-40 before:content-[''] before:absolute before:left-0 before:right-0 before:-bottom-0.5 before:h-px before:bg-[color:var(--gold)] before:opacity-60 before:transition-opacity before:duration-[var(--dur-quick)] hover:before:opacity-100 focus-visible:before:opacity-100 active:before:opacity-100";
+  "group relative inline-flex items-center gap-3 rounded-[2px] font-sans uppercase font-semibold text-[11.5px] leading-[1.25] tracking-[0.17em] py-2.5 min-h-[44px] text-[color:var(--charcoal)] transition-opacity duration-[var(--dur-quick)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--teal)] focus-visible:ring-offset-4 focus-visible:ring-offset-[color:var(--ivory)] active:scale-[0.985] active:transition-transform active:duration-[var(--dur-tap)] disabled:pointer-events-none disabled:opacity-40 before:content-[''] before:absolute before:left-0 before:right-0 before:-bottom-0.5 before:h-px before:bg-[color:var(--gold)] before:opacity-60 before:transition-opacity before:duration-[var(--dur-quick)] hover:before:opacity-100 focus-visible:before:opacity-100 active:before:opacity-100";
 
 const variantClasses: Record<Variant, string> = {
   primary:
@@ -91,7 +91,7 @@ const variantClasses: Record<Variant, string> = {
   ghost:
     "premium-cta--ghost bg-transparent text-[color:var(--charcoal)]",
   ghostDark:
-    "premium-cta--dark bg-transparent text-[color:var(--gold-soft)]",
+    "premium-cta--dark bg-transparent text-[color:var(--gold-soft)] focus-visible:ring-[color:var(--gold-soft)] focus-visible:ring-offset-[color:var(--charcoal)]",
   hairline: "opacity-100",
 };
 

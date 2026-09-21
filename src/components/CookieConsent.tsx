@@ -73,7 +73,7 @@ export function CookieConsent() {
     const sync = () =>
       setConversionOverlayOpen(
         document.querySelectorAll(
-          '[role="dialog"][data-state="open"], [role="dialog"][aria-modal="true"], [data-radix-dialog-content], [data-sonner-toast][data-visible="true"]',
+          '[role="dialog"][data-state="open"]:not([data-cookie-consent-dialog]), [role="dialog"][aria-modal="true"]:not([data-cookie-consent-dialog]), [data-radix-dialog-content], [data-sonner-toast][data-visible="true"]',
         ).length > 0,
       );
     sync();
@@ -86,6 +86,18 @@ export function CookieConsent() {
     });
     return () => observer.disconnect();
   }, [hydrated]);
+
+  React.useEffect(() => {
+    if (!hydrated) return;
+    if (open && !conversionOverlayOpen) {
+      document.documentElement.dataset.cookieConsentOpen = "true";
+    } else {
+      delete document.documentElement.dataset.cookieConsentOpen;
+    }
+    return () => {
+      delete document.documentElement.dataset.cookieConsentOpen;
+    };
+  }, [conversionOverlayOpen, hydrated, open]);
 
   React.useEffect(() => {
     if (!hydrated) return;
@@ -137,6 +149,7 @@ export function CookieConsent() {
       role="dialog"
       aria-modal="false"
       aria-labelledby="cookie-consent-title"
+      data-cookie-consent-dialog
       className="fixed inset-x-0 bottom-0 z-[70] pointer-events-none px-0 pb-0 sm:px-5 sm:pb-4"
     >
       <div
@@ -153,11 +166,11 @@ export function CookieConsent() {
           <div className={customize ? undefined : "sm:flex-1"}>
             <p
               id="cookie-consent-title"
-              className="t-h3 text-[12px] leading-[1.15] text-[color:var(--charcoal)] sm:text-[15px]"
+              className="font-sans text-[12px] font-semibold leading-[1.25] text-[color:var(--charcoal)] sm:text-[15px]"
             >
               We use cookies
             </p>
-            <p className="mt-0.5 max-w-[62ch] font-sans text-[11px] leading-[1.35] text-[color:var(--charcoal-soft)] sm:text-[12px] sm:leading-[1.42]">
+            <p className="mt-0.5 max-w-[62ch] font-sans text-[12px] leading-[1.4] text-[color:var(--charcoal-soft)] sm:leading-[1.42]">
               Essential cookies keep the site working. Analytics help us improve.{" "}
               <a
                 href="/cookies"
@@ -206,7 +219,7 @@ export function CookieConsent() {
                   type="button"
                   variant="ghost"
                   onClick={() => setCustomize(true)}
-                  className="tap min-h-11 shrink-0 rounded-sm px-2 text-[11px] uppercase tracking-[0.06em] text-[color:var(--charcoal-soft)] hover:bg-transparent hover:text-[color:var(--teal)] sm:px-3 sm:text-[11px] sm:tracking-[0.16em]"
+                  className="tap min-h-11 shrink-0 rounded-sm px-2 text-[11.5px] uppercase tracking-[0.06em] text-[color:var(--charcoal-soft)] hover:bg-transparent hover:text-[color:var(--teal)] sm:px-3 sm:tracking-[0.16em]"
                 >
                   Customise
                 </Button>
@@ -214,14 +227,14 @@ export function CookieConsent() {
                   type="button"
                   variant="outline"
                   onClick={() => commit({ analytics: "denied", ads: "denied" }, "essential_only")}
-                  className="tap min-h-11 flex-1 rounded-sm border-[color:var(--charcoal)]/[0.18] bg-transparent px-2 text-[11px] uppercase tracking-[0.04em] text-[color:var(--charcoal)] shadow-none hover:border-[color:var(--teal)] hover:bg-transparent hover:text-[color:var(--teal)] sm:flex-none sm:px-3 sm:text-[11px] sm:tracking-[0.14em]"
+                  className="tap min-h-11 flex-1 rounded-sm border-[color:var(--charcoal)]/[0.18] bg-transparent px-2 text-[11.5px] uppercase tracking-[0.04em] text-[color:var(--charcoal)] shadow-none hover:border-[color:var(--teal)] hover:bg-transparent hover:text-[color:var(--teal)] sm:flex-none sm:px-3 sm:tracking-[0.14em]"
                 >
                   Essential only
                 </Button>
                 <Button
                   type="button"
                   onClick={() => commit({ analytics: "granted", ads: "granted" }, "accept_all")}
-                  className="tap min-h-11 flex-1 rounded-sm bg-[color:var(--teal)] px-2 text-[11px] uppercase tracking-[0.05em] text-[color:var(--ivory)] shadow-none hover:bg-[color:var(--teal-2)] sm:flex-none sm:px-4 sm:text-[11px] sm:tracking-[0.16em]"
+                  className="tap min-h-11 flex-1 rounded-sm bg-[color:var(--teal)] px-2 text-[11.5px] uppercase tracking-[0.05em] text-[color:var(--ivory)] shadow-none hover:bg-[color:var(--teal-2)] sm:flex-none sm:px-4 sm:tracking-[0.16em]"
                 >
                   Accept all
                 </Button>

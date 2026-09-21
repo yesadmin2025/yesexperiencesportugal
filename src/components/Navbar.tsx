@@ -57,7 +57,7 @@ export function Navbar() {
             aria-label="YES experiences PORTUGAL — Home"
             className="relative inline-flex h-full flex-shrink-0 items-center rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--teal)] focus-visible:ring-offset-2"
           >
-            <span className="relative inline-flex h-[45px] w-[72px] items-start translate-y-[4px] overflow-hidden md:h-[50px] md:w-[80px] md:translate-y-[6px] lg:h-[56px] lg:w-[90px] lg:translate-y-[7px]">
+            <span className="relative inline-flex h-[45px] w-[72px] items-start translate-y-[4px] overflow-visible md:h-[50px] md:w-[80px] md:translate-y-[6px] lg:h-[56px] lg:w-[90px] lg:translate-y-[7px]">
               <Logo
                 theme="teal-on-ivory"
                 fetchPriority="high"
