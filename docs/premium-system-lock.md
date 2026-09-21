@@ -51,3 +51,29 @@ The homepage presents three primary purchase paths: Studio, Signature Experience
 - Customer-facing failures use calm, human language and retain a retry action. Raw provider errors are never shown.
 - Date, guests, price, inclusions and trust remain visible and legible at the payment seam.
 - No ornamental delay may block payment interaction.
+
+## Visual scale and spacing
+
+- Public editorial headings use one shared Fraunces scale:
+  - Page H1 / anchor: 40px mobile / 60px desktop.
+  - Standard section H2: 29px mobile / 36px desktop.
+  - Compact reassurance / social-proof heading: 24px mobile / 30px desktop.
+  - Card H3: 24px mobile / 26px desktop.
+- Public body/UI copy stays in Inter. Eyebrows are 11px uppercase; public CTA labels are 11.5–12px uppercase.
+- Shared section rhythm is 64px mobile / 96px desktop; compact reassurance bands use 48px mobile / 64px desktop.
+- Do not invent per-page headline scales or oversized social-proof headings. Local spacing should resolve to the shared 4/8/12/16/24/32/48/72/96 scale.
+
+## Homepage hierarchy
+
+- The cinematic Hero is intentionally sparse: two-line brand statement + two actions only.
+- Do not add a visible explanatory paragraph or a third Travel Designer action back into the Hero. The service explanation belongs immediately below the fold.
+- Social proof is reassurance, not a primary editorial chapter; keep it visually smaller than Studio, Signature and Travel Designer chapter headings.
+- Five Ways orders the three primary commercial paths first: Signature, Studio, Travel Designer. Moments and Corporate follow as secondary paths.
+
+## Experiences conversion
+
+- /experiences is a decision page, not a magazine spread.
+- Experience cards align to a consistent grid and image ratio; no vertical stagger between cards.
+- Every card exposes one dominant "See dates & reserve" action and one quiet "Tailor this day" action.
+- Price, duration, rating and a short promise must be legible before the primary action.
+- Compare remains tertiary and must not visually outrank reserve or tailor.
