@@ -54,6 +54,18 @@ const PATHS: ReadonlyArray<Path> = [
     analyticsEvent: "home_path_studio_click",
   },
   {
+    id: "designer",
+    Icon: Compass,
+    eyebrow: "Travel designer",
+    title: "Full Portugal journeys, designed for you.",
+    titleLead: "Full Portugal journeys,",
+    titleEmphasis: "designed for you.",
+    body: "From a few days to a full journey across Portugal, shaped around your time, rhythm and interests.",
+    cta: "Begin with a designer",
+    href: "/multi-day",
+    analyticsEvent: "home_path_designer_click",
+  },
+  {
     id: "proposals",
     Icon: Sparkles,
     eyebrow: "Moments",
@@ -76,18 +88,6 @@ const PATHS: ReadonlyArray<Path> = [
     cta: "Plan a group day",
     href: "/corporate",
     analyticsEvent: "home_secondary_corporate_click",
-  },
-  {
-    id: "designer",
-    Icon: Compass,
-    eyebrow: "Travel designer",
-    title: "Full Portugal journeys, designed for you.",
-    titleLead: "Full Portugal journeys,",
-    titleEmphasis: "designed for you.",
-    body: "From a few days to a full journey across Portugal, shaped around your time, rhythm and interests.",
-    cta: "Begin with a designer",
-    href: "/multi-day",
-    analyticsEvent: "home_path_designer_click",
   },
 ] as const;
 
