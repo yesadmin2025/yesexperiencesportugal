@@ -159,4 +159,9 @@ export const BRAND_HEX_EXEMPT_PATH_PREFIXES = [
   // Same reason: server-side email senders inline the brand hex into the
   // HTML they hand to the mail provider.
   "src/lib/email/",
+  // Guest-update emails sent from the booking admin: inlined email HTML,
+  // same mail-client limitation as the templates above.
+  "src/lib/bookingsAdmin.functions.ts",
+  // Guide brief email/print HTML — inlined brand hex for mail clients.
+  "src/lib/guide-brief.ts",
 ] as const;
