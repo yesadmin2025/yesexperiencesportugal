@@ -30,7 +30,7 @@ const SOURCE_LABEL: Record<string, string> = {
 function Stars({ rating }: { rating: number }) {
   return (
     <span
-      className="inline-flex items-center gap-0.5 text-[color:var(--gold)]"
+      className="inline-flex items-center gap-0.5 text-[color:var(--teal)]"
       aria-label={`${rating} out of 5`}
     >
       {Array.from({ length: 5 }).map((_, i) => (
@@ -129,7 +129,7 @@ export function TourReviews({ tourId }: { tourId: string }) {
           className="mt-2 text-[1.8rem] md:text-[2.2rem] font-medium text-[color:var(--charcoal)] leading-tight"
         >
           <span className="tabular-nums">{displayRating.toFixed(1)}</span>
-          <span className="text-[color:var(--gold)] mx-2">★</span>
+          <span className="text-[color:var(--teal)] mx-2">★</span>
           <span className="font-normal text-[color:var(--charcoal)]/75">
             across <span className="tabular-nums">{displayTotal}</span> reviews
           </span>

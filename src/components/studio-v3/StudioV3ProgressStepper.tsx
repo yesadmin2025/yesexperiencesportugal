@@ -183,9 +183,9 @@ export function StudioV3ProgressStepper({
               className="block h-[3px] w-full rounded-full transition-colors duration-300"
               style={{
                 background: isActive
-                  ? "var(--gold)"
+                  ? "var(--teal)"
                   : isDone
-                    ? "color-mix(in oklab, var(--gold) 55%, transparent)"
+                    ? "color-mix(in oklab, var(--teal) 62%, transparent)"
                     : "color-mix(in oklab, var(--charcoal) 12%, transparent)",
               }}
             />

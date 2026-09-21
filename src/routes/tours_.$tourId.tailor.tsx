@@ -1139,9 +1139,9 @@ function TailorPage() {
       {/* ── 2 · EDITOR (Moments · Rhythm · Enhance) + YOUR VERSION ── */}
       <section className="py-8 md:py-12 reveal">
         <div className="container-x max-w-6xl">
-          <div className="grid items-start gap-8 lg:grid-cols-[1fr_22rem] lg:gap-12">
+          <div className="grid min-w-0 items-start gap-8 lg:grid-cols-[minmax(0,1fr)_22rem] lg:gap-12">
             {/* ─── Editor column ─────────────────────────── */}
-            <div className="space-y-10">
+            <div className="min-w-0 space-y-10">
               {/* Booking context — compact, not a form wall */}
               <div
                 data-testid="tailor-booking-context"
@@ -1189,7 +1189,7 @@ function TailorPage() {
                     required
                     aria-invalid={Boolean(dateError)}
                     aria-describedby={dateError ? "tailor-date-error" : undefined}
-                    className="signature-date-input block w-full min-w-0 max-w-full min-h-[48px] appearance-none border border-[color:var(--border)] bg-[color:var(--ivory)] px-3 py-2.5 text-[16px] sm:text-sm focus:border-[color:var(--gold)] focus:outline-none"
+                    className="signature-date-input block w-full min-w-0 max-w-full min-h-[48px] appearance-none border border-[color:var(--border)] bg-[color:var(--ivory)] px-3 py-2.5 text-[16px] sm:text-sm focus:border-[color:var(--teal)] focus:outline-none focus:ring-2 focus:ring-[color:var(--teal)]/25"
                   />
                   {/* Same written-out day echo as the Signature card, so both
                       reserve surfaces confirm the chosen date identically. */}
