@@ -44,6 +44,7 @@ import { getTourGallery, getHeroAlt } from "@/lib/tour-gallery";
 import { getTourContent, signatureDurationLabel } from "@/lib/tourContent";
 import { projectPublicSotItinerary } from "@/lib/publicItineraryProjection";
 import { TourReviews } from "@/components/TourReviews";
+import { GuestReviewForm } from "@/components/reviews/GuestReviewForm";
 import { RecognisedByGuides } from "@/components/RecognisedByGuides";
 import { CredentialStrip } from "@/components/ui/CredentialStrip";
 import { TourImage } from "@/components/tours/TourImage";
@@ -359,6 +360,7 @@ function TourDetailPage() {
       {/* ── H · REVIEWS — proof right after the decision ───────── */}
       <section className="container-x py-6">
         <TourReviews tourId={tour.id} initialFirstParty={firstPartyReviews} />
+        <GuestReviewForm lockedTour={{ tour_id: tour.id, title: tour.title }} />
       </section>
 
       <FinalCta tour={tour} />
