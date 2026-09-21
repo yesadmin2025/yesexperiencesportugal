@@ -99,7 +99,7 @@ function ExperiencesPage() {
 
   return (
     <SiteLayout>
-      <section className="pt-28 pb-12 md:pt-32 md:pb-16 bg-[color:var(--sand)] text-center">
+      <section className="pt-24 pb-10 md:pt-28 md:pb-12 bg-[color:var(--sand)] text-center">
         <div className="container-x">
           <SiteBreadcrumbs
             containerClassName=""
@@ -113,9 +113,9 @@ function ExperiencesPage() {
           <SectionTitle as="h1" size="anchor" spacing="loose">
             Private days, <SectionTitle.Em>ready when you are.</SectionTitle.Em>
           </SectionTitle>
-          <p className="mt-4 max-w-[54ch] mx-auto text-[15px] md:text-[16px] leading-[1.65] text-[color:var(--charcoal-soft)]">
-            Every Signature can be reserved as designed, or tailored around your pace, interests and
-            group.
+          <p className="mt-3 max-w-[52ch] mx-auto text-[15px] md:text-[16px] leading-[1.65] text-[color:var(--charcoal-soft)]">
+            Choose a private day, see the price and reserve it as designed. Prefer a different pace?
+            Tailor the same experience around your group.
           </p>
           <div className="mt-5 flex justify-center">
             <PriceCurrencyChip />
@@ -128,7 +128,7 @@ function ExperiencesPage() {
         aria-label="Signature collection"
       >
         <div className="container-x">
-          <Scene className="experiences-editorial-grid experiences-story grid gap-8 md:grid-cols-2 md:gap-10 lg:gap-12">
+          <Scene className="experiences-editorial-grid experiences-story grid gap-6 md:grid-cols-2 md:gap-7 lg:gap-8">
             {tours.map((tour, index) => (
               <TourCard key={tour.id} tour={tour} resolveImg={resolveImg} featured={index < 2} compareActive={selectedTours.includes(tour.id)} compareDisabled={selectedTours.length >= 2 && !selectedTours.includes(tour.id)} onCompare={() => toggleComparison(tour.id)} />
             ))}
@@ -197,7 +197,6 @@ function TourCard({
       </Link>
 
       <div className="experience-card-content flex flex-1 flex-col px-5 pb-5 pt-5 md:px-6 md:pb-6 md:pt-6">
-        <div className="flex items-start justify-between gap-4">
         <div className="flex flex-wrap items-center gap-x-2 gap-y-1 text-[11px] font-medium uppercase tracking-[0.16em] text-[color:var(--teal)]">
           <span>{tour.region}</span>
           <span aria-hidden="true" className="text-[color:var(--gold)]">
@@ -205,11 +204,9 @@ function TourCard({
           </span>
           <span>{tour.theme}</span>
         </div>
-        <CompareControl active={compareActive} disabled={compareDisabled} onClick={onCompare} title={tour.title} />
-        </div>
 
         <h3
-          className="experience-card-title mt-3 font-display text-[1.5rem] font-medium leading-[1.16] tracking-normal text-[color:var(--charcoal)] md:text-[1.625rem]"
+          className="experience-card-title mt-2.5 font-display text-[1.375rem] font-medium leading-[1.16] tracking-normal text-[color:var(--charcoal)] md:text-[1.5rem]"
         >
           <Link
             to="/tours/$tourId"
@@ -220,36 +217,33 @@ function TourCard({
           </Link>
         </h3>
 
-        <p className="experience-card-promise mt-3 text-[14px] leading-[1.6] text-[color:var(--charcoal-soft)] md:text-[15px] md:leading-[1.65]">
+        <p className="experience-card-promise mt-3 text-[14px] leading-[1.58] text-[color:var(--charcoal-soft)] md:text-[14.5px] md:leading-[1.62]">
           {teaser}
         </p>
 
-        {verifiedRating && verifiedReviewCount && verifiedReviewCount > 0 && (
-          <div
-            className="mt-3 flex items-center gap-1.5 text-[12.5px] text-[color:var(--charcoal)]"
-            aria-label={`${verifiedRating.toFixed(1)} out of 5, ${verifiedReviewCount} reviews`}
-          >
-            <Star
-              size={13}
-              fill="currentColor"
-              strokeWidth={0}
-              className="text-[color:var(--gold)]"
-              aria-hidden="true"
-            />
-            <span className="font-semibold">{verifiedRating.toFixed(1)}</span>
-            <span className="text-[color:var(--charcoal-soft)]">
-              · {verifiedReviewCount} reviews
-            </span>
-          </div>
-        )}
-
-        <div className="mt-4 flex flex-wrap items-baseline gap-x-3 gap-y-1">
-          <span className="font-sans text-[1.2rem] font-medium text-[color:var(--charcoal)]">
+        <div className="mt-3 flex flex-wrap items-center gap-x-3 gap-y-1.5">
+          <span className="font-sans text-[1.125rem] font-semibold text-[color:var(--charcoal)]">
             From <PriceEur amountEur={tour.priceFrom} role="from" /> per person
           </span>
-          <span className="text-[12px] uppercase tracking-[0.12em] text-[color:var(--charcoal-soft)]">
+          <span className="text-[11.5px] uppercase tracking-[0.12em] text-[color:var(--charcoal-soft)]">
             {signatureDurationLabel(tour.id, tour.durationHours)}
           </span>
+          {verifiedRating && verifiedReviewCount && verifiedReviewCount > 0 && (
+            <span
+              className="inline-flex items-center gap-1 text-[12px] text-[color:var(--charcoal)]"
+              aria-label={`${verifiedRating.toFixed(1)} out of 5, ${verifiedReviewCount} reviews`}
+            >
+              <Star
+                size={12}
+                fill="currentColor"
+                strokeWidth={0}
+                className="text-[color:var(--gold)]"
+                aria-hidden="true"
+              />
+              <strong>{verifiedRating.toFixed(1)}</strong>
+              <span className="text-[color:var(--charcoal-soft)]">({verifiedReviewCount})</span>
+            </span>
+          )}
         </div>
 
         {idealFor && (
@@ -259,7 +253,7 @@ function TourCard({
         )}
 
         {highlights.length > 0 && (
-          <ul className="experience-card-highlights mt-4 space-y-2 text-[13.5px] leading-[1.5] text-[color:var(--charcoal)]">
+          <ul className="experience-card-highlights mt-3 space-y-1.5 text-[13px] leading-[1.5] text-[color:var(--charcoal)]">
             {highlights.map((highlight) => (
               <li key={highlight} className="flex gap-2">
                 <span
@@ -272,7 +266,7 @@ function TourCard({
           </ul>
         )}
 
-        <div className="experience-card-action mt-auto pt-5 md:pt-6">
+        <div className="experience-card-action mt-auto pt-4 md:pt-5">
           <CtaButton
             to="/tours/$tourId"
             params={{ tourId: tour.id }}
@@ -292,6 +286,14 @@ function TourCard({
           >
             {CTA_LABELS.tailor}
           </CtaButton>
+          <div className="mt-1 flex justify-end">
+            <CompareControl
+              active={compareActive}
+              disabled={compareDisabled}
+              onClick={onCompare}
+              title={tour.title}
+            />
+          </div>
         </div>
       </div>
     </article>
