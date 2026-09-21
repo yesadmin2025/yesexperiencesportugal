@@ -1,10 +1,8 @@
 /**
  * GuestQuotes — homepage social proof block.
  *
- * 1. Aggregate trust line shows "700+ five-star reviews" as the public
- *    social proof headline. The real `global_review_aggregate` view still
- *    drives JSON-LD and internal reporting, but the visible count is locked
- *    to the brand-wide 700+ claim.
+ * 1. Trust headline reads from the public review certificate so visible
+ *    rating/count never drift from the verified badge.
  * 2. Up to 6 curated 5★ quotes from `tour_reviews` (admin-marked
  *    is_featured). When none exist, the quote row is hidden.
  * 3. Trust line: "Based on verified guest reviews across major booking
