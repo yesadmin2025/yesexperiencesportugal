@@ -286,7 +286,7 @@ function BookPage() {
 
               <div className="mt-7 flex flex-col gap-3 sm:flex-row sm:justify-center">
                 {chosenTour ? (
-                  <CtaButton to="/tours/$tourId" params={{ tourId: chosenTour.id }}>
+                  <CtaButton to="/book" search={{ tour: chosenTour.id }}>
                     Book this day instantly
                   </CtaButton>
                 ) : (
