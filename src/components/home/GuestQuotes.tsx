@@ -50,7 +50,7 @@ export function GuestQuotes() {
       <p className="font-sans text-[11px] font-semibold uppercase tracking-[0.18em] text-[color:var(--charcoal-soft)]">
         {REVIEW_CERTIFICATE.ratingValue}/5 · {REVIEW_COUNT_DISPLAY} guest reviews
       </p>
-      <h2 className="editorial-title-safe mt-1.5 font-serif text-[1.375rem] font-medium leading-[1.2] text-[color:var(--charcoal)] md:text-[1.625rem]">
+      <h2 className="editorial-title-safe mt-1.5 font-serif text-[1.25rem] font-medium leading-[1.2] text-[color:var(--charcoal)] md:text-[1.5rem]">
         Real guests. <em className="font-normal text-[color:var(--teal)]">Real Portugal.</em>
       </h2>
 
@@ -98,7 +98,7 @@ function ReviewCarousel({ quotes }: { quotes: PublicReview[] }) {
   };
 
   return (
-    <div className="relative mt-5 md:mt-6 -mx-5 sm:mx-0 min-h-[12rem] sm:min-h-[13rem]">
+    <div className="relative mt-4 md:mt-5 -mx-5 sm:mx-0 min-h-[10.75rem] sm:min-h-[11.5rem]">
       {quotes.length === 0 ? null : (
         <>
           {/* Edge fade masks — premium editorial cue that content continues */}
@@ -119,7 +119,7 @@ function ReviewCarousel({ quotes }: { quotes: PublicReview[] }) {
             {quotes.map((q, idx) => (
               <li
                 key={q.id}
-                className="he-card-lift shrink-0 snap-start w-[82vw] sm:w-[46%] lg:w-[31.5%] flex flex-col min-h-[12rem] sm:min-h-[13rem] rounded-[2px] border border-[color:var(--charcoal)]/10 bg-[color:var(--ivory)] p-4 md:p-5 relative shadow-[var(--shadow-card)]"
+                className="he-card-lift shrink-0 snap-start w-[82vw] sm:w-[46%] lg:w-[31.5%] flex flex-col min-h-[10.75rem] sm:min-h-[11.5rem] rounded-[2px] border border-[color:var(--charcoal)]/10 bg-[color:var(--ivory)] p-4 md:p-[18px] relative shadow-[var(--shadow-card)]"
               >
                 <Quote
                   aria-hidden="true"
