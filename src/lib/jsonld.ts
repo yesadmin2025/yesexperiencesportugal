@@ -413,6 +413,22 @@ interface StopForLd {
  * an itinerary ItemList when stops are supplied — these are the fields
  * that drive richer experience cards on Google.
  */
+/**
+ * MerchantReturnPolicy mirroring the published Signature cancellation
+ * truth (src/config/business-nap.ts: "Free cancellation up to 24h
+ * before, when applicable."). Mapped to Google's merchant-listing
+ * fields: a 1-day finite window with a full refund and no fees.
+ */
+const SIGNATURE_CANCELLATION_POLICY_LD = {
+  "@type": "MerchantReturnPolicy",
+  applicableCountry: "PT",
+  returnPolicyCategory: "https://schema.org/MerchantReturnFiniteReturnWindow",
+  merchantReturnDays: 1,
+  returnMethod: "https://schema.org/ReturnByMail",
+  returnFees: "https://schema.org/FreeReturn",
+  refundType: "https://schema.org/FullRefund",
+} as const;
+
 export function tourProductLd(args: {
   id: string;
   title: string;
