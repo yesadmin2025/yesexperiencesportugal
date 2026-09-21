@@ -74,9 +74,9 @@ function useImageLoader(srcs: readonly string[]) {
   const [loaded, setLoaded] = useState<Set<string>>(() => new Set());
   useEffect(() => {
     let cancelled = false;
-    // Eagerly decode every page once mounted — five 200KB JPEGs total,
-    // small enough to make flips instantaneous. Honours image-decode
-    // priority via the native <img> decode() API.
+    // Decode only the pages requested by the flip-book. The homepage sample
+    // has 23 pages, so preloading the entire dossier would spend several MB
+    // before the visitor asks for it. The caller passes current + neighbours.
     srcs.forEach((src) => {
       const img = new Image();
       img.src = src;
@@ -263,10 +263,13 @@ function BookFlip() {
   const touchStartX = useRef<number | null>(null);
   const flipping = useRef(false);
 
-  const srcs = useMemo(() => PAGES.map((p) => p.src), []);
-  const loaded = useImageLoader(srcs);
-
   const total = PAGES.length;
+  const srcs = useMemo(() => {
+    const nearby = [index, index + 1, index - 1]
+      .filter((i) => i >= 0 && i < PAGES.length);
+    return Array.from(new Set(nearby.map((i) => PAGES[i].src)));
+  }, [index]);
+  const loaded = useImageLoader(srcs);
 
   const goTo = (target: number) => {
     if (flipping.current) return;
