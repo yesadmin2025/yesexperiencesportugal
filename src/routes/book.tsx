@@ -112,12 +112,15 @@ const HOW_IT_WORKS = [
 
 function BookPage() {
   const { tour: tourParam } = Route.useSearch();
-  const preselected = tourParam && findTour(tourParam) ? tourParam : "";
+  // MODE A (instant) is driven ONLY by a valid ?tour= URL param.
+  const instantTour = tourParam ? findTour(tourParam) : undefined;
+  const instantMode = Boolean(instantTour);
 
   const [step, setStep] = useState<0 | 1 | 2>(0);
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
-  const [tourId, setTourId] = useState(preselected);
+  // MODE B (request) selection is independent of the URL preselection.
+  const [tourId, setTourId] = useState("");
   const [date, setDate] = useState("");
   const [adults, setAdults] = useState(2);
   const [children, setChildren] = useState(0);
@@ -198,37 +201,56 @@ function BookPage() {
       <section className="pt-10 pb-12 bg-[color:var(--sand)] text-center">
         <div className="container-x">
           <Eyebrow flank>Book directly</Eyebrow>
-          <SectionTitle as="h1" size="anchor" spacing="loose">
-            Tell us your day. <SectionTitle.Em>We take care of the rest</SectionTitle.Em>.
-          </SectionTitle>
-          <p className="mt-6 max-w-2xl mx-auto text-[color:var(--charcoal-soft)] leading-relaxed">
-            Two ways to do it: pay and confirm your day instantly, or send your dates and a real
-            person from our team replies within 24 hours.
-          </p>
+          {instantMode && instantTour ? (
+            <>
+              <SectionTitle as="h1" size="anchor" spacing="loose">
+                {instantTour.title}. <SectionTitle.Em>Confirmed the moment you pay</SectionTitle.Em>.
+              </SectionTitle>
+              <p
+                className="mt-6 max-w-2xl mx-auto text-[color:var(--charcoal-soft)] leading-relaxed"
+                data-testid="instant-tour-context"
+              >
+                {instantTour.region} · {instantTour.durationHours} · private for your group, hotel
+                pickup included. Choose your date and party below to see the final price.
+              </p>
+            </>
+          ) : (
+            <>
+              <SectionTitle as="h1" size="anchor" spacing="loose">
+                Tell us your day. <SectionTitle.Em>We take care of the rest</SectionTitle.Em>.
+              </SectionTitle>
+              <p className="mt-6 max-w-2xl mx-auto text-[color:var(--charcoal-soft)] leading-relaxed">
+                Send your dates and what you love, and a real person from our team replies within 24
+                hours.
+              </p>
+            </>
+          )}
         </div>
       </section>
 
-      {chosenTour && !done ? (
+      {instantMode && instantTour ? (
         <section className="py-12 md:py-14 border-b border-[color:var(--border)]" id="pay">
           <div className="container-x max-w-3xl">
-            <div className="text-center">
-              <Eyebrow flank>Confirm instantly</Eyebrow>
-              <SectionTitle as="h2" spacing="tight">
-                Pay securely and{" "}
-                <SectionTitle.Em>your day is confirmed on the spot</SectionTitle.Em>.
-              </SectionTitle>
-              <p className="mt-5 mx-auto max-w-xl text-[15px] leading-[1.75] text-[color:var(--charcoal-soft)]">
-                Live dates and the final price for {chosenTour.title}, paid by card here. No waiting
-                for a reply.
-              </p>
+            <div data-testid="instant-booking-block">
+              <SimpleBookingForm tour={instantTour} />
             </div>
-            <div className="mt-8">
-              <SimpleBookingForm tour={chosenTour} />
-            </div>
+            <p className="mt-7 text-center text-[13.5px] leading-relaxed text-[color:var(--charcoal-soft)]">
+              Prefer to ask first?{" "}
+              <Link
+                to="/contact"
+                search={{ type: "private_day" }}
+                className="underline decoration-[color:var(--gold)] underline-offset-4 hover:text-[color:var(--teal)]"
+                data-testid="instant-enquiry-fallback"
+              >
+                Talk to a local
+              </Link>
+              .
+            </p>
           </div>
         </section>
       ) : null}
 
+      {!instantMode ? (
       <section className="py-12 md:py-14">
         <div className="container-x max-w-2xl">
           {done ? (
@@ -264,7 +286,7 @@ function BookPage() {
 
               <div className="mt-7 flex flex-col gap-3 sm:flex-row sm:justify-center">
                 {chosenTour ? (
-                  <CtaButton to="/tours/$tourId" params={{ tourId: chosenTour.id }}>
+                  <CtaButton to="/book" search={{ tour: chosenTour.id }}>
                     Book this day instantly
                   </CtaButton>
                 ) : (
@@ -339,9 +361,23 @@ function BookPage() {
                         ))}
                       </select>
                       {chosenTour ? (
-                        <p className="mt-2 text-[13px] leading-relaxed text-[color:var(--charcoal-soft)]">
-                          From €{chosenTour.priceFrom} per person · private, hotel pickup included.
-                        </p>
+                        <>
+                          <p className="mt-2 text-[13px] leading-relaxed text-[color:var(--charcoal-soft)]">
+                            From €{chosenTour.priceFrom} per person · private, hotel pickup included.
+                          </p>
+                          <p className="mt-1.5 text-[13px] leading-relaxed text-[color:var(--charcoal-soft)]">
+                            Prefer instant confirmation?{" "}
+                            <Link
+                              to="/book"
+                              search={{ tour: chosenTour.id }}
+                              className="underline decoration-[color:var(--gold)] underline-offset-4 hover:text-[color:var(--teal)]"
+                              data-testid="request-to-instant-link"
+                            >
+                              See live dates &amp; reserve
+                            </Link>
+                            .
+                          </p>
+                        </>
                       ) : null}
                     </div>
 
@@ -502,14 +538,17 @@ function BookPage() {
                 </div>
 
                 <p className="text-center text-[12.5px] leading-snug text-[color:var(--charcoal-soft)]">
-                  A person replies within 24 hours — never an autoresponder. No payment is taken in this form; to pay now, choose a Signature day and use instant confirmation above.
+                  A person replies within 24 hours — never an autoresponder. No payment is taken in
+                  this form.
                 </p>
               </div>
             </form>
           )}
         </div>
       </section>
+      ) : null}
 
+      {!instantMode ? (
       <section className="pb-16 md:pb-20">
         <div className="container-x max-w-4xl">
           <Eyebrow>What happens next</Eyebrow>
@@ -547,6 +586,7 @@ function BookPage() {
           </div>
         </div>
       </section>
+      ) : null}
 
       <section
         id="prices"
