@@ -76,7 +76,7 @@ function Page() {
 
   return (
     <SiteLayout>
-      <section className="pt-40 pb-16 md:pt-48 md:pb-20 bg-[color:var(--sand)] text-center">
+      <section className="page-hero public-page-header text-center">
         <div className="container-x">
           <SiteBreadcrumbs
             containerClassName=""
@@ -94,7 +94,7 @@ function Page() {
               The Portugal <SectionTitle.Em>we travel ourselves</SectionTitle.Em>
             </SectionTitle>
           </div>
-          <p className="scene-body mt-6 max-w-xl mx-auto text-[15px] md:text-[17px] text-[color:var(--charcoal-soft)] leading-[1.75]">
+          <p className="page-header-support scene-body mt-6 max-w-xl mx-auto text-[15px] md:text-[17px] text-[color:var(--charcoal-soft)]">
             Notes from the road — written by the locals who design our private experiences.
           </p>
         </div>

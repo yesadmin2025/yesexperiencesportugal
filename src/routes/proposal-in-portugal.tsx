@@ -110,14 +110,14 @@ export function ProposalInPortugalPage() {
   return (
     <SiteLayout>
       {/* Hero */}
-      <section className="page-hero reveal">
+      <section className="page-hero public-page-header reveal">
         <div className="container-x max-w-3xl text-center">
           <Eyebrow flank>Proposal in Portugal</Eyebrow>
            <SectionTitle as="h1" size="anchor" spacing="loose" className="text-[40px] leading-[1.08] md:text-[60px] md:leading-[1.02]">
             A proposal in Portugal, <SectionTitle.Em>planned discreetly.</SectionTitle.Em>
           </SectionTitle>
-          <RouteThread compact className="mx-auto mt-6 max-w-xl" />
-          <p className="mt-6 text-[1rem] md:text-[1.1rem] text-[color:var(--charcoal-soft)] leading-relaxed">
+          <RouteThread compact className="page-header-thread mx-auto mt-6 max-w-xl" />
+          <p className="page-header-support mt-6 text-[1rem] md:text-[1.1rem] text-[color:var(--charcoal-soft)]">
             Anywhere in Portugal — coastline, vineyard, palace garden or a quiet city terrace. A
             private moment shaped end to end by a local team, with the setting, timing and surprise
             handled quietly on your behalf.

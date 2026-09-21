@@ -50,13 +50,13 @@ function FaqPage() {
       <SiteBreadcrumbs crumbs={crumbs} />
 
       {/* Hero */}
-      <section className="pt-10 pb-14 md:pb-16 bg-[color:var(--sand)] text-center">
+      <section className="public-page-header pt-6 pb-14 md:pt-10 md:pb-16 bg-[color:var(--sand)] text-center">
         <div className="container-x max-w-3xl">
           <Eyebrow flank>Before you book</Eyebrow>
           <SectionTitle as="h1" size="anchor" spacing="loose">
             Everything worth asking, <SectionTitle.Em>answered honestly.</SectionTitle.Em>
           </SectionTitle>
-          <p className="mt-6 text-[15.5px] md:text-[17px] leading-[1.75] text-[color:var(--charcoal-soft)]">
+          <p className="page-header-support mt-6 text-[15.5px] md:text-[17px] text-[color:var(--charcoal-soft)]">
             How our private days are designed, what they cost, where you stand if plans change, and
             the two ways to book. If your question isn&apos;t here, a local answers it personally.
           </p>

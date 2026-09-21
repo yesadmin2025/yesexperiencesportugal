@@ -187,13 +187,13 @@ function MultiDayPage() {
   return (
     <SiteLayout>
       {/* ── Hero ─────────────────────────────────────────── */}
-      <section className="page-hero reveal">
+      <section className="page-hero public-page-header reveal">
         <div className="container-x max-w-3xl text-center">
           <Eyebrow flank>Travel Designer Portugal</Eyebrow>
           <SectionTitle as="h1" size="anchor" spacing="loose" className="text-[40px] leading-[1.08] md:text-[60px] md:leading-[1.02]">
             Full Portugal journeys, <SectionTitle.Em>designed for you.</SectionTitle.Em>
           </SectionTitle>
-          <p className="mt-6 text-[1rem] md:text-[1.1rem] text-[color:var(--charcoal-soft)] leading-relaxed">
+          <p className="page-header-support mt-6 text-[1rem] md:text-[1.1rem] text-[color:var(--charcoal-soft)]">
             Portugal changes quickly as the road moves from one region to another — a private
             multi-day journey is designed around the travellers, the time available and the rhythm
             they want to maintain.

@@ -192,15 +192,15 @@ function CorporatePage() {
   return (
     <SiteLayout>
       {/* ── Hero ─────────────────────────────────────────── */}
-      <section className="page-hero reveal">
+      <section className="page-hero public-page-header reveal">
         <div className="container-x max-w-3xl text-center">
           <Eyebrow flank>Corporate &amp; incentives</Eyebrow>
            <SectionTitle as="h1" size="anchor" spacing="loose" className="text-[40px] leading-[1.08] md:text-[60px] md:leading-[1.02]">
             Corporate experiences in Portugal,{" "}
             <SectionTitle.Em>designed by locals.</SectionTitle.Em>
           </SectionTitle>
-          <RouteThread compact className="mx-auto mt-6 max-w-xl" />
-          <p className="mt-7 mx-auto max-w-[46ch] md:max-w-[62ch] text-[1rem] md:text-[1.1rem] text-[color:var(--charcoal-soft)] leading-[1.8]">
+          <RouteThread compact className="page-header-thread mx-auto mt-6 max-w-xl" />
+          <p className="page-header-support mt-6 mx-auto max-w-[46ch] md:max-w-[62ch] text-[1rem] md:text-[1.1rem] text-[color:var(--charcoal-soft)]">
             Private team-building days, incentive programmes, corporate retreats, executive
             off-sites, client hosting and company celebrations{" "}
             <strong className="font-medium text-[color:var(--charcoal)]">across Portugal</strong>.

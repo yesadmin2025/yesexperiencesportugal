@@ -133,7 +133,7 @@ function LisbonPrivateTours() {
     <SiteLayout>
       <SiteBreadcrumbs crumbs={crumbs} />
 
-      <section className="bg-[color:var(--sand)] py-16 md:py-24">
+      <section className="public-page-header bg-[color:var(--sand)] py-16 md:py-24">
         <div className="container-x max-w-3xl">
           <Eyebrow flank>Lisbon · private · licensed local operator</Eyebrow>
           <h1 className="mt-4 font-serif text-[40px] font-medium leading-[1.08] tracking-normal text-[color:var(--charcoal)] md:text-[60px] md:leading-[1.02]">
@@ -142,7 +142,7 @@ function LisbonPrivateTours() {
               run by the people who live here.
             </span>
           </h1>
-          <p className="mt-6 text-[16px] md:text-[17px] leading-[1.8] text-[color:var(--charcoal-soft)]">
+          <p className="page-header-support mt-6 text-[16px] md:text-[17px] text-[color:var(--charcoal-soft)]">
             We are a Portuguese operator based in Sesimbra, forty minutes south of Lisbon. Every day
             below leaves from your Lisbon address, belongs to your party alone, and is hosted by
             someone who grew up in the region you are visiting. You can reserve and pay online, or

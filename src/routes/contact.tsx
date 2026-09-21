@@ -151,7 +151,7 @@ function Page() {
 
   return (
     <SiteLayout>
-      <section className="page-hero reveal">
+      <section className="page-hero public-page-header reveal">
         <Scene className="container-x text-center">
           <div className="scene-atmosphere">
             <Eyebrow flank>Talk to a Designer</Eyebrow>
@@ -161,11 +161,11 @@ function Page() {
               Begin your <SectionTitle.Em>Portugal story.</SectionTitle.Em>
             </SectionTitle>
           </div>
-          <p className="scene-body mt-5 max-w-xl mx-auto text-[color:var(--charcoal-soft)]">
+          <p className="page-header-support scene-body mt-6 max-w-xl mx-auto text-[color:var(--charcoal-soft)]">
             Tell us a little about who you are and what you'd love to experience. A local replies
             personally, usually within one working day.
           </p>
-          <RouteThread compact className="scene-body mx-auto mt-7 max-w-xl" />
+          <RouteThread compact className="page-header-thread scene-body mx-auto mt-7 max-w-xl" />
         </Scene>
       </section>
 
