@@ -73,7 +73,7 @@ export function CookieConsent() {
     const sync = () =>
       setConversionOverlayOpen(
         document.querySelectorAll(
-          '[role="dialog"][data-state="open"], [role="dialog"][aria-modal="true"], [data-radix-dialog-content], [data-sonner-toast][data-visible="true"]',
+          '[role="dialog"][data-state="open"]:not([data-cookie-consent-dialog]), [role="dialog"][aria-modal="true"]:not([data-cookie-consent-dialog]), [data-radix-dialog-content], [data-sonner-toast][data-visible="true"]',
         ).length > 0,
       );
     sync();
@@ -149,6 +149,7 @@ export function CookieConsent() {
       role="dialog"
       aria-modal="false"
       aria-labelledby="cookie-consent-title"
+      data-cookie-consent-dialog
       className="fixed inset-x-0 bottom-0 z-[70] pointer-events-none px-0 pb-0 sm:px-5 sm:pb-4"
     >
       <div
