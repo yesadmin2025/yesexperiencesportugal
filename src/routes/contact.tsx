@@ -16,8 +16,6 @@ import { RouteThread } from "@/components/motion/RouteThread";
 import { useMarketingMotion } from "@/hooks/use-marketing-motion";
 import {
   BUSINESS_LEGAL_NAME,
-  CITY,
-  COUNTRY_CODE,
   EMAIL,
   EMAIL_HREF,
   PHONE_DISPLAY,

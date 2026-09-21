@@ -513,7 +513,7 @@ function DbPostView({ post }: { post: NonNullable<LoaderData["dbPost"]> }) {
                 {post.region}
               </span>
             )}
-            <h1 className="font-display font-bold text-[2rem] md:text-[2.6rem] leading-[1.15] tracking-[-0.01em] text-[color:var(--charcoal)]">
+            <h1 className="font-serif text-[40px] font-medium leading-[1.08] tracking-normal text-[color:var(--charcoal)] md:text-[60px] md:leading-[1.02]">
               {post.title}
             </h1>
             {post.authorName && (
@@ -538,7 +538,7 @@ function DbPostView({ post }: { post: NonNullable<LoaderData["dbPost"]> }) {
           )}
         </header>
 
-        <section className="py-20 md:py-28 bg-[color:var(--ivory)] reveal">
+        <section className="reveal bg-[color:var(--ivory)] py-16 md:py-24">
           <div className="container-x max-w-2xl">
             {post.excerpt && (
               <p className="font-serif italic text-[1.25rem] md:text-[1.4rem] leading-[1.55] text-[color:var(--charcoal)] mb-10 pb-10 border-b border-[color:var(--gold-soft)]/40">

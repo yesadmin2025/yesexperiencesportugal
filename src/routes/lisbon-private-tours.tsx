@@ -133,10 +133,10 @@ function LisbonPrivateTours() {
     <SiteLayout>
       <SiteBreadcrumbs crumbs={crumbs} />
 
-      <section className="bg-[color:var(--sand)] py-14 md:py-20">
+      <section className="bg-[color:var(--sand)] py-16 md:py-24">
         <div className="container-x max-w-3xl">
           <Eyebrow flank>Lisbon · private · licensed local operator</Eyebrow>
-          <h1 className="font-serif mt-4 text-[2.25rem] md:text-[3.25rem] font-medium leading-[1.12] md:leading-[1.08] tracking-normal text-[color:var(--charcoal)]">
+          <h1 className="mt-4 font-serif text-[40px] font-medium leading-[1.08] tracking-normal text-[color:var(--charcoal)] md:text-[60px] md:leading-[1.02]">
             Private Lisbon tours,{" "}
             <span className="italic font-normal text-[color:var(--teal)]">
               run by the people who live here.
@@ -169,7 +169,7 @@ function LisbonPrivateTours() {
         </div>
       </section>
 
-      <section className="py-14 md:py-20">
+      <section className="py-16 md:py-24">
         <div className="container-x">
           <Eyebrow>Real days, real routes</Eyebrow>
           <SectionTitle as="h2" spacing="tight">
@@ -182,7 +182,7 @@ function LisbonPrivateTours() {
                 <span className="font-sans text-[11px] uppercase tracking-[0.22em] font-bold text-[color:var(--gold)]">
                   {tour.region}
                 </span>
-                <h3 className="font-display mt-3 text-[1.2rem] leading-snug text-[color:var(--charcoal)]">
+                <h3 className="mt-3 font-serif text-[24px] leading-[1.2] text-[color:var(--charcoal)] md:text-[26px]">
                   {tour.title}
                 </h3>
                 <p className="mt-3 flex-1 text-[14.5px] leading-[1.75] text-[color:var(--charcoal-soft)]">
@@ -208,7 +208,7 @@ function LisbonPrivateTours() {
       </section>
 
       {/* ── Booking form ────────────────────────────────── */}
-      <section id="reserve" className="scroll-mt-24 bg-[color:var(--sand)] py-14 md:py-20">
+      <section id="reserve" className="scroll-mt-24 bg-[color:var(--sand)] py-16 md:py-24">
         <div className="container-x max-w-3xl">
           <Eyebrow>Reserve online</Eyebrow>
           <SectionTitle as="h2" spacing="tight">
@@ -233,7 +233,7 @@ function LisbonPrivateTours() {
 
       <RealReviewsStrip />
 
-      <section className="py-14 md:py-20">
+      <section className="py-16 md:py-24">
         <div className="container-x max-w-4xl">
           <Eyebrow>By region</Eyebrow>
           <SectionTitle as="h2" spacing="tight">
@@ -276,7 +276,7 @@ function LisbonPrivateTours() {
 
       {/* Local orientation for the Lisbon pickup area. */}
       <section
-        className="border-t border-[color:var(--border)] py-14 md:py-20"
+        className="border-t border-[color:var(--border)] py-16 md:py-24"
         aria-labelledby="lisbon-areas-title"
       >
         <div className="container-x max-w-4xl">
@@ -287,7 +287,7 @@ function LisbonPrivateTours() {
           <div className="mt-9 grid gap-8 md:gap-10">
             {areaProfilesFor("/lisbon-private-tours").map((a) => (
               <article key={a.anchor} id={a.anchor} className="scroll-mt-24 md:scroll-mt-28">
-                <h3 className="serif text-[1.4rem] leading-snug text-[color:var(--charcoal)] md:text-[1.7rem]">
+                <h3 className="font-serif text-[24px] leading-[1.2] text-[color:var(--charcoal)] md:text-[26px]">
                   {a.heading}
                 </h3>
                 <p className="mt-3 text-[15px] leading-[1.75] text-[color:var(--charcoal-soft)]">
