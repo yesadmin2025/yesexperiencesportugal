@@ -22,6 +22,22 @@ import { Star } from "lucide-react";
 import { listPublishedExperienceContent } from "@/lib/experienceContent.functions";
 import { CompareControl, ExperienceCompare } from "@/components/experiences/ExperienceCompare";
 
+const EXPERIENCE_FILTERS = [
+  { id: "all", label: "All" },
+  { id: "wine-food", label: "Wine & food" },
+  { id: "coast", label: "Coast" },
+  { id: "heritage", label: "Heritage" },
+] as const;
+
+type ExperienceFilter = (typeof EXPERIENCE_FILTERS)[number]["id"];
+
+function matchesExperienceFilter(tour: SignatureTour, filter: ExperienceFilter) {
+  if (filter === "all") return true;
+  if (filter === "wine-food") return tour.theme === "Wine" || tour.theme === "Gastronomy";
+  if (filter === "coast") return tour.theme === "Coastal";
+  return tour.theme === "Heritage";
+}
+
 export const Route = createFileRoute("/experiences")({
   loader: async () => ({ contentOverrides: await listPublishedExperienceContent() }),
   head: () => ({
@@ -80,6 +96,7 @@ function ExperiencesPage() {
   useMarketingMotion();
   const { resolveImg } = useImportedTourImages();
   const [selectedTours, setSelectedTours] = useState<string[]>([]);
+  const [activeFilter, setActiveFilter] = useState<ExperienceFilter>("all");
   const tours = signatureTours.map((tour) => {
     const canonicalContent = getTourContent(tour.id);
     const override = contentOverrides.find((row) => row.tourId === tour.id);
@@ -91,6 +108,8 @@ function ExperiencesPage() {
         }
       : { ...tour, highlights: canonicalContent.highlights };
   });
+  const visibleTours = tours.filter((tour) => matchesExperienceFilter(tour, activeFilter));
+
   const toggleComparison = (id: string) => {
     setSelectedTours((current) => current.includes(id)
       ? current.filter((item) => item !== id)
@@ -120,6 +139,29 @@ function ExperiencesPage() {
           <div className="mt-5 flex justify-center">
             <PriceCurrencyChip />
           </div>
+          <p className="mt-4 text-[11px] font-medium uppercase tracking-[0.16em] text-[color:var(--charcoal-soft)]">
+            Private · Hotel pickup · Local support · Secure checkout
+          </p>
+          <div className="mt-6 flex flex-wrap items-center justify-center gap-2" aria-label="Filter Signature Experiences">
+            {EXPERIENCE_FILTERS.map((filter) => {
+              const active = activeFilter === filter.id;
+              return (
+                <button
+                  key={filter.id}
+                  type="button"
+                  aria-pressed={active}
+                  onClick={() => setActiveFilter(filter.id)}
+                  className={`min-h-[38px] rounded-full border px-4 py-2 font-sans text-[11px] font-semibold uppercase tracking-[0.14em] transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--teal)] ${
+                    active
+                      ? "border-[color:var(--teal)] bg-[color:var(--teal)] text-white"
+                      : "border-[color:var(--border)] bg-[color:var(--ivory)] text-[color:var(--charcoal)] hover:border-[color:var(--gold)]"
+                  }`}
+                >
+                  {filter.label}
+                </button>
+              );
+            })}
+          </div>
         </div>
       </section>
 
@@ -129,7 +171,7 @@ function ExperiencesPage() {
       >
         <div className="container-x">
           <Scene className="experiences-editorial-grid experiences-story grid gap-6 md:grid-cols-2 md:gap-7 lg:gap-8">
-            {tours.map((tour, index) => (
+            {visibleTours.map((tour, index) => (
               <TourCard key={tour.id} tour={tour} resolveImg={resolveImg} featured={index < 2} compareActive={selectedTours.includes(tour.id)} compareDisabled={selectedTours.length >= 2 && !selectedTours.includes(tour.id)} onCompare={() => toggleComparison(tour.id)} />
             ))}
           </Scene>
@@ -286,7 +328,7 @@ function TourCard({
           >
             {CTA_LABELS.tailor}
           </CtaButton>
-          <div className="mt-1 flex justify-end">
+          <div className="mt-1 hidden justify-end md:flex">
             <CompareControl
               active={compareActive}
               disabled={compareDisabled}
