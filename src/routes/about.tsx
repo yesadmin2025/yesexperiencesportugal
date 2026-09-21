@@ -100,7 +100,7 @@ function Page() {
       </section>
 
       {/* Created from real travel */}
-      <section className="reveal about-story py-20">
+      <section className="reveal about-story section-y chapter-flow">
         <div className="container-x max-w-3xl">
           <Eyebrow>Created from real travel</Eyebrow>
           <SplitLines
@@ -128,7 +128,7 @@ function Page() {
       </section>
 
       {/* Founder-built */}
-      <section className="reveal about-story py-20 bg-[color:var(--sand)]">
+      <section className="reveal about-story section-y chapter-flow bg-[color:var(--sand)]">
         <div className="container-x grid lg:grid-cols-[1.15fr_1fr] gap-14 items-start">
           <div>
             <Eyebrow>Founder-built</Eyebrow>
@@ -201,7 +201,7 @@ function Page() {
       </section>
 
       {/* Founder-led */}
-      <section className="reveal about-story py-20">
+      <section className="reveal about-story section-y chapter-flow">
         <div className="container-x max-w-3xl">
           <Eyebrow>Founder-led</Eyebrow>
           <SectionTitle as="h2" size="default">
@@ -253,7 +253,7 @@ function Page() {
       </section>
 
       {/* What we create */}
-      <section className="reveal about-story py-20 bg-[color:var(--sand)]">
+      <section className="reveal about-story section-y chapter-flow bg-[color:var(--sand)]">
         <div className="container-x">
           <Eyebrow flank>What we create</Eyebrow>
           <SectionTitle as="h2" size="default">
@@ -305,7 +305,7 @@ function Page() {
       </section>
 
       {/* Credentials & trust */}
-      <section className="reveal about-story py-16">
+      <section className="reveal about-story section-y-sm chapter-flow">
         <div className="container-x">
           <Eyebrow flank>Credentials &amp; trust</Eyebrow>
           <SectionTitle as="h2" size="default">
@@ -356,7 +356,7 @@ function Page() {
       </section>
 
       {/* How we work + policies */}
-      <section className="reveal about-story about-story--quiet py-20 bg-[color:var(--sand)]">
+      <section className="reveal about-story about-story--quiet section-y chapter-flow bg-[color:var(--sand)]">
         <div className="container-x grid lg:grid-cols-2 gap-14">
           <div>
             <Eyebrow>How we work</Eyebrow>
@@ -436,7 +436,7 @@ function Page() {
       </section>
 
       {/* Final CTA */}
-      <section className="reveal about-story py-20 text-center">
+      <section className="reveal about-story section-y chapter-flow text-center">
         <div className="container-x max-w-2xl mx-auto">
           <Eyebrow flank>Talk to YES</Eyebrow>
           <SectionTitle as="h2" size="default">

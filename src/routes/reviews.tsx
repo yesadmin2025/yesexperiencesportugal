@@ -186,7 +186,7 @@ function ReviewsPage() {
           </div>
         </header>
 
-        <section className="reveal py-16 md:py-24 bg-[color:var(--ivory)]">
+        <section className="reveal section-y chapter-flow bg-[color:var(--ivory)]">
           <div className="container-x max-w-5xl">
             <div className="space-y-16 md:space-y-20">
               {tours.map((b) => {

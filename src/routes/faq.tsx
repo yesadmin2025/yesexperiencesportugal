@@ -50,7 +50,7 @@ function FaqPage() {
       <SiteBreadcrumbs crumbs={crumbs} />
 
       {/* Hero */}
-      <section className="public-page-header pt-6 pb-14 md:pt-10 md:pb-16 bg-[color:var(--sand)] text-center">
+      <section className="page-hero public-page-header reveal bg-[color:var(--sand)] text-center">
         <div className="container-x max-w-3xl">
           <Eyebrow flank>Before you book</Eyebrow>
           <SectionTitle as="h1" size="anchor" spacing="loose">
@@ -65,7 +65,7 @@ function FaqPage() {
       </section>
 
       {/* Grouped questions */}
-      <section className="py-16 md:py-24">
+      <section className="section-y chapter-flow">
         <div className="container-x max-w-3xl">
           {FAQ_PAGE_GROUPS.map((group, gi) => (
             <div

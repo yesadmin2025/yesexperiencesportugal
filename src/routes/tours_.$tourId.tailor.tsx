@@ -949,7 +949,7 @@ function TailorPage() {
       totalEur: totalForSummary,
       heroSrc: metaForSummary?.localGallery?.[0]?.src ?? metaForSummary?.gallery?.[0] ?? tour.img,
       beats: stopLabels.slice(0, 4),
-      flowLabel: "Tailored",
+      flowLabel: "Tailored Signature",
     });
 
     setDetailsOpen(false);
@@ -1739,6 +1739,13 @@ function TailorPage() {
         submitting={checkoutPending}
         tourId={tour.id}
         dateRule={rule}
+        productRecap={{
+          title: tour.title,
+          flowLabel: "Tailored Signature",
+          duration: tour.durationHours,
+          region: tour.region,
+          beats: publicSelectionLabels.slice(0, 4),
+        }}
         initial={{
           tourDate: date,
           adults: composition.adults,
@@ -1770,12 +1777,17 @@ function TailorPage() {
         summary={
           checkoutSummary ?? {
             tourTitle: `Tailored — ${tour.title.split("—")[0].trim()}`,
+             region: tour.region,
+             durationHours: tour.durationHours,
+             dateExact: date || null,
+             startTime: pickup,
+             beats: publicSelectionLabels.slice(0, 4),
             guests,
             adults: composition.adults,
             minorAges: [...composition.minorAges],
             pricePerPaxEur: estimatedPrice,
             totalEur: Math.round(estimatedPrice * guests),
-            flowLabel: "Tailored",
+            flowLabel: "Tailored Signature",
           }
         }
         onComplete={(sid) => {

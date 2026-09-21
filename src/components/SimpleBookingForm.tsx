@@ -200,6 +200,12 @@ export function SimpleBookingForm({ tour }: { tour: SignatureTour }) {
   const [checkoutSummary, setCheckoutSummary] = useState<CheckoutSummary | null>(null);
   const [checkoutError, setCheckoutError] = useState<string | null>(null);
   const [lastDetails, setLastDetails] = useState<GuestDetails | null>(null);
+  const signatureBeats = (() => {
+    const content = getTourContent(tour.id);
+    if (content.included.length > 0) return content.included.slice(0, 4);
+    if (content.highlights.length > 0) return content.highlights.slice(0, 4);
+    return (tour.highlights ?? []).slice(0, 4);
+  })();
 
   const handleReserve = async (details: GuestDetails) => {
     if (pending) return;
@@ -265,12 +271,7 @@ export function SimpleBookingForm({ tour }: { tour: SignatureTour }) {
       pricePerPaxEur: perPaxForSummary,
       totalEur: totalForSummary,
       heroSrc: meta?.localGallery?.[0]?.src ?? meta?.gallery?.[0] ?? tour.img,
-      beats: (() => {
-        const c = getTourContent(tour.id);
-        if (c.included.length > 0) return c.included;
-        if (c.highlights.length > 0) return c.highlights;
-        return tour.highlights ?? [];
-      })(),
+       beats: signatureBeats,
       flowLabel: "Signature",
     });
 
@@ -691,6 +692,13 @@ export function SimpleBookingForm({ tour }: { tour: SignatureTour }) {
         submitting={pending}
         tourId={tour.id}
         dateRule={rule}
+        productRecap={{
+          title: tour.title,
+          flowLabel: "Signature",
+          duration: tour.durationHours,
+          region: tour.region,
+          beats: signatureBeats,
+        }}
         initial={{
           tourDate: date,
           adults: composition.adults,
@@ -721,6 +729,12 @@ export function SimpleBookingForm({ tour }: { tour: SignatureTour }) {
         summary={
           checkoutSummary ?? {
             tourTitle: tour.title,
+             region: tour.region,
+             durationHours: tour.durationHours,
+             dateExact: date || null,
+             startTime: pickup,
+             pickupLabel: pickup,
+             beats: signatureBeats,
             guests,
             adults: composition.adults,
             minorAges: [...composition.minorAges],

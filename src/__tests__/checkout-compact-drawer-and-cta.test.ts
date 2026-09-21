@@ -3,9 +3,8 @@
  *
  * 1. The Signature booking card exposes exactly ONE primary action and
  *    its label is the approved "Reserve this day".
- * 2. The payment drawer is compact: no hero/region/duration above Stripe,
- *    a single trust line (no bottom secure-checkout footer), and every
- *    itemisation lives behind one `Details` disclosure.
+ * 2. The payment drawer is compact: essential product context stays visible,
+ *    a single trust line remains, and itemisation lives behind one disclosure.
  *
  * Source-level assertions keep these cheap and stable; the visual side is
  * covered by the mobile Playwright smoke.
@@ -46,10 +45,12 @@ describe("compact payment drawer", () => {
     expect((drawer.match(/checkout-drawer-trust-line/g) ?? []).length).toBe(1);
   });
 
-  it("does not render hero, region or duration in the payment summary", () => {
+  it("keeps imagery out while surfacing duration, region and pickup", () => {
     expect(drawer).not.toContain("summary.heroSrc");
-    expect(drawer).not.toContain("summary.region");
-    expect(drawer).not.toContain("summary.durationHours");
+    expect(drawer).toContain("summary.region");
+    expect(drawer).toContain("summary.durationHours");
+    expect(drawer).toContain("summary.pickupLabel");
+    expect(drawer).toContain('data-testid="checkout-drawer-product-context"');
   });
 
   it("renders a compact meta line and a prominent total", () => {
@@ -57,8 +58,10 @@ describe("compact payment drawer", () => {
     expect(drawer).toContain('data-testid="checkout-drawer-total"');
   });
 
-  it("hides traveller bands, add-ons and beats behind one Details disclosure", () => {
+  it("hides traveller bands, add-ons and inclusions behind one Signature disclosure", () => {
     expect(drawer).toContain('data-testid="checkout-drawer-details-toggle"');
+    expect(drawer).toContain("Your Signature details");
+    expect(drawer).toContain("What's included");
     const detailsIdx = drawer.indexOf('data-testid="checkout-drawer-details"');
     expect(detailsIdx).toBeGreaterThan(-1);
     for (const marker of ["checkout-drawer-journey-lines", "Add-ons", "summary.beats!"]) {

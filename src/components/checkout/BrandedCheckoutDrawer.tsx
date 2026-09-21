@@ -65,7 +65,7 @@ export interface CheckoutSummary {
   heroSrc?: string | null;
   /** Short list (max 4) of inclusions / signature beats. */
   beats?: string[];
-  flowLabel?: "Signature" | "Tailored" | "Studio";
+  flowLabel?: "Signature" | "Tailored" | "Tailored Signature" | "Studio";
   /** Selected reveal add-ons, kept in sync with SignaturePriceCard. */
   addOns?: CheckoutAddOnLine[];
   /** Legacy per-person sum of add-ons (back-compat). */
@@ -262,11 +262,8 @@ export function BrandedCheckoutDrawer({
 }
 
 /**
- * Compact payment summary: date + party on one line, total prominent,
- * and everything else (traveller bands, add-ons, day beats) behind a
- * single `Details` disclosure so Stripe paints immediately below.
- * Hero, region and duration are decision-surface content and are not
- * rendered here.
+ * Compact payment summary: date + party + product context remain visible,
+ * while itemisation and inclusions sit behind one clear disclosure.
  */
 function ExperienceSummaryCard({
   summary,
@@ -295,6 +292,13 @@ function ExperienceSummaryCard({
   const hasAddOns = !!summary.addOns && summary.addOns.length > 0;
   const hasBeats = !!summary.beats && summary.beats.length > 0;
   const hasDetails = hasBands || hasAddOns || hasBeats;
+  const productLine = [
+    summary.durationHours != null ? formatDuration(summary.durationHours) : null,
+    summary.region || null,
+    summary.pickupLabel ? `Pickup · ${summary.pickupLabel}` : null,
+  ]
+    .filter(Boolean)
+    .join(" · ");
 
   return (
     <div
@@ -307,6 +311,14 @@ function ExperienceSummaryCard({
       >
         {metaLine}
       </p>
+      {productLine ? (
+        <p
+          className="mt-1 text-[12px] leading-snug text-[color:var(--charcoal-soft)]"
+          data-testid="checkout-drawer-product-context"
+        >
+          {productLine}
+        </p>
+      ) : null}
 
       {total != null ? (
         <div
@@ -331,7 +343,7 @@ function ExperienceSummaryCard({
             data-testid="checkout-drawer-details-toggle"
             className="mt-1 flex min-h-[44px] w-full items-center justify-between gap-2 text-left text-[12.5px] uppercase tracking-[0.2em] text-[color:var(--charcoal-soft)] hover:text-[color:var(--charcoal)]"
           >
-            <span>Details</span>
+            <span>Your Signature details</span>
             <ChevronDown
               size={14}
               aria-hidden
@@ -410,8 +422,12 @@ function ExperienceSummaryCard({
               ) : null}
 
               {hasBeats ? (
-                <ul className="mt-3 pt-2 border-t border-[color:var(--border)] space-y-1">
-                  {summary.beats!.slice(0, 4).map((b) => (
+                <div className="mt-3 border-t border-[color:var(--border)] pt-2">
+                  <p className="text-[12px] uppercase tracking-[0.26em] text-[color:var(--charcoal)]">
+                    What's included
+                  </p>
+                  <ul className="mt-1.5 space-y-1">
+                    {summary.beats!.slice(0, 4).map((b) => (
                     <li
                       key={b}
                       className="flex gap-2 text-[12px] leading-snug text-[color:var(--charcoal)]"
@@ -419,8 +435,9 @@ function ExperienceSummaryCard({
                       <span className="mt-1.5 w-1 h-1 rounded-full bg-[color:var(--gold)] shrink-0" />
                       <span>{b}</span>
                     </li>
-                  ))}
-                </ul>
+                    ))}
+                  </ul>
+                </div>
               ) : null}
             </div>
           ) : null}
@@ -448,6 +465,11 @@ function formatDate(iso: string): string {
   } catch {
     return iso;
   }
+}
+
+function formatDuration(value: string | number): string {
+  if (typeof value === "number") return `${value} hours`;
+  return /(?:h|hour)/i.test(value) ? value : `${value} hours`;
 }
 
 /** Format e.g. `4 guests · 2 adults · children aged 8 and 13`. Kept
