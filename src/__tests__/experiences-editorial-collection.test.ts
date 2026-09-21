@@ -13,17 +13,17 @@ describe("Experiences editorial collection", () => {
     expect(source).toContain("CTA_LABELS.tailor");
   });
 
-  it("shows the fourth decision fact (who the day suits) from tour data", () => {
-    expect(source).toContain("tour.idealFor");
-    expect(source).toContain("Ideal for:");
+  it("prioritises three canonical decision highlights without a secondary Ideal for line", () => {
+    expect(source).toContain("getSignatureCardHighlights(tour.id)");
+    expect(source).not.toContain("tour.idealFor");
+    expect(source).not.toContain("Ideal for:");
   });
 
   it("keeps cards concise with collection highlight lists and verified reviews", () => {
-    expect(source).not.toContain("getSignatureCardMoments");
+    expect(source).toContain("getSignatureCardHighlights");
     expect(source).toContain("canonicalContent.highlights");
     expect(source).toContain("signatureDurationLabel");
     expect(source).toContain("verifiedReviewCount");
-    expect(source).not.toContain("Lunch included");
     expect(source).not.toContain("<span>Private</span>");
   });
 

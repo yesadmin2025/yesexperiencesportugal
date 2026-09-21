@@ -21,6 +21,7 @@ import { getViatorMeta } from "@/data/signatureToursViator";
 import { Star } from "lucide-react";
 import { listPublishedExperienceContent } from "@/lib/experienceContent.functions";
 import { CompareControl, ExperienceCompare } from "@/components/experiences/ExperienceCompare";
+import { getSignatureCardHighlights } from "@/lib/signatureCardHighlights";
 
 const EXPERIENCE_FILTERS = [
   { id: "all", label: "All" },
@@ -213,9 +214,7 @@ function TourCard({
   const meta = getViatorMeta(tour.id);
   const verifiedRating = meta?.rating;
   const verifiedReviewCount = meta?.reviewCount;
-  const highlights = content.highlights.slice(0, 2);
-  // Fourth decision fact, read straight from the tour source of truth.
-  const idealFor = tour.idealFor?.[0];
+  const highlights = getSignatureCardHighlights(tour.id);
   return (
     <article
       className="experience-editorial-card scene-item group flex min-w-0 flex-col overflow-hidden rounded-[4px] border border-[color:var(--border)] bg-[color:var(--ivory)] text-left shadow-[var(--shadow-card)]"
@@ -262,18 +261,6 @@ function TourCard({
           {teaser}
         </p>
 
-        <div className="mt-3">
-          <span className="font-sans text-[1.125rem] font-semibold text-[color:var(--charcoal)]">
-            From <PriceEur amountEur={tour.priceFrom} role="from" /> per person
-          </span>
-        </div>
-
-        {idealFor && (
-          <p className="experience-card-ideal mt-2 text-[13px] leading-[1.5] text-[color:var(--charcoal-soft)]">
-            <span className="font-medium text-[color:var(--charcoal)]">Ideal for:</span> {idealFor}
-          </p>
-        )}
-
         {highlights.length > 0 && (
           <ul className="experience-card-highlights mt-3 space-y-1.5 text-[13px] leading-[1.5] text-[color:var(--charcoal)]">
             {highlights.map((highlight) => (
@@ -287,6 +274,12 @@ function TourCard({
             ))}
           </ul>
         )}
+
+        <div className="mt-4">
+          <span className="font-sans text-[1.125rem] font-semibold text-[color:var(--charcoal)]">
+            From <PriceEur amountEur={tour.priceFrom} role="from" /> per person
+          </span>
+        </div>
 
         <div className="experience-card-action mt-auto pt-4 md:pt-5">
           <CtaButton

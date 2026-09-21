@@ -33,7 +33,7 @@ export function ServiceCrossLinks({
         tone === "sand" ? "bg-[color:var(--sand)]" : "bg-[color:var(--ivory)]"
       }`}
     >
-      <div className="container-x max-w-3xl">
+      <div className="container-x max-w-3xl editorial-label-stack">
         <Eyebrow>{eyebrow}</Eyebrow>
         <SectionTitle size="compact" spacing="normal">
           {title}

@@ -7779,6 +7779,25 @@ html[data-cookie-consent-open="true"] [data-testid="floating-actions"] {
   transform: scale(1);
 }
 
+/* Major commercial intros use the existing Scene observer with a visibly
+   editorial sequence: label, title, then supporting copy. */
+[data-scene-ready="1"].home-major-intro :is(.scene-atmosphere, .scene-title, .scene-body),
+[data-scene-ready="1"].travel-file-settle .scene-item {
+  transform: translate3d(0, 18px, 0);
+  transition-duration: 720ms;
+  transition-timing-function: var(--ease-scene);
+}
+[data-scene="in"].home-major-intro .scene-atmosphere { transition-delay: 0ms; }
+[data-scene="in"].home-major-intro .scene-title { transition-delay: 120ms; }
+[data-scene="in"].home-major-intro .scene-body { transition-delay: 240ms; }
+[data-scene="in"].travel-file-settle .scene-item { transition-delay: 120ms; }
+@media (min-width: 768px) {
+  [data-scene-ready="1"].home-major-intro :is(.scene-atmosphere, .scene-title, .scene-body),
+  [data-scene-ready="1"].travel-file-settle .scene-item {
+    transform: translate3d(0, 22px, 0);
+  }
+}
+
 /* Final public-motion contract: one restrained interaction language.
    Cards lift 4px on pointer devices, editorial actions 1px, with no bounce. */
 @media (hover: hover) and (pointer: fine) {
@@ -8048,19 +8067,25 @@ html[data-motion-scope="marketing"] .cta-breathe::after {
 }
 
 /* About is composed as chapters rather than full-section crossfades. */
+.editorial-label-stack > :is(h1, h2, .motion-split) {
+  margin-top: 1.5rem;
+}
+
 html.reveal-ready .about-story.reveal {
   opacity: 1;
 }
 html.reveal-ready .about-story :is(.he-eyebrow-bar, h1, h2, .about-sequence-item, p) {
   opacity: 0;
-  transition: opacity 480ms var(--ease-scene);
+  transform: translate3d(0, 16px, 0);
+  transition: opacity 560ms var(--ease-scene), transform 680ms var(--ease-scene);
 }
 html.reveal-ready .about-story :is(h1, h2) {
   clip-path: inset(0 100% 0 0);
-  transition: opacity 480ms var(--ease-scene), clip-path 760ms var(--ease-scene);
+  transition: opacity 560ms var(--ease-scene), transform 680ms var(--ease-scene), clip-path 760ms var(--ease-scene);
 }
 html.reveal-ready .about-story.is-visible :is(.he-eyebrow-bar, h1, h2, .about-sequence-item, p) {
   opacity: 1;
+  transform: translate3d(0, 0, 0);
 }
 html.reveal-ready .about-story.is-visible :is(h1, h2) {
   clip-path: inset(0 0 0 0);
@@ -8266,7 +8291,7 @@ html.reveal-ready .about-story--quiet :is(li, a) { transition-delay: 0ms; }
 
 html.reveal-ready .about-story .about-copy-sequence p {
   clip-path: inset(0 100% 0 0);
-  transition: opacity 520ms var(--motion-ease-editorial), clip-path 760ms var(--motion-ease-editorial);
+  transition: opacity 520ms var(--motion-ease-editorial), transform 680ms var(--motion-ease-editorial), clip-path 760ms var(--motion-ease-editorial);
 }
 html.reveal-ready .about-story.is-visible .about-copy-sequence p { clip-path: inset(0); }
 html.reveal-ready .about-story.is-visible .about-copy-sequence p:nth-child(1) { transition-delay: 220ms; }
@@ -8280,6 +8305,12 @@ html.reveal-ready .about-story.is-visible .about-copy-sequence p:nth-child(4) { 
     opacity: 1 !important;
     clip-path: none !important;
     filter: none !important;
+    transition: none !important;
+  }
+  html.reveal-ready .about-story :is(.he-eyebrow-bar, h1, h2, .about-sequence-item, p) {
+    opacity: 1 !important;
+    transform: none !important;
+    clip-path: none !important;
     transition: none !important;
   }
 }

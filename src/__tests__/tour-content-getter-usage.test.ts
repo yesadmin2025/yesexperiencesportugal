@@ -26,10 +26,10 @@ const REQUIRED_CONSUMERS = [
   "src/components/studio-v3/FinalRevealStory.tsx",
   "src/components/studio-v3/signatureStorySnapshot.ts",
 
-  // Signature listings (EN + PT) + homepage cards
+  // Signature listings (EN + PT). Homepage cards consume the validated
+  // presentation helper, which owns the canonical getTourContent read.
   "src/routes/experiences.tsx",
   "src/routes/pt.experiences.tsx",
-  "src/routes/index.tsx",
 ];
 
 const IMPORT_RE =

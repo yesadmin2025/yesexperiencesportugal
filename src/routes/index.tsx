@@ -32,11 +32,13 @@ import {
 } from "@/lib/jsonld";
 import { signatureTours, isValidTourId, findTour } from "@/data/signatureTours";
 import { getViatorMeta } from "@/data/signatureToursViator";
-import { getTourContent, signatureDurationLabel } from "@/lib/tourContent";
+import { signatureDurationLabel } from "@/lib/tourContent";
 import { LOCAL_STORIES_ARTICLES } from "@/content/local-stories-articles";
 import { PortugalPlannerMap } from "@/components/home/PortugalPlannerMap";
 import { RouteThread } from "@/components/motion/RouteThread";
 import { CTA_LABELS } from "@/content/cta-vocabulary";
+import { getSignatureCardHighlights } from "@/lib/signatureCardHighlights";
+import { Scene } from "@/components/motion/Scene";
 
 /**
  * Tours whose already-published verified quotes fill the homepage review
@@ -252,11 +254,7 @@ const baseSignatures = FEATURED_TOUR_IDS.filter((id) => isValidTourId(id))
       // Verified highlights for this experience — the SAME list the
       // experience page and the Viator product page show. Stop names are
       // NOT highlights, so they are no longer used here. Never fabricated.
-      highlights: (
-        getTourContent(t.id).highlights.length > 0
-          ? getTourContent(t.id).highlights
-          : (t.highlights ?? [])
-      ).slice(0, 3),
+      highlights: getSignatureCardHighlights(t.id),
     };
   });
 
@@ -368,7 +366,7 @@ function HomePage() {
         ? {
             ...card,
             line: override.blurb ?? card.line,
-            highlights: override.highlights?.slice(0, 3) ?? card.highlights,
+            highlights: card.highlights,
           }
         : card;
     });
@@ -560,7 +558,7 @@ function HomePage() {
           No invented quotes, no repeated review blocks. */}
         <section
           id="reviews"
-          className="section-enter py-7 md:py-9 bg-[color:var(--ivory)] border-b border-[color:var(--border)] scroll-mt-24 md:scroll-mt-28"
+          className="section-enter py-12 md:py-16 bg-[color:var(--ivory)] border-b border-[color:var(--border)] scroll-mt-24 md:scroll-mt-28"
         >
           <div className="container-x">
             <GuestQuotes />
@@ -584,7 +582,7 @@ function HomePage() {
           FAQ closer, and the Final CTA. */}
         <section
           id="builder"
-          className="he-section-rule section-enter section-y-lg bg-[color:var(--sand)] border-b border-[color:var(--border)] scroll-mt-24 md:scroll-mt-28"
+          className="he-section-rule section-enter pt-10 pb-12 md:pt-14 md:pb-16 bg-[color:var(--sand)] border-b border-[color:var(--border)] scroll-mt-24 md:scroll-mt-28"
           aria-labelledby="studio-title"
         >
           <div className="container-x">
@@ -676,22 +674,23 @@ function HomePage() {
           repeated labels. */}
         <section
           id="signatures"
-          className="he-section-rule section-enter section-y bg-[color:var(--ivory)] border-b border-[color:var(--border)] scroll-mt-24 md:scroll-mt-28"
+          className="he-section-rule section-enter py-12 md:py-16 bg-[color:var(--ivory)] border-b border-[color:var(--border)] scroll-mt-24 md:scroll-mt-28"
           aria-labelledby="signatures-title"
         >
           <div className="container-x">
-            <div className="reveal text-center max-w-2xl mx-auto mb-10 md:mb-14">
-              <Eyebrow className="mb-5">Signature</Eyebrow>
+            <Scene className="home-major-intro text-center max-w-2xl mx-auto mb-10 md:mb-14">
+              <div className="scene-atmosphere"><Eyebrow className="mb-5">Signature</Eyebrow></div>
                <SectionTitle
                 id="signatures-title"
+                 className="scene-title"
               >
                 Signature days,{" "}
                  <SectionTitle.Em>already loved.</SectionTitle.Em>
                </SectionTitle>
-              <p className="mt-5 text-[15px] md:text-[16px] leading-[1.65] text-[color:var(--charcoal-soft)]">
+              <p className="scene-body mt-5 text-[15px] md:text-[16px] leading-[1.65] text-[color:var(--charcoal-soft)]">
                 Every Signature can be reserved as designed, or tailored around your pace, interests and group.
               </p>
-            </div>
+            </Scene>
 
             {/* Mobile: full-bleed editorial cover carousel. Uses
               snap-proximity (NOT mandatory) so the horizontal strip
