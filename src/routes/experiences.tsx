@@ -99,7 +99,7 @@ function ExperiencesPage() {
 
   return (
     <SiteLayout>
-      <section className="pt-24 pb-10 md:pt-28 md:pb-12 bg-[color:var(--sand)] text-center">
+      <section className="page-hero text-center">
         <div className="container-x">
           <SiteBreadcrumbs
             containerClassName=""
