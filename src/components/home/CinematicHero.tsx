@@ -218,33 +218,20 @@ export function CinematicHero() {
                 {HERO_PHRASES[1]}
               </span>
             </span>
-            {/* The descriptive service line lives inside the <h1> so the page's
-                main heading states what we actually sell — private Portugal
-                days, journeys and special moments — while the approved
-                two-line brand statement and the on-screen composition stay
-                byte-for-byte unchanged. */}
-            <span
-              data-hero-field="subheadline"
-              className="hero-support mx-auto mt-5 block max-w-[39rem] px-2 font-sans text-[13px] font-normal not-italic leading-[1.65] tracking-[0.025em] text-[color:var(--ivory)]/88 sm:text-[14px] md:mt-6 md:text-[15px]"
-              style={{ animation: `heroApprovedReveal 1000ms ${EASE} 2850ms both` }}
-            >
-              {HERO_COPY.subheadline}
-            </span>
           </h1>
         </div>
       </div>
 
       {/* Original low CTA anchor. */}
       <div
-        className="hero-cta-group z-20 flex flex-col items-center gap-3"
+        className="hero-cta-group z-20 flex flex-col items-center gap-3 sm:flex-row sm:justify-center sm:gap-4"
         data-hero-composed="true"
         style={{
           opacity: 1,
-          animation: `heroApprovedReveal ${CTA_FADE_MS}ms ${EASE} 4000ms both`,
+          animation: `heroApprovedReveal ${CTA_FADE_MS}ms ${EASE} 3100ms both`,
           pointerEvents: "auto",
         }}
       >
-        <div className="flex flex-col items-center gap-3 sm:flex-row sm:justify-center sm:gap-4">
         <Link
           to="/studio-v3"
           data-hero-field="primaryCta"
@@ -267,15 +254,6 @@ export function CinematicHero() {
         >
           <span className="hero-cta__sheen" aria-hidden="true" />
           <span className="relative z-10">{HERO_COPY.secondaryCta}</span>
-        </Link>
-        </div>
-        <Link
-          to="/multi-day"
-          data-analytics="hero_travel_designer"
-          data-analytics-placement="hero"
-          className="mt-1 inline-flex min-h-[36px] items-center justify-center rounded-sm px-2 font-sans text-[10.5px] font-medium tracking-[0.08em] text-[color:var(--ivory)]/82 underline decoration-[color:var(--gold-soft)]/55 underline-offset-4 transition-colors hover:text-[color:var(--gold-soft)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)]"
-        >
-          Planning a full Portugal journey? Work with a Travel Designer →
         </Link>
       </div>
       </div>
