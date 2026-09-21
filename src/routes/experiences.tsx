@@ -1,7 +1,7 @@
 import { localeAlternateLinks } from "@/i18n/seo";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState } from "react";
-import { breadcrumbLd, itemListLd, jsonLdScript, organizationUsCaAudienceLd } from "@/lib/jsonld";
+import { breadcrumbLd, itemListLd, jsonLdScript } from "@/lib/jsonld";
 import { SiteLayout } from "@/components/SiteLayout";
 import { SiteBreadcrumbs } from "@/components/SiteBreadcrumbs";
 import { signatureTours, type SignatureTour } from "@/data/signatureTours";
@@ -68,7 +68,6 @@ export const Route = createFileRoute("/experiences")({
       ...localeAlternateLinks("/experiences"),
     ],
     scripts: [
-      jsonLdScript(organizationUsCaAudienceLd()),
       jsonLdScript(
         breadcrumbLd([
           { name: "Home", path: "/" },

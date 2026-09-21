@@ -291,7 +291,7 @@ export const Route = createFileRoute("/")({
       { property: "twitter:title", content: HOME_SEO_SOCIAL_TITLE },
       { property: "twitter:description", content: HOME_SEO_DESCRIPTION },
       { property: "og:image", content: `https://yesexperiencesportugal.com${heroImg}` },
-      { property: "twitter:image", content: `https://yesexperiencesportugal.com${heroImg}` },
+      { name: "twitter:image", content: `https://yesexperiencesportugal.com${heroImg}` },
       { property: "og:url", content: "https://yesexperiencesportugal.com/" },
     ],
     links: [

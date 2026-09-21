@@ -1,3 +1,4 @@
+import { socialImageMeta } from "@/lib/seo";
 import { createFileRoute, Link } from "@tanstack/react-router";
 
 import { SiteLayout } from "@/components/SiteLayout";
@@ -123,6 +124,7 @@ const UNIQUE_TOURS = Array.from(new Set(LISTED))
 export const Route = createFileRoute("/how-many-days-in-portugal")({
   head: () => ({
     meta: [
+      ...socialImageMeta(),
       { title: TITLE },
       { name: "description", content: DESCRIPTION },
       { name: "robots", content: "index, follow" },

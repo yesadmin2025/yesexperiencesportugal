@@ -1,3 +1,4 @@
+import { socialImageMeta } from "@/lib/seo";
 import { localeAlternateLinks } from "@/i18n/seo";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { breadcrumbLd, itemListLd, jsonLdScript } from "@/lib/jsonld";
@@ -23,6 +24,7 @@ const DESCRIPTION =
 export const Route = createFileRoute("/pt/day-tours")({
   head: () => ({
     meta: [
+      ...socialImageMeta(),
       { title: TITLE },
       { name: "description", content: DESCRIPTION },
       { property: "og:title", content: TITLE },

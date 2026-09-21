@@ -26,7 +26,7 @@ export const Route = createFileRoute("/pt/corporate")({
       { property: "og:description", content: DESCRIPTION },
       { property: "og:image", content: `https://yesexperiencesportugal.com${imgFatimaNazare}` },
       {
-        property: "twitter:image",
+        name: "twitter:image",
         content: `https://yesexperiencesportugal.com${imgFatimaNazare}`,
       },
       { property: "og:url", content: "https://yesexperiencesportugal.com/pt/corporate" },

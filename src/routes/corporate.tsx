@@ -61,7 +61,7 @@ export const Route = createFileRoute("/corporate")({
       { name: "twitter:card", content: "summary_large_image" },
       { property: "og:image", content: `https://yesexperiencesportugal.com${imgFatimaNazare}` },
       {
-        property: "twitter:image",
+        name: "twitter:image",
         content: `https://yesexperiencesportugal.com${imgFatimaNazare}`,
       },
       { property: "og:url", content: CANONICAL },

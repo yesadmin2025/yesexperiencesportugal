@@ -1,3 +1,4 @@
+import { socialImageMeta } from "@/lib/seo";
 import { createFileRoute, Link } from "@tanstack/react-router";
 
 import { SiteLayout } from "@/components/SiteLayout";
@@ -12,7 +13,6 @@ import {
   faqPageLd,
   jsonLdScript,
   localBusinessLd,
-  organizationUsCaAudienceLd,
 } from "@/lib/jsonld";
 import { US_TRAVELER_NOTES } from "@/content/lisbon-day-trip-comparison";
 import { WEBSITE_URL, LICENSE_LABEL } from "@/config/business-nap";
@@ -129,6 +129,7 @@ const FEATURED_STORIES = [
 export const Route = createFileRoute("/portugal-for-american-travelers")({
   head: () => ({
     meta: [
+      ...socialImageMeta(),
       { title: TITLE },
       { name: "description", content: DESCRIPTION },
       { name: "robots", content: "index, follow" },
@@ -140,7 +141,6 @@ export const Route = createFileRoute("/portugal-for-american-travelers")({
     ],
     links: [{ rel: "canonical", href: PAGE_URL }],
     scripts: [
-      jsonLdScript(organizationUsCaAudienceLd()),
       jsonLdScript(breadcrumbLd(crumbs)),
       jsonLdScript(faqPageLd(FAQS)),
       jsonLdScript(

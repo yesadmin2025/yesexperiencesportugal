@@ -994,33 +994,14 @@ export function hreflangUsCaLinks(path: string) {
   ] as const;
 }
 
-/**
- * Per-page Organization node that reinforces US/Canada targeting on a
- * landing page. Reuses the sitewide Organization @id so linked-data
- * consumers merge it with the canonical entity rather than creating a
- * duplicate brand. Adds `areaServed`, `audience` and `knowsLanguage`
- * scoped to North-American English travellers.
+/*
+ * NOTE: the sitewide `organizationLd()` node is the single defining
+ * source for `${SITE_URL}/#organization`, including US/Canada audience
+ * context. Do not add a second top-level Organization / TravelAgency /
+ * LocalBusiness node reusing that @id on individual routes — it produces
+ * a duplicate defining @id and missing required fields.
  */
-export function organizationUsCaAudienceLd() {
-  return {
-    "@context": "https://schema.org",
-    "@type": ["TravelAgency", "LocalBusiness"],
-    "@id": `${SITE_URL}/#organization`,
-    knowsLanguage: ["en", "en-US", "en-CA"],
-    areaServed: [
-      { "@type": "Country", name: "United States" },
-      { "@type": "Country", name: "Canada" },
-    ],
-    audience: {
-      "@type": "Audience",
-      audienceType: "International travellers from the United States and Canada",
-      geographicArea: [
-        { "@type": "Country", name: "United States" },
-        { "@type": "Country", name: "Canada" },
-      ],
-    },
-  } as const;
-}
+
 
 /**
  * Corporate Service — /corporate.

@@ -4,7 +4,7 @@ import { Eyebrow } from "@/components/ui/Eyebrow";
 import { SectionTitle } from "@/components/ui/SectionTitle";
 import { CtaButton } from "@/components/ui/CtaButton";
 import { CTA_LABELS } from "@/content/cta-vocabulary";
-import { jsonLdScript, breadcrumbLd, organizationUsCaAudienceLd } from "@/lib/jsonld";
+import { jsonLdScript, breadcrumbLd } from "@/lib/jsonld";
 import { useMarketingMotion } from "@/hooks/use-marketing-motion";
 import ogSocialImg from "@/assets/hero-coast.jpg";
 
@@ -48,7 +48,6 @@ export const Route = createFileRoute("/portugal-tours")({
     ],
     links: [{ rel: "canonical", href: PAGE_URL }],
     scripts: [
-      jsonLdScript(organizationUsCaAudienceLd()),
       jsonLdScript(articleJsonLd),
       jsonLdScript(
         breadcrumbLd([
