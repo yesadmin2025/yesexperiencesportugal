@@ -131,7 +131,7 @@ function PickupAndWineries() {
     <SiteLayout>
       <SiteBreadcrumbs crumbs={crumbs} />
 
-      <section className="bg-[color:var(--sand)] py-16 md:py-24">
+      <section className="public-page-header bg-[color:var(--sand)] py-16 md:py-24">
         <div className="container-x max-w-3xl">
           <Eyebrow flank icon={<MapPin aria-hidden />}>
             Pickup · Timings · Cellars
@@ -142,7 +142,7 @@ function PickupAndWineries() {
               where we collect you, and whose cellar you sit in.
             </span>
           </h1>
-          <p className="mt-6 text-[16px] md:text-[17px] leading-[1.8] text-[color:var(--charcoal-soft)]">
+          <p className="page-header-support mt-6 text-[16px] md:text-[17px] leading-[1.8] text-[color:var(--charcoal-soft)]">
             Two questions decide whether a Lisbon wine tour is worth the day: how you get out of the
             city, and who is pouring at the other end. Both answers are below, with no padding — the
             wineries named here are the ones we actually work with, forty minutes south of Lisbon.

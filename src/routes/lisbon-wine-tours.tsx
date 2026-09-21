@@ -140,7 +140,7 @@ function LisbonWineTours() {
     <SiteLayout>
       <SiteBreadcrumbs crumbs={crumbs} />
 
-      <section className="bg-[color:var(--sand)] py-16 md:py-24">
+      <section className="public-page-header bg-[color:var(--sand)] py-16 md:py-24">
         <div className="container-x max-w-3xl">
           <Eyebrow flank icon={<Grape aria-hidden />}>
             Azeitão · Arrábida · Alentejo
@@ -151,7 +151,7 @@ function LisbonWineTours() {
               at the tables of the families who make it.
             </SectionTitle.Em>
           </SectionTitle>
-          <p className="mt-6 text-[16px] md:text-[17px] leading-[1.8] text-[color:var(--charcoal-soft)]">
+          <p className="page-header-support mt-6 text-[16px] md:text-[17px] leading-[1.8] text-[color:var(--charcoal-soft)]">
             The wine country nearest Lisbon is not a marketing region — it is our own. We live forty
             minutes from the Azeitão cellars, and the people pouring are people we know. Every day
             here is private, includes hotel pickup, and can be reserved online.
