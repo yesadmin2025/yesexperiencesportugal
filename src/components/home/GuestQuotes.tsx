@@ -14,38 +14,29 @@ import { useEffect, useRef, useState } from "react";
 import { Star, ChevronLeft, ChevronRight, Quote } from "lucide-react";
 import { useServerFn } from "@tanstack/react-start";
 import {
-  getGlobalReviewStats,
   getCuratedHomepageReviews,
-  type GlobalStats,
   type PublicReview,
 } from "@/lib/reviews.functions";
+import { REVIEW_CERTIFICATE, REVIEW_COUNT_DISPLAY } from "@/config/trust-certificate";
 import { ReviewSourceLink } from "@/components/ui/ReviewSourceLink";
 import { SectionTitle } from "@/components/ui/SectionTitle";
 
 export function GuestQuotes() {
-  const statsFn = useServerFn(getGlobalReviewStats);
   const quotesFn = useServerFn(getCuratedHomepageReviews);
-  const [stats, setStats] = useState<GlobalStats | null>(null);
   const [quotes, setQuotes] = useState<PublicReview[]>([]);
 
   useEffect(() => {
     let cancelled = false;
-    Promise.all([statsFn({}), quotesFn({ data: { limit: 8 } })])
-      .then(([s, q]) => {
+    quotesFn({ data: { limit: 8 } })
+      .then((q) => {
         if (cancelled) return;
-        setStats(s);
         setQuotes(q);
       })
       .catch(() => undefined);
     return () => {
       cancelled = true;
     };
-  }, [statsFn, quotesFn]);
-
-  const hasReal = stats && stats.total_reviews >= 25;
-  const count = hasReal ? stats!.total_reviews : null;
-  const avg = hasReal && stats!.average_rating ? stats!.average_rating : null;
-
+  }, [quotesFn]);
 
 
   return (
@@ -60,7 +51,7 @@ export function GuestQuotes() {
       </div>
 
       <SectionTitle className="mt-3">
-        700+ five-star reviews{" "}
+        {REVIEW_CERTIFICATE.ratingValue}/5 · {REVIEW_COUNT_DISPLAY} guest reviews{" "}
         <SectionTitle.Em>
           — real guests, real stories.
         </SectionTitle.Em>
