@@ -171,7 +171,7 @@ export function PortugalPlannerMap() {
         </h3>
         <div className="planner-map-panel__trace" aria-hidden="true"><span /></div>
 
-        {/* One clear idea per region: a private day can be designed around it.
+        {/* One clear idea per region: your Portugal can take shape around it.
             Where fixed Signature days exist, link them; otherwise the CTA
             leads straight to a designed-day request. */}
         {active.tours.length > 0 && (
