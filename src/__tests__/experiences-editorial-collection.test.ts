@@ -26,4 +26,13 @@ describe("Experiences editorial collection", () => {
     expect(source).not.toContain("Lunch included");
     expect(source).not.toContain("<span>Private</span>");
   });
+
+  it("uses one shared metadata structure in rating, duration, location order", () => {
+    expect(source).toContain("function ExperienceCardMeta");
+    expect(source).toMatch(
+      /<ExperienceCardMeta[\s\S]*?rating=\{verifiedRating\}[\s\S]*?reviewCount=\{verifiedReviewCount\}[\s\S]*?duration=\{signatureDurationLabel[\s\S]*?location=\{tour\.region\}/,
+    );
+    expect(source.indexOf("{hasReviews ? (")).toBeLessThan(source.indexOf("{duration ? <span>{duration}</span> : null}"));
+    expect(source.indexOf("{duration ? <span>{duration}</span> : null}")).toBeLessThan(source.indexOf("{location ? <span>{location}</span> : null}"));
+  });
 });

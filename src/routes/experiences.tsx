@@ -239,16 +239,8 @@ function TourCard({
       </Link>
 
       <div className="experience-card-content flex flex-1 flex-col px-5 pb-5 pt-5 md:px-6 md:pb-6 md:pt-6">
-        <div className="flex flex-wrap items-center gap-x-2 gap-y-1 text-[11px] font-medium uppercase tracking-[0.16em] text-[color:var(--teal)]">
-          <span>{tour.region}</span>
-          <span aria-hidden="true" className="text-[color:var(--gold)]">
-            ·
-          </span>
-          <span>{tour.theme}</span>
-        </div>
-
         <h3
-          className="experience-card-title t-h3 mt-2.5 text-[color:var(--charcoal)]"
+          className="experience-card-title t-h3 text-[color:var(--charcoal)] md:min-h-[3.1rem]"
         >
           <Link
             to="/tours/$tourId"
@@ -259,33 +251,21 @@ function TourCard({
           </Link>
         </h3>
 
-        <p className="experience-card-promise mt-3 text-[14px] leading-[1.58] text-[color:var(--charcoal-soft)] md:text-[14.5px] md:leading-[1.62]">
+        <ExperienceCardMeta
+          rating={verifiedRating}
+          reviewCount={verifiedReviewCount}
+          duration={signatureDurationLabel(tour.id, tour.durationHours)}
+          location={tour.region}
+        />
+
+        <p className="experience-card-promise mt-4 text-[14px] leading-[1.58] text-[color:var(--charcoal-soft)] md:min-h-[2.9rem] md:text-[14.5px] md:leading-[1.62]">
           {teaser}
         </p>
 
-        <div className="mt-3 flex flex-wrap items-center gap-x-3 gap-y-1.5">
+        <div className="mt-3">
           <span className="font-sans text-[1.125rem] font-semibold text-[color:var(--charcoal)]">
             From <PriceEur amountEur={tour.priceFrom} role="from" /> per person
           </span>
-          <span className="text-[11.5px] uppercase tracking-[0.12em] text-[color:var(--charcoal-soft)]">
-            {signatureDurationLabel(tour.id, tour.durationHours)}
-          </span>
-          {verifiedRating && verifiedReviewCount && verifiedReviewCount > 0 && (
-            <span
-              className="inline-flex items-center gap-1 text-[12px] text-[color:var(--charcoal)]"
-              aria-label={`${verifiedRating.toFixed(1)} out of 5, ${verifiedReviewCount} reviews`}
-            >
-              <Star
-                size={12}
-                fill="currentColor"
-                strokeWidth={0}
-                className="text-[color:var(--gold)]"
-                aria-hidden="true"
-              />
-              <strong>{verifiedRating.toFixed(1)}</strong>
-              <span className="text-[color:var(--charcoal-soft)]">({verifiedReviewCount})</span>
-            </span>
-          )}
         </div>
 
         {idealFor && (
@@ -339,6 +319,44 @@ function TourCard({
         </div>
       </div>
     </article>
+  );
+}
+
+function ExperienceCardMeta({
+  rating,
+  reviewCount,
+  duration,
+  location,
+}: {
+  rating?: number;
+  reviewCount?: number;
+  duration: string | null;
+  location?: string;
+}) {
+  const hasReviews = Boolean(rating && reviewCount && reviewCount > 0);
+  return (
+    <div className="mt-3 flex flex-wrap items-center gap-x-3 gap-y-1.5 border-b border-[color:var(--border)] pb-3 font-sans text-[12px] text-[color:var(--charcoal-soft)]">
+      {hasReviews ? (
+        <span
+          className="inline-flex items-center gap-1 text-[color:var(--charcoal)]"
+          aria-label={`${rating?.toFixed(1)} out of 5, ${reviewCount} reviews`}
+        >
+          <Star
+            size={12}
+            fill="currentColor"
+            strokeWidth={0}
+            className="text-[color:var(--gold)]"
+            aria-hidden="true"
+          />
+          <strong>{rating?.toFixed(1)}</strong>
+          <span className="text-[color:var(--charcoal-soft)]">({reviewCount})</span>
+        </span>
+      ) : (
+        <span className="text-[color:var(--charcoal-soft)]">New</span>
+      )}
+      {duration ? <span>{duration}</span> : null}
+      {location ? <span>{location}</span> : null}
+    </div>
   );
 }
 

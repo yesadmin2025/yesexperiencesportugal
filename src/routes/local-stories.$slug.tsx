@@ -259,7 +259,7 @@ function StaticArticleView({ article }: { article: LocalStoryArticle }) {
   return (
     <SiteLayout>
       <article className="local-stories-scope">
-        <header className="pt-32 md:pt-40 pb-10 bg-[color:var(--sand)]">
+        <header className="page-hero public-page-header">
           <SiteBreadcrumbs
             containerClassName="container-x max-w-3xl"
             className="bg-transparent pt-0 pb-6"
@@ -277,7 +277,7 @@ function StaticArticleView({ article }: { article: LocalStoryArticle }) {
               {article.h1}
             </h1>
             {article.standfirst && (
-              <p className="mt-6 font-serif italic text-[1.1rem] md:text-[1.25rem] leading-[1.55] text-[color:var(--charcoal-soft)] max-w-2xl mx-auto">
+              <p className="page-header-support mt-6 font-sans text-[16px] md:text-[17px] text-[color:var(--charcoal-soft)] max-w-2xl mx-auto">
                 {article.standfirst}
               </p>
             )}
@@ -497,7 +497,7 @@ function DbPostView({ post }: { post: NonNullable<LoaderData["dbPost"]> }) {
   return (
     <SiteLayout>
       <article>
-        <header className="pt-32 md:pt-40 pb-10 bg-[color:var(--sand)]">
+        <header className="page-hero public-page-header">
           <SiteBreadcrumbs
             containerClassName="container-x max-w-3xl"
             className="bg-transparent pt-0 pb-6"

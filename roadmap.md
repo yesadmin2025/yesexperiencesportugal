@@ -84,3 +84,8 @@
 - [x] Capture and inspect required surfaces at five viewports
 - [x] Apply only clearly superior visual refinements
 - [x] Compare after captures and run focused tests
+
+## Mobile header and Experiences consistency
+- [x] Audit requested page headers at 393px and 430px
+- [x] Unify every Experiences card structure and metadata order
+- [x] Validate five viewports and run focused checks

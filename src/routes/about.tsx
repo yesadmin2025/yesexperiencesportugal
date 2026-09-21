@@ -72,25 +72,25 @@ function Page() {
   return (
     <SiteLayout>
       {/* Hero */}
-      <section className="page-hero reveal about-story text-center">
+      <section className="page-hero public-page-header reveal about-story text-center">
         <div className="container-x">
           <Scene>
               <div className="scene-atmosphere">
-                <Eyebrow flank>About YES</Eyebrow>
+                <Eyebrow flank>Our story</Eyebrow>
               </div>
               <div className="scene-title">
                 <SectionTitle as="h1" size="anchor" spacing="loose">
                   About YES Experiences Portugal:{" "}
                   <SectionTitle.Em>local travel designers</SectionTitle.Em>.
                 </SectionTitle>
-                <RouteThread compact className="mx-auto mt-7 max-w-xl" />
+                <RouteThread compact className="page-header-thread mx-auto mt-7 max-w-xl" />
               </div>
-              <p className="scene-body mt-6 max-w-2xl mx-auto text-[color:var(--charcoal-soft)] leading-relaxed">
+              <p className="page-header-support scene-body mt-6 max-w-2xl mx-auto text-[color:var(--charcoal-soft)] leading-relaxed">
                 YES Experiences Portugal is a licensed Portuguese private tour operator, founder-led
                 since 2022 and built around one idea: Portugal should feel personal, local and
                 genuinely yours.
               </p>
-              <p className="scene-body mt-4 max-w-2xl mx-auto text-sm text-[color:var(--charcoal-soft)]/85 leading-relaxed">
+              <p className="page-header-secondary scene-body mt-4 max-w-2xl mx-auto text-sm text-[color:var(--charcoal-soft)]/85 leading-relaxed">
                 Private days, live-designed experiences and full journeys, created from real routes,
                 real guests and real local knowledge.
               </p>

@@ -152,7 +152,7 @@ function ReviewsPage() {
   return (
     <SiteLayout>
       <article>
-        <header className="reveal pt-32 md:pt-40 pb-12 md:pb-16 bg-[color:var(--sand)]">
+        <header className="page-hero public-page-header reveal">
           <div className="container-x max-w-3xl text-center">
             <Scene>
               <div className="scene-atmosphere">
@@ -162,7 +162,7 @@ function ReviewsPage() {
                 <SectionTitle as="h1" size="anchor" spacing="loose">
                   What guests <SectionTitle.Em>actually</SectionTitle.Em> say.
                 </SectionTitle>
-                <RouteThread compact className="mx-auto mt-7 max-w-xl" />
+                <RouteThread compact className="page-header-thread mx-auto mt-7 max-w-xl" />
               </div>
               {global.total_reviews >= 25 && (
                 <p className="scene-body mt-6 font-serif italic text-[1.1rem] md:text-[1.25rem] leading-[1.55] text-[color:var(--charcoal-soft)]">
@@ -179,7 +179,7 @@ function ReviewsPage() {
                   across platforms.
                 </p>
               )}
-              <p className="scene-body mt-4 font-sans text-[12.5px] text-[color:var(--charcoal-soft)]">
+              <p className="page-header-support scene-body mt-5 font-sans text-[12.5px] text-[color:var(--charcoal-soft)]">
                 Based on verified guest reviews across major booking platforms.
               </p>
             </Scene>

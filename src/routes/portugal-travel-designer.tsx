@@ -90,14 +90,14 @@ function PortugalTravelDesignerPage() {
   useMarketingMotion();
   return (
     <SiteLayout>
-      <section className="reveal pt-28 md:pt-36 pb-10 bg-[color:var(--sand)]">
+      <section className="page-hero public-page-header reveal">
         <div className="container-x max-w-3xl text-center">
           <Eyebrow flank>Portugal Travel Designer</Eyebrow>
            <SectionTitle as="h1" size="anchor" spacing="loose" className="text-[40px] leading-[1.08] md:text-[60px] md:leading-[1.02]">
             Portugal, <SectionTitle.Em>shaped around you.</SectionTitle.Em>
           </SectionTitle>
-          <RouteThread compact className="mx-auto mt-6 max-w-xl" />
-          <p className="mt-6 mx-auto max-w-2xl text-[16px] md:text-[17px] leading-[1.7] text-[color:var(--charcoal-soft)]">
+          <RouteThread compact className="page-header-thread mx-auto mt-6 max-w-xl" />
+          <p className="page-header-support mt-6 mx-auto max-w-2xl text-[16px] md:text-[17px] text-[color:var(--charcoal-soft)]">
             One local hand connects the route, rhythm and private experiences into a journey that
             feels entirely your own.
           </p>

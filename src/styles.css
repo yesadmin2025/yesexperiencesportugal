@@ -555,6 +555,27 @@
     padding-bottom: 3.5rem;
     background: var(--sand);
   }
+  /* Calm public-page opening: one measured title stack on small screens.
+     Decorative route threads are intentionally deferred to larger viewports. */
+  .public-page-header h1 {
+    max-width: 20ch;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  .public-page-header .page-header-support {
+    max-width: 42rem;
+    margin-left: auto;
+    margin-right: auto;
+    line-height: 1.7;
+  }
+  @media (max-width: 639px) {
+    .public-page-header .page-header-thread {
+      display: none;
+    }
+    .public-page-header .page-header-secondary {
+      display: none;
+    }
+  }
   @media (min-width: 768px) {
     .page-hero {
       padding-top: 7rem;
