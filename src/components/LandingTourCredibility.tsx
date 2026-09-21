@@ -2,7 +2,7 @@
  * LandingTourCredibility — visible rating + real review snippets for
  * SEO landing pages that map to a Signature parent tour.
  *
- * Mirrors the data emitted by `withAggregateAndReviews()` so Google
+ * Displays verified platform ratings as attributed social proof. These
  * sees the rating + reviews in JSON-LD AND on the page (rich-snippet
  * policy requirement). All content is sourced from the verified
  * Viator meta — never invented.
