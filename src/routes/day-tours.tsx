@@ -1,6 +1,6 @@
 import { localeAlternateLinks } from "@/i18n/seo";
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { breadcrumbLd, itemListLd, jsonLdScript, organizationUsCaAudienceLd } from "@/lib/jsonld";
+import { breadcrumbLd, itemListLd, jsonLdScript } from "@/lib/jsonld";
 import { SiteLayout } from "@/components/SiteLayout";
 import { SiteBreadcrumbs } from "@/components/SiteBreadcrumbs";
 import { Clock, MapPin, Star } from "lucide-react";
@@ -49,7 +49,6 @@ export const Route = createFileRoute("/day-tours")({
       ...localeAlternateLinks("/day-tours"),
     ],
     scripts: [
-      jsonLdScript(organizationUsCaAudienceLd()),
       jsonLdScript(
         breadcrumbLd([
           { name: "Home", path: "/" },

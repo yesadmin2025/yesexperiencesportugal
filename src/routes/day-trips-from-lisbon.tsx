@@ -1,3 +1,4 @@
+import { socialImageMeta } from "@/lib/seo";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { Clock, MapPin, Phone, Mail, Star, Car } from "lucide-react";
 
@@ -16,7 +17,6 @@ import {
   itemListLd,
   jsonLdScript,
   localBusinessLd,
-  organizationUsCaAudienceLd,
 } from "@/lib/jsonld";
 import { LISBON_REGIONS } from "@/content/lisbon-regions";
 
@@ -130,6 +130,7 @@ const FAQS = [
 export const Route = createFileRoute("/day-trips-from-lisbon")({
   head: () => ({
     meta: [
+      ...socialImageMeta(),
       { title: TITLE },
       { name: "description", content: DESCRIPTION },
       { property: "og:title", content: TITLE },
@@ -140,7 +141,6 @@ export const Route = createFileRoute("/day-trips-from-lisbon")({
     ],
     links: [{ rel: "canonical", href: PAGE_URL }],
     scripts: [
-      jsonLdScript(organizationUsCaAudienceLd()),
       jsonLdScript(breadcrumbLd(crumbs)),
       jsonLdScript(
         localBusinessLd({

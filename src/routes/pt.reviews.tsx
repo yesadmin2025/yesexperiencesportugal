@@ -12,7 +12,7 @@ import { CtaButton } from "@/components/ui/CtaButton";
 import { getReviewsPageData } from "@/lib/reviews.functions";
 import { GuestReviewForm } from "@/components/reviews/GuestReviewForm";
 
-import { SITE_URL } from "@/lib/seo";
+import { SITE_URL, socialImageMeta } from "@/lib/seo";
 
 import { useMarketingMotion } from "@/hooks/use-marketing-motion";
 
@@ -33,6 +33,7 @@ export const Route = createFileRoute("/pt/reviews")({
     const description =
       "Avaliações verificadas de clientes no Viator, Tripadvisor, GetYourGuide e submissões diretas para os nossos tours privados a partir de Lisboa.";
     const meta = [
+      ...socialImageMeta(),
       { title },
       { name: "description", content: description },
       { name: "robots", content: "index, follow" },

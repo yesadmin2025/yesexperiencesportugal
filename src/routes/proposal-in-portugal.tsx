@@ -43,7 +43,7 @@ export const Route = createFileRoute("/proposal-in-portugal")({
         content: "Plan a proposal in Portugal — private moments, discreetly designed",
       },
       { name: "twitter:card", content: "summary_large_image" },
-      { property: "twitter:image", content: `${BASE_URL}${imgRomantic}` },
+      { name: "twitter:image", content: `${BASE_URL}${imgRomantic}` },
       { property: "og:url", content: PAGE_URL },
       { property: "og:type", content: "website" },
     ],

@@ -1,3 +1,4 @@
+import { socialImageMeta } from "@/lib/seo";
 import { localeAlternateLinks } from "@/i18n/seo";
 import { createFileRoute } from "@tanstack/react-router";
 
@@ -27,6 +28,7 @@ export const Route = createFileRoute("/pt/contact")({
     const isParamVariant = typeof search.type === "string" && search.type.length > 0;
     return {
     meta: [
+      ...socialImageMeta(),
       // Clean /pt/contact is indexable. Query variants only preselect the
       // enquiry type, so keep those crawlable but out of the index.
       ...(isParamVariant ? [{ name: "robots", content: "noindex, follow" }] : []),

@@ -1,3 +1,4 @@
+import { socialImageMeta } from "@/lib/seo";
 import { createFileRoute, Link } from "@tanstack/react-router";
 
 import { SiteLayout } from "@/components/SiteLayout";
@@ -102,6 +103,7 @@ const FAQS = [
 export const Route = createFileRoute("/portugal-itinerary")({
   head: () => ({
     meta: [
+      ...socialImageMeta(),
       { title: TITLE },
       { name: "description", content: DESCRIPTION },
       { property: "og:title", content: TITLE },

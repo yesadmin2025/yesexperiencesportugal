@@ -4,7 +4,6 @@ import {
   faqPageLd,
   jsonLdScript,
   travelDesignerServiceLd,
-  organizationUsCaAudienceLd,
 } from "@/lib/jsonld";
 import { TRAVEL_DESIGNER_FAQ } from "@/content/seo-faq";
 import { SiteLayout } from "@/components/SiteLayout";
@@ -58,14 +57,13 @@ export const Route = createFileRoute("/multi-day")({
 
       { property: "og:image", content: `https://yesexperiencesportugal.com${imgSintraEstates}` },
       {
-        property: "twitter:image",
+        name: "twitter:image",
         content: `https://yesexperiencesportugal.com${imgSintraEstates}`,
       },
       { property: "og:url", content: "https://yesexperiencesportugal.com/multi-day" },
     ],
     links: [{ rel: "canonical", href: "https://yesexperiencesportugal.com/multi-day" }],
     scripts: [
-      jsonLdScript(organizationUsCaAudienceLd()),
       jsonLdScript(
         breadcrumbLd([
           { name: "Home", path: "/" },

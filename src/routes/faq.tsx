@@ -1,3 +1,4 @@
+import { socialImageMeta } from "@/lib/seo";
 import { createFileRoute, Link } from "@tanstack/react-router";
 
 import { SiteLayout } from "@/components/SiteLayout";
@@ -29,6 +30,7 @@ const crumbs = [
 export const Route = createFileRoute("/faq")({
   head: () => ({
     meta: [
+      ...socialImageMeta(),
       { title: TITLE },
       { name: "description", content: DESCRIPTION },
       { property: "og:title", content: TITLE },

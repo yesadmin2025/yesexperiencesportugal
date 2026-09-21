@@ -1,3 +1,4 @@
+import { socialImageMeta } from "@/lib/seo";
 import { createFileRoute } from "@tanstack/react-router";
 
 import { RegionListingPage, regionTours } from "@/components/seo/RegionListingPage";
@@ -17,6 +18,7 @@ const PAGE_URL = `${WEBSITE_URL}${REGION.path}`;
 export const Route = createFileRoute("/private-tours-alentejo-evora")({
   head: () => ({
     meta: [
+      ...socialImageMeta(),
       { title: REGION.title },
       { name: "description", content: REGION.description },
       { property: "og:title", content: REGION.title },

@@ -1,3 +1,4 @@
+import { socialImageMeta } from "@/lib/seo";
 import { useMemo, useState } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { z } from "zod";
@@ -49,6 +50,7 @@ export const Route = createFileRoute("/book")({
   validateSearch: searchSchema,
   head: () => ({
     meta: [
+      ...socialImageMeta(),
       { title: "Book a Private Day Trip in Portugal — Prices & Contact" },
       {
         name: "description",

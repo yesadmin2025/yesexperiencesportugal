@@ -1,3 +1,4 @@
+import { socialImageMeta } from "@/lib/seo";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { Receipt } from "lucide-react";
 
@@ -72,6 +73,7 @@ const FAQS = [
 export const Route = createFileRoute("/lisbon-wine-tour-prices-and-inclusions")({
   head: () => ({
     meta: [
+      ...socialImageMeta(),
       { title: TITLE },
       { name: "description", content: DESCRIPTION },
       { property: "og:title", content: TITLE },

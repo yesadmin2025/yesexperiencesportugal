@@ -1,3 +1,4 @@
+import { socialImageMeta } from "@/lib/seo";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { Car, Star } from "lucide-react";
 
@@ -18,7 +19,6 @@ import {
   itemListLd,
   jsonLdScript,
   localBusinessLd,
-  organizationUsCaAudienceLd,
 } from "@/lib/jsonld";
 import { LiveReviews } from "@/components/reviews/LiveReviews";
 import { areaProfilesFor } from "@/content/lisbon-regions";
@@ -37,7 +37,7 @@ const PATH = "/lisbon-private-tours";
 const PAGE_URL = `${WEBSITE_URL}${PATH}`;
 const TITLE = "Private Lisbon Tours & Day Trips — Local, Instantly Bookable";
 const DESCRIPTION =
-  "Private Lisbon tours and day trips run by a licensed local operator: Arrábida wine, Sintra & Cascais, Comporta, Évora and the Atlantic coast. Hotel pickup, your group only, book online.";
+  "Private Lisbon tours and day trips with a licensed local guide: Arrábida wine, Sintra & Cascais, Évora and the Atlantic coast. Hotel pickup, your group only.";
 
 const crumbs = [
   { name: "Home", path: "/" },
@@ -92,6 +92,7 @@ const FAQS = [
 export const Route = createFileRoute("/lisbon-private-tours")({
   head: () => ({
     meta: [
+      ...socialImageMeta(),
       { title: TITLE },
       { name: "description", content: DESCRIPTION },
       { property: "og:title", content: TITLE },
@@ -102,7 +103,6 @@ export const Route = createFileRoute("/lisbon-private-tours")({
     ],
     links: [{ rel: "canonical", href: PAGE_URL }],
     scripts: [
-      jsonLdScript(organizationUsCaAudienceLd()),
       jsonLdScript(breadcrumbLd(crumbs)),
       jsonLdScript(
         localBusinessLd({
