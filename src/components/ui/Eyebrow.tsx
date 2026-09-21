@@ -6,11 +6,11 @@ import { cn } from "@/lib/utils";
  * label that introduces every section across the site.
  *
  * Visual contract (locked by .he-eyebrow-bar in src/styles.css):
- *   • 32×1.5px gold-deep leading rule
+ *   • 28×1px gold-deep leading rule
  *   • optional trailing rule when `flank` is true (centred titles, FAQ-style)
- *   • Inter 0.82rem / 600 / tracking 0.24em / uppercase
- *   • 14px gap between rule, optional icon and label
- *   • inline svg icon auto-renders at 12px in --gold-deep
+ *   • Inter 11px / 600 / tracking 0.24em / uppercase
+ *   • 12px gap between rule, optional icon and label
+ *   • inline svg icon auto-renders at 13px in --gold-deep
  *
  * Always use this component instead of writing ad-hoc <span className="eyebrow">
  * or className="he-eyebrow-bar" markup. That way icon, spacing and colour stay
