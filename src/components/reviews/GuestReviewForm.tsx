@@ -34,6 +34,7 @@ const COPY = {
       "Your review has been sent to our team. Once checked, it will appear on this page.",
     note: "We publish reviews as written. Please only review an experience you actually took.",
     genericError: "Could not submit your review",
+    reviewing: "You are reviewing",
   },
   pt: {
     eyebrow: "Viajou connosco?",
@@ -55,19 +56,24 @@ const COPY = {
       "A sua avaliação foi enviada para a nossa equipa. Depois de verificada, aparecerá nesta página.",
     note: "Publicamos as avaliações tal como são escritas. Avalie apenas uma experiência que tenha realizado.",
     genericError: "Não foi possível enviar a sua avaliação",
+    reviewing: "Está a avaliar",
   },
 } as const;
 
 export function GuestReviewForm({
   tours,
   locale = "en",
+  lockedTour,
 }: {
-  tours: TourOption[];
+  tours?: TourOption[];
   locale?: "en" | "pt";
+  /** When set, the form reviews exactly this experience — no picker. */
+  lockedTour?: TourOption;
 }) {
   const t = COPY[locale];
   const submit = useServerFn(submitPublicReview);
-  const [tourId, setTourId] = useState(tours[0]?.tour_id ?? "");
+  const options = lockedTour ? [lockedTour] : (tours ?? []);
+  const [tourId, setTourId] = useState(lockedTour?.tour_id ?? options[0]?.tour_id ?? "");
   const [rating, setRating] = useState(5);
   const [hover, setHover] = useState(0);
   const [title, setTitle] = useState("");
@@ -142,25 +148,34 @@ export function GuestReviewForm({
               {t.intro}
             </p>
             <form onSubmit={onSubmit} className="mt-6 space-y-5">
-              <div>
-                <label className={label} htmlFor="gr-tour">
-                  {t.experience}
-                </label>
-                <select
-                  id="gr-tour"
-                  required
-                  value={tourId}
-                  onChange={(e) => setTourId(e.target.value)}
-                  className={field}
-                >
-                  <option value="">{t.choose}</option>
-                  {tours.map((o) => (
-                    <option key={o.tour_id} value={o.tour_id}>
-                      {o.title}
-                    </option>
-                  ))}
-                </select>
-              </div>
+              {lockedTour ? (
+                <p className="text-[13px] leading-[1.6] text-[color:var(--charcoal-soft)]">
+                  {t.reviewing}{" "}
+                  <span className="font-medium text-[color:var(--charcoal)]">
+                    {lockedTour.title}
+                  </span>
+                </p>
+              ) : (
+                <div>
+                  <label className={label} htmlFor="gr-tour">
+                    {t.experience}
+                  </label>
+                  <select
+                    id="gr-tour"
+                    required
+                    value={tourId}
+                    onChange={(e) => setTourId(e.target.value)}
+                    className={field}
+                  >
+                    <option value="">{t.choose}</option>
+                    {options.map((o) => (
+                      <option key={o.tour_id} value={o.tour_id}>
+                        {o.title}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              )}
 
               <div>
                 <span className={label}>{t.rating}</span>
