@@ -53,15 +53,14 @@ const LIVE_REVIEW_FALLBACK_TOURS = [
 ] as const;
 
 /**
- * Homepage search + social metadata, written in the Hero's own voice so the
- * Google snippet and shared cards read like the premium opening screen.
- * Keeps the primary keyword ("private day trips from Lisbon") intact.
+ * Homepage search + social metadata — brand-wide across Portugal, while
+ * dedicated landing pages own Lisbon and day-trip search intent.
  */
 const HOME_SEO_TITLE =
-  "YES Experiences Portugal | Private Portugal Tours & Day Trips from Lisbon";
+  "Private Tours in Portugal & Tailor-Made Journeys | YES";
 const HOME_SEO_SOCIAL_TITLE = `${HERO_COPY.headlineLine1} ${HERO_COPY.headlineLine2} | YES Experiences Portugal`;
 const HOME_SEO_DESCRIPTION =
-  "Private Portugal tours with local guides: day trips from Lisbon to Sintra, Arrábida and Alentejo wine country, plus tailor-made multi-day Portugal itineraries.";
+  "Private tours, custom day experiences and tailor-made journeys across Portugal. Reserve a Signature day, design your own, or plan a full trip with a local expert.";
 
 
 /** Homepage Journal row — three evergreen Local Stories guides.
@@ -320,7 +319,7 @@ export const Route = createFileRoute("/")({
       jsonLdScript(serviceEntityListLd()),
       jsonLdScript(
         itemListLd({
-          name: "Signature Experiences — YES experiences Portugal",
+          name: "Signature Experiences — YES Experiences Portugal",
           path: "/",
           items: signatureTours.map((t) => ({
             id: t.id,

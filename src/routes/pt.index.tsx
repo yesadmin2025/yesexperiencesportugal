@@ -48,7 +48,7 @@ export const Route = createFileRoute("/pt/")({
     scripts: [
       jsonLdScript(
         itemListLd({
-          name: "Experiências Signature — YES experiences Portugal",
+          name: "Experiências Signature — YES Experiences Portugal",
           path: "/pt",
           items: signatureTours.map((t) => ({
             id: t.id,

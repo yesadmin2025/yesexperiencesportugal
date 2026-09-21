@@ -59,10 +59,10 @@ describe("brand-critical SERP snippets", () => {
   it("homepage title and description are locked", () => {
     const home = read("src/routes/index.tsx");
     expect(home).toContain(
-      '"YES Experiences Portugal | Private Portugal Tours & Day Trips from Lisbon"',
+      '"Private Tours in Portugal & Tailor-Made Journeys | YES"',
     );
     expect(home).toContain(
-      "Private Portugal tours with local guides: day trips from Lisbon to Sintra, Arrábida and Alentejo wine country, plus tailor-made multi-day Portugal itineraries.",
+      "Private tours, custom day experiences and tailor-made journeys across Portugal. Reserve a Signature day, design your own, or plan a full trip with a local expert.",
     );
   });
 

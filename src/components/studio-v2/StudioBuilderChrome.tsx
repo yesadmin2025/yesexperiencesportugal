@@ -361,7 +361,7 @@ function EmailDraftModal({
               href={`mailto:${encodeURIComponent(email)}?subject=${encodeURIComponent(
                 "Your YES Studio draft",
               )}&body=${encodeURIComponent(
-                `Pick up where you left off:\n\n${resumeUrl}\n\n— YES experiences Portugal`,
+                `Pick up where you left off:\n\n${resumeUrl}\n\n— YES Experiences Portugal`,
               )}`}
               className="inline-flex h-10 items-center justify-center w-full rounded-[2px] px-6 text-[11px] uppercase tracking-[0.32em]"
               style={{
