@@ -27,11 +27,6 @@ async function gotoHero(page: Page) {
 }
 
 test.describe("Hero — approved copy lock", () => {
-  test("eyebrow matches approved copy exactly", async ({ page }) => {
-    await gotoHero(page);
-    await expect(page.getByText(HERO_COPY.eyebrow, { exact: true }).first()).toBeVisible();
-  });
-
   test("headline (both lines) matches approved copy exactly", async ({ page }) => {
     await gotoHero(page);
     const h1 = page.locator("h1.hero-h1");
@@ -39,9 +34,13 @@ test.describe("Hero — approved copy lock", () => {
     expect(text).toBe(`${HERO_COPY.headlineLine1} ${HERO_COPY.headlineLine2}`);
   });
 
-  test("subheadline matches approved copy exactly", async ({ page }) => {
+  test("service-support copy stays in the hidden verification contract, not the visual Hero", async ({ page }) => {
     await gotoHero(page);
-    await expect(page.getByText(HERO_COPY.subheadline, { exact: true })).toBeVisible();
+    await expect(page.locator('[data-section="hero"] [data-hero-field="subheadline"]')).toHaveCount(0);
+    await expect(page.locator('[data-testid="hero-copy-version"]')).toHaveAttribute(
+      "data-hero-subheadline",
+      HERO_COPY.subheadline,
+    );
   });
 
   test("primary and secondary CTAs match approved labels", async ({ page }) => {
