@@ -177,10 +177,10 @@ function DayTripsFromLisbon() {
       <SiteBreadcrumbs crumbs={crumbs} />
 
       {/* ── Hero ─────────────────────────────────────────── */}
-      <section className="bg-[color:var(--sand)] py-14 md:py-20">
+      <section className="bg-[color:var(--sand)] py-16 md:py-24">
         <div className="container-x max-w-3xl">
           <Eyebrow flank>Lisbon · Setúbal · Alentejo</Eyebrow>
-          <h1 className="font-serif mt-4 text-[2.25rem] md:text-[3.25rem] font-medium leading-[1.12] md:leading-[1.08] tracking-normal text-[color:var(--charcoal)]">
+          <h1 className="mt-4 font-serif text-[40px] font-medium leading-[1.08] tracking-normal text-[color:var(--charcoal)] md:text-[60px] md:leading-[1.02]">
             Day trips from Lisbon,{" "}
             <span className="italic font-normal text-[color:var(--teal)]">
               designed by people who live here.
@@ -214,7 +214,7 @@ function DayTripsFromLisbon() {
       </section>
 
       {/* ── The days ─────────────────────────────────────── */}
-      <section className="py-14 md:py-20">
+      <section className="py-16 md:py-24">
         <div className="container-x">
           <Eyebrow>The days we run most</Eyebrow>
           <SectionTitle as="h2" spacing="tight">
@@ -227,7 +227,7 @@ function DayTripsFromLisbon() {
                 <span className="font-sans text-[11px] uppercase tracking-[0.22em] font-bold text-[color:var(--gold)]">
                   {tour.region}
                 </span>
-                <h3 className="font-display mt-3 text-[1.2rem] leading-snug text-[color:var(--charcoal)]">
+                <h3 className="mt-3 font-serif text-[24px] leading-[1.2] text-[color:var(--charcoal)] md:text-[26px]">
                   {tour.title}
                 </h3>
                 <p className="mt-3 flex-1 text-[14.5px] leading-[1.75] text-[color:var(--charcoal-soft)]">
@@ -265,7 +265,7 @@ function DayTripsFromLisbon() {
       </section>
 
       {/* ── Comparison table ─────────────────────────────── */}
-      <section className="bg-[color:var(--sand)] py-14 md:py-20">
+      <section className="bg-[color:var(--sand)] py-16 md:py-24">
         <div className="container-x">
           <Eyebrow>Compare every day</Eyebrow>
           <SectionTitle as="h2" spacing="tight">
@@ -370,7 +370,7 @@ function DayTripsFromLisbon() {
       </section>
 
       {/* ── Is it worth it / head to head ────────────────── */}
-      <section className="py-14 md:py-20">
+      <section className="py-16 md:py-24">
         <div className="container-x max-w-3xl">
           <Eyebrow>Deciding between them</Eyebrow>
           <SectionTitle as="h2" spacing="tight">
@@ -409,7 +409,7 @@ function DayTripsFromLisbon() {
       </section>
 
       {/* ── Coming from the US ───────────────────────────── */}
-      <section className="bg-[color:var(--sand)] py-14 md:py-20">
+      <section className="bg-[color:var(--sand)] py-16 md:py-24">
         <div className="container-x max-w-3xl">
           <Eyebrow>Coming from the United States</Eyebrow>
           <SectionTitle as="h2" spacing="tight">
@@ -445,7 +445,7 @@ function DayTripsFromLisbon() {
       <RealReviewsStrip />
 
       {/* ── Where we are ─────────────────────────────────── */}
-      <section className="py-14 md:py-20">
+      <section className="py-16 md:py-24">
         <div className="container-x max-w-4xl">
           <Eyebrow>Where we are</Eyebrow>
           <SectionTitle as="h2" spacing="tight">
@@ -522,7 +522,7 @@ function DayTripsFromLisbon() {
       </section>
 
       {/* ── By region ────────────────────────────────────── */}
-      <section className="bg-[color:var(--sand)] py-14 md:py-20">
+      <section className="bg-[color:var(--sand)] py-16 md:py-24">
         <div className="container-x max-w-4xl">
           <Eyebrow>Day tours from Lisbon, by region</Eyebrow>
           <SectionTitle as="h2" spacing="tight">
