@@ -112,12 +112,15 @@ const HOW_IT_WORKS = [
 
 function BookPage() {
   const { tour: tourParam } = Route.useSearch();
-  const preselected = tourParam && findTour(tourParam) ? tourParam : "";
+  // MODE A (instant) is driven ONLY by a valid ?tour= URL param.
+  const instantTour = tourParam ? findTour(tourParam) : undefined;
+  const instantMode = Boolean(instantTour);
 
   const [step, setStep] = useState<0 | 1 | 2>(0);
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
-  const [tourId, setTourId] = useState(preselected);
+  // MODE B (request) selection is independent of the URL preselection.
+  const [tourId, setTourId] = useState("");
   const [date, setDate] = useState("");
   const [adults, setAdults] = useState(2);
   const [children, setChildren] = useState(0);
