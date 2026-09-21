@@ -17,26 +17,26 @@ base: animation: heroEnterFadeOnly 0.4s ease-out 0.6s both !important;"
 `;
 
 exports[`Typography regression — token rules from styles.css > token .t-display 1`] = `
-"base: font-family: var(--font-editorial); font-weight: 400; font-size: clamp(2.55rem, 10vw, 3rem); line-height: 1.04; letter-spacing: -0.015em;
-base: font-size: clamp(3.25rem, 5vw, 4.5rem); line-height: 1.02; letter-spacing: -0.018em;
-base: font-size: clamp(3.25rem, 5vw, 4.5rem); line-height: 1.02;"
+"base: font-family: var(--font-display); font-weight: 500; font-size: 2.25rem; line-height: 1.06; letter-spacing: 0;
+base: font-size: 4rem;
+base: font-size: 4.75rem; line-height: 1.06;"
 `;
 
-exports[`Typography regression — token rules from styles.css > token .t-eyebrow 1`] = `"base: font-family: var(--font-body); font-size: 0.82rem; line-height: 1.3; font-weight: 600; letter-spacing: 0.24em; text-transform: uppercase; color: var(--charcoal-soft);"`;
+exports[`Typography regression — token rules from styles.css > token .t-eyebrow 1`] = `"base: font-family: var(--font-sans); font-size: 11px; line-height: 1; letter-spacing: 0.28em; text-transform: uppercase; color: var(--charcoal-soft);"`;
 
 exports[`Typography regression — token rules from styles.css > token .t-h1 1`] = `
-"base: font-family: var(--font-editorial); font-weight: 400; font-size: clamp(2.55rem, 10vw, 3rem); line-height: 1.04; letter-spacing: -0.015em;
-base: font-size: clamp(3.25rem, 5vw, 4.5rem); line-height: 1.02; letter-spacing: -0.018em;"
+"base: font-family: var(--font-display); font-weight: 500; font-size: 2rem; line-height: 1.1; letter-spacing: 0;
+base: font-size: 3.75rem; line-height: 1.08;"
 `;
 
 exports[`Typography regression — token rules from styles.css > token .t-h2 1`] = `
-"base: font-family: var(--font-editorial); font-weight: 400; font-size: 2.5rem; line-height: 1.06; letter-spacing: -0.012em;
-base: font-size: 3.5rem; line-height: 1.03;"
+"base: font-family: var(--font-display); font-weight: 500; font-size: 1.78rem; line-height: 1.18; letter-spacing: 0;
+base: font-size: 2.25rem; line-height: 1.1;"
 `;
 
 exports[`Typography regression — token rules from styles.css > token .t-h3 1`] = `
-"base: font-family: var(--font-editorial); font-weight: 400; font-size: 1.9rem; line-height: 1.08; letter-spacing: -0.008em;
-base: font-size: 2.075rem; line-height: 1.08;"
+"base: font-family: var(--font-display); font-weight: 500; font-size: 1.5rem; line-height: 1.22; letter-spacing: 0;
+base: font-size: 1.625rem; line-height: 1.18;"
 `;
 
 exports[`Typography regression — token rules from styles.css > token .t-lead 1`] = `
