@@ -40,18 +40,20 @@ export function StudioTrustStrip({ reviewsLabel: _r = "reviews" }: Props) {
           ★★★★★
         </span>
         <span>{REVIEW_CERTIFICATE.ratingValue} · {REVIEW_COUNT_DISPLAY} reviews</span>
-        <span aria-hidden="true" className="opacity-40">
-          ·
+        <span className="hidden sm:contents">
+          <span aria-hidden="true" className="opacity-40">
+            ·
+          </span>
+          <span>Google</span>
+          <span aria-hidden="true" className="opacity-30">
+            ·
+          </span>
+          <span>Tripadvisor</span>
+          <span aria-hidden="true" className="opacity-30">
+            ·
+          </span>
+          <span>GetYourGuide</span>
         </span>
-        <span>Google</span>
-        <span aria-hidden="true" className="opacity-30">
-          ·
-        </span>
-        <span>Tripadvisor</span>
-        <span aria-hidden="true" className="opacity-30">
-          ·
-        </span>
-        <span>GetYourGuide</span>
       </span>
     </div>
   );
