@@ -17,7 +17,6 @@ import { GuestQuotes } from "@/components/home/GuestQuotes";
 import { StudioLivePreview } from "@/components/home/StudioLivePreview";
 import { CinematicHero } from "@/components/home/CinematicHero";
 import { RecentJourney } from "@/components/home/RecentJourney";
-import { ExitIntentEmailCapture } from "@/components/home/EmailCapture";
 import { FiveWaysIn } from "@/components/home/FiveWaysIn";
 
 import { getScrollDebugFlags, useScrollDebugFlags } from "@/lib/scroll-debug";
@@ -1102,7 +1101,6 @@ function HomePage() {
           </div>
         </section>
       </div>
-      <ExitIntentEmailCapture />
     </SiteLayout>
   );
 }
