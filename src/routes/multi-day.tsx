@@ -188,7 +188,7 @@ function MultiDayPage() {
     <SiteLayout>
       {/* ── Hero ─────────────────────────────────────────── */}
       <section className="page-hero public-page-header reveal">
-        <div className="container-x max-w-3xl text-center">
+        <div className="container-x max-w-3xl text-center header-seq">
           <Eyebrow flank>Travel Designer Portugal</Eyebrow>
           <SectionTitle as="h1" size="anchor" spacing="loose" className="text-[40px] leading-[1.08] md:text-[60px] md:leading-[1.02]">
             Full Portugal journeys, <SectionTitle.Em>designed for you.</SectionTitle.Em>
@@ -207,14 +207,11 @@ function MultiDayPage() {
               See Sample Travel File
             </CtaButton>
           </div>
-          <p className="mt-5 font-sans text-[11px] md:text-[12px] uppercase tracking-[0.24em] text-[color:var(--charcoal)]/85">
-            Designed locally · Delivered as a travel file · Supported in Portugal
-          </p>
         </div>
       </section>
 
       {/* ── Editorial intro (indexable) ─────────────────────── */}
-      <section className="section-y chapter-flow bg-[color:var(--ivory)] reveal">
+      <section className="section-y-major chapter-flow bg-[color:var(--ivory)] reveal">
         <div className="container-x max-w-3xl">
           <div className="space-y-5 text-[color:var(--charcoal-soft)] leading-relaxed">
             <p>
@@ -231,6 +228,9 @@ function MultiDayPage() {
               Rather than forcing every guest into a fixed package, we create a coherent route with
               realistic travel times and space for each region to feel distinct. The journey may
               begin in Lisbon, but it is designed to reveal a wider Portugal.
+            </p>
+            <p className="font-sans text-[11px] md:text-[12px] uppercase tracking-[0.24em] text-[color:var(--charcoal)]/85">
+              Designed locally · Delivered as a travel file · Supported in Portugal
             </p>
           </div>
         </div>

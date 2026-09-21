@@ -51,7 +51,7 @@ function FaqPage() {
 
       {/* Hero */}
       <section className="page-hero public-page-header reveal bg-[color:var(--sand)] text-center">
-        <div className="container-x max-w-3xl">
+        <div className="container-x max-w-3xl header-seq">
           <Eyebrow flank>Before you book</Eyebrow>
           <SectionTitle as="h1" size="anchor" spacing="loose">
             Everything worth asking, <SectionTitle.Em>answered honestly.</SectionTitle.Em>
