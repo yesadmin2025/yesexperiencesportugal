@@ -79,7 +79,7 @@ function expectClean(payload: unknown, minReviews: number) {
 }
 
 describe("GuestQuotes JSON-LD → Google Rich Results guard", () => {
-  it("empty carousel still emits a valid AggregateRating with the 700+ fallback", () => {
+  it("empty carousel still emits a valid AggregateRating with the 1,000+ fallback", () => {
     const payload = buildGuestQuotesJsonLd([], { count: null, avg: null });
     expectClean(payload, 0);
     const agg = (payload["@graph"][0] ?? {}) as Record<string, unknown>;

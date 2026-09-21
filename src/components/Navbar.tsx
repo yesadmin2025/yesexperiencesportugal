@@ -14,7 +14,7 @@ function usePrimaryLinks() {
   return [
     { to: "/experiences", label: t("nav.experiences") },
     { to: "/studio-v3", label: t("nav.studio") },
-    { to: "/multi-day", label: t("nav.travel_designer") },
+    { to: "/portugal-travel-designer", label: t("nav.travel_designer") },
   ];
 }
 
