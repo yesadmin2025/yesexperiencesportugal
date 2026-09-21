@@ -389,7 +389,7 @@ const HEADLINES: HeadlineSpec[] = [
     // The visible stanza is the semantic <h1>; each line is a block-level
     // <span> inside it so the two-line cadence and animation are unchanged.
     pattern:
-      /<span\s+className="(hero-title-line block font-editorial font-normal italic m-0)"[^>]*>\s*\n[\s\S]*?HERO_PHRASES\[0\]/,
+      /<span\s+className="(hero-title-line block font-serif italic font-normal m-0 text-[color:var(--gold-soft)])"[^>]*>\s*\n[\s\S]*?HERO_PHRASES\[0\]/,
   },
   {
     page: "home",
