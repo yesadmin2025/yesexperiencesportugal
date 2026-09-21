@@ -44,6 +44,10 @@ export function Navbar() {
   const linkClass =
     "link-hairline tap inline-flex min-h-[44px] items-center font-sans font-medium tracking-[0.03em] text-[color:var(--charcoal)] hover:text-[color:var(--teal)] transition-colors duration-[var(--dur-quick)] rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--teal)] focus-visible:ring-offset-4 focus-visible:ring-offset-[color:var(--ivory,#FAF8F3)]";
 
+  const toggleMobileMenu = () => {
+    setOpen((value) => !value);
+  };
+
   return (
     <header
       className="fixed top-0 inset-x-0 z-50 border-b border-[color:var(--charcoal)]/[0.06] bg-[rgb(247,243,236)] opacity-0 animate-[headerFade_600ms_ease-out_forwards]"
@@ -99,7 +103,7 @@ export function Navbar() {
             <button
               type="button"
               className="tap inline-flex h-11 w-11 items-center justify-center rounded-full text-[color:var(--charcoal)] transition-colors hover:text-[color:var(--teal)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--teal)]"
-              onClick={() => setOpen((value) => !value)}
+              onClick={toggleMobileMenu}
               aria-label={open ? "Close menu" : "Open menu"}
               aria-expanded={open}
               aria-controls="mobile-nav"
