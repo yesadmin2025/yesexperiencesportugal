@@ -28,4 +28,4 @@ export const REVIEW_CERTIFICATE = {
 export const TRUSTINDEX_LOADER_SRC = `https://cdn.trustindex.io/loader-cert.js?${REVIEW_CERTIFICATE.widgetId}`;
 
 /** Display string for the review count, e.g. "1000 customer reviews". */
-export const REVIEW_COUNT_DISPLAY = String(REVIEW_CERTIFICATE.reviewCount);
+export const REVIEW_COUNT_DISPLAY = REVIEW_CERTIFICATE.reviewCount.toLocaleString("en-US");
