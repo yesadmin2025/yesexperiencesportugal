@@ -5,20 +5,51 @@
  * blurs of the same field deduplicate at the email_send_log layer.
  */
 import { createServerFn } from "@tanstack/react-start";
+import { getRequest } from "@tanstack/react-start/server";
 import { z } from "zod";
 
+/**
+ * Free-text coming from the browser is rendered inside a branded email, so it
+ * must never be able to carry links, markup or injected headers. We strip URLs,
+ * angle brackets and control characters before anything reaches a template.
+ */
+const URL_LIKE =
+  /((https?:\/\/|www\.)\S+|\b[\w.-]+\.(com|net|org|io|co|pt|es|ru|xyz|info|biz|link|top|cn)\b\S*)/gi;
+
+function sanitizeText(value: string): string {
+  return value
+    .replace(/[\r\n\t]+/g, " ")
+    // eslint-disable-next-line no-control-regex
+    .replace(/[\u0000-\u001f\u007f]/g, "")
+    .replace(URL_LIKE, "")
+    .replace(/[<>]/g, "")
+    .replace(/\s{2,}/g, " ")
+    .trim();
+}
+
+const safeText = (max: number) =>
+  z
+    .string()
+    .max(max)
+    .transform(sanitizeText)
+    .refine((v) => v.length > 0, "Required");
+
 const chapterSchema = z.object({
-  title: z.string().min(1).max(200),
-  body: z.string().min(1).max(600),
+  title: safeText(200),
+  body: safeText(600),
 });
 
 const snapshotSchema = z.object({
-  title: z.string().min(1).max(200),
-  dateLabel: z.string().max(80).nullable(),
+  title: safeText(200),
+  dateLabel: z
+    .string()
+    .max(80)
+    .nullable()
+    .transform((v) => (v === null ? null : sanitizeText(v) || null)),
   guests: z.number().int().min(1).max(24),
-  pickupLabel: z.string().min(1).max(200),
+  pickupLabel: safeText(200),
   chapters: z.array(chapterSchema).max(6),
-  inclusions: z.array(z.string().min(1).max(200)).max(10),
+  inclusions: z.array(safeText(200)).max(10),
 });
 
 const inputSchema = z.object({
@@ -43,14 +74,58 @@ async function sha1Hex(input: string): Promise<string> {
   return Array.from(new Uint8Array(hash), (b) => b.toString(16).padStart(2, "0")).join("");
 }
 
+function clientIp(): string {
+  try {
+    const h = getRequest().headers;
+    const raw =
+      h.get("cf-connecting-ip") ??
+      h.get("x-real-ip") ??
+      (h.get("x-forwarded-for") ?? "").split(",")[0] ??
+      "";
+    return raw.trim();
+  } catch {
+    return "";
+  }
+}
+
 export const sendSignatureStoryEmail = createServerFn({ method: "POST" })
   .inputValidator((data) => inputSchema.parse(data))
   .handler(async ({ data }) => {
     try {
-      const [{ sendTransactionalInternal }, { TEAM_NOTIFICATION_RECIPIENTS }] = await Promise.all([
-        import("@/lib/email/send-internal.server"),
-        import("@/lib/email/team-recipients"),
-      ]);
+      const [{ sendTransactionalInternal }, { TEAM_NOTIFICATION_RECIPIENTS }, { rateLimit }] =
+        await Promise.all([
+          import("@/lib/email/send-internal.server"),
+          import("@/lib/email/team-recipients"),
+          import("@/lib/rateLimit.server"),
+        ]);
+
+      // Abuse cap: this endpoint is intentionally unauthenticated (it fires on
+      // email blur during Studio), so cap sends per caller network and per
+      // recipient address. Exceeding the cap is silent — the guest flow must
+      // never break, and an abuser gets no signal.
+      const ip = clientIp();
+      const recipientKey = await sha1Hex(`recipient:${data.email.toLowerCase()}`);
+      const limits = [
+        ip
+          ? rateLimit({
+              sessionId: await sha1Hex(`ip:${ip}`),
+              bucket: "signature-story-ip",
+              limit: 5,
+              windowSec: 3600,
+            })
+          : Promise.resolve({ ok: true }),
+        rateLimit({
+          sessionId: recipientKey,
+          bucket: "signature-story-recipient",
+          limit: 6,
+          windowSec: 86_400,
+        }),
+      ];
+      const results = await Promise.all(limits);
+      if (results.some((r) => !r.ok)) {
+        console.warn("[sendSignatureStoryEmail] rate limited");
+        return { ok: true } as const;
+      }
       // Revision-scoped idempotency: repeated submits of the same journey
       // dedupe at the email_send_log layer; a refined journey (new revision)
       // sends a fresh copy.
