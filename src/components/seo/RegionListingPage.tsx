@@ -57,13 +57,13 @@ export function RegionListingPage({ region }: { region: LisbonRegion }) {
     <SiteLayout>
       <SiteBreadcrumbs crumbs={crumbs} />
 
-      <section className="bg-[color:var(--sand)] py-14 md:py-20">
+      <section className="bg-[color:var(--sand)] py-16 md:py-24">
         <div className="container-x max-w-3xl">
           <Eyebrow flank>{region.eyebrow}</Eyebrow>
-          <h1 className="font-display mt-5 text-[2rem] sm:text-[2.4rem] md:text-[3rem] font-medium leading-[1.08] tracking-[-0.02em] text-[color:var(--charcoal)]">
+          <SectionTitle as="h1" size="anchor" spacing="loose">
             {region.h1Lead}{" "}
-            <span className="italic font-normal text-[color:var(--teal)]">{region.h1Em}</span>
-          </h1>
+            <SectionTitle.Em>{region.h1Em}</SectionTitle.Em>
+          </SectionTitle>
           <p className="mt-6 text-[16px] md:text-[17px] leading-[1.8] text-[color:var(--charcoal-soft)]">
             {region.standfirst}
           </p>
@@ -100,7 +100,7 @@ export function RegionListingPage({ region }: { region: LisbonRegion }) {
         </div>
       </section>
 
-      <section className="py-14 md:py-20">
+      <section className="py-16 md:py-24">
         <div className="container-x">
           <Eyebrow>The days we run here</Eyebrow>
           <SectionTitle as="h2" spacing="tight">
@@ -113,7 +113,7 @@ export function RegionListingPage({ region }: { region: LisbonRegion }) {
                 <span className="font-sans text-[11px] uppercase tracking-[0.22em] font-bold text-[color:var(--gold)]">
                   {tour.region}
                 </span>
-                <h3 className="font-display mt-3 text-[1.2rem] leading-snug text-[color:var(--charcoal)]">
+                <h3 className="mt-3 font-serif text-[24px] leading-[1.2] text-[color:var(--charcoal)] md:text-[26px]">
                   {tour.title}
                 </h3>
                 <p className="mt-3 flex-1 text-[14.5px] leading-[1.75] text-[color:var(--charcoal-soft)]">
@@ -172,7 +172,7 @@ export function RegionListingPage({ region }: { region: LisbonRegion }) {
       {/* Local orientation for each service area this page covers. */}
       {areaProfilesFor(region.path).length > 0 ? (
         <section
-          className="border-t border-[color:var(--border)] py-14 md:py-20"
+          className="border-t border-[color:var(--border)] py-16 md:py-24"
           aria-labelledby="region-areas-title"
         >
           <div className="container-x max-w-4xl">
@@ -183,7 +183,7 @@ export function RegionListingPage({ region }: { region: LisbonRegion }) {
             <div className="mt-9 grid gap-8 md:gap-10">
               {areaProfilesFor(region.path).map((a) => (
                 <article key={a.anchor} id={a.anchor} className="scroll-mt-24 md:scroll-mt-28">
-                  <h3 className="serif text-[1.4rem] leading-snug text-[color:var(--charcoal)] md:text-[1.7rem]">
+                   <h3 className="font-serif text-[24px] leading-[1.2] text-[color:var(--charcoal)] md:text-[26px]">
                     {a.heading}
                   </h3>
                   <p className="mt-3 text-[15px] leading-[1.75] text-[color:var(--charcoal-soft)]">
@@ -211,7 +211,7 @@ export function RegionListingPage({ region }: { region: LisbonRegion }) {
       ) : null}
 
 
-      <section className="py-14 md:py-20">
+      <section className="py-16 md:py-24">
         <div className="container-x max-w-4xl">
           <Eyebrow>Practical details</Eyebrow>
           <SectionTitle as="h2" spacing="tight">
@@ -316,7 +316,7 @@ export function RegionListingPage({ region }: { region: LisbonRegion }) {
         </div>
       </section>
 
-      <section className="border-t border-[color:var(--border)] py-14 md:py-20">
+      <section className="border-t border-[color:var(--border)] py-16 md:py-24">
         <div className="container-x max-w-4xl">
           <Eyebrow>Where we collect you</Eyebrow>
           <SectionTitle as="h2" spacing="tight">

@@ -153,15 +153,15 @@ function HowManyDays() {
     <SiteLayout>
       <SiteBreadcrumbs crumbs={crumbs} />
 
-      <section className="bg-[color:var(--sand)] py-14 md:py-20">
+      <section className="bg-[color:var(--sand)] py-16 md:py-24">
         <div className="container-x max-w-3xl">
           <Eyebrow flank>Trip planning · Portugal</Eyebrow>
-          <h1 className="font-display mt-5 text-[2rem] sm:text-[2.4rem] md:text-[3rem] font-medium leading-[1.08] tracking-[-0.02em] text-[color:var(--charcoal)]">
+          <SectionTitle as="h1" size="anchor" spacing="loose">
             How many days do you need in Portugal?{" "}
-            <span className="italic font-normal text-[color:var(--teal)]">
+            <SectionTitle.Em>
               Seven, if you are asking.
-            </span>
-          </h1>
+            </SectionTitle.Em>
+          </SectionTitle>
           <p className="mt-6 text-[16px] md:text-[17px] leading-[1.8] text-[color:var(--charcoal-soft)]">
             Below is what genuinely fits in five, seven, ten and fourteen days, what we would cut
             first, and which private days are worth the drive. We are a licensed Portuguese
@@ -176,7 +176,7 @@ function HowManyDays() {
         </div>
       </section>
 
-      <section className="py-14 md:py-20">
+      <section className="py-16 md:py-24">
         <div className="container-x max-w-3xl">
           <Eyebrow>Four trip shapes</Eyebrow>
           <SectionTitle as="h2" spacing="tight">
@@ -192,7 +192,7 @@ function HowManyDays() {
                 <span className="font-sans text-[11px] uppercase tracking-[0.22em] font-bold text-[color:var(--gold)]">
                   {shape.length}
                 </span>
-                <h3 className="font-display mt-3 text-[1.35rem] leading-snug text-[color:var(--charcoal)]">
+                <h3 className="mt-3 font-serif text-[24px] leading-[1.2] text-[color:var(--charcoal)] md:text-[26px]">
                   {shape.verdict}
                 </h3>
                 <p className="mt-3 text-[15.5px] leading-[1.85] text-[color:var(--charcoal-soft)]">
@@ -242,7 +242,7 @@ function HowManyDays() {
         </div>
       </section>
 
-      <section className="bg-[color:var(--sand)] py-14 md:py-20">
+      <section className="bg-[color:var(--sand)] py-16 md:py-24">
         <div className="container-x max-w-3xl">
           <Eyebrow>Common questions</Eyebrow>
           <SectionTitle as="h2" spacing="tight">

@@ -161,15 +161,15 @@ function PortugalForAmericans() {
     <SiteLayout>
       <SiteBreadcrumbs crumbs={crumbs} />
 
-      <section className="bg-[color:var(--sand)] py-14 md:py-20">
+      <section className="bg-[color:var(--sand)] py-16 md:py-24">
         <div className="container-x max-w-3xl">
           <Eyebrow flank>Planning from the United States</Eyebrow>
-          <h1 className="font-display mt-5 text-[2rem] sm:text-[2.4rem] md:text-[3rem] font-medium leading-[1.08] tracking-[-0.02em] text-[color:var(--charcoal)]">
+          <SectionTitle as="h1" size="anchor" spacing="loose">
             Portugal for American travelers,{" "}
-            <span className="italic font-normal text-[color:var(--teal)]">
+            <SectionTitle.Em>
               explained by people who live here.
-            </span>
-          </h1>
+            </SectionTitle.Em>
+          </SectionTitle>
           <p className="mt-6 text-[16px] md:text-[17px] leading-[1.8] text-[color:var(--charcoal-soft)]">
             Flight times, jet lag, money, tipping, driving, the months worth flying for, and how
             long to stay. Everything below is what we tell American guests before they arrive — we
@@ -188,7 +188,7 @@ function PortugalForAmericans() {
         </div>
       </section>
 
-      <section className="py-14 md:py-20">
+      <section className="py-16 md:py-24">
         <div className="container-x max-w-3xl">
           {SECTIONS.map((section) => (
             <article key={section.heading} className="mb-11 last:mb-0">
@@ -210,7 +210,7 @@ function PortugalForAmericans() {
 
       <RealReviewsStrip />
 
-      <section className="py-14 md:py-20">
+      <section className="py-16 md:py-24">
         <div className="container-x max-w-3xl">
           <Eyebrow>Read before you arrive</Eyebrow>
           <SectionTitle as="h2" spacing="tight">
@@ -235,7 +235,7 @@ function PortugalForAmericans() {
         </div>
       </section>
 
-      <section className="bg-[color:var(--sand)] py-14 md:py-20">
+      <section className="bg-[color:var(--sand)] py-16 md:py-24">
         <div className="container-x max-w-3xl">
           <Eyebrow>Questions we get from the US</Eyebrow>
           <SectionTitle as="h2" spacing="tight">

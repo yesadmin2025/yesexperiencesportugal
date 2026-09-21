@@ -76,7 +76,7 @@
 - [x] Validate no gap, clipping, rounding, or horizontal overflow; do not publish.
 
 ## Current preview — remaining public-site audit
-- [ ] Normalize confirmed visual-system gaps across remaining public and editorial routes.
-- [ ] Resolve confirmed mobile, form, Studio, checkout, image, and accessibility issues without changing behavior.
-- [ ] Verify technical SEO safety and repair objective defects only.
+- [x] Normalize confirmed visual-system gaps across remaining public and editorial routes.
+- [x] Resolve confirmed mobile, form, Studio, checkout, image, and accessibility issues without changing behavior.
+- [x] Verify technical SEO safety and repair objective defects only.
 - [ ] Validate representative routes at 393px and 1280px plus focused automated checks; do not publish.
