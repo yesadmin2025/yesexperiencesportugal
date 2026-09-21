@@ -172,7 +172,7 @@ const FILE_GROUPS: Card[] = [
 function GroupCard({ title, body }: Card) {
   return (
     <div className="reveal-stagger bg-[color:var(--ivory)] border border-[color:var(--border)] p-5 md:p-6">
-      <h3 className="serif font-normal tracking-[-0.012em] text-[1.05rem] md:text-[1.15rem] text-[color:var(--charcoal)] leading-tight">
+      <h3 className="serif text-[24px] font-normal leading-[1.08] tracking-normal text-[color:var(--charcoal)] md:text-[26px]">
         {title}
       </h3>
       <p className="mt-3 text-[14.5px] md:text-[15px] text-[color:var(--charcoal-soft)] leading-relaxed">
@@ -190,7 +190,7 @@ function MultiDayPage() {
       <section className="page-hero reveal">
         <div className="container-x max-w-3xl text-center">
           <Eyebrow flank>Travel Designer Portugal</Eyebrow>
-          <SectionTitle as="h1" size="anchor" spacing="loose">
+          <SectionTitle as="h1" size="anchor" spacing="loose" className="text-[40px] leading-[1.08] md:text-[60px] md:leading-[1.02]">
             Full Portugal journeys, <SectionTitle.Em>designed for you.</SectionTitle.Em>
           </SectionTitle>
           <p className="mt-6 text-[1rem] md:text-[1.1rem] text-[color:var(--charcoal-soft)] leading-relaxed">
@@ -214,7 +214,7 @@ function MultiDayPage() {
       </section>
 
       {/* ── Editorial intro (indexable) ─────────────────────── */}
-      <section className="py-12 md:py-16 bg-[color:var(--ivory)] reveal">
+      <section className="py-16 md:py-24 bg-[color:var(--ivory)] reveal">
         <div className="container-x max-w-3xl">
           <div className="space-y-5 text-[color:var(--charcoal-soft)] leading-relaxed">
             <p>
@@ -237,7 +237,7 @@ function MultiDayPage() {
       </section>
 
       {/* ── How a private multi-day journey is created ──────── */}
-      <section className="py-14 md:py-20 reveal">
+      <section className="py-16 md:py-24 reveal">
         <div className="container-x max-w-3xl">
           <Eyebrow icon={<RouteIcon strokeWidth={1.8} />}>How it is created</Eyebrow>
           <SectionTitle as="h2" size="default" spacing="loose">
@@ -291,7 +291,7 @@ function MultiDayPage() {
       </section>
 
       {/* ── Who it is for ────────────────────────────────── */}
-      <section className="py-14 md:py-20 bg-[color:var(--ivory)] reveal">
+      <section className="py-16 md:py-24 bg-[color:var(--ivory)] reveal">
         <div className="container-x max-w-5xl">
           <div className="text-center max-w-2xl mx-auto">
             <Eyebrow icon={<Users strokeWidth={1.8} />}>More than a booking</Eyebrow>
@@ -313,7 +313,7 @@ function MultiDayPage() {
       </section>
 
       {/* ── What we design ────────────────────────────────── */}
-      <section className="py-14 md:py-20 reveal">
+      <section className="py-16 md:py-24 reveal">
         <div className="container-x max-w-5xl">
           <div className="text-center max-w-2xl mx-auto">
             <Eyebrow icon={<Sparkles strokeWidth={1.8} />}>What we design</Eyebrow>
@@ -340,7 +340,7 @@ function MultiDayPage() {
       </section>
 
       {/* ── How it works ─────────────────────────────────── */}
-      <section className="py-14 md:py-20 bg-[color:var(--sand)] reveal">
+      <section className="py-16 md:py-24 bg-[color:var(--sand)] reveal">
         <div className="container-x max-w-5xl">
           <div className="text-center max-w-2xl mx-auto">
             <Eyebrow icon={<Compass strokeWidth={1.8} />}>How it works</Eyebrow>
@@ -357,7 +357,7 @@ function MultiDayPage() {
                 <div className="font-sans text-[11px] uppercase tracking-[0.28em] text-[color:var(--charcoal)]">
                   {s.n}
                 </div>
-                <h3 className="mt-3 serif font-normal tracking-[-0.012em] text-[1.25rem] md:text-[1.4rem] text-[color:var(--charcoal)] leading-tight">
+                <h3 className="mt-3 serif text-[24px] font-normal leading-[1.08] tracking-normal text-[color:var(--charcoal)] md:text-[26px]">
                   {s.title}
                 </h3>
                 <p className="mt-3 text-[color:var(--charcoal-soft)] leading-relaxed">{s.body}</p>
@@ -370,7 +370,7 @@ function MultiDayPage() {
       {/* ── The travel file ──────────────────────────────── */}
       <section
         id="sample-file"
-        className="scroll-mt-24 py-14 md:py-24 bg-[color:var(--ivory)] border-y border-[color:var(--border)] reveal"
+        className="scroll-mt-24 py-16 md:py-24 bg-[color:var(--ivory)] border-y border-[color:var(--border)] reveal"
       >
         <div className="container-x max-w-6xl">
           <div className="text-center max-w-2xl mx-auto mb-10 md:mb-14">
@@ -396,7 +396,7 @@ function MultiDayPage() {
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label="Open the cover page full size"
-                className="block overflow-hidden border border-[color:var(--border)] shadow-[var(--shadow-card)] bg-[color:var(--ivory)] cursor-zoom-in focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--teal)]"
+                className="block overflow-hidden border border-[color:var(--border)] bg-[color:var(--ivory)] cursor-zoom-in focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--teal)]"
               >
                 <img
                   src={SAMPLE_PAGES[0].src}
@@ -412,7 +412,7 @@ function MultiDayPage() {
 
             {/* What's inside — grouped cards */}
             <div className="md:col-span-5">
-              <h3 className="serif text-[1.25rem] md:text-[1.45rem] text-[color:var(--charcoal)] leading-tight">
+              <h3 className="serif text-[24px] leading-[1.08] text-[color:var(--charcoal)] md:text-[26px]">
                 What&rsquo;s inside your file
               </h3>
               <div className="mt-5 grid sm:grid-cols-2 md:grid-cols-1 gap-3 md:gap-4">
@@ -455,7 +455,7 @@ function MultiDayPage() {
                   target="_blank"
                   rel="noopener noreferrer"
                   aria-label={`Open page ${i + 2} full size`}
-                  className="group relative flex-none w-[150px] md:w-[180px] snap-start overflow-hidden border border-[color:var(--border)] shadow-[var(--shadow-soft)] bg-[color:var(--ivory)] cursor-zoom-in focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--teal)]"
+                  className="group relative flex-none w-[150px] md:w-[180px] snap-start overflow-hidden border border-[color:var(--border)] bg-[color:var(--ivory)] cursor-zoom-in focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--teal)]"
                 >
                   <img
                     src={p.src}
@@ -489,7 +489,7 @@ function MultiDayPage() {
         </div>
       </section>
 
-      <section className="py-10 md:py-14 bg-[color:var(--sand)] reveal" aria-label="Start a Travel Designer enquiry">
+      <section className="py-12 md:py-16 bg-[color:var(--sand)] reveal" aria-label="Start a Travel Designer enquiry">
         <div className="container-x max-w-3xl text-center">
           <p className="font-serif italic text-[1.15rem] md:text-[1.35rem] leading-[1.45] text-[color:var(--teal)]">
             Ready to see what your Portugal could look like?
@@ -517,7 +517,7 @@ function MultiDayPage() {
       </section>
 
       {/* ── Where it can go ──────────────────────────────── */}
-      <section className="py-14 md:py-24 reveal">
+      <section className="py-16 md:py-24 reveal">
         <div className="container-x max-w-3xl">
           <Eyebrow icon={<RouteIcon strokeWidth={1.8} />}>Where it can go</Eyebrow>
           <SectionTitle size="compact" spacing="loose">
@@ -546,7 +546,7 @@ function MultiDayPage() {
       </section>
 
       {/* ── Local support ────────────────────────────────── */}
-      <section className="py-14 md:py-20 bg-[color:var(--sand)] reveal">
+      <section className="py-16 md:py-24 bg-[color:var(--sand)] reveal">
         <div className="container-x max-w-3xl text-center">
           <Eyebrow icon={<LifeBuoy strokeWidth={1.8} />}>Local support</Eyebrow>
           <SectionTitle size="compact" spacing="loose">
@@ -569,7 +569,7 @@ function MultiDayPage() {
       </section>
 
       {/* ── FAQ ──────────────────────────────────────────── */}
-      <section className="py-14 md:py-20 bg-[color:var(--ivory)] reveal" aria-labelledby="td-faq">
+      <section className="py-16 md:py-24 bg-[color:var(--ivory)] reveal" aria-labelledby="td-faq">
         <div className="container-x max-w-3xl">
           <div className="text-center">
             <Eyebrow flank>Before you begin</Eyebrow>
@@ -597,7 +597,7 @@ function MultiDayPage() {
       </section>
 
       {/* ── Closing CTA ──────────────────────────────────── */}
-      <section className="py-14 md:py-20 bg-[color:var(--sand)] reveal">
+      <section className="py-16 md:py-24 bg-[color:var(--sand)] reveal">
         <div className="container-x max-w-2xl text-center">
           <Eyebrow icon={<Heart strokeWidth={1.8} />}>Begin</Eyebrow>
           <SectionTitle size="compact" spacing="loose">
@@ -608,17 +608,19 @@ function MultiDayPage() {
             route, until Portugal feels like yours.
           </p>
           <div className="mt-7 flex flex-col sm:flex-row gap-3 justify-center">
-            <CtaButton to="/contact" variant="primary">
-              Begin with a Designer
+            <CtaButton to="/contact" search={{ type: "multi_day" }} variant="primary">
+              {CTA_LABELS.travelDesigner}
             </CtaButton>
-            <a
+            <CtaButton
               href={whatsappHref("Hi YES — I'd like to plan a multi-day Portugal journey.")}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center justify-center gap-2 border border-[color:var(--charcoal)]/25 hover:border-[color:var(--gold)] text-[color:var(--charcoal)] px-6 py-3 text-sm tracking-wide transition-all"
+              variant="ghost"
+              icon={null}
+              iconLeading={<MessageCircle size={14} aria-hidden="true" />}
             >
-              <MessageCircle size={14} aria-hidden="true" /> Talk to a Local
-            </a>
+              Talk to a local
+            </CtaButton>
           </div>
           <p className="mt-6 font-sans text-[11px] uppercase tracking-[0.24em] text-[color:var(--charcoal-soft)]">
             Licensed Portuguese tour operator · local support · private journeys only
