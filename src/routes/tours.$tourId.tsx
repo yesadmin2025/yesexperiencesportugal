@@ -37,7 +37,8 @@ import { Scene } from "@/components/motion/Scene";
 
 import { CtaPair } from "@/components/ui/CtaPair";
 import { breadcrumbLd, tourProductLd, faqPageLd, jsonLdScript } from "@/lib/jsonld";
-import { withAggregateAndReviews } from "@/lib/aggregate-review-schema";
+import { withFirstPartyReviews } from "@/lib/first-party-review-schema";
+import { getFirstPartyReviewBundle } from "@/lib/reviews.functions";
 import { getFaqForTour } from "@/content/seo-faq";
 import { getTourGallery, getHeroAlt } from "@/lib/tour-gallery";
 import { getTourContent, signatureDurationLabel } from "@/lib/tourContent";
@@ -103,7 +104,16 @@ export const Route = createFileRoute("/tours/$tourId")({
     } catch {
       /* copy overrides are optional — never block the page */
     }
-    return { tour };
+    // First-party reviews only — used for Product review structured data and
+    // rendered server-side inside <TourReviews /> so the schema always matches
+    // visible content. External-platform ratings never enter the schema.
+    let firstPartyReviews: Awaited<ReturnType<typeof getFirstPartyReviewBundle>> | null = null;
+    try {
+      firstPartyReviews = await getFirstPartyReviewBundle({ data: { tourId: params.tourId } });
+    } catch {
+      /* reviews are optional — never block the page, and never fall back */
+    }
+    return { tour, firstPartyReviews };
   },
 
   head: ({ params, loaderData }) => {
@@ -182,7 +192,7 @@ export const Route = createFileRoute("/tours/$tourId")({
           ]),
         ),
         jsonLdScript(
-          withAggregateAndReviews(
+          withFirstPartyReviews(
             (() => {
               // Prefer the SoT itinerary (verified against Viator) for JSON-LD.
               // Falls back to legacy tour.stops when SoT is not populated for a tour.
@@ -210,8 +220,6 @@ export const Route = createFileRoute("/tours/$tourId")({
                 img: t.img,
                 priceFrom: (t as { priceFrom?: number }).priceFrom,
                 currency: "EUR",
-                rating: getViatorMeta(params.tourId)?.rating ?? null,
-                reviewCount: getViatorMeta(params.tourId)?.reviewCount ?? null,
                 region: (t as { region?: string }).region ?? null,
                 durationHours: signatureDurationLabel(
                   t.id,
@@ -220,7 +228,7 @@ export const Route = createFileRoute("/tours/$tourId")({
                 stops,
               });
             })(),
-            params.tourId,
+            loaderData?.firstPartyReviews ?? null,
           ),
         ),
         jsonLdScript(faqPageLd(getFaqForTour(params.tourId))),
@@ -350,7 +358,7 @@ function TourDetailPage() {
 
       {/* ── H · REVIEWS — proof right after the decision ───────── */}
       <section className="container-x py-6">
-        <TourReviews tourId={tour.id} />
+        <TourReviews tourId={tour.id} initialFirstParty={firstPartyReviews} />
       </section>
 
       <FinalCta tour={tour} />

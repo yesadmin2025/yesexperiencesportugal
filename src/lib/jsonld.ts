@@ -420,8 +420,6 @@ export function tourProductLd(args: {
   img: string; // absolute or root-relative
   priceFrom?: number;
   currency?: string;
-  rating?: number | null;
-  reviewCount?: number | null;
   region?: string | null;
   durationHours?: string | null;
   stops?: StopForLd[];
@@ -475,17 +473,10 @@ export function tourProductLd(args: {
           },
         }
       : {}),
-    ...(args.rating && args.reviewCount
-      ? {
-          aggregateRating: {
-            "@type": "AggregateRating",
-            ratingValue: args.rating,
-            reviewCount: args.reviewCount,
-            bestRating: 5,
-            worstRating: 1,
-          },
-        }
-      : {}),
+    // No aggregateRating here: review structured data is added separately
+    // from FIRST-PARTY reviews only (see withFirstPartyReviews). Ratings from
+    // Viator/Tripadvisor/GetYourGuide/Google stay visible on-page but must
+    // never feed review structured data.
     potentialAction: {
       "@type": "ReserveAction",
       target: {
