@@ -18,7 +18,6 @@ import {
   SOCIAL,
   WEBSITE_URL,
 } from "@/config/business-nap";
-import { REVIEW_CERTIFICATE } from "@/config/trust-certificate";
 
 export const SITE_URL = WEBSITE_URL;
 
@@ -90,15 +89,6 @@ export function organizationLd() {
         audienceType: "Travel advisors, travel designers, travel agencies",
       },
     ],
-    aggregateRating: {
-      "@type": "AggregateRating",
-      ratingValue: REVIEW_CERTIFICATE.ratingValue,
-      bestRating: REVIEW_CERTIFICATE.bestRating,
-      worstRating: REVIEW_CERTIFICATE.worstRating,
-      reviewCount: REVIEW_CERTIFICATE.reviewCount,
-      // Independently collected and verified — public certificate:
-      // https://www.trustindex.io/reviews/yesexperiencesportugal.com
-    },
     award: [
       "First Portuguese tour operator to offer real-time private tour design and instant reservation through an in-house Experience Studio",
       "Recognised on Tripadvisor, Viator and GetYourGuide for the Arrábida private wine tour from Lisbon",
@@ -1331,13 +1321,6 @@ export function localBusinessLd(args: {
           "https://schema.org/MobileWebPlatform",
         ],
       },
-    },
-    aggregateRating: {
-      "@type": "AggregateRating",
-      ratingValue: REVIEW_CERTIFICATE.ratingValue,
-      bestRating: REVIEW_CERTIFICATE.bestRating,
-      worstRating: REVIEW_CERTIFICATE.worstRating,
-      reviewCount: REVIEW_CERTIFICATE.reviewCount,
     },
   };
 }
