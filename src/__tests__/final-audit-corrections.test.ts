@@ -34,7 +34,8 @@ describe("final audit corrections", () => {
     expect(src).toContain('href="#signature-days"');
     expect(src).toContain('id="signature-days"');
     expect(src).toContain("CTA_LABELS.signatureDiscoveryCompact");
-    expect(src).not.toMatch(/placement: `area:\$\{page\.area\}:hero`[\s\S]*experience_id:/);
+    const heroTracking = src.match(/placement: `area:\$\{page\.area\}:hero`[\s\S]{0,200}/)?.[0] ?? "";
+    expect(heroTracking).not.toContain("experience_id");
     expect(src).toContain("Reserve this day · from €{tour.priceFrom}");
   });
 
@@ -45,8 +46,10 @@ describe("final audit corrections", () => {
     expect(src).toContain('href="#signature-days"');
     expect(src).toContain('id="signature-days"');
     expect(src).toContain("CTA_LABELS.signatureDiscoveryCompact");
-    expect(src).not.toMatch(/placement: `region:\$\{region\.path\}:hero`[\s\S]*experience_id:/);
-    expect(src).not.toMatch(/placement: `region:\$\{region\.path\}:reserve-panel`[\s\S]*experience_id:/);
+    const heroTracking = src.match(/placement: `region:\$\{region\.path\}:hero`[\s\S]{0,200}/)?.[0] ?? "";
+    const reserveTracking = src.match(/placement: `region:\$\{region\.path\}:reserve-panel`[\s\S]{0,200}/)?.[0] ?? "";
+    expect(heroTracking).not.toContain("experience_id");
+    expect(reserveTracking).not.toContain("experience_id");
     expect(src).toContain("Reserve this day · from €{tour.priceFrom}");
   });
 
