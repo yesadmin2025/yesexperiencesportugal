@@ -1,5 +1,5 @@
 import { Link, useRouterState } from "@tanstack/react-router";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Menu, X, Globe } from "lucide-react";
 import { Logo } from "@/components/Logo";
 import { CtaButton } from "@/components/ui/CtaButton";
