@@ -136,7 +136,7 @@ function LisbonPrivateTours() {
       <section className="bg-[color:var(--sand)] py-14 md:py-20">
         <div className="container-x max-w-3xl">
           <Eyebrow flank>Lisbon · private · licensed local operator</Eyebrow>
-          <h1 className="font-display mt-5 text-[2rem] sm:text-[2.4rem] md:text-[3rem] font-medium leading-[1.08] tracking-[-0.02em] text-[color:var(--charcoal)]">
+          <h1 className="font-serif mt-4 text-[2.25rem] md:text-[3.25rem] font-medium leading-[1.12] md:leading-[1.08] tracking-normal text-[color:var(--charcoal)]">
             Private Lisbon tours,{" "}
             <span className="italic font-normal text-[color:var(--teal)]">
               run by the people who live here.
