@@ -209,7 +209,7 @@ function TourCard({
         </div>
 
         <h3
-          className={`experience-card-title mt-3 font-display font-medium leading-[1.14] tracking-normal text-[color:var(--charcoal)] ${featured ? "text-[1.5rem] md:text-[1.75rem]" : "text-[1.45rem] md:text-[1.55rem]"}`}
+          className="experience-card-title mt-3 font-display text-[1.5rem] font-medium leading-[1.16] tracking-normal text-[color:var(--charcoal)] md:text-[1.625rem]"
         >
           <Link
             to="/tours/$tourId"
@@ -313,7 +313,7 @@ function CtaStrip() {
               price in the Studio.
             </p>
           </div>
-          <CtaButton to="/studio-v3" variant="ghost" className="flex-shrink-0">
+          <CtaButton to="/studio-v3" variant="primary" className="flex-shrink-0">
             {CTA_LABELS.studio}
           </CtaButton>
         </div>
