@@ -470,6 +470,13 @@ export function tourProductLd(args: {
             price: args.priceFrom,
             availability: "https://schema.org/InStock",
             seller: { "@id": `${SITE_URL}/#organization` },
+            // Experiences are not shipped — Google accepts doesNotShip in
+            // place of shippingDetails so no fake shipping data is emitted.
+            doesNotShip: true,
+            // Mirrors the published Signature cancellation truth
+            // (src/config/business-nap.ts): free cancellation up to 24h
+            // before the experience.
+            hasMerchantReturnPolicy: SIGNATURE_CANCELLATION_POLICY_LD,
           },
         }
       : {}),
