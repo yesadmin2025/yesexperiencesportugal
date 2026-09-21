@@ -89,6 +89,18 @@ export function CookieConsent() {
 
   React.useEffect(() => {
     if (!hydrated) return;
+    if (open && !conversionOverlayOpen) {
+      document.documentElement.dataset.cookieConsentOpen = "true";
+    } else {
+      delete document.documentElement.dataset.cookieConsentOpen;
+    }
+    return () => {
+      delete document.documentElement.dataset.cookieConsentOpen;
+    };
+  }, [conversionOverlayOpen, hydrated, open]);
+
+  React.useEffect(() => {
+    if (!hydrated) return;
     const existing = readStored();
     if (!existing) {
       // No decision yet — hold custom events in the queue until the guest

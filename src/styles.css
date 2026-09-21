@@ -6532,9 +6532,9 @@ html {
 /* Consent is the only action that should occupy the bottom edge while open.
    Temporarily remove competing fixed controls rather than stacking them behind
    the dialog or obscuring conversion details. */
-html:has(.cookie-consent-card) [data-testid="mobile-reserve-bar"],
-html:has(.cookie-consent-card) [data-testid="whatsapp-support-button"],
-html:has(.cookie-consent-card) [data-testid="floating-actions"] {
+html[data-cookie-consent-open="true"] [data-testid="mobile-reserve-bar"],
+html[data-cookie-consent-open="true"] [data-testid="whatsapp-support-button"],
+html[data-cookie-consent-open="true"] [data-testid="floating-actions"] {
   visibility: hidden;
   pointer-events: none;
 }
