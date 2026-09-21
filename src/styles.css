@@ -8477,6 +8477,14 @@ html.reveal-ready .about-story.is-visible .about-copy-sequence p:nth-child(4) { 
   width: 100%;
   justify-self: center;
 }
+.hero-cinematic .hero-stanza-zone {
+  grid-row: 2;
+  align-self: center;
+}
+.hero-cinematic .hero-cta-group {
+  grid-row: 4;
+  align-self: end;
+}
 
 /* One alignment grid for the whole marketing homepage. */
 .home-energy {
