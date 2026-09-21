@@ -547,6 +547,20 @@
     padding-top: var(--section-y-app);
     padding-bottom: var(--section-y-app);
   }
+
+  /* Canonical public page hero spacing. Marketing pages should use this
+     instead of inventing route-specific pt/pb values. */
+  .page-hero {
+    padding-top: 6rem;
+    padding-bottom: 3.5rem;
+    background: var(--sand);
+  }
+  @media (min-width: 768px) {
+    .page-hero {
+      padding-top: 7rem;
+      padding-bottom: 4rem;
+    }
+  }
   /* Original editorial rhythm: 64px mobile / 96px desktop, with taller
      anchor chapters and quieter supporting bands. */
   @media (min-width: 768px) {
