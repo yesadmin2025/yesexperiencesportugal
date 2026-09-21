@@ -8118,15 +8118,10 @@ html.reveal-ready .about-story--quiet :is(li, a) { transition-delay: 0ms; }
 [data-scene="in"] .experience-editorial-card:nth-child(even) .experience-card-image {
   clip-path: inset(0);
 }
-.experience-card-image { aspect-ratio: 4 / 5; }
+.experience-card-image { aspect-ratio: 3 / 2; }
 .experience-card-image > * { height: 100%; aspect-ratio: auto; }
 .experience-card-content { position: relative; }
 .experience-card-promise { max-width: 42ch; }
-@media (min-width: 768px) {
-  .experience-editorial-card:nth-child(4n + 2) { margin-top: 5rem; }
-  .experience-editorial-card:nth-child(4n + 3) .experience-card-image { aspect-ratio: 5 / 4; }
-  .experience-editorial-card[data-experience-position="lead"] .experience-card-image { aspect-ratio: 5 / 4; }
-}
 [data-scene-ready="1"] .experience-card-content > * {
   opacity: 0;
   transition: opacity 520ms var(--motion-ease-editorial);
