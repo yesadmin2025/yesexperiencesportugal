@@ -88,7 +88,7 @@ export function Navbar() {
               <Globe size={13} strokeWidth={1.6} aria-hidden />
               <LanguageSwitcher variant="header" />
             </span>
-            <CtaButton to="/studio-v3" variant="primary" size="sm" className="ml-1">
+            <CtaButton to="/studio-v3" variant={pathname === "/" || pathname === "/pt" ? "ghost" : "primary"} size="sm" className="ml-1">
               Design your day
             </CtaButton>
           </nav>

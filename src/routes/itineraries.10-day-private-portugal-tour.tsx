@@ -212,13 +212,13 @@ function Page() {
   return (
     <SiteLayout>
       {/* Hero */}
-      <section className="reveal pt-32 pb-14 bg-[color:var(--sand)] text-center">
+      <section className="page-hero public-page-header reveal text-center">
         <div className="container-x">
           <Eyebrow flank>Sample 10-day itinerary</Eyebrow>
           <SectionTitle as="h1" size="anchor" spacing="loose">
             A private ten-day <SectionTitle.Em>Portugal</SectionTitle.Em>, composed with you.
           </SectionTitle>
-          <p className="mt-6 max-w-2xl mx-auto text-[color:var(--charcoal-soft)] leading-relaxed">
+          <p className="page-header-support mt-6 max-w-2xl mx-auto text-[color:var(--charcoal-soft)] leading-relaxed">
             Lisbon, Sintra, the Arrábida coast and the Alentejo — stitched into a single, unhurried
             private journey. This is a <strong className="font-medium text-[color:var(--charcoal)]">sample shape</strong>, not
             a fixed package: the actual days are composed with a human Travel Designer and confirmed

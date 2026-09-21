@@ -109,13 +109,15 @@ describe("reveal animation contract — CSS rules", () => {
     expect(body).toMatch(/transition:[\s\S]*transform/);
   });
 
-  it("card reveal uses 22px travel and a restrained crop", () => {
+  it("card reveal uses the approved 18px mobile / 22px desktop travel and a restrained crop", () => {
     const body = ruleBlock(
       'html.motion-ready[data-motion-scope="marketing"] [data-motion="card-reveal"] {',
     );
     expect(body, "marketing card-reveal rule must exist").not.toBe("");
-    expect(body).toMatch(/transform:\s*translate3d\(0,\s*22px,\s*0\)/);
-    expect(body).toMatch(/clip-path:\s*inset\(3% 3% 3% 3%\)/);
+    expect(body).toMatch(/transform:\s*translate3d\(0,\s*18px,\s*0\)/);
+    expect(CSS).toMatch(
+      /\[data-motion="card-reveal"\]\s*\{[\s\S]*?transform:\s*translate3d\(0,\s*22px,\s*0\)[\s\S]*?clip-path:\s*inset\(3% 3% 3% 3%\)/,
+    );
   });
 
   it("prefers-reduced-motion forces .reveal and .reveal-stagger to opacity:1", () => {

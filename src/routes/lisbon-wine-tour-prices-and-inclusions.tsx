@@ -104,7 +104,7 @@ function PricesAndInclusions() {
     <SiteLayout>
       <SiteBreadcrumbs crumbs={crumbs} />
 
-      <section className="bg-[color:var(--sand)] py-16 md:py-24">
+      <section className="public-page-header bg-[color:var(--sand)] py-16 md:py-24">
         <div className="container-x max-w-3xl">
           <Eyebrow flank icon={<Receipt aria-hidden />}>
             Prices · Inclusions · Cancellation
@@ -115,7 +115,7 @@ function PricesAndInclusions() {
               and exactly what the price covers.
             </span>
           </h1>
-          <p className="mt-6 text-[16px] md:text-[17px] leading-[1.8] text-[color:var(--charcoal-soft)]">
+          <p className="page-header-support mt-6 text-[16px] md:text-[17px] leading-[1.8] text-[color:var(--charcoal-soft)]">
             A private wine tour from Lisbon should not need a phone call to price. Below is what each
             wine day costs per person, what sits inside that number, and the one day where lunch is
             deliberately left out.

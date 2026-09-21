@@ -111,13 +111,13 @@ function CorporatePage() {
   );
   return (
     <SiteLayout>
-      <section className="pt-28 pb-14 bg-[color:var(--sand)] reveal">
+      <section className="page-hero public-page-header reveal">
         <div className="container-x max-w-3xl text-center">
           <Eyebrow flank>Retiros corporativos</Eyebrow>
           <SectionTitle as="h1" size="anchor" spacing="loose">
             Team building em Portugal, <SectionTitle.Em>desenhado por locais.</SectionTitle.Em>
           </SectionTitle>
-          <p className="mt-6 text-[1rem] md:text-[1.1rem] text-[color:var(--charcoal-soft)] leading-relaxed">
+          <p className="page-header-support mt-6 text-[1rem] md:text-[1.1rem] text-[color:var(--charcoal-soft)] leading-relaxed">
             Retiros corporativos privados, dias de team building, incentivos e off-sites executivos
             por Portugal — de Lisboa e Sintra à costa da Arrábida, ao Alentejo, ao Douro e além, com
             transporte, guias e locais coordenados de ponta a ponta para que o dia pareça{" "}

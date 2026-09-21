@@ -64,19 +64,19 @@ function DayToursPage() {
   const { resolveImg } = useImportedTourImages();
   return (
     <SiteLayout>
-      <section className="reveal pt-32 pb-12 bg-[color:var(--sand)] text-center">
+      <section className="page-hero public-page-header reveal text-center">
         <div className="container-x">
           <div>
             <Eyebrow flank>Meio dia &amp; Dia inteiro</Eyebrow>
             <SectionTitle as="h1" size="anchor" spacing="loose">
               Experiências <SectionTitle.Em>de um dia</SectionTitle.Em>
             </SectionTitle>
-            <p className="mt-5 max-w-xl mx-auto text-[color:var(--charcoal-soft)]">
+            <p className="page-header-support mt-5 max-w-xl mx-auto text-[color:var(--charcoal-soft)]">
               Guias privados, ritmo cuidado e as partes de Portugal que se recordam melhor. Reserve
               em tempo real — ou ajuste alguns detalhes dentro da experiência para se adaptar ao seu
               ritmo.
             </p>
-            <p className="mt-4 text-xs text-[color:var(--charcoal-soft)]">
+            <p className="page-header-secondary mt-4 text-xs text-[color:var(--charcoal-soft)]">
               As páginas detalhadas de cada experiência estão, para já, disponíveis em inglês.
             </p>
           </div>

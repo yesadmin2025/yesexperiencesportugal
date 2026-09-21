@@ -42,7 +42,7 @@ export const Route = createFileRoute("/pt/terms")({
 function TermsPage() {
   return (
     <SiteLayout>
-      <section className="bg-[color:var(--ivory)] py-16 md:py-24">
+      <section className="public-page-header bg-[color:var(--ivory)] py-16 md:py-24">
         <div className="container-x max-w-2xl mx-auto">
           <Eyebrow className="mb-5">Legal</Eyebrow>
           <SectionTitle as="h1" size="anchor" spacing="normal">

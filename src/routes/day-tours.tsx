@@ -80,7 +80,7 @@ function DayToursPage() {
   const { resolveImg } = useImportedTourImages();
   return (
     <SiteLayout>
-      <section className="reveal pt-32 pb-12 bg-[color:var(--sand)] text-center">
+      <section className="public-page-header reveal pt-32 pb-12 bg-[color:var(--sand)] text-center">
         <div className="container-x">
           <SiteBreadcrumbs
             containerClassName=""
@@ -95,7 +95,7 @@ function DayToursPage() {
             <SectionTitle as="h1" size="anchor" spacing="loose">
               Day <SectionTitle.Em>Tours</SectionTitle.Em>
             </SectionTitle>
-            <p className="mt-5 max-w-xl mx-auto text-[color:var(--charcoal-soft)]">
+            <p className="page-header-support mt-5 max-w-xl mx-auto text-[color:var(--charcoal-soft)]">
               Private guides, refined pace, and the parts of Portugal you'll remember most. Reserve
               instantly — or adjust a few details within the experience to match your rhythm.
             </p>

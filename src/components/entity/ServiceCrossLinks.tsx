@@ -1,5 +1,6 @@
 import { Link } from "@tanstack/react-router";
 import { Eyebrow } from "@/components/ui/Eyebrow";
+import { SectionTitle } from "@/components/ui/SectionTitle";
 
 export interface ServiceCrossLink {
   to: string;
@@ -34,9 +35,9 @@ export function ServiceCrossLinks({
     >
       <div className="container-x max-w-3xl">
         <Eyebrow>{eyebrow}</Eyebrow>
-        <h2 className="mt-3 font-display text-2xl md:text-3xl font-semibold tracking-tight text-[color:var(--charcoal)]">
+        <SectionTitle size="compact" spacing="normal">
           {title}
-        </h2>
+        </SectionTitle>
         <ul className="mt-8 space-y-6">
           {links.map((l) => (
             <li key={l.to + l.label}>
