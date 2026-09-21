@@ -147,7 +147,7 @@ function Stars({ rating }: { rating: number }) {
 
 function ReviewsPage() {
   useMarketingMotion();
-  const { global, tours } = Route.useLoaderData();
+  const { tours } = Route.useLoaderData();
 
   return (
     <SiteLayout>

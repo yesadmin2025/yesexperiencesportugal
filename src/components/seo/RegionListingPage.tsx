@@ -95,7 +95,7 @@ export function RegionListingPage({ region }: { region: LisbonRegion }) {
         </div>
       </section>
 
-      <section id="signature-days" className="py-16 md:py-24">
+      <section id="signature-days" className="scroll-mt-24 py-16 md:scroll-mt-28 md:py-24">
         <div className="container-x">
           <Eyebrow>The days we run here</Eyebrow>
           <SectionTitle as="h2" spacing="tight">

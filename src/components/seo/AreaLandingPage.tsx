@@ -119,7 +119,7 @@ export function AreaLandingPage({ page }: { page: ServiceAreaPage }) {
 
       <section
         id="signature-days"
-        className="border-t border-[color:var(--border)] py-16 md:py-24"
+        className="scroll-mt-24 border-t border-[color:var(--border)] py-16 md:scroll-mt-28 md:py-24"
         aria-labelledby="area-tours-title"
       >
         <div className="container-x">

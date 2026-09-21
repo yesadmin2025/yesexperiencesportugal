@@ -214,7 +214,7 @@ function DayTripsFromLisbon() {
       </section>
 
       {/* ── The days ─────────────────────────────────────── */}
-      <section id="signature-days" className="py-16 md:py-24">
+      <section id="signature-days" className="scroll-mt-24 py-16 md:scroll-mt-28 md:py-24">
         <div className="container-x">
           <Eyebrow>The days we run most</Eyebrow>
           <SectionTitle as="h2" spacing="tight">
