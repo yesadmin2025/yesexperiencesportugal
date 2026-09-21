@@ -330,7 +330,7 @@ function ExperienceCardMeta({
 }: {
   rating?: number;
   reviewCount?: number;
-  duration: string;
+  duration: string | null;
   location?: string;
 }) {
   const hasReviews = Boolean(rating && reviewCount && reviewCount > 0);
@@ -354,7 +354,7 @@ function ExperienceCardMeta({
       ) : (
         <span className="text-[color:var(--charcoal-soft)]">New</span>
       )}
-      <span>{duration}</span>
+      {duration ? <span>{duration}</span> : null}
       {location ? <span>{location}</span> : null}
     </div>
   );
