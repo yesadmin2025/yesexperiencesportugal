@@ -23,9 +23,10 @@ describe("homepage approved brand restoration", () => {
     expect(fiveWays).toContain("font-normal text-[color:var(--teal)]");
     expect(styles).toContain('--font-display: "Fraunces", serif');
     expect(styles).toContain('--font-serif: "Fraunces", serif');
-    // The descriptive service line is part of the <h1> so the main heading
-    // states the service, not only the brand statement.
-    expect(hero).toMatch(/<h1[\s\S]*?\{HERO_COPY\.subheadline\}[\s\S]*?<\/h1>/);
+    // The approved visual Hero stays deliberately sparse: no descriptive
+    // service paragraph is rendered inside the visible composition.
+    expect(hero).not.toContain('data-hero-field="subheadline"');
+    expect(hero).toContain("data-hero-subheadline={HERO_COPY.subheadline}");
   });
 
   it("keeps all five paths, visible actions and the canonical arrow", () => {
