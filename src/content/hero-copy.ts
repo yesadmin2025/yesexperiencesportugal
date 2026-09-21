@@ -13,7 +13,7 @@ export const HERO_COPY = {
     "Private days, journeys and special moments across Portugal, guided by local knowledge.",
   primaryCta: "DESIGN YOUR DAY",
   secondaryCta: "EXPLORE EXPERIENCES",
-  microcopy: "700+ five-star reviews · Private · Local support · Secure checkout",
+  microcopy: "4.9/5 · 1,000 guest reviews · Private · Local support · Secure checkout",
   brandLine: "Continue the story across Portugal →",
 } as const;
 
