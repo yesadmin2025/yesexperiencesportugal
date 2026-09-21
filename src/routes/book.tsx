@@ -250,7 +250,8 @@ function BookPage() {
         </section>
       ) : null}
 
-      <section className={instantMode ? "hidden" : "py-12 md:py-14"} aria-hidden={instantMode}>
+      {!instantMode ? (
+      <section className="py-12 md:py-14">
         <div className="container-x max-w-2xl">
           {done ? (
             <div
