@@ -440,7 +440,7 @@ function TourHero({
             />
           </div>
 
-          <div className="mt-6 sm:mt-8 lg:mt-0">
+          <div className="mt-5 sm:mt-8 lg:mt-0">
             <Eyebrow>Private Signature Experience</Eyebrow>
             <h1 className="serif mt-3 max-w-3xl text-[40px] font-medium leading-[1.08] tracking-normal text-[color:var(--charcoal)] md:text-[60px] md:leading-[1.02]">
               {tour.title}
