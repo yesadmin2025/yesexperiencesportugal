@@ -25,7 +25,7 @@ import { test, expect, type Page } from "@playwright/test";
 // { mobile, tablet, desktop } — tablet uses the sm ramp (Tailwind sm ≥ 640).
 type Ramp = { mobile: number; tablet: number; desktop: number };
 
-const SHARED_SECTION_RAMP: Ramp = { mobile: 29, tablet: 36, desktop: 36 };
+const SHARED_SECTION_RAMP: Ramp = { mobile: 28, tablet: 36, desktop: 36 };
 
 const HEADINGS: Array<{ id: string; label: string; ramp: Ramp }> = [
   { id: "signatures-title", label: "Signatures", ramp: SHARED_SECTION_RAMP },
