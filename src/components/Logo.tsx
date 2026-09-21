@@ -28,7 +28,7 @@ export type LogoTheme = BrandLogoTheme;
 export function Logo({
   theme,
   className = "block h-[60px] md:h-[64px] lg:h-[68px] w-auto select-none",
-  alt = "YES experiences PORTUGAL",
+  alt = "YES Experiences Portugal",
   loading,
   fetchPriority,
 }: {
