@@ -1206,7 +1206,7 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
       },
       {
         heading: "How to choose.",
-        body: "If it is your first wine day from Lisbon, choose [Arrábida](/tours/arrabida-wine-allinclusive) — coast, food and wine in the same afternoon. If you want to be back early and taste seriously, choose [Azeitão](/tours/azeitao-cheese). If Alentejo is on your list, choose [Évora](/tours/evora-alentejo) for the heritage plus wine, or [Roman Heritage](/tours/roman-heritage-alentejo) for the deeper wine story. All four are private, licensed, and shaped around your pace — never a fixed coach itinerary.\n\nIf you already know you want a private wine day and only need live dates, current prices and inclusions, see our [Lisbon wine tours](/lisbon-wine-tours) page.",
+        body: "If it is your first wine day from Lisbon, choose [Arrábida](/tours/arrabida-wine-allinclusive) — coast, food and wine in the same afternoon. If you want to make cheese with your own hands and pair it with one local winery tasting, choose [Azeitão](/tours/azeitao-cheese) for the craft and food focus. If Alentejo is on your list, choose [Évora](/tours/evora-alentejo) for the heritage plus wine, or [Roman Heritage](/tours/roman-heritage-alentejo) for the deeper wine story. All four are private, licensed, and shaped around your pace — never a fixed coach itinerary.\n\nIf you already know you want a private wine day and only need live dates, current prices and inclusions, see our [Lisbon wine tours](/lisbon-wine-tours) page.",
       },
       {
         heading: "The wine regions themselves, compared.",
