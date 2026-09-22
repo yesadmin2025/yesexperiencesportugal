@@ -20,6 +20,7 @@ import {
   CONSOLIDATED_LOCAL_STORY_SLUGS,
 } from "@/content/local-stories-articles";
 import { LEGACY_TOUR_REDIRECTS } from "@/lib/legacy-tour-redirects";
+import { PT_READY_PATHS, resolveLocalePath } from "@/i18n/pt-ready";
 
 const ROUTES = "src/routes";
 
@@ -155,5 +156,20 @@ describe("guide attribution stays crawl-clean", () => {
     expect(attribution).toContain("export function recordGuideLinkClick");
     // Legacy `?ref=` URLs must still be readable for backwards compatibility.
     expect(attribution).toContain("captureGuideRefFromLocation");
+  });
+});
+
+describe("language switcher targets are final pages", () => {
+  it("resolves every PT-ready locale target away from a 301 stub", () => {
+    const aliases = buildRedirectAliasMap();
+    const offenders: string[] = [];
+    for (const neutral of PT_READY_PATHS) {
+      for (const prefix of ["", "/pt"]) {
+        const raw = `${prefix}${neutral === "/" ? "" : neutral}` || "/";
+        const resolved = resolveLocalePath(raw);
+        if (aliases.has(resolved)) offenders.push(`${raw} → ${resolved} (still an alias)`);
+      }
+    }
+    expect(offenders, offenders.join("\n")).toEqual([]);
   });
 });
