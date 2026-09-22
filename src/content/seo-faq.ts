@@ -113,7 +113,7 @@ export const WINE_TOUR_FAQ_BY_ID: Record<string, FaqItem[]> = {
     },
     {
       q: "How does this compare to the Arrábida private wine tour from Lisbon?",
-      a: "They explore the same wider region but with a different focus. The Arrábida Wine Signature is wine-led; Azeitão Cheese & Wine gives the cheese workshop equal weight, then adds a winery tasting, lunch and Sesimbra context. Both are full private days rather than short tasting trips.",
+      a: "They explore the same wider region but with a different focus. The Arrábida Wine Signature is wine-led; Azeitão Cheese & Wine gives the cheese workshop equal weight, then adds a winery tasting and Sesimbra context. Both are full private days rather than short tasting trips.",
     },
     {
       q: "Is the cheese-making workshop included?",
