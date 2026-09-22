@@ -90,6 +90,16 @@ serve(async (req) => {
     return jsonResponse({ error: "Method not allowed" }, 405);
   }
 
+  // Caller verification: this function reads PRIVATE guest uploads with the
+  // service-role client and spends paid AI credits, so it is only callable by
+  // our own server (src/lib/builderReferences.analyze.functions.ts).
+  const internalSecret = Deno.env.get("BUILDER_SESSION_SIGNING_SECRET");
+  if (!internalSecret || req.headers.get("x-builder-internal") !== internalSecret) {
+    return jsonResponse({ error: "Unauthorized" }, 401);
+  }
+
+
+
   let body: RequestBody;
   try {
     body = await req.json();
