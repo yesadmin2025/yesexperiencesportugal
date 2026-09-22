@@ -12,6 +12,7 @@
 
 import { createServerFn } from "@tanstack/react-start";
 import { rateLimit } from "@/lib/rateLimit.server";
+import { guardAiCaller } from "@/lib/abuseGuard.server";
 
 interface StoryInput {
   name?: string; // optional, may be ""
@@ -70,6 +71,12 @@ export const generateStoryOpener = createServerFn({ method: "POST" })
     } satisfies StoryInput;
   })
   .handler(async ({ data }) => {
+    const ipGuard = await guardAiCaller({
+      bucket: "studio_v2_story",
+      limit: 30,
+      windowSec: 60,
+    });
+    if (!ipGuard.ok) return fallback(data);
     const rl = await rateLimit({
       sessionId: data.sessionId,
       bucket: "studio_v2_story",

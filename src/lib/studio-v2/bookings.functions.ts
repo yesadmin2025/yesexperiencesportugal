@@ -65,7 +65,9 @@ export const getCustomBookingDraft = createServerFn({ method: "POST" })
     const { data: row, error } = await supabaseAdmin
       .from("studio_v2_bookings")
       .select(
-        "draft_token, profile, region, archetype, stops, total_minutes, total_drive_minutes, total_km, status, contact_name, contact_email, contact_phone, preferred_date, guests, notes, created_at",
+        // Never expose contact PII to an unauthenticated token holder — the
+        // checkout screen only renders the itinerary and its timings.
+        "draft_token, profile, region, archetype, stops, total_minutes, total_drive_minutes, total_km, status, preferred_date, guests, created_at",
       )
       .eq("draft_token", data.draftToken)
       .maybeSingle();

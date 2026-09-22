@@ -197,9 +197,13 @@ export interface BuilderImage {
   priority_score: number;
 }
 
+// Keys are slugs; the strict charset also keeps them safe to interpolate
+// into a PostgREST `.or()` filter string (no commas, quotes or parentheses).
+const SAFE_KEY = /^[a-zA-Z0-9_.:-]+$/;
+
 const PickRouteSchema = z.object({
-  regionKey: z.string().min(1).max(40),
-  stopKeys: z.array(z.string().min(1).max(80)).min(1).max(12),
+  regionKey: z.string().min(1).max(40).regex(SAFE_KEY),
+  stopKeys: z.array(z.string().min(1).max(80).regex(SAFE_KEY)).min(1).max(12),
   mood: z.string().min(1).max(40).optional(),
   occasion: z.string().min(1).max(40).optional(),
 });
