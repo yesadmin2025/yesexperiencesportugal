@@ -32,6 +32,25 @@ export function isPtReady(path: string): boolean {
 export const PT_READY_PATHS: readonly string[] = Array.from(READY_PATHS);
 
 /**
+ * Locale paths that are 301 redirect stubs, mapped to their final page.
+ *
+ * The language switcher must send a reader straight to real content instead of
+ * through a permanent redirect. Hreflang/sitemap policy is unaffected: those
+ * already exclude every stub via `PAIRED`.
+ */
+const LOCALE_STUB_DESTINATIONS: Record<string, string> = {
+  "/moments": "/proposal-in-portugal",
+  "/pt/faq": "/pt/about",
+  "/pt/moments": "/pt/contact",
+  "/pt/proposals": "/pt/contact",
+};
+
+/** Final destination for a locale path, resolving 301 stubs in one hop. */
+export function resolveLocalePath(path: string): string {
+  return LOCALE_STUB_DESTINATIONS[path] ?? path;
+}
+
+/**
  * Paths with a genuine page on BOTH sides (EN and PT).
  *
  * This is the locale-pair allow-list used for hreflang/sitemap policy.
