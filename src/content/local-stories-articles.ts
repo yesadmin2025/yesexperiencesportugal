@@ -1189,8 +1189,8 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
         body: "Our most-booked [private wine tour from Lisbon](/tours/arrabida-wine-allinclusive), and the one most guests describe afterwards as the day the trip turned. Family wineries in Azeitão, the Livramento market in Setúbal, a long Portuguese lunch, and the Arrábida Natural Park where the mountains fall into the Atlantic. Door-to-door from Lisbon, everything included, paced around you rather than a coach timetable.",
       },
       {
-        heading: "Azeitão Cheese & Wine Day — a shorter, more focused tasting.",
-        body: "For travelers who want depth over distance — the best [wine tasting near Lisbon](/tours/azeitao-cheese) for a half-day. A morning at a working Azeitão estate — Moscatel and JP Azeitão reds — a small producer of Azeitão sheep's cheese, and lunch in a village that has been making both for centuries. Back in Lisbon by mid-afternoon, with the evening still yours.",
+        heading: "Azeitão Cheese & Wine Day — the hands-on local craft day.",
+        body: "A full private day of about eight and a half hours for travelers who want to make something, not only taste it. It begins at Setúbal's Livramento market, continues with a private Azeitão cheese workshop and regional tastings, adds a tasting at a local winery in Azeitão, and finishes beside the water in Sesimbra. Lunch is not included, so you are free to eat where the day takes you. See the [Azeitão cheese and wine day](/tours/azeitao-cheese) for dates and inclusions.",
       },
       {
         heading: "Évora & Alentejo Wine Tour — the Alentejo day, done properly.",
