@@ -105,27 +105,24 @@ describe("internal links never point at a permanent redirect alias", () => {
 
   it("has zero internal link targets using an alias", () => {
     const offenders: string[] = [];
+    // One pass per line: capture any internal link target, then look it up.
+    const linkTarget = /(?:\]\(|(?:path|to|href)(?::\s*|=)")(\/[^")\s]*)/g;
 
     for (const file of publicSourceFiles()) {
       const src = readFileSync(file, "utf8");
       const isRedirectRoute = src.includes("statusCode: 301");
       src.split("\n").forEach((line, i) => {
-        for (const [alias, final] of aliases) {
-          const patterns = [
-            `](${alias})`,
-            `path: "${alias}"`,
-            `to="${alias}"`,
-            `to: "${alias}"`,
-            `href="${alias}"`,
-            `href: "${alias}"`,
-          ];
-          if (!patterns.some((p) => line.includes(p))) continue;
+        for (const match of line.matchAll(linkTarget)) {
+          const target = match[1].split(/[?#]/)[0];
+          const final = aliases.get(target);
+          if (!final) continue;
           // The redirect route's own definition is what creates the alias.
-          if (isRedirectRoute && /redirect\(|to: |href: /.test(line)) continue;
-          offenders.push(`${file}:${i + 1} ${alias} → ${final}`);
+          if (isRedirectRoute) continue;
+          offenders.push(`${file}:${i + 1} ${target} → ${final}`);
         }
       });
     }
+
 
     expect(offenders, offenders.join("\n")).toEqual([]);
   });
