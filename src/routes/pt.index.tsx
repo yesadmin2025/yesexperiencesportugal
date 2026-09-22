@@ -24,7 +24,7 @@ import ogSocialImg from "@/assets/hero-coast.jpg";
  */
 const PT_TITLE = "Experiência Privada Portugal · Reservar Tour Privado | YES";
 const PT_DESCRIPTION =
-  "Experiências privadas em Portugal com anfitriões locais — Sintra, Arrábida, Évora, Douro. Veja o percurso e o preço real e reserve o seu tour privado com confirmação imediata.";
+  "Experiências privadas em Portugal com anfitriões locais. Sintra, Arrábida, Évora e Douro, com itinerário, preço real e confirmação online.";
 
 export const Route = createFileRoute("/pt/")({
   head: () => ({

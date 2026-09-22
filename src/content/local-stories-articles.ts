@@ -271,7 +271,7 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
     relatedReads: [
       { path: "/tours/wild-beaches-picnic", label: "Wild Beaches & Picnic — private day" },
       { path: "/tours/arrabida-wine-allinclusive", label: "Arrábida Wine — All Inclusive" },
-      { path: "/local-stories/best-day-trips-from-lisbon", label: "Best day trips from Lisbon" },
+      { path: "/day-trips-from-lisbon", label: "Best day trips from Lisbon" },
     ],
 
     datePublished: "2026-06-04",
@@ -537,7 +537,7 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
       { slug: "azeitao-cheese", label: "Azeitão Cheese & Wine" },
     ],
     relatedReads: [
-      { path: "/local-stories/wine-tours-lisbon", label: "Wine tours from Lisbon" },
+      { path: "/local-stories/best-wine-tours-from-lisbon", label: "Wine tours from Lisbon" },
       { path: "/local-stories/arrabida-wine-tour-from-lisbon", label: "Arrábida wine tour" },
       { path: "/local-stories/setubal-wine-guide", label: "Setúbal wine country guide" },
     ],
@@ -670,7 +670,7 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
       { slug: "azeitao-cheese", label: "Azeitão Cheese" },
     ],
     relatedReads: [
-      { path: "/local-stories/private-tours-from-lisbon", label: "Best private tours from Lisbon" },
+      { path: "/lisbon-private-tours", label: "Best private tours from Lisbon" },
       { path: "/local-stories/arrabida-wine-tour-from-lisbon", label: "Arrábida wine tour guide" },
       {
         path: "/local-stories/best-wine-tours-from-lisbon",
@@ -692,7 +692,7 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
     sections: [
       {
         heading: "The closest complete wine region to Lisbon",
-        body: "Arrábida and the Setúbal Peninsula form the closest complete wine region to Lisbon. Vineyards spread between Azeitão, Palmela and the limestone hills of the Arrábida Natural Park, with the Atlantic coast always nearby.\n\nThe region is known for Moscatel de Setúbal, local Castelão reds and a mixture of historic wine houses and independent family estates. A private Arrábida wine tour can combine contrasting tastings with Setúbal, a traditional lunch, panoramic mountain roads or the fishing town of Sesimbra.\n\nBecause the distances are relatively short, the experience can remain flexible. There is time to understand the wines, speak with local hosts and enjoy lunch without following the fixed pace of a large group tour. It is an especially strong choice for travelers who want Portuguese wine, local food and coastal scenery within one day from Lisbon. For a closer look at the cellars themselves, read [where to taste wine close to Lisbon](/local-stories/best-wine-tasting-near-lisbon).",
+        body: "Arrábida and the Setúbal Peninsula form the closest complete wine region to Lisbon. Vineyards spread between Azeitão, Palmela and the limestone hills of the Arrábida Natural Park, with the Atlantic coast always nearby.\n\nThe region is known for Moscatel de Setúbal, local Castelão reds and a mixture of historic wine houses and independent family estates. A private Arrábida wine tour can combine contrasting tastings with Setúbal, a traditional lunch, panoramic mountain roads or the fishing town of Sesimbra.\n\nBecause the distances are relatively short, the experience can remain flexible. There is time to understand the wines, speak with local hosts and enjoy lunch without following the fixed pace of a large group tour. It is an especially strong choice for travelers who want Portuguese wine, local food and coastal scenery within one day from Lisbon. For a closer look at the cellars themselves, read [where to taste wine close to Lisbon](/local-stories/best-wine-tours-from-lisbon).",
       },
       {
         heading: "Three cellars, one long lunch, no rush.",
@@ -717,7 +717,7 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
         path: "/tours/arrabida-wine-allinclusive",
         label: "Reserve the private three-winery experience",
       },
-      { path: "/local-stories/wine-tours-lisbon", label: "Compare private wine tours from Lisbon" },
+      { path: "/local-stories/best-wine-tours-from-lisbon", label: "Compare private wine tours from Lisbon" },
       {
         path: "/local-stories/setubal-wine-guide",
         label: "Read our local guide to Setúbal wine country",
@@ -812,7 +812,7 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
       { slug: "azeitao-cheese", label: "Azeitão Cheese & Wine" },
     ],
     relatedReads: [
-      { path: "/local-stories/wine-tours-lisbon", label: "Private wine tours from Lisbon" },
+      { path: "/local-stories/best-wine-tours-from-lisbon", label: "Private wine tours from Lisbon" },
       {
         path: "/local-stories/arrabida-wine-tour-from-lisbon",
         label: "Explore Arrábida and Setúbal wine country",
@@ -837,7 +837,7 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
     sections: [
       {
         heading: "Wine tours from Lisbon at their best",
-        body: "Lisbon is one of the most convenient starting points in Europe for a serious wine day. Within a short drive, travelers can reach several distinct regions, each with its own grape varieties, wineries and gastronomic traditions.\n\nArrábida, Setúbal, Palmela and Azeitão are especially close. All can easily be visited on a single day trip, offering a strong balance between tasting quality, landscape and a comfortable pace. A little further, the Alentejo and its historic talha wines allow for a more immersive full-day experience.\n\nA private wine tour from Lisbon is ideal for travelers who want to understand these regions in depth without long, exhausting itineraries. It also allows the day to be shaped precisely to individual preferences, whether the focus is on family cellars, historic estates, coastal scenery, traditional lunch or all of these together. If tasting is the main reason you are travelling, start with our local guide to [wine tasting south of Lisbon](/local-stories/best-wine-tasting-near-lisbon).",
+        body: "Lisbon is one of the most convenient starting points in Europe for a serious wine day. Within a short drive, travelers can reach several distinct regions, each with its own grape varieties, wineries and gastronomic traditions.\n\nArrábida, Setúbal, Palmela and Azeitão are especially close. All can easily be visited on a single day trip, offering a strong balance between tasting quality, landscape and a comfortable pace. A little further, the Alentejo and its historic talha wines allow for a more immersive full-day experience.\n\nA private wine tour from Lisbon is ideal for travelers who want to understand these regions in depth without long, exhausting itineraries. It also allows the day to be shaped precisely to individual preferences, whether the focus is on family cellars, historic estates, coastal scenery, traditional lunch or all of these together. If tasting is the main reason you are travelling, start with our local guide to [wine tasting south of Lisbon](/local-stories/best-wine-tours-from-lisbon).",
       },
       {
         heading: "Real Signature wine days.",
@@ -856,7 +856,7 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
       { path: "/local-stories/arrabida-wine-tour-from-lisbon", label: "Explore the Arrábida wine region" },
       { path: "/tours/arrabida-wine-allinclusive", label: "See the three-winery Signature" },
       {
-        path: "/local-stories/portugal-wine-tours",
+        path: "/local-stories/best-wine-tours-from-lisbon",
         label: "Explore wine journeys across Portugal",
       },
     ],
@@ -896,8 +896,8 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
     ],
     relatedReads: [
       {
-        path: "/local-stories/best-wine-tasting-near-lisbon",
-        label: "Best wine tasting near Lisbon",
+        path: "/local-stories/best-wine-tours-from-lisbon",
+        label: "Best wine tours from Lisbon",
       },
       { path: "/local-stories/arrabida-wine-tour-from-lisbon", label: "Arrábida wine tour guide" },
       { path: "/local-stories/setubal-wine-guide", label: "Setúbal wine country guide" },
@@ -1100,7 +1100,7 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
     ],
     relatedReads: [
       { path: "/tours/arrabida-wine-allinclusive", label: "Reserve the private Arrábida wine day" },
-      { path: "/local-stories/private-wine-tour-lisbon", label: "Private wine tour from Lisbon" },
+      { path: "/local-stories/best-wine-tours-from-lisbon", label: "Private wine tour from Lisbon" },
       { path: "/local-stories/setubal-wine-guide", label: "Local guide to Setúbal wine" },
     ],
     faq: [
@@ -1323,7 +1323,7 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
       { slug: "southwest-vicentine-coast", label: "Southwest Vicentine Coast" },
     ],
     relatedReads: [
-      { path: "/local-stories/best-day-trips-from-lisbon", label: "Best day trips from Lisbon" },
+      { path: "/day-trips-from-lisbon", label: "Best day trips from Lisbon" },
       { path: "/portugal-travel-designer", label: "Design your own Portugal journey" },
     ],
     datePublished: "2026-07-26",
@@ -1510,7 +1510,7 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
     ctaLabel: "See our Signature days",
     signatureSlug: "arrabida-wine-allinclusive",
     relatedReads: [
-      { path: "/local-stories/best-day-trips-from-lisbon", label: "Best day trips from Lisbon" },
+      { path: "/day-trips-from-lisbon", label: "Best day trips from Lisbon" },
       {
         path: "/local-stories/best-time-of-year-lisbon-day-trip",
         label: "Best time of year for a day trip",
@@ -1637,7 +1637,7 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
     ctaLabel: "Design your day",
     signatureSlug: "arrabida-wine-allinclusive",
     relatedReads: [
-      { path: "/local-stories/best-day-trips-from-lisbon", label: "Best day trips from Lisbon" },
+      { path: "/day-trips-from-lisbon", label: "Best day trips from Lisbon" },
       {
         path: "/local-stories/arrabida-wine-tour-from-lisbon",
         label: "Arrábida wine tour guide",
@@ -1694,7 +1694,7 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
     ctaLabel: "Design a day that fits",
     signatureSlug: "wild-beaches-picnic",
     relatedReads: [
-      { path: "/local-stories/best-day-trips-from-lisbon", label: "Best day trips from Lisbon" },
+      { path: "/day-trips-from-lisbon", label: "Best day trips from Lisbon" },
       { path: "/local-stories/what-to-do-in-sesimbra", label: "Things to do in Sesimbra" },
     ],
     faq: [
