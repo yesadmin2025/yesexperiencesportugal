@@ -13,6 +13,7 @@ import { useEffect, useRef, useState } from "react";
 import { Plus, X, ImageIcon, FileText, Loader2, Sparkles } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
+import { analyzeBuilderReferences } from "@/lib/builderReferences.analyze.functions";
 import { deleteBuilderReference } from "@/lib/builderReferences.functions";
 import { listBuilderReferences } from "@/lib/builderReferences.list.functions";
 import { uploadBuilderReference } from "@/lib/builderReferences.upload.functions";
