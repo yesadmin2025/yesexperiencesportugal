@@ -841,7 +841,7 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
       },
       {
         heading: "Real Signature wine days.",
-        body: "Arrábida Wine — All Inclusive (8h): Setúbal's 145-year-old market for oysters and Moscatel, three family wineries in Azeitão, traditional Portuguese lunch, panoramic close at Cristo Rei or Sesimbra. Évora & Alentejo Wine (11h): the walled town of Évora — Roman temple, bone chapel — then two Alentejo wineries with a long lunch under the cork oaks, on the way back to Lisbon. Azeitão Cheese & Wine (half day): a morning with a 7th-generation Azeitão cheesemaker, paired with the local Moscatel — a calm, intimate alternative to a full wine day.",
+        body: "Arrábida Wine — All Inclusive (8h): Setúbal's 145-year-old market for oysters and Moscatel, three family wineries in Azeitão, traditional Portuguese lunch, panoramic close at Cristo Rei or Sesimbra. Évora & Alentejo Wine (11h): the walled town of Évora — Roman temple, bone chapel — then two Alentejo wineries with a long lunch under the cork oaks, on the way back to Lisbon. Azeitão Cheese & Wine (8h30): Setúbal's Livramento market, a private Azeitão cheese workshop with regional tastings, a tasting at a local winery and time by the water in Sesimbra.",
       },
     ],
     ctaLead:
