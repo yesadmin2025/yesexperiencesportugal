@@ -1,52 +1,47 @@
-# Live visual, UX and conversion audit
+# Surgical final pass
 
-## Scope and guardrails
-- Audit only the currently published site at `https://yesexperiencesportugal.com`, treating commit `cce817743f94951d0bc121dac90e2c1bf150caa4` as the requested baseline.
-- Make no source, content, database, configuration, commit, or publishing changes.
-- Inspect only observable behavior and presentation; do not submit payment or create a real booking.
+## Scope and safeguards
+- Work from the current project state without redesigning any page or changing approved motion, typography, pricing, booking, Stripe, Studio, SEO architecture, or backlink strategy.
+- Preserve the protected wine guide’s title, H1, canonical, short answer, methodology, FAQs, intent split, and internal links.
+- Publish only after every required validation passes and no blocker or high-risk regression remains.
 
-## Audit method
-1. Open a fresh browser session at each requested viewport: 393×852, 430×932, 768×1024, 1280×800, and 1440×900.
-2. Review the complete homepage scroll and every requested page:
-   - `/experiences`
-   - `/tours/arrabida-wine-allinclusive`
-   - `/about`
-   - `/portugal-travel-designer`
-   - `/contact`
-   - `/local-stories/best-wine-tours-from-lisbon`
-3. Capture evidence at key states rather than relying on source inspection: first viewport, representative section transitions, cards, social proof, footer, sticky controls, menus, forms, and conversion handoffs.
-4. Exercise the Signature booking journey through date selection, guest controls, and the payment screen, stopping before payment submission. Check normal layout and a 200% text-size simulation on the booking flow.
-5. Observe motion after fresh loads and while scrolling, including Five Ways, Studio, Signature introduction, and the Travel Designer book reveal. Also confirm reduced-motion behavior remains usable.
-6. Test obvious interaction and accessibility quality: keyboard focus, 44px-class tap targets, text wrapping, horizontal overflow, sticky CTA/WhatsApp/back-to-top collisions, form feedback, and mobile navigation.
-7. Record browser console errors and failed network requests, separating site-attributable failures from browser extensions, blocked analytics, or third-party noise.
-8. Compare visible copy and facts against the established project rules: Fraunces/Inter usage, YES casing, private positioning, 4.9/5 and 1,000-review proof, restrained gold, and no retired `700+` claim.
+## Implementation
+1. **Correct the two factual passages and brand casing**
+   - Update the protected wine guide so Azeitão is described as the hands-on craft and food day built around the cheese workshop, one winery, Azeitão, and Sesimbra.
+   - Make lunch wording explicitly route-specific rather than claiming every full-day wine route includes lunch.
+   - Normalize the Arrábida operator sentence to “YES Experiences Portugal” and search owned public copy for the same incomplete/lower-case form.
+   - Add focused regression coverage that locks these facts and all protected SEO fields.
 
-## Evaluation framework
-Assess each requested dimension with route- and viewport-specific evidence:
-- Hero clarity and premium feel
-- Spacing rhythm and eyebrow/title consistency
-- Visible, narrative motion
-- Gold restraint and typography consistency
-- Signature card hierarchy, alignment, highlights, and CTA clarity
-- Human-contact availability and informational-to-booking handoff
-- Mobile floating-control collisions
-- Social proof hierarchy, footer clarity, and trust information
-- Copy/factual consistency
-- Accessibility, overflow, focus, tap targets, and 200% text behavior
-- Runtime and console health
+2. **Clarify review sources without changing ratings or counts**
+   - Update the shared tour proof presentation so external-platform totals are visibly attributed as platform reviews.
+   - Label the direct review block as reviews collected directly by YES with its unchanged first-party count.
+   - Confirm all affected tour pages inherit the shared clarification and that Product structured data remains first-party only.
 
-## Deliverable
-Return one prioritized audit with four sections:
-- **BLOCKER** — prevents booking, access, or a core journey
-- **HIGH** — materially weakens trust, comprehension, or conversion
-- **MEDIUM** — visible quality or consistency issue with bounded impact
-- **LEAVE ALONE** — elements that are working well and should not be changed
+3. **Prove GA4 behavior in a fresh browser**
+   - Test both consent paths on a production-equivalent build: default denied, Accept all → granted, direct tag load, one initial collection hit, and exactly one additional SPA page view.
+   - Test Essential only/rejection keeps analytics denied and emits no analytics hit.
+   - Inspect data-layer and network evidence for duplicate page views caused by the direct Google tag plus GTM.
+   - Change tracking code only if this test proves a site-side defect; otherwise retain the implementation and identify `G-MLYSPHSN41` as the emitted property ID and the external property connection/data freshness as the remaining cause.
 
-Every actionable finding will include:
-- Exact route
-- Exact viewport and interaction state
-- Observable evidence
-- Why it matters
-- The smallest targeted fix
+4. **Apply only measured, visually neutral performance improvements**
+   - Establish mobile production-build baselines for `/about`, `/lisbon-private-tours`, `/contact`, `/day-trips-from-lisbon`, `/faq`, `/cookies`, `/how-many-days-in-portugal`, and `/book`.
+   - Inspect shared scripts, widgets, hydration work, route bundles, maps/media, and below-fold images before changing anything.
+   - Apply only a shared or route-specific optimization that is safe, visually neutral, and measurably improves an affected route; otherwise leave code unchanged.
+   - Re-measure every changed route and report comparable before/after results.
 
-The report will distinguish confirmed findings from items not reproducible. It will include a concise coverage summary and explicitly state that nothing was edited, committed, or published.
+5. **Triage current security evidence conservatively**
+   - The persisted scanner currently reports no active findings. A fresh deep scan reports 11 public-read findings already ignored by the user; these will not be reopened or modified.
+   - Classify any newly active findings as genuine actionable, intentional public read, false positive, informational, or manual review.
+   - Fix and mark only low-risk genuine issues supported by scanner evidence and regression tests. Leave ambiguity open.
+   - Separately classify dependency advisories, applying upgrades only if a safe compatible update is available and validated; do not force transitive overrides that risk product behavior.
+
+## Validation and release gate
+- Run type checking, focused factual/copy tests, review-attribution tests, analytics consent/page-view browser tests, and any relevant security regression tests.
+- Run the full test suite and production build.
+- Smoke-test homepage, About, Experiences, Arrábida Signature, wine guide, Contact, and booking flow at 393×852, 430×932, 768×1024, and 1440×900; repeat the booking flow at 200% text size and stop before payment submission.
+- Confirm no site-attributable browser console errors, no protected SEO drift, no `700+`, unchanged 4.9/5 · 1,000 owned-site certificate, and first-party-only review schema.
+- Publish only if every gate passes; otherwise stop and report the blocker.
+
+## Final report
+- List exact files and copy changes, GA4 browser evidence and root cause, route-level performance before/after, security classification totals and reasons, exact validation results, final commit SHA, and publication status.
+- Report separately that backlink strategy was untouched and that hotel partners, wineries/venues, travel advisors, wedding planners, and Portugal/travel editorial are the five highest-value outreach categories and the next off-page priority.
