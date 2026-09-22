@@ -32,6 +32,15 @@ describe("renderBodyWithTourLinks", () => {
     expect(textNodes).not.toContain("/local-stories/");
   });
 
+  it("turns top-level internal markdown links into clean anchors", () => {
+    const nodes = renderBodyWithTourLinks("See our [Lisbon wine tours](/lisbon-wine-tours) page.");
+    const links = nodes.filter((n): n is React.ReactElement<Record<string, unknown>> => React.isValidElement(n));
+    expect(links).toHaveLength(1);
+    expect(links[0].props.href).toBe("/lisbon-wine-tours");
+    const textNodes = nodes.filter((n) => typeof n === "string").join("");
+    expect(textNodes).not.toContain("](");
+  });
+
   it("leaves no raw markdown in any published article body", () => {
     for (const article of LOCAL_STORIES_ARTICLES) {
       for (const section of article.sections) {
@@ -39,7 +48,7 @@ describe("renderBodyWithTourLinks", () => {
           .filter((n) => typeof n === "string")
           .join("");
         expect(
-          /\[[^\]]+\]\(\/[a-z-]+\/[a-z0-9-]+\)/.test(textNodes),
+          /\[[^\]]+\]\(\/[a-z0-9-]+(?:\/[a-z0-9-]+)?\)/.test(textNodes),
           `${article.slug} renders raw markdown`,
         ).toBe(false);
       }

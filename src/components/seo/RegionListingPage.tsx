@@ -64,6 +64,19 @@ export function RegionListingPage({ region }: { region: LisbonRegion }) {
           <p className="mt-6 text-[16px] md:text-[17px] leading-[1.8] text-[color:var(--charcoal-soft)]">
             {region.standfirst}
           </p>
+          {region.guideLink && (
+            <p className="mt-4 text-[15px] leading-[1.75] text-[color:var(--charcoal-soft)]">
+              {region.guideLink.lead}
+              <Link
+                to="/local-stories/$slug"
+                params={{ slug: "best-wine-tours-from-lisbon" }}
+                className="underline decoration-[color:var(--gold)]/60 underline-offset-4 hover:text-[color:var(--teal)] transition-colors"
+              >
+                {region.guideLink.anchor}
+              </Link>
+              {region.guideLink.tail}
+            </p>
+          )}
           <div className="mt-8 flex flex-col gap-3 sm:flex-row">
             <CtaButton
               href="#signature-days"
