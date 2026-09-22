@@ -137,11 +137,14 @@ describe("guide attribution stays crawl-clean", () => {
     for (const file of publicSourceFiles()) {
       const src = readFileSync(file, "utf8");
       src.split("\n").forEach((line, i) => {
+        // Documentation of the retired scheme is allowed; only code counts.
+        const trimmed = line.trim();
+        if (trimmed.startsWith("*") || trimmed.startsWith("//") || trimmed.startsWith("/*")) return;
         if (/["'`][^"'`]*[?&]ref=/.test(line) || /[?&]ref_slot=/.test(line)) {
-          offenders.push(`${file}:${i + 1} ${line.trim().slice(0, 140)}`);
+          offenders.push(`${file}:${i + 1} ${trimmed.slice(0, 140)}`);
         }
         if (/\bref_slot:\s*["']/.test(line)) {
-          offenders.push(`${file}:${i + 1} ${line.trim().slice(0, 140)}`);
+          offenders.push(`${file}:${i + 1} ${trimmed.slice(0, 140)}`);
         }
       });
     }
