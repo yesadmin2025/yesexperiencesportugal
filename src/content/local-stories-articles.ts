@@ -1177,6 +1177,10 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
       "Three real wine regions sit within 90 minutes of Lisbon. Here are the private days we actually run — what each one feels like, what it costs you in time, and how to choose between them.",
     sections: [
       {
+        heading: "The short answer: which wine tour from Lisbon is best?",
+        body: "For a first wine day from Lisbon, we would choose Arrábida. It is around forty minutes from the city and combines family wineries in Azeitão, Setúbal's Livramento market, a long Portuguese lunch and the Arrábida coast without spending half the day in the car. Choose Azeitão if tasting time matters more than scenery, and choose the Alentejo if you want a longer wine-led day with Évora or traditional talha winemaking.\n\nThere is no universal winner — the best choice depends on how far you want to drive, how much of the day you want devoted to wine, and whether food, coast or heritage matters most.",
+      },
+      {
         heading: "Lisbon is closer to serious wine country than travelers expect.",
         body: "South of the 25 de Abril Bridge, the Setúbal Peninsula makes Moscatel de Setúbal and structured reds around Azeitão. Ninety minutes inland, the Alentejo plains produce Portugal's most recognised big reds. And on the coast west of the city, the tiny Colares appellation still grows vines in sand. You do not need to travel to the Douro to taste real Portuguese wine — the best wine tours from Lisbon are day trips, private, and back in the city for dinner.",
       },
@@ -1197,8 +1201,12 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
         body: "A quieter [Alentejo wine tour from Lisbon](/tours/roman-heritage-alentejo) built around vinho de talha — wine still fermented in clay amphorae, the way the Romans made it here two thousand years ago. Small cellars, a hands-on tasting, and history you can drink. Private, slow, and off the standard route.",
       },
       {
+        heading: "How we compare the best wine tours from Lisbon.",
+        body: "This is not a marketplace list. We operate these private days ourselves, so we compare them by what guests actually experience: drive time from Lisbon, time spent at wineries, the depth and variety of the tastings, what is included, the quality of the food stop, the landscape around the wine, and the total length of the day. Availability changes by date, so individual wineries can change; the shape of each day does not.\n\nFor most first-time visitors, proximity matters more than the number of tastings. A day with two unhurried wineries, a proper lunch and time in the landscape usually feels richer than a longer checklist of cellar stops.",
+      },
+      {
         heading: "How to choose.",
-        body: "If it is your first wine day from Lisbon, choose [Arrábida](/tours/arrabida-wine-allinclusive) — coast, food and wine in the same afternoon. If you want to be back early and taste seriously, choose [Azeitão](/tours/azeitao-cheese). If Alentejo is on your list, choose [Évora](/tours/evora-alentejo) for the heritage plus wine, or [Roman Heritage](/tours/roman-heritage-alentejo) for the deeper wine story. All four are private, licensed, and shaped around your pace — never a fixed coach itinerary.",
+        body: "If it is your first wine day from Lisbon, choose [Arrábida](/tours/arrabida-wine-allinclusive) — coast, food and wine in the same afternoon. If you want to be back early and taste seriously, choose [Azeitão](/tours/azeitao-cheese). If Alentejo is on your list, choose [Évora](/tours/evora-alentejo) for the heritage plus wine, or [Roman Heritage](/tours/roman-heritage-alentejo) for the deeper wine story. All four are private, licensed, and shaped around your pace — never a fixed coach itinerary.\n\nIf you already know you want a private wine day and only need live dates, current prices and inclusions, see our [Lisbon wine tours](/lisbon-wine-tours) page.",
       },
       {
         heading: "The wine regions themselves, compared.",
@@ -1260,6 +1268,14 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
         q: "Can I book a wine tour from Lisbon for a specific date?",
         a: "Yes. Each Signature wine day can be reserved for your date with hotel pickup, or tailored around your group and interests first.",
       },
+      {
+        q: "What is the closest wine region to Lisbon?",
+        a: "Azeitão, Setúbal and Palmela are the closest serious wine areas, roughly forty minutes south of central Lisbon depending on traffic. That short drive is why Arrábida and Azeitão work especially well as private day trips.",
+      },
+      {
+        q: "Which is better from Lisbon: Arrábida or the Alentejo for wine?",
+        a: "Choose Arrábida for the shorter drive, family wineries, Setúbal Moscatel, lunch and Atlantic scenery in one day. Choose the Alentejo for a longer inland journey, bigger red wines, cork-oak landscapes and the option to combine wine with Évora or traditional talha cellars.",
+      },
     ],
     ctaLead:
       "Every day above exists as a private Signature Experience you can reserve for your date. Prefer to shape your own? Our Studio lets you design a wine day from scratch.",
@@ -1280,7 +1296,7 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
       { path: "/portugal-travel-designer", label: "Design your own Portugal journey" },
     ],
     datePublished: "2026-07-24",
-    dateModified: "2026-09-18",
+    dateModified: "2026-09-22",
   },
   {
     slug: "portugal-coastal-drives-from-lisbon",

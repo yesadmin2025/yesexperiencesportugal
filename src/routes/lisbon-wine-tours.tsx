@@ -182,6 +182,17 @@ function LisbonWineTours() {
             The best wine tours from Lisbon,{" "}
             <SectionTitle.Em>as we actually run them</SectionTitle.Em>.
           </SectionTitle>
+          <p className="mt-5 max-w-2xl text-[15.5px] leading-[1.8] text-[color:var(--charcoal-soft)]">
+            Still deciding between Arrábida, Azeitão and the Alentejo? Our guide to the{" "}
+            <Link
+              to="/local-stories/$slug"
+              params={{ slug: "best-wine-tours-from-lisbon" }}
+              className="underline decoration-[color:var(--gold)]/60 underline-offset-4 hover:text-[color:var(--teal)] transition-colors"
+            >
+              best wine tours from Lisbon
+            </Link>{" "}
+            compares the regions and the kind of day each one gives you.
+          </p>
           <ul className="mt-10 grid gap-5 md:grid-cols-2 lg:grid-cols-3 list-none p-0">
             {WINE_DAYS.map((tour) => (
               <li key={tour.id} className={cardClass}>

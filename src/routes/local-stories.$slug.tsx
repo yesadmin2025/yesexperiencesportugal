@@ -39,32 +39,43 @@ import {
  */
 
 export function renderBodyWithTourLinks(text: string): React.ReactNode[] {
-  const re = /\[([^\]]+)\]\(\/(tours|local-stories)\/([a-z0-9-]+)\)/g;
+  const re = /\[([^\]]+)\]\((\/[a-z0-9-]+(?:\/[a-z0-9-]+)?)\)/g;
   const nodes: React.ReactNode[] = [];
   let last = 0;
   let m: RegExpExecArray | null;
   let key = 0;
   while ((m = re.exec(text)) !== null) {
     if (m.index > last) nodes.push(text.slice(last, m.index));
+    const href = m[2];
+    const tourMatch = href.match(/^\/tours\/([a-z0-9-]+)$/);
+    const storyMatch = href.match(/^\/local-stories\/([a-z0-9-]+)$/);
     nodes.push(
-      m[2] === "tours" ? (
+      tourMatch ? (
         <Link
           key={`tl-${key++}`}
           to="/tours/$tourId"
-          params={{ tourId: m[3] }}
+          params={{ tourId: tourMatch[1] }}
+          className="underline decoration-[color:var(--gold)]/60 underline-offset-4 hover:text-[color:var(--teal)] transition-colors"
+        >
+          {m[1]}
+        </Link>
+      ) : storyMatch ? (
+        <Link
+          key={`tl-${key++}`}
+          to="/local-stories/$slug"
+          params={{ slug: storyMatch[1] }}
           className="underline decoration-[color:var(--gold)]/60 underline-offset-4 hover:text-[color:var(--teal)] transition-colors"
         >
           {m[1]}
         </Link>
       ) : (
-        <Link
+        <a
           key={`tl-${key++}`}
-          to="/local-stories/$slug"
-          params={{ slug: m[3] }}
+          href={href}
           className="underline decoration-[color:var(--gold)]/60 underline-offset-4 hover:text-[color:var(--teal)] transition-colors"
         >
           {m[1]}
-        </Link>
+        </a>
       ),
     );
     last = m.index + m[0].length;

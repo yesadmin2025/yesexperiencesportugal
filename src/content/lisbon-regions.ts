@@ -24,6 +24,11 @@ export interface LisbonRegion {
   h1Lead: string;
   h1Em: string;
   standfirst: string;
+  guideLink?: {
+    lead: string;
+    anchor: string;
+    tail: string;
+  };
   /** Signature tour ids that genuinely run in this region. */
   tourIds: readonly string[];
   driveTime: string;
@@ -72,6 +77,11 @@ export const LISBON_REGIONS: readonly LisbonRegion[] = [
     h1Em: "through Arrábida & Sesimbra.",
     standfirst:
       "This is where we are based, and it is the closest real wine country to Lisbon. The Serra da Arrábida drops straight into green water, Azeitão makes wine and cheese a few kilometres inland, and Sesimbra still lands its fish every morning.",
+    guideLink: {
+      lead: "Still choosing between the wine regions? Our local guide lets you ",
+      anchor: "compare wine days from Lisbon",
+      tail: " before you reserve a private Arrábida or Sesimbra day.",
+    },
     tourIds: [
       "arrabida-wine-allinclusive",
       "arrabida-boat",
@@ -119,6 +129,11 @@ export const LISBON_REGIONS: readonly LisbonRegion[] = [
     h1Em: "close to Lisbon, far from the crowds.",
     standfirst:
       "Azeitão is a village of cellars, cheese rooms and tile workshops sitting between the Arrábida hills and the Sado estuary. It is where Lisbon's Moscatel comes from, and it is close enough that the day belongs to the tastings rather than the drive.",
+    guideLink: {
+      lead: "If you are weighing Azeitão against Arrábida or the Alentejo, see ",
+      anchor: "which Lisbon wine day suits you",
+      tail: " before choosing the shape of the day.",
+    },
     tourIds: ["azeitao-cheese", "arrabida-wine-allinclusive", "tiles-workshop"],
     driveTime: "About 40 minutes from central Lisbon",
     bestSeason: "Year-round. Harvest energy in September; cellars are at their best in winter.",
