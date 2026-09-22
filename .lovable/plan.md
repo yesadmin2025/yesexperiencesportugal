@@ -1,21 +1,52 @@
-# Final SERP positioning cleanup
+# Live visual, UX and conversion audit
 
-## Scope
-- Change only the homepage search title and shared meta/OG/Twitter description to the exact supplied wording; keep the Hero unchanged.
-- Normalize current public-facing `YES experiences Portugal` strings to `YES Experiences Portugal` in metadata, schema, accessibility labels, generated public text, and other live customer-facing copy. Preserve URLs, slugs, identifiers, user reviews, and historical quotations.
-- Remove any live retired `700+` review proof only if found, using the existing review certificate source rather than duplicating values.
-- Preserve the existing WebSite, Organization, site-name, canonical/hreflang/sitemap/robots, and first-party-only Product review schema contracts.
+## Scope and guardrails
+- Audit only the currently published site at `https://yesexperiencesportugal.com`, treating commit `cce817743f94951d0bc121dac90e2c1bf150caa4` as the requested baseline.
+- Make no source, content, database, configuration, commit, or publishing changes.
+- Inspect only observable behavior and presentation; do not submit payment or create a real booking.
 
-## Technical details
-- Update the existing homepage constants and their focused regression expectations.
-- Update only files confirmed by the public-output audit; adjust current-output tests where their exact expectations intentionally lock corrected casing.
-- Confirm WebSite is emitted once with the required name and alternates, Organization has the required name, and root `og:site_name` is exact.
+## Audit method
+1. Open a fresh browser session at each requested viewport: 393×852, 430×932, 768×1024, 1280×800, and 1440×900.
+2. Review the complete homepage scroll and every requested page:
+   - `/experiences`
+   - `/tours/arrabida-wine-allinclusive`
+   - `/about`
+   - `/portugal-travel-designer`
+   - `/contact`
+   - `/local-stories/best-wine-tours-from-lisbon`
+3. Capture evidence at key states rather than relying on source inspection: first viewport, representative section transitions, cards, social proof, footer, sticky controls, menus, forms, and conversion handoffs.
+4. Exercise the Signature booking journey through date selection, guest controls, and the payment screen, stopping before payment submission. Check normal layout and a 200% text-size simulation on the booking flow.
+5. Observe motion after fresh loads and while scrolling, including Five Ways, Studio, Signature introduction, and the Travel Designer book reveal. Also confirm reduced-motion behavior remains usable.
+6. Test obvious interaction and accessibility quality: keyboard focus, 44px-class tap targets, text wrapping, horizontal overflow, sticky CTA/WhatsApp/back-to-top collisions, form feedback, and mobile navigation.
+7. Record browser console errors and failed network requests, separating site-attributable failures from browser extensions, blocked analytics, or third-party noise.
+8. Compare visible copy and facts against the established project rules: Fraunces/Inter usage, YES casing, private positioning, 4.9/5 and 1,000-review proof, restrained gold, and no retired `700+` claim.
 
-## Validation
-- Run the TypeScript check, focused SEO/meta/schema tests, the full test suite, and the production build.
-- Fetch rendered homepage HTML and verify title, description, OG/Twitter description, site name, and a single WebSite node.
-- Re-scan current public source/output for inconsistent casing and retired `700+` proof.
-- Record the final commit SHA and do not publish.
+## Evaluation framework
+Assess each requested dimension with route- and viewport-specific evidence:
+- Hero clarity and premium feel
+- Spacing rhythm and eyebrow/title consistency
+- Visible, narrative motion
+- Gold restraint and typography consistency
+- Signature card hierarchy, alignment, highlights, and CTA clarity
+- Human-contact availability and informational-to-booking handoff
+- Mobile floating-control collisions
+- Social proof hierarchy, footer clarity, and trust information
+- Copy/factual consistency
+- Accessibility, overflow, focus, tap targets, and 200% text behavior
+- Runtime and console health
 
-## Explicitly untouched
-Visuals, motion, layout, Hero copy and actions, prices, booking, Stripe, Studio, tour facts, canonical/hreflang/sitemaps/robots, database, security, admin, integrations, and emails.
+## Deliverable
+Return one prioritized audit with four sections:
+- **BLOCKER** — prevents booking, access, or a core journey
+- **HIGH** — materially weakens trust, comprehension, or conversion
+- **MEDIUM** — visible quality or consistency issue with bounded impact
+- **LEAVE ALONE** — elements that are working well and should not be changed
+
+Every actionable finding will include:
+- Exact route
+- Exact viewport and interaction state
+- Observable evidence
+- Why it matters
+- The smallest targeted fix
+
+The report will distinguish confirmed findings from items not reproducible. It will include a concise coverage summary and explicitly state that nothing was edited, committed, or published.
