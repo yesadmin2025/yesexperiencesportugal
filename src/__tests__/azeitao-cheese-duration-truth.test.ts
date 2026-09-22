@@ -1,12 +1,12 @@
 import { describe, expect, it } from "vitest";
 import { LOCAL_STORIES_ARTICLES } from "@/content/local-stories-articles";
-import { SIGNATURE_TOURS_SOURCE_OF_TRUTH } from "@/data/signatureToursSourceOfTruth";
+import { SIGNATURE_SOURCE_OF_TRUTH } from "@/data/signatureToursSourceOfTruth";
 
 const GUIDE_SLUG = "best-wine-tours-from-lisbon";
 
 describe("Azeitão Cheese & Wine factual truth in the wine guide", () => {
   const guide = LOCAL_STORIES_ARTICLES.find((a) => a.slug === GUIDE_SLUG);
-  const sot = SIGNATURE_TOURS_SOURCE_OF_TRUTH.find((t) => t.slug === "azeitao-cheese");
+  const sot = SIGNATURE_SOURCE_OF_TRUTH["azeitao-cheese"];
 
   it("has both the guide and the source-of-truth entry", () => {
     expect(guide).toBeTruthy();
@@ -29,7 +29,7 @@ describe("Azeitão Cheese & Wine factual truth in the wine guide", () => {
   });
 
   it("states the canonical ~8h30 duration in the comparison table", () => {
-    const row = guide?.table?.rows.find((r) => /Azeitão Cheese/i.test(r[0] ?? ""));
+    const row = guide?.comparison?.rows.find((r: string[]) => /Azeitão Cheese/i.test(r[0] ?? ""));
     expect(row).toBeTruthy();
     expect(row?.join(" ")).toMatch(/8h30|8½/);
     expect(row?.join(" ").toLowerCase()).not.toContain("half day");
