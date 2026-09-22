@@ -175,7 +175,9 @@ export function TourReviews({
     <section className="mt-16 md:mt-20" aria-labelledby="tour-reviews-heading">
       <div className="text-center">
         <div className="text-[11px] uppercase tracking-[0.22em] text-[color:var(--text-muted)]">
-          Real guest reviews
+          {useFallback
+            ? `Verified platform reviews · ${displayTotal}`
+            : `Reviews collected directly by YES · ${initialFirstParty?.count ?? displayTotal}`}
         </div>
         <h2
           id="tour-reviews-heading"
@@ -297,7 +299,9 @@ export function TourReviews({
       )}
 
       <p className="mt-8 text-center text-[12px] text-[color:var(--charcoal)]/60">
-        Based on verified guest reviews across major booking platforms.
+        {useFallback
+          ? "Based on verified guest reviews across major booking platforms."
+          : "Collected directly by YES Experiences Portugal."}
       </p>
     </section>
   );
