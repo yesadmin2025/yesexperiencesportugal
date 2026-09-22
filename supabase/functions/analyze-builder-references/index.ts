@@ -23,7 +23,8 @@ import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.0";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
+  "Access-Control-Allow-Headers":
+    "authorization, x-client-info, apikey, content-type, x-builder-internal",
   "Access-Control-Allow-Methods": "POST, OPTIONS",
 };
 
@@ -89,6 +90,16 @@ serve(async (req) => {
   if (req.method !== "POST") {
     return jsonResponse({ error: "Method not allowed" }, 405);
   }
+
+  // Caller verification: this function reads PRIVATE guest uploads with the
+  // service-role client and spends paid AI credits, so it is only callable by
+  // our own server (src/lib/builderReferences.analyze.functions.ts).
+  const internalSecret = Deno.env.get("BUILDER_SESSION_SIGNING_SECRET");
+  if (!internalSecret || req.headers.get("x-builder-internal") !== internalSecret) {
+    return jsonResponse({ error: "Unauthorized" }, 401);
+  }
+
+
 
   let body: RequestBody;
   try {

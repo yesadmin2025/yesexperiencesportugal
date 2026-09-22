@@ -3,6 +3,7 @@ import { z } from "zod";
 import { supabaseAdmin } from "@/integrations/supabase/client.server";
 import { hashConfig, logAiUsage } from "@/lib/aiAuditLog.server";
 import { rateLimit } from "./rateLimit.server";
+import { guardAiCaller } from "./abuseGuard.server";
 
 /**
  * AI user-intent helper for the live builder.
@@ -27,6 +28,18 @@ const inputSchema = z.object({
 export const suggestFromIntent = createServerFn({ method: "POST" })
   .inputValidator((input: unknown) => inputSchema.parse(input))
   .handler(async ({ data }) => {
+    // Network-level guard first: sessionId is caller-supplied and rotatable.
+    const ipGuard = await guardAiCaller({ bucket: "builder_intent", limit: 40, windowSec: 300 });
+    if (!ipGuard.ok) {
+      return {
+        suggestedStopKeys: [],
+        rankedKeys: [],
+        paceHint: null,
+        source: "rate_limited" as const,
+        retryInSec: ipGuard.resetInSec,
+      };
+    }
+
     // Throttle anon AI calls per session: max 12 calls / 5 min.
     const rl = await rateLimit({
       sessionId: data.sessionId,

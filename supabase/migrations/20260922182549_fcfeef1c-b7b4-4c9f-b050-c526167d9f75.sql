@@ -1,0 +1,1 @@
+DROP POLICY IF EXISTS "Gallery tour photos are readable" ON storage.objects;

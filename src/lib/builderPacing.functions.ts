@@ -2,6 +2,7 @@ import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import { hashConfig, logAiUsage } from "@/lib/aiAuditLog.server";
 import { rateLimit } from "./rateLimit.server";
+import { guardAiCaller } from "./abuseGuard.server";
 
 /**
  * Silent AI pacing advisor for the live builder & review screen.
@@ -65,6 +66,9 @@ export const suggestPacing = createServerFn({ method: "POST" })
       rationale: null,
       source: "fallback",
     };
+
+    const ipGuard = await guardAiCaller({ bucket: "builder_pacing", limit: 40, windowSec: 300 });
+    if (!ipGuard.ok) return { ...fallback, source: "rate_limited" };
 
     const rl = await rateLimit({
       sessionId: data.sessionId,
