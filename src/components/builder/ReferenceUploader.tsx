@@ -175,19 +175,9 @@ export function ReferenceUploader({ sessionId, onToneReady }: Props) {
     if (rows.length === 0 || analyzing) return;
     setAnalyzing(true);
     try {
-      const { data, error } = await supabase.functions.invoke("analyze-builder-references", {
-        body: {
-          sessionId,
-          fileIds: rows.map((r) => r.id),
-        },
-      });
-      if (error) {
-        const msg =
-          (error as { message?: string }).message ?? "Couldn't read your references right now.";
-        toast.error(msg);
-        return;
-      }
-      const result = data as ToneResult | { error: string } | null;
+      const result = (await analyzeBuilderReferences({
+        data: { sessionId, fileIds: rows.map((r) => r.id) },
+      })) as ToneResult | { error: string } | null;
       if (!result || "error" in (result ?? {})) {
         toast.error(
           (result as { error: string } | null)?.error ??
