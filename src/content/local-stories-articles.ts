@@ -1178,7 +1178,7 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
     sections: [
       {
         heading: "The short answer: which wine tour from Lisbon is best?",
-        body: "For a first wine day from Lisbon, we would choose Arrábida. It is around forty minutes from the city and combines family wineries in Azeitão, Setúbal's Livramento market, a long Portuguese lunch and the Arrábida coast without spending half the day in the car. Choose Azeitão if tasting time matters more than scenery, and choose the Alentejo if you want a longer wine-led day with Évora or traditional talha winemaking.\n\nThere is no universal winner — the best choice depends on how far you want to drive, how much of the day you want devoted to wine, and whether food, coast or heritage matters most.",
+        body: "For a first wine day from Lisbon, we would choose Arrábida. It is around forty minutes from the city and combines family wineries in Azeitão, Setúbal's Livramento market, a long Portuguese lunch and the Arrábida coast without spending half the day in the car. Choose Azeitão for the hands-on local craft and food day built around a private cheese workshop, one winery, Azeitão and Sesimbra; choose the Alentejo if you want a longer wine-led day with Évora or traditional talha winemaking.\n\nThere is no universal winner — the best choice depends on how far you want to drive, how much of the day you want devoted to wine, and whether food, coast or heritage matters most.",
       },
       {
         heading: "Lisbon is closer to serious wine country than travelers expect.",
@@ -1218,7 +1218,7 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
       },
       {
         heading: "What a private wine day from Lisbon includes.",
-        body: "Every day on this page is private to your party and runs door to door: pickup and drop-off at your Lisbon hotel or apartment, a licensed driver-guide, a comfortable private vehicle, winery visits and tastings arranged in advance, and a long local lunch on the full-day versions. You choose how long to linger at each table, which cellar to add, and whether the day ends on a viewpoint or back in the city for dinner.\n\nEach Signature page shows the exact duration, the from-price and what is included, and can be reserved for a chosen date — or tailored around your pace, interests and group size before you book.",
+        body: "Every day on this page is private to your party and runs door to door: pickup and drop-off at your Lisbon hotel or apartment, a licensed driver-guide, a comfortable private vehicle, and winery visits and tastings arranged in advance. Lunch is included only where the individual route says so; the Azeitão Cheese Signature lasts about eight and a half hours and does not include lunch. You choose how long to linger at each table and whether the day ends on a viewpoint or back in the city for dinner.\n\nEach Signature page shows the exact duration, the from-price and what is included, and can be reserved for a chosen date — or tailored around your pace, interests and group size before you book.",
       },
     ],
     comparison: {

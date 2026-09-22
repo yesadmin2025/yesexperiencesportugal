@@ -115,11 +115,12 @@ export function TourReviews({
   // page's review structured data.
   const meta = getViatorMeta(tourId);
   const clientReviews = filterVisibleReviews(reviews);
-  const hasDbReviews = (!!stats && stats.total_reviews > 0) || ssrFirstParty.length > 0;
+  const clientFirstParty = clientReviews.filter((review) => review.is_first_party);
+  const hasFirstParty = ssrFirstParty.length > 0 || clientFirstParty.length > 0;
   const canFallback = !!meta && meta.topReviews.length > 0;
-  const useFallback = !hasDbReviews && canFallback;
+  const useFallback = !hasFirstParty && canFallback;
 
-  if (!hasDbReviews && !canFallback) return null;
+  if (!hasFirstParty && !canFallback) return null;
 
   const fpAverage =
     initialFirstParty && initialFirstParty.count > 0 && initialFirstParty.average != null
@@ -127,11 +128,13 @@ export function TourReviews({
       : null;
   const displayRating = useFallback
     ? meta!.rating
-    : (stats?.average_rating ?? fpAverage ?? 5);
+    : (fpAverage ?? stats?.average_rating ?? 5);
   const displayTotal = useFallback
     ? meta!.reviewCount
-    : (stats?.total_reviews ?? initialFirstParty?.count ?? 0);
-  const perSource = useFallback ? [] : (stats?.per_source ?? []);
+    : (initialFirstParty?.count ?? clientFirstParty.length);
+  const perSource = useFallback
+    ? []
+    : (stats?.per_source ?? []).filter((source) => source.source === "first_party");
   const displayReviews: Array<{
     id: string;
     rating: number;
@@ -158,7 +161,7 @@ export function TourReviews({
         // Schema-backed first-party rows always stay visible, then any other
         // stored quotes the DB returns after hydration.
         ...ssrFirstParty,
-        ...clientReviews
+        ...clientFirstParty
           .filter((r) => !ssrFirstParty.some((f) => f.id === r.id))
           .map((r) => ({ ...r, source_url: null })),
       ];
@@ -175,7 +178,9 @@ export function TourReviews({
     <section className="mt-16 md:mt-20" aria-labelledby="tour-reviews-heading">
       <div className="text-center">
         <div className="text-[11px] uppercase tracking-[0.22em] text-[color:var(--text-muted)]">
-          Real guest reviews
+          {useFallback
+            ? `Verified platform reviews · ${displayTotal}`
+            : `Reviews collected directly by YES · ${initialFirstParty?.count ?? displayTotal}`}
         </div>
         <h2
           id="tour-reviews-heading"
@@ -297,7 +302,9 @@ export function TourReviews({
       )}
 
       <p className="mt-8 text-center text-[12px] text-[color:var(--charcoal)]/60">
-        Based on verified guest reviews across major booking platforms.
+        {useFallback
+          ? "Based on verified guest reviews across major booking platforms."
+          : "Collected directly by YES Experiences Portugal."}
       </p>
     </section>
   );

@@ -14,10 +14,18 @@
  * Escape hatch for manual QA: `localStorage.YES_ANALYTICS_FORCE = "1"`.
  */
 
-import { isCanonicalPaymentHost } from "@/lib/payments-environment";
-
 function isBrowser(): boolean {
   return typeof window !== "undefined" && typeof document !== "undefined";
+}
+
+const CANONICAL_ANALYTICS_HOSTS = new Set([
+  "yesexperiencesportugal.com",
+  "www.yesexperiencesportugal.com",
+]);
+
+function isCanonicalAnalyticsHost(hostname: string | null | undefined): boolean {
+  if (!hostname) return false;
+  return CANONICAL_ANALYTICS_HOSTS.has(hostname.trim().toLowerCase().replace(/\.$/, ""));
 }
 
 function forced(): boolean {
@@ -74,7 +82,7 @@ export function isAutomatedSession(nav?: { webdriver?: boolean; userAgent?: stri
 /** Reporting dimension: which surface produced this event. */
 export function analyticsEnvironment(hostname?: string): "production" | "preview" | "local" {
   const h = (hostname ?? (isBrowser() ? window.location.hostname : "")).toLowerCase();
-  if (isCanonicalPaymentHost(h)) return "production";
+  if (isCanonicalAnalyticsHost(h)) return "production";
   if (h === "localhost" || h === "127.0.0.1" || h.endsWith(".local")) return "local";
   return "preview";
 }
