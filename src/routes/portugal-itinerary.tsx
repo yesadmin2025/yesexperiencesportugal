@@ -26,7 +26,7 @@ const PATH = "/portugal-itinerary";
 const PAGE_URL = `${WEBSITE_URL}${PATH}`;
 const TITLE = "Portugal Itinerary — How to Tour Portugal, by Locals";
 const DESCRIPTION =
-  "How to plan a Portugal itinerary: 5, 7 and 10-day route shapes, real driving distances, how long to stay in Lisbon, Porto, the Douro and the Alentejo — written by a Portuguese team.";
+  "Plan a Portugal itinerary for 5, 7 or 10 days with realistic routes, drive times and local advice for Lisbon, Porto, the Douro and Alentejo.";
 
 const crumbs = [
   { name: "Home", path: "/" },

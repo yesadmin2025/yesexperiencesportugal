@@ -30,7 +30,7 @@ const PATH = "/lisbon-wine-tours";
 const PAGE_URL = `${WEBSITE_URL}${PATH}`;
 const TITLE = "Lisbon Wine Tours — Best Private Wine Days from Lisbon";
 const DESCRIPTION =
-  "Private wine tours from Lisbon with a licensed local operator: family cellars in Azeitão and Arrábida, talha wine in the Alentejo and tastings near Sintra. Hotel pickup, book online.";
+  "Private wine tours from Lisbon to Azeitão, Arrábida and the Alentejo, with local cellars, tastings, hotel pickup and private transport.";
 
 const crumbs = [
   { name: "Home", path: "/" },

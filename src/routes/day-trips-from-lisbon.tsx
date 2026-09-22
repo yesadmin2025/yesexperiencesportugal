@@ -59,7 +59,7 @@ const PATH = "/day-trips-from-lisbon";
 const PAGE_URL = `${WEBSITE_URL}${PATH}`;
 const TITLE = "Best Day Trips from Lisbon (2026) — Compared by Locals";
 const DESCRIPTION =
-  "Every day trip from Lisbon compared: drive times, miles, best season and our honest verdict on Sintra, Arrábida wine country, Évora and the coast. Private, hotel pickup, book online.";
+  "Compare private day trips from Lisbon to Sintra, Arrábida, Évora and the coast, with drive times, best seasons, hotel pickup and online booking.";
 
 const crumbs = [
   { name: "Home", path: "/" },
