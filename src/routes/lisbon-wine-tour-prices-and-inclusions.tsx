@@ -23,7 +23,7 @@ const PATH = "/lisbon-wine-tour-prices-and-inclusions";
 const PAGE_URL = `${WEBSITE_URL}${PATH}`;
 const TITLE = "Lisbon Wine Tour Prices — What's Included, Per Person";
 const DESCRIPTION =
-  "What a private wine tour from Lisbon costs and what the price covers: tastings, lunch, private transport and a licensed local host. Prices per person from €101, booked online.";
+  "See private wine tour prices from Lisbon and what’s included: tastings, lunch, private transport and local host, with per-person pricing and online booking.";
 
 const crumbs = [
   { name: "Home", path: "/" },

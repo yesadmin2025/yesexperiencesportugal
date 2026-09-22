@@ -24,7 +24,7 @@ const PATH = "/lisbon-wine-tour-pickup-and-wineries";
 const PAGE_URL = `${WEBSITE_URL}${PATH}`;
 const TITLE = "Lisbon Wine Tour Pickup & Wineries — Where We Collect You";
 const DESCRIPTION =
-  "Pickup points, timings and the real wineries on a private wine tour from Lisbon: José Maria da Fonseca, Quinta do Piloto, Catralvos, Palmela and Bacalhôa in Azeitão and Setúbal.";
+  "Pickup, timings and wineries on a private wine tour from Lisbon, including Azeitão and Setúbal cellars such as José Maria da Fonseca, Piloto and Bacalhôa.";
 
 const crumbs = [
   { name: "Home", path: "/" },
