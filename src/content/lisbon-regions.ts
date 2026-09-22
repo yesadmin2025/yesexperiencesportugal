@@ -113,7 +113,7 @@ export const LISBON_REGIONS: readonly LisbonRegion[] = [
     name: "Azeitão & Setúbal",
     title: "Private Wine Tours Lisbon to Azeitão & Setúbal",
     description:
-      "Private wine tours from Lisbon to Azeitão and Setúbal: family cellars, Moscatel, hands-on cheese-making, tile painting and the Setúbal market. Hotel pickup, one group only.",
+      "Private wine tours from Lisbon to Azeitão and Setúbal: family cellars, Moscatel, cheese-making, tile painting and the Setúbal market, with hotel pickup.",
     eyebrow: "Azeitão · Setúbal · 40 minutes from Lisbon",
     h1Lead: "Private wine tours in Azeitão,",
     h1Em: "close to Lisbon, far from the crowds.",
