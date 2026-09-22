@@ -1233,9 +1233,9 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
         ],
         [
           "Azeitão Cheese & Wine",
-          "Azeitão",
-          "Half day",
-          "Tasting-focused travelers who want the evening in Lisbon",
+          "Azeitão · Setúbal · Sesimbra",
+          "About 8½ hours (8h30)",
+          "Hands-on cheese workshop, one winery tasting and the Sesimbra coast",
         ],
         [
           "Évora & Alentejo Wine",
