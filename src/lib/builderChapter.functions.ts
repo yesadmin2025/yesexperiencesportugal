@@ -2,6 +2,7 @@ import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import { hashConfig, logAiUsage } from "@/lib/aiAuditLog.server";
 import { rateLimit } from "./rateLimit.server";
+import { guardAiCaller } from "./abuseGuard.server";
 
 /**
  * Tone-only chapter generator for the Living Atmosphere Studio.
@@ -123,6 +124,9 @@ export const generateChapter = createServerFn({ method: "POST" })
       ),
       source: "fallback",
     };
+
+    const ipGuard = await guardAiCaller({ bucket: "builder_chapter", limit: 50, windowSec: 300 });
+    if (!ipGuard.ok) return { ...fallback, source: "rate_limited" };
 
     const rl = await rateLimit({
       sessionId: data.sessionId,
