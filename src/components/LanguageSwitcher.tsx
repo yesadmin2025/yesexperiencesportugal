@@ -20,7 +20,7 @@ import {
   type Locale,
 } from "@/i18n/config";
 import { useLocale, useT } from "@/i18n/locale-context";
-import { isPtReady } from "@/i18n/pt-ready";
+import { isPtReady, resolveLocalePath } from "@/i18n/pt-ready";
 import { cn } from "@/lib/utils";
 import { trackEvent } from "@/lib/analytics-events";
 
@@ -75,7 +75,10 @@ export function LanguageSwitcher({ variant = "header", className }: LanguageSwit
     >
       {LOCALES.map((loc, i) => {
         const prefix = localePrefix(loc);
-        const target = `${prefix}${localeNeutralPath === "/" ? "" : localeNeutralPath}` || "/";
+        // Resolve 301 stubs so the switcher never links through a redirect.
+        const target = resolveLocalePath(
+          `${prefix}${localeNeutralPath === "/" ? "" : localeNeutralPath}` || "/",
+        );
         const isActive = loc === active;
         const isDisabled = loc === "pt" && !ptReady && active !== "pt";
 
