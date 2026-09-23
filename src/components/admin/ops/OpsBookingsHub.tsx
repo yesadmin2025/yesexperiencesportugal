@@ -43,7 +43,7 @@ type Row = {
 };
 
 type Guide = { id: string; name: string; active?: boolean | null };
-type View = "list" | "calendar" | "review" | "integrations";
+type View = "list" | "calendar" | "review" | "reconciliation" | "integrations";
 
 const today = () => new Date().toISOString().slice(0, 10);
 const plusDays = (days: number) => new Date(Date.now() + days * 86_400_000).toISOString().slice(0, 10);
