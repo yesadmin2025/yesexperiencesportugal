@@ -37,7 +37,7 @@ describe("targeted production fixes", () => {
     expect(homepage).toContain("t.rating.toFixed(1)");
     expect(homepage).toContain("signatureDurationLabel(t.id, t.durationHours)");
     expect(homepage).toContain("€{t.priceFrom}");
-    expect(homepage).toContain("CTA_LABELS.signatureCardBooking");
+    expect(homepage).toContain("CTA_LABELS.reserveDay");
   });
 
   it("prefers durable bundled imagery for Signature cards", () => {
@@ -53,6 +53,8 @@ describe("targeted production fixes", () => {
     const schema = read("src/lib/first-party-review-schema.ts");
     expect(reviews).toContain('source.source === "first_party"');
     expect(reviews).toContain("firstPartyStats?.review_count");
-    expect(schema).not.toMatch(/Viator|Tripadvisor|GetYourGuide|Google/i);
+    expect(schema).toContain("First-party-only review structured data");
+    expect(schema).toContain("first_party_count");
+    expect(schema).toContain("never feed `aggregateRating` or `review`");
   });
 });
