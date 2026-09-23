@@ -1,5 +1,5 @@
 import { socialImageMeta } from "@/lib/seo";
-import { useMemo, useState } from "react";
+import { lazy, Suspense, useMemo, useState } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { z } from "zod";
 import { Calendar, Users, Loader2, Check, ChevronLeft, MapPin, Clock, Mail } from "lucide-react";
@@ -10,7 +10,6 @@ import { Eyebrow } from "@/components/ui/Eyebrow";
 import { SectionTitle } from "@/components/ui/SectionTitle";
 import { CtaButton } from "@/components/ui/CtaButton";
 import { signatureTours, findTour } from "@/data/signatureTours";
-import { SimpleBookingForm } from "@/components/SimpleBookingForm";
 import { guideAttributionMetadata } from "@/lib/guide-attribution";
 import { breadcrumbLd, jsonLdScript, localBusinessLd, itemListLd } from "@/lib/jsonld";
 import {
@@ -27,6 +26,9 @@ import { toast } from "sonner";
 import { CTA_LABELS } from "@/content/cta-vocabulary";
 
 const PAGE_URL = "https://yesexperiencesportugal.com/book";
+const SimpleBookingForm = lazy(() =>
+  import("@/components/SimpleBookingForm").then((module) => ({ default: module.SimpleBookingForm })),
+);
 const crumbs = [
   { name: "Home", path: "/" },
   { name: "Book a day", path: "/book" },
@@ -235,7 +237,16 @@ function BookPage() {
         <section className="py-12 md:py-14 border-b border-[color:var(--border)]" id="pay">
           <div className="container-x max-w-3xl">
             <div data-testid="instant-booking-block">
-              <SimpleBookingForm tour={instantTour} />
+              <Suspense
+                fallback={
+                  <div
+                    className="min-h-[520px] animate-pulse bg-[color:var(--sand)] motion-reduce:animate-none"
+                    aria-label="Loading availability"
+                  />
+                }
+              >
+                <SimpleBookingForm tour={instantTour} />
+              </Suspense>
             </div>
             <p className="mt-7 text-center text-[13.5px] leading-relaxed text-[color:var(--charcoal-soft)]">
               Prefer to ask first?{" "}
