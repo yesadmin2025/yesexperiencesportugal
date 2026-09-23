@@ -335,8 +335,13 @@ function parseBokun(input: EmailInput): ParseResult {
   if (!draft.externalBookingRef) draft.externalBookingRef = bookingRef;
   if (!draft.productBookingRef) draft.productBookingRef = bookingRef;
 
-  draft.tourTitle = clean(labelled(body, "Product"));
-  draft.externalProductRef = draft.tourTitle;
+  // Bókun splits the product over two lines: "349639P3 -" then the title.
+  const productLines = productBlock(body);
+  const productCode = productLines.find((line) => /^[0-9]{3,8}[A-Z]?[0-9]*\s*-?$/.test(line)) ?? null;
+  const productName = productLines.find((line) => line !== productCode && line.length > 4) ?? null;
+  draft.tourTitle = productName ?? clean(labelled(body, "Product"));
+  draft.productCode = productCode ? productCode.replace(/\s*-\s*$/, "") : null;
+  draft.externalProductRef = draft.productCode ?? draft.tourTitle;
   draft.selectedRate = clean(labelled(body, "Rate"));
   draft.customerName = clean(labelled(body, "Customer"));
   draft.customerEmail = clean(labelled(body, "Customer email"))?.toLowerCase() ?? null;
