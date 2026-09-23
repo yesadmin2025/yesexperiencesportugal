@@ -99,9 +99,9 @@ function ErrorView({ error, reset }: { error: Error; reset: () => void }) {
   );
 }
 
-export const Route = createFileRoute("/admin/")({
+export const Route = createFileRoute("/admin/activity")({
   head: () => ({
-    meta: [{ title: "Admin overview — YES" }, { name: "robots", content: "noindex, nofollow" }],
+    meta: [{ title: "Activity & payment health — YES" }, { name: "robots", content: "noindex, nofollow" }],
   }),
   component: AdminOverviewPage,
   errorComponent: ErrorView,
