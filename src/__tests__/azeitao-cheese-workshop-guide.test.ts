@@ -7,7 +7,7 @@ const SLUG = "azeitao-cheese-workshop-near-lisbon";
 
 describe("Azeitão cheese workshop guide", () => {
   const article = LOCAL_STORIES_ARTICLES.find((a) => a.slug === SLUG);
-  const sot = SIGNATURE_SOURCE_OF_TRUTH["azeitao-cheese"];
+  const sot = SIGNATURE_SOURCE_OF_TRUTH["azeitao-cheese"]!;
   const text = article
     ? [
         article.standfirst,
@@ -35,7 +35,7 @@ describe("Azeitão cheese workshop guide", () => {
 
   it("only references stops that exist in the real itinerary", () => {
     for (const needle of ["Livramento", "Quinta Velha", "Catralvos", "Sesimbra"]) {
-      expect(sot.itinerary.some((s: { name: string }) => s.name.includes(needle.split(" ")[0]!))).toBe(true);
+      expect(sot.itinerary.some((s) => s.label.includes(needle.split(" ")[0]!))).toBe(true);
       expect(text).toContain(needle);
     }
   });
