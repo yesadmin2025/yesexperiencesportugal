@@ -613,6 +613,9 @@ const voucherReconInput = z.object({
   dryRun: z.boolean().default(true),
   maxRows: z.number().int().min(1).max(120).default(60),
   maxMessagesPerGuest: z.number().int().min(1).max(20).default(8),
+  includeInternalNotifications: z.boolean().default(true),
+  notificationDays: z.number().int().min(1).max(365).default(365),
+  maxNotifications: z.number().int().min(1).max(300).default(150),
 });
 
 /**
