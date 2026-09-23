@@ -42,7 +42,6 @@ export const Route = createFileRoute("/api/public/hooks/bokun-booking")({
 
         const outcome = await ingestParsedBooking(supabaseAdmin, booking, {
           source: "BOKUN",
-          reference: booking.externalBookingRef ?? booking.productBookingRef ?? null,
           subject: `Bókun webhook ${booking.intent}`,
           rawPayload: payload,
         });
