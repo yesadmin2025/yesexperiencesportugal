@@ -1960,6 +1960,82 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
   },
 
   {
+    slug: "azeitao-cheese-workshop-near-lisbon",
+    title: "Azeitão Cheese Workshop Near Lisbon — Private Day (2026)",
+    metaDescription:
+      "A private Azeitão cheese workshop near Lisbon: Livramento market, making cheese by hand, regional tastings, one winery and Sesimbra. 8h30, lunch not included.",
+    h1: "Azeitão Cheese Workshop Near Lisbon — How the Day Runs",
+    eyebrow: "Setúbal · Cheese & Wine",
+    standfirst:
+      "Azeitão cheese is made from raw sheep's milk and set with thistle flower rather than animal rennet. This is the private day where you make it with your own hands, then taste the wine that grows beside it.",
+    sections: [
+      {
+        heading: "The day starts in a market, not a workshop.",
+        body: "We open at Mercado do Livramento in Setúbal, about forty minutes south of Lisbon. It is the town's working kitchen rather than a visitor attraction: fish arriving from the port, tiled walls, cheese and bread counters, people ordering lunch at nine in the morning. Seeing the produce first makes the workshop that follows read differently — you have already met the region before you taste it.",
+      },
+      {
+        heading: "The workshop itself is hands-on and private to your party.",
+        body: "At Quinta Velha you make Azeitão cheese the traditional way, with raw sheep's milk curdled using cardoon thistle. It is a slower, warmer process than industrial cheesemaking and it explains the texture that makes this cheese famous — soft enough to spoon out through a cut in the crust. The session is private, so questions are answered properly and nobody is rushed off the table.",
+      },
+      {
+        heading: "What you taste, and what you do not.",
+        body: "The tasting is regional and generous: toasted and regional bread, fresh cheese alongside cured Azeitão cheese, homemade jam or chutney, and Moscatel de Setúbal. It is deliberately a tasting rather than a meal. Lunch is not included on this day — we stop in Azeitão village and you eat where you like, at your own expense. Guests who prefer a long included lunch usually pick our Setúbal and Arrábida wine day instead.",
+      },
+      {
+        heading: "One winery, then the coast.",
+        body: "After Azeitão we visit a local winery — Farm Catralvos — where the entrance and tasting are included. This is a single, unhurried cellar rather than a tour of three, because the cheese is the centre of this day. From there the road climbs to Sesimbra and its castle above the bay, with Cristo Rei and the 25 de Abril Bridge on the panoramic route back into Lisbon.",
+      },
+      {
+        heading: "How long it takes, and who it suits.",
+        body: "The day runs 8h30 door to door, with pickup and drop-off in the listed service areas. It suits people who would rather make something than watch something: food-led couples, families with older children, small private groups. If you want wine as the main subject and cheese as the pairing, the Arrábida and Setúbal days are the better fit.",
+      },
+      {
+        heading: "Why the thistle matters.",
+        body: "Because Azeitão cheese is set with a plant, it carries a faint vegetal bitterness behind the salt and cream that animal-rennet cheeses do not have. That is also why it pairs so naturally with Moscatel: the sweetness and the bitterness hold each other in place. Once you have tasted the two together in the village where both are made, the pairing stops being a wine-list convention and starts making sense.",
+      },
+    ],
+    ctaLead:
+      "This is the day exactly as we run it — private to your party, workshop and winery included, pickup from your accommodation.",
+    ctaLabel: "See dates & reserve",
+    signatureSlug: "azeitao-cheese",
+    relatedSignatures: [
+      { slug: "arrabida-wine-allinclusive", label: "Setúbal & Arrábida Wine Signature" },
+      { slug: "azulejo-workshop", label: "Tile Painting Workshop" },
+    ],
+    relatedReads: [
+      { path: "/local-stories/setubal-wine-guide", label: "Setúbal wine, explained" },
+      {
+        path: "/local-stories/best-wine-tours-from-lisbon",
+        label: "Compare wine tours from Lisbon",
+      },
+      { path: "/day-trips-from-lisbon", label: "Every day trip, by drive time" },
+    ],
+    faq: [
+      {
+        q: "How long is the Azeitão cheese workshop day?",
+        a: "About 8h30 door to door from your pickup address, including Livramento market, the private workshop, the tastings, a winery visit and Sesimbra.",
+      },
+      {
+        q: "Is lunch included?",
+        a: "No. Lunch is at your own expense — we stop in Azeitão village so you can choose. The workshop tasting does include bread, fresh and cured cheese, jam or chutney and Moscatel wine, so nobody arrives at lunch hungry.",
+      },
+      {
+        q: "Do you actually make the cheese yourself?",
+        a: "Yes. The workshop is hands-on, using raw sheep's milk set with cardoon thistle, which is the traditional Azeitão method.",
+      },
+      {
+        q: "How far is Azeitão from Lisbon?",
+        a: "About forty minutes south, across the 25 de Abril Bridge. It sits between Setúbal and the Arrábida hills, so the coast is close enough to include in the same day.",
+      },
+      {
+        q: "Is there a wine tasting as well?",
+        a: "Yes — one local winery, with entrance and tasting included. If you want several cellars in a day, our Setúbal and Arrábida wine tour is built that way instead.",
+      },
+    ],
+    datePublished: "2026-09-23",
+  },
+
+  {
     slug: "tomar-coimbra-day-trip-from-lisbon",
     title: "Tomar & Coimbra Day Trip from Lisbon — Private Tour (2026)",
     metaDescription:
