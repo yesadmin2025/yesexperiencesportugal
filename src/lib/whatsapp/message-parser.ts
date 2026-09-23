@@ -29,6 +29,8 @@ export type WhatsAppFacts = {
   /** Explicit request to move the date or time. */
   reschedule: boolean;
   date: string | null;
+  /** Every date the message actually states, in the order written. */
+  dates: string[];
   startTime: string | null;
   pickup: string | null;
   dropoff: string | null;
@@ -246,6 +248,7 @@ export function parseWhatsAppMessage(input: { body: string | null | undefined })
     refund,
     reschedule,
     date,
+    dates,
     startTime,
     pickup,
     dropoff,
