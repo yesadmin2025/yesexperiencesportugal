@@ -131,6 +131,17 @@ export function CookieConsent() {
       persist(full);
       applyConsent(full);
       setAnalyticsConsent(full.analytics);
+      // GTM starts while Consent Mode is denied, so its automatic initial
+      // page view cannot be collected. Emit that one page view immediately
+      // after a first-time grant; later SPA navigations are handled by
+      // usePageViewTracking.
+      if (full.analytics === "granted") {
+        trackEvent("page_view", {
+          page_path: window.location.pathname,
+          page_location: `${window.location.origin}${window.location.pathname}`,
+          page_title: document.title,
+        });
+      }
       trackEvent("consent_choice", {
         source,
         analytics: full.analytics,
