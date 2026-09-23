@@ -173,6 +173,17 @@ function listAfter(body: string, label: string): string[] {
     .slice(0, 20);
 }
 
+/** Lines written under the "Product" label, before the next labelled row. */
+function productBlock(body: string): string[] {
+  const match = body.match(/^[>\s*]*Product\s*[:：]?[ \t]*\n([\s\S]{0,400}?)(?=\n\s*\n|\n[>\s*]*(?:Supplier|Sold by|Booking channel|Customer|Rate|Date)\b|$)/im);
+  if (!match) return [];
+  return match[1]!
+    .split("\n")
+    .map((line) => clean(line) ?? "")
+    .filter((line) => line.length > 0)
+    .slice(0, 6);
+}
+
 function parseMoney(value: string | null): { amount: number | null; currency: string | null } {
   if (!value) return { amount: null, currency: null };
   const currency = /eur|€/i.test(value) ? "EUR" : /usd|\$/.test(value) ? "USD" : /gbp|£/.test(value) ? "GBP" : null;
