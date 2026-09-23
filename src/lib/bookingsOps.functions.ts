@@ -815,7 +815,7 @@ export const listOpsWhatsAppForBooking = createServerFn({ method: "POST" })
       .maybeSingle();
 
     const metadata = (booking?.metadata ?? {}) as Record<string, unknown>;
-    const evidence = (metadata["whatsapp_evidence"] ?? {}) as Record<string, unknown>;
+    const evidence = (metadata["whatsapp_evidence"] ?? null) as Json;
     const evidencePhone = typeof evidence["phone"] === "string" ? evidence["phone"] : null;
     const phone = normalizePhone(evidencePhone ?? booking?.customer_phone ?? null);
 
