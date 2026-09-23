@@ -127,7 +127,13 @@ const hit = (patterns: RegExp[], text: string) => patterns.some((pattern) => pat
 
 const clean = (value: string | null | undefined): string | null => {
   if (!value) return null;
-  const text = value.replace(/\s+/g, " ").trim().replace(/[,;.]$/, "");
+  const text = value
+    .replace(/\s+/g, " ")
+    .trim()
+    // Conversational tails that are not part of the value itself.
+    .replace(/\s+(?:instead|please|thanks|thank you|if possible|ok)\b\.?$/i, "")
+    .trim()
+    .replace(/[,;.]$/, "");
   return text.length >= 2 && text.length <= 200 ? text : null;
 };
 
