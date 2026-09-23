@@ -165,7 +165,16 @@ function buildPatch(
       patch[column] = next;
       sources.add(candidate.source);
     }
-    if (!("guests" in patch) && candidate.block.pax != null && (shell["guests"] == null || shell["guests"] === 1)) {
+    // A bare payment notification states no real party size — ignore its pax.
+    const paxTrustworthy =
+      candidate.source !== "internal_notification" ||
+      (candidate.block as InternalNotificationBlock).structured === true;
+    if (
+      !("guests" in patch) &&
+      paxTrustworthy &&
+      candidate.block.pax != null &&
+      (shell["guests"] == null || shell["guests"] === 1)
+    ) {
       patch["guests"] = candidate.block.pax;
       sources.add(candidate.source);
     }

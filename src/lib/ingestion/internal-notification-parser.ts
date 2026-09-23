@@ -51,6 +51,8 @@ export type InternalNotificationBlock = VoucherBlock & {
   productCode: string | null;
   /** Stable identity of the booking this notification describes. */
   dedupeKey: string;
+  /** True when the message states real operational detail (not just a payment line). */
+  structured: boolean;
 };
 
 const BOOKING_TYPE_PREFIX = /^YES\s+(Signature|Tailored|Studio|Moments|Corporate)\s*[—–-]\s*/i;
@@ -137,8 +139,11 @@ export function parseInternalNotification(input: {
   const bodyDateRaw = firstLabel(body, ["Booking date", "Date", "Trip date", "Experience date"]);
   const bodyDate = bodyDateRaw ? parseDateToken(bodyDateRaw) : { date: null, time: null };
 
-  const tourTitle =
-    specificTitle(firstLabel(body, ["Experience", "Tour", "Product"])) ?? fromSubject.tourTitle;
+  const bodyTitle = (firstLabel(body, ["Experience", "Tour", "Product"]) ?? "").replace(
+    BOOKING_TYPE_PREFIX,
+    "",
+  );
+  const tourTitle = specificTitle(bodyTitle) ?? fromSubject.tourTitle;
   const date = bodyDate.date ?? fromSubject.date;
   const notes = listAfter(body, "Customer notes");
 
@@ -174,6 +179,7 @@ export function parseInternalNotification(input: {
     bookingType: firstLabel(body, ["Type"]) ?? fromSubject.bookingType,
     productCode: firstLabel(body, ["Product code", "Source tour id", "Tour id"]),
     dedupeKey: dedupeBase,
+    structured: !!(date || tourTitle || firstLabel(body, ["Pickup", "Pick-up", "Pick up"])),
   };
 }
 
