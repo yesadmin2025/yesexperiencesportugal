@@ -92,6 +92,155 @@ export type Database = {
         }
         Relationships: []
       }
+      booking_ingestion_candidates: {
+        Row: {
+          confidence: number | null
+          created_at: string
+          created_booking_id: string | null
+          detected: Json
+          gmail_message_id: string | null
+          gmail_thread_id: string | null
+          id: string
+          matched_booking_id: string | null
+          missing_fields: Json
+          raw_payload: Json | null
+          reason: string | null
+          received_at: string | null
+          resolved_at: string | null
+          resolved_by: string | null
+          source: string
+          source_channel: string | null
+          source_email_url: string | null
+          status: string
+          subject: string | null
+          updated_at: string
+        }
+        Insert: {
+          confidence?: number | null
+          created_at?: string
+          created_booking_id?: string | null
+          detected?: Json
+          gmail_message_id?: string | null
+          gmail_thread_id?: string | null
+          id?: string
+          matched_booking_id?: string | null
+          missing_fields?: Json
+          raw_payload?: Json | null
+          reason?: string | null
+          received_at?: string | null
+          resolved_at?: string | null
+          resolved_by?: string | null
+          source: string
+          source_channel?: string | null
+          source_email_url?: string | null
+          status?: string
+          subject?: string | null
+          updated_at?: string
+        }
+        Update: {
+          confidence?: number | null
+          created_at?: string
+          created_booking_id?: string | null
+          detected?: Json
+          gmail_message_id?: string | null
+          gmail_thread_id?: string | null
+          id?: string
+          matched_booking_id?: string | null
+          missing_fields?: Json
+          raw_payload?: Json | null
+          reason?: string | null
+          received_at?: string | null
+          resolved_at?: string | null
+          resolved_by?: string | null
+          source?: string
+          source_channel?: string | null
+          source_email_url?: string | null
+          status?: string
+          subject?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "booking_ingestion_candidates_created_booking_id_fkey"
+            columns: ["created_booking_id"]
+            isOneToOne: false
+            referencedRelation: "bookings"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "booking_ingestion_candidates_matched_booking_id_fkey"
+            columns: ["matched_booking_id"]
+            isOneToOne: false
+            referencedRelation: "bookings"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      booking_ingestion_log: {
+        Row: {
+          action: string
+          actor_user_id: string | null
+          confidence: number | null
+          created_at: string
+          dedupe_key: string | null
+          gmail_message_id: string | null
+          gmail_thread_id: string | null
+          id: string
+          matched_booking_id: string | null
+          parse_status: string
+          parser: string | null
+          payload: Json | null
+          reason: string | null
+          source: string
+          source_channel: string | null
+          subject: string | null
+        }
+        Insert: {
+          action: string
+          actor_user_id?: string | null
+          confidence?: number | null
+          created_at?: string
+          dedupe_key?: string | null
+          gmail_message_id?: string | null
+          gmail_thread_id?: string | null
+          id?: string
+          matched_booking_id?: string | null
+          parse_status: string
+          parser?: string | null
+          payload?: Json | null
+          reason?: string | null
+          source: string
+          source_channel?: string | null
+          subject?: string | null
+        }
+        Update: {
+          action?: string
+          actor_user_id?: string | null
+          confidence?: number | null
+          created_at?: string
+          dedupe_key?: string | null
+          gmail_message_id?: string | null
+          gmail_thread_id?: string | null
+          id?: string
+          matched_booking_id?: string | null
+          parse_status?: string
+          parser?: string | null
+          payload?: Json | null
+          reason?: string | null
+          source?: string
+          source_channel?: string | null
+          subject?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "booking_ingestion_log_matched_booking_id_fkey"
+            columns: ["matched_booking_id"]
+            isOneToOne: false
+            referencedRelation: "bookings"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       booking_quotes: {
         Row: {
           add_on_pricing: Json
@@ -268,81 +417,176 @@ export type Database = {
       }
       bookings: {
         Row: {
+          amount_paid: number | null
           amount_total: number
+          assigned_guide_id: string | null
           booking_details: Json | null
           booking_details_completed_at: string | null
           booking_type: Database["public"]["Enums"]["booking_type"]
+          cancelled_at: string | null
+          client_notes: string | null
           created_at: string
           currency: string
           customer_email: string
           customer_name: string | null
           customer_phone: string | null
           database_addon_subtotal_eur: number | null
+          dropoff_location: string | null
+          exclusions: Json | null
+          external_booking_ref: string | null
+          external_product_ref: string | null
+          extras: Json | null
           final_total_eur: number | null
           guests: number
           id: string
+          inclusions: Json | null
+          language: string | null
+          last_synced_at: string | null
           metadata: Json
           notes: string | null
+          operational_notes: string | null
+          pax_breakdown: Json | null
+          payment_status: string | null
+          pickup_location: string | null
           preferred_date: string | null
+          product_code: string | null
           quote_id: string | null
+          review_reason: string | null
+          review_required: boolean
+          selected_rate: string | null
+          source: string
+          source_channel: string | null
+          source_email_url: string | null
           source_journey_id: string | null
+          source_message_id: string | null
+          source_raw_payload: Json | null
+          source_thread_id: string | null
           source_tour_id: string | null
+          start_time: string | null
           status: Database["public"]["Enums"]["booking_status"]
           stripe_payment_intent_id: string | null
           stripe_session_id: string | null
+          sync_status: string | null
+          tour_title: string | null
           updated_at: string
         }
         Insert: {
+          amount_paid?: number | null
           amount_total: number
+          assigned_guide_id?: string | null
           booking_details?: Json | null
           booking_details_completed_at?: string | null
           booking_type: Database["public"]["Enums"]["booking_type"]
+          cancelled_at?: string | null
+          client_notes?: string | null
           created_at?: string
           currency?: string
           customer_email: string
           customer_name?: string | null
           customer_phone?: string | null
           database_addon_subtotal_eur?: number | null
+          dropoff_location?: string | null
+          exclusions?: Json | null
+          external_booking_ref?: string | null
+          external_product_ref?: string | null
+          extras?: Json | null
           final_total_eur?: number | null
           guests?: number
           id?: string
+          inclusions?: Json | null
+          language?: string | null
+          last_synced_at?: string | null
           metadata?: Json
           notes?: string | null
+          operational_notes?: string | null
+          pax_breakdown?: Json | null
+          payment_status?: string | null
+          pickup_location?: string | null
           preferred_date?: string | null
+          product_code?: string | null
           quote_id?: string | null
+          review_reason?: string | null
+          review_required?: boolean
+          selected_rate?: string | null
+          source?: string
+          source_channel?: string | null
+          source_email_url?: string | null
           source_journey_id?: string | null
+          source_message_id?: string | null
+          source_raw_payload?: Json | null
+          source_thread_id?: string | null
           source_tour_id?: string | null
+          start_time?: string | null
           status?: Database["public"]["Enums"]["booking_status"]
           stripe_payment_intent_id?: string | null
           stripe_session_id?: string | null
+          sync_status?: string | null
+          tour_title?: string | null
           updated_at?: string
         }
         Update: {
+          amount_paid?: number | null
           amount_total?: number
+          assigned_guide_id?: string | null
           booking_details?: Json | null
           booking_details_completed_at?: string | null
           booking_type?: Database["public"]["Enums"]["booking_type"]
+          cancelled_at?: string | null
+          client_notes?: string | null
           created_at?: string
           currency?: string
           customer_email?: string
           customer_name?: string | null
           customer_phone?: string | null
           database_addon_subtotal_eur?: number | null
+          dropoff_location?: string | null
+          exclusions?: Json | null
+          external_booking_ref?: string | null
+          external_product_ref?: string | null
+          extras?: Json | null
           final_total_eur?: number | null
           guests?: number
           id?: string
+          inclusions?: Json | null
+          language?: string | null
+          last_synced_at?: string | null
           metadata?: Json
           notes?: string | null
+          operational_notes?: string | null
+          pax_breakdown?: Json | null
+          payment_status?: string | null
+          pickup_location?: string | null
           preferred_date?: string | null
+          product_code?: string | null
           quote_id?: string | null
+          review_reason?: string | null
+          review_required?: boolean
+          selected_rate?: string | null
+          source?: string
+          source_channel?: string | null
+          source_email_url?: string | null
           source_journey_id?: string | null
+          source_message_id?: string | null
+          source_raw_payload?: Json | null
+          source_thread_id?: string | null
           source_tour_id?: string | null
+          start_time?: string | null
           status?: Database["public"]["Enums"]["booking_status"]
           stripe_payment_intent_id?: string | null
           stripe_session_id?: string | null
+          sync_status?: string | null
+          tour_title?: string | null
           updated_at?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "bookings_assigned_guide_id_fkey"
+            columns: ["assigned_guide_id"]
+            isOneToOne: false
+            referencedRelation: "guides"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       builder_compatibility_rules: {
         Row: {
@@ -1824,6 +2068,39 @@ export type Database = {
           theme?: string
           tier?: string
           title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      integration_state: {
+        Row: {
+          cursor: string | null
+          detail: Json
+          enabled: boolean
+          id: string
+          last_error: string | null
+          last_run_at: string | null
+          last_status: string | null
+          updated_at: string
+        }
+        Insert: {
+          cursor?: string | null
+          detail?: Json
+          enabled?: boolean
+          id: string
+          last_error?: string | null
+          last_run_at?: string | null
+          last_status?: string | null
+          updated_at?: string
+        }
+        Update: {
+          cursor?: string | null
+          detail?: Json
+          enabled?: boolean
+          id?: string
+          last_error?: string | null
+          last_run_at?: string | null
+          last_status?: string | null
           updated_at?: string
         }
         Relationships: []
