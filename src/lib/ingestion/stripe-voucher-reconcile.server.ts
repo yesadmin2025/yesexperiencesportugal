@@ -98,7 +98,7 @@ const money = (cents: number | null, currency: string | null): string =>
   cents == null ? "—" : `${(cents / 100).toFixed(2)} ${(currency ?? "eur").toUpperCase()}`;
 
 const SHELL_COLUMNS =
-  "id, created_at, customer_name, customer_email, customer_phone, tour_title, source_tour_id, selected_rate, preferred_date, start_time, pickup_location, dropoff_location, guests, pax_breakdown, language, inclusions, exclusions, extras, client_notes, amount_total, amount_paid, currency, status, payment_status, source, source_channel, stripe_session_id, stripe_payment_intent_id, metadata";
+  "id, created_at, customer_name, customer_email, customer_phone, booking_type, tour_title, source_tour_id, selected_rate, preferred_date, start_time, pickup_location, dropoff_location, guests, pax_breakdown, language, inclusions, exclusions, extras, client_notes, amount_total, amount_paid, currency, status, payment_status, source, source_channel, stripe_session_id, stripe_payment_intent_id, metadata";
 
 type ShellRow = StripeShell & Record<string, unknown> & {
   customer_email: string | null;
@@ -176,6 +176,17 @@ function buildPatch(
       (shell["guests"] == null || shell["guests"] === 1)
     ) {
       patch["guests"] = candidate.block.pax;
+      sources.add(candidate.source);
+    }
+    const stated = (candidate.block as InternalNotificationBlock).bookingType;
+    const bookingType = typeof stated === "string" ? stated.trim().toLowerCase() : null;
+    if (
+      !("booking_type" in patch) &&
+      bookingType &&
+      ["signature", "tailored", "builder", "multi-day"].includes(bookingType) &&
+      isEmptyValue(shell["booking_type"])
+    ) {
+      patch["booking_type"] = bookingType;
       sources.add(candidate.source);
     }
     if (!("source_tour_id" in patch) && candidate.productCode && isEmptyValue(shell["source_tour_id"])) {
