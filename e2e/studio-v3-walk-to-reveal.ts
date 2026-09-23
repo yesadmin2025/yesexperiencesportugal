@@ -24,7 +24,7 @@ export const STUDIO_ROOT = '[data-testid="studio-v3-root"]';
  * from a first-visit state instead of inheriting a partially-walked funnel.
  */
 export async function resetStudioV3State(page: Page): Promise<void> {
-  await page.goto("/studio-v3");
+  await page.goto("/studio");
   await page.evaluate(() => {
     const wipe = (store: Storage) => {
       for (const key of Object.keys(store)) {

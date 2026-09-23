@@ -1,7 +1,7 @@
 import { createFileRoute, redirect } from "@tanstack/react-router";
 
 /**
- * /builder → /studio-v3 (canonical cinematic Studio).
+ * /builder → /studio (canonical cinematic Studio).
  */
 export const Route = createFileRoute("/builder")({
   head: () => ({
@@ -12,7 +12,7 @@ export const Route = createFileRoute("/builder")({
   }),
   beforeLoad: ({ search }) => {
     throw redirect({
-      to: "/studio-v3",
+      to: "/studio",
       search: search as Record<string, unknown>,
       statusCode: 301,
     });

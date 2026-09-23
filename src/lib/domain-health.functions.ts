@@ -22,7 +22,7 @@ const CANONICAL_HOSTS = ["yesexperiencesportugal.com", "www.yesexperiencesportug
 const CANONICAL_PATHS = [
   "/",
   "/experiences",
-  "/studio-v3",
+  "/studio",
   "/multi-day",
   "/reviews",
   "/sitemap.xml",

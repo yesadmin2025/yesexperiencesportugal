@@ -5,8 +5,8 @@ import { StudioV3 } from "@/components/studio-v3/StudioV3";
 /**
  * Shared page body for the public Experience Studio.
  *
- * Mounted by the canonical route (`/studio-v3`) and by the legacy
- * alias (`/studio-v3`) so both URLs render the identical Studio V3 /
+ * Mounted by the canonical route (`/studio`) and by the legacy
+ * alias (`/studio`) so both URLs render the identical Studio V3 /
  * Living Atlas implementation. Route-level metadata (canonical, JSON-LD,
  * robots) lives in each route file, not here.
  */

@@ -99,7 +99,7 @@ describe("click-time attribution", () => {
         guideSlug: "best-wine-tours-from-lisbon",
         slot: "next_studio",
         kind: "studio",
-        destination: "/studio-v3",
+        destination: "/studio",
       }),
     ).not.toThrow();
     expect(trackEventMock).toHaveBeenCalledWith(
@@ -107,7 +107,7 @@ describe("click-time attribution", () => {
       expect.objectContaining({
         guide_slug: "best-wine-tours-from-lisbon",
         placement: "next_studio",
-        destination: "/studio-v3",
+        destination: "/studio",
         destination_kind: "studio",
       }),
     );
@@ -115,7 +115,7 @@ describe("click-time attribution", () => {
       expect.objectContaining({
         guide_slug: "best-wine-tours-from-lisbon",
         slot: "next_studio",
-        destination: "/studio-v3",
+        destination: "/studio",
         destination_kind: "studio",
       }),
     );
@@ -251,7 +251,7 @@ describe("internal guide links are crawl-clean", () => {
     }
     const hrefs = anchors.map((a) => a.getAttribute("href"));
     expect(hrefs).toContain("/tours/arrabida-wine-allinclusive");
-    expect(hrefs).toContain("/studio-v3");
+    expect(hrefs).toContain("/studio");
 
     // Clicking the Signature link persists attribution before navigation.
     const signature = anchors.find(

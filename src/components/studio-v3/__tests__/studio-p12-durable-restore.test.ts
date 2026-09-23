@@ -31,7 +31,7 @@ function durableProgress(now = Date.now()) {
 }
 
 afterEach(() => {
-  window.history.replaceState({}, "", "/studio-v3");
+  window.history.replaceState({}, "", "/studio");
   clearStudioDraftPersistence();
   consumeDurableStudioDraftRestore();
 });
@@ -58,7 +58,7 @@ describe("P12 durable Studio browser restore", () => {
   it("never lets a shared ?saved= view replace the traveller's session", () => {
     const raw = durableProgress();
     window.localStorage.setItem(STUDIO_V3_DURABLE_DRAFT_KEY, raw as string);
-    window.history.replaceState({}, "", "/studio-v3?saved=abc123");
+    window.history.replaceState({}, "", "/studio?saved=abc123");
 
     expect(restoreDurableStudioDraftBeforeMount()).toBe(false);
     expect(window.sessionStorage.getItem(STUDIO_V3_SESSION_KEY)).toBeNull();

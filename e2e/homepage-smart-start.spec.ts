@@ -16,7 +16,7 @@ test.describe("homepage conversion paths", () => {
     await expect(primary).toHaveCount(5);
 
     await expect(primary.nth(0)).toHaveAttribute("href", "/experiences");
-    await expect(primary.nth(1)).toHaveAttribute("href", "/studio-v3");
+    await expect(primary.nth(1)).toHaveAttribute("href", "/studio");
     await expect(primary.nth(2)).toHaveAttribute("href", "/multi-day");
     await expect(primary.nth(3)).toHaveAttribute("href", "/proposal-in-portugal");
     await expect(primary.nth(4)).toHaveAttribute("href", "/corporate");
@@ -71,7 +71,7 @@ test.describe("homepage conversion paths", () => {
     const resume = page.locator('[data-testid="home-smart-start-resume"]');
     await expect(resume).toBeVisible({ timeout: 20_000 });
     await expect(page.getByText(/Coastal · Couple · Slow/)).toBeVisible();
-    await expect(resume).toHaveAttribute("href", "/studio-v3");
+    await expect(resume).toHaveAttribute("href", "/studio");
     await expect(resume).toHaveAttribute("data-smart-start-recommended", "true");
   });
 });

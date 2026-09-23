@@ -20,7 +20,7 @@ test.use({ ...devices["Pixel 5"], viewport: { width: 393, height: 588 } });
 test.setTimeout(120_000);
 
 test("moments reel never traps the journey and the reveal paints in <=2.5s", async ({ page }) => {
-  await page.goto("/studio-v3");
+  await page.goto("/studio");
   await walkToReveal(page);
 
   const refine = page.locator('[data-studio-v3-screen="refine"]');
@@ -60,7 +60,7 @@ test("moments reel never traps the journey and the reveal paints in <=2.5s", asy
 
 test("reveal still paints when every image request is blocked", async ({ page }) => {
   await page.route("**/*.{png,jpg,jpeg,webp,avif,svg}", (route) => route.abort());
-  await page.goto("/studio-v3");
+  await page.goto("/studio");
   await walkToReveal(page);
 
   const cta = page

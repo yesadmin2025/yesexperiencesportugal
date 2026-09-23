@@ -38,7 +38,7 @@ async function revealFromRefine(page: Page): Promise<number> {
 }
 
 test("moments complete, then the signature story reveals in <=2.5s", async ({ page }) => {
-  await page.goto("/studio-v3");
+  await page.goto("/studio");
   await walkToReveal(page, { stopAtMoments: true });
 
   // The moments surface must reach a completed state on its own and offer an
@@ -61,7 +61,7 @@ test("moments complete, then the signature story reveals in <=2.5s", async ({ pa
 
 test("same reveal contract with every image blocked", async ({ page }) => {
   await page.route("**/*.{png,jpg,jpeg,webp,avif,gif,svg}", (route) => route.abort());
-  await page.goto("/studio-v3");
+  await page.goto("/studio");
   await walkToReveal(page);
 
   const elapsed = await revealFromRefine(page);
@@ -70,7 +70,7 @@ test("same reveal contract with every image blocked", async ({ page }) => {
 });
 
 test("the moments reel does not loop back to its first moment", async ({ page }) => {
-  await page.goto("/studio-v3");
+  await page.goto("/studio");
   await walkToReveal(page, { stopAtMoments: true });
 
   const momentsBlock = page.getByTestId("studio-v3-moments-continue");

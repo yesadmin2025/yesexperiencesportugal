@@ -48,7 +48,7 @@ async function clickUntilGone(page: Page, selector: string, timeout = 12_000) {
 async function walkIntroToInvestment(page: Page) {
   // `?e2e=1` disables the dev hard-reload poller that otherwise reloads the
   // page mid-test and resets React state.
-  await page.goto("/studio-v3?e2e=1", { waitUntil: "domcontentloaded" });
+  await page.goto("/studio?e2e=1", { waitUntil: "domcontentloaded" });
   await page.waitForLoadState("load");
   await page.waitForTimeout(400);
 

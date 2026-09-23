@@ -370,7 +370,7 @@ function CtaStrip() {
               price in the Studio.
             </p>
           </div>
-          <CtaButton to="/studio-v3" variant="primary" className="flex-shrink-0">
+          <CtaButton to="/studio" variant="primary" className="flex-shrink-0">
             {CTA_LABELS.studio}
           </CtaButton>
         </div>

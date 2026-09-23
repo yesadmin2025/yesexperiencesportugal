@@ -1,7 +1,7 @@
 import { expect, test, type Page } from "@playwright/test";
 
 /**
- * Production browser gate for the public Experience Studio (/studio-v3).
+ * Production browser gate for the public Experience Studio (/studio).
  *
  * The deep checkout test restores a complete, non-sensitive Studio composition
  * from sessionStorage. That is the same public recovery path used after a
@@ -73,7 +73,7 @@ async function expectNoInternalCopy(page: Page) {
 }
 
 async function restoreStudioState(page: Page, state: Record<string, unknown>) {
-  await page.goto("/studio-v3");
+  await page.goto("/studio");
   await waitForStudioHydration(page);
   await page.evaluate(
     ({ key, value }) => window.sessionStorage.setItem(key, JSON.stringify(value)),

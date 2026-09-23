@@ -57,7 +57,7 @@ test("guest-details submit is single-shot + no client-side Bókun call", async (
     }
   });
 
-  await page.goto("/studio-v3");
+  await page.goto("/studio");
   await walkToReveal(page);
   await advanceRefineToStorytelling(page);
 

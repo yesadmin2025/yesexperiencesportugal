@@ -119,7 +119,7 @@ test.describe("studio-v3 — full walkthrough to reveal", () => {
     test.setTimeout(120_000);
 
     await installTelemetryCapture(page);
-    await page.goto("/studio-v3", { waitUntil: "domcontentloaded" });
+    await page.goto("/studio", { waitUntil: "domcontentloaded" });
 
     // Wait for full React hydration before any interaction — the root layout
     // sets `window.__APP_READY__ = true` once the tree mounts. Clicking

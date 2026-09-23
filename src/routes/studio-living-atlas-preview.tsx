@@ -3,7 +3,7 @@ import { createFileRoute, redirect } from "@tanstack/react-router";
 /**
  * /studio-living-atlas-preview — the Living Atlas prototype route.
  *
- * The Living Atlas is now the live public Experience Studio at /studio-v3,
+ * The Living Atlas is now the live public Experience Studio at /studio,
  * so this prototype URL permanently redirects there. Keeping it as a
  * redirect (rather than a second rendering surface) avoids a duplicate SEO
  * surface and stops customers landing on a route named "preview".
@@ -24,7 +24,7 @@ export const Route = createFileRoute("/studio-living-atlas-preview")({
   }),
   beforeLoad: ({ search }) => {
     throw redirect({
-      to: "/studio-v3",
+      to: "/studio",
       search: search as Record<string, unknown>,
       statusCode: 301,
     });

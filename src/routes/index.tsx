@@ -643,7 +643,7 @@ function HomePage() {
                 </ol>
 
                 <div className="reveal-stagger mt-8 flex flex-wrap gap-x-5 gap-y-4">
-                  <CtaButton to="/studio-v3" variant="primary">
+                  <CtaButton to="/studio" variant="primary">
                     {CTA_LABELS.studioSection}
                   </CtaButton>
                 </div>
@@ -1066,7 +1066,7 @@ function HomePage() {
                   </div>
                   <div className="mt-7 flex flex-wrap items-center justify-center gap-x-7 gap-y-2 text-sm">
                     <Link
-                      to="/studio-v3"
+                      to="/studio"
                       className="inline-flex min-h-11 items-center text-[color:var(--charcoal)] underline decoration-[color:var(--gold)]/60 underline-offset-4 hover:decoration-[color:var(--gold)]"
                     >
                       Design one private day

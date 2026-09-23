@@ -76,14 +76,14 @@ export function GuideBookingCta({
         </Link>
 
         <Link
-          to="/studio-v3"
+          to="/studio"
           {...guideRefDataAttrs(guideSlug, "inline_book_studio")}
           onClick={() =>
             recordGuideLinkClick({
               guideSlug,
               slot: "inline_book_studio",
               kind: "studio",
-              destination: "/studio-v3",
+              destination: "/studio",
             })
           }
           className="inline-flex min-h-[48px] items-center gap-2 font-sans text-[12px] uppercase tracking-[0.16em] font-semibold text-[color:var(--teal)] underline decoration-[color:var(--gold)]/60 underline-offset-4 hover:text-[color:var(--charcoal)]"

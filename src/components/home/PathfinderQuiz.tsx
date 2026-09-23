@@ -511,7 +511,7 @@ function buildResultContent(s: QuizState, r: ResultKey): ResultContent {
       title: "No exact match — let's build it.",
       subtitle: "Design your day in real time. Takes about 90 seconds.",
       pills: ["Custom", "Any mood", "Instant price"],
-      ctas: [{ label: CTA_LABELS.studio, to: "/studio-v3", variant: "gold" }],
+      ctas: [{ label: CTA_LABELS.studio, to: "/studio", variant: "gold" }],
     };
   }
   return {

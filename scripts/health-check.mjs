@@ -14,7 +14,7 @@ const BASE = process.argv[2] ?? process.env.HEALTH_BASE_URL ?? "https://yesexper
 const PATHS = [
   "/",
   "/experiences",
-  "/studio-v3",
+  "/studio",
   "/portugal-travel-designer",
   "/tours/arrabida-wine-allinclusive",
   "/robots.txt",

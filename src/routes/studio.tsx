@@ -1,24 +1,62 @@
-import { createFileRoute, redirect } from "@tanstack/react-router";
+import { createFileRoute } from "@tanstack/react-router";
+import { LivingAtlasStudioPage } from "@/components/studio-v3/LivingAtlasStudioPage";
+import { breadcrumbLd, studioServiceLd, faqPageLd, jsonLdScript } from "@/lib/jsonld";
+import { STUDIO_FAQ } from "@/content/seo-faq";
+import ogImg from "@/assets/decision-studio.jpg";
 
 /**
- * /studio — short legacy entry point. Permanently redirects to the
- * canonical public Experience Studio, forwarding any search params.
+ * /studio — the canonical public Experience Studio.
+ *
+ * Renders the Living Atlas implementation (entry → date → interests →
+ * priority → result → shape → guest details → Stripe checkout handoff).
+ * /experience-studio, /studio-v3, /studio-v2 and /studio-living-atlas-preview
+ * are permanent redirects into this route, so there is a single indexable
+ * Studio surface.
  */
+
+const CANONICAL_URL = "https://yesexperiencesportugal.com/studio";
+
 export const Route = createFileRoute("/studio")({
   head: () => ({
     meta: [
-      { title: "Studio shortcut (moved) — YES Experiences Portugal" },
-      { name: "description", content: "Short legacy studio link. This URL redirects to the current YES Experiences Portugal Experience Studio." },
-      { property: "og:title", content: "Studio shortcut (moved) — YES Experiences Portugal" },
-      { property: "og:description", content: "Short legacy studio link. This URL redirects to the current YES Experiences Portugal Experience Studio." },
-      { name: "robots", content: "noindex, nofollow" },
+      { title: "Design Your Own Private Portugal Day | YES Studio" },
+      {
+        name: "description",
+        content:
+          "Design your own private day in Portugal, hour by hour — choose the region, wine, coast, food and heritage, watch the route take shape, then book it.",
+      },
+
+      { property: "og:title", content: "Design your Portugal day." },
+      {
+        property: "og:description",
+        content: "A cinematic, guided composer — not a form. Portugal responds as you choose.",
+      },
+      { property: "og:url", content: CANONICAL_URL },
+      { property: "og:image", content: `https://yesexperiencesportugal.com${ogImg}` },
+      { property: "og:image:width", content: "1200" },
+      { property: "og:image:height", content: "630" },
+      { property: "og:image:alt", content: "YES Studio — design your private Portugal day" },
+      { name: "twitter:card", content: "summary_large_image" },
+      { name: "twitter:image", content: `https://yesexperiencesportugal.com${ogImg}` },
+    ],
+    links: [{ rel: "canonical", href: CANONICAL_URL }],
+    scripts: [
+      jsonLdScript(
+        breadcrumbLd([
+          { name: "Home", path: "/" },
+          { name: "Experience Studio", path: "/studio" },
+        ]),
+      ),
+      jsonLdScript(
+        studioServiceLd({
+          path: "/studio",
+          name: "YES Experience Studio — Design your private Portugal day",
+          description:
+            "A cinematic, guided composer that designs and reserves a private Portugal day in minutes — feeling, company, rhythm, then live pricing and instant confirmation across Lisbon, Sintra, Arrábida and Sesimbra.",
+        }),
+      ),
+      jsonLdScript(faqPageLd(STUDIO_FAQ)),
     ],
   }),
-  beforeLoad: ({ search }) => {
-    throw redirect({
-      to: "/studio-v3",
-      search: search as Record<string, unknown>,
-      statusCode: 301,
-    });
-  },
+  component: LivingAtlasStudioPage,
 });

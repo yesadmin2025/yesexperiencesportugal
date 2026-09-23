@@ -90,10 +90,10 @@ export function GuideNextSteps({ article }: { article: LocalStoryArticle }) {
             {CTA_LABELS.studio}
           </p>
           <Link
-            to="/studio-v3"
+            to="/studio"
             className={linkClass}
             {...guideRefDataAttrs(article.slug, "next_studio")}
-            onClick={onClick("next_studio", "studio", "/studio-v3")}
+            onClick={onClick("next_studio", "studio", "/studio")}
           >
             {next.studioLead}
           </Link>

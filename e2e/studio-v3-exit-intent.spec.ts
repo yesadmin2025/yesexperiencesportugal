@@ -124,7 +124,7 @@ test.describe("studio-v3 — exit-intent + full question coverage", () => {
   }) => {
     test.setTimeout(150_000);
 
-    await page.goto("/studio-v3", { waitUntil: "domcontentloaded" });
+    await page.goto("/studio", { waitUntil: "domcontentloaded" });
     await page.waitForFunction(
       () => (window as unknown as { __APP_READY__?: boolean }).__APP_READY__ === true,
       undefined,

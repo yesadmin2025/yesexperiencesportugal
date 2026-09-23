@@ -59,7 +59,7 @@ async function waitForStudioHydration(page: Page) {
 }
 
 async function restoreStudioState(page: Page, state: Record<string, unknown>) {
-  await page.goto("/studio-v3");
+  await page.goto("/studio");
   await waitForStudioHydration(page);
   await page.evaluate(
     ({ key, value }) => window.sessionStorage.setItem(key, JSON.stringify(value)),

@@ -15,7 +15,7 @@ import { PICKUP_CITY_LABELS } from "../src/components/studio-v3/curation";
  */
 
 async function walkToReveal(page: Page) {
-  await page.goto("/studio-v3");
+  await page.goto("/studio");
   await page.getByRole("button", { name: /^Begin$/ }).click();
   await page.getByRole("button", { name: /^Skip$/ }).click();
 

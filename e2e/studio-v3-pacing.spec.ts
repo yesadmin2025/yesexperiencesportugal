@@ -13,7 +13,7 @@ import { test, expect, type Page } from "@playwright/test";
  */
 
 async function walkToReveal(page: Page, opts: { pickInvestment: boolean }) {
-  await page.goto("/studio-v3");
+  await page.goto("/studio");
   await page.getByRole("button", { name: /^Begin$/ }).click();
   await page.getByRole("button", { name: /^Skip$/ }).click();
 

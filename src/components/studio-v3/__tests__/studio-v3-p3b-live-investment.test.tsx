@@ -40,7 +40,7 @@ function makeWrapper() {
 const render = (ui: React.ReactElement) => rtlRender(ui, { wrapper: makeWrapper() });
 
 const src = (rel: string) =>
-  readFileSync(resolve(process.cwd(), "src/components/studio-v3", rel), "utf8");
+  readFileSync(resolve(process.cwd(), "src/components/studio", rel), "utf8");
 
 const pricedTour = signatureTours.find((t) => t.priceFrom && t.priceFrom > 0)!;
 

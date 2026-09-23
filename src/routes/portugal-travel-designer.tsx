@@ -131,7 +131,7 @@ function PortugalTravelDesignerPage() {
           </Link>
           . Others adapt an existing experience or use the{" "}
           <Link
-            to="/studio-v3"
+            to="/studio"
             className="text-[color:var(--teal)] underline underline-offset-4 decoration-[color:var(--gold)]/60 hover:decoration-[color:var(--gold)]"
           >
             Studio
@@ -239,7 +239,7 @@ function PortugalTravelDesignerPage() {
         title="Where travel design sits among our services."
         links={[
           {
-            to: "/studio-v3",
+            to: "/studio",
             label: "Design a private day in the Experience Studio",
             description:
               "Build your own Portugal day online: choose the region, stops and rhythm and watch the route and pricing evolve, then reserve directly or ask for a local review.",

@@ -13,7 +13,7 @@ import { walkToReveal } from "./studio-v3-walk-to-reveal";
 
 test.describe("Studio V3 — P1 audit fixes (mobile)", () => {
   test("intro polish: editorial opening, no feature strip, no WhatsApp", async ({ page }) => {
-    await page.goto("/studio-v3", { waitUntil: "domcontentloaded" });
+    await page.goto("/studio", { waitUntil: "domcontentloaded" });
 
     // P2 — the opening reads like a travel director, not onboarding.
     const h1Text = await page.getByTestId("studio-v3-intro-headline").innerText();
@@ -27,13 +27,13 @@ test.describe("Studio V3 — P1 audit fixes (mobile)", () => {
     expect(bodyText).not.toContain("region-aware moments");
     expect(bodyText).not.toContain("recommended");
 
-    // #8 — global WhatsApp bubble hidden under /studio-v3.
+    // #8 — global WhatsApp bubble hidden under /studio.
     await expect(page.getByTestId("whatsapp-support-button")).toHaveCount(0);
   });
 
 
   test("stepper: Feel/Taste/Shape/Your day, no truncation", async ({ page }) => {
-    await page.goto("/studio-v3", { waitUntil: "domcontentloaded" });
+    await page.goto("/studio", { waitUntil: "domcontentloaded" });
     await walkToReveal(page);
 
     const stepper = page.getByTestId("studio-v3-progress-stepper");

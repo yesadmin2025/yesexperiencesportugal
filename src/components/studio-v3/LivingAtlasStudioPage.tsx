@@ -10,7 +10,7 @@ import {
 import { toast } from "sonner";
 
 /**
- * Page body for the public Experience Studio at /studio-v3.
+ * Page body for the public Experience Studio at /studio.
  *
  * Studio V3 is the production architecture: progressive phases, progress
  * stepper, Travel File, guest details, pricing and Stripe checkout. The
@@ -65,7 +65,7 @@ export function LivingAtlasStudioPage() {
           label: "Start fresh",
           onClick: () => {
             clearStudioDraftPersistence();
-            window.location.assign("/studio-v3");
+            window.location.assign("/studio");
           },
         },
       });

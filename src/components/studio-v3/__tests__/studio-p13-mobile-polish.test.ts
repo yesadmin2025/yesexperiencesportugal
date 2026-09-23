@@ -5,7 +5,7 @@ import { describe, expect, it } from "vitest";
 const ROOT = process.cwd();
 
 function source(file: string): string {
-  return fs.readFileSync(path.join(ROOT, "src/components/studio-v3", file), "utf8");
+  return fs.readFileSync(path.join(ROOT, "src/components/studio", file), "utf8");
 }
 
 describe("P13 Studio mobile presentation contract", () => {

@@ -17,7 +17,7 @@ import { auditSeoUrls, type SeoAuditResult } from "@/lib/seoAudit.functions";
 const KEY_URLS = [
   "https://yesexperiencesportugal.com/",
   "https://yesexperiencesportugal.com/experiences",
-  "https://yesexperiencesportugal.com/studio-v3",
+  "https://yesexperiencesportugal.com/studio",
   "https://yesexperiencesportugal.com/tours/arrabida-wine-allinclusive",
   "https://yesexperiencesportugal.com/day-trips-from-lisbon",
 ];

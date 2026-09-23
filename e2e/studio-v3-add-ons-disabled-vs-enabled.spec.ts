@@ -17,7 +17,7 @@ test.describe("Studio V3 — disabled add-ons inert, enabled add-ons live", () =
     page,
   }) => {
     test.setTimeout(150_000);
-    await page.goto("/studio-v3?e2e=1", { waitUntil: "domcontentloaded" });
+    await page.goto("/studio?e2e=1", { waitUntil: "domcontentloaded" });
     await page
       .waitForFunction(
         () => (window as unknown as { __APP_READY__?: boolean }).__APP_READY__ === true,

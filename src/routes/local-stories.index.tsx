@@ -134,7 +134,7 @@ function Page() {
           </div>
 
           <div className="reveal mt-20 text-center">
-            <CtaButton to="/studio-v3" variant="primary">
+            <CtaButton to="/studio" variant="primary">
               Design your day
             </CtaButton>
           </div>

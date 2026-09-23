@@ -93,7 +93,7 @@ async function advanceIntro(page: import("@playwright/test").Page) {
 }
 
 test("Delegation carries the journey through to a composed day", async ({ page }) => {
-  await page.goto("/studio-v3");
+  await page.goto("/studio");
   await advanceIntro(page);
 
   // P10: Feeling is always answered personally — no delegation before the

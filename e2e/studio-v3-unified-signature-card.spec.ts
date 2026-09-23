@@ -28,7 +28,7 @@ const CARD = '[data-testid="studio-v3-signature-card"]';
 
 test.describe("Studio V3 — unified Signature card", () => {
   test.beforeEach(async ({ page }) => {
-    await page.goto("/studio-v3");
+    await page.goto("/studio");
     await walkToReveal(page);
   });
 

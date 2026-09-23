@@ -150,7 +150,7 @@ function LisbonPrivateTours() {
           </p>
           <div className="mt-8 flex flex-col gap-3 sm:flex-row">
             <CtaButton href="#reserve">{CTA_LABELS.signatureBooking}</CtaButton>
-            <CtaButton to="/studio-v3" variant="ghost">
+            <CtaButton to="/studio" variant="ghost">
               {CTA_LABELS.studio}
             </CtaButton>
           </div>

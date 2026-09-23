@@ -48,7 +48,7 @@ async function assertNoHardcodedFallbacks(page: import("@playwright/test").Page,
 
 test("studio-v3 inline styles never hardcode retired font families", async ({ page }) => {
   test.setTimeout(90_000);
-  await page.goto("/studio-v3");
+  await page.goto("/studio");
   await page.waitForLoadState("networkidle", { timeout: 5_000 }).catch(() => undefined);
   await assertNoHardcodedFallbacks(page, "intro");
 

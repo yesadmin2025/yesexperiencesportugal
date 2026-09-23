@@ -89,7 +89,7 @@ export function Navbar() {
               <Globe size={13} strokeWidth={1.6} aria-hidden />
               <LanguageSwitcher variant="header" />
             </span>
-            <CtaButton to="/studio-v3" variant={pathname === "/" || pathname === "/pt" ? "ghost" : "primary"} size="sm" className="ml-1">
+            <CtaButton to="/studio" variant={pathname === "/" || pathname === "/pt" ? "ghost" : "primary"} size="sm" className="ml-1">
               Design your day
             </CtaButton>
           </nav>
@@ -178,7 +178,7 @@ export function Navbar() {
 
           <div className="container-x shrink-0 border-t border-[color:var(--charcoal)]/[0.06] py-4">
             <CtaButton
-              to="/studio-v3"
+              to="/studio"
               onClick={() => setOpen(false)}
               variant="primary"
               size="sm"

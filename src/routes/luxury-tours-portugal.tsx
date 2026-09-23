@@ -109,7 +109,7 @@ function Page() {
               <CtaButton to="/experiences" variant="primary">
                 {CTA_LABELS.signatureDiscovery}
               </CtaButton>
-              <CtaButton to="/studio-v3" variant="ghost">
+              <CtaButton to="/studio" variant="ghost">
                 {CTA_LABELS.studio}
               </CtaButton>
             </div>

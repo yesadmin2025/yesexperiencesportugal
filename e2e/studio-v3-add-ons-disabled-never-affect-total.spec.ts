@@ -25,7 +25,7 @@ test.describe("studio-v3 — disabled add-ons never move add-ons-total or party-
   test("day-gated and cap-gated chips reject clicks and totals stay put", async ({ page }) => {
     test.setTimeout(150_000);
 
-    await page.goto("/studio-v3?e2e=1", { waitUntil: "domcontentloaded" });
+    await page.goto("/studio?e2e=1", { waitUntil: "domcontentloaded" });
     await page.waitForFunction(
       () => (window as unknown as { __APP_READY__?: boolean }).__APP_READY__ === true,
       undefined,
