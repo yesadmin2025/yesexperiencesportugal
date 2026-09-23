@@ -197,6 +197,7 @@ import { Route as ApiPublicHooksEmailFlushRouteImport } from './routes/api/publi
 import { Route as ApiPublicHooksDnsWatchRouteImport } from './routes/api/public/hooks/dns-watch'
 import { Route as ApiPublicHooksCheckoutEmailRouteImport } from './routes/api/public/hooks/checkout-email'
 import { Route as ApiPublicHooksBookingCancelledEmailRouteImport } from './routes/api/public/hooks/booking-cancelled-email'
+import { Route as ApiPublicHooksBokunBookingRouteImport } from './routes/api/public/hooks/bokun-booking'
 import { Route as ApiPublicFeedsThingsToDoDotxmlRouteImport } from './routes/api/public/feeds/things-to-do[.]xml'
 import { Route as ApiPublicFeedsThingsToDoDotjsonRouteImport } from './routes/api/public/feeds/things-to-do[.]json'
 
@@ -1175,6 +1176,12 @@ const ApiPublicHooksBookingCancelledEmailRoute =
     path: '/api/public/hooks/booking-cancelled-email',
     getParentRoute: () => rootRouteImport,
   } as any)
+const ApiPublicHooksBokunBookingRoute =
+  ApiPublicHooksBokunBookingRouteImport.update({
+    id: '/api/public/hooks/bokun-booking',
+    path: '/api/public/hooks/bokun-booking',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const ApiPublicFeedsThingsToDoDotxmlRoute =
   ApiPublicFeedsThingsToDoDotxmlRouteImport.update({
     id: '/api/public/feeds/things-to-do.xml',
@@ -1365,6 +1372,7 @@ export interface FileRoutesByFullPath {
   '/admin/bookings/': typeof AdminBookingsIndexRoute
   '/api/public/feeds/things-to-do.json': typeof ApiPublicFeedsThingsToDoDotjsonRoute
   '/api/public/feeds/things-to-do.xml': typeof ApiPublicFeedsThingsToDoDotxmlRoute
+  '/api/public/hooks/bokun-booking': typeof ApiPublicHooksBokunBookingRoute
   '/api/public/hooks/booking-cancelled-email': typeof ApiPublicHooksBookingCancelledEmailRoute
   '/api/public/hooks/checkout-email': typeof ApiPublicHooksCheckoutEmailRoute
   '/api/public/hooks/dns-watch': typeof ApiPublicHooksDnsWatchRoute
@@ -1555,6 +1563,7 @@ export interface FileRoutesByTo {
   '/admin/bookings': typeof AdminBookingsIndexRoute
   '/api/public/feeds/things-to-do.json': typeof ApiPublicFeedsThingsToDoDotjsonRoute
   '/api/public/feeds/things-to-do.xml': typeof ApiPublicFeedsThingsToDoDotxmlRoute
+  '/api/public/hooks/bokun-booking': typeof ApiPublicHooksBokunBookingRoute
   '/api/public/hooks/booking-cancelled-email': typeof ApiPublicHooksBookingCancelledEmailRoute
   '/api/public/hooks/checkout-email': typeof ApiPublicHooksCheckoutEmailRoute
   '/api/public/hooks/dns-watch': typeof ApiPublicHooksDnsWatchRoute
@@ -1748,6 +1757,7 @@ export interface FileRoutesById {
   '/admin/bookings/': typeof AdminBookingsIndexRoute
   '/api/public/feeds/things-to-do.json': typeof ApiPublicFeedsThingsToDoDotjsonRoute
   '/api/public/feeds/things-to-do.xml': typeof ApiPublicFeedsThingsToDoDotxmlRoute
+  '/api/public/hooks/bokun-booking': typeof ApiPublicHooksBokunBookingRoute
   '/api/public/hooks/booking-cancelled-email': typeof ApiPublicHooksBookingCancelledEmailRoute
   '/api/public/hooks/checkout-email': typeof ApiPublicHooksCheckoutEmailRoute
   '/api/public/hooks/dns-watch': typeof ApiPublicHooksDnsWatchRoute
@@ -1942,6 +1952,7 @@ export interface FileRouteTypes {
     | '/admin/bookings/'
     | '/api/public/feeds/things-to-do.json'
     | '/api/public/feeds/things-to-do.xml'
+    | '/api/public/hooks/bokun-booking'
     | '/api/public/hooks/booking-cancelled-email'
     | '/api/public/hooks/checkout-email'
     | '/api/public/hooks/dns-watch'
@@ -2132,6 +2143,7 @@ export interface FileRouteTypes {
     | '/admin/bookings'
     | '/api/public/feeds/things-to-do.json'
     | '/api/public/feeds/things-to-do.xml'
+    | '/api/public/hooks/bokun-booking'
     | '/api/public/hooks/booking-cancelled-email'
     | '/api/public/hooks/checkout-email'
     | '/api/public/hooks/dns-watch'
@@ -2324,6 +2336,7 @@ export interface FileRouteTypes {
     | '/admin/bookings/'
     | '/api/public/feeds/things-to-do.json'
     | '/api/public/feeds/things-to-do.xml'
+    | '/api/public/hooks/bokun-booking'
     | '/api/public/hooks/booking-cancelled-email'
     | '/api/public/hooks/checkout-email'
     | '/api/public/hooks/dns-watch'
@@ -2499,6 +2512,7 @@ export interface RootRouteChildren {
   AdminBookingsIndexRoute: typeof AdminBookingsIndexRoute
   ApiPublicFeedsThingsToDoDotjsonRoute: typeof ApiPublicFeedsThingsToDoDotjsonRoute
   ApiPublicFeedsThingsToDoDotxmlRoute: typeof ApiPublicFeedsThingsToDoDotxmlRoute
+  ApiPublicHooksBokunBookingRoute: typeof ApiPublicHooksBokunBookingRoute
   ApiPublicHooksBookingCancelledEmailRoute: typeof ApiPublicHooksBookingCancelledEmailRoute
   ApiPublicHooksCheckoutEmailRoute: typeof ApiPublicHooksCheckoutEmailRoute
   ApiPublicHooksDnsWatchRoute: typeof ApiPublicHooksDnsWatchRoute
@@ -3833,6 +3847,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicHooksBookingCancelledEmailRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/hooks/bokun-booking': {
+      id: '/api/public/hooks/bokun-booking'
+      path: '/api/public/hooks/bokun-booking'
+      fullPath: '/api/public/hooks/bokun-booking'
+      preLoaderRoute: typeof ApiPublicHooksBokunBookingRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/public/feeds/things-to-do.xml': {
       id: '/api/public/feeds/things-to-do.xml'
       path: '/api/public/feeds/things-to-do.xml'
@@ -4086,6 +4107,7 @@ const rootRouteChildren: RootRouteChildren = {
   AdminBookingsIndexRoute: AdminBookingsIndexRoute,
   ApiPublicFeedsThingsToDoDotjsonRoute: ApiPublicFeedsThingsToDoDotjsonRoute,
   ApiPublicFeedsThingsToDoDotxmlRoute: ApiPublicFeedsThingsToDoDotxmlRoute,
+  ApiPublicHooksBokunBookingRoute: ApiPublicHooksBokunBookingRoute,
   ApiPublicHooksBookingCancelledEmailRoute:
     ApiPublicHooksBookingCancelledEmailRoute,
   ApiPublicHooksCheckoutEmailRoute: ApiPublicHooksCheckoutEmailRoute,
