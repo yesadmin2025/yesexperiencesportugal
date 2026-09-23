@@ -489,6 +489,22 @@ export const runOpsEmailIngestion = createServerFn({ method: "POST" })
       messages.sort((a, b) => (a.receivedAt ?? "").localeCompare(b.receivedAt ?? ""));
       for (const message of messages) {
         scanned += 1;
+        if (mailbox === "INTERNAL") {
+          // Our own booking notification: enrich the existing Stripe row only.
+          const { enrichFromInternalNotification } = await import(
+            "@/lib/ingestion/stripe-voucher-reconcile.server"
+          );
+          const outcome = await enrichFromInternalNotification(supabaseAdmin, message, {
+            dryRun: data.dryRun,
+          });
+          outcomes.push({
+            action: `internal_${outcome.action}`,
+            subject: message.subject,
+            reason: outcome.reason,
+            bookingId: outcome.bookingId,
+          });
+          continue;
+        }
         const results = await ingestEmailMessage(
           supabaseAdmin,
           {
@@ -498,7 +514,7 @@ export const runOpsEmailIngestion = createServerFn({ method: "POST" })
             from: message.from,
             body: message.body,
             receivedAt: message.receivedAt,
-            mailbox: message.mailbox,
+            mailbox: message.mailbox as "INBOX" | "SENT",
           },
           { dryRun: data.dryRun, futureOnly: data.futureOnly },
         );
