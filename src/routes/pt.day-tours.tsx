@@ -31,6 +31,7 @@ export const Route = createFileRoute("/pt/day-tours")({
       { property: "og:description", content: DESCRIPTION },
       { property: "og:url", content: "https://yesexperiencesportugal.com/pt/day-tours" },
       { property: "og:locale", content: "pt_PT" },
+      { property: "og:locale:alternate", content: "en_US" },
     ],
     links: [
       { rel: "canonical", href: "https://yesexperiencesportugal.com/pt/day-tours" },

@@ -1,7 +1,7 @@
 /**
  * Studio V3 heading structure lock
  * ─────────────────────────────────────────────────────────────────
- * The /studio-v3 route must emit exactly one <h1> during SSR and
+ * The /studio route must emit exactly one <h1> during SSR and
  * after hydration. A previous implementation rendered an SSR-only
  * <header className="sr-only"> containing a second <h1>, which audit
  * tools reported as a multiple-H1 defect on the canonical URL and on
@@ -35,7 +35,7 @@ vi.mock("@/components/studio-v3/StudioV3", () => ({
 
 import { LivingAtlasStudioPage } from "@/components/studio-v3/LivingAtlasStudioPage";
 
-describe("/studio-v3 heading structure", () => {
+describe("/studio heading structure", () => {
   function countH1(markup: string): number {
     const matches = markup.match(/<h1[\s\S]*?<\/h1>/gi);
     return matches ? matches.length : 0;

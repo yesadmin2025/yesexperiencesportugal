@@ -28,7 +28,7 @@ describe("latest direct visual feedback", () => {
     expect(about).toContain('<CtaButton to="/contact" variant="primary">');
     expect(about).toContain("Talk to a local");
     expect(about).toContain("CTA_LABELS.signatureDiscovery");
-    expect(about.slice(about.indexOf("{/* Final CTA */}"))).not.toContain('to="/studio-v3"');
+    expect(about.slice(about.indexOf("{/* Final CTA */}"))).not.toContain('to="/studio"');
   });
 
   it("uses the requested chapter rhythm and existing Scene sequence", () => {

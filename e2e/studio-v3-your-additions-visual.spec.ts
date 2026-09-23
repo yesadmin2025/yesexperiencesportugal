@@ -40,7 +40,7 @@ async function settle(page: Page): Promise<void> {
 }
 
 async function reachRefineWithFootnote(page: Page): Promise<boolean> {
-  await page.goto("/studio-v3");
+  await page.goto("/studio");
   await walkToReveal(page);
   const refine = page.locator('[data-studio-v3-screen="refine"]').first();
   if (!(await refine.isVisible().catch(() => false))) return false;

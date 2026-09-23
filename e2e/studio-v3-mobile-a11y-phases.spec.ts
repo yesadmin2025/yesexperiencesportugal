@@ -116,7 +116,7 @@ test.describe("Studio V3 · mobile accessibility @ 393px", () => {
 
   test("intro phase — named controls, tap targets, axe clean", async ({ page }) => {
     test.setTimeout(120_000);
-    await page.goto("/studio-v3");
+    await page.goto("/studio");
     await page.getByTestId("studio-v3-intro-begin").waitFor({ timeout: 20_000 });
 
     const scope = page.locator(STUDIO_SCOPE);

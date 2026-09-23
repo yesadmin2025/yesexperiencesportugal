@@ -12,7 +12,7 @@ test.use({
 });
 
 test("guest-details footer microcopy does not clip on 393px", async ({ page }) => {
-  await page.goto("/studio-v3");
+  await page.goto("/studio");
   await walkToReveal(page);
   await advanceRefineToStorytelling(page);
 

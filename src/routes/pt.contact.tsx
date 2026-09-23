@@ -44,6 +44,7 @@ export const Route = createFileRoute("/pt/contact")({
         content: "Fale connosco por WhatsApp, telefone ou email.",
       },
       { property: "og:locale", content: "pt_PT" },
+      { property: "og:locale:alternate", content: "en_US" },
       { property: "og:url", content: "https://yesexperiencesportugal.com/pt/contact" },
     ],
     links: [

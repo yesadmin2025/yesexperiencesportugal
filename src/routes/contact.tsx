@@ -90,6 +90,8 @@ export const Route = createFileRoute("/contact")({
         },
         { property: "og:url", content: "https://yesexperiencesportugal.com/contact" },
         { property: "og:type", content: "website" },
+        { property: "og:locale", content: "en_US" },
+        { property: "og:locale:alternate", content: "pt_PT" },
         { property: "og:image", content: `https://yesexperiencesportugal.com${ogImg}` },
         { property: "og:image:width", content: "1200" },
         { property: "og:image:height", content: "630" },

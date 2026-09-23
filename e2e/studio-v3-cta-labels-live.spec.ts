@@ -22,7 +22,7 @@ function parseEurAttr(attr: string | null | undefined): number | null {
 
 test.describe("Studio V3 — CTA labels update live with totals", () => {
   test.beforeEach(async ({ page }) => {
-    await page.goto("/studio-v3");
+    await page.goto("/studio");
     await walkToReveal(page);
   });
 

@@ -27,7 +27,7 @@ async function domClick(page: Page, selector: string): Promise<boolean> {
 
 /** Walk intro → first choice of each desire phase → land on logistics/"when". */
 async function walkToWhenMoment(page: Page) {
-  await page.goto("/studio-v3", { waitUntil: "domcontentloaded" });
+  await page.goto("/studio", { waitUntil: "domcontentloaded" });
   await expect.poll(() => phase(page), { timeout: 30_000 }).toBe("intro");
 
   for (let i = 0; i < 40; i++) {

@@ -39,7 +39,7 @@ test.describe("studio-v3 — add-ons totals update in the same frame as the clic
   }) => {
     test.setTimeout(150_000);
 
-    await page.goto("/studio-v3?e2e=1", { waitUntil: "domcontentloaded" });
+    await page.goto("/studio?e2e=1", { waitUntil: "domcontentloaded" });
     await page.waitForFunction(
       () => (window as unknown as { __APP_READY__?: boolean }).__APP_READY__ === true,
       undefined,

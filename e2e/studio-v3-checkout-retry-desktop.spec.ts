@@ -51,7 +51,7 @@ async function waitForStudioHydration(page: Page) {
 }
 
 async function restoreStudioState(page: Page) {
-  await page.goto("/studio-v3");
+  await page.goto("/studio");
   await waitForStudioHydration(page);
   await page.evaluate(
     ({ key, value }) => window.sessionStorage.setItem(key, JSON.stringify(value)),
@@ -133,5 +133,5 @@ test("checkout creation failure stays retryable without losing the reviewed stat
   await expect(summary).toContainText("studio-retry@yesexperiences.test");
   await expect(reserve).toHaveText(/try secure checkout again/i);
   await expect(page.getByTestId("studio-v3-checkout-summary-stripe-inline")).toHaveCount(0);
-  await expect(page).toHaveURL(/\/studio-v3(?:\?|$)/);
+  await expect(page).toHaveURL(/\/studio(?:\?|$)/);
 });

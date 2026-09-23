@@ -233,7 +233,7 @@ export function CinematicHero() {
         }}
       >
         <Link
-          to="/studio-v3"
+          to="/studio"
           data-hero-field="primaryCta"
           data-analytics="hero_open_studio"
           data-analytics-placement="hero"

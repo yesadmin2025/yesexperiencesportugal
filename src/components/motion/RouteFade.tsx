@@ -16,8 +16,8 @@ import { type ReactNode } from "react";
  *    wrapper is presentational only.
  */
 const EXCLUDE_PATTERNS: RegExp[] = [
+  /^\/studio(\/|$)/,
   /^\/studio-v2(\/|$)/,
-  /^\/studio-v3(\/|$)/,
   /^\/studio-v3(\/|$)/,
   /^\/studio-drift(\/|$)/,
   /^\/builder(\/|$)/,

@@ -315,7 +315,7 @@ export function RegionListingPage({ region }: { region: LisbonRegion }) {
                 >
                   {CTA_LABELS.signatureDiscoveryCompact}
                 </CtaButton>
-                <CtaButton to="/studio-v3" variant="ghost">{CTA_LABELS.studio}</CtaButton>
+                <CtaButton to="/studio" variant="ghost">{CTA_LABELS.studio}</CtaButton>
               </div>
             </div>
           </div>

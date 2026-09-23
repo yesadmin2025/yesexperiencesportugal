@@ -20,7 +20,7 @@ const REQUIRED_CANONICAL_PATHS = [
   "/press",
   "/contact",
   "/experiences",
-  "/studio-v3",
+  "/studio",
   "/day-tours",
   "/multi-day",
   "/portugal-travel-designer",

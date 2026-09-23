@@ -51,6 +51,15 @@ describe("hreflang reciprocity across EN/PT twins", () => {
     }
   });
 
+  it.each(PT_PAIRED_PATHS)("both %s and its PT twin emit reciprocal Open Graph locales", (path) => {
+    const en = readFileSync(enRouteFile(path), "utf8");
+    const pt = readFileSync(ptRouteFile(path), "utf8");
+    expect(en).toContain('{ property: "og:locale", content: "en_US" }');
+    expect(en).toContain('{ property: "og:locale:alternate", content: "pt_PT" }');
+    expect(pt).toContain('{ property: "og:locale", content: "pt_PT" }');
+    expect(pt).toContain('{ property: "og:locale:alternate", content: "en_US" }');
+  });
+
   it("excludes redirect stubs from the paired set", () => {
     for (const stub of ["/faq", "/moments", "/proposals"]) {
       expect(isPtPaired(stub)).toBe(false);

@@ -9,8 +9,8 @@ describe("final audit corrections", () => {
     const src = read("src/components/Navbar.tsx");
     const primaryLinksBody = src.match(/function usePrimaryLinks\(\)[\s\S]*?return \[([\s\S]*?)\];/)?.[1] ?? "";
 
-    expect(primaryLinksBody).not.toContain("/studio-v3");
-    expect(src).toContain('<CtaButton to="/studio-v3"');
+    expect(primaryLinksBody).not.toContain("/studio");
+    expect(src).toContain('<CtaButton to="/studio"');
     expect(src).toContain("Design your day");
   });
 

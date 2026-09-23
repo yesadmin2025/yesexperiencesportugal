@@ -2,7 +2,7 @@
 //
 // Goals:
 // - Map namespaces (builder-map / premium-map) never overwrite each other
-//   when switching between /builder and /studio-v3.
+//   when switching between /builder and /studio.
 // - Selecting a destination region card advances the Studio V3 flow far
 //   enough for CI to read the reveal-phase testids.
 // - Verifies the new testids: studio-v3-destination-region-grid,
@@ -36,7 +36,7 @@ test.describe("Studio V3 — PremiumMap destination path", () => {
     expect(afterBuilder.b).toContain("lisbon");
     expect(afterBuilder.p).toContain("porto");
 
-    await page.goto(`${BASE}/studio-v3`);
+    await page.goto(`${BASE}/studio`);
     await page.waitForTimeout(1200);
     const afterStudio = await page.evaluate(() => ({
       b: localStorage.getItem("yes.mapZoom.builder-map.v1"),
@@ -49,7 +49,7 @@ test.describe("Studio V3 — PremiumMap destination path", () => {
   });
 
   test("destination region card selection drives the reveal path", async ({ page }) => {
-    await page.goto(`${BASE}/studio-v3`);
+    await page.goto(`${BASE}/studio`);
     await page.evaluate(() => localStorage.clear());
     await page.reload();
 

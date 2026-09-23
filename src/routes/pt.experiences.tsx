@@ -42,6 +42,7 @@ export const Route = createFileRoute("/pt/experiences")({
         content: "YES Signature Experiences — dias privados em Portugal",
       },
       { property: "og:locale", content: "pt_PT" },
+      { property: "og:locale:alternate", content: "en_US" },
       { name: "twitter:card", content: "summary_large_image" },
       { name: "twitter:image", content: `https://yesexperiencesportugal.com${ogImg}` },
     ],
@@ -221,7 +222,7 @@ function CtaStrip() {
               constrói, dentro do que funciona melhor no terreno.
             </p>
           </div>
-          <CtaButton to="/studio-v3" variant="ghostDark" className="flex-shrink-0">
+          <CtaButton to="/studio" variant="ghostDark" className="flex-shrink-0">
             Abrir o Studio
           </CtaButton>
         </div>

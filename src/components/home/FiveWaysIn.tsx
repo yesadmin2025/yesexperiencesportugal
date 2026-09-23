@@ -50,7 +50,7 @@ const PATHS: ReadonlyArray<Path> = [
     titleEmphasis: "designed by you.",
     body: "Choose the mood, rhythm and route in real time. See the live price and reserve instantly, with local support if you need it.",
     cta: "Open the Studio",
-    href: "/studio-v3",
+    href: "/studio",
     analyticsEvent: "home_path_studio_click",
   },
   {
@@ -196,7 +196,7 @@ export function FiveWaysIn() {
               )}
             </div>
             <Link
-              to="/studio-v3"
+              to="/studio"
               data-testid="home-smart-start-resume"
               data-smart-start-recommended="true"
               className="mt-4 inline-flex min-h-[44px] items-center gap-2 text-[12px] uppercase tracking-[0.16em] font-semibold text-[color:var(--teal)] underline decoration-[color:var(--gold)]/70 underline-offset-4 sm:mt-0"

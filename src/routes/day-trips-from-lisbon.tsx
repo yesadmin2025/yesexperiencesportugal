@@ -194,7 +194,7 @@ function DayTripsFromLisbon() {
           </p>
           <div className="mt-8 flex flex-col gap-3 sm:flex-row">
             <CtaButton to="/experiences">{CTA_LABELS.signatureDiscovery}</CtaButton>
-            <CtaButton to="/studio-v3" variant="ghost">
+            <CtaButton to="/studio" variant="ghost">
               {CTA_LABELS.studio}
             </CtaButton>
           </div>
@@ -511,7 +511,7 @@ function DayTripsFromLisbon() {
               </p>
               <div className="mt-5 flex flex-col gap-3">
                 <CtaButton href="#signature-days">{CTA_LABELS.signatureDiscoveryCompact}</CtaButton>
-                <CtaButton to="/studio-v3" variant="ghost">
+                <CtaButton to="/studio" variant="ghost">
                   {CTA_LABELS.studio}
                 </CtaButton>
               </div>

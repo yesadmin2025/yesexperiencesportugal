@@ -21,6 +21,8 @@ export const Route = createFileRoute("/terms")({
         content: `Booking terms for private experiences with YES Experiences Portugal — a licensed Portuguese tour operator (${LICENSE_LABEL}).`,
       },
       { property: "og:type", content: "website" },
+      { property: "og:locale", content: "en_US" },
+      { property: "og:locale:alternate", content: "pt_PT" },
       { property: "og:url", content: "https://yesexperiencesportugal.com/terms" },
       { property: "og:image", content: `https://yesexperiencesportugal.com${ogImg}` },
       { property: "og:image:width", content: "1200" },

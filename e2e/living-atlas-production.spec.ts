@@ -1,7 +1,7 @@
 import { expect, test, type Page } from "@playwright/test";
 
 /**
- * Production browser gate for the public Experience Studio (/studio-v3).
+ * Production browser gate for the public Experience Studio (/studio).
  *
  * The deep checkout test restores a complete, non-sensitive Studio composition
  * from sessionStorage. That is the same public recovery path used after a
@@ -73,7 +73,7 @@ async function expectNoInternalCopy(page: Page) {
 }
 
 async function restoreStudioState(page: Page, state: Record<string, unknown>) {
-  await page.goto("/studio-v3");
+  await page.goto("/studio");
   await waitForStudioHydration(page);
   await page.evaluate(
     ({ key, value }) => window.sessionStorage.setItem(key, JSON.stringify(value)),
@@ -179,7 +179,7 @@ test("a restored composition reaches Guest Details and checkout exactly once", a
 
   await expect.poll(() => checkoutInvocations, { timeout: 10_000 }).toBe(1);
   expect(checkoutBodies.join("\n")).toContain(GUIDE_NOTE);
-  await expect(page).toHaveURL(/\/studio-v3(?:\?|$)/);
+  await expect(page).toHaveURL(/\/studio(?:\?|$)/);
 });
 
 test("adaptive refinement appears only when it can change a supported direction", async ({
@@ -222,7 +222,7 @@ test("adaptive refinement appears only when it can change a supported direction"
 
 test("the retired preview URL resolves to the canonical public Studio", async ({ page }) => {
   await page.goto("/studio-living-atlas-preview?source=qa");
-  await expect(page).toHaveURL(/\/studio-v3\?source=qa$/);
+  await expect(page).toHaveURL(/\/studio\?source=qa$/);
   await waitForStudioHydration(page);
   await expectNoInternalCopy(page);
 });

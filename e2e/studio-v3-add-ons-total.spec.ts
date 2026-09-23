@@ -216,7 +216,7 @@ test.describe("studio-v3 — add-ons total updates immediately in rendered HTML"
 
     // `?e2e=1` disables the dev hard-reload poller and any long
     // ambient wait mid-funnel that otherwise makes the walker flaky.
-    await page.goto("/studio-v3?e2e=1", { waitUntil: "domcontentloaded" });
+    await page.goto("/studio?e2e=1", { waitUntil: "domcontentloaded" });
     await page.waitForFunction(
       () => (window as unknown as { __APP_READY__?: boolean }).__APP_READY__ === true,
       undefined,

@@ -30,7 +30,7 @@ import {
 const VIEWPORT = { width: 393, height: 588 } as const;
 
 async function reachRefine(page: Page): Promise<boolean> {
-  await page.goto("/studio-v3");
+  await page.goto("/studio");
   await walkToReveal(page);
   return page
     .locator('[data-studio-v3-screen="refine"]')

@@ -6,7 +6,7 @@ import { test, expect, type Page } from "@playwright/test";
  * Scope (intentionally narrow and resilient):
  *   1. Public marketing → hero loads, primary CTAs exist.
  *   2. /builder       → boots without runtime errors, first interactive step is reachable.
- *   3. /studio-v3     → cinematic intro renders, "begin" affordance is present and clickable.
+ *   3. /studio     → cinematic intro renders, "begin" affordance is present and clickable.
  *   4. /tours/$tourId → at least one Signature tour route renders with real stops + price block.
  *   5. /admin.*       → gated routes redirect unauthenticated users to /auth (no leaks).
  *
@@ -83,9 +83,9 @@ test.describe("smoke — builder flow", () => {
 });
 
 test.describe("smoke — studio v3 flow", () => {
-  test("/studio-v3 renders cinematic intro", async ({ page }) => {
+  test("/studio renders cinematic intro", async ({ page }) => {
     const { errors } = attachConsoleErrorWatcher(page);
-    await page.goto("/studio-v3", { waitUntil: "domcontentloaded" });
+    await page.goto("/studio", { waitUntil: "domcontentloaded" });
 
     // The intro renders an H1/H2 + a "begin"/"start"/"continue" affordance.
     const heading = page.locator("h1, h2").first();

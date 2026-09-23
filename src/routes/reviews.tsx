@@ -56,6 +56,8 @@ export const Route = createFileRoute("/reviews")({
       },
       { property: "og:url", content: `${SITE_URL}/reviews` },
       { property: "og:type", content: "website" },
+      { property: "og:locale", content: "en_US" },
+      { property: "og:locale:alternate", content: "pt_PT" },
       { name: "twitter:card", content: "summary_large_image" },
       { property: "og:image", content: `https://yesexperiencesportugal.com${ogSocialImg}` },
       { name: "twitter:image", content: `https://yesexperiencesportugal.com${ogSocialImg}` },

@@ -150,7 +150,7 @@ export const Route = createRootRoute({
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1, viewport-fit=cover" },
-      { name: "theme-color", content: "var(--teal)" },
+      { name: "theme-color", content: "#295B61" },
       { name: "mobile-web-app-capable", content: "yes" },
       { name: "apple-mobile-web-app-capable", content: "yes" },
       { name: "apple-mobile-web-app-title", content: "YES Experiences" },
@@ -175,7 +175,7 @@ export const Route = createRootRoute({
       { property: "og:site_name", content: "YES Experiences Portugal" },
       { property: "og:type", content: "website" },
       { property: "og:locale", content: "en_US" },
-      { property: "og:locale:alternate", content: "en_GB" },
+      { property: "og:locale:alternate", content: "pt_PT" },
       { name: "twitter:card", content: "summary_large_image" },
       { name: "twitter:site", content: "@yesexperiencespt" },
     ],

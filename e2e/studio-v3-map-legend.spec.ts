@@ -68,7 +68,7 @@ async function walkOnce(page: Page): Promise<boolean> {
 }
 
 async function driveToReveal(page: Page): Promise<void> {
-  await page.goto("/studio-v3?e2e=1", { waitUntil: "domcontentloaded" });
+  await page.goto("/studio?e2e=1", { waitUntil: "domcontentloaded" });
   await page.waitForFunction(
     () => (window as unknown as { __APP_READY__?: boolean }).__APP_READY__ === true,
     undefined,

@@ -24,6 +24,8 @@ export const Route = createFileRoute("/privacy")({
       },
       { property: "og:type", content: "website" },
       { property: "og:url", content: "https://yesexperiencesportugal.com/privacy" },
+      { property: "og:locale", content: "en_US" },
+      { property: "og:locale:alternate", content: "pt_PT" },
       { name: "twitter:card", content: "summary" },
     ],
     links: [

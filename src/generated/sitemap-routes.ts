@@ -38,7 +38,7 @@ export const SITEMAP_STATIC_ROUTES: SitemapRoute[] = [
   { path: "/private-tours-sintra-cascais", changefreq: "monthly", priority: "0.7" },
   { path: "/proposal-in-portugal", changefreq: "monthly", priority: "0.8" },
   { path: "/reviews", changefreq: "monthly", priority: "0.5" },
-  { path: "/studio-v3", changefreq: "weekly", priority: "0.9" },
+  { path: "/studio", changefreq: "weekly", priority: "0.9" },
   { path: "/terms", changefreq: "yearly", priority: "0.4" },
   { path: "/trade", changefreq: "monthly", priority: "0.7" },
 ];

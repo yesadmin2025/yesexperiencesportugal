@@ -2,7 +2,7 @@
  * @vitest-environment jsdom
  *
  * Production hardening regressions for the public Experience Studio
- * (/studio-v3, Living Atlas):
+ * (/studio, Living Atlas):
  *  • a composed day survives a reload / back navigation;
  *  • it is persisted in sessionStorage (tab-scoped, non-PII), never localStorage;
  *  • required guest fields raise accessible inline errors and focus the first

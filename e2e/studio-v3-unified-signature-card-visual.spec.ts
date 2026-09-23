@@ -15,7 +15,7 @@ const CARD = '[data-testid="studio-v3-signature-card"]';
 test.describe("Studio V3 — Signature card visual regression", () => {
   test.beforeEach(async ({ page }) => {
     await page.emulateMedia({ reducedMotion: "reduce" });
-    await page.goto("/studio-v3");
+    await page.goto("/studio");
     await walkToReveal(page);
   });
 

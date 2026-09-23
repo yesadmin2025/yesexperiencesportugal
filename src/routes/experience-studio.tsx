@@ -2,7 +2,7 @@ import { createFileRoute, redirect } from "@tanstack/react-router";
 
 /**
  * /experience-studio — legacy alias. The canonical public Experience Studio
- * is /studio-v3 (Living Atlas). Permanently redirects, forwarding search
+ * is /studio (Living Atlas). Permanently redirects, forwarding search
  * params so deep links keep working. No duplicate SEO surface.
  */
 export const Route = createFileRoute("/experience-studio")({
@@ -17,7 +17,7 @@ export const Route = createFileRoute("/experience-studio")({
   }),
   beforeLoad: ({ search }) => {
     throw redirect({
-      to: "/studio-v3",
+      to: "/studio",
       search: search as Record<string, unknown>,
       statusCode: 301,
     });

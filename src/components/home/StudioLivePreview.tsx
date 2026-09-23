@@ -109,7 +109,7 @@ export function StudioLivePreview() {
             </p>
           </div>
           <CtaButton
-            to="/studio-v3"
+            to="/studio"
             size="sm"
             className="mt-4 shrink-0 sm:mt-0"
           >

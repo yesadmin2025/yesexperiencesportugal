@@ -19,7 +19,7 @@ test.use({
 test.setTimeout(120_000);
 
 test("storytelling reveal renders non-empty within 2500ms on mobile", async ({ page }) => {
-  await page.goto("/studio-v3");
+  await page.goto("/studio");
   await walkToReveal(page);
   await advanceRefineToStorytelling(page);
 

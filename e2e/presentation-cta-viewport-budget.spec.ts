@@ -17,7 +17,7 @@ const MOBILE = { width: 393, height: 588 } as const;
 test.use({ viewport: MOBILE });
 
 test("presentation CTA sits within 6 mobile viewports", async ({ page }) => {
-  await page.goto("/studio-v3", { waitUntil: "domcontentloaded" });
+  await page.goto("/studio", { waitUntil: "domcontentloaded" });
 
   await walkToReveal(page);
 

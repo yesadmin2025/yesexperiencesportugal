@@ -48,6 +48,8 @@ export const Route = createFileRoute("/about")({
       { name: "twitter:card", content: "summary_large_image" },
       { name: "twitter:image", content: `https://yesexperiencesportugal.com${founderAsset.url}` },
       { property: "og:type", content: "website" },
+      { property: "og:locale", content: "en_US" },
+      { property: "og:locale:alternate", content: "pt_PT" },
     ],
     links: [
       { rel: "canonical", href: "https://yesexperiencesportugal.com/about" },
@@ -229,7 +231,7 @@ function Page() {
               </a>
               ,{" "}
               <a
-                href="/studio-v3"
+                href="/studio"
                 className="text-[color:var(--teal)] underline underline-offset-4 decoration-[color:var(--gold)]/60 hover:decoration-[color:var(--gold)] transition-colors"
               >
                 build through the YES Studio
@@ -436,7 +438,7 @@ function Page() {
         title="Six distinct services, one local team."
         links={[
           { to: "/experiences", label: "Signature Experiences across Portugal", description: "Curated private days, ready to reserve with a dedicated guide and vehicle." },
-          { to: "/studio-v3", label: "Experience Studio — build your own Portugal experience", description: "Design a private day online and watch the route and pricing evolve before you reserve." },
+          { to: "/studio", label: "Experience Studio — build your own Portugal experience", description: "Design a private day online and watch the route and pricing evolve before you reserve." },
           { to: "/portugal-travel-designer", label: "Portugal travel designer for complete journeys", description: "Custom multi-day private itineraries across the country, not a single day trip." },
           { to: "/proposal-in-portugal", label: "Moments — proposals, anniversaries and celebrations", description: "Private occasions planned discreetly, anywhere we operate." },
           { to: "/corporate", label: "Corporate events, incentives and retreats", description: "From leadership teams to corporate groups of 100+, coordinated across Portugal." },

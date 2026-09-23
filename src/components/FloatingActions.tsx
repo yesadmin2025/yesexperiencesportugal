@@ -65,7 +65,7 @@ export function FloatingActions() {
           tabIndex / pointer-events are also gated here as defense-in-depth
           on top of the wrapper-level `inert`. */}
       <Link
-        to="/studio-v3"
+        to="/studio"
         aria-label={CTA_LABELS.studio}
         tabIndex={pastHero ? 0 : -1}
         className={
