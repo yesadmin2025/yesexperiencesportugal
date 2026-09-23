@@ -60,12 +60,9 @@ export interface AnalyticsParams {
   [key: string]: unknown;
 }
 
-type GtagFn = (command: "event", name: string, params?: Record<string, unknown>) => void;
-
-interface AnalyticsWindow extends Window {
+type AnalyticsWindow = Window & {
   dataLayer?: Array<Record<string, unknown>>;
-  gtag?: GtagFn;
-}
+};
 
 function isBrowser(): boolean {
   return typeof window !== "undefined" && typeof document !== "undefined";
