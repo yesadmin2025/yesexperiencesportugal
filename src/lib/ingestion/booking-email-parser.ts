@@ -150,7 +150,7 @@ const normaliseBody = (body: string) =>
  * Reads a labelled value: "Customer email: a@b.com", "Customer email a@b.com"
  * or the label on its own line with the value underneath.
  */
-function labelled(body: string, label: string): string | null {
+export function labelled(body: string, label: string): string | null {
   const escaped = label.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
   // The separator is required so the label "Product" cannot swallow the value
   // of the neighbouring label "Product booking ref.".
@@ -162,7 +162,7 @@ function labelled(body: string, label: string): string | null {
   return block ? clean(block[1]) : null;
 }
 
-function listAfter(body: string, label: string): string[] {
+export function listAfter(body: string, label: string): string[] {
   const escaped = label.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
   const match = body.match(new RegExp(`^[>\\s*]*${escaped}\\s*[:：-]?[ \\t]*\\n?([\\s\\S]{0,900}?)(?=\\n\\s*\\n|\\n[>\\s*]*[A-Z][^\\n]{0,40}\\s*:|$)`, "im"));
   if (!match) return [];
@@ -184,7 +184,7 @@ function productBlock(body: string): string[] {
     .slice(0, 6);
 }
 
-function parseMoney(value: string | null): { amount: number | null; currency: string | null } {
+export function parseMoney(value: string | null): { amount: number | null; currency: string | null } {
   if (!value) return { amount: null, currency: null };
   const currency = /eur|€/i.test(value) ? "EUR" : /usd|\$/.test(value) ? "USD" : /gbp|£/.test(value) ? "GBP" : null;
   const number = value.replace(/[^0-9.,]/g, "");
@@ -241,14 +241,14 @@ const INQUIRY_MARKERS = [
   /\b(enquiry|inquiry|availability request|just wondering|would like to know|is it possible|can you tell me|asking about)\b/i,
 ];
 
-const DIRECT_CONFIRM_MARKERS = [
+export const DIRECT_CONFIRM_MARKERS = [
   /confirmed\s*(&|and)\s*fully\s*paid/i,
   /confirmed\s*[–—-]\s*fully\s*paid/i,
   /\bbooking confirmed\b/i,
   /\bfully paid\b/i,
 ];
 
-const DIRECT_PRECONFIRM_MARKERS = [
+export const DIRECT_PRECONFIRM_MARKERS = [
   /pre[-\s]?confirmation voucher/i,
   /\bpre[-\s]?confirmation\b/i,
   /\bprovisional booking\b/i,
@@ -509,7 +509,7 @@ function parseDirect(input: EmailInput): ParseResult {
 const LABEL_LINE = /^[>\s*]*[A-Za-z][A-Za-z .'-]{0,28}\s*[:：]/;
 
 /** Picks the last heading-like line in a chunk — used as the tour name. */
-function headingAbove(chunk: string): string | null {
+export function headingAbove(chunk: string): string | null {
   const lines = chunk.split("\n").map((line) => line.trim()).filter((line) => line.length > 0);
   for (let i = lines.length - 1; i >= 0; i -= 1) {
     const line = lines[i]!;
