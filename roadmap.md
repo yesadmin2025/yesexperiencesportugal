@@ -14,6 +14,8 @@
 - [ ] Verify production GA4 collection — GA4 property linked and preview collection proven; awaiting the scheduled deployment before a production confirmation
 - [ ] Connect verified GA4 property to SiteGuru — blocked: SiteGuru is not available as a connector and no authenticated SiteGuru account is accessible
 - [x] Profile /about, /lisbon-private-tours and /book; safely defer below-fold and checkout-only resources
-- [ ] Apply deferred payment loading and mobile checkout alignment to every booking gate
-- [ ] Verify and repair `/contact` delivery to at least one YES team inbox
-- [ ] Strengthen Google site-name and real-image preview signals without changing page copy
+- [x] Apply deferred payment loading and mobile checkout alignment to every booking gate (implemented; browser verification pending)
+- [x] Repair `/contact` delivery — endpoint now returns 503 unless at least one YES inbox accepts delivery; failed sends parked for durable retry (live submission test pending)
+- [x] Strengthen Google site-name and real-image preview signals — square 192×192 org logo, descriptive og/twitter image alt tags, WebSite alternate names (prerender verification pending)
+- [ ] Research: related searches for travel experiences (answered via Semrush; no site changes)
+- [ ] Competitor comparison vs a tour booking site — blocked: waiting for user to pick a competitor domain (Viator, GetYourGuide, Tripadvisor, Airbnb Experiences)
