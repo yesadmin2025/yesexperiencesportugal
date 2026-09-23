@@ -526,3 +526,78 @@ export const runOpsEmailIngestion = createServerFn({ method: "POST" })
 
     return { ok: true as const, configured: true as const, scanned, dryRun: data.dryRun, outcomes, summary };
   });
+
+/* -------------------------------------------------------- reconciliation report */
+
+export type ReconciliationGroup =
+  | "enriched"
+  | "created"
+  | "duplicate"
+  | "skipped"
+  | "conflict";
+
+const RECON_GROUP: Record<string, ReconciliationGroup> = {
+  updated: "enriched",
+  created: "created",
+  cancelled: "enriched",
+  duplicate: "duplicate",
+  ignored: "skipped",
+  needs_review: "conflict",
+};
+
+const reconInput = z.object({
+  days: z.number().int().min(1).max(365).default(30),
+  limit: z.number().int().min(1).max(500).default(200),
+});
+
+/**
+ * What the last reconciliation passes actually did: which reservations were
+ * enriched, which were newly created, which were skipped as duplicates or as
+ * cancelled/past/unconfirmed, and which need a human decision. Also lists the
+ * Stripe-paid reservations still missing operational detail.
+ */
+export const listOpsReconciliation = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((input: unknown) => reconInput.parse(input ?? {}))
+  .handler(async ({ data, context }) => {
+    await assertAdmin(context);
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+
+    const since = new Date(Date.now() - data.days * 86_400_000).toISOString();
+    const { data: log } = await supabaseAdmin
+      .from("booking_ingestion_log")
+      .select(
+        "id, created_at, source, source_channel, subject, parser, parse_status, action, reason, matched_booking_id, confidence",
+      )
+      .gte("created_at", since)
+      .order("created_at", { ascending: false })
+      .limit(data.limit);
+
+    const rows = (log ?? []).map((entry) => ({
+      ...entry,
+      group: RECON_GROUP[entry.action ?? ""] ?? ("skipped" as ReconciliationGroup),
+    }));
+
+    const summary = rows.reduce<Record<string, number>>((acc, row) => {
+      acc[row.group] = (acc[row.group] ?? 0) + 1;
+      return acc;
+    }, {});
+
+    // Stripe-paid reservations that still read as shells in the diary.
+    const today = new Date().toISOString().slice(0, 10);
+    const { data: shells } = await supabaseAdmin
+      .from("bookings")
+      .select("id, created_at, customer_name, customer_email, tour_title, preferred_date, guests, pickup_location, amount_total, currency, stripe_session_id")
+      .not("stripe_session_id", "is", null)
+      .eq("status", "paid")
+      .order("created_at", { ascending: false })
+      .limit(100);
+
+    const incompleteStripe = (shells ?? []).filter((row) => {
+      const future = !row.preferred_date || row.preferred_date >= today;
+      const missing = !row.preferred_date || !row.pickup_location || !row.tour_title || !row.customer_name;
+      return future && missing;
+    });
+
+    return { ok: true as const, days: data.days, rows, summary, incompleteStripe };
+  });

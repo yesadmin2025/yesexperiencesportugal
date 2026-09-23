@@ -15,6 +15,7 @@ import { listOpsBookings, OPS_CHANNELS } from "@/lib/bookingsOps.functions";
 import { OpsBookingDetail } from "./OpsBookingDetail";
 import { OpsReviewInbox } from "./OpsReviewInbox";
 import { OpsIntegrationsPanel } from "./OpsIntegrationsPanel";
+import { OpsReconciliationPanel } from "./OpsReconciliationPanel";
 import { ChannelBadge, GuideBadge, PaymentBadge, ReviewBadge, StatusBadge } from "./badges";
 
 type Row = {
@@ -43,7 +44,7 @@ type Row = {
 };
 
 type Guide = { id: string; name: string; active?: boolean | null };
-type View = "list" | "calendar" | "review" | "integrations";
+type View = "list" | "calendar" | "review" | "reconciliation" | "integrations";
 
 const today = () => new Date().toISOString().slice(0, 10);
 const plusDays = (days: number) => new Date(Date.now() + days * 86_400_000).toISOString().slice(0, 10);
@@ -127,6 +128,7 @@ export function OpsBookingsHub() {
     { id: "list", label: "List" },
     { id: "calendar", label: "Calendar" },
     { id: "review", label: reviewCount > 0 ? `Needs review · ${reviewCount}` : "Needs review" },
+    { id: "reconciliation", label: "Reconciliation" },
     { id: "integrations", label: "Sources" },
   ];
 
@@ -150,6 +152,7 @@ export function OpsBookingsHub() {
       </div>
 
       {view === "review" ? <OpsReviewInbox onChanged={refresh} /> : null}
+      {view === "reconciliation" ? <OpsReconciliationPanel onOpenBooking={setSelected} /> : null}
       {view === "integrations" ? <OpsIntegrationsPanel onChanged={refresh} /> : null}
 
       {view === "list" || view === "calendar" ? (

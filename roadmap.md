@@ -33,3 +33,12 @@
 ## Blocked on owner
 - [ ] Connect the Gmail account (read-only) that receives Bókun notifications and sends vouchers
 - [ ] Bókun access key / secret / webhook secret (endpoint stays disabled until then)
+
+## Stripe + email reconciliation (done, 23 Sep 2026)
+- [x] Voucher/confirmation emails enrich the matching Stripe-paid reservation (ref → guest+date → paid shell with no date) instead of duplicating
+- [x] Stripe authoritative for payment state, amount, currency and origin; email authoritative for operational detail
+- [x] Cancelled/refunded reservations never reactivated by an older confirmation
+- [x] Reconciliation tab: enriched / created / duplicate / skipped / conflict counts + paid reservations still missing operational detail
+- [x] Tests: src/__tests__/booking-stripe-reconciliation.test.ts
+- [ ] Blocked: connect the Google mailbox (read-only) before any real import
+- [ ] Blocked: Bókun access key / secret / webhook secret for direct sync
