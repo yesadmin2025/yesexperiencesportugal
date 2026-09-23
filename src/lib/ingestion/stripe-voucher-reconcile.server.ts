@@ -556,6 +556,26 @@ export async function reconcileStripeVouchers(
       }
     }
 
+    if (fields.length === 0 && !duplicateSuppressed) {
+      // The matched message confirms the payment but states no operational
+      // detail we do not already hold — nothing is written.
+      report.no_voucher += 1;
+      report.still_incomplete += 1;
+      report.rows.push({
+        ...base,
+        outcome: "no_voucher",
+        rule: chosen.rule,
+        evidence: chosen.source,
+        fields: [],
+        subject: chosen.subject,
+        messageDate: chosen.receivedAt,
+        duplicateSuppressed: null,
+        stillIncomplete: true,
+        reason: "matched_email_states_no_new_detail",
+      });
+      continue;
+    }
+
     if (!dryRun) {
       const { error: updateError } = await supabaseAdmin.from("bookings").update(patch as never).eq("id", shell.id);
       if (updateError) throw new Error(updateError.message);
