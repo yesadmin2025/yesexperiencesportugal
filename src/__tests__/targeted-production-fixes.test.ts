@@ -57,4 +57,12 @@ describe("targeted production fixes", () => {
     expect(schema).toContain("first_party_count");
     expect(schema).toContain("never feed `aggregateRating` or `review`");
   });
+
+  it("emits the first page view immediately after analytics consent is granted", () => {
+    const consent = read("src/components/CookieConsent.tsx");
+    const grant = consent.indexOf('if (full.analytics === "granted")');
+    const pageView = consent.indexOf('trackEvent("page_view"', grant);
+    expect(grant).toBeGreaterThan(-1);
+    expect(pageView).toBeGreaterThan(grant);
+  });
 });
