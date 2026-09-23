@@ -392,6 +392,44 @@ export async function reconcileWhatsAppMessage(
     .sort((a, b) => b.score - a.score);
 
   if (scored.length === 0) {
+    // Several reservations share this number and the message states nothing
+    // that separates them. A confirmation like this is a human's decision.
+    if (bookings.length > 1 && (facts.confirmed || facts.hasOperationalDetail)) {
+      const reason = `ambiguous_whatsapp_match: ${bookings.length} reservations share this number and the message states no date or amount`;
+      if (!dryRun) {
+        await admin.from("booking_ingestion_candidates").upsert(
+          {
+            source: "WHATSAPP",
+            source_channel: "DIRECT",
+            gmail_message_id: `wa:${message.provider_message_id}`,
+            slot: 0,
+            subject: `WhatsApp ${maskPhone(phone)}`,
+            received_at: sentAt,
+            detected: { ...facts, phone: maskPhone(phone) } as never,
+            missing_fields: [] as never,
+            confidence: 0,
+            reason: `${reason} — candidates ${bookings.map((entry) => entry.id).join(", ")}`,
+            status: "pending",
+            raw_payload: {
+              whatsapp: true,
+              provider_message_id: message.provider_message_id,
+              candidate_booking_ids: bookings.map((entry) => entry.id),
+            } as never,
+          },
+          { onConflict: "gmail_message_id,slot" },
+        );
+        await admin.from("booking_ingestion_log").insert({
+          source: "WHATSAPP",
+          source_channel: "DIRECT",
+          parser: "whatsapp",
+          parse_status: "parsed",
+          action: "needs_review",
+          reason,
+          dedupe_key: `wa:${message.provider_message_id}`,
+        });
+      }
+      return finish({ ...base, action: "needs_review", bookingId: null, reason });
+    }
     return finish({ ...base, action: "no_match", bookingId: null, reason: "no_confident_match" });
   }
 
