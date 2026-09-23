@@ -196,6 +196,6 @@ function AdminGuidesPage() {
           <li className="py-3 text-sm text-[color:var(--charcoal-soft)]">No guides saved yet.</li>
         ) : null}
       </ul>
-    </main>
+    </AdminShell>
   );
 }
