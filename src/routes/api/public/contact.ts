@@ -106,8 +106,9 @@ export const Route = createFileRoute("/api/public/contact")({
         };
 
 
+        let teamAccepted = false;
         try {
-          // Client confirmation
+          // Client confirmation is independent of the lead notification.
           await sendTransactionalInternal({
             templateName: "contact-received",
             recipientEmail: data.email,
@@ -116,7 +117,7 @@ export const Route = createFileRoute("/api/public/contact")({
           });
 
           // Team notifications — one send per recipient so bounces are isolated.
-          await Promise.all(
+          const teamResults = await Promise.all(
             TEAM_NOTIFICATION_RECIPIENTS.map((recipient) =>
               sendTransactionalInternal({
                 templateName: "internal-lead",
@@ -126,10 +127,18 @@ export const Route = createFileRoute("/api/public/contact")({
               }),
             ),
           );
+          teamAccepted = teamResults.some((result) => result.ok);
         } catch (e) {
           console.error("[contact] email dispatch failed (non-fatal)", {
             error: e instanceof Error ? e.message : e,
           });
+        }
+
+        // The database remains the source of truth, but the form must not
+        // claim email success unless at least one YES inbox accepted the
+        // notification into its durable delivery path.
+        if (!teamAccepted) {
+          return Response.json({ ok: false, error: "team_delivery_failed" }, { status: 503 });
         }
 
         return Response.json({ ok: true });

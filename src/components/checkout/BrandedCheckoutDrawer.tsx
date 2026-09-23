@@ -200,7 +200,7 @@ export function BrandedCheckoutDrawer({
     <Sheet open={open} onOpenChange={onOpenChange}>
       <SheetContent
         side="right"
-        className="w-full sm:max-w-[560px] p-0 bg-[color:var(--ivory)] border-l border-[color:var(--border)] flex flex-col gap-0 [&>button.absolute]:hidden"
+        className="h-[100dvh] w-full sm:max-w-[560px] p-0 bg-[color:var(--ivory)] border-l border-[color:var(--border)] flex flex-col gap-0 [&>button.absolute]:hidden"
         data-checkout="embedded"
       >
         {/* Header */}
@@ -230,7 +230,7 @@ export function BrandedCheckoutDrawer({
           </p>
         </div>
 
-        <div className="overflow-y-auto flex-1">
+        <div className="min-h-0 overflow-y-auto overscroll-contain flex-1 pb-[env(safe-area-inset-bottom)]">
           <ExperienceSummaryCard summary={summary} total={total} />
 
           {/* Stripe Embedded Checkout */}

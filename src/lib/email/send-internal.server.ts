@@ -12,7 +12,6 @@ import * as React from "react";
 import { render } from "react-email";
 import { supabaseAdmin } from "@/integrations/supabase/client.server";
 import { TEMPLATES } from "@/lib/email-templates/registry";
-import { TEAM_NOTIFICATION_RECIPIENTS } from "@/lib/email/team-recipients";
 
 const SITE_NAME = "yesexperiences";
 const SENDER_DOMAIN = "notify.yesexperiences.pt";
@@ -518,27 +517,23 @@ export async function sendTransactionalInternal(
         error_message: `resend ${res.status}: ${res.body.slice(0, 300)}`,
       });
 
-      const isTeamAddress = (TEAM_NOTIFICATION_RECIPIENTS as readonly string[])
-        .map((r) => r.toLowerCase())
-        .includes(normalizedEmail);
-
       // Automatic fallback #1 — park the guest's message so it is delivered
       // for real the moment the provider/domain starts accepting mail again.
-      if (!isTeamAddress) {
-        await deferSend({
-          supabase,
-          messageId,
-          templateName,
-          recipientEmail: effectiveRecipient,
-          subject,
-          html,
-          plainText,
-          idemKey,
-          lastError: `resend ${res.status}: ${res.body}`,
-          failureKind: classifyFailure(res.status, res.body),
-
-        });
-      }
+      // This includes team notifications: a safe-inbox mirror is useful for
+      // immediate visibility, but it must never replace durable delivery to
+      // the intended YES inbox.
+      await deferSend({
+        supabase,
+        messageId,
+        templateName,
+        recipientEmail: effectiveRecipient,
+        subject,
+        html,
+        plainText,
+        idemKey,
+        lastError: `resend ${res.status}: ${res.body}`,
+        failureKind: classifyFailure(res.status, res.body),
+      });
 
       // Automatic fallback #2 — mirror the undeliverable message to the safe
       // inbox so the team can forward it immediately, whatever the reason for

@@ -18,7 +18,7 @@ describe("WebSite / site-name signals", () => {
     const ld = websiteLd() as unknown as Record<string, unknown>;
     expect(ld["@type"]).toBe("WebSite");
     expect(ld.name).toBe("YES Experiences Portugal");
-    expect(ld.alternateName).toEqual(["YES Experiences", "YES", "yesexperiencesportugal.com"]);
+    expect(ld.alternateName).toEqual(["YES Experiences", "YES Portugal"]);
     expect(ld.url).toBe("https://yesexperiencesportugal.com/");
     expect(ld.publisher).toEqual({ "@id": "https://yesexperiencesportugal.com/#organization" });
   });
@@ -26,7 +26,13 @@ describe("WebSite / site-name signals", () => {
   it("Organization keeps the exact brand name and brand-consistent alternates", () => {
     const ld = organizationLd() as unknown as Record<string, unknown>;
     expect(ld.name).toBe("YES Experiences Portugal");
-    expect(ld.alternateName).toEqual(["YES Experiences", "YES", "yesexperiencesportugal.com"]);
+    expect(ld.alternateName).toEqual(["YES Experiences", "YES Portugal"]);
+    expect(ld.logo).toMatchObject({
+      "@type": "ImageObject",
+      url: "https://yesexperiencesportugal.com/icon-192.png",
+      width: 192,
+      height: 192,
+    });
   });
 
   it("Organization carries no self-serving rating or review markup", () => {
@@ -72,6 +78,18 @@ describe("brand-critical SERP snippets", () => {
     expect(contact).toContain(
       "Contact YES Experiences Portugal for private tours, tailor-made journeys, proposals and corporate experiences. WhatsApp, email or a short call.",
     );
+  });
+
+  it("homepage and wine results describe their real preview photography", () => {
+    const home = read("src/routes/index.tsx");
+    const tour = read("src/routes/tours.$tourId.tsx");
+    const guide = read("src/routes/local-stories.$slug.tsx");
+    const hub = read("src/routes/lisbon-wine-tours.tsx");
+    for (const source of [home, tour, guide]) {
+      expect(source).toContain("og:image:alt");
+      expect(source).toContain("twitter:image:alt");
+    }
+    expect(hub).toContain("arrabidaWineImage");
   });
 
   it("wine guide title/description are locked and never describe YES as small-group", async () => {

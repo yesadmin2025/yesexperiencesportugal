@@ -395,15 +395,13 @@ import { interpretFreeText } from "@/lib/studio-v3/freeTextInterpreter";
 import { interpretFreeTextWithAi } from "@/lib/studio-v3/interpret-free-text.functions";
 import type { SemanticSourceEvent } from "@/lib/studio-v3/semanticSourceEvents";
 
-import { CheckoutSummary as CheckoutSummaryStep } from "./CheckoutSummary";
+const CheckoutSummaryStep = lazy(() =>
+  import("./CheckoutSummary").then((module) => ({ default: module.CheckoutSummary })),
+);
 import { GuestDetailsStep } from "./GuestDetailsStep";
 import { buildSignatureStorySnapshot } from "./signatureStorySnapshot";
 import { INSTANT_CONFIRMATION, CTA_MAKE_IT_REAL } from "@/content/signature-day-copy";
 import { sendSignatureStoryEmail } from "@/lib/emails/sendSignatureStoryEmail.functions";
-import {
-  BrandedCheckoutDrawer,
-  type CheckoutSummary,
-} from "@/components/checkout/BrandedCheckoutDrawer";
 
 /**
  * StudioV3 — Cinematic Journey Composer (Phase 1A: Operational Spine).
@@ -1126,10 +1124,8 @@ export function StudioV3() {
   // resolved tour id and party size. On success we redirect to Stripe's
   // hosted checkout (test mode). On failure we surface a quiet toast and
   // fall back to the lead-capture sheet so the conversion never dead-ends.
-  const [checkoutOpen, setCheckoutOpen] = useState(false);
   const [clientSecret, setClientSecret] = useState<string | null>(null);
   const [publishableKey, setPublishableKey] = useState<string | null>(null);
-  const [checkoutSummary, setCheckoutSummary] = useState<CheckoutSummary | null>(null);
   const [checkoutTourId, setCheckoutTourId] = useState<string | null>(null);
   const [checkoutPending, setCheckoutPending] = useState(false);
   // Final checkout revalidation can fail because a live operational fact
@@ -1592,34 +1588,11 @@ export function StudioV3() {
             )
           : null;
 
-      const journeyLines = journey ? journey.lines : undefined;
-      const journeyTotalEur = journey ? Math.round(journey.totalEur) : undefined;
       const totalEur = journey
         ? Math.round(journey.totalEur + addOnsPartyTotalEur + composablePartyTotalEur)
         : Math.round(
             perPaxBase * details.guests + addOnsPartyTotalEur + composablePartyTotalEur,
           );
-      setCheckoutSummary({
-        tourTitle: currentState.journeyTitle ?? tour.title ?? tour.id,
-        region: tour.region,
-        durationHours: tour.durationHours,
-        guests: details.guests,
-        adults: composedAdults ?? undefined,
-        minorAges: composedMinors,
-        dateExact: details.tourDate || currentState.dateExact || null,
-        startTime: details.startTime ?? null,
-        pickupLabel: details.pickupAddress || pickupCityLabel(currentState.pickup) || "",
-        pricePerPaxEur: perPaxBase,
-        totalEur,
-        heroSrc: tour.img ?? null,
-        beats: stopLabels.slice(0, 4),
-        flowLabel: "Studio",
-        addOns: addOnsForCheckout,
-        addOnsTotalEur: addOnsPartyTotalEur,
-        addOnsPartyTotalEur,
-        journeyLines,
-        journeyTotalEur,
-      });
       setCheckoutTourId(tour.id);
       setDetailsOpen(false);
       // Studio V3 renders Stripe Embedded Checkout INLINE below the
@@ -4292,6 +4265,7 @@ export function StudioV3() {
 
       {state.phase === "checkoutSummary" && pendingGuestDetails ? (
         <PhaseShell accent="ivory" exiting={exiting}>
+          <Suspense fallback={<div className="mx-auto min-h-[640px] w-full max-w-[560px] px-5 pt-8" aria-label="Loading secure checkout"><BookingCtaSkeleton className="mt-[28rem] w-full" label="Preparing secure checkout…" /></div>}>
           <CheckoutSummaryStep
             state={state}
             guestDetails={pendingGuestDetails}
@@ -4321,36 +4295,9 @@ export function StudioV3() {
               void handleStripeCheckout(state, pendingGuestDetails);
             }}
           />
+          </Suspense>
         </PhaseShell>
       ) : null}
-
-      <BrandedCheckoutDrawer
-        open={checkoutOpen}
-        onOpenChange={(o) => {
-          setCheckoutOpen(o);
-          if (!o) setClientSecret(null);
-        }}
-        clientSecret={clientSecret}
-        publishableKey={publishableKey}
-        summary={
-          checkoutSummary ?? {
-            tourTitle: state.journeyTitle ?? "Your Signature",
-            guests: typeof state.guests === "number" ? state.guests : 2,
-            adults: typeof state.adults === "number" ? state.adults : undefined,
-            minorAges: state.minorAges ? [...state.minorAges] : undefined,
-            pricePerPaxEur: null,
-            flowLabel: "Studio",
-          }
-        }
-        onComplete={(sid) => {
-          setCheckoutOpen(false);
-          const tid = checkoutTourId ?? state.tourId ?? "";
-          const qs = new URLSearchParams();
-          if (sid) qs.set("session_id", sid);
-          if (tid) qs.set("tour", tid);
-          window.location.assign(`/booking-confirmed?${qs.toString()}`);
-        }}
-      />
 
 
       {reaction ? (

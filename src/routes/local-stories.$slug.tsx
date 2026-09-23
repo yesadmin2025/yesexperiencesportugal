@@ -126,7 +126,9 @@ export const Route = createFileRoute("/local-stories/$slug")({
           { property: "og:url", content: url },
           { property: "og:type", content: "article" },
           ...(imageUrl ? [{ property: "og:image", content: imageUrl }] : []),
+          ...(imageUrl ? [{ property: "og:image:alt", content: `${article.h1} — local guide by YES Experiences Portugal` }] : []),
           ...(imageUrl ? [{ name: "twitter:image", content: imageUrl }] : []),
+          ...(imageUrl ? [{ name: "twitter:image:alt", content: `${article.h1} — local guide by YES Experiences Portugal` }] : []),
           { property: "article:published_time", content: article.datePublished },
           ...(article.dateModified
             ? [{ property: "article:modified_time", content: article.dateModified }]

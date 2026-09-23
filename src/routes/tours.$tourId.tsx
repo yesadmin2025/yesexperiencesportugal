@@ -174,8 +174,10 @@ export const Route = createFileRoute("/tours/$tourId")({
         { property: "og:description", content: seo?.ogDescription ?? pageDescription },
 
         { property: "og:image", content: img },
+        { property: "og:image:alt", content: `${t.title} with YES Experiences Portugal` },
         { name: "twitter:card", content: "summary_large_image" },
         { name: "twitter:image", content: img },
+        { name: "twitter:image:alt", content: `${t.title} with YES Experiences Portugal` },
         { property: "og:url", content: url },
         { property: "og:type", content: "product" },
       ],

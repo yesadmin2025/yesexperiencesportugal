@@ -35,10 +35,17 @@ export function organizationLd() {
     "@type": ["TravelAgency", "LocalBusiness"],
     "@id": `${SITE_URL}/#organization`,
     name: "YES Experiences Portugal",
-    alternateName: ["YES Experiences", "YES", "yesexperiencesportugal.com"],
+    alternateName: ["YES Experiences", "YES Portugal"],
     legalName: "YES Experiences Portugal",
     url: `${SITE_URL}/`,
-    logo: `${SITE_URL}/brand/png/yes-experiences-portugal-centered-full@2x.png`,
+    logo: {
+      "@type": "ImageObject",
+      url: `${SITE_URL}/icon-192.png`,
+      contentUrl: `${SITE_URL}/icon-192.png`,
+      width: 192,
+      height: 192,
+      caption: "YES Experiences Portugal",
+    },
     image: [
       {
         "@type": "ImageObject",
@@ -256,7 +263,7 @@ export function websiteLd() {
     "@id": `${SITE_URL}/#website`,
     url: `${SITE_URL}/`,
     name: "YES Experiences Portugal",
-    alternateName: ["YES Experiences", "YES", "yesexperiencesportugal.com"],
+    alternateName: ["YES Experiences", "YES Portugal"],
     publisher: { "@id": `${SITE_URL}/#organization` },
     inLanguage: "en",
     potentialAction: {
