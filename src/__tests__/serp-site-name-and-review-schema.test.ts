@@ -65,10 +65,10 @@ describe("brand-critical SERP snippets", () => {
   it("homepage title and description are locked", () => {
     const home = read("src/routes/index.tsx");
     expect(home).toContain(
-      '"Private Tours in Portugal & Tailor-Made Journeys | YES"',
+      '"Portugal Tours & Private Day Tours from Lisbon | YES"',
     );
     expect(home).toContain(
-      "Private tours, custom day experiences and tailor-made journeys across Portugal. Reserve a Signature day, design your own, or plan a full trip with a local expert.",
+      "Private Portugal tours and day tours from Lisbon: Arrábida wine, Sintra & Cascais, Évora and Azeitão. Design your own day, or plan a full journey with a local expert.",
     );
   });
 
