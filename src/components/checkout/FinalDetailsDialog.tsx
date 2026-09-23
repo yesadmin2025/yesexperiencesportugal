@@ -234,7 +234,7 @@ export function FinalDetailsDialog({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-lg p-0 gap-0 bg-[color:var(--ivory)] border border-[color:var(--border)] max-h-[92vh] overflow-hidden flex flex-col">
+      <DialogContent className="max-w-lg p-0 gap-0 bg-[color:var(--ivory)] border border-[color:var(--border)] h-[100dvh] max-h-[100dvh] sm:h-auto sm:max-h-[92vh] overflow-hidden flex flex-col">
         <form
           onSubmit={(e) => {
             e.preventDefault();
@@ -252,7 +252,7 @@ export function FinalDetailsDialog({
             </DialogDescription>
           </DialogHeader>
 
-          <div className="overflow-y-auto px-5 sm:px-7 py-5 space-y-5">
+          <div className="min-h-0 overflow-y-auto overscroll-contain px-5 sm:px-7 py-5 space-y-5">
             {productRecap ? (
               <ProductRecap
                 recap={productRecap}
@@ -508,7 +508,7 @@ export function FinalDetailsDialog({
             </Disclosure>
           </div>
 
-          <DialogFooter className="px-5 sm:px-7 py-4 border-t border-[color:var(--border)] bg-[color:var(--sand)]/40 sm:flex-col sm:items-stretch sm:space-x-0 gap-2">
+          <DialogFooter className="shrink-0 px-5 sm:px-7 pt-4 pb-[calc(env(safe-area-inset-bottom)+1rem)] sm:py-4 border-t border-[color:var(--border)] bg-[color:var(--sand)]/40 sm:flex-col sm:items-stretch sm:space-x-0 gap-2">
             {priceQuote ? <ChargeSummaryLine quote={quote} /> : null}
             {/* Canonical cancellation + payment reassurance, never hand-authored. */}
             <p

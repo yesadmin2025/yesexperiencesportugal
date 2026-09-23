@@ -151,9 +151,17 @@ function CheckoutPage() {
   if (loading) {
     return (
       <Shell>
-        <p style={{ color: "color-mix(in oklab, var(--charcoal) 60%, transparent)" }}>
-          Loading your bespoke day…
-        </p>
+        <div className="min-h-[520px] animate-pulse motion-reduce:animate-none" aria-label="Loading your bespoke day">
+          <div className="h-3 w-36 bg-[color:var(--gold-soft)]" />
+          <div className="mt-5 h-9 w-4/5 bg-[color:var(--sand)]" />
+          <div className="mt-8 space-y-3 border-l border-[color:var(--gold)]/30 pl-4">
+            <div className="h-4 w-3/4 bg-[color:var(--sand)]" />
+            <div className="h-4 w-2/3 bg-[color:var(--sand)]" />
+            <div className="h-4 w-4/5 bg-[color:var(--sand)]" />
+          </div>
+          <div className="mt-10 h-12 w-full bg-[color:var(--sand)]" />
+          <p className="sr-only">Loading your bespoke day…</p>
+        </div>
       </Shell>
     );
   }

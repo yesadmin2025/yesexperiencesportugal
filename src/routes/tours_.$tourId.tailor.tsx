@@ -1,6 +1,6 @@
 import { trackEvent } from "@/lib/analytics-events";
 import { createFileRoute, Link, notFound, useNavigate } from "@tanstack/react-router";
-import { useMemo, useRef, useState } from "react";
+import { lazy, Suspense, useMemo, useRef, useState } from "react";
 import {
   ArrowLeft,
   Check,
@@ -29,15 +29,12 @@ import { RouteThread } from "@/components/motion/RouteThread";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { invokeSignatureCheckout } from "@/lib/checkout/session-request";
-import { FinalDetailsDialog, type GuestDetails } from "@/components/checkout/FinalDetailsDialog";
+import type { GuestDetails } from "@/components/checkout/FinalDetailsDialog";
 import {
   ChargeSummaryLine,
   type ChargeQuote,
 } from "@/components/checkout/ChargeSummaryLine";
-import {
-  BrandedCheckoutDrawer,
-  type CheckoutSummary,
-} from "@/components/checkout/BrandedCheckoutDrawer";
+import type { CheckoutSummary } from "@/components/checkout/BrandedCheckoutDrawer";
 import { getTailorBlueprint, type BlueprintStop } from "@/data/tailorBlueprints";
 import { DWELL_MINIMUM_MIN, evaluateDay, type FeasibilityStop } from "@/lib/feasibility";
 import { useTourPriceTiers } from "@/hooks/use-tour-price-tiers";
@@ -62,6 +59,17 @@ import { resolveClientIncludedItems } from "@/lib/checkout/inclusions";
 import { PriceBreakdownRows } from "@/components/checkout/PriceBreakdownRows";
 import { hasCompleteJourneyPricing } from "@/lib/checkout/journeyDisplay";
 import { CompositionField } from "@/components/booking/CompositionField";
+
+const FinalDetailsDialog = lazy(() =>
+  import("@/components/checkout/FinalDetailsDialog").then((module) => ({
+    default: module.FinalDetailsDialog,
+  })),
+);
+const BrandedCheckoutDrawer = lazy(() =>
+  import("@/components/checkout/BrandedCheckoutDrawer").then((module) => ({
+    default: module.BrandedCheckoutDrawer,
+  })),
+);
 import {
   formatCompositionSummary,
   isCompositionComplete,
@@ -1703,7 +1711,7 @@ function TailorPage() {
         </div>
       </section>
 
-      <FinalDetailsDialog
+      {detailsOpen ? <Suspense fallback={null}><FinalDetailsDialog
         priceQuote={({ adults, minorAges }) => {
           // Never quote a price we can't charge instantly.
           if (requiresManualConfirmation) return null;
@@ -1758,9 +1766,9 @@ function TailorPage() {
         onConfirm={async (d) => {
           await handleReserve(d);
         }}
-      />
+      /></Suspense> : null}
 
-      <BrandedCheckoutDrawer
+      {checkoutOpen ? <Suspense fallback={null}><BrandedCheckoutDrawer
         open={checkoutOpen}
         onOpenChange={(o) => {
           setCheckoutOpen(o);
@@ -1797,7 +1805,7 @@ function TailorPage() {
             search: { session_id: sid ?? undefined, tour: tour.id },
           });
         }}
-      />
+      /></Suspense> : null}
     </SiteLayout>
   );
 }
