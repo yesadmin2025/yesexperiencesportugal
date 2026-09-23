@@ -44,7 +44,7 @@ test.describe("homepage conversion paths", () => {
     const smartStart = await openHome(page);
     const studio = smartStart.locator('[data-home-primary-path="studio"]');
     await studio.click();
-    await expect(page).toHaveURL(/\/studio-v3(?:[?#].*)?$/);
+    await expect(page).toHaveURL(/\/studio(?:[?#].*)?$/);
   });
 
   test("recognises a privacy-safe saved Studio draft", async ({ page }) => {

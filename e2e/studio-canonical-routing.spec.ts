@@ -7,8 +7,7 @@ import { test, expect } from "@playwright/test";
  * Studio V3 / Living Atlas implementation. This spec proves that:
  *  1. the canonical route mounts Studio V3 and self-canonicalises,
  *  2. homepage, desktop nav and mobile nav all enter it,
- *  3. legacy Studio routes (/studio, /studio-v2) land on the new Studio,
- *  4. the /studio alias still renders it but is noindex + canonicalised.
+ *  3. legacy Studio routes land on the canonical Studio.
  */
 
 const STUDIO_ROOT = '[data-testid="studio-v3-root"]';
@@ -20,17 +19,17 @@ test("canonical /studio renders Studio V3", async ({ page }) => {
   await expect(page.locator('link[rel="canonical"]')).toHaveAttribute("href", CANONICAL);
 });
 
-for (const legacy of ["/studio", "/studio-v2", "/experience-studio"]) {
+for (const legacy of ["/studio-v3", "/studio-v2", "/experience-studio"]) {
   test(`legacy ${legacy} lands on the new Studio`, async ({ page }) => {
     await page.goto(legacy, { waitUntil: "domcontentloaded" });
-    await expect(page).toHaveURL(/\/studio-v3/);
+    await expect(page).toHaveURL(/\/studio(?:\?|$)/);
     await expect(page.locator(STUDIO_ROOT).first()).toBeVisible({ timeout: 20_000 });
   });
 }
 
 test("legacy Studio redirects preserve query parameters", async ({ page }) => {
-  await page.goto("/studio?source=qa", { waitUntil: "domcontentloaded" });
-  await expect(page).toHaveURL(/\/studio-v3\?source=qa$/);
+  await page.goto("/studio-v3?source=qa", { waitUntil: "domcontentloaded" });
+  await expect(page).toHaveURL(/\/studio\?source=qa$/);
 });
 
 test("desktop navigation enters the new Studio", async ({ page }) => {
@@ -39,7 +38,7 @@ test("desktop navigation enters the new Studio", async ({ page }) => {
   const navLink = page.locator('header a[href^="/studio"]').first();
   await expect(navLink).toBeVisible();
   await navLink.click();
-  await expect(page).toHaveURL(/\/studio-v3/);
+  await expect(page).toHaveURL(/\/studio(?:\?|$)/);
   await expect(page.locator(STUDIO_ROOT).first()).toBeVisible({ timeout: 20_000 });
 });
 
@@ -67,6 +66,6 @@ test("mobile navigation enters the new Studio", async ({ page }) => {
   const link = page.locator('a[href^="/studio"]:visible').first();
   await expect(link).toBeVisible();
   await link.click();
-  await expect(page).toHaveURL(/\/studio-v3/);
+  await expect(page).toHaveURL(/\/studio(?:\?|$)/);
   await expect(page.locator(STUDIO_ROOT).first()).toBeVisible({ timeout: 20_000 });
 });
