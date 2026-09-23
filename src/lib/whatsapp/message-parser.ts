@@ -143,6 +143,21 @@ function statedDate(text: string): { date: string | null; time: string | null } 
   return parseDateToken(text);
 }
 
+/**
+ * Every written date, in order — a single payment can cover two operational
+ * days ("the 12th and also the 14th"), and each day needs its own record.
+ */
+export function statedDates(text: string): string[] {
+  const out: string[] = [];
+  for (const chunk of text.split(/\band also\b|\band\b|[,;\n]|\+/i)) {
+    const { date } = parseDateToken(chunk);
+    if (date && !out.includes(date)) out.push(date);
+  }
+  const single = parseDateToken(text).date;
+  if (single && !out.includes(single)) out.unshift(single);
+  return out.slice(0, 6);
+}
+
 function listFrom(value: string | null): string[] {
   if (!value) return [];
   return value
