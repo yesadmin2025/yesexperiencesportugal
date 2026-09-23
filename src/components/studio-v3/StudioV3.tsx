@@ -1595,27 +1595,6 @@ export function StudioV3() {
         : Math.round(
             perPaxBase * details.guests + addOnsPartyTotalEur + composablePartyTotalEur,
           );
-      setCheckoutSummary({
-        tourTitle: currentState.journeyTitle ?? tour.title ?? tour.id,
-        region: tour.region,
-        durationHours: tour.durationHours,
-        guests: details.guests,
-        adults: composedAdults ?? undefined,
-        minorAges: composedMinors,
-        dateExact: details.tourDate || currentState.dateExact || null,
-        startTime: details.startTime ?? null,
-        pickupLabel: details.pickupAddress || pickupCityLabel(currentState.pickup) || "",
-        pricePerPaxEur: perPaxBase,
-        totalEur,
-        heroSrc: tour.img ?? null,
-        beats: stopLabels.slice(0, 4),
-        flowLabel: "Studio",
-        addOns: addOnsForCheckout,
-        addOnsTotalEur: addOnsPartyTotalEur,
-        addOnsPartyTotalEur,
-        journeyLines,
-        journeyTotalEur,
-      });
       setCheckoutTourId(tour.id);
       setDetailsOpen(false);
       // Studio V3 renders Stripe Embedded Checkout INLINE below the
