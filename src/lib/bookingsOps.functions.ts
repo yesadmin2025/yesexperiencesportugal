@@ -631,6 +631,9 @@ export const runOpsVoucherReconciliation = createServerFn({ method: "POST" })
       dryRun: data.dryRun,
       maxRows: data.maxRows,
       maxMessagesPerGuest: data.maxMessagesPerGuest,
+      includeInternalNotifications: data.includeInternalNotifications,
+      notificationDays: data.notificationDays,
+      maxNotifications: data.maxNotifications,
     });
     return { ok: true as const, report };
   });
