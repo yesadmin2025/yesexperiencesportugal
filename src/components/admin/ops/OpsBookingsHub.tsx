@@ -127,6 +127,7 @@ export function OpsBookingsHub() {
     { id: "list", label: "List" },
     { id: "calendar", label: "Calendar" },
     { id: "review", label: reviewCount > 0 ? `Needs review · ${reviewCount}` : "Needs review" },
+    { id: "reconciliation", label: "Reconciliation" },
     { id: "integrations", label: "Sources" },
   ];
 
