@@ -60,6 +60,7 @@ export function OpsIntegrationsPanel({ onChanged }: { onChanged?: () => void }) 
   const [outcomes, setOutcomes] = useState<Outcome[]>([]);
   const [summary, setSummary] = useState<Record<string, number>>({});
   const [dryRun, setDryRun] = useState(true);
+  const gmailHealth = status ? readGmailHealth(status.state) : null;
 
   const refresh = async () => {
     try {
