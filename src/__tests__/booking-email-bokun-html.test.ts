@@ -11,12 +11,15 @@ const html = `<table>
 <tr><td>Booking ref.</td><td>VIA-104657893</td></tr>
 <tr><td>Product booking ref.</td><td>YES-T147327068</td></tr>
 <tr><td>Ext. booking ref</td><td>1449975423</td></tr>
-<tr><td>Product</td><td>349639P3 -<br>Private Lisbon Wine Tour - Setubal, Arrabida, 3 Wineries &amp; Lunch</td></tr>
+<tr><td>Product</td></tr>
+<tr><td>349639P3 -</td></tr>
+<tr><td>Private Lisbon Wine Tour - Setubal, Arrabida, 3 Wineries &amp; Lunch</td></tr>
 <tr><td>Sold by</td><td>Viator.com</td></tr>
 <tr><td>Customer</td><td>Porter, Rick</td></tr>
 <tr><td>PAX</td><td>2 Adults</td></tr>
 <tr><td>Pick-up</td><td>Olissippo Lapa Palace</td></tr>
-<tr><td>Date</td><td>Sat 24.Oct &#x27;26<br>@ 09:00</td></tr>
+<tr><td>Date</td></tr>
+<tr><td>Sat 24.Oct &#x27;26 @ 09:00</td></tr>
 </table>`;
 
 describe("Bókun HTML notification parsing", () => {
