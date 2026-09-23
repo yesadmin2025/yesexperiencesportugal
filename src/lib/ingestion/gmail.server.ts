@@ -7,7 +7,11 @@
  * reports `configured: false` so the admin surface can show a setup state
  * instead of failing.
  */
+import { internalNotificationQuery } from "./internal-notification-parser";
+
 const GATEWAY_URL = "https://connector-gateway.lovable.dev/google_mail";
+
+export type GmailMailbox = "INBOX" | "SENT" | "INTERNAL";
 
 export type GmailMessage = {
   id: string;
@@ -16,7 +20,7 @@ export type GmailMessage = {
   from: string;
   body: string;
   receivedAt: string | null;
-  mailbox: "INBOX" | "SENT";
+  mailbox: GmailMailbox;
 };
 
 function credentials(): { lovableKey: string; connectionKey: string } | null {
@@ -119,7 +123,7 @@ export async function listMessageIds(query: string, max = 50): Promise<Array<{ i
   return out;
 }
 
-export async function getMessage(id: string, mailbox: "INBOX" | "SENT"): Promise<GmailMessage> {
+export async function getMessage(id: string, mailbox: GmailMailbox): Promise<GmailMessage> {
   const raw = (await gmailFetch(`/gmail/v1/users/me/messages/${id}?format=full`)) as {
     id: string;
     threadId?: string;
@@ -141,9 +145,11 @@ export async function getMessage(id: string, mailbox: "INBOX" | "SENT"): Promise
 }
 
 /** Gmail search strings for the two mailboxes we watch. */
-export function buildQueries(days: number): Array<{ query: string; mailbox: "INBOX" | "SENT" }> {
+export function buildQueries(days: number): Array<{ query: string; mailbox: GmailMailbox }> {
   const window = `newer_than:${Math.max(1, Math.min(365, days))}d`;
   return [
+    // Our own "New booking" notifications: enrich-only, never create bookings.
+    { query: internalNotificationQuery(days), mailbox: "INTERNAL" },
     { query: `in:inbox from:bokun.io ${window}`, mailbox: "INBOX" },
     {
       query: `in:sent ${window} (subject:("Booking Confirmed" OR "Pre-Confirmation" OR "Confirmed & Fully Paid") OR "Confirmed & Fully Paid" OR "Pre-Confirmation Voucher")`,

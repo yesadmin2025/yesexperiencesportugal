@@ -52,6 +52,9 @@ export const Route = createFileRoute("/api/public/hooks/gmail-booking-scan")({
 
         const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
         const { ingestEmailMessage } = await import("@/lib/ingestion/booking-ingest.server");
+        const { enrichFromInternalNotification } = await import(
+          "@/lib/ingestion/stripe-voucher-reconcile.server"
+        );
 
         const days = body.days ?? 7;
         const maxMessages = body.maxMessages ?? 40;
@@ -67,11 +70,23 @@ export const Route = createFileRoute("/api/public/hooks/gmail-booking-scan")({
         const previous = (existing?.detail ?? {}) as Record<string, unknown>;
 
         try {
-          for (const { query, mailbox } of buildQueries(days)) {
-            const ids = await listMessageIds(query, Math.ceil(maxMessages / 2));
+          const queries = buildQueries(days);
+          const perQuery = Math.max(1, Math.ceil(maxMessages / queries.length));
+          for (const { query, mailbox } of queries) {
+            const ids = await listMessageIds(query, perQuery);
             for (const { id } of ids) {
               const message = await getMessage(id, mailbox);
               scanned += 1;
+              if (mailbox === "INTERNAL") {
+                // Enrich-only path: our own notification tops up the existing
+                // Stripe reservation, it never creates a second booking.
+                const outcome = await enrichFromInternalNotification(supabaseAdmin, message, {
+                  dryRun: body.dryRun === true,
+                });
+                const key = `internal_${outcome.action}`;
+                summary[key] = (summary[key] ?? 0) + 1;
+                continue;
+              }
               const outcomes = await ingestEmailMessage(
                 supabaseAdmin,
                 {
@@ -81,7 +96,7 @@ export const Route = createFileRoute("/api/public/hooks/gmail-booking-scan")({
                   from: message.from,
                   body: message.body,
                   receivedAt: message.receivedAt,
-                  mailbox: message.mailbox,
+                  mailbox: message.mailbox as "INBOX" | "SENT",
                 },
                 { dryRun: body.dryRun === true, futureOnly: body.futureOnly !== false },
               );
