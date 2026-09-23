@@ -92,7 +92,6 @@ import { Route as AboutRouteImport } from './routes/about'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as PtIndexRouteImport } from './routes/pt.index'
 import { Route as LocalStoriesIndexRouteImport } from './routes/local-stories.index'
-import { Route as AdminIndexRouteImport } from './routes/admin.index'
 import { Route as ToursTourIdRouteImport } from './routes/tours.$tourId'
 import { Route as STokenRouteImport } from './routes/s.$token'
 import { Route as ReviewTokenRouteImport } from './routes/review.$token'
@@ -165,6 +164,7 @@ import { Route as AdminBuilderImagesRouteImport } from './routes/admin.builder-i
 import { Route as AdminAvailabilityRouteImport } from './routes/admin.availability'
 import { Route as AdminAnalyticsHealthRouteImport } from './routes/admin.analytics-health'
 import { Route as AdminAiAuditRouteImport } from './routes/admin.ai-audit'
+import { Route as AdminActivityRouteImport } from './routes/admin.activity'
 import { Route as Char91DotwellKnownChar93OauthProtectedResourceRouteImport } from './routes/[.well-known]/oauth-protected-resource'
 import { Route as Char91DotmcpChar93ListToolsRouteImport } from './routes/[.mcp]/list-tools'
 import { Route as AdminBookingsIndexRouteImport } from './routes/admin.bookings.index'
@@ -631,11 +631,6 @@ const LocalStoriesIndexRoute = LocalStoriesIndexRouteImport.update({
   path: '/',
   getParentRoute: () => LocalStoriesRoute,
 } as any)
-const AdminIndexRoute = AdminIndexRouteImport.update({
-  id: '/admin/',
-  path: '/admin/',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const ToursTourIdRoute = ToursTourIdRouteImport.update({
   id: '/tours/$tourId',
   path: '/tours/$tourId',
@@ -998,6 +993,11 @@ const AdminAiAuditRoute = AdminAiAuditRouteImport.update({
   path: '/admin/ai-audit',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AdminActivityRoute = AdminActivityRouteImport.update({
+  id: '/admin/activity',
+  path: '/admin/activity',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const Char91DotwellKnownChar93OauthProtectedResourceRoute =
   Char91DotwellKnownChar93OauthProtectedResourceRouteImport.update({
     id: '/.well-known/oauth-protected-resource',
@@ -1286,6 +1286,7 @@ export interface FileRoutesByFullPath {
   '/wine-tours-lisbon': typeof WineToursLisbonRoute
   '/.mcp/list-tools': typeof Char91DotmcpChar93ListToolsRoute
   '/.well-known/oauth-protected-resource': typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
+  '/admin/activity': typeof AdminActivityRoute
   '/admin/ai-audit': typeof AdminAiAuditRoute
   '/admin/analytics-health': typeof AdminAnalyticsHealthRoute
   '/admin/availability': typeof AdminAvailabilityRoute
@@ -1358,7 +1359,6 @@ export interface FileRoutesByFullPath {
   '/review/$token': typeof ReviewTokenRoute
   '/s/$token': typeof STokenRoute
   '/tours/$tourId': typeof ToursTourIdRoute
-  '/admin/': typeof AdminIndexRoute
   '/local-stories/': typeof LocalStoriesIndexRoute
   '/pt/': typeof PtIndexRoute
   '/.lovable/oauth/consent': typeof DotlovableOauthConsentRoute
@@ -1478,6 +1478,7 @@ export interface FileRoutesByTo {
   '/wine-tours-lisbon': typeof WineToursLisbonRoute
   '/.mcp/list-tools': typeof Char91DotmcpChar93ListToolsRoute
   '/.well-known/oauth-protected-resource': typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
+  '/admin/activity': typeof AdminActivityRoute
   '/admin/ai-audit': typeof AdminAiAuditRoute
   '/admin/analytics-health': typeof AdminAnalyticsHealthRoute
   '/admin/availability': typeof AdminAvailabilityRoute
@@ -1550,7 +1551,6 @@ export interface FileRoutesByTo {
   '/review/$token': typeof ReviewTokenRoute
   '/s/$token': typeof STokenRoute
   '/tours/$tourId': typeof ToursTourIdRoute
-  '/admin': typeof AdminIndexRoute
   '/local-stories': typeof LocalStoriesIndexRoute
   '/pt': typeof PtIndexRoute
   '/.lovable/oauth/consent': typeof DotlovableOauthConsentRoute
@@ -1673,6 +1673,7 @@ export interface FileRoutesById {
   '/wine-tours-lisbon': typeof WineToursLisbonRoute
   '/.mcp/list-tools': typeof Char91DotmcpChar93ListToolsRoute
   '/.well-known/oauth-protected-resource': typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
+  '/admin/activity': typeof AdminActivityRoute
   '/admin/ai-audit': typeof AdminAiAuditRoute
   '/admin/analytics-health': typeof AdminAnalyticsHealthRoute
   '/admin/availability': typeof AdminAvailabilityRoute
@@ -1745,7 +1746,6 @@ export interface FileRoutesById {
   '/review/$token': typeof ReviewTokenRoute
   '/s/$token': typeof STokenRoute
   '/tours/$tourId': typeof ToursTourIdRoute
-  '/admin/': typeof AdminIndexRoute
   '/local-stories/': typeof LocalStoriesIndexRoute
   '/pt/': typeof PtIndexRoute
   '/.lovable/oauth/consent': typeof DotlovableOauthConsentRoute
@@ -1869,6 +1869,7 @@ export interface FileRouteTypes {
     | '/wine-tours-lisbon'
     | '/.mcp/list-tools'
     | '/.well-known/oauth-protected-resource'
+    | '/admin/activity'
     | '/admin/ai-audit'
     | '/admin/analytics-health'
     | '/admin/availability'
@@ -1941,7 +1942,6 @@ export interface FileRouteTypes {
     | '/review/$token'
     | '/s/$token'
     | '/tours/$tourId'
-    | '/admin/'
     | '/local-stories/'
     | '/pt/'
     | '/.lovable/oauth/consent'
@@ -2061,6 +2061,7 @@ export interface FileRouteTypes {
     | '/wine-tours-lisbon'
     | '/.mcp/list-tools'
     | '/.well-known/oauth-protected-resource'
+    | '/admin/activity'
     | '/admin/ai-audit'
     | '/admin/analytics-health'
     | '/admin/availability'
@@ -2133,7 +2134,6 @@ export interface FileRouteTypes {
     | '/review/$token'
     | '/s/$token'
     | '/tours/$tourId'
-    | '/admin'
     | '/local-stories'
     | '/pt'
     | '/.lovable/oauth/consent'
@@ -2255,6 +2255,7 @@ export interface FileRouteTypes {
     | '/wine-tours-lisbon'
     | '/.mcp/list-tools'
     | '/.well-known/oauth-protected-resource'
+    | '/admin/activity'
     | '/admin/ai-audit'
     | '/admin/analytics-health'
     | '/admin/availability'
@@ -2327,7 +2328,6 @@ export interface FileRouteTypes {
     | '/review/$token'
     | '/s/$token'
     | '/tours/$tourId'
-    | '/admin/'
     | '/local-stories/'
     | '/pt/'
     | '/.lovable/oauth/consent'
@@ -2450,6 +2450,7 @@ export interface RootRouteChildren {
   WineToursLisbonRoute: typeof WineToursLisbonRoute
   Char91DotmcpChar93ListToolsRoute: typeof Char91DotmcpChar93ListToolsRoute
   Char91DotwellKnownChar93OauthProtectedResourceRoute: typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
+  AdminActivityRoute: typeof AdminActivityRoute
   AdminAiAuditRoute: typeof AdminAiAuditRoute
   AdminAnalyticsHealthRoute: typeof AdminAnalyticsHealthRoute
   AdminAvailabilityRoute: typeof AdminAvailabilityRoute
@@ -2507,7 +2508,6 @@ export interface RootRouteChildren {
   ReviewTokenRoute: typeof ReviewTokenRoute
   STokenRoute: typeof STokenRoute
   ToursTourIdRoute: typeof ToursTourIdRoute
-  AdminIndexRoute: typeof AdminIndexRoute
   DotlovableOauthConsentRoute: typeof DotlovableOauthConsentRoute
   Char91DotmcpChar93InvokeToolToolRoute: typeof Char91DotmcpChar93InvokeToolToolRoute
   AdminBookingsIdRoute: typeof AdminBookingsIdRoute
@@ -3126,13 +3126,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LocalStoriesIndexRouteImport
       parentRoute: typeof LocalStoriesRoute
     }
-    '/admin/': {
-      id: '/admin/'
-      path: '/admin'
-      fullPath: '/admin/'
-      preLoaderRoute: typeof AdminIndexRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/tours/$tourId': {
       id: '/tours/$tourId'
       path: '/tours/$tourId'
@@ -3637,6 +3630,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminAiAuditRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/admin/activity': {
+      id: '/admin/activity'
+      path: '/admin/activity'
+      fullPath: '/admin/activity'
+      preLoaderRoute: typeof AdminActivityRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/.well-known/oauth-protected-resource': {
       id: '/.well-known/oauth-protected-resource'
       path: '/.well-known/oauth-protected-resource'
@@ -4052,6 +4052,7 @@ const rootRouteChildren: RootRouteChildren = {
   Char91DotmcpChar93ListToolsRoute: Char91DotmcpChar93ListToolsRoute,
   Char91DotwellKnownChar93OauthProtectedResourceRoute:
     Char91DotwellKnownChar93OauthProtectedResourceRoute,
+  AdminActivityRoute: AdminActivityRoute,
   AdminAiAuditRoute: AdminAiAuditRoute,
   AdminAnalyticsHealthRoute: AdminAnalyticsHealthRoute,
   AdminAvailabilityRoute: AdminAvailabilityRoute,
@@ -4110,7 +4111,6 @@ const rootRouteChildren: RootRouteChildren = {
   ReviewTokenRoute: ReviewTokenRoute,
   STokenRoute: STokenRoute,
   ToursTourIdRoute: ToursTourIdRoute,
-  AdminIndexRoute: AdminIndexRoute,
   DotlovableOauthConsentRoute: DotlovableOauthConsentRoute,
   Char91DotmcpChar93InvokeToolToolRoute: Char91DotmcpChar93InvokeToolToolRoute,
   AdminBookingsIdRoute: AdminBookingsIdRoute,
