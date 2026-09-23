@@ -3130,6 +3130,176 @@ export type Database = {
         }
         Relationships: []
       }
+      whatsapp_conversations: {
+        Row: {
+          created_at: string
+          display_name: string | null
+          first_message_at: string | null
+          id: string
+          last_inbound_at: string | null
+          last_message_at: string | null
+          match_confidence: number | null
+          matched_booking_id: string | null
+          message_count: number
+          phone_e164: string
+          review_reason: string | null
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          display_name?: string | null
+          first_message_at?: string | null
+          id?: string
+          last_inbound_at?: string | null
+          last_message_at?: string | null
+          match_confidence?: number | null
+          matched_booking_id?: string | null
+          message_count?: number
+          phone_e164: string
+          review_reason?: string | null
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          display_name?: string | null
+          first_message_at?: string | null
+          id?: string
+          last_inbound_at?: string | null
+          last_message_at?: string | null
+          match_confidence?: number | null
+          matched_booking_id?: string | null
+          message_count?: number
+          phone_e164?: string
+          review_reason?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "whatsapp_conversations_matched_booking_id_fkey"
+            columns: ["matched_booking_id"]
+            isOneToOne: false
+            referencedRelation: "bookings"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      whatsapp_messages: {
+        Row: {
+          body: string | null
+          conversation_id: string | null
+          created_at: string
+          delivery_status: string | null
+          delivery_status_at: string | null
+          direction: string
+          id: string
+          ingest_source: string
+          match_confidence: number | null
+          match_rule: string | null
+          matched_booking_id: string | null
+          parsed: Json | null
+          phone_e164: string
+          processed_at: string | null
+          provider_message_id: string
+          review_reason: string | null
+          sent_at: string | null
+          updated_at: string
+        }
+        Insert: {
+          body?: string | null
+          conversation_id?: string | null
+          created_at?: string
+          delivery_status?: string | null
+          delivery_status_at?: string | null
+          direction: string
+          id?: string
+          ingest_source?: string
+          match_confidence?: number | null
+          match_rule?: string | null
+          matched_booking_id?: string | null
+          parsed?: Json | null
+          phone_e164: string
+          processed_at?: string | null
+          provider_message_id: string
+          review_reason?: string | null
+          sent_at?: string | null
+          updated_at?: string
+        }
+        Update: {
+          body?: string | null
+          conversation_id?: string | null
+          created_at?: string
+          delivery_status?: string | null
+          delivery_status_at?: string | null
+          direction?: string
+          id?: string
+          ingest_source?: string
+          match_confidence?: number | null
+          match_rule?: string | null
+          matched_booking_id?: string | null
+          parsed?: Json | null
+          phone_e164?: string
+          processed_at?: string | null
+          provider_message_id?: string
+          review_reason?: string | null
+          sent_at?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "whatsapp_messages_conversation_id_fkey"
+            columns: ["conversation_id"]
+            isOneToOne: false
+            referencedRelation: "whatsapp_conversations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "whatsapp_messages_matched_booking_id_fkey"
+            columns: ["matched_booking_id"]
+            isOneToOne: false
+            referencedRelation: "bookings"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      whatsapp_webhook_events: {
+        Row: {
+          attempts: number
+          created_at: string
+          delivery_id: string
+          event: string
+          id: string
+          payload: Json
+          processed_at: string | null
+          processing_error: string | null
+          received_at: string
+          updated_at: string
+        }
+        Insert: {
+          attempts?: number
+          created_at?: string
+          delivery_id: string
+          event: string
+          id?: string
+          payload: Json
+          processed_at?: string | null
+          processing_error?: string | null
+          received_at?: string
+          updated_at?: string
+        }
+        Update: {
+          attempts?: number
+          created_at?: string
+          delivery_id?: string
+          event?: string
+          id?: string
+          payload?: Json
+          processed_at?: string | null
+          processing_error?: string | null
+          received_at?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       global_review_aggregate: {

@@ -671,3 +671,182 @@ export const getOpsVoucherReconciliationReport = createServerFn({ method: "POST"
     return { ok: true as const, state: state ?? null };
   });
 
+
+/* ----------------------------------------------------- WhatsApp evidence source */
+
+/** Connection state, health counters and the last inbound/history events. */
+export const getOpsWhatsAppStatus = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .handler(async ({ context }) => {
+    await assertAdmin(context);
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const { whatsappConfigured, getWhatsAppNumber } = await import("@/lib/whatsapp/client.server");
+
+    const configured = whatsappConfigured();
+    let number: Awaited<ReturnType<typeof getWhatsAppNumber>> = null;
+    let numberError: string | null = null;
+    if (configured) {
+      try {
+        number = await getWhatsAppNumber();
+      } catch (error) {
+        numberError = error instanceof Error ? error.message : "unknown_error";
+      }
+    }
+
+    const { data: state } = await supabaseAdmin
+      .from("integration_state")
+      .select("id, enabled, last_run_at, last_status, last_error, detail")
+      .in("id", ["whatsapp_inbound", "whatsapp_reconcile", "whatsapp_history"]);
+
+    const { count: messageCount } = await supabaseAdmin
+      .from("whatsapp_messages")
+      .select("id", { count: "exact", head: true });
+    const { count: conversationCount } = await supabaseAdmin
+      .from("whatsapp_conversations")
+      .select("id", { count: "exact", head: true });
+    const { count: matchedCount } = await supabaseAdmin
+      .from("whatsapp_messages")
+      .select("id", { count: "exact", head: true })
+      .not("matched_booking_id", "is", null);
+    const { count: reviewCount } = await supabaseAdmin
+      .from("whatsapp_messages")
+      .select("id", { count: "exact", head: true })
+      .not("review_reason", "is", null);
+    const { count: unprocessedCount } = await supabaseAdmin
+      .from("whatsapp_messages")
+      .select("id", { count: "exact", head: true })
+      .is("processed_at", null);
+
+    const { data: lastInbound } = await supabaseAdmin
+      .from("whatsapp_messages")
+      .select("sent_at, created_at, direction")
+      .eq("direction", "inbound")
+      .order("created_at", { ascending: false })
+      .limit(1)
+      .maybeSingle();
+
+    const { data: lastEvent } = await supabaseAdmin
+      .from("whatsapp_webhook_events")
+      .select("event, received_at, processed_at, processing_error")
+      .order("received_at", { ascending: false })
+      .limit(1)
+      .maybeSingle();
+
+    return {
+      ok: true as const,
+      configured,
+      number,
+      numberError,
+      state: state ?? [],
+      counts: {
+        messages: messageCount ?? 0,
+        conversations: conversationCount ?? 0,
+        matched: matchedCount ?? 0,
+        needsReview: reviewCount ?? 0,
+        unprocessed: unprocessedCount ?? 0,
+      },
+      lastInboundAt: lastInbound?.sent_at ?? lastInbound?.created_at ?? null,
+      lastEvent: lastEvent ?? null,
+    };
+  });
+
+const whatsappRunInput = z.object({
+  dryRun: z.boolean().default(true),
+  limit: z.number().int().min(1).max(500).default(200),
+  onlyUnprocessed: z.boolean().default(false),
+});
+
+/** Re-reads stored WhatsApp messages and reconciles them against reservations. */
+export const runOpsWhatsAppReconciliation = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((input: unknown) => whatsappRunInput.parse(input ?? {}))
+  .handler(async ({ data, context }) => {
+    await assertAdmin(context);
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const { reconcileStoredWhatsAppMessages } = await import("@/lib/whatsapp/reconcile.server");
+    const report = await reconcileStoredWhatsAppMessages(supabaseAdmin, {
+      dryRun: data.dryRun,
+      limit: data.limit,
+      onlyUnprocessed: data.onlyUnprocessed,
+    });
+    return { ok: true as const, report };
+  });
+
+/**
+ * Asks WhatsApp for past chats and contacts (when Meta's post-connection window
+ * allows it) and reconciles everything already stored.
+ */
+export const runOpsWhatsAppHistoryImport = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((input: unknown) =>
+    z
+      .object({
+        dryRun: z.boolean().default(true),
+        requestSync: z.boolean().default(true),
+        limit: z.number().int().min(1).max(500).default(300),
+      })
+      .parse(input ?? {}),
+  )
+  .handler(async ({ data, context }) => {
+    await assertAdmin(context);
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const { importWhatsAppHistory } = await import("@/lib/whatsapp/reconcile.server");
+    const result = await importWhatsAppHistory(supabaseAdmin, {
+      dryRun: data.dryRun,
+      requestSync: data.requestSync,
+      limit: data.limit,
+    });
+    return { ok: true as const, ...result };
+  });
+
+/** The WhatsApp conversation linked to one reservation, newest message last. */
+export const listOpsWhatsAppForBooking = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((input: unknown) => z.object({ bookingId: z.string().uuid() }).parse(input))
+  .handler(async ({ data, context }) => {
+    await assertAdmin(context);
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const { normalizePhone, phoneTail } = await import("@/lib/whatsapp/phone");
+
+    const { data: booking } = await supabaseAdmin
+      .from("bookings")
+      .select("customer_phone, metadata")
+      .eq("id", data.bookingId)
+      .maybeSingle();
+
+    const metadata = (booking?.metadata ?? {}) as Record<string, unknown>;
+    const evidenceRaw = (metadata["whatsapp_evidence"] ?? null) as Record<string, unknown> | null;
+    const evidence = (evidenceRaw ?? null) as Json;
+    const evidencePhone =
+      evidenceRaw && typeof evidenceRaw["phone"] === "string" ? (evidenceRaw["phone"] as string) : null;
+    const phone = normalizePhone(evidencePhone ?? booking?.customer_phone ?? null);
+
+    let query = supabaseAdmin
+      .from("whatsapp_messages")
+      .select("id, provider_message_id, phone_e164, direction, sent_at, body, delivery_status, match_rule, match_confidence, review_reason, matched_booking_id, parsed")
+      .order("sent_at", { ascending: true })
+      .limit(80);
+
+    const tail = phoneTail(phone);
+    query = tail
+      ? query.or(`matched_booking_id.eq.${data.bookingId},phone_e164.ilike.%${tail}%`)
+      : query.eq("matched_booking_id", data.bookingId);
+
+    const { data: messages } = await query;
+
+    const { data: conversation } = phone
+      ? await supabaseAdmin
+          .from("whatsapp_conversations")
+          .select("phone_e164, display_name, message_count, first_message_at, last_message_at, review_reason")
+          .eq("phone_e164", phone)
+          .maybeSingle()
+      : { data: null };
+
+    return {
+      ok: true as const,
+      phone,
+      evidence,
+      conversation: conversation ?? null,
+      messages: messages ?? [],
+    };
+  });
