@@ -104,10 +104,12 @@ function undatedBlock(subject: string, body: string, stripeRefs: string[]): Vouc
     date: null,
     startTime: labelled(body, "Start time") ?? labelled(body, "Time"),
     tourTitle:
-      labelled(body, "Tour") ??
-      labelled(body, "Experience") ??
-      labelled(body, "Product") ??
-      headingAbove(body),
+      cleanTourTitle(
+        labelled(body, "Tour") ?? labelled(body, "Experience") ?? labelled(body, "Product"),
+      ) ??
+      titleFromSubject(subject) ??
+      cleanTourTitle(headingAbove(body)),
+
     selectedRate: labelled(body, "Special rate") ?? labelled(body, "Rate"),
     pickup: labelled(body, "Pick-up") ?? labelled(body, "Pickup") ?? labelled(body, "Pick up"),
     dropoff: labelled(body, "Drop-off") ?? labelled(body, "Dropoff"),
