@@ -815,8 +815,10 @@ export const listOpsWhatsAppForBooking = createServerFn({ method: "POST" })
       .maybeSingle();
 
     const metadata = (booking?.metadata ?? {}) as Record<string, unknown>;
-    const evidence = (metadata["whatsapp_evidence"] ?? null) as Json;
-    const evidencePhone = typeof evidence["phone"] === "string" ? evidence["phone"] : null;
+    const evidenceRaw = (metadata["whatsapp_evidence"] ?? null) as Record<string, unknown> | null;
+    const evidence = (evidenceRaw ?? null) as Json;
+    const evidencePhone =
+      evidenceRaw && typeof evidenceRaw["phone"] === "string" ? (evidenceRaw["phone"] as string) : null;
     const phone = normalizePhone(evidencePhone ?? booking?.customer_phone ?? null);
 
     let query = supabaseAdmin
