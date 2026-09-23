@@ -116,7 +116,14 @@ export function TourReviews({
   const meta = getViatorMeta(tourId);
   const clientReviews = filterVisibleReviews(reviews);
   const clientFirstParty = clientReviews.filter((review) => review.is_first_party);
-  const hasFirstParty = ssrFirstParty.length > 0 || clientFirstParty.length > 0;
+  const firstPartyStats = (stats?.per_source ?? []).find(
+    (source) => source.source === "first_party" && source.review_count > 0,
+  );
+  const hasFirstParty =
+    (initialFirstParty?.count ?? 0) > 0 ||
+    ssrFirstParty.length > 0 ||
+    clientFirstParty.length > 0 ||
+    Boolean(firstPartyStats);
   const canFallback = !!meta && meta.topReviews.length > 0;
   const useFallback = !hasFirstParty && canFallback;
 
@@ -131,7 +138,7 @@ export function TourReviews({
     : (fpAverage ?? stats?.average_rating ?? 5);
   const displayTotal = useFallback
     ? meta!.reviewCount
-    : (initialFirstParty?.count ?? clientFirstParty.length);
+    : (initialFirstParty?.count ?? firstPartyStats?.review_count ?? clientFirstParty.length);
   const perSource = useFallback
     ? []
     : (stats?.per_source ?? []).filter((source) => source.source === "first_party");

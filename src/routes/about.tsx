@@ -48,6 +48,8 @@ export const Route = createFileRoute("/about")({
       { name: "twitter:card", content: "summary_large_image" },
       { name: "twitter:image", content: `https://yesexperiencesportugal.com${founderAsset.url}` },
       { property: "og:type", content: "website" },
+      { property: "og:locale", content: "en_US" },
+      { property: "og:locale:alternate", content: "pt_PT" },
     ],
     links: [
       { rel: "canonical", href: "https://yesexperiencesportugal.com/about" },

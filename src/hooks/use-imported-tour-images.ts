@@ -97,10 +97,15 @@ export function useImportedTourImages() {
       tour: (typeof signatureTours)[number],
       size: CardSize = "md",
     ): { src: string; srcSet?: string; sizes?: string } => {
+      const bundled = bundledTourCardImage(tour.img, SIZES[size]);
+      // Signature cards must prefer our durable, build-time assets. Imported
+      // marketplace URLs can expire and are only a fallback for tours without
+      // a bundled image.
+      if (bundled.srcSet) return bundled;
       const live = byUrl.get(normalize(tour.bookingUrl));
       // No live imported photo → serve the bundled hero, but as build-time
       // WebP variants + srcset so phones don't download the 300 KB original.
-      if (!live) return bundledTourCardImage(tour.img, SIZES[size]);
+      if (!live) return bundled;
       const widths = SRCSET_WIDTHS[size].map((w) => scaleForQuality(w, quality));
       const srcSet = widths.map((w) => `${proxied(live, w)} ${w}w`).join(", ");
       return {

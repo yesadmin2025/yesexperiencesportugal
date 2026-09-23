@@ -60,6 +60,8 @@ export const Route = createFileRoute("/experiences")({
       { property: "og:image:width", content: "1200" },
       { property: "og:image:height", content: "630" },
       { property: "og:image:alt", content: "YES Signature Experiences — private Portugal days" },
+      { property: "og:locale", content: "en_US" },
+      { property: "og:locale:alternate", content: "pt_PT" },
       { name: "twitter:card", content: "summary_large_image" },
       { name: "twitter:image", content: `https://yesexperiencesportugal.com${ogImg}` },
     ],

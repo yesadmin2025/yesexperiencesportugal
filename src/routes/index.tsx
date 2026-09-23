@@ -294,6 +294,8 @@ export const Route = createFileRoute("/")({
       { property: "og:image", content: `https://yesexperiencesportugal.com${heroImg}` },
       { name: "twitter:image", content: `https://yesexperiencesportugal.com${heroImg}` },
       { property: "og:url", content: "https://yesexperiencesportugal.com/" },
+      { property: "og:locale", content: "en_US" },
+      { property: "og:locale:alternate", content: "pt_PT" },
     ],
     links: [
       { rel: "canonical", href: "https://yesexperiencesportugal.com/" },

@@ -28,6 +28,7 @@ export const Route = createFileRoute("/pt/terms")({
       { property: "og:image:height", content: "630" },
       { property: "og:image:alt", content: "YES Experiences Portugal — Termos e Condições" },
       { property: "og:locale", content: "pt_PT" },
+      { property: "og:locale:alternate", content: "en_US" },
       { name: "twitter:card", content: "summary_large_image" },
       { name: "twitter:image", content: `https://yesexperiencesportugal.com${ogImg}` },
     ],

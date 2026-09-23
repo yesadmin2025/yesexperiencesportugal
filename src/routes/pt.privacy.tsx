@@ -23,6 +23,7 @@ export const Route = createFileRoute("/pt/privacy")({
       { property: "og:type", content: "website" },
       { property: "og:url", content: "https://yesexperiencesportugal.com/pt/privacy" },
       { property: "og:locale", content: "pt_PT" },
+      { property: "og:locale:alternate", content: "en_US" },
       { name: "twitter:card", content: "summary" },
     ],
     links: [

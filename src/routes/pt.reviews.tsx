@@ -42,6 +42,7 @@ export const Route = createFileRoute("/pt/reviews")({
       { property: "og:url", content: `${SITE_URL}/pt/reviews` },
       { property: "og:type", content: "website" },
       { property: "og:locale", content: "pt_PT" },
+      { property: "og:locale:alternate", content: "en_US" },
     ];
     const links = [
       { rel: "canonical", href: `${SITE_URL}/pt/reviews` },

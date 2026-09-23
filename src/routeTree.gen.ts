@@ -14,7 +14,7 @@ import { Route as UnsubscribeRouteImport } from './routes/unsubscribe'
 import { Route as TypographyAuditRouteImport } from './routes/typography-audit'
 import { Route as TradeRouteImport } from './routes/trade'
 import { Route as TermsRouteImport } from './routes/terms'
-import { Route as StudioV3RouteImport } from './routes/studio'
+import { Route as StudioV3RouteImport } from './routes/studio-v3'
 import { Route as StudioV2RouteImport } from './routes/studio-v2'
 import { Route as StudioLivingAtlasPreviewRouteImport } from './routes/studio-living-atlas-preview'
 import { Route as StudioDriftRouteImport } from './routes/studio-drift'
@@ -225,8 +225,8 @@ const TermsRoute = TermsRouteImport.update({
   getParentRoute: () => rootRouteImport,
 } as any)
 const StudioV3Route = StudioV3RouteImport.update({
-  id: '/studio',
-  path: '/studio',
+  id: '/studio-v3',
+  path: '/studio-v3',
   getParentRoute: () => rootRouteImport,
 } as any)
 const StudioV2Route = StudioV2RouteImport.update({
@@ -1257,7 +1257,7 @@ export interface FileRoutesByFullPath {
   '/studio-drift': typeof StudioDriftRoute
   '/studio-living-atlas-preview': typeof StudioLivingAtlasPreviewRoute
   '/studio-v2': typeof StudioV2RouteWithChildren
-  '/studio': typeof StudioV3Route
+  '/studio-v3': typeof StudioV3Route
   '/terms': typeof TermsRoute
   '/trade': typeof TradeRoute
   '/typography-audit': typeof TypographyAuditRoute
@@ -1446,7 +1446,7 @@ export interface FileRoutesByTo {
   '/studio-drift': typeof StudioDriftRoute
   '/studio-living-atlas-preview': typeof StudioLivingAtlasPreviewRoute
   '/studio-v2': typeof StudioV2RouteWithChildren
-  '/studio': typeof StudioV3Route
+  '/studio-v3': typeof StudioV3Route
   '/terms': typeof TermsRoute
   '/trade': typeof TradeRoute
   '/typography-audit': typeof TypographyAuditRoute
@@ -1638,7 +1638,7 @@ export interface FileRoutesById {
   '/studio-drift': typeof StudioDriftRoute
   '/studio-living-atlas-preview': typeof StudioLivingAtlasPreviewRoute
   '/studio-v2': typeof StudioV2RouteWithChildren
-  '/studio': typeof StudioV3Route
+  '/studio-v3': typeof StudioV3Route
   '/terms': typeof TermsRoute
   '/trade': typeof TradeRoute
   '/typography-audit': typeof TypographyAuditRoute
@@ -1831,7 +1831,7 @@ export interface FileRouteTypes {
     | '/studio-drift'
     | '/studio-living-atlas-preview'
     | '/studio-v2'
-    | '/studio'
+    | '/studio-v3'
     | '/terms'
     | '/trade'
     | '/typography-audit'
@@ -2020,7 +2020,7 @@ export interface FileRouteTypes {
     | '/studio-drift'
     | '/studio-living-atlas-preview'
     | '/studio-v2'
-    | '/studio'
+    | '/studio-v3'
     | '/terms'
     | '/trade'
     | '/typography-audit'
@@ -2211,7 +2211,7 @@ export interface FileRouteTypes {
     | '/studio-drift'
     | '/studio-living-atlas-preview'
     | '/studio-v2'
-    | '/studio'
+    | '/studio-v3'
     | '/terms'
     | '/trade'
     | '/typography-audit'
@@ -2538,10 +2538,10 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof TermsRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/studio': {
-      id: '/studio'
-      path: '/studio'
-      fullPath: '/studio'
+    '/studio-v3': {
+      id: '/studio-v3'
+      path: '/studio-v3'
+      fullPath: '/studio-v3'
       preLoaderRoute: typeof StudioV3RouteImport
       parentRoute: typeof rootRouteImport
     }
