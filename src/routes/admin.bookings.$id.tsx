@@ -16,6 +16,7 @@ import {
 } from "@/lib/bookingsAdmin.functions";
 import { Button } from "@/components/ui/button";
 import { GuideBriefPanel } from "@/components/admin/GuideBriefPanel";
+import { OpsBookingDetail } from "@/components/admin/ops/OpsBookingDetail";
 import {
   buildSnapshotEmailPreview,
   validateBookingSnapshot,
@@ -141,16 +142,27 @@ function AdminBookingDetailPage() {
     {}) as AnyRec;
 
   return (
-    <main className="mx-auto max-w-3xl px-4 py-10">
-      <Link to="/admin/bookings" className="text-sm text-[color:var(--charcoal-soft)]">
+    <main className="mx-auto max-w-3xl px-4 py-8 md:px-10 md:py-12">
+      <Link to="/admin/bookings" className="inline-flex min-h-11 items-center text-sm text-[color:var(--charcoal-soft)]">
         ← All bookings
       </Link>
-      <h1 className="mt-3 font-[family-name:var(--font-editorial)] text-3xl text-[color:var(--charcoal)]">
-        {snapshot?.experienceName || booking.source_tour_id || "Booking"}
+      <h1 className="mt-2 font-[family-name:var(--font-editorial)] text-[28px] leading-tight text-[color:var(--charcoal)] md:text-[34px]">
+        {snapshot?.experienceName || booking.tour_title || booking.source_tour_id || "Booking"}
       </h1>
+
+      <div className="mt-6">
+        <OpsBookingDetail bookingId={id} hideFullPageLink />
+      </div>
+
+      <details className="group mt-10 border-t border-[color:var(--charcoal)]/[0.08] pt-4">
+        <summary className="flex min-h-11 cursor-pointer list-none items-center justify-between text-[11px] uppercase tracking-[0.2em] text-[color:var(--charcoal-soft)]">
+          Purchase record, guest messages &amp; refunds
+          <span aria-hidden className="transition-transform duration-200 group-open:rotate-45">+</span>
+        </summary>
       <p className="mt-2 text-sm text-[color:var(--charcoal-soft)]">
         {booking.status} · {booking.booking_type} · {new Date(booking.created_at).toLocaleString()}
       </p>
+
 
       {booking.status === "paid" ? (
         <section className="mt-6 border-y border-[color:var(--border)] py-5">
@@ -490,6 +502,7 @@ function AdminBookingDetailPage() {
           No purchase snapshot was captured for this booking (it predates snapshotting).
         </p>
       ) : null}
+      </details>
     </main>
   );
 }

@@ -51,3 +51,11 @@
 - [x] Booking drawer reorder: Essentials · Operations · Communication/evidence · History
 - [ ] Phase 2: single detail surface for /admin/bookings/$id, one status pill
 - [ ] WhatsApp: live conversation section in drawer (link-out added), channel badge — after owner connects WhatsApp
+
+## 23 Sep 2026 requests
+- [x] Full booking page uses the booking panel layout (purchase record folded below)
+- [x] Every admin page sits inside the new four-part menu (/admin layout)
+- [ ] Publish admin, then run live Gmail scan
+- [ ] Connect WhatsApp Business (owner action) → import past chats → reconcile
+- [ ] Missing date/tour/pickup: only fillable where a source states them — never invented
+- [ ] Preview admin sign-in: owner signs in with the existing admin account (shared backend)
