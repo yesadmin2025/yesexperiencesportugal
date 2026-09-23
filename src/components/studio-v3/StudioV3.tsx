@@ -1588,8 +1588,6 @@ export function StudioV3() {
             )
           : null;
 
-      const journeyLines = journey ? journey.lines : undefined;
-      const journeyTotalEur = journey ? Math.round(journey.totalEur) : undefined;
       const totalEur = journey
         ? Math.round(journey.totalEur + addOnsPartyTotalEur + composablePartyTotalEur)
         : Math.round(
