@@ -1,394 +1,50 @@
 /**
- * /admin/bookings — phone-first list of reservations.
- * Read-only; pricing and Stripe logic are untouched here.
+ * /admin/bookings — the single bookings workspace.
  *
- * Default view groups by WHEN the trip runs (today / tomorrow / upcoming /
- * needs attention / past) instead of when it was booked, because the operator
- * reads this on a phone in the morning, not at a desk.
+ * One view (List | Calendar) with quick ranges and a drawer for detail. The
+ * technical panels that used to sit here as tabs (matching report, sources)
+ * now live under Settings → Connections & automation. The per-day brief
+ * calendar and calendar subscription stay available under "More".
  */
-import { createFileRoute, Link } from "@tanstack/react-router";
-import { useEffect, useMemo, useState } from "react";
-import { useServerFn } from "@tanstack/react-start";
-import { listAdminBookings } from "@/lib/bookingsAdmin.functions";
-import { formatGuestComposition } from "@/components/studio-v3/formatGuests";
+import { createFileRoute } from "@tanstack/react-router";
+import { AdminShell } from "@/components/admin/AdminShell";
+import { OpsBookingsHub, type QuickRange } from "@/components/admin/ops/OpsBookingsHub";
 import { BookingsAvailabilityCalendar } from "@/components/admin/BookingsAvailabilityCalendar";
-import { OpsBookingsHub } from "@/components/admin/ops/OpsBookingsHub";
 import { CalendarSubscribePanel } from "@/components/admin/CalendarSubscribePanel";
-import { PaidSalesSummary } from "@/components/admin/PaidSalesSummary";
-import { PHONE_DISPLAY, WHATSAPP_NUMBER } from "@/config/business-nap";
-import { signatureTours } from "@/data/signatureTours";
+
+const FOCUS: QuickRange[] = ["today", "week", "future", "attention"];
 
 export const Route = createFileRoute("/admin/bookings/")({
+  validateSearch: (search: Record<string, unknown>): { focus?: QuickRange; open?: string } => ({
+    ...(typeof search["focus"] === "string" && FOCUS.includes(search["focus"] as QuickRange)
+      ? { focus: search["focus"] as QuickRange }
+      : {}),
+    ...(typeof search["open"] === "string" && /^[0-9a-f-]{36}$/i.test(search["open"]) ? { open: search["open"] } : {}),
+  }),
   component: AdminBookingsPage,
   head: () => ({
-    meta: [{ title: "Bookings · Admin" }, { name: "robots", content: "noindex, nofollow" }],
+    meta: [{ title: "Bookings · YES Operations" }, { name: "robots", content: "noindex, nofollow" }],
   }),
   errorComponent: ({ error }) => <div className="p-8 text-red-700">Error: {error.message}</div>,
   notFoundComponent: () => <div className="p-8">Not found</div>,
 });
 
-type Row = {
-  id: string;
-  created_at: string;
-  booking_type: string;
-  source_tour_id: string | null;
-  customer_name: string | null;
-  customer_email: string;
-  guests: number;
-  preferred_date: string | null;
-  amount_total: number;
-  currency: string;
-  status: string;
-  stripe_session_id: string | null;
-  booking_details: Record<string, unknown> | null;
-};
-
-const TOUR_LABELS = new Map(signatureTours.map((tour) => [tour.id, tour.title]));
-/** Real catalogue durations — used only when the snapshot has none. */
-const TOUR_DURATIONS = new Map(
-  signatureTours.map((tour) => [tour.id, tour.durationHours || tour.duration]),
-);
-
-function experienceLabel(row: Row): string {
-  if (row.source_tour_id) return TOUR_LABELS.get(row.source_tour_id) ?? row.source_tour_id;
-  return row.booking_type;
-}
-
-/** Pickup is stored inside the frozen booking_details snapshot, not as a column. */
-function pickupOf(b: Row): string | null {
-  const d = b.booking_details;
-  if (!d || typeof d !== "object") return null;
-  const guest = (d as { guestDetails?: Record<string, unknown> }).guestDetails;
-  const candidates = [
-    (d as Record<string, unknown>)["pickupAddress"],
-    (d as Record<string, unknown>)["pickupLabel"],
-    guest?.["pickupAddress"],
-  ];
-  const hit = candidates.find((v) => typeof v === "string" && v.trim().length > 0);
-  return typeof hit === "string" ? hit : null;
-}
-
-/** Guest phone lives in the frozen snapshot too — never invented. */
-function phoneOf(b: Row): string | null {
-  const d = (b.booking_details ?? {}) as Record<string, unknown>;
-  const guest = (d["guestDetails"] ?? {}) as Record<string, unknown>;
-  const snapshot = (d["snapshot"] ?? {}) as Record<string, unknown>;
-  const candidates = [d["customerPhone"], guest["phone"], snapshot["customerPhone"]];
-  const hit = candidates.find((v) => typeof v === "string" && v.trim().length > 3);
-  return typeof hit === "string" ? hit.trim() : null;
-}
-
-/** Start time as captured at checkout, when it exists. */
-function startTimeOf(b: Row): string | null {
-  const d = (b.booking_details ?? {}) as Record<string, unknown>;
-  const snapshot = (d["snapshot"] ?? {}) as Record<string, unknown>;
-  const hit = [d["startTime"], snapshot["startTime"]].find(
-    (v) => typeof v === "string" && v.trim().length > 0,
-  );
-  return typeof hit === "string" ? hit : null;
-}
-
-/**
- * Duration, from the frozen snapshot when the purchase captured one, otherwise
- * the Signature catalogue's real duration. Never invented.
- */
-function durationOf(b: Row): string | null {
-  const d = (b.booking_details ?? {}) as Record<string, unknown>;
-  const snapshot = (d["snapshot"] ?? {}) as Record<string, unknown>;
-  const label = [d["durationLabel"], snapshot["durationLabel"]].find(
-    (v) => typeof v === "string" && v.trim().length > 0,
-  );
-  if (typeof label === "string") return label.trim();
-  const minutes = [d["durationMinutes"], snapshot["durationMinutes"]].find(
-    (v) => typeof v === "number" && v > 0,
-  );
-  if (typeof minutes === "number") {
-    const h = Math.floor(minutes / 60);
-    const m = minutes % 60;
-    return m === 0 ? `${h}h` : `${h}h ${m}min`;
-  }
-  return b.source_tour_id ? (TOUR_DURATIONS.get(b.source_tour_id) ?? null) : null;
-}
-
-/** Party split comes from the frozen composition; never guessed. */
-function partyOf(b: Row): string {
-  const d = (b.booking_details ?? {}) as Record<string, unknown>;
-  const comp = (d["composition"] ?? {}) as Record<string, unknown>;
-  const adults = typeof comp["adults"] === "number" ? (comp["adults"] as number) : null;
-  const minorAges = Array.isArray(comp["minorAges"]) ? (comp["minorAges"] as number[]) : null;
-  return formatGuestComposition(adults, minorAges, b.guests) ?? `${b.guests} guests`;
-}
-
-const STATUSES = ["paid", "pending", "cancelled", "refunded", "all"] as const;
-type StatusFilter = (typeof STATUSES)[number];
-
-function money(cents: number, currency: string) {
-  return new Intl.NumberFormat("en-GB", {
-    style: "currency",
-    currency: (currency || "eur").toUpperCase(),
-  }).format((cents || 0) / 100);
-}
-
-/** Local Lisbon day key (YYYY-MM-DD) for "today"/"tomorrow" bucketing. */
-function dayKey(d: Date): string {
-  return new Intl.DateTimeFormat("en-CA", { timeZone: "Europe/Lisbon" }).format(d);
-}
-
-type Bucket = "attention" | "today" | "tomorrow" | "upcoming" | "undated" | "past";
-
-const BUCKET_LABEL: Record<Bucket, string> = {
-  attention: "Needs attention",
-  today: "Today",
-  tomorrow: "Tomorrow",
-  upcoming: "Upcoming",
-  undated: "Date to confirm",
-  past: "Past",
-};
-
-const BUCKET_ORDER: Bucket[] = ["attention", "today", "tomorrow", "upcoming", "undated", "past"];
-
-function bucketOf(b: Row, today: string, tomorrow: string): Bucket {
-  // Anything not paid, and anything paid with no pickup on file, needs a human.
-  const unresolved = b.status !== "paid" && b.status !== "cancelled" && b.status !== "refunded";
-  const missingPickup = b.status === "paid" && !pickupOf(b) && !!b.preferred_date;
-  if (unresolved || missingPickup) return "attention";
-  if (!b.preferred_date) return "undated";
-  if (b.preferred_date === today) return "today";
-  if (b.preferred_date === tomorrow) return "tomorrow";
-  return b.preferred_date > today ? "upcoming" : "past";
-}
-
 function AdminBookingsPage() {
-  const list = useServerFn(listAdminBookings);
-  const [search, setSearch] = useState("");
-  const [status, setStatus] = useState<StatusFilter>("all");
-  const [rows, setRows] = useState<Row[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-  /** Operations hub is the default working view; the day view stays available. */
-  const [mode, setMode] = useState<"ops" | "day">("ops");
-
-  useEffect(() => {
-    let active = true;
-    setLoading(true);
-    const t = setTimeout(() => {
-      list({ data: { search: search || undefined, status, limit: 100 } })
-        .then((r) => {
-          if (!active) return;
-          setRows((r.bookings ?? []) as Row[]);
-          setError(null);
-        })
-        .catch((e: unknown) => active && setError(e instanceof Error ? e.message : String(e)))
-        .finally(() => active && setLoading(false));
-    }, 250);
-    return () => {
-      active = false;
-      clearTimeout(t);
-    };
-  }, [search, status, list]);
-
-  const groups = useMemo(() => {
-    const now = new Date();
-    const today = dayKey(now);
-    const tomorrow = dayKey(new Date(now.getTime() + 24 * 60 * 60 * 1000));
-    const map = new Map<Bucket, Row[]>();
-    for (const b of rows) {
-      const k = bucketOf(b, today, tomorrow);
-      const arr = map.get(k) ?? [];
-      arr.push(b);
-      map.set(k, arr);
-    }
-    for (const [k, arr] of map) {
-      arr.sort((a, c) => {
-        const da = a.preferred_date ?? "";
-        const dc = c.preferred_date ?? "";
-        // Past reads newest-first; everything else reads soonest-first.
-        return k === "past" ? dc.localeCompare(da) : da.localeCompare(dc);
-      });
-    }
-    return BUCKET_ORDER.map((k) => [k, map.get(k) ?? []] as const).filter(
-      ([, arr]) => arr.length > 0,
-    );
-  }, [rows]);
-
-  const totalCents = rows.reduce((sum, b) => sum + (b.amount_total || 0), 0);
-
+  const { focus, open } = Route.useSearch();
   return (
-    <main className="mx-auto max-w-5xl px-4 py-10">
-      <Link
-        to="/admin"
-        className="text-[11px] uppercase tracking-[0.18em] text-[color:var(--charcoal-soft)]"
-      >
-        ← Admin
-      </Link>
-      <h1 className="mt-4 font-[family-name:var(--font-editorial)] text-3xl text-[color:var(--charcoal)]">
-        Guest trips
-      </h1>
-      <p className="mt-2 text-sm text-[color:var(--charcoal-soft)]">
-        Grouped by the day the trip runs. Open one to see the frozen purchase snapshot. Tap a date in
-        the calendar to see that day's trips and send the brief to a guide.
-      </p>
-      <Link to="/admin/guides" className="mt-2 inline-block text-sm text-[color:var(--teal)] underline">
-        Manage guides
-      </Link>
+    <AdminShell eyebrow="All channels" title="Bookings">
+      <OpsBookingsHub initialRange={focus ?? (open ? "future" : "week")} initialOpen={open ?? null} />
 
-      <div className="mt-5 flex flex-wrap gap-1.5">
-        {([
-          { id: "ops", label: "Operations" },
-          { id: "day", label: "Day view" },
-        ] as const).map((tab) => (
-          <button
-            key={tab.id}
-            type="button"
-            onClick={() => setMode(tab.id)}
-            aria-pressed={mode === tab.id}
-            className={`min-h-11 rounded-full border px-4 text-[11px] uppercase tracking-[0.16em] transition-colors ${
-              mode === tab.id
-                ? "border-[color:var(--charcoal)] bg-[color:var(--charcoal)] text-[color:var(--ivory)]"
-                : "border-[color:var(--sand)] text-[color:var(--charcoal-soft)]"
-            }`}
-          >
-            {tab.label}
-          </button>
-        ))}
-      </div>
-
-      {mode === "ops" ? <div className="mt-5"><OpsBookingsHub /></div> : null}
-
-      {mode === "day" ? (
-      <>
-      <BookingsAvailabilityCalendar />
-
-      <CalendarSubscribePanel />
-
-      <input
-        type="search"
-        value={search}
-        onChange={(e) => setSearch(e.target.value)}
-        aria-label="Search bookings by guest name, email, tour or Stripe session"
-        placeholder="Search guest name, email, tour…"
-        className="mt-5 w-full rounded-md border border-[color:var(--sand)] bg-white px-4 py-3 text-base"
-      />
-
-      <div className="mt-3 flex flex-wrap gap-2">
-        {STATUSES.map((s) => (
-          <button
-            key={s}
-            type="button"
-            onClick={() => setStatus(s)}
-            aria-pressed={status === s}
-            className={`min-h-11 rounded-full border px-4 text-[11px] uppercase tracking-[0.16em] transition-colors ${
-              status === s
-                ? "border-[color:var(--charcoal)] bg-[color:var(--charcoal)] text-[color:var(--ivory)]"
-                : "border-[color:var(--sand)] text-[color:var(--charcoal-soft)]"
-            }`}
-          >
-            {s}
-          </button>
-        ))}
-      </div>
-
-      {error ? <p className="mt-4 text-sm text-red-700">{error}</p> : null}
-      {loading ? (
-        <p className="mt-6 text-sm text-[color:var(--charcoal-soft)]">Loading…</p>
-      ) : rows.length === 0 ? (
-        <p className="mt-6 text-sm text-[color:var(--charcoal-soft)]">No bookings found.</p>
-      ) : (
-        <>
-          <p className="mt-6 text-[11px] uppercase tracking-[0.18em] text-[color:var(--charcoal-soft)]">
-            {rows.length} trip{rows.length === 1 ? "" : "s"} ·{" "}
-            {money(totalCents, rows[0]?.currency ?? "eur")}
-          </p>
-
-          {/* Sales reading: every paid booking with date, group and total. */}
-          <PaidSalesSummary rows={rows} currency={rows[0]?.currency ?? "eur"} />
-
-          {groups.map(([bucket, list]) => (
-            <section key={bucket} className="mt-8" data-bucket={bucket}>
-              <h2 className="text-[11px] uppercase tracking-[0.2em] text-[color:var(--charcoal)]">
-                {BUCKET_LABEL[bucket]}{" "}
-                <span className="text-[color:var(--charcoal-soft)]">({list.length})</span>
-              </h2>
-              <ul className="mt-3 divide-y divide-[color:var(--sand)] border-y border-[color:var(--sand)]">
-                {list.map((b) => {
-                  const phone = phoneOf(b);
-                  const time = startTimeOf(b);
-                  const duration = durationOf(b);
-                  return (
-                    <li key={b.id} className="py-4">
-                      <Link
-                        to="/admin/bookings/$id"
-                        params={{ id: b.id }}
-                        className="flex flex-col gap-1 hover:opacity-80 min-h-11 justify-center"
-                      >
-                        <span className="text-[11px] uppercase tracking-[0.18em] text-[color:var(--charcoal-soft)]">
-                          {b.preferred_date ?? "date TBC"}
-                          {time ? ` · ${time}` : ""} · {b.status}
-                        </span>
-                        <span className="text-base text-[color:var(--charcoal)]">
-                          {b.customer_name || b.customer_email}
-                        </span>
-                        <span className="text-sm text-[color:var(--charcoal-soft)]">
-                          {experienceLabel(b)}
-                          {duration ? ` · ${duration}` : ""}
-                        </span>
-                        <span className="text-sm text-[color:var(--charcoal)]">
-                          {partyOf(b)} · {money(b.amount_total, b.currency)}
-                        </span>
-                        <span className="text-sm text-[color:var(--charcoal-soft)]">
-                          Pickup: {pickupOf(b) ?? "—"}
-                        </span>
-                      </Link>
-
-                      {/* One-tap reach on a phone. Guest number when we have it,
-                          otherwise our own line — never a fabricated number. */}
-                      <div className="mt-2 flex flex-wrap gap-2">
-                        {phone ? (
-                          <>
-                            <a
-                              href={`tel:${phone.replace(/[^\d+]/g, "")}`}
-                              className="inline-flex min-h-11 items-center rounded-full border border-[color:var(--sand)] px-4 text-[11px] uppercase tracking-[0.16em] text-[color:var(--teal)]"
-                            >
-                              Call {phone}
-                            </a>
-                            <a
-                              href={`https://wa.me/${phone.replace(/[^\d]/g, "")}`}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className="inline-flex min-h-11 items-center rounded-full border border-[color:var(--sand)] px-4 text-[11px] uppercase tracking-[0.16em] text-[color:var(--teal)]"
-                            >
-                              WhatsApp
-                            </a>
-                          </>
-                        ) : (
-                          <span className="inline-flex min-h-11 items-center text-[11px] uppercase tracking-[0.16em] text-[color:var(--charcoal-soft)]">
-                            No guest phone on file
-                          </span>
-                        )}
-                        <a
-                          href={`mailto:${b.customer_email}`}
-                          className="inline-flex min-h-11 items-center rounded-full border border-[color:var(--sand)] px-4 text-[11px] uppercase tracking-[0.16em] text-[color:var(--teal)]"
-                        >
-                          Email
-                        </a>
-                      </div>
-                    </li>
-                  );
-                })}
-              </ul>
-            </section>
-          ))}
-
-          <p className="mt-8 text-[11px] uppercase tracking-[0.18em] text-[color:var(--charcoal-soft)]">
-            Our own line: {PHONE_DISPLAY} ·{" "}
-            <a href={`https://wa.me/${WHATSAPP_NUMBER}`} className="underline">
-              WhatsApp
-            </a>
-          </p>
-        </>
-      )}
-      </>
-      ) : null}
-    </main>
+      <details className="group mt-12 border-t border-[color:var(--charcoal)]/[0.07]">
+        <summary className="flex min-h-14 cursor-pointer list-none items-center justify-between py-3 text-[11px] uppercase tracking-[0.2em] text-[color:var(--charcoal-soft)] [&::-webkit-details-marker]:hidden">
+          More · day briefs and calendar subscription
+          <span aria-hidden className="transition-transform duration-200 group-open:rotate-90">›</span>
+        </summary>
+        <div className="pb-6">
+          <BookingsAvailabilityCalendar />
+          <CalendarSubscribePanel />
+        </div>
+      </details>
+    </AdminShell>
   );
 }

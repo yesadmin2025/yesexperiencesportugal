@@ -129,6 +129,7 @@ import { Route as AdminStudioV3AuditRouteImport } from './routes/admin.studio-v3
 import { Route as AdminStopParityRouteImport } from './routes/admin.stop-parity'
 import { Route as AdminSotRefreshRouteImport } from './routes/admin.sot-refresh'
 import { Route as AdminSotDiffRouteImport } from './routes/admin.sot-diff'
+import { Route as AdminSettingsRouteImport } from './routes/admin.settings'
 import { Route as AdminSeoStrategyRouteImport } from './routes/admin.seo-strategy'
 import { Route as AdminSeoMonitorRouteImport } from './routes/admin.seo-monitor'
 import { Route as AdminSeoJsonldRouteImport } from './routes/admin.seo-jsonld'
@@ -165,6 +166,7 @@ import { Route as AdminBuilderImagesRouteImport } from './routes/admin.builder-i
 import { Route as AdminAvailabilityRouteImport } from './routes/admin.availability'
 import { Route as AdminAnalyticsHealthRouteImport } from './routes/admin.analytics-health'
 import { Route as AdminAiAuditRouteImport } from './routes/admin.ai-audit'
+import { Route as AdminActivityRouteImport } from './routes/admin.activity'
 import { Route as Char91DotwellKnownChar93OauthProtectedResourceRouteImport } from './routes/[.well-known]/oauth-protected-resource'
 import { Route as Char91DotmcpChar93ListToolsRouteImport } from './routes/[.mcp]/list-tools'
 import { Route as AdminBookingsIndexRouteImport } from './routes/admin.bookings.index'
@@ -817,6 +819,11 @@ const AdminSotDiffRoute = AdminSotDiffRouteImport.update({
   path: '/admin/sot-diff',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AdminSettingsRoute = AdminSettingsRouteImport.update({
+  id: '/admin/settings',
+  path: '/admin/settings',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AdminSeoStrategyRoute = AdminSeoStrategyRouteImport.update({
   id: '/admin/seo-strategy',
   path: '/admin/seo-strategy',
@@ -996,6 +1003,11 @@ const AdminAnalyticsHealthRoute = AdminAnalyticsHealthRouteImport.update({
 const AdminAiAuditRoute = AdminAiAuditRouteImport.update({
   id: '/admin/ai-audit',
   path: '/admin/ai-audit',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdminActivityRoute = AdminActivityRouteImport.update({
+  id: '/admin/activity',
+  path: '/admin/activity',
   getParentRoute: () => rootRouteImport,
 } as any)
 const Char91DotwellKnownChar93OauthProtectedResourceRoute =
@@ -1286,6 +1298,7 @@ export interface FileRoutesByFullPath {
   '/wine-tours-lisbon': typeof WineToursLisbonRoute
   '/.mcp/list-tools': typeof Char91DotmcpChar93ListToolsRoute
   '/.well-known/oauth-protected-resource': typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
+  '/admin/activity': typeof AdminActivityRoute
   '/admin/ai-audit': typeof AdminAiAuditRoute
   '/admin/analytics-health': typeof AdminAnalyticsHealthRoute
   '/admin/availability': typeof AdminAvailabilityRoute
@@ -1322,6 +1335,7 @@ export interface FileRoutesByFullPath {
   '/admin/seo-jsonld': typeof AdminSeoJsonldRoute
   '/admin/seo-monitor': typeof AdminSeoMonitorRoute
   '/admin/seo-strategy': typeof AdminSeoStrategyRoute
+  '/admin/settings': typeof AdminSettingsRoute
   '/admin/sot-diff': typeof AdminSotDiffRoute
   '/admin/sot-refresh': typeof AdminSotRefreshRoute
   '/admin/stop-parity': typeof AdminStopParityRoute
@@ -1478,6 +1492,7 @@ export interface FileRoutesByTo {
   '/wine-tours-lisbon': typeof WineToursLisbonRoute
   '/.mcp/list-tools': typeof Char91DotmcpChar93ListToolsRoute
   '/.well-known/oauth-protected-resource': typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
+  '/admin/activity': typeof AdminActivityRoute
   '/admin/ai-audit': typeof AdminAiAuditRoute
   '/admin/analytics-health': typeof AdminAnalyticsHealthRoute
   '/admin/availability': typeof AdminAvailabilityRoute
@@ -1514,6 +1529,7 @@ export interface FileRoutesByTo {
   '/admin/seo-jsonld': typeof AdminSeoJsonldRoute
   '/admin/seo-monitor': typeof AdminSeoMonitorRoute
   '/admin/seo-strategy': typeof AdminSeoStrategyRoute
+  '/admin/settings': typeof AdminSettingsRoute
   '/admin/sot-diff': typeof AdminSotDiffRoute
   '/admin/sot-refresh': typeof AdminSotRefreshRoute
   '/admin/stop-parity': typeof AdminStopParityRoute
@@ -1673,6 +1689,7 @@ export interface FileRoutesById {
   '/wine-tours-lisbon': typeof WineToursLisbonRoute
   '/.mcp/list-tools': typeof Char91DotmcpChar93ListToolsRoute
   '/.well-known/oauth-protected-resource': typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
+  '/admin/activity': typeof AdminActivityRoute
   '/admin/ai-audit': typeof AdminAiAuditRoute
   '/admin/analytics-health': typeof AdminAnalyticsHealthRoute
   '/admin/availability': typeof AdminAvailabilityRoute
@@ -1709,6 +1726,7 @@ export interface FileRoutesById {
   '/admin/seo-jsonld': typeof AdminSeoJsonldRoute
   '/admin/seo-monitor': typeof AdminSeoMonitorRoute
   '/admin/seo-strategy': typeof AdminSeoStrategyRoute
+  '/admin/settings': typeof AdminSettingsRoute
   '/admin/sot-diff': typeof AdminSotDiffRoute
   '/admin/sot-refresh': typeof AdminSotRefreshRoute
   '/admin/stop-parity': typeof AdminStopParityRoute
@@ -1869,6 +1887,7 @@ export interface FileRouteTypes {
     | '/wine-tours-lisbon'
     | '/.mcp/list-tools'
     | '/.well-known/oauth-protected-resource'
+    | '/admin/activity'
     | '/admin/ai-audit'
     | '/admin/analytics-health'
     | '/admin/availability'
@@ -1905,6 +1924,7 @@ export interface FileRouteTypes {
     | '/admin/seo-jsonld'
     | '/admin/seo-monitor'
     | '/admin/seo-strategy'
+    | '/admin/settings'
     | '/admin/sot-diff'
     | '/admin/sot-refresh'
     | '/admin/stop-parity'
@@ -2061,6 +2081,7 @@ export interface FileRouteTypes {
     | '/wine-tours-lisbon'
     | '/.mcp/list-tools'
     | '/.well-known/oauth-protected-resource'
+    | '/admin/activity'
     | '/admin/ai-audit'
     | '/admin/analytics-health'
     | '/admin/availability'
@@ -2097,6 +2118,7 @@ export interface FileRouteTypes {
     | '/admin/seo-jsonld'
     | '/admin/seo-monitor'
     | '/admin/seo-strategy'
+    | '/admin/settings'
     | '/admin/sot-diff'
     | '/admin/sot-refresh'
     | '/admin/stop-parity'
@@ -2255,6 +2277,7 @@ export interface FileRouteTypes {
     | '/wine-tours-lisbon'
     | '/.mcp/list-tools'
     | '/.well-known/oauth-protected-resource'
+    | '/admin/activity'
     | '/admin/ai-audit'
     | '/admin/analytics-health'
     | '/admin/availability'
@@ -2291,6 +2314,7 @@ export interface FileRouteTypes {
     | '/admin/seo-jsonld'
     | '/admin/seo-monitor'
     | '/admin/seo-strategy'
+    | '/admin/settings'
     | '/admin/sot-diff'
     | '/admin/sot-refresh'
     | '/admin/stop-parity'
@@ -2450,6 +2474,7 @@ export interface RootRouteChildren {
   WineToursLisbonRoute: typeof WineToursLisbonRoute
   Char91DotmcpChar93ListToolsRoute: typeof Char91DotmcpChar93ListToolsRoute
   Char91DotwellKnownChar93OauthProtectedResourceRoute: typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
+  AdminActivityRoute: typeof AdminActivityRoute
   AdminAiAuditRoute: typeof AdminAiAuditRoute
   AdminAnalyticsHealthRoute: typeof AdminAnalyticsHealthRoute
   AdminAvailabilityRoute: typeof AdminAvailabilityRoute
@@ -2486,6 +2511,7 @@ export interface RootRouteChildren {
   AdminSeoJsonldRoute: typeof AdminSeoJsonldRoute
   AdminSeoMonitorRoute: typeof AdminSeoMonitorRoute
   AdminSeoStrategyRoute: typeof AdminSeoStrategyRoute
+  AdminSettingsRoute: typeof AdminSettingsRoute
   AdminSotDiffRoute: typeof AdminSotDiffRoute
   AdminSotRefreshRoute: typeof AdminSotRefreshRoute
   AdminStopParityRoute: typeof AdminStopParityRoute
@@ -3385,6 +3411,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminSotDiffRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/admin/settings': {
+      id: '/admin/settings'
+      path: '/admin/settings'
+      fullPath: '/admin/settings'
+      preLoaderRoute: typeof AdminSettingsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/admin/seo-strategy': {
       id: '/admin/seo-strategy'
       path: '/admin/seo-strategy'
@@ -3635,6 +3668,13 @@ declare module '@tanstack/react-router' {
       path: '/admin/ai-audit'
       fullPath: '/admin/ai-audit'
       preLoaderRoute: typeof AdminAiAuditRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admin/activity': {
+      id: '/admin/activity'
+      path: '/admin/activity'
+      fullPath: '/admin/activity'
+      preLoaderRoute: typeof AdminActivityRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/.well-known/oauth-protected-resource': {
@@ -4052,6 +4092,7 @@ const rootRouteChildren: RootRouteChildren = {
   Char91DotmcpChar93ListToolsRoute: Char91DotmcpChar93ListToolsRoute,
   Char91DotwellKnownChar93OauthProtectedResourceRoute:
     Char91DotwellKnownChar93OauthProtectedResourceRoute,
+  AdminActivityRoute: AdminActivityRoute,
   AdminAiAuditRoute: AdminAiAuditRoute,
   AdminAnalyticsHealthRoute: AdminAnalyticsHealthRoute,
   AdminAvailabilityRoute: AdminAvailabilityRoute,
@@ -4088,6 +4129,7 @@ const rootRouteChildren: RootRouteChildren = {
   AdminSeoJsonldRoute: AdminSeoJsonldRoute,
   AdminSeoMonitorRoute: AdminSeoMonitorRoute,
   AdminSeoStrategyRoute: AdminSeoStrategyRoute,
+  AdminSettingsRoute: AdminSettingsRoute,
   AdminSotDiffRoute: AdminSotDiffRoute,
   AdminSotRefreshRoute: AdminSotRefreshRoute,
   AdminStopParityRoute: AdminStopParityRoute,

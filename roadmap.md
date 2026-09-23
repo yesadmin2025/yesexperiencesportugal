@@ -42,3 +42,12 @@
 - [x] Tests: src/__tests__/booking-stripe-reconciliation.test.ts
 - [ ] Blocked: connect the Google mailbox (read-only) before any real import
 - [ ] Blocked: Bókun access key / secret / webhook secret for direct sync
+
+## Admin simplification (Phase 1, 23 Sep 2026)
+- [x] Admin shell: Today · Bookings · Guides · Settings (sidebar desktop, bottom bar iPhone)
+- [x] Today home: status sentence, Needs you, Today/Tomorrow, next 7 days, month footer
+- [x] Bookings: one workspace, List | Calendar, quick filters, Filter button, no Reconciliation/Sources tabs
+- [x] Settings: grouped sections; Connections & automation hosts Gmail/Bókun/WhatsApp/reconciliation panels
+- [x] Booking drawer reorder: Essentials · Operations · Communication/evidence · History
+- [ ] Phase 2: single detail surface for /admin/bookings/$id, one status pill
+- [ ] WhatsApp: live conversation section in drawer (link-out added), channel badge — after owner connects WhatsApp
