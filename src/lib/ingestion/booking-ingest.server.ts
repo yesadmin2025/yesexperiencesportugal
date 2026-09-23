@@ -65,10 +65,31 @@ const isFutureOrToday = (date: string | null): boolean => {
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type Admin = any;
 
-type ExistingBooking = { id: string; status: string; payment_status: string | null };
+type ExistingBooking = {
+  id: string;
+  status: string;
+  payment_status: string | null;
+  /** Present on Stripe-paid reservations; makes payment truth authoritative. */
+  stripe_session_id?: string | null;
+  stripe_payment_intent_id?: string | null;
+  amount_total?: number | null;
+  amount_paid?: number | null;
+  source?: string | null;
+  source_channel?: string | null;
+  preferred_date?: string | null;
+};
 
+const EXISTING_COLUMNS =
+  "id, status, payment_status, stripe_session_id, stripe_payment_intent_id, amount_total, amount_paid, source, source_channel, preferred_date";
+
+/**
+ * Strongest key first: OTA reference, then the Stripe-paid reservation the
+ * voucher belongs to, then guest + day. Stripe "shell" reservations (paid, but
+ * with no date or pickup on file yet) are matched on guest alone so the voucher
+ * enriches them instead of creating a second row.
+ */
 async function findExistingBooking(supabaseAdmin: Admin, booking: ParsedBooking): Promise<ExistingBooking | null> {
-  const columns = "id, status, payment_status";
+  const columns = EXISTING_COLUMNS;
   const refs = [booking.externalBookingRef, booking.productBookingRef].filter(Boolean) as string[];
   for (const ref of refs) {
     const { data } = await supabaseAdmin
@@ -78,18 +99,40 @@ async function findExistingBooking(supabaseAdmin: Admin, booking: ParsedBooking)
       .maybeSingle();
     if (data) return data as ExistingBooking;
   }
-  // Cautious fallback: same guest, same day — used only when unambiguous.
-  if (booking.customerEmail && booking.date) {
+
+  const email = booking.customerEmail ? booking.customerEmail.toLowerCase() : null;
+  if (!email) return null;
+
+  // Same guest, same day — unambiguous match.
+  if (booking.date) {
     const { data } = await supabaseAdmin
       .from("bookings")
       .select(columns)
-      .eq("customer_email", booking.customerEmail.toLowerCase())
+      .eq("customer_email", email)
       .eq("preferred_date", booking.date)
       .limit(5);
     const rows = (data ?? []) as ExistingBooking[];
     if (rows.length === 1) return rows[0]!;
+    if (rows.length > 1) return null;
   }
+
+  // Stripe-paid reservation with no trip date yet: the voucher completes it.
+  const { data: shells } = await supabaseAdmin
+    .from("bookings")
+    .select(columns)
+    .eq("customer_email", email)
+    .is("preferred_date", null)
+    .limit(5);
+  const shellRows = ((shells ?? []) as ExistingBooking[]).filter(
+    (row) => !!row.stripe_session_id || !!row.stripe_payment_intent_id,
+  );
+  if (shellRows.length === 1) return shellRows[0]!;
   return null;
+}
+
+/** Stripe owns payment success and amounts; parsed email never overrides it. */
+function isStripeAuthoritative(existing: ExistingBooking): boolean {
+  return !!existing.stripe_session_id || !!existing.stripe_payment_intent_id;
 }
 
 function bookingRow(booking: ParsedBooking, ctx: IngestContext) {
