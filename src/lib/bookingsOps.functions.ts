@@ -481,8 +481,13 @@ export const runOpsEmailIngestion = createServerFn({ method: "POST" })
 
     for (const { query, mailbox } of buildQueries(data.days)) {
       const ids = await listMessageIds(query, Math.ceil(data.maxMessages / 2));
+      const messages = [] as Awaited<ReturnType<typeof getMessage>>[];
       for (const { id } of ids) {
-        const message = await getMessage(id, mailbox);
+        messages.push(await getMessage(id, mailbox));
+      }
+      // Oldest first, so a creation is recorded before its later cancellation.
+      messages.sort((a, b) => (a.receivedAt ?? "").localeCompare(b.receivedAt ?? ""));
+      for (const message of messages) {
         scanned += 1;
         const results = await ingestEmailMessage(
           supabaseAdmin,

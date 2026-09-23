@@ -272,6 +272,18 @@ export async function ingestParsedBooking(
   }
 
   if (booking.intent === "cancel") {
+    // A cancellation for a day that has already passed, with nothing in the
+    // diary to cancel, is historic paperwork — not something to review.
+    if (!existing && futureOnly && !isFutureOrToday(booking.date)) {
+      if (!dryRun) {
+        await logIngestion(supabaseAdmin, ctx, {
+          parser: booking.parser, parseStatus: "parsed", action: "ignored",
+          reason: "cancellation_of_past_booking", confidence: booking.confidence,
+          dedupeKey, channel: booking.sourceChannel,
+        });
+      }
+      return { ...base, action: "ignored", bookingId: null, candidateId: null, reason: "cancellation_of_past_booking" };
+    }
     if (!existing) {
       const reason = "cancellation_without_matching_booking";
       const candidateId = dryRun ? null : await createCandidate(supabaseAdmin, ctx, booking, reason);

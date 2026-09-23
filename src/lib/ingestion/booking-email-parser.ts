@@ -173,6 +173,17 @@ function listAfter(body: string, label: string): string[] {
     .slice(0, 20);
 }
 
+/** Lines written under the "Product" label, before the next labelled row. */
+function productBlock(body: string): string[] {
+  const match = body.match(/^[>\s*]*Product\s*[:：]?[ \t]*\n([\s\S]{0,600}?)(?=\n[>\s*]*(?:Supplier|Sold by|Booking channel|Customer|Rate|Date|Product booking ref)\b|(?![\s\S]))/im);
+  if (!match) return [];
+  return match[1]!
+    .split("\n")
+    .map((line) => clean(line) ?? "")
+    .filter((line) => line.length > 0)
+    .slice(0, 6);
+}
+
 function parseMoney(value: string | null): { amount: number | null; currency: string | null } {
   if (!value) return { amount: null, currency: null };
   const currency = /eur|€/i.test(value) ? "EUR" : /usd|\$/.test(value) ? "USD" : /gbp|£/.test(value) ? "GBP" : null;
@@ -335,8 +346,13 @@ function parseBokun(input: EmailInput): ParseResult {
   if (!draft.externalBookingRef) draft.externalBookingRef = bookingRef;
   if (!draft.productBookingRef) draft.productBookingRef = bookingRef;
 
-  draft.tourTitle = clean(labelled(body, "Product"));
-  draft.externalProductRef = draft.tourTitle;
+  // Bókun splits the product over two lines: "349639P3 -" then the title.
+  const productLines = productBlock(body);
+  const productCode = productLines.find((line) => /^[0-9]{3,8}[A-Z]?[0-9]*\s*-?$/.test(line)) ?? null;
+  const productName = productLines.find((line) => line !== productCode && line.length > 4) ?? null;
+  draft.tourTitle = productName ?? clean(labelled(body, "Product"));
+  draft.productCode = productCode ? productCode.replace(/\s*-\s*$/, "") : null;
+  draft.externalProductRef = draft.productCode ?? draft.tourTitle;
   draft.selectedRate = clean(labelled(body, "Rate"));
   draft.customerName = clean(labelled(body, "Customer"));
   draft.customerEmail = clean(labelled(body, "Customer email"))?.toLowerCase() ?? null;

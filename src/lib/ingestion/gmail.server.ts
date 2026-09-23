@@ -74,7 +74,10 @@ function htmlToText(html: string): string {
     .replace(/&quot;/gi, '"')
     .replace(/&#39;/gi, "'")
     .replace(/&lt;/gi, "<")
-    .replace(/&gt;/gi, ">");
+    .replace(/&gt;/gi, ">")
+    // Numeric entities: Bókun writes the apostrophe in "24.Oct '26" as &#x27;
+    .replace(/&#x([0-9a-f]+);/gi, (_match, hex: string) => String.fromCodePoint(parseInt(hex, 16)))
+    .replace(/&#(\d+);/g, (_match, dec: string) => String.fromCodePoint(Number(dec)));
 }
 
 /** Prefers text/plain; falls back to a flattened HTML part. */
