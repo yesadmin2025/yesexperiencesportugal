@@ -15,6 +15,7 @@ import { listOpsBookings, OPS_CHANNELS } from "@/lib/bookingsOps.functions";
 import { OpsBookingDetail } from "./OpsBookingDetail";
 import { OpsReviewInbox } from "./OpsReviewInbox";
 import { OpsIntegrationsPanel } from "./OpsIntegrationsPanel";
+import { OpsReconciliationPanel } from "./OpsReconciliationPanel";
 import { ChannelBadge, GuideBadge, PaymentBadge, ReviewBadge, StatusBadge } from "./badges";
 
 type Row = {
