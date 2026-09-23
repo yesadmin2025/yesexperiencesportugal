@@ -5,7 +5,51 @@
 import { useEffect, useState } from "react";
 import { useServerFn } from "@tanstack/react-start";
 import { toast } from "sonner";
-import { listOpsReconciliation } from "@/lib/bookingsOps.functions";
+import {
+  getOpsVoucherReconciliationReport,
+  listOpsReconciliation,
+  runOpsVoucherReconciliation,
+} from "@/lib/bookingsOps.functions";
+
+type VoucherRow = {
+  bookingId: string;
+  customer: string;
+  email: string;
+  amount: string;
+  tourTitle: string | null;
+  date: string | null;
+  outcome: string;
+  rule: string | null;
+  fields: string[];
+  subject: string | null;
+  messageDate: string | null;
+  duplicateSuppressed: string | null;
+  reason: string | null;
+};
+
+type VoucherReport = {
+  ran_at?: string;
+  dry_run?: boolean;
+  considered?: number;
+  vouchers_found?: number;
+  enriched?: number;
+  duplicates_suppressed?: number;
+  ambiguous?: number;
+  no_voucher?: number;
+  already_complete?: number;
+  excluded_test?: number;
+  rows?: VoucherRow[];
+};
+
+const VOUCHER_COUNTS: Array<[keyof VoucherReport, string]> = [
+  ["considered", "Paid reservations considered"],
+  ["vouchers_found", "Sent confirmations read"],
+  ["enriched", "Reservations completed"],
+  ["duplicates_suppressed", "Duplicate email rows merged"],
+  ["ambiguous", "Sent to Needs Review"],
+  ["no_voucher", "No matching confirmation"],
+];
+
 
 type Row = {
   id: string;
