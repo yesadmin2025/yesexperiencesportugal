@@ -6,3 +6,10 @@
 - [ ] Classify all current security findings and safely remediate genuine issues
 - [ ] Complete full validation and publish only if all gates pass
 - [ ] Report backlink outreach priorities without code changes
+- [ ] Fix Experiences Arrábida card image
+- [ ] Make /studio canonical; redirect legacy Studio slugs
+- [ ] Replace invalid theme-color with brand teal hex
+- [ ] Restore Sintra & Cascais homepage card details
+- [ ] Verify reciprocal EN/PT hreflang and list EN-only pages
+- [ ] Verify production GA4 in a fresh real-browser session
+- [ ] Connect verified GA4 property to SiteGuru when an integration path is available
