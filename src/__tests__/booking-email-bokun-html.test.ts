@@ -30,8 +30,7 @@ describe("Bókun HTML notification parsing", () => {
       subject: "New booking: Sat 24.Oct '26 @ 09:00 (YES-T147327068) Ext. booking ref: 1449975423",
       from: "Bókun Notifications <no-reply@bokun.io>",
       body,
-      mailbox: "INBOX",
-      receivedAt: "2026-09-01T10:00:00.000Z",
+      sentByUs: false,
     });
 
     expect(result.kind).toBe("bokun");
