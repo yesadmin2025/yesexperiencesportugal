@@ -96,7 +96,7 @@ function fakeAdmin(bookings: Row[]) {
 
 const parseDirect = () => {
   const parsed = parseBookingEmail({ ...DIRECT_PAID, sentByUs: true });
-  if (parsed.kind !== "parsed") throw new Error("expected a parsed voucher");
+  if (parsed.kind === "ignored") throw new Error("expected a parsed voucher");
   return parsed.bookings[0]!;
 };
 
