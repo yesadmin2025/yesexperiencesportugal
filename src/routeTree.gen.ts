@@ -88,6 +88,7 @@ import { Route as AuthRouteImport } from './routes/auth'
 import { Route as ArrabidaWineTourRouteImport } from './routes/arrabida-wine-tour'
 import { Route as ArrabidaDayTripFromLisbonRouteImport } from './routes/arrabida-day-trip-from-lisbon'
 import { Route as AlentejoWineTourFromLisbonRouteImport } from './routes/alentejo-wine-tour-from-lisbon'
+import { Route as AdminRouteImport } from './routes/admin'
 import { Route as AboutRouteImport } from './routes/about'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as PtIndexRouteImport } from './routes/pt.index'
@@ -613,6 +614,11 @@ const AlentejoWineTourFromLisbonRoute =
     path: '/alentejo-wine-tour-from-lisbon',
     getParentRoute: () => rootRouteImport,
   } as any)
+const AdminRoute = AdminRouteImport.update({
+  id: '/admin',
+  path: '/admin',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AboutRoute = AboutRouteImport.update({
   id: '/about',
   path: '/about',
@@ -634,9 +640,9 @@ const LocalStoriesIndexRoute = LocalStoriesIndexRouteImport.update({
   getParentRoute: () => LocalStoriesRoute,
 } as any)
 const AdminIndexRoute = AdminIndexRouteImport.update({
-  id: '/admin/',
-  path: '/admin/',
-  getParentRoute: () => rootRouteImport,
+  id: '/',
+  path: '/',
+  getParentRoute: () => AdminRoute,
 } as any)
 const ToursTourIdRoute = ToursTourIdRouteImport.update({
   id: '/tours/$tourId',
@@ -780,235 +786,235 @@ const ApiHealthRoute = ApiHealthRouteImport.update({
   getParentRoute: () => rootRouteImport,
 } as any)
 const AdminWebhookEventsRoute = AdminWebhookEventsRouteImport.update({
-  id: '/admin/webhook-events',
-  path: '/admin/webhook-events',
-  getParentRoute: () => rootRouteImport,
+  id: '/webhook-events',
+  path: '/webhook-events',
+  getParentRoute: () => AdminRoute,
 } as any)
 const AdminViatorValidationRoute = AdminViatorValidationRouteImport.update({
-  id: '/admin/viator-validation',
-  path: '/admin/viator-validation',
-  getParentRoute: () => rootRouteImport,
+  id: '/viator-validation',
+  path: '/viator-validation',
+  getParentRoute: () => AdminRoute,
 } as any)
 const AdminTourLinkAuditRoute = AdminTourLinkAuditRouteImport.update({
-  id: '/admin/tour-link-audit',
-  path: '/admin/tour-link-audit',
-  getParentRoute: () => rootRouteImport,
+  id: '/tour-link-audit',
+  path: '/tour-link-audit',
+  getParentRoute: () => AdminRoute,
 } as any)
 const AdminStudioV3FunnelRoute = AdminStudioV3FunnelRouteImport.update({
-  id: '/admin/studio-v3-funnel',
-  path: '/admin/studio-v3-funnel',
-  getParentRoute: () => rootRouteImport,
+  id: '/studio-v3-funnel',
+  path: '/studio-v3-funnel',
+  getParentRoute: () => AdminRoute,
 } as any)
 const AdminStudioV3AuditRoute = AdminStudioV3AuditRouteImport.update({
-  id: '/admin/studio-v3-audit',
-  path: '/admin/studio-v3-audit',
-  getParentRoute: () => rootRouteImport,
+  id: '/studio-v3-audit',
+  path: '/studio-v3-audit',
+  getParentRoute: () => AdminRoute,
 } as any)
 const AdminStopParityRoute = AdminStopParityRouteImport.update({
-  id: '/admin/stop-parity',
-  path: '/admin/stop-parity',
-  getParentRoute: () => rootRouteImport,
+  id: '/stop-parity',
+  path: '/stop-parity',
+  getParentRoute: () => AdminRoute,
 } as any)
 const AdminSotRefreshRoute = AdminSotRefreshRouteImport.update({
-  id: '/admin/sot-refresh',
-  path: '/admin/sot-refresh',
-  getParentRoute: () => rootRouteImport,
+  id: '/sot-refresh',
+  path: '/sot-refresh',
+  getParentRoute: () => AdminRoute,
 } as any)
 const AdminSotDiffRoute = AdminSotDiffRouteImport.update({
-  id: '/admin/sot-diff',
-  path: '/admin/sot-diff',
-  getParentRoute: () => rootRouteImport,
+  id: '/sot-diff',
+  path: '/sot-diff',
+  getParentRoute: () => AdminRoute,
 } as any)
 const AdminSettingsRoute = AdminSettingsRouteImport.update({
-  id: '/admin/settings',
-  path: '/admin/settings',
-  getParentRoute: () => rootRouteImport,
+  id: '/settings',
+  path: '/settings',
+  getParentRoute: () => AdminRoute,
 } as any)
 const AdminSeoStrategyRoute = AdminSeoStrategyRouteImport.update({
-  id: '/admin/seo-strategy',
-  path: '/admin/seo-strategy',
-  getParentRoute: () => rootRouteImport,
+  id: '/seo-strategy',
+  path: '/seo-strategy',
+  getParentRoute: () => AdminRoute,
 } as any)
 const AdminSeoMonitorRoute = AdminSeoMonitorRouteImport.update({
-  id: '/admin/seo-monitor',
-  path: '/admin/seo-monitor',
-  getParentRoute: () => rootRouteImport,
+  id: '/seo-monitor',
+  path: '/seo-monitor',
+  getParentRoute: () => AdminRoute,
 } as any)
 const AdminSeoJsonldRoute = AdminSeoJsonldRouteImport.update({
-  id: '/admin/seo-jsonld',
-  path: '/admin/seo-jsonld',
-  getParentRoute: () => rootRouteImport,
+  id: '/seo-jsonld',
+  path: '/seo-jsonld',
+  getParentRoute: () => AdminRoute,
 } as any)
 const AdminSeoExperiencesRoute = AdminSeoExperiencesRouteImport.update({
-  id: '/admin/seo-experiences',
-  path: '/admin/seo-experiences',
-  getParentRoute: () => rootRouteImport,
+  id: '/seo-experiences',
+  path: '/seo-experiences',
+  getParentRoute: () => AdminRoute,
 } as any)
 const AdminReviewsRoute = AdminReviewsRouteImport.update({
-  id: '/admin/reviews',
-  path: '/admin/reviews',
-  getParentRoute: () => rootRouteImport,
+  id: '/reviews',
+  path: '/reviews',
+  getParentRoute: () => AdminRoute,
 } as any)
 const AdminRedirectsMonitorRoute = AdminRedirectsMonitorRouteImport.update({
-  id: '/admin/redirects-monitor',
-  path: '/admin/redirects-monitor',
-  getParentRoute: () => rootRouteImport,
+  id: '/redirects-monitor',
+  path: '/redirects-monitor',
+  getParentRoute: () => AdminRoute,
 } as any)
 const AdminPricingToolRoute = AdminPricingToolRouteImport.update({
-  id: '/admin/pricing-tool',
-  path: '/admin/pricing-tool',
-  getParentRoute: () => rootRouteImport,
+  id: '/pricing-tool',
+  path: '/pricing-tool',
+  getParentRoute: () => AdminRoute,
 } as any)
 const AdminPricingRoute = AdminPricingRouteImport.update({
-  id: '/admin/pricing',
-  path: '/admin/pricing',
-  getParentRoute: () => rootRouteImport,
+  id: '/pricing',
+  path: '/pricing',
+  getParentRoute: () => AdminRoute,
 } as any)
 const AdminPriceMapRoute = AdminPriceMapRouteImport.update({
-  id: '/admin/price-map',
-  path: '/admin/price-map',
-  getParentRoute: () => rootRouteImport,
+  id: '/price-map',
+  path: '/price-map',
+  getParentRoute: () => AdminRoute,
 } as any)
 const AdminPhotosRoute = AdminPhotosRouteImport.update({
-  id: '/admin/photos',
-  path: '/admin/photos',
-  getParentRoute: () => rootRouteImport,
+  id: '/photos',
+  path: '/photos',
+  getParentRoute: () => AdminRoute,
 } as any)
 const AdminPaymentsEnvRoute = AdminPaymentsEnvRouteImport.update({
-  id: '/admin/payments-env',
-  path: '/admin/payments-env',
-  getParentRoute: () => rootRouteImport,
+  id: '/payments-env',
+  path: '/payments-env',
+  getParentRoute: () => AdminRoute,
 } as any)
 const AdminPathPhotosRoute = AdminPathPhotosRouteImport.update({
-  id: '/admin/path-photos',
-  path: '/admin/path-photos',
-  getParentRoute: () => rootRouteImport,
+  id: '/path-photos',
+  path: '/path-photos',
+  getParentRoute: () => AdminRoute,
 } as any)
 const AdminLegacyScanRoute = AdminLegacyScanRouteImport.update({
-  id: '/admin/legacy-scan',
-  path: '/admin/legacy-scan',
-  getParentRoute: () => rootRouteImport,
+  id: '/legacy-scan',
+  path: '/legacy-scan',
+  getParentRoute: () => AdminRoute,
 } as any)
 const AdminLegacyDomainsMonitorRoute =
   AdminLegacyDomainsMonitorRouteImport.update({
-    id: '/admin/legacy-domains-monitor',
-    path: '/admin/legacy-domains-monitor',
-    getParentRoute: () => rootRouteImport,
+    id: '/legacy-domains-monitor',
+    path: '/legacy-domains-monitor',
+    getParentRoute: () => AdminRoute,
   } as any)
 const AdminLegacyDomainUnlinkRoute = AdminLegacyDomainUnlinkRouteImport.update({
-  id: '/admin/legacy-domain-unlink',
-  path: '/admin/legacy-domain-unlink',
-  getParentRoute: () => rootRouteImport,
+  id: '/legacy-domain-unlink',
+  path: '/legacy-domain-unlink',
+  getParentRoute: () => AdminRoute,
 } as any)
 const AdminImportToursRoute = AdminImportToursRouteImport.update({
-  id: '/admin/import-tours',
-  path: '/admin/import-tours',
-  getParentRoute: () => rootRouteImport,
+  id: '/import-tours',
+  path: '/import-tours',
+  getParentRoute: () => AdminRoute,
 } as any)
 const AdminImageSwapRoute = AdminImageSwapRouteImport.update({
-  id: '/admin/image-swap',
-  path: '/admin/image-swap',
-  getParentRoute: () => rootRouteImport,
+  id: '/image-swap',
+  path: '/image-swap',
+  getParentRoute: () => AdminRoute,
 } as any)
 const AdminGuidesRoute = AdminGuidesRouteImport.update({
-  id: '/admin/guides',
-  path: '/admin/guides',
-  getParentRoute: () => rootRouteImport,
+  id: '/guides',
+  path: '/guides',
+  getParentRoute: () => AdminRoute,
 } as any)
 const AdminGuideAttributionRoute = AdminGuideAttributionRouteImport.update({
-  id: '/admin/guide-attribution',
-  path: '/admin/guide-attribution',
-  getParentRoute: () => rootRouteImport,
+  id: '/guide-attribution',
+  path: '/guide-attribution',
+  getParentRoute: () => AdminRoute,
 } as any)
 const AdminGscRoute = AdminGscRouteImport.update({
-  id: '/admin/gsc',
-  path: '/admin/gsc',
-  getParentRoute: () => rootRouteImport,
+  id: '/gsc',
+  path: '/gsc',
+  getParentRoute: () => AdminRoute,
 } as any)
 const AdminGbpLegacyRemovalRoute = AdminGbpLegacyRemovalRouteImport.update({
-  id: '/admin/gbp-legacy-removal',
-  path: '/admin/gbp-legacy-removal',
-  getParentRoute: () => rootRouteImport,
+  id: '/gbp-legacy-removal',
+  path: '/gbp-legacy-removal',
+  getParentRoute: () => AdminRoute,
 } as any)
 const AdminExperiencesRoute = AdminExperiencesRouteImport.update({
-  id: '/admin/experiences',
-  path: '/admin/experiences',
-  getParentRoute: () => rootRouteImport,
+  id: '/experiences',
+  path: '/experiences',
+  getParentRoute: () => AdminRoute,
 } as any)
 const AdminErrorLogsRoute = AdminErrorLogsRouteImport.update({
-  id: '/admin/error-logs',
-  path: '/admin/error-logs',
-  getParentRoute: () => rootRouteImport,
+  id: '/error-logs',
+  path: '/error-logs',
+  getParentRoute: () => AdminRoute,
 } as any)
 const AdminEnquiriesRoute = AdminEnquiriesRouteImport.update({
-  id: '/admin/enquiries',
-  path: '/admin/enquiries',
-  getParentRoute: () => rootRouteImport,
+  id: '/enquiries',
+  path: '/enquiries',
+  getParentRoute: () => AdminRoute,
 } as any)
 const AdminEmailsRoute = AdminEmailsRouteImport.update({
-  id: '/admin/emails',
-  path: '/admin/emails',
-  getParentRoute: () => rootRouteImport,
+  id: '/emails',
+  path: '/emails',
+  getParentRoute: () => AdminRoute,
 } as any)
 const AdminE2eReportRoute = AdminE2eReportRouteImport.update({
-  id: '/admin/e2e-report',
-  path: '/admin/e2e-report',
-  getParentRoute: () => rootRouteImport,
+  id: '/e2e-report',
+  path: '/e2e-report',
+  getParentRoute: () => AdminRoute,
 } as any)
 const AdminDriftBibleRoute = AdminDriftBibleRouteImport.update({
-  id: '/admin/drift-bible',
-  path: '/admin/drift-bible',
-  getParentRoute: () => rootRouteImport,
+  id: '/drift-bible',
+  path: '/drift-bible',
+  getParentRoute: () => AdminRoute,
 } as any)
 const AdminDriftBehaviorRoute = AdminDriftBehaviorRouteImport.update({
-  id: '/admin/drift-behavior',
-  path: '/admin/drift-behavior',
-  getParentRoute: () => rootRouteImport,
+  id: '/drift-behavior',
+  path: '/drift-behavior',
+  getParentRoute: () => AdminRoute,
 } as any)
 const AdminDomainsHealthRoute = AdminDomainsHealthRouteImport.update({
-  id: '/admin/domains-health',
-  path: '/admin/domains-health',
-  getParentRoute: () => rootRouteImport,
+  id: '/domains-health',
+  path: '/domains-health',
+  getParentRoute: () => AdminRoute,
 } as any)
 const AdminDnsWatchRoute = AdminDnsWatchRouteImport.update({
-  id: '/admin/dns-watch',
-  path: '/admin/dns-watch',
-  getParentRoute: () => rootRouteImport,
+  id: '/dns-watch',
+  path: '/dns-watch',
+  getParentRoute: () => AdminRoute,
 } as any)
 const AdminComposableStopsRoute = AdminComposableStopsRouteImport.update({
-  id: '/admin/composable-stops',
-  path: '/admin/composable-stops',
-  getParentRoute: () => rootRouteImport,
+  id: '/composable-stops',
+  path: '/composable-stops',
+  getParentRoute: () => AdminRoute,
 } as any)
 const AdminBuilderImagesQaRoute = AdminBuilderImagesQaRouteImport.update({
-  id: '/admin/builder-images-qa',
-  path: '/admin/builder-images-qa',
-  getParentRoute: () => rootRouteImport,
+  id: '/builder-images-qa',
+  path: '/builder-images-qa',
+  getParentRoute: () => AdminRoute,
 } as any)
 const AdminBuilderImagesRoute = AdminBuilderImagesRouteImport.update({
-  id: '/admin/builder-images',
-  path: '/admin/builder-images',
-  getParentRoute: () => rootRouteImport,
+  id: '/builder-images',
+  path: '/builder-images',
+  getParentRoute: () => AdminRoute,
 } as any)
 const AdminAvailabilityRoute = AdminAvailabilityRouteImport.update({
-  id: '/admin/availability',
-  path: '/admin/availability',
-  getParentRoute: () => rootRouteImport,
+  id: '/availability',
+  path: '/availability',
+  getParentRoute: () => AdminRoute,
 } as any)
 const AdminAnalyticsHealthRoute = AdminAnalyticsHealthRouteImport.update({
-  id: '/admin/analytics-health',
-  path: '/admin/analytics-health',
-  getParentRoute: () => rootRouteImport,
+  id: '/analytics-health',
+  path: '/analytics-health',
+  getParentRoute: () => AdminRoute,
 } as any)
 const AdminAiAuditRoute = AdminAiAuditRouteImport.update({
-  id: '/admin/ai-audit',
-  path: '/admin/ai-audit',
-  getParentRoute: () => rootRouteImport,
+  id: '/ai-audit',
+  path: '/ai-audit',
+  getParentRoute: () => AdminRoute,
 } as any)
 const AdminActivityRoute = AdminActivityRouteImport.update({
-  id: '/admin/activity',
-  path: '/admin/activity',
-  getParentRoute: () => rootRouteImport,
+  id: '/activity',
+  path: '/activity',
+  getParentRoute: () => AdminRoute,
 } as any)
 const Char91DotwellKnownChar93OauthProtectedResourceRoute =
   Char91DotwellKnownChar93OauthProtectedResourceRouteImport.update({
@@ -1023,9 +1029,9 @@ const Char91DotmcpChar93ListToolsRoute =
     getParentRoute: () => rootRouteImport,
   } as any)
 const AdminBookingsIndexRoute = AdminBookingsIndexRouteImport.update({
-  id: '/admin/bookings/',
-  path: '/admin/bookings/',
-  getParentRoute: () => rootRouteImport,
+  id: '/bookings/',
+  path: '/bookings/',
+  getParentRoute: () => AdminRoute,
 } as any)
 const ToursTourIdTailorRoute = ToursTourIdTailorRouteImport.update({
   id: '/tours_/$tourId/tailor',
@@ -1093,9 +1099,9 @@ const ApiPublicBookingCalendarRoute =
     getParentRoute: () => rootRouteImport,
   } as any)
 const AdminBookingsIdRoute = AdminBookingsIdRouteImport.update({
-  id: '/admin/bookings/$id',
-  path: '/admin/bookings/$id',
-  getParentRoute: () => rootRouteImport,
+  id: '/bookings/$id',
+  path: '/bookings/$id',
+  getParentRoute: () => AdminRoute,
 } as any)
 const Char91DotmcpChar93InvokeToolToolRoute =
   Char91DotmcpChar93InvokeToolToolRouteImport.update({
@@ -1217,6 +1223,7 @@ const ApiPublicFeedsThingsToDoDotjsonRoute =
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
+  '/admin': typeof AdminRouteWithChildren
   '/alentejo-wine-tour-from-lisbon': typeof AlentejoWineTourFromLisbonRoute
   '/arrabida-day-trip-from-lisbon': typeof ArrabidaDayTripFromLisbonRoute
   '/arrabida-wine-tour': typeof ArrabidaWineTourRoute
@@ -1608,6 +1615,7 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
+  '/admin': typeof AdminRouteWithChildren
   '/alentejo-wine-tour-from-lisbon': typeof AlentejoWineTourFromLisbonRoute
   '/arrabida-day-trip-from-lisbon': typeof ArrabidaDayTripFromLisbonRoute
   '/arrabida-wine-tour': typeof ArrabidaWineTourRoute
@@ -1806,6 +1814,7 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/about'
+    | '/admin'
     | '/alentejo-wine-tour-from-lisbon'
     | '/arrabida-day-trip-from-lisbon'
     | '/arrabida-wine-tour'
@@ -2196,6 +2205,7 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/about'
+    | '/admin'
     | '/alentejo-wine-tour-from-lisbon'
     | '/arrabida-day-trip-from-lisbon'
     | '/arrabida-wine-tour'
@@ -2393,6 +2403,7 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AboutRoute: typeof AboutRoute
+  AdminRoute: typeof AdminRouteWithChildren
   AlentejoWineTourFromLisbonRoute: typeof AlentejoWineTourFromLisbonRoute
   ArrabidaDayTripFromLisbonRoute: typeof ArrabidaDayTripFromLisbonRoute
   ArrabidaWineTourRoute: typeof ArrabidaWineTourRoute
@@ -2474,52 +2485,6 @@ export interface RootRouteChildren {
   WineToursLisbonRoute: typeof WineToursLisbonRoute
   Char91DotmcpChar93ListToolsRoute: typeof Char91DotmcpChar93ListToolsRoute
   Char91DotwellKnownChar93OauthProtectedResourceRoute: typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
-  AdminActivityRoute: typeof AdminActivityRoute
-  AdminAiAuditRoute: typeof AdminAiAuditRoute
-  AdminAnalyticsHealthRoute: typeof AdminAnalyticsHealthRoute
-  AdminAvailabilityRoute: typeof AdminAvailabilityRoute
-  AdminBuilderImagesRoute: typeof AdminBuilderImagesRoute
-  AdminBuilderImagesQaRoute: typeof AdminBuilderImagesQaRoute
-  AdminComposableStopsRoute: typeof AdminComposableStopsRoute
-  AdminDnsWatchRoute: typeof AdminDnsWatchRoute
-  AdminDomainsHealthRoute: typeof AdminDomainsHealthRoute
-  AdminDriftBehaviorRoute: typeof AdminDriftBehaviorRoute
-  AdminDriftBibleRoute: typeof AdminDriftBibleRoute
-  AdminE2eReportRoute: typeof AdminE2eReportRoute
-  AdminEmailsRoute: typeof AdminEmailsRoute
-  AdminEnquiriesRoute: typeof AdminEnquiriesRoute
-  AdminErrorLogsRoute: typeof AdminErrorLogsRoute
-  AdminExperiencesRoute: typeof AdminExperiencesRoute
-  AdminGbpLegacyRemovalRoute: typeof AdminGbpLegacyRemovalRoute
-  AdminGscRoute: typeof AdminGscRoute
-  AdminGuideAttributionRoute: typeof AdminGuideAttributionRoute
-  AdminGuidesRoute: typeof AdminGuidesRoute
-  AdminImageSwapRoute: typeof AdminImageSwapRoute
-  AdminImportToursRoute: typeof AdminImportToursRoute
-  AdminLegacyDomainUnlinkRoute: typeof AdminLegacyDomainUnlinkRoute
-  AdminLegacyDomainsMonitorRoute: typeof AdminLegacyDomainsMonitorRoute
-  AdminLegacyScanRoute: typeof AdminLegacyScanRoute
-  AdminPathPhotosRoute: typeof AdminPathPhotosRoute
-  AdminPaymentsEnvRoute: typeof AdminPaymentsEnvRoute
-  AdminPhotosRoute: typeof AdminPhotosRoute
-  AdminPriceMapRoute: typeof AdminPriceMapRoute
-  AdminPricingRoute: typeof AdminPricingRoute
-  AdminPricingToolRoute: typeof AdminPricingToolRoute
-  AdminRedirectsMonitorRoute: typeof AdminRedirectsMonitorRoute
-  AdminReviewsRoute: typeof AdminReviewsRoute
-  AdminSeoExperiencesRoute: typeof AdminSeoExperiencesRoute
-  AdminSeoJsonldRoute: typeof AdminSeoJsonldRoute
-  AdminSeoMonitorRoute: typeof AdminSeoMonitorRoute
-  AdminSeoStrategyRoute: typeof AdminSeoStrategyRoute
-  AdminSettingsRoute: typeof AdminSettingsRoute
-  AdminSotDiffRoute: typeof AdminSotDiffRoute
-  AdminSotRefreshRoute: typeof AdminSotRefreshRoute
-  AdminStopParityRoute: typeof AdminStopParityRoute
-  AdminStudioV3AuditRoute: typeof AdminStudioV3AuditRoute
-  AdminStudioV3FunnelRoute: typeof AdminStudioV3FunnelRoute
-  AdminTourLinkAuditRoute: typeof AdminTourLinkAuditRoute
-  AdminViatorValidationRoute: typeof AdminViatorValidationRoute
-  AdminWebhookEventsRoute: typeof AdminWebhookEventsRoute
   ApiHealthRoute: typeof ApiHealthRoute
   ApiImgRoute: typeof ApiImgRoute
   ApiVerifyHeroRoute: typeof ApiVerifyHeroRoute
@@ -2533,10 +2498,8 @@ export interface RootRouteChildren {
   ReviewTokenRoute: typeof ReviewTokenRoute
   STokenRoute: typeof STokenRoute
   ToursTourIdRoute: typeof ToursTourIdRoute
-  AdminIndexRoute: typeof AdminIndexRoute
   DotlovableOauthConsentRoute: typeof DotlovableOauthConsentRoute
   Char91DotmcpChar93InvokeToolToolRoute: typeof Char91DotmcpChar93InvokeToolToolRoute
-  AdminBookingsIdRoute: typeof AdminBookingsIdRoute
   ApiPublicBookingCalendarRoute: typeof ApiPublicBookingCalendarRoute
   ApiPublicBookingItineraryRoute: typeof ApiPublicBookingItineraryRoute
   ApiPublicBookingItineraryDataRoute: typeof ApiPublicBookingItineraryDataRoute
@@ -2548,7 +2511,6 @@ export interface RootRouteChildren {
   FunctionsV1StripeWebhookRoute: typeof FunctionsV1StripeWebhookRoute
   LovableEmailSuppressionRoute: typeof LovableEmailSuppressionRoute
   ToursTourIdTailorRoute: typeof ToursTourIdTailorRoute
-  AdminBookingsIndexRoute: typeof AdminBookingsIndexRoute
   ApiPublicFeedsThingsToDoDotjsonRoute: typeof ApiPublicFeedsThingsToDoDotjsonRoute
   ApiPublicFeedsThingsToDoDotxmlRoute: typeof ApiPublicFeedsThingsToDoDotxmlRoute
   ApiPublicHooksBokunBookingRoute: typeof ApiPublicHooksBokunBookingRoute
@@ -3124,6 +3086,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AlentejoWineTourFromLisbonRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/admin': {
+      id: '/admin'
+      path: '/admin'
+      fullPath: '/admin'
+      preLoaderRoute: typeof AdminRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/about': {
       id: '/about'
       path: '/about'
@@ -3154,10 +3123,10 @@ declare module '@tanstack/react-router' {
     }
     '/admin/': {
       id: '/admin/'
-      path: '/admin'
+      path: '/'
       fullPath: '/admin/'
       preLoaderRoute: typeof AdminIndexRouteImport
-      parentRoute: typeof rootRouteImport
+      parentRoute: typeof AdminRoute
     }
     '/tours/$tourId': {
       id: '/tours/$tourId'
@@ -3357,325 +3326,325 @@ declare module '@tanstack/react-router' {
     }
     '/admin/webhook-events': {
       id: '/admin/webhook-events'
-      path: '/admin/webhook-events'
+      path: '/webhook-events'
       fullPath: '/admin/webhook-events'
       preLoaderRoute: typeof AdminWebhookEventsRouteImport
-      parentRoute: typeof rootRouteImport
+      parentRoute: typeof AdminRoute
     }
     '/admin/viator-validation': {
       id: '/admin/viator-validation'
-      path: '/admin/viator-validation'
+      path: '/viator-validation'
       fullPath: '/admin/viator-validation'
       preLoaderRoute: typeof AdminViatorValidationRouteImport
-      parentRoute: typeof rootRouteImport
+      parentRoute: typeof AdminRoute
     }
     '/admin/tour-link-audit': {
       id: '/admin/tour-link-audit'
-      path: '/admin/tour-link-audit'
+      path: '/tour-link-audit'
       fullPath: '/admin/tour-link-audit'
       preLoaderRoute: typeof AdminTourLinkAuditRouteImport
-      parentRoute: typeof rootRouteImport
+      parentRoute: typeof AdminRoute
     }
     '/admin/studio-v3-funnel': {
       id: '/admin/studio-v3-funnel'
-      path: '/admin/studio-v3-funnel'
+      path: '/studio-v3-funnel'
       fullPath: '/admin/studio-v3-funnel'
       preLoaderRoute: typeof AdminStudioV3FunnelRouteImport
-      parentRoute: typeof rootRouteImport
+      parentRoute: typeof AdminRoute
     }
     '/admin/studio-v3-audit': {
       id: '/admin/studio-v3-audit'
-      path: '/admin/studio-v3-audit'
+      path: '/studio-v3-audit'
       fullPath: '/admin/studio-v3-audit'
       preLoaderRoute: typeof AdminStudioV3AuditRouteImport
-      parentRoute: typeof rootRouteImport
+      parentRoute: typeof AdminRoute
     }
     '/admin/stop-parity': {
       id: '/admin/stop-parity'
-      path: '/admin/stop-parity'
+      path: '/stop-parity'
       fullPath: '/admin/stop-parity'
       preLoaderRoute: typeof AdminStopParityRouteImport
-      parentRoute: typeof rootRouteImport
+      parentRoute: typeof AdminRoute
     }
     '/admin/sot-refresh': {
       id: '/admin/sot-refresh'
-      path: '/admin/sot-refresh'
+      path: '/sot-refresh'
       fullPath: '/admin/sot-refresh'
       preLoaderRoute: typeof AdminSotRefreshRouteImport
-      parentRoute: typeof rootRouteImport
+      parentRoute: typeof AdminRoute
     }
     '/admin/sot-diff': {
       id: '/admin/sot-diff'
-      path: '/admin/sot-diff'
+      path: '/sot-diff'
       fullPath: '/admin/sot-diff'
       preLoaderRoute: typeof AdminSotDiffRouteImport
-      parentRoute: typeof rootRouteImport
+      parentRoute: typeof AdminRoute
     }
     '/admin/settings': {
       id: '/admin/settings'
-      path: '/admin/settings'
+      path: '/settings'
       fullPath: '/admin/settings'
       preLoaderRoute: typeof AdminSettingsRouteImport
-      parentRoute: typeof rootRouteImport
+      parentRoute: typeof AdminRoute
     }
     '/admin/seo-strategy': {
       id: '/admin/seo-strategy'
-      path: '/admin/seo-strategy'
+      path: '/seo-strategy'
       fullPath: '/admin/seo-strategy'
       preLoaderRoute: typeof AdminSeoStrategyRouteImport
-      parentRoute: typeof rootRouteImport
+      parentRoute: typeof AdminRoute
     }
     '/admin/seo-monitor': {
       id: '/admin/seo-monitor'
-      path: '/admin/seo-monitor'
+      path: '/seo-monitor'
       fullPath: '/admin/seo-monitor'
       preLoaderRoute: typeof AdminSeoMonitorRouteImport
-      parentRoute: typeof rootRouteImport
+      parentRoute: typeof AdminRoute
     }
     '/admin/seo-jsonld': {
       id: '/admin/seo-jsonld'
-      path: '/admin/seo-jsonld'
+      path: '/seo-jsonld'
       fullPath: '/admin/seo-jsonld'
       preLoaderRoute: typeof AdminSeoJsonldRouteImport
-      parentRoute: typeof rootRouteImport
+      parentRoute: typeof AdminRoute
     }
     '/admin/seo-experiences': {
       id: '/admin/seo-experiences'
-      path: '/admin/seo-experiences'
+      path: '/seo-experiences'
       fullPath: '/admin/seo-experiences'
       preLoaderRoute: typeof AdminSeoExperiencesRouteImport
-      parentRoute: typeof rootRouteImport
+      parentRoute: typeof AdminRoute
     }
     '/admin/reviews': {
       id: '/admin/reviews'
-      path: '/admin/reviews'
+      path: '/reviews'
       fullPath: '/admin/reviews'
       preLoaderRoute: typeof AdminReviewsRouteImport
-      parentRoute: typeof rootRouteImport
+      parentRoute: typeof AdminRoute
     }
     '/admin/redirects-monitor': {
       id: '/admin/redirects-monitor'
-      path: '/admin/redirects-monitor'
+      path: '/redirects-monitor'
       fullPath: '/admin/redirects-monitor'
       preLoaderRoute: typeof AdminRedirectsMonitorRouteImport
-      parentRoute: typeof rootRouteImport
+      parentRoute: typeof AdminRoute
     }
     '/admin/pricing-tool': {
       id: '/admin/pricing-tool'
-      path: '/admin/pricing-tool'
+      path: '/pricing-tool'
       fullPath: '/admin/pricing-tool'
       preLoaderRoute: typeof AdminPricingToolRouteImport
-      parentRoute: typeof rootRouteImport
+      parentRoute: typeof AdminRoute
     }
     '/admin/pricing': {
       id: '/admin/pricing'
-      path: '/admin/pricing'
+      path: '/pricing'
       fullPath: '/admin/pricing'
       preLoaderRoute: typeof AdminPricingRouteImport
-      parentRoute: typeof rootRouteImport
+      parentRoute: typeof AdminRoute
     }
     '/admin/price-map': {
       id: '/admin/price-map'
-      path: '/admin/price-map'
+      path: '/price-map'
       fullPath: '/admin/price-map'
       preLoaderRoute: typeof AdminPriceMapRouteImport
-      parentRoute: typeof rootRouteImport
+      parentRoute: typeof AdminRoute
     }
     '/admin/photos': {
       id: '/admin/photos'
-      path: '/admin/photos'
+      path: '/photos'
       fullPath: '/admin/photos'
       preLoaderRoute: typeof AdminPhotosRouteImport
-      parentRoute: typeof rootRouteImport
+      parentRoute: typeof AdminRoute
     }
     '/admin/payments-env': {
       id: '/admin/payments-env'
-      path: '/admin/payments-env'
+      path: '/payments-env'
       fullPath: '/admin/payments-env'
       preLoaderRoute: typeof AdminPaymentsEnvRouteImport
-      parentRoute: typeof rootRouteImport
+      parentRoute: typeof AdminRoute
     }
     '/admin/path-photos': {
       id: '/admin/path-photos'
-      path: '/admin/path-photos'
+      path: '/path-photos'
       fullPath: '/admin/path-photos'
       preLoaderRoute: typeof AdminPathPhotosRouteImport
-      parentRoute: typeof rootRouteImport
+      parentRoute: typeof AdminRoute
     }
     '/admin/legacy-scan': {
       id: '/admin/legacy-scan'
-      path: '/admin/legacy-scan'
+      path: '/legacy-scan'
       fullPath: '/admin/legacy-scan'
       preLoaderRoute: typeof AdminLegacyScanRouteImport
-      parentRoute: typeof rootRouteImport
+      parentRoute: typeof AdminRoute
     }
     '/admin/legacy-domains-monitor': {
       id: '/admin/legacy-domains-monitor'
-      path: '/admin/legacy-domains-monitor'
+      path: '/legacy-domains-monitor'
       fullPath: '/admin/legacy-domains-monitor'
       preLoaderRoute: typeof AdminLegacyDomainsMonitorRouteImport
-      parentRoute: typeof rootRouteImport
+      parentRoute: typeof AdminRoute
     }
     '/admin/legacy-domain-unlink': {
       id: '/admin/legacy-domain-unlink'
-      path: '/admin/legacy-domain-unlink'
+      path: '/legacy-domain-unlink'
       fullPath: '/admin/legacy-domain-unlink'
       preLoaderRoute: typeof AdminLegacyDomainUnlinkRouteImport
-      parentRoute: typeof rootRouteImport
+      parentRoute: typeof AdminRoute
     }
     '/admin/import-tours': {
       id: '/admin/import-tours'
-      path: '/admin/import-tours'
+      path: '/import-tours'
       fullPath: '/admin/import-tours'
       preLoaderRoute: typeof AdminImportToursRouteImport
-      parentRoute: typeof rootRouteImport
+      parentRoute: typeof AdminRoute
     }
     '/admin/image-swap': {
       id: '/admin/image-swap'
-      path: '/admin/image-swap'
+      path: '/image-swap'
       fullPath: '/admin/image-swap'
       preLoaderRoute: typeof AdminImageSwapRouteImport
-      parentRoute: typeof rootRouteImport
+      parentRoute: typeof AdminRoute
     }
     '/admin/guides': {
       id: '/admin/guides'
-      path: '/admin/guides'
+      path: '/guides'
       fullPath: '/admin/guides'
       preLoaderRoute: typeof AdminGuidesRouteImport
-      parentRoute: typeof rootRouteImport
+      parentRoute: typeof AdminRoute
     }
     '/admin/guide-attribution': {
       id: '/admin/guide-attribution'
-      path: '/admin/guide-attribution'
+      path: '/guide-attribution'
       fullPath: '/admin/guide-attribution'
       preLoaderRoute: typeof AdminGuideAttributionRouteImport
-      parentRoute: typeof rootRouteImport
+      parentRoute: typeof AdminRoute
     }
     '/admin/gsc': {
       id: '/admin/gsc'
-      path: '/admin/gsc'
+      path: '/gsc'
       fullPath: '/admin/gsc'
       preLoaderRoute: typeof AdminGscRouteImport
-      parentRoute: typeof rootRouteImport
+      parentRoute: typeof AdminRoute
     }
     '/admin/gbp-legacy-removal': {
       id: '/admin/gbp-legacy-removal'
-      path: '/admin/gbp-legacy-removal'
+      path: '/gbp-legacy-removal'
       fullPath: '/admin/gbp-legacy-removal'
       preLoaderRoute: typeof AdminGbpLegacyRemovalRouteImport
-      parentRoute: typeof rootRouteImport
+      parentRoute: typeof AdminRoute
     }
     '/admin/experiences': {
       id: '/admin/experiences'
-      path: '/admin/experiences'
+      path: '/experiences'
       fullPath: '/admin/experiences'
       preLoaderRoute: typeof AdminExperiencesRouteImport
-      parentRoute: typeof rootRouteImport
+      parentRoute: typeof AdminRoute
     }
     '/admin/error-logs': {
       id: '/admin/error-logs'
-      path: '/admin/error-logs'
+      path: '/error-logs'
       fullPath: '/admin/error-logs'
       preLoaderRoute: typeof AdminErrorLogsRouteImport
-      parentRoute: typeof rootRouteImport
+      parentRoute: typeof AdminRoute
     }
     '/admin/enquiries': {
       id: '/admin/enquiries'
-      path: '/admin/enquiries'
+      path: '/enquiries'
       fullPath: '/admin/enquiries'
       preLoaderRoute: typeof AdminEnquiriesRouteImport
-      parentRoute: typeof rootRouteImport
+      parentRoute: typeof AdminRoute
     }
     '/admin/emails': {
       id: '/admin/emails'
-      path: '/admin/emails'
+      path: '/emails'
       fullPath: '/admin/emails'
       preLoaderRoute: typeof AdminEmailsRouteImport
-      parentRoute: typeof rootRouteImport
+      parentRoute: typeof AdminRoute
     }
     '/admin/e2e-report': {
       id: '/admin/e2e-report'
-      path: '/admin/e2e-report'
+      path: '/e2e-report'
       fullPath: '/admin/e2e-report'
       preLoaderRoute: typeof AdminE2eReportRouteImport
-      parentRoute: typeof rootRouteImport
+      parentRoute: typeof AdminRoute
     }
     '/admin/drift-bible': {
       id: '/admin/drift-bible'
-      path: '/admin/drift-bible'
+      path: '/drift-bible'
       fullPath: '/admin/drift-bible'
       preLoaderRoute: typeof AdminDriftBibleRouteImport
-      parentRoute: typeof rootRouteImport
+      parentRoute: typeof AdminRoute
     }
     '/admin/drift-behavior': {
       id: '/admin/drift-behavior'
-      path: '/admin/drift-behavior'
+      path: '/drift-behavior'
       fullPath: '/admin/drift-behavior'
       preLoaderRoute: typeof AdminDriftBehaviorRouteImport
-      parentRoute: typeof rootRouteImport
+      parentRoute: typeof AdminRoute
     }
     '/admin/domains-health': {
       id: '/admin/domains-health'
-      path: '/admin/domains-health'
+      path: '/domains-health'
       fullPath: '/admin/domains-health'
       preLoaderRoute: typeof AdminDomainsHealthRouteImport
-      parentRoute: typeof rootRouteImport
+      parentRoute: typeof AdminRoute
     }
     '/admin/dns-watch': {
       id: '/admin/dns-watch'
-      path: '/admin/dns-watch'
+      path: '/dns-watch'
       fullPath: '/admin/dns-watch'
       preLoaderRoute: typeof AdminDnsWatchRouteImport
-      parentRoute: typeof rootRouteImport
+      parentRoute: typeof AdminRoute
     }
     '/admin/composable-stops': {
       id: '/admin/composable-stops'
-      path: '/admin/composable-stops'
+      path: '/composable-stops'
       fullPath: '/admin/composable-stops'
       preLoaderRoute: typeof AdminComposableStopsRouteImport
-      parentRoute: typeof rootRouteImport
+      parentRoute: typeof AdminRoute
     }
     '/admin/builder-images-qa': {
       id: '/admin/builder-images-qa'
-      path: '/admin/builder-images-qa'
+      path: '/builder-images-qa'
       fullPath: '/admin/builder-images-qa'
       preLoaderRoute: typeof AdminBuilderImagesQaRouteImport
-      parentRoute: typeof rootRouteImport
+      parentRoute: typeof AdminRoute
     }
     '/admin/builder-images': {
       id: '/admin/builder-images'
-      path: '/admin/builder-images'
+      path: '/builder-images'
       fullPath: '/admin/builder-images'
       preLoaderRoute: typeof AdminBuilderImagesRouteImport
-      parentRoute: typeof rootRouteImport
+      parentRoute: typeof AdminRoute
     }
     '/admin/availability': {
       id: '/admin/availability'
-      path: '/admin/availability'
+      path: '/availability'
       fullPath: '/admin/availability'
       preLoaderRoute: typeof AdminAvailabilityRouteImport
-      parentRoute: typeof rootRouteImport
+      parentRoute: typeof AdminRoute
     }
     '/admin/analytics-health': {
       id: '/admin/analytics-health'
-      path: '/admin/analytics-health'
+      path: '/analytics-health'
       fullPath: '/admin/analytics-health'
       preLoaderRoute: typeof AdminAnalyticsHealthRouteImport
-      parentRoute: typeof rootRouteImport
+      parentRoute: typeof AdminRoute
     }
     '/admin/ai-audit': {
       id: '/admin/ai-audit'
-      path: '/admin/ai-audit'
+      path: '/ai-audit'
       fullPath: '/admin/ai-audit'
       preLoaderRoute: typeof AdminAiAuditRouteImport
-      parentRoute: typeof rootRouteImport
+      parentRoute: typeof AdminRoute
     }
     '/admin/activity': {
       id: '/admin/activity'
-      path: '/admin/activity'
+      path: '/activity'
       fullPath: '/admin/activity'
       preLoaderRoute: typeof AdminActivityRouteImport
-      parentRoute: typeof rootRouteImport
+      parentRoute: typeof AdminRoute
     }
     '/.well-known/oauth-protected-resource': {
       id: '/.well-known/oauth-protected-resource'
@@ -3693,10 +3662,10 @@ declare module '@tanstack/react-router' {
     }
     '/admin/bookings/': {
       id: '/admin/bookings/'
-      path: '/admin/bookings'
+      path: '/bookings'
       fullPath: '/admin/bookings/'
       preLoaderRoute: typeof AdminBookingsIndexRouteImport
-      parentRoute: typeof rootRouteImport
+      parentRoute: typeof AdminRoute
     }
     '/tours_/$tourId/tailor': {
       id: '/tours_/$tourId/tailor'
@@ -3784,10 +3753,10 @@ declare module '@tanstack/react-router' {
     }
     '/admin/bookings/$id': {
       id: '/admin/bookings/$id'
-      path: '/admin/bookings/$id'
+      path: '/bookings/$id'
       fullPath: '/admin/bookings/$id'
       preLoaderRoute: typeof AdminBookingsIdRouteImport
-      parentRoute: typeof rootRouteImport
+      parentRoute: typeof AdminRoute
     }
     '/.mcp/invoke-tool/$tool': {
       id: '/.mcp/invoke-tool/$tool'
@@ -3932,6 +3901,112 @@ declare module '@tanstack/react-router' {
   }
 }
 
+interface AdminRouteChildren {
+  AdminActivityRoute: typeof AdminActivityRoute
+  AdminAiAuditRoute: typeof AdminAiAuditRoute
+  AdminAnalyticsHealthRoute: typeof AdminAnalyticsHealthRoute
+  AdminAvailabilityRoute: typeof AdminAvailabilityRoute
+  AdminBuilderImagesRoute: typeof AdminBuilderImagesRoute
+  AdminBuilderImagesQaRoute: typeof AdminBuilderImagesQaRoute
+  AdminComposableStopsRoute: typeof AdminComposableStopsRoute
+  AdminDnsWatchRoute: typeof AdminDnsWatchRoute
+  AdminDomainsHealthRoute: typeof AdminDomainsHealthRoute
+  AdminDriftBehaviorRoute: typeof AdminDriftBehaviorRoute
+  AdminDriftBibleRoute: typeof AdminDriftBibleRoute
+  AdminE2eReportRoute: typeof AdminE2eReportRoute
+  AdminEmailsRoute: typeof AdminEmailsRoute
+  AdminEnquiriesRoute: typeof AdminEnquiriesRoute
+  AdminErrorLogsRoute: typeof AdminErrorLogsRoute
+  AdminExperiencesRoute: typeof AdminExperiencesRoute
+  AdminGbpLegacyRemovalRoute: typeof AdminGbpLegacyRemovalRoute
+  AdminGscRoute: typeof AdminGscRoute
+  AdminGuideAttributionRoute: typeof AdminGuideAttributionRoute
+  AdminGuidesRoute: typeof AdminGuidesRoute
+  AdminImageSwapRoute: typeof AdminImageSwapRoute
+  AdminImportToursRoute: typeof AdminImportToursRoute
+  AdminLegacyDomainUnlinkRoute: typeof AdminLegacyDomainUnlinkRoute
+  AdminLegacyDomainsMonitorRoute: typeof AdminLegacyDomainsMonitorRoute
+  AdminLegacyScanRoute: typeof AdminLegacyScanRoute
+  AdminPathPhotosRoute: typeof AdminPathPhotosRoute
+  AdminPaymentsEnvRoute: typeof AdminPaymentsEnvRoute
+  AdminPhotosRoute: typeof AdminPhotosRoute
+  AdminPriceMapRoute: typeof AdminPriceMapRoute
+  AdminPricingRoute: typeof AdminPricingRoute
+  AdminPricingToolRoute: typeof AdminPricingToolRoute
+  AdminRedirectsMonitorRoute: typeof AdminRedirectsMonitorRoute
+  AdminReviewsRoute: typeof AdminReviewsRoute
+  AdminSeoExperiencesRoute: typeof AdminSeoExperiencesRoute
+  AdminSeoJsonldRoute: typeof AdminSeoJsonldRoute
+  AdminSeoMonitorRoute: typeof AdminSeoMonitorRoute
+  AdminSeoStrategyRoute: typeof AdminSeoStrategyRoute
+  AdminSettingsRoute: typeof AdminSettingsRoute
+  AdminSotDiffRoute: typeof AdminSotDiffRoute
+  AdminSotRefreshRoute: typeof AdminSotRefreshRoute
+  AdminStopParityRoute: typeof AdminStopParityRoute
+  AdminStudioV3AuditRoute: typeof AdminStudioV3AuditRoute
+  AdminStudioV3FunnelRoute: typeof AdminStudioV3FunnelRoute
+  AdminTourLinkAuditRoute: typeof AdminTourLinkAuditRoute
+  AdminViatorValidationRoute: typeof AdminViatorValidationRoute
+  AdminWebhookEventsRoute: typeof AdminWebhookEventsRoute
+  AdminIndexRoute: typeof AdminIndexRoute
+  AdminBookingsIdRoute: typeof AdminBookingsIdRoute
+  AdminBookingsIndexRoute: typeof AdminBookingsIndexRoute
+}
+
+const AdminRouteChildren: AdminRouteChildren = {
+  AdminActivityRoute: AdminActivityRoute,
+  AdminAiAuditRoute: AdminAiAuditRoute,
+  AdminAnalyticsHealthRoute: AdminAnalyticsHealthRoute,
+  AdminAvailabilityRoute: AdminAvailabilityRoute,
+  AdminBuilderImagesRoute: AdminBuilderImagesRoute,
+  AdminBuilderImagesQaRoute: AdminBuilderImagesQaRoute,
+  AdminComposableStopsRoute: AdminComposableStopsRoute,
+  AdminDnsWatchRoute: AdminDnsWatchRoute,
+  AdminDomainsHealthRoute: AdminDomainsHealthRoute,
+  AdminDriftBehaviorRoute: AdminDriftBehaviorRoute,
+  AdminDriftBibleRoute: AdminDriftBibleRoute,
+  AdminE2eReportRoute: AdminE2eReportRoute,
+  AdminEmailsRoute: AdminEmailsRoute,
+  AdminEnquiriesRoute: AdminEnquiriesRoute,
+  AdminErrorLogsRoute: AdminErrorLogsRoute,
+  AdminExperiencesRoute: AdminExperiencesRoute,
+  AdminGbpLegacyRemovalRoute: AdminGbpLegacyRemovalRoute,
+  AdminGscRoute: AdminGscRoute,
+  AdminGuideAttributionRoute: AdminGuideAttributionRoute,
+  AdminGuidesRoute: AdminGuidesRoute,
+  AdminImageSwapRoute: AdminImageSwapRoute,
+  AdminImportToursRoute: AdminImportToursRoute,
+  AdminLegacyDomainUnlinkRoute: AdminLegacyDomainUnlinkRoute,
+  AdminLegacyDomainsMonitorRoute: AdminLegacyDomainsMonitorRoute,
+  AdminLegacyScanRoute: AdminLegacyScanRoute,
+  AdminPathPhotosRoute: AdminPathPhotosRoute,
+  AdminPaymentsEnvRoute: AdminPaymentsEnvRoute,
+  AdminPhotosRoute: AdminPhotosRoute,
+  AdminPriceMapRoute: AdminPriceMapRoute,
+  AdminPricingRoute: AdminPricingRoute,
+  AdminPricingToolRoute: AdminPricingToolRoute,
+  AdminRedirectsMonitorRoute: AdminRedirectsMonitorRoute,
+  AdminReviewsRoute: AdminReviewsRoute,
+  AdminSeoExperiencesRoute: AdminSeoExperiencesRoute,
+  AdminSeoJsonldRoute: AdminSeoJsonldRoute,
+  AdminSeoMonitorRoute: AdminSeoMonitorRoute,
+  AdminSeoStrategyRoute: AdminSeoStrategyRoute,
+  AdminSettingsRoute: AdminSettingsRoute,
+  AdminSotDiffRoute: AdminSotDiffRoute,
+  AdminSotRefreshRoute: AdminSotRefreshRoute,
+  AdminStopParityRoute: AdminStopParityRoute,
+  AdminStudioV3AuditRoute: AdminStudioV3AuditRoute,
+  AdminStudioV3FunnelRoute: AdminStudioV3FunnelRoute,
+  AdminTourLinkAuditRoute: AdminTourLinkAuditRoute,
+  AdminViatorValidationRoute: AdminViatorValidationRoute,
+  AdminWebhookEventsRoute: AdminWebhookEventsRoute,
+  AdminIndexRoute: AdminIndexRoute,
+  AdminBookingsIdRoute: AdminBookingsIdRoute,
+  AdminBookingsIndexRoute: AdminBookingsIndexRoute,
+}
+
+const AdminRouteWithChildren = AdminRoute._addFileChildren(AdminRouteChildren)
+
 interface LocalStoriesRouteChildren {
   LocalStoriesSlugRoute: typeof LocalStoriesSlugRoute
   LocalStoriesIndexRoute: typeof LocalStoriesIndexRoute
@@ -4009,6 +4084,7 @@ const StudioV2RouteWithChildren = StudioV2Route._addFileChildren(
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AboutRoute: AboutRoute,
+  AdminRoute: AdminRouteWithChildren,
   AlentejoWineTourFromLisbonRoute: AlentejoWineTourFromLisbonRoute,
   ArrabidaDayTripFromLisbonRoute: ArrabidaDayTripFromLisbonRoute,
   ArrabidaWineTourRoute: ArrabidaWineTourRoute,
@@ -4092,52 +4168,6 @@ const rootRouteChildren: RootRouteChildren = {
   Char91DotmcpChar93ListToolsRoute: Char91DotmcpChar93ListToolsRoute,
   Char91DotwellKnownChar93OauthProtectedResourceRoute:
     Char91DotwellKnownChar93OauthProtectedResourceRoute,
-  AdminActivityRoute: AdminActivityRoute,
-  AdminAiAuditRoute: AdminAiAuditRoute,
-  AdminAnalyticsHealthRoute: AdminAnalyticsHealthRoute,
-  AdminAvailabilityRoute: AdminAvailabilityRoute,
-  AdminBuilderImagesRoute: AdminBuilderImagesRoute,
-  AdminBuilderImagesQaRoute: AdminBuilderImagesQaRoute,
-  AdminComposableStopsRoute: AdminComposableStopsRoute,
-  AdminDnsWatchRoute: AdminDnsWatchRoute,
-  AdminDomainsHealthRoute: AdminDomainsHealthRoute,
-  AdminDriftBehaviorRoute: AdminDriftBehaviorRoute,
-  AdminDriftBibleRoute: AdminDriftBibleRoute,
-  AdminE2eReportRoute: AdminE2eReportRoute,
-  AdminEmailsRoute: AdminEmailsRoute,
-  AdminEnquiriesRoute: AdminEnquiriesRoute,
-  AdminErrorLogsRoute: AdminErrorLogsRoute,
-  AdminExperiencesRoute: AdminExperiencesRoute,
-  AdminGbpLegacyRemovalRoute: AdminGbpLegacyRemovalRoute,
-  AdminGscRoute: AdminGscRoute,
-  AdminGuideAttributionRoute: AdminGuideAttributionRoute,
-  AdminGuidesRoute: AdminGuidesRoute,
-  AdminImageSwapRoute: AdminImageSwapRoute,
-  AdminImportToursRoute: AdminImportToursRoute,
-  AdminLegacyDomainUnlinkRoute: AdminLegacyDomainUnlinkRoute,
-  AdminLegacyDomainsMonitorRoute: AdminLegacyDomainsMonitorRoute,
-  AdminLegacyScanRoute: AdminLegacyScanRoute,
-  AdminPathPhotosRoute: AdminPathPhotosRoute,
-  AdminPaymentsEnvRoute: AdminPaymentsEnvRoute,
-  AdminPhotosRoute: AdminPhotosRoute,
-  AdminPriceMapRoute: AdminPriceMapRoute,
-  AdminPricingRoute: AdminPricingRoute,
-  AdminPricingToolRoute: AdminPricingToolRoute,
-  AdminRedirectsMonitorRoute: AdminRedirectsMonitorRoute,
-  AdminReviewsRoute: AdminReviewsRoute,
-  AdminSeoExperiencesRoute: AdminSeoExperiencesRoute,
-  AdminSeoJsonldRoute: AdminSeoJsonldRoute,
-  AdminSeoMonitorRoute: AdminSeoMonitorRoute,
-  AdminSeoStrategyRoute: AdminSeoStrategyRoute,
-  AdminSettingsRoute: AdminSettingsRoute,
-  AdminSotDiffRoute: AdminSotDiffRoute,
-  AdminSotRefreshRoute: AdminSotRefreshRoute,
-  AdminStopParityRoute: AdminStopParityRoute,
-  AdminStudioV3AuditRoute: AdminStudioV3AuditRoute,
-  AdminStudioV3FunnelRoute: AdminStudioV3FunnelRoute,
-  AdminTourLinkAuditRoute: AdminTourLinkAuditRoute,
-  AdminViatorValidationRoute: AdminViatorValidationRoute,
-  AdminWebhookEventsRoute: AdminWebhookEventsRoute,
   ApiHealthRoute: ApiHealthRoute,
   ApiImgRoute: ApiImgRoute,
   ApiVerifyHeroRoute: ApiVerifyHeroRoute,
@@ -4152,10 +4182,8 @@ const rootRouteChildren: RootRouteChildren = {
   ReviewTokenRoute: ReviewTokenRoute,
   STokenRoute: STokenRoute,
   ToursTourIdRoute: ToursTourIdRoute,
-  AdminIndexRoute: AdminIndexRoute,
   DotlovableOauthConsentRoute: DotlovableOauthConsentRoute,
   Char91DotmcpChar93InvokeToolToolRoute: Char91DotmcpChar93InvokeToolToolRoute,
-  AdminBookingsIdRoute: AdminBookingsIdRoute,
   ApiPublicBookingCalendarRoute: ApiPublicBookingCalendarRoute,
   ApiPublicBookingItineraryRoute: ApiPublicBookingItineraryRoute,
   ApiPublicBookingItineraryDataRoute: ApiPublicBookingItineraryDataRoute,
@@ -4167,7 +4195,6 @@ const rootRouteChildren: RootRouteChildren = {
   FunctionsV1StripeWebhookRoute: FunctionsV1StripeWebhookRoute,
   LovableEmailSuppressionRoute: LovableEmailSuppressionRoute,
   ToursTourIdTailorRoute: ToursTourIdTailorRoute,
-  AdminBookingsIndexRoute: AdminBookingsIndexRoute,
   ApiPublicFeedsThingsToDoDotjsonRoute: ApiPublicFeedsThingsToDoDotjsonRoute,
   ApiPublicFeedsThingsToDoDotxmlRoute: ApiPublicFeedsThingsToDoDotxmlRoute,
   ApiPublicHooksBokunBookingRoute: ApiPublicHooksBokunBookingRoute,

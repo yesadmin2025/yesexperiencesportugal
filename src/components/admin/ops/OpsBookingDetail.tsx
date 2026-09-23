@@ -49,7 +49,15 @@ function Group({ title, children }: { title: string; children: React.ReactNode }
   );
 }
 
-export function OpsBookingDetail({ bookingId, onChanged }: { bookingId: string; onChanged?: () => void }) {
+export function OpsBookingDetail({
+  bookingId,
+  onChanged,
+  hideFullPageLink,
+}: {
+  bookingId: string;
+  onChanged?: () => void;
+  hideFullPageLink?: boolean;
+}) {
   const load = useServerFn(getOpsBooking);
   const update = useServerFn(updateOpsBooking);
   const saveDraft = useServerFn(saveOpsBriefDraft);
@@ -383,13 +391,15 @@ export function OpsBookingDetail({ bookingId, onChanged }: { bookingId: string; 
             </ul>
           </Fold>
         ) : null}
-        <Link
-          to="/admin/bookings/$id"
-          params={{ id: bookingId }}
-          className="mt-3 inline-block text-[12.5px] text-[color:var(--teal)] underline"
-        >
-          Full booking page (purchase snapshot, refunds)
-        </Link>
+        {hideFullPageLink ? null : (
+          <Link
+            to="/admin/bookings/$id"
+            params={{ id: bookingId }}
+            className="mt-3 inline-block text-[12.5px] text-[color:var(--teal)] underline"
+          >
+            Full booking page (purchase snapshot, refunds)
+          </Link>
+        )}
       </Group>
     </div>
   );
