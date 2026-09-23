@@ -191,11 +191,13 @@ import { Route as LovableEmailAuthPreviewRouteImport } from './routes/lovable/em
 import { Route as ApiPublicHooksViatorDriftCheckRouteImport } from './routes/api/public/hooks/viator-drift-check'
 import { Route as ApiPublicHooksStripeWebhookHealthRouteImport } from './routes/api/public/hooks/stripe-webhook-health'
 import { Route as ApiPublicHooksImportTripadvisorReviewsRouteImport } from './routes/api/public/hooks/import-tripadvisor-reviews'
+import { Route as ApiPublicHooksGmailBookingScanRouteImport } from './routes/api/public/hooks/gmail-booking-scan'
 import { Route as ApiPublicHooksEnquiryFollowupRouteImport } from './routes/api/public/hooks/enquiry-followup'
 import { Route as ApiPublicHooksEmailFlushRouteImport } from './routes/api/public/hooks/email-flush'
 import { Route as ApiPublicHooksDnsWatchRouteImport } from './routes/api/public/hooks/dns-watch'
 import { Route as ApiPublicHooksCheckoutEmailRouteImport } from './routes/api/public/hooks/checkout-email'
 import { Route as ApiPublicHooksBookingCancelledEmailRouteImport } from './routes/api/public/hooks/booking-cancelled-email'
+import { Route as ApiPublicHooksBokunBookingRouteImport } from './routes/api/public/hooks/bokun-booking'
 import { Route as ApiPublicFeedsThingsToDoDotxmlRouteImport } from './routes/api/public/feeds/things-to-do[.]xml'
 import { Route as ApiPublicFeedsThingsToDoDotjsonRouteImport } from './routes/api/public/feeds/things-to-do[.]json'
 
@@ -1139,6 +1141,12 @@ const ApiPublicHooksImportTripadvisorReviewsRoute =
     path: '/api/public/hooks/import-tripadvisor-reviews',
     getParentRoute: () => rootRouteImport,
   } as any)
+const ApiPublicHooksGmailBookingScanRoute =
+  ApiPublicHooksGmailBookingScanRouteImport.update({
+    id: '/api/public/hooks/gmail-booking-scan',
+    path: '/api/public/hooks/gmail-booking-scan',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const ApiPublicHooksEnquiryFollowupRoute =
   ApiPublicHooksEnquiryFollowupRouteImport.update({
     id: '/api/public/hooks/enquiry-followup',
@@ -1166,6 +1174,12 @@ const ApiPublicHooksBookingCancelledEmailRoute =
   ApiPublicHooksBookingCancelledEmailRouteImport.update({
     id: '/api/public/hooks/booking-cancelled-email',
     path: '/api/public/hooks/booking-cancelled-email',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const ApiPublicHooksBokunBookingRoute =
+  ApiPublicHooksBokunBookingRouteImport.update({
+    id: '/api/public/hooks/bokun-booking',
+    path: '/api/public/hooks/bokun-booking',
     getParentRoute: () => rootRouteImport,
   } as any)
 const ApiPublicFeedsThingsToDoDotxmlRoute =
@@ -1358,11 +1372,13 @@ export interface FileRoutesByFullPath {
   '/admin/bookings/': typeof AdminBookingsIndexRoute
   '/api/public/feeds/things-to-do.json': typeof ApiPublicFeedsThingsToDoDotjsonRoute
   '/api/public/feeds/things-to-do.xml': typeof ApiPublicFeedsThingsToDoDotxmlRoute
+  '/api/public/hooks/bokun-booking': typeof ApiPublicHooksBokunBookingRoute
   '/api/public/hooks/booking-cancelled-email': typeof ApiPublicHooksBookingCancelledEmailRoute
   '/api/public/hooks/checkout-email': typeof ApiPublicHooksCheckoutEmailRoute
   '/api/public/hooks/dns-watch': typeof ApiPublicHooksDnsWatchRoute
   '/api/public/hooks/email-flush': typeof ApiPublicHooksEmailFlushRoute
   '/api/public/hooks/enquiry-followup': typeof ApiPublicHooksEnquiryFollowupRoute
+  '/api/public/hooks/gmail-booking-scan': typeof ApiPublicHooksGmailBookingScanRoute
   '/api/public/hooks/import-tripadvisor-reviews': typeof ApiPublicHooksImportTripadvisorReviewsRoute
   '/api/public/hooks/stripe-webhook-health': typeof ApiPublicHooksStripeWebhookHealthRoute
   '/api/public/hooks/viator-drift-check': typeof ApiPublicHooksViatorDriftCheckRoute
@@ -1547,11 +1563,13 @@ export interface FileRoutesByTo {
   '/admin/bookings': typeof AdminBookingsIndexRoute
   '/api/public/feeds/things-to-do.json': typeof ApiPublicFeedsThingsToDoDotjsonRoute
   '/api/public/feeds/things-to-do.xml': typeof ApiPublicFeedsThingsToDoDotxmlRoute
+  '/api/public/hooks/bokun-booking': typeof ApiPublicHooksBokunBookingRoute
   '/api/public/hooks/booking-cancelled-email': typeof ApiPublicHooksBookingCancelledEmailRoute
   '/api/public/hooks/checkout-email': typeof ApiPublicHooksCheckoutEmailRoute
   '/api/public/hooks/dns-watch': typeof ApiPublicHooksDnsWatchRoute
   '/api/public/hooks/email-flush': typeof ApiPublicHooksEmailFlushRoute
   '/api/public/hooks/enquiry-followup': typeof ApiPublicHooksEnquiryFollowupRoute
+  '/api/public/hooks/gmail-booking-scan': typeof ApiPublicHooksGmailBookingScanRoute
   '/api/public/hooks/import-tripadvisor-reviews': typeof ApiPublicHooksImportTripadvisorReviewsRoute
   '/api/public/hooks/stripe-webhook-health': typeof ApiPublicHooksStripeWebhookHealthRoute
   '/api/public/hooks/viator-drift-check': typeof ApiPublicHooksViatorDriftCheckRoute
@@ -1739,11 +1757,13 @@ export interface FileRoutesById {
   '/admin/bookings/': typeof AdminBookingsIndexRoute
   '/api/public/feeds/things-to-do.json': typeof ApiPublicFeedsThingsToDoDotjsonRoute
   '/api/public/feeds/things-to-do.xml': typeof ApiPublicFeedsThingsToDoDotxmlRoute
+  '/api/public/hooks/bokun-booking': typeof ApiPublicHooksBokunBookingRoute
   '/api/public/hooks/booking-cancelled-email': typeof ApiPublicHooksBookingCancelledEmailRoute
   '/api/public/hooks/checkout-email': typeof ApiPublicHooksCheckoutEmailRoute
   '/api/public/hooks/dns-watch': typeof ApiPublicHooksDnsWatchRoute
   '/api/public/hooks/email-flush': typeof ApiPublicHooksEmailFlushRoute
   '/api/public/hooks/enquiry-followup': typeof ApiPublicHooksEnquiryFollowupRoute
+  '/api/public/hooks/gmail-booking-scan': typeof ApiPublicHooksGmailBookingScanRoute
   '/api/public/hooks/import-tripadvisor-reviews': typeof ApiPublicHooksImportTripadvisorReviewsRoute
   '/api/public/hooks/stripe-webhook-health': typeof ApiPublicHooksStripeWebhookHealthRoute
   '/api/public/hooks/viator-drift-check': typeof ApiPublicHooksViatorDriftCheckRoute
@@ -1932,11 +1952,13 @@ export interface FileRouteTypes {
     | '/admin/bookings/'
     | '/api/public/feeds/things-to-do.json'
     | '/api/public/feeds/things-to-do.xml'
+    | '/api/public/hooks/bokun-booking'
     | '/api/public/hooks/booking-cancelled-email'
     | '/api/public/hooks/checkout-email'
     | '/api/public/hooks/dns-watch'
     | '/api/public/hooks/email-flush'
     | '/api/public/hooks/enquiry-followup'
+    | '/api/public/hooks/gmail-booking-scan'
     | '/api/public/hooks/import-tripadvisor-reviews'
     | '/api/public/hooks/stripe-webhook-health'
     | '/api/public/hooks/viator-drift-check'
@@ -2121,11 +2143,13 @@ export interface FileRouteTypes {
     | '/admin/bookings'
     | '/api/public/feeds/things-to-do.json'
     | '/api/public/feeds/things-to-do.xml'
+    | '/api/public/hooks/bokun-booking'
     | '/api/public/hooks/booking-cancelled-email'
     | '/api/public/hooks/checkout-email'
     | '/api/public/hooks/dns-watch'
     | '/api/public/hooks/email-flush'
     | '/api/public/hooks/enquiry-followup'
+    | '/api/public/hooks/gmail-booking-scan'
     | '/api/public/hooks/import-tripadvisor-reviews'
     | '/api/public/hooks/stripe-webhook-health'
     | '/api/public/hooks/viator-drift-check'
@@ -2312,11 +2336,13 @@ export interface FileRouteTypes {
     | '/admin/bookings/'
     | '/api/public/feeds/things-to-do.json'
     | '/api/public/feeds/things-to-do.xml'
+    | '/api/public/hooks/bokun-booking'
     | '/api/public/hooks/booking-cancelled-email'
     | '/api/public/hooks/checkout-email'
     | '/api/public/hooks/dns-watch'
     | '/api/public/hooks/email-flush'
     | '/api/public/hooks/enquiry-followup'
+    | '/api/public/hooks/gmail-booking-scan'
     | '/api/public/hooks/import-tripadvisor-reviews'
     | '/api/public/hooks/stripe-webhook-health'
     | '/api/public/hooks/viator-drift-check'
@@ -2486,11 +2512,13 @@ export interface RootRouteChildren {
   AdminBookingsIndexRoute: typeof AdminBookingsIndexRoute
   ApiPublicFeedsThingsToDoDotjsonRoute: typeof ApiPublicFeedsThingsToDoDotjsonRoute
   ApiPublicFeedsThingsToDoDotxmlRoute: typeof ApiPublicFeedsThingsToDoDotxmlRoute
+  ApiPublicHooksBokunBookingRoute: typeof ApiPublicHooksBokunBookingRoute
   ApiPublicHooksBookingCancelledEmailRoute: typeof ApiPublicHooksBookingCancelledEmailRoute
   ApiPublicHooksCheckoutEmailRoute: typeof ApiPublicHooksCheckoutEmailRoute
   ApiPublicHooksDnsWatchRoute: typeof ApiPublicHooksDnsWatchRoute
   ApiPublicHooksEmailFlushRoute: typeof ApiPublicHooksEmailFlushRoute
   ApiPublicHooksEnquiryFollowupRoute: typeof ApiPublicHooksEnquiryFollowupRoute
+  ApiPublicHooksGmailBookingScanRoute: typeof ApiPublicHooksGmailBookingScanRoute
   ApiPublicHooksImportTripadvisorReviewsRoute: typeof ApiPublicHooksImportTripadvisorReviewsRoute
   ApiPublicHooksStripeWebhookHealthRoute: typeof ApiPublicHooksStripeWebhookHealthRoute
   ApiPublicHooksViatorDriftCheckRoute: typeof ApiPublicHooksViatorDriftCheckRoute
@@ -3777,6 +3805,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicHooksImportTripadvisorReviewsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/hooks/gmail-booking-scan': {
+      id: '/api/public/hooks/gmail-booking-scan'
+      path: '/api/public/hooks/gmail-booking-scan'
+      fullPath: '/api/public/hooks/gmail-booking-scan'
+      preLoaderRoute: typeof ApiPublicHooksGmailBookingScanRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/public/hooks/enquiry-followup': {
       id: '/api/public/hooks/enquiry-followup'
       path: '/api/public/hooks/enquiry-followup'
@@ -3810,6 +3845,13 @@ declare module '@tanstack/react-router' {
       path: '/api/public/hooks/booking-cancelled-email'
       fullPath: '/api/public/hooks/booking-cancelled-email'
       preLoaderRoute: typeof ApiPublicHooksBookingCancelledEmailRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/hooks/bokun-booking': {
+      id: '/api/public/hooks/bokun-booking'
+      path: '/api/public/hooks/bokun-booking'
+      fullPath: '/api/public/hooks/bokun-booking'
+      preLoaderRoute: typeof ApiPublicHooksBokunBookingRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/api/public/feeds/things-to-do.xml': {
@@ -4065,12 +4107,14 @@ const rootRouteChildren: RootRouteChildren = {
   AdminBookingsIndexRoute: AdminBookingsIndexRoute,
   ApiPublicFeedsThingsToDoDotjsonRoute: ApiPublicFeedsThingsToDoDotjsonRoute,
   ApiPublicFeedsThingsToDoDotxmlRoute: ApiPublicFeedsThingsToDoDotxmlRoute,
+  ApiPublicHooksBokunBookingRoute: ApiPublicHooksBokunBookingRoute,
   ApiPublicHooksBookingCancelledEmailRoute:
     ApiPublicHooksBookingCancelledEmailRoute,
   ApiPublicHooksCheckoutEmailRoute: ApiPublicHooksCheckoutEmailRoute,
   ApiPublicHooksDnsWatchRoute: ApiPublicHooksDnsWatchRoute,
   ApiPublicHooksEmailFlushRoute: ApiPublicHooksEmailFlushRoute,
   ApiPublicHooksEnquiryFollowupRoute: ApiPublicHooksEnquiryFollowupRoute,
+  ApiPublicHooksGmailBookingScanRoute: ApiPublicHooksGmailBookingScanRoute,
   ApiPublicHooksImportTripadvisorReviewsRoute:
     ApiPublicHooksImportTripadvisorReviewsRoute,
   ApiPublicHooksStripeWebhookHealthRoute:

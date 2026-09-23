@@ -12,6 +12,7 @@ import { useServerFn } from "@tanstack/react-start";
 import { listAdminBookings } from "@/lib/bookingsAdmin.functions";
 import { formatGuestComposition } from "@/components/studio-v3/formatGuests";
 import { BookingsAvailabilityCalendar } from "@/components/admin/BookingsAvailabilityCalendar";
+import { OpsBookingsHub } from "@/components/admin/ops/OpsBookingsHub";
 import { CalendarSubscribePanel } from "@/components/admin/CalendarSubscribePanel";
 import { PaidSalesSummary } from "@/components/admin/PaidSalesSummary";
 import { PHONE_DISPLAY, WHATSAPP_NUMBER } from "@/config/business-nap";
@@ -164,6 +165,8 @@ function AdminBookingsPage() {
   const [rows, setRows] = useState<Row[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  /** Operations hub is the default working view; the day view stays available. */
+  const [mode, setMode] = useState<"ops" | "day">("ops");
 
   useEffect(() => {
     let active = true;
@@ -229,6 +232,31 @@ function AdminBookingsPage() {
         Manage guides
       </Link>
 
+      <div className="mt-5 flex flex-wrap gap-1.5">
+        {([
+          { id: "ops", label: "Operations" },
+          { id: "day", label: "Day view" },
+        ] as const).map((tab) => (
+          <button
+            key={tab.id}
+            type="button"
+            onClick={() => setMode(tab.id)}
+            aria-pressed={mode === tab.id}
+            className={`min-h-11 rounded-full border px-4 text-[11px] uppercase tracking-[0.16em] transition-colors ${
+              mode === tab.id
+                ? "border-[color:var(--charcoal)] bg-[color:var(--charcoal)] text-[color:var(--ivory)]"
+                : "border-[color:var(--sand)] text-[color:var(--charcoal-soft)]"
+            }`}
+          >
+            {tab.label}
+          </button>
+        ))}
+      </div>
+
+      {mode === "ops" ? <div className="mt-5"><OpsBookingsHub /></div> : null}
+
+      {mode === "day" ? (
+      <>
       <BookingsAvailabilityCalendar />
 
       <CalendarSubscribePanel />
@@ -359,6 +387,8 @@ function AdminBookingsPage() {
           </p>
         </>
       )}
+      </>
+      ) : null}
     </main>
   );
 }

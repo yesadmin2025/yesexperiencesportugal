@@ -1,21 +1,35 @@
-# Surgical final pass
-- [x] Correct protected wine-guide facts and public brand casing
-- [x] Clarify external-platform versus direct-review attribution
-- [x] Prove GA4 consent and SPA page-view behavior locally
-- [x] Measure and apply only safe performance improvements
-- [x] Classify all current security findings and safely remediate genuine issues
-- [x] Complete scoped validation and publish the requested site fixes
-- [x] Report backlink outreach priorities without code changes
-- [x] Fix Experiences Arrábida card image
-- [x] Make /studio canonical; redirect legacy Studio slugs
-- [x] Replace invalid theme-color with brand teal hex
-- [x] Restore Sintra & Cascais homepage card details
-- [x] Verify reciprocal EN/PT hreflang and list EN-only pages
-- [ ] Verify production GA4 collection — GA4 property linked and preview collection proven; awaiting the scheduled deployment before a production confirmation
-- [ ] Connect verified GA4 property to SiteGuru — blocked: SiteGuru is not available as a connector and no authenticated SiteGuru account is accessible
-- [x] Profile /about, /lisbon-private-tours and /book; safely defer below-fold and checkout-only resources
-- [x] Apply deferred payment loading and mobile checkout alignment to every booking gate (implemented; browser verification pending)
-- [x] Repair `/contact` delivery — endpoint now returns 503 unless at least one YES inbox accepts delivery; failed sends parked for durable retry (live submission test pending)
-- [x] Strengthen Google site-name and real-image preview signals — square 192×192 org logo, descriptive og/twitter image alt tags, WebSite alternate names (prerender verification pending)
-- [ ] Research: related searches for travel experiences (answered via Semrush; no site changes)
-- [ ] Competitor comparison vs a tour booking site — blocked: waiting for user to pick a competitor domain (Viator, GetYourGuide, Tripadvisor, Airbnb Experiences)
+# Roadmap — Operations hub upgrade
+
+## B. Data model (migration)
+- [x] Extend `bookings` with operational columns (source, channel, external refs, start_time, pickup/dropoff, pax_breakdown, language, payment_status, amount_paid, assigned_guide_id, notes, inclusions/exclusions/extras, source_raw_payload, sync_status, last_synced_at, cancelled_at, review_required/reason)
+- [x] `booking_ingestion_log` (audit: parser result, action, matched booking, reason)
+- [x] `booking_ingestion_candidates` (needs-review queue)
+- [x] GRANTs + RLS admin-only on new tables
+
+## C/D. Email ingestion
+- [x] Deterministic Bókun parser (new booking / cancellation)
+- [x] Deterministic direct sent-voucher parser (multi-booking, pre-confirmation vs fully paid)
+- [x] Non-booking email rejection rules
+- [x] Dedupe ladder: external ref → gmail message id → thread+date+tour → email+date+product
+- [x] Gmail scan server route (server-side auth only)
+
+## A/E. Admin UI
+- [x] Bookings hub: calendar + list toggle, search, filters, badges
+- [x] Booking detail: grouped sections + quick actions
+- [x] Needs Review inbox with approve / match / ignore / edit
+
+## F. Guide briefing
+- [x] Structured, editable briefing from booking + tour source of truth (no money)
+
+## G. Bókun API prep
+- [x] Server-side service abstraction + disabled-until-credentials admin state
+
+## H. Backfill
+- [x] Admin dry-run + apply, 120-day email window, future tour dates only
+
+## J. Tests
+- [x] Bókun new booking, Bókun cancellation match, direct fully-paid, two-tour email, pre-confirm→paid update, inquiry ignored
+
+## Blocked on owner
+- [ ] Connect the Gmail account (read-only) that receives Bókun notifications and sends vouchers
+- [ ] Bókun access key / secret / webhook secret (endpoint stays disabled until then)
