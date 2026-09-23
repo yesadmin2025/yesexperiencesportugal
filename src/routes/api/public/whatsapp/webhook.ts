@@ -55,13 +55,13 @@ export const Route = createFileRoute("/api/public/whatsapp/webhook")({
         const { verifyWebhookRequest } = await import("@lovable.dev/webhooks-js");
         let rawBody: string;
         try {
-          const verified = await verifyWebhookRequest(request, {
+          const verified = await verifyWebhookRequest({
+            req: request,
             secret: connectionKey,
             // WhatsApp Business history chunks reach ~3 MB.
             maxBodyBytes: 4 * 1024 * 1024,
           });
-          rawBody = typeof verified === "string" ? verified : ((verified as { body?: string }).body ?? "");
-          if (!rawBody) rawBody = await request.clone().text();
+          rawBody = verified.body;
         } catch (error) {
           console.error("whatsapp_webhook_unverified", error instanceof Error ? error.message : error);
           return Response.json({ ok: false, error: "unverified" }, { status: 401 });
