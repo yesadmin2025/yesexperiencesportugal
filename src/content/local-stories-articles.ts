@@ -2000,7 +2000,7 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
     signatureSlug: "azeitao-cheese",
     relatedSignatures: [
       { slug: "arrabida-wine-allinclusive", label: "Setúbal & Arrábida Wine Signature" },
-      { slug: "azulejo-workshop", label: "Tile Painting Workshop" },
+      { slug: "tiles-workshop", label: "Tile Painting Workshop" },
     ],
     relatedReads: [
       { path: "/local-stories/setubal-wine-guide", label: "Setúbal wine, explained" },
