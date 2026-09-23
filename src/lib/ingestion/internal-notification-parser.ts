@@ -84,8 +84,17 @@ export function parseInternalSubject(subject: string): {
   }
   if (/^a\s+yes\s+experience$/i.test(head)) head = "";
 
-  return { tourTitle: cleanTourTitle(head), date, bookingType };
+  return { tourTitle: specificTitle(head), date, bookingType };
 }
+
+/** Our own template writes these when nothing specific was recorded. */
+const GENERIC_TITLE = /^(?:a\s+)?yes\s+experience$|^yes\s+experiences?$|^experience$/i;
+
+const specificTitle = (value: string | null): string | null => {
+  const title = cleanTourTitle(value);
+  if (!title || GENERIC_TITLE.test(title.trim())) return null;
+  return title;
+};
 
 const firstLabel = (body: string, labels: string[]): string | null => {
   for (const label of labels) {
@@ -129,7 +138,7 @@ export function parseInternalNotification(input: {
   const bodyDate = bodyDateRaw ? parseDateToken(bodyDateRaw) : { date: null, time: null };
 
   const tourTitle =
-    cleanTourTitle(firstLabel(body, ["Experience", "Tour", "Product"])) ?? fromSubject.tourTitle;
+    specificTitle(firstLabel(body, ["Experience", "Tour", "Product"])) ?? fromSubject.tourTitle;
   const date = bodyDate.date ?? fromSubject.date;
   const notes = listAfter(body, "Customer notes");
 
