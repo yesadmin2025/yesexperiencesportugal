@@ -58,7 +58,7 @@ describe("voucher reconciliation parser", () => {
 
   it("matches on the payment reference before anything else", () => {
     const rule = classifyMatch(
-      { id: "a", created_at: "", amount_total: 100, amount_paid: 100, currency: "eur", preferred_date: null, tour_title: null, stripe_session_id: "cs_live_abc123456789", stripe_payment_intent_id: null },
+      { id: "a", created_at: "", amount_total: 100, amount_paid: 100, preferred_date: null, tour_title: null, stripe_session_id: "cs_live_abc123456789", stripe_payment_intent_id: null },
       block({ stripeRefs: ["cs_live_abc123456789"] }),
       { soleCandidate: false },
     );
@@ -67,7 +67,7 @@ describe("voucher reconciliation parser", () => {
 
   it("does not match when nothing lines up", () => {
     const rule = classifyMatch(
-      { id: "a", created_at: "", amount_total: 39000, amount_paid: 39000, currency: "eur", preferred_date: null, tour_title: null, stripe_session_id: "cs_live_x1234567890", stripe_payment_intent_id: null },
+      { id: "a", created_at: "", amount_total: 39000, amount_paid: 39000, preferred_date: null, tour_title: null, stripe_session_id: "cs_live_x1234567890", stripe_payment_intent_id: null },
       block({ amountCents: 12000, confirmed: true }),
       { soleCandidate: false },
     );
