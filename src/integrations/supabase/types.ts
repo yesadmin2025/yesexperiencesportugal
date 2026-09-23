@@ -108,6 +108,7 @@ export type Database = {
           received_at: string | null
           resolved_at: string | null
           resolved_by: string | null
+          slot: number
           source: string
           source_channel: string | null
           source_email_url: string | null
@@ -130,6 +131,7 @@ export type Database = {
           received_at?: string | null
           resolved_at?: string | null
           resolved_by?: string | null
+          slot?: number
           source: string
           source_channel?: string | null
           source_email_url?: string | null
@@ -152,6 +154,7 @@ export type Database = {
           received_at?: string | null
           resolved_at?: string | null
           resolved_by?: string | null
+          slot?: number
           source?: string
           source_channel?: string | null
           source_email_url?: string | null
