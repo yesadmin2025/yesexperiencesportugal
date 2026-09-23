@@ -54,15 +54,9 @@ function AdminGuidesPage() {
   const labelClass = "block text-[11px] uppercase tracking-[0.18em] text-[color:var(--charcoal-soft)]";
 
   return (
-    <main className="mx-auto max-w-3xl px-4 py-10">
-      <Link to="/admin/bookings" className="text-sm text-[color:var(--teal)]">
-        ← Guest trips
-      </Link>
-      <h1 className="mt-3 font-[family-name:var(--font-editorial)] text-3xl text-[color:var(--charcoal)]">
-        Guides
-      </h1>
-      <p className="mt-2 text-sm text-[color:var(--charcoal-soft)]">
-        Saved contacts for sending a day's brief by email or WhatsApp.
+    <AdminShell eyebrow="Team" title="Guides">
+      <p className="text-sm text-[color:var(--charcoal-soft)]">
+        Saved contacts for sending a day's brief by email or WhatsApp. Assign a guide from any booking.
       </p>
 
       {error ? <p className="mt-4 text-sm text-red-700">{error}</p> : null}
