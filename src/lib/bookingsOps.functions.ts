@@ -606,3 +606,46 @@ export const listOpsReconciliation = createServerFn({ method: "POST" })
 
     return { ok: true as const, days: data.days, rows, summary, incompleteStripe };
   });
+
+/* --------------------------------------------- one-time Stripe voucher repair */
+
+const voucherReconInput = z.object({
+  dryRun: z.boolean().default(true),
+  maxRows: z.number().int().min(1).max(120).default(60),
+  maxMessagesPerGuest: z.number().int().min(1).max(20).default(8),
+});
+
+/**
+ * Historical repair pass: matches Stripe-paid reservations that still lack
+ * operational detail against the confirmation/voucher emails already sent to
+ * the same guest. Never creates reservations, never rewrites payment truth.
+ */
+export const runOpsVoucherReconciliation = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((input: unknown) => voucherReconInput.parse(input ?? {}))
+  .handler(async ({ data, context }) => {
+    await assertAdmin(context);
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const { reconcileStripeVouchers } = await import("@/lib/ingestion/stripe-voucher-reconcile.server");
+    const report = await reconcileStripeVouchers(supabaseAdmin, {
+      dryRun: data.dryRun,
+      maxRows: data.maxRows,
+      maxMessagesPerGuest: data.maxMessagesPerGuest,
+    });
+    return { ok: true as const, report };
+  });
+
+/** Last stored result of the voucher reconciliation pass. */
+export const getOpsVoucherReconciliationReport = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .handler(async ({ context }) => {
+    await assertAdmin(context);
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const { data: state } = await supabaseAdmin
+      .from("integration_state")
+      .select("last_run_at, last_status, last_error, detail")
+      .eq("id", "stripe_voucher_reconcile")
+      .maybeSingle();
+    return { ok: true as const, state: state ?? null };
+  });
+
