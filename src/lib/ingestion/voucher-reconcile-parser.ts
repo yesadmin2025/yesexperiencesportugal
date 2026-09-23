@@ -79,9 +79,12 @@ export function cleanTourTitle(value: string | null): string | null {
 
 /** Title stated in the subject of a confirmation YES sent ("Re: Your X"). */
 export function titleFromSubject(subject: string): string | null {
-  const match = /^(?:re\s*:\s*|fwd\s*:\s*)*your\s+(.{6,90})$/i.exec(subject.trim());
-  return cleanTourTitle(match?.[1] ?? null);
+  const match = /^(?:re\s*:\s*|fwd\s*:\s*)*your\s+(.{6,120})$/i.exec(subject.trim());
+  // Subjects often append a date or note after a pipe/dash — keep the title only.
+  const head = match?.[1]?.split(/\s+[|·–—]\s+/)[0] ?? null;
+  return cleanTourTitle(head);
 }
+
 
 
 function moneyFrom(text: string): { amount: number | null; currency: string | null } {
