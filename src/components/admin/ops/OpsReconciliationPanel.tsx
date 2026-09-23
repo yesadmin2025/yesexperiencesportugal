@@ -103,7 +103,7 @@ export function OpsReconciliationPanel({ onOpenBooking }: { onOpenBooking?: (id:
 
   const refreshVoucher = async () => {
     try {
-      const result = await loadVoucher({ data: {} });
+      const result = await loadVoucher();
       const detail = (result.state?.detail ?? null) as VoucherReport | null;
       setVoucher(detail);
       setVoucherRanAt(result.state?.last_run_at ?? null);
