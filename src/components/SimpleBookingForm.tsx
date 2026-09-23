@@ -1,4 +1,4 @@
-import { useEffect, useId, useRef, useState } from "react";
+import { lazy, Suspense, useEffect, useId, useRef, useState } from "react";
 import { trackEvent } from "@/lib/analytics-events";
 import { Calendar, Sparkles, ChevronDown } from "lucide-react";
 import { Link, useNavigate } from "@tanstack/react-router";
@@ -8,11 +8,8 @@ import { SectionTitle } from "@/components/ui/SectionTitle";
 import { CtaButton } from "@/components/ui/CtaButton";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
-import { FinalDetailsDialog, type GuestDetails } from "@/components/checkout/FinalDetailsDialog";
-import {
-  BrandedCheckoutDrawer,
-  type CheckoutSummary,
-} from "@/components/checkout/BrandedCheckoutDrawer";
+import type { GuestDetails } from "@/components/checkout/FinalDetailsDialog";
+import type { CheckoutSummary } from "@/components/checkout/BrandedCheckoutDrawer";
 import { CompositionField } from "@/components/booking/CompositionField";
 import { ChargeSummaryLine } from "@/components/checkout/ChargeSummaryLine";
 import {
@@ -48,6 +45,17 @@ import {
 } from "@/lib/analytics-ga4";
 import { guideAttributionMetadata } from "@/lib/guide-attribution";
 import { SIGNATURE_RESERVE_INTENT_EVENT } from "@/lib/booking/reserve-intent";
+
+const FinalDetailsDialog = lazy(() =>
+  import("@/components/checkout/FinalDetailsDialog").then((module) => ({
+    default: module.FinalDetailsDialog,
+  })),
+);
+const BrandedCheckoutDrawer = lazy(() =>
+  import("@/components/checkout/BrandedCheckoutDrawer").then((module) => ({
+    default: module.BrandedCheckoutDrawer,
+  })),
+);
 
 /**
  * Human-readable echo of an ISO date, e.g. "Sat, 4 Oct 2026".
@@ -658,7 +666,7 @@ export function SimpleBookingForm({ tour }: { tour: SignatureTour }) {
       </div>
 
 
-      <FinalDetailsDialog
+      {detailsOpen ? <Suspense fallback={null}><FinalDetailsDialog
         priceQuote={({ adults, minorAges }) => {
           // Same resolver + arguments as handleReserve → Stripe.
           const j = resolveJourneyPricing(tour, adults, minorAges, tierOverrides);
@@ -710,9 +718,9 @@ export function SimpleBookingForm({ tour }: { tour: SignatureTour }) {
         onConfirm={async (details) => {
           await handleReserve(details);
         }}
-      />
+      /></Suspense> : null}
 
-      <BrandedCheckoutDrawer
+      {checkoutOpen ? <Suspense fallback={null}><BrandedCheckoutDrawer
         open={checkoutOpen}
         onOpenChange={(o) => {
           setCheckoutOpen(o);
@@ -750,7 +758,7 @@ export function SimpleBookingForm({ tour }: { tour: SignatureTour }) {
             search: { session_id: sid ?? undefined, tour: tour.id },
           });
         }}
-      />
+      /></Suspense> : null}
     </div>
   );
 }

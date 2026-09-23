@@ -22,6 +22,9 @@ import {
 const TITLE = "Sobre a YES Experiences Portugal | Viagens por quem cá vive";
 const DESCRIPTION =
   "Operador turístico privado, fundado em Sesimbra em 2022. Licenciado RNAAT nº 31/2023, a desenhar viagens privadas por Portugal.";
+const founderSrcSet = [480, 720, 900, 1200]
+  .map((width) => `${founderAsset.url}?w=${width}&q=78 ${width}w`)
+  .join(", ");
 
 export const Route = createFileRoute("/pt/about")({
   head: () => ({
@@ -131,6 +134,8 @@ function Page() {
             <figure className="mt-10 lg:hidden">
               <img
                 src={founderAsset.url}
+                srcSet={founderSrcSet}
+                sizes="100vw"
                 alt="Nídia Almeida a receber hóspedes numa experiência privada de vinho da YES Experiences Portugal."
                 loading="lazy"
                 decoding="async"
@@ -164,6 +169,8 @@ function Page() {
           <figure className="hidden lg:block lg:sticky lg:top-28">
             <img
               src={founderAsset.url}
+                srcSet={founderSrcSet}
+                sizes="(min-width: 1024px) 50vw, 100vw"
               alt="Nídia Almeida a receber hóspedes numa experiência privada de vinho da YES Experiences Portugal."
               loading="lazy"
               decoding="async"

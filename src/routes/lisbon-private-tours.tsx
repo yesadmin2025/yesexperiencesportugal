@@ -10,7 +10,7 @@ import { CtaButton } from "@/components/ui/CtaButton";
 import { CTA_LABELS } from "@/content/cta-vocabulary";
 import { RealReviewsStrip } from "@/components/home/RealReviewsStrip";
 import { ExitIntentEmailCapture } from "@/components/home/EmailCapture";
-import { HubBookingPicker } from "@/components/booking/HubBookingPicker";
+import { DeferredHubBookingPicker } from "@/components/performance/DeferredHubBookingPicker";
 import { signatureTours } from "@/data/signatureTours";
 import { LISBON_REGIONS } from "@/content/lisbon-regions";
 import {
@@ -219,7 +219,7 @@ function LisbonPrivateTours() {
             confirmed instantly. {CANCELLATION.signature.en}
           </p>
           <div className="mt-8 rounded-[6px] border border-[color:var(--border)] bg-[color:var(--card)] p-5 md:p-7">
-            <HubBookingPicker tourIds={BOOKABLE_IDS} />
+            <DeferredHubBookingPicker tourIds={BOOKABLE_IDS} />
           </div>
           <p className="mt-6 text-[14px] text-[color:var(--charcoal-soft)]">
             Prefer to talk first?{" "}

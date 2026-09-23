@@ -29,6 +29,9 @@ import {
 const TITLE = "About YES Experiences Portugal | Local Travel Designers";
 const DESCRIPTION =
   "Meet YES Experiences Portugal, a licensed private tour operator and local travel design company creating personal journeys from Lisbon and Sesimbra.";
+const founderSrcSet = [480, 720, 900, 1200]
+  .map((width) => `${founderAsset.url}?w=${width}&q=78 ${width}w`)
+  .join(", ");
 
 export const Route = createFileRoute("/about")({
   head: () => ({
@@ -149,6 +152,7 @@ function Page() {
             <MaskReveal as="figure" className="mt-10 lg:hidden">
               <img
                 src={founderAsset.url}
+                srcSet={founderSrcSet}
                 alt="Nídia Almeida hosting a private wine experience with YES Experiences Portugal guests."
                 loading="lazy"
                 decoding="async"
@@ -183,6 +187,7 @@ function Page() {
           <MaskReveal as="figure" className="hidden lg:block lg:sticky lg:top-28">
             <img
               src={founderAsset.url}
+                srcSet={founderSrcSet}
               alt="Nídia Almeida hosting a private wine experience with YES Experiences Portugal guests."
               loading="lazy"
               decoding="async"
