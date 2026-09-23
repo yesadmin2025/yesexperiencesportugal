@@ -230,7 +230,10 @@ export const updateOpsBooking = createServerFn({ method: "POST" })
       ops_edits: [...priorEdits.slice(-99), { at: new Date().toISOString(), by: context.userId, changes }],
     } as Json;
 
-    const { error: updateError } = await supabaseAdmin.from("bookings").update(patch).eq("id", booking.id);
+    const { error: updateError } = await supabaseAdmin
+      .from("bookings")
+      .update(patch as never)
+      .eq("id", booking.id);
     if (updateError) throw new Error(updateError.message);
     return { ok: true, changed: true, changes };
   });
