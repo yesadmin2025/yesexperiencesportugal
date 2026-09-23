@@ -7,6 +7,7 @@ import { useEffect, useState } from "react";
 import { useServerFn } from "@tanstack/react-start";
 import { deleteGuide, listGuides, saveGuide } from "@/lib/guides.functions";
 import { Button } from "@/components/ui/button";
+import { AdminShell } from "@/components/admin/AdminShell";
 
 export const Route = createFileRoute("/admin/guides")({
   component: AdminGuidesPage,

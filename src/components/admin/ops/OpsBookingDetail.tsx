@@ -14,7 +14,6 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { getOpsBooking, saveOpsBriefDraft, updateOpsBooking } from "@/lib/bookingsOps.functions";
-import { ChannelBadge, GuideBadge, PaymentBadge, ReviewBadge, StatusBadge } from "./badges";
 
 type Guide = { id: string; name: string; email?: string | null; phone?: string | null; active?: boolean | null };
 type Booking = Record<string, unknown> & { id: string };
@@ -43,8 +42,8 @@ function Row({ label, value }: { label: string; value: React.ReactNode }) {
 
 function Group({ title, children }: { title: string; children: React.ReactNode }) {
   return (
-    <section className="rounded-lg border border-[color:var(--charcoal)]/10 bg-white p-4">
-      <h3 className="mb-2 text-[12px] font-semibold uppercase tracking-[0.18em] text-[color:var(--teal)]">{title}</h3>
+    <section className="border-t border-[color:var(--charcoal)]/[0.08] pt-4">
+      <h3 className="mb-2 text-[11px] uppercase tracking-[0.2em] text-[color:var(--charcoal-soft)]">{title}</h3>
       {children}
     </section>
   );
@@ -115,108 +114,85 @@ export function OpsBookingDetail({ bookingId, onChanged }: { bookingId: string; 
   const pax = booking["pax_breakdown"] as Record<string, number> | null;
   const emailUrl = booking["source_email_url"];
 
+  const guideSelect = (
+    <select
+      aria-label="Assigned guide"
+      className="w-full rounded-md border border-[color:var(--charcoal)]/15 bg-white px-3 py-2 text-sm"
+      value={(booking["assigned_guide_id"] as string | null) ?? ""}
+      disabled={busy}
+      onChange={(event) => void apply({ assignedGuideId: event.target.value || null }, "Guide updated.")}
+    >
+      <option value="">Unassigned</option>
+      {guides.map((guide) => (
+        <option key={guide.id} value={guide.id}>
+          {guide.name}
+        </option>
+      ))}
+    </select>
+  );
+
+  const phone = typeof booking["customer_phone"] === "string" && booking["customer_phone"] ? (booking["customer_phone"] as string) : null;
+
   return (
-    <div className="space-y-3 pb-24">
-      <div className="flex flex-wrap items-center gap-1.5">
-        <ChannelBadge channel={booking["source_channel"] as string | null} source={booking["source"] as string | null} />
-        <StatusBadge status={booking["status"] as string | null} />
-        <PaymentBadge paymentStatus={booking["payment_status"] as string | null} />
-        <GuideBadge guideName={guideName} />
-        {booking["review_required"] === true ? <ReviewBadge reason={booking["review_reason"] as string | null} /> : null}
-      </div>
-
-      <Group title="Customer">
-        <Row label="Name" value={str(booking["customer_name"])} />
-        <Row
-          label="Email"
-          value={
-            <a className="underline" href={`mailto:${str(booking["customer_email"], "")}`}>
-              {str(booking["customer_email"])}
-            </a>
-          }
-        />
-        <Row
-          label="Phone"
-          value={
-            typeof booking["customer_phone"] === "string" && booking["customer_phone"] ? (
-              <a className="underline" href={`tel:${booking["customer_phone"] as string}`}>
-                {booking["customer_phone"] as string}
-              </a>
-            ) : (
-              "—"
-            )
-          }
-        />
-      </Group>
-
-      <Group title="Booking">
-        <Row label="Source" value={`${str(booking["source"], "WEBSITE")} · ${str(booking["source_channel"], "website")}`} />
-        <Row label="External ref" value={str(booking["external_booking_ref"])} />
-        <Row label="Product ref" value={str(booking["external_product_ref"])} />
-        <Row label="Internal id" value={<code className="text-[11.5px]">{bookingId}</code>} />
-        <Row label="Tour / product" value={str(booking["tour_title"] ?? booking["source_tour_id"])} />
-        <Row label="Option / rate" value={str(booking["selected_rate"])} />
-        <Row label="Date" value={str(booking["preferred_date"])} />
-        <Row label="Start time" value={str(booking["start_time"] ?? inner["startTime"])} />
-        <Row
-          label="Guests"
-          value={
-            pax
-              ? Object.entries(pax).map(([key, count]) => `${count} ${key}`).join(", ")
-              : `${str(booking["guests"], "—")} guests`
-          }
-        />
-        <Row label="Pick-up" value={str(booking["pickup_location"] ?? inner["pickup"])} />
-        <Row label="Drop-off" value={str(booking["dropoff_location"])} />
-        <Row label="Language" value={str(booking["language"] ?? inner["language"])} />
-        <Row label="Status" value={str(booking["status"])} />
-      </Group>
-
-      <Group title="Payment">
-        <Row label="Payment status" value={str(booking["payment_status"], "—")} />
-        <Row label="Amount paid" value={money(booking["amount_paid"] ?? booking["amount_total"], booking["currency"])} />
-        <Row label="Booking total" value={money(booking["amount_total"], booking["currency"])} />
-        <Row label="Stripe session" value={str(booking["stripe_session_id"])} />
-      </Group>
-
-      <Group title="Experience choices">
-        <Row label="Extras" value={list(booking["extras"]).join(", ") || "—"} />
-        <Row label="Included" value={list(booking["inclusions"]).join(", ") || "—"} />
-        <Row label="Not included" value={list(booking["exclusions"]).join(", ") || "—"} />
-        <Row label="Preferences" value={str(booking["preferences"] ?? inner["specialRequests"])} />
-        {itinerary.length > 0 ? (
-          <ol className="mt-2 space-y-1 text-[13px] text-[color:var(--charcoal)]">
-            {itinerary.map((stop, index) => (
-              <li key={index}>
-                {index + 1}. {str(stop["label"] ?? stop["name"])}
-                {typeof stop["note"] === "string" && stop["note"] ? ` — ${stop["note"] as string}` : ""}
-              </li>
-            ))}
-          </ol>
+    <div className="space-y-6 pb-24">
+      {/* ------------------------------------------------------ Essentials */}
+      <section>
+        <p className="text-[11px] uppercase tracking-[0.2em] text-[color:var(--gold)]">
+          {str(booking["source_channel"], "website")} · {str(booking["status"])}
+          {booking["review_required"] === true ? " · needs a check" : ""}
+        </p>
+        <h3 className="mt-1 font-[family-name:var(--font-editorial)] text-[22px] leading-snug text-[color:var(--charcoal)]">
+          {str(booking["tour_title"] ?? booking["source_tour_id"], "Tour to confirm")}
+        </h3>
+        {booking["review_required"] === true && typeof booking["review_reason"] === "string" ? (
+          <p className="mt-1 text-[12.5px] text-[#8A6B23]">{booking["review_reason"] as string}</p>
         ) : null}
-      </Group>
+        <div className="mt-3">
+          <Row label="Guest" value={str(booking["customer_name"])} />
+          <Row
+            label="Contact"
+            value={
+              <span className="space-x-2">
+                <a className="underline" href={`mailto:${str(booking["customer_email"], "")}`}>
+                  {str(booking["customer_email"])}
+                </a>
+                {phone ? (
+                  <a className="underline" href={`tel:${phone}`}>
+                    {phone}
+                  </a>
+                ) : null}
+              </span>
+            }
+          />
+          <Row
+            label="When"
+            value={`${str(booking["preferred_date"], "No date")}${booking["start_time"] ?? inner["startTime"] ? ` · ${str(booking["start_time"] ?? inner["startTime"])}` : ""}`}
+          />
+          <Row
+            label="Guests"
+            value={
+              pax
+                ? Object.entries(pax).map(([key, count]) => `${count} ${key}`).join(", ")
+                : `${str(booking["guests"], "—")} guests`
+            }
+          />
+          <Row label="Pick-up" value={str(booking["pickup_location"] ?? inner["pickup"])} />
+          <Row
+            label="Payment"
+            value={`${money(booking["amount_paid"] ?? booking["amount_total"], booking["currency"])} · ${str(booking["payment_status"], "—")}`}
+          />
+          <div className="flex flex-wrap items-center justify-between gap-2 py-2">
+            <span className="text-[11px] uppercase tracking-[0.14em] text-[color:var(--charcoal-soft)]">
+              Guide{guideName ? "" : " · not assigned"}
+            </span>
+            <div className="w-full sm:w-64">{guideSelect}</div>
+          </div>
+        </div>
+      </section>
 
+      {/* ------------------------------------------------------ Operations */}
       <Group title="Operations">
-        <label className="mt-1 block text-[11px] uppercase tracking-[0.14em] text-[color:var(--charcoal-soft)]">
-          Assigned guide
-        </label>
-        <select
-          className="mt-1 w-full rounded-md border border-[color:var(--charcoal)]/20 bg-white px-3 py-2 text-sm"
-          value={(booking["assigned_guide_id"] as string | null) ?? ""}
-          disabled={busy}
-          onChange={(event) =>
-            void apply({ assignedGuideId: event.target.value || null }, "Guide updated.")
-          }
-        >
-          <option value="">Unassigned</option>
-          {guides.map((guide) => (
-            <option key={guide.id} value={guide.id}>
-              {guide.name}
-            </option>
-          ))}
-        </select>
-
-        <div className="mt-3 grid gap-2 sm:grid-cols-2">
+        <div className="grid gap-2 sm:grid-cols-2">
           <QuickField
             label="Pick-up"
             initial={str(booking["pickup_location"], "")}
@@ -243,46 +219,7 @@ export function OpsBookingDetail({ bookingId, onChanged }: { bookingId: string; 
           />
         </div>
 
-        <div className="mt-3 flex flex-wrap gap-2">
-          <Button size="sm" variant="outline" disabled={busy} onClick={() => void apply({ paymentStatus: "PAID" }, "Marked paid.")}>
-            Mark paid
-          </Button>
-          <Button size="sm" variant="outline" disabled={busy} onClick={() => void apply({ paymentStatus: "PENDING_PAYMENT" }, "Marked awaiting payment.")}>
-            Awaiting payment
-          </Button>
-          <Button size="sm" variant="outline" disabled={busy} onClick={() => void apply({ status: "paid" }, "Booking confirmed.")}>
-            Confirm booking
-          </Button>
-          <Button size="sm" variant="outline" disabled={busy} onClick={() => void apply({ status: "pending" }, "Booking set to pending.")}>
-            Set pending
-          </Button>
-          {booking["review_required"] === true ? (
-            <Button size="sm" variant="outline" disabled={busy} onClick={() => void apply({ reviewRequired: false, reviewReason: null }, "Review resolved.")}>
-              Resolve review
-            </Button>
-          ) : (
-            <Button size="sm" variant="outline" disabled={busy} onClick={() => void apply({ reviewRequired: true, reviewReason: "Flagged by operator" }, "Flagged for review.")}>
-              Flag for review
-            </Button>
-          )}
-          {typeof emailUrl === "string" && emailUrl ? (
-            <Button asChild size="sm" variant="outline">
-              <a href={emailUrl} target="_blank" rel="noreferrer">
-                Open source email
-              </a>
-            </Button>
-          ) : null}
-          <Button asChild size="sm" variant="ghost">
-            <Link to="/admin/bookings/$id" params={{ id: bookingId }}>
-              Full booking page
-            </Link>
-          </Button>
-        </div>
-
-        <Row label="Sync status" value={`${str(booking["sync_status"], "—")} · ${str(booking["last_synced_at"], "never")}`} />
-        <Row label="Client notes" value={str(booking["client_notes"] ?? booking["notes"])} />
-
-        <div className="mt-3">
+        <div className="mt-4">
           <label className="block text-[11px] uppercase tracking-[0.14em] text-[color:var(--charcoal-soft)]">
             Operational notes
           </label>
@@ -290,11 +227,7 @@ export function OpsBookingDetail({ bookingId, onChanged }: { bookingId: string; 
             {str(booking["operational_notes"], "No notes yet.")}
           </pre>
           <div className="mt-2 flex gap-2">
-            <Input
-              value={note}
-              placeholder="Add an operational note"
-              onChange={(event) => setNote(event.target.value)}
-            />
+            <Input value={note} placeholder="Add an operational note" onChange={(event) => setNote(event.target.value)} />
             <Button
               size="sm"
               disabled={busy || note.trim().length < 2}
@@ -307,69 +240,170 @@ export function OpsBookingDetail({ bookingId, onChanged }: { bookingId: string; 
             </Button>
           </div>
         </div>
+
+        <Fold title="Guide briefing">
+          <p className="mb-2 text-[12.5px] text-[color:var(--charcoal-soft)]">
+            Generated from this reservation. Edit before sending — prices and payment details are never included.
+          </p>
+          <Textarea
+            value={briefDraft}
+            rows={14}
+            className="font-mono text-[12.5px]"
+            onChange={(event) => setBriefDraft(event.target.value)}
+          />
+          <div className="mt-2 flex flex-wrap gap-2">
+            <Button
+              size="sm"
+              disabled={busy}
+              onClick={async () => {
+                setBusy(true);
+                try {
+                  await saveDraft({ data: { id: bookingId, draft: briefDraft } });
+                  toast.success("Briefing saved.");
+                } catch (error) {
+                  toast.error(error instanceof Error ? error.message : "Briefing not saved.");
+                } finally {
+                  setBusy(false);
+                }
+              }}
+            >
+              Save briefing
+            </Button>
+            <Button
+              size="sm"
+              variant="outline"
+              onClick={async () => {
+                await navigator.clipboard.writeText(briefDraft);
+                toast.success("Briefing copied.");
+              }}
+            >
+              Copy
+            </Button>
+            <Button
+              size="sm"
+              variant="ghost"
+              onClick={() => setBriefDraft(brief.map((section) => [section.heading.toUpperCase(), ...section.lines].join("\n")).join("\n\n"))}
+            >
+              Regenerate
+            </Button>
+          </div>
+        </Fold>
+
+        <Fold title="Experience details">
+          <Row label="Option / rate" value={str(booking["selected_rate"])} />
+          <Row label="Drop-off" value={str(booking["dropoff_location"])} />
+          <Row label="Language" value={str(booking["language"] ?? inner["language"])} />
+          <Row label="Extras" value={list(booking["extras"]).join(", ") || "—"} />
+          <Row label="Included" value={list(booking["inclusions"]).join(", ") || "—"} />
+          <Row label="Not included" value={list(booking["exclusions"]).join(", ") || "—"} />
+          {itinerary.length > 0 ? (
+            <ol className="mt-2 space-y-1 text-[13px] text-[color:var(--charcoal)]">
+              {itinerary.map((stop, index) => (
+                <li key={index}>
+                  {index + 1}. {str(stop["label"] ?? stop["name"])}
+                  {typeof stop["note"] === "string" && stop["note"] ? ` — ${stop["note"] as string}` : ""}
+                </li>
+              ))}
+            </ol>
+          ) : null}
+        </Fold>
+
+        <Fold title="Status and payment actions">
+          <div className="flex flex-wrap gap-2">
+            <Button size="sm" variant="outline" disabled={busy} onClick={() => void apply({ paymentStatus: "PAID" }, "Marked paid.")}>
+              Mark paid
+            </Button>
+            <Button size="sm" variant="outline" disabled={busy} onClick={() => void apply({ paymentStatus: "PENDING_PAYMENT" }, "Marked awaiting payment.")}>
+              Awaiting payment
+            </Button>
+            <Button size="sm" variant="outline" disabled={busy} onClick={() => void apply({ status: "paid" }, "Booking confirmed.")}>
+              Confirm booking
+            </Button>
+            <Button size="sm" variant="outline" disabled={busy} onClick={() => void apply({ status: "pending" }, "Booking set to pending.")}>
+              Set pending
+            </Button>
+            {booking["review_required"] === true ? (
+              <Button size="sm" variant="outline" disabled={busy} onClick={() => void apply({ reviewRequired: false, reviewReason: null }, "Review resolved.")}>
+                Resolve review
+              </Button>
+            ) : (
+              <Button size="sm" variant="outline" disabled={busy} onClick={() => void apply({ reviewRequired: true, reviewReason: "Flagged by operator" }, "Flagged for review.")}>
+                Flag for review
+              </Button>
+            )}
+          </div>
+          <p className="mt-2 text-[12px] text-[color:var(--charcoal-soft)]">
+            Refunds run from the full booking page, through the existing card-payment refund.
+          </p>
+        </Fold>
       </Group>
 
-      <Group title="Guide briefing">
-        <p className="mb-2 text-[12.5px] text-[color:var(--charcoal-soft)]">
-          Generated from this reservation. Edit before sending — prices and payment details are never included.
-        </p>
-        <Textarea
-          value={briefDraft}
-          rows={16}
-          className="font-mono text-[12.5px]"
-          onChange={(event) => setBriefDraft(event.target.value)}
-        />
+      {/* ------------------------------------------ Communication & evidence */}
+      <Group title="Communication & evidence">
+        <Row label="Guest notes" value={str(booking["client_notes"] ?? booking["notes"])} />
+        <Row label="Preferences" value={str(booking["preferences"] ?? inner["specialRequests"])} />
+        <Row label="Source" value={`${str(booking["source"], "WEBSITE")} · ${str(booking["source_channel"], "website")}`} />
         <div className="mt-2 flex flex-wrap gap-2">
-          <Button
-            size="sm"
-            disabled={busy}
-            onClick={async () => {
-              setBusy(true);
-              try {
-                await saveDraft({ data: { id: bookingId, draft: briefDraft } });
-                toast.success("Briefing saved.");
-              } catch (error) {
-                toast.error(error instanceof Error ? error.message : "Briefing not saved.");
-              } finally {
-                setBusy(false);
-              }
-            }}
-          >
-            Save briefing
-          </Button>
-          <Button
-            size="sm"
-            variant="outline"
-            onClick={async () => {
-              await navigator.clipboard.writeText(briefDraft);
-              toast.success("Briefing copied.");
-            }}
-          >
-            Copy
-          </Button>
-          <Button
-            size="sm"
-            variant="ghost"
-            onClick={() => setBriefDraft(brief.map((section) => [section.heading.toUpperCase(), ...section.lines].join("\n")).join("\n\n"))}
-          >
-            Regenerate
-          </Button>
+          {typeof emailUrl === "string" && emailUrl ? (
+            <Button asChild size="sm" variant="outline">
+              <a href={emailUrl} target="_blank" rel="noreferrer">
+                Open source email
+              </a>
+            </Button>
+          ) : null}
+          {phone ? (
+            <Button asChild size="sm" variant="outline">
+              <a href={`https://wa.me/${phone.replace(/\D/g, "")}`} target="_blank" rel="noreferrer">
+                Open WhatsApp chat
+              </a>
+            </Button>
+          ) : null}
         </div>
       </Group>
 
-      {ingestion.length > 0 ? (
-        <Group title="Ingestion history">
-          <ul className="space-y-1 text-[12.5px] text-[color:var(--charcoal-soft)]">
-            {ingestion.map((entry) => (
-              <li key={String(entry["id"])}>
-                {String(entry["created_at"]).slice(0, 16).replace("T", " ")} · {String(entry["action"])}
-                {entry["reason"] ? ` · ${String(entry["reason"])}` : ""}
-              </li>
-            ))}
-          </ul>
-        </Group>
-      ) : null}
+      {/* ------------------------------------------------------------ History */}
+      <Group title="History">
+        <Row label="Last synced" value={`${str(booking["sync_status"], "—")} · ${str(booking["last_synced_at"], "never")}`} />
+        <Fold title="References">
+          <Row label="External ref" value={str(booking["external_booking_ref"])} />
+          <Row label="Product ref" value={str(booking["external_product_ref"])} />
+          <Row label="Card payment session" value={str(booking["stripe_session_id"])} />
+          <Row label="Booking total" value={money(booking["amount_total"], booking["currency"])} />
+          <Row label="Internal id" value={<code className="text-[11.5px]">{bookingId}</code>} />
+        </Fold>
+        {ingestion.length > 0 ? (
+          <Fold title={`Import history · ${ingestion.length}`}>
+            <ul className="space-y-1 text-[12.5px] text-[color:var(--charcoal-soft)]">
+              {ingestion.map((entry) => (
+                <li key={String(entry["id"])}>
+                  {String(entry["created_at"]).slice(0, 16).replace("T", " ")} · {String(entry["action"])}
+                  {entry["reason"] ? ` · ${String(entry["reason"])}` : ""}
+                </li>
+              ))}
+            </ul>
+          </Fold>
+        ) : null}
+        <Link
+          to="/admin/bookings/$id"
+          params={{ id: bookingId }}
+          className="mt-3 inline-block text-[12.5px] text-[color:var(--teal)] underline"
+        >
+          Full booking page (purchase snapshot, refunds)
+        </Link>
+      </Group>
     </div>
+  );
+}
+
+function Fold({ title, children }: { title: string; children: React.ReactNode }) {
+  return (
+    <details className="group mt-3 border-t border-[color:var(--charcoal)]/[0.07]">
+      <summary className="flex min-h-11 cursor-pointer list-none items-center justify-between text-[12.5px] text-[color:var(--charcoal)] [&::-webkit-details-marker]:hidden">
+        {title}
+        <span aria-hidden className="text-[color:var(--charcoal-soft)] transition-transform duration-200 group-open:rotate-90">›</span>
+      </summary>
+      <div className="pb-2">{children}</div>
+    </details>
   );
 }
 

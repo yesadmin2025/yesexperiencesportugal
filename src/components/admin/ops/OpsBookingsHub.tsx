@@ -76,7 +76,7 @@ const channelLabel = (row: Row) => {
 const isLive = (row: Row) => row.status !== "cancelled" && row.status !== "refunded" && row.status !== "failed";
 
 /** Why a live reservation needs a human, in plain words. Empty when fine. */
-export function attentionReasons(row: Row): string[] {
+function attentionReasons(row: Row): string[] {
   if (!isLive(row)) return [];
   const reasons: string[] = [];
   if (row.review_required) reasons.push(row.review_reason ?? "Flagged for a check");
