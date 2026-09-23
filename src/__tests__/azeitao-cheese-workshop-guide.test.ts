@@ -30,7 +30,7 @@ describe("Azeitão cheese workshop guide", () => {
 
   it("states that lunch is not included", () => {
     expect(text).toMatch(/lunch is not included|Lunch is at your own expense/i);
-    expect(text).not.toMatch(/lunch included|included lunch on this day/i);
+    expect(text).not.toMatch(/lunch is included|includes lunch/i);
   });
 
   it("only references stops that exist in the real itinerary", () => {
