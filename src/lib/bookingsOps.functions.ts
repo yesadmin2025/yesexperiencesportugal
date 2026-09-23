@@ -489,6 +489,22 @@ export const runOpsEmailIngestion = createServerFn({ method: "POST" })
       messages.sort((a, b) => (a.receivedAt ?? "").localeCompare(b.receivedAt ?? ""));
       for (const message of messages) {
         scanned += 1;
+        if (mailbox === "INTERNAL") {
+          // Our own booking notification: enrich the existing Stripe row only.
+          const { enrichFromInternalNotification } = await import(
+            "@/lib/ingestion/stripe-voucher-reconcile.server"
+          );
+          const outcome = await enrichFromInternalNotification(supabaseAdmin, message, {
+            dryRun: data.dryRun,
+          });
+          outcomes.push({
+            action: `internal_${outcome.action}`,
+            subject: message.subject,
+            reason: outcome.reason,
+            bookingId: outcome.bookingId,
+          });
+          continue;
+        }
         const results = await ingestEmailMessage(
           supabaseAdmin,
           {
@@ -498,7 +514,7 @@ export const runOpsEmailIngestion = createServerFn({ method: "POST" })
             from: message.from,
             body: message.body,
             receivedAt: message.receivedAt,
-            mailbox: message.mailbox,
+            mailbox: message.mailbox as "INBOX" | "SENT",
           },
           { dryRun: data.dryRun, futureOnly: data.futureOnly },
         );
@@ -613,6 +629,9 @@ const voucherReconInput = z.object({
   dryRun: z.boolean().default(true),
   maxRows: z.number().int().min(1).max(120).default(60),
   maxMessagesPerGuest: z.number().int().min(1).max(20).default(8),
+  includeInternalNotifications: z.boolean().default(true),
+  notificationDays: z.number().int().min(1).max(365).default(365),
+  maxNotifications: z.number().int().min(1).max(300).default(150),
 });
 
 /**
@@ -631,6 +650,9 @@ export const runOpsVoucherReconciliation = createServerFn({ method: "POST" })
       dryRun: data.dryRun,
       maxRows: data.maxRows,
       maxMessagesPerGuest: data.maxMessagesPerGuest,
+      includeInternalNotifications: data.includeInternalNotifications,
+      notificationDays: data.notificationDays,
+      maxNotifications: data.maxNotifications,
     });
     return { ok: true as const, report };
   });

@@ -20,6 +20,8 @@ type VoucherRow = {
   date: string | null;
   outcome: string;
   rule: string | null;
+  evidence?: string | null;
+  stillIncomplete?: boolean;
   fields: string[];
   subject: string | null;
   messageDate: string | null;
@@ -32,7 +34,13 @@ type VoucherReport = {
   dry_run?: boolean;
   considered?: number;
   vouchers_found?: number;
+  internal_notifications_found?: number;
+  duplicate_copies_ignored?: number;
   enriched?: number;
+  enriched_by_voucher?: number;
+  enriched_by_internal?: number;
+  enriched_by_both?: number;
+  still_incomplete?: number;
   duplicates_suppressed?: number;
   ambiguous?: number;
   no_voucher?: number;
@@ -44,11 +52,20 @@ type VoucherReport = {
 const VOUCHER_COUNTS: Array<[keyof VoucherReport, string]> = [
   ["considered", "Paid reservations considered"],
   ["vouchers_found", "Sent confirmations read"],
+  ["internal_notifications_found", "Site notifications read"],
+  ["duplicate_copies_ignored", "Duplicate notification copies ignored"],
   ["enriched", "Reservations completed"],
+  ["still_incomplete", "Still incomplete"],
   ["duplicates_suppressed", "Duplicate email rows merged"],
   ["ambiguous", "Sent to Needs Review"],
   ["no_voucher", "No matching confirmation"],
 ];
+
+const EVIDENCE_LABEL: Record<string, string> = {
+  sent_voucher: "Sent voucher",
+  internal_notification: "Site notification",
+  both: "Both sources",
+};
 
 
 type Row = {
@@ -201,6 +218,11 @@ export function OpsReconciliationPanel({ onOpenBooking }: { onOpenBooking?: (id:
                       <span className="rounded-full bg-[color:var(--sand)] px-2 py-0.5 text-[10.5px] uppercase tracking-[0.12em] text-[color:var(--charcoal-soft)]">
                         {row.outcome.replace(/_/g, " ")}
                       </span>
+                      {row.evidence ? (
+                        <span className="rounded-full border border-[color:var(--gold)]/50 px-2 py-0.5 text-[10.5px] uppercase tracking-[0.12em] text-[color:var(--charcoal-soft)]">
+                          {EVIDENCE_LABEL[row.evidence] ?? row.evidence.replace(/_/g, " ")}
+                        </span>
+                      ) : null}
                       <button
                         type="button"
                         className="text-[12.5px] text-[color:var(--teal)] underline decoration-dotted"
@@ -218,6 +240,11 @@ export function OpsReconciliationPanel({ onOpenBooking }: { onOpenBooking?: (id:
                         {row.subject}
                         {row.messageDate ? ` · ${new Date(row.messageDate).toLocaleDateString("en-GB")}` : ""}
                         {row.rule ? ` · matched on ${row.rule.replace(/_/g, " ")}` : ""}
+                      </p>
+                    ) : null}
+                    {row.fields.length > 0 ? (
+                      <p className="text-[11px] text-[color:var(--charcoal-soft)]">
+                        Filled: {row.fields.map((f) => f.replace(/_/g, " ")).join(", ")}
                       </p>
                     ) : null}
                     {row.duplicateSuppressed ? (
