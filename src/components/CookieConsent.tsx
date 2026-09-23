@@ -111,6 +111,13 @@ export function CookieConsent() {
       // Re-apply on every mount so late-loading GTM sees the correct signals.
       applyConsent(existing);
       setAnalyticsConsent(existing.analytics);
+      if (existing.analytics === "granted") {
+        trackEvent("page_view", {
+          page_path: window.location.pathname,
+          page_location: `${window.location.origin}${window.location.pathname}`,
+          page_title: document.title,
+        });
+      }
     }
     const onOpen = () => {
       const cur = readStored();

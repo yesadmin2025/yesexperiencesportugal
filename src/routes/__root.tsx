@@ -34,6 +34,7 @@ import { LocaleProvider } from "@/i18n/locale-context";
 import { LOCALE_BCP47, parseLocaleFromPath } from "@/i18n/config";
 import { Analytics } from "@vercel/analytics/react";
 import { usePublicEditorialMotion } from "@/hooks/use-marketing-motion";
+import { initializeGoogleAnalytics } from "@/lib/google-analytics";
 
 /* ──────────────────────────────────────────────────────────────────
  * App readiness flag — sets `window.__APP_READY__ = true` and fires
@@ -308,6 +309,7 @@ function RootComponent() {
   useEffect(() => installClientErrorLogger(), []);
   useEffect(() => installDevHardReload(), []);
   useEffect(() => installAnalyticsAttrs(), []);
+  useEffect(() => initializeGoogleAnalytics(), []);
   usePageViewTracking();
   useEffect(() => {
     captureUtmsFromLocation();
