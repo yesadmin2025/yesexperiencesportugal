@@ -1,15 +1,15 @@
 # Surgical final pass
-- [ ] Correct protected wine-guide facts and public brand casing
-- [ ] Clarify external-platform versus direct-review attribution
-- [ ] Prove GA4 consent and SPA page-view behavior
-- [ ] Measure and apply only safe performance improvements
-- [ ] Classify all current security findings and safely remediate genuine issues
+- [x] Correct protected wine-guide facts and public brand casing
+- [x] Clarify external-platform versus direct-review attribution
+- [x] Prove GA4 consent and SPA page-view behavior locally
+- [x] Measure and apply only safe performance improvements
+- [x] Classify all current security findings and safely remediate genuine issues
 - [ ] Complete full validation and publish only if all gates pass
-- [ ] Report backlink outreach priorities without code changes
-- [ ] Fix Experiences Arrábida card image
-- [ ] Make /studio canonical; redirect legacy Studio slugs
-- [ ] Replace invalid theme-color with brand teal hex
-- [ ] Restore Sintra & Cascais homepage card details
-- [ ] Verify reciprocal EN/PT hreflang and list EN-only pages
+- [x] Report backlink outreach priorities without code changes
+- [x] Fix Experiences Arrábida card image
+- [x] Make /studio canonical; redirect legacy Studio slugs
+- [x] Replace invalid theme-color with brand teal hex
+- [x] Restore Sintra & Cascais homepage card details
+- [x] Verify reciprocal EN/PT hreflang and list EN-only pages
 - [ ] Verify production GA4 in a fresh real-browser session
 - [ ] Connect verified GA4 property to SiteGuru when an integration path is available
