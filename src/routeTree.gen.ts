@@ -92,6 +92,7 @@ import { Route as AboutRouteImport } from './routes/about'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as PtIndexRouteImport } from './routes/pt.index'
 import { Route as LocalStoriesIndexRouteImport } from './routes/local-stories.index'
+import { Route as AdminIndexRouteImport } from './routes/admin.index'
 import { Route as ToursTourIdRouteImport } from './routes/tours.$tourId'
 import { Route as STokenRouteImport } from './routes/s.$token'
 import { Route as ReviewTokenRouteImport } from './routes/review.$token'
@@ -128,6 +129,7 @@ import { Route as AdminStudioV3AuditRouteImport } from './routes/admin.studio-v3
 import { Route as AdminStopParityRouteImport } from './routes/admin.stop-parity'
 import { Route as AdminSotRefreshRouteImport } from './routes/admin.sot-refresh'
 import { Route as AdminSotDiffRouteImport } from './routes/admin.sot-diff'
+import { Route as AdminSettingsRouteImport } from './routes/admin.settings'
 import { Route as AdminSeoStrategyRouteImport } from './routes/admin.seo-strategy'
 import { Route as AdminSeoMonitorRouteImport } from './routes/admin.seo-monitor'
 import { Route as AdminSeoJsonldRouteImport } from './routes/admin.seo-jsonld'
@@ -631,6 +633,11 @@ const LocalStoriesIndexRoute = LocalStoriesIndexRouteImport.update({
   path: '/',
   getParentRoute: () => LocalStoriesRoute,
 } as any)
+const AdminIndexRoute = AdminIndexRouteImport.update({
+  id: '/admin/',
+  path: '/admin/',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ToursTourIdRoute = ToursTourIdRouteImport.update({
   id: '/tours/$tourId',
   path: '/tours/$tourId',
@@ -810,6 +817,11 @@ const AdminSotRefreshRoute = AdminSotRefreshRouteImport.update({
 const AdminSotDiffRoute = AdminSotDiffRouteImport.update({
   id: '/admin/sot-diff',
   path: '/admin/sot-diff',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdminSettingsRoute = AdminSettingsRouteImport.update({
+  id: '/admin/settings',
+  path: '/admin/settings',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AdminSeoStrategyRoute = AdminSeoStrategyRouteImport.update({
@@ -1323,6 +1335,7 @@ export interface FileRoutesByFullPath {
   '/admin/seo-jsonld': typeof AdminSeoJsonldRoute
   '/admin/seo-monitor': typeof AdminSeoMonitorRoute
   '/admin/seo-strategy': typeof AdminSeoStrategyRoute
+  '/admin/settings': typeof AdminSettingsRoute
   '/admin/sot-diff': typeof AdminSotDiffRoute
   '/admin/sot-refresh': typeof AdminSotRefreshRoute
   '/admin/stop-parity': typeof AdminStopParityRoute
@@ -1359,6 +1372,7 @@ export interface FileRoutesByFullPath {
   '/review/$token': typeof ReviewTokenRoute
   '/s/$token': typeof STokenRoute
   '/tours/$tourId': typeof ToursTourIdRoute
+  '/admin/': typeof AdminIndexRoute
   '/local-stories/': typeof LocalStoriesIndexRoute
   '/pt/': typeof PtIndexRoute
   '/.lovable/oauth/consent': typeof DotlovableOauthConsentRoute
@@ -1515,6 +1529,7 @@ export interface FileRoutesByTo {
   '/admin/seo-jsonld': typeof AdminSeoJsonldRoute
   '/admin/seo-monitor': typeof AdminSeoMonitorRoute
   '/admin/seo-strategy': typeof AdminSeoStrategyRoute
+  '/admin/settings': typeof AdminSettingsRoute
   '/admin/sot-diff': typeof AdminSotDiffRoute
   '/admin/sot-refresh': typeof AdminSotRefreshRoute
   '/admin/stop-parity': typeof AdminStopParityRoute
@@ -1551,6 +1566,7 @@ export interface FileRoutesByTo {
   '/review/$token': typeof ReviewTokenRoute
   '/s/$token': typeof STokenRoute
   '/tours/$tourId': typeof ToursTourIdRoute
+  '/admin': typeof AdminIndexRoute
   '/local-stories': typeof LocalStoriesIndexRoute
   '/pt': typeof PtIndexRoute
   '/.lovable/oauth/consent': typeof DotlovableOauthConsentRoute
@@ -1710,6 +1726,7 @@ export interface FileRoutesById {
   '/admin/seo-jsonld': typeof AdminSeoJsonldRoute
   '/admin/seo-monitor': typeof AdminSeoMonitorRoute
   '/admin/seo-strategy': typeof AdminSeoStrategyRoute
+  '/admin/settings': typeof AdminSettingsRoute
   '/admin/sot-diff': typeof AdminSotDiffRoute
   '/admin/sot-refresh': typeof AdminSotRefreshRoute
   '/admin/stop-parity': typeof AdminStopParityRoute
@@ -1746,6 +1763,7 @@ export interface FileRoutesById {
   '/review/$token': typeof ReviewTokenRoute
   '/s/$token': typeof STokenRoute
   '/tours/$tourId': typeof ToursTourIdRoute
+  '/admin/': typeof AdminIndexRoute
   '/local-stories/': typeof LocalStoriesIndexRoute
   '/pt/': typeof PtIndexRoute
   '/.lovable/oauth/consent': typeof DotlovableOauthConsentRoute
@@ -1906,6 +1924,7 @@ export interface FileRouteTypes {
     | '/admin/seo-jsonld'
     | '/admin/seo-monitor'
     | '/admin/seo-strategy'
+    | '/admin/settings'
     | '/admin/sot-diff'
     | '/admin/sot-refresh'
     | '/admin/stop-parity'
@@ -1942,6 +1961,7 @@ export interface FileRouteTypes {
     | '/review/$token'
     | '/s/$token'
     | '/tours/$tourId'
+    | '/admin/'
     | '/local-stories/'
     | '/pt/'
     | '/.lovable/oauth/consent'
@@ -2098,6 +2118,7 @@ export interface FileRouteTypes {
     | '/admin/seo-jsonld'
     | '/admin/seo-monitor'
     | '/admin/seo-strategy'
+    | '/admin/settings'
     | '/admin/sot-diff'
     | '/admin/sot-refresh'
     | '/admin/stop-parity'
@@ -2134,6 +2155,7 @@ export interface FileRouteTypes {
     | '/review/$token'
     | '/s/$token'
     | '/tours/$tourId'
+    | '/admin'
     | '/local-stories'
     | '/pt'
     | '/.lovable/oauth/consent'
@@ -2292,6 +2314,7 @@ export interface FileRouteTypes {
     | '/admin/seo-jsonld'
     | '/admin/seo-monitor'
     | '/admin/seo-strategy'
+    | '/admin/settings'
     | '/admin/sot-diff'
     | '/admin/sot-refresh'
     | '/admin/stop-parity'
@@ -2328,6 +2351,7 @@ export interface FileRouteTypes {
     | '/review/$token'
     | '/s/$token'
     | '/tours/$tourId'
+    | '/admin/'
     | '/local-stories/'
     | '/pt/'
     | '/.lovable/oauth/consent'
@@ -2487,6 +2511,7 @@ export interface RootRouteChildren {
   AdminSeoJsonldRoute: typeof AdminSeoJsonldRoute
   AdminSeoMonitorRoute: typeof AdminSeoMonitorRoute
   AdminSeoStrategyRoute: typeof AdminSeoStrategyRoute
+  AdminSettingsRoute: typeof AdminSettingsRoute
   AdminSotDiffRoute: typeof AdminSotDiffRoute
   AdminSotRefreshRoute: typeof AdminSotRefreshRoute
   AdminStopParityRoute: typeof AdminStopParityRoute
@@ -2508,6 +2533,7 @@ export interface RootRouteChildren {
   ReviewTokenRoute: typeof ReviewTokenRoute
   STokenRoute: typeof STokenRoute
   ToursTourIdRoute: typeof ToursTourIdRoute
+  AdminIndexRoute: typeof AdminIndexRoute
   DotlovableOauthConsentRoute: typeof DotlovableOauthConsentRoute
   Char91DotmcpChar93InvokeToolToolRoute: typeof Char91DotmcpChar93InvokeToolToolRoute
   AdminBookingsIdRoute: typeof AdminBookingsIdRoute
@@ -3126,6 +3152,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LocalStoriesIndexRouteImport
       parentRoute: typeof LocalStoriesRoute
     }
+    '/admin/': {
+      id: '/admin/'
+      path: '/admin'
+      fullPath: '/admin/'
+      preLoaderRoute: typeof AdminIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/tours/$tourId': {
       id: '/tours/$tourId'
       path: '/tours/$tourId'
@@ -3376,6 +3409,13 @@ declare module '@tanstack/react-router' {
       path: '/admin/sot-diff'
       fullPath: '/admin/sot-diff'
       preLoaderRoute: typeof AdminSotDiffRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admin/settings': {
+      id: '/admin/settings'
+      path: '/admin/settings'
+      fullPath: '/admin/settings'
+      preLoaderRoute: typeof AdminSettingsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/admin/seo-strategy': {
@@ -4089,6 +4129,7 @@ const rootRouteChildren: RootRouteChildren = {
   AdminSeoJsonldRoute: AdminSeoJsonldRoute,
   AdminSeoMonitorRoute: AdminSeoMonitorRoute,
   AdminSeoStrategyRoute: AdminSeoStrategyRoute,
+  AdminSettingsRoute: AdminSettingsRoute,
   AdminSotDiffRoute: AdminSotDiffRoute,
   AdminSotRefreshRoute: AdminSotRefreshRoute,
   AdminStopParityRoute: AdminStopParityRoute,
@@ -4111,6 +4152,7 @@ const rootRouteChildren: RootRouteChildren = {
   ReviewTokenRoute: ReviewTokenRoute,
   STokenRoute: STokenRoute,
   ToursTourIdRoute: ToursTourIdRoute,
+  AdminIndexRoute: AdminIndexRoute,
   DotlovableOauthConsentRoute: DotlovableOauthConsentRoute,
   Char91DotmcpChar93InvokeToolToolRoute: Char91DotmcpChar93InvokeToolToolRoute,
   AdminBookingsIdRoute: AdminBookingsIdRoute,
