@@ -191,6 +191,7 @@ import { Route as LovableEmailAuthPreviewRouteImport } from './routes/lovable/em
 import { Route as ApiPublicHooksViatorDriftCheckRouteImport } from './routes/api/public/hooks/viator-drift-check'
 import { Route as ApiPublicHooksStripeWebhookHealthRouteImport } from './routes/api/public/hooks/stripe-webhook-health'
 import { Route as ApiPublicHooksImportTripadvisorReviewsRouteImport } from './routes/api/public/hooks/import-tripadvisor-reviews'
+import { Route as ApiPublicHooksGmailBookingScanRouteImport } from './routes/api/public/hooks/gmail-booking-scan'
 import { Route as ApiPublicHooksEnquiryFollowupRouteImport } from './routes/api/public/hooks/enquiry-followup'
 import { Route as ApiPublicHooksEmailFlushRouteImport } from './routes/api/public/hooks/email-flush'
 import { Route as ApiPublicHooksDnsWatchRouteImport } from './routes/api/public/hooks/dns-watch'
@@ -1139,6 +1140,12 @@ const ApiPublicHooksImportTripadvisorReviewsRoute =
     path: '/api/public/hooks/import-tripadvisor-reviews',
     getParentRoute: () => rootRouteImport,
   } as any)
+const ApiPublicHooksGmailBookingScanRoute =
+  ApiPublicHooksGmailBookingScanRouteImport.update({
+    id: '/api/public/hooks/gmail-booking-scan',
+    path: '/api/public/hooks/gmail-booking-scan',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const ApiPublicHooksEnquiryFollowupRoute =
   ApiPublicHooksEnquiryFollowupRouteImport.update({
     id: '/api/public/hooks/enquiry-followup',
@@ -1363,6 +1370,7 @@ export interface FileRoutesByFullPath {
   '/api/public/hooks/dns-watch': typeof ApiPublicHooksDnsWatchRoute
   '/api/public/hooks/email-flush': typeof ApiPublicHooksEmailFlushRoute
   '/api/public/hooks/enquiry-followup': typeof ApiPublicHooksEnquiryFollowupRoute
+  '/api/public/hooks/gmail-booking-scan': typeof ApiPublicHooksGmailBookingScanRoute
   '/api/public/hooks/import-tripadvisor-reviews': typeof ApiPublicHooksImportTripadvisorReviewsRoute
   '/api/public/hooks/stripe-webhook-health': typeof ApiPublicHooksStripeWebhookHealthRoute
   '/api/public/hooks/viator-drift-check': typeof ApiPublicHooksViatorDriftCheckRoute
@@ -1552,6 +1560,7 @@ export interface FileRoutesByTo {
   '/api/public/hooks/dns-watch': typeof ApiPublicHooksDnsWatchRoute
   '/api/public/hooks/email-flush': typeof ApiPublicHooksEmailFlushRoute
   '/api/public/hooks/enquiry-followup': typeof ApiPublicHooksEnquiryFollowupRoute
+  '/api/public/hooks/gmail-booking-scan': typeof ApiPublicHooksGmailBookingScanRoute
   '/api/public/hooks/import-tripadvisor-reviews': typeof ApiPublicHooksImportTripadvisorReviewsRoute
   '/api/public/hooks/stripe-webhook-health': typeof ApiPublicHooksStripeWebhookHealthRoute
   '/api/public/hooks/viator-drift-check': typeof ApiPublicHooksViatorDriftCheckRoute
@@ -1744,6 +1753,7 @@ export interface FileRoutesById {
   '/api/public/hooks/dns-watch': typeof ApiPublicHooksDnsWatchRoute
   '/api/public/hooks/email-flush': typeof ApiPublicHooksEmailFlushRoute
   '/api/public/hooks/enquiry-followup': typeof ApiPublicHooksEnquiryFollowupRoute
+  '/api/public/hooks/gmail-booking-scan': typeof ApiPublicHooksGmailBookingScanRoute
   '/api/public/hooks/import-tripadvisor-reviews': typeof ApiPublicHooksImportTripadvisorReviewsRoute
   '/api/public/hooks/stripe-webhook-health': typeof ApiPublicHooksStripeWebhookHealthRoute
   '/api/public/hooks/viator-drift-check': typeof ApiPublicHooksViatorDriftCheckRoute
@@ -1937,6 +1947,7 @@ export interface FileRouteTypes {
     | '/api/public/hooks/dns-watch'
     | '/api/public/hooks/email-flush'
     | '/api/public/hooks/enquiry-followup'
+    | '/api/public/hooks/gmail-booking-scan'
     | '/api/public/hooks/import-tripadvisor-reviews'
     | '/api/public/hooks/stripe-webhook-health'
     | '/api/public/hooks/viator-drift-check'
@@ -2126,6 +2137,7 @@ export interface FileRouteTypes {
     | '/api/public/hooks/dns-watch'
     | '/api/public/hooks/email-flush'
     | '/api/public/hooks/enquiry-followup'
+    | '/api/public/hooks/gmail-booking-scan'
     | '/api/public/hooks/import-tripadvisor-reviews'
     | '/api/public/hooks/stripe-webhook-health'
     | '/api/public/hooks/viator-drift-check'
@@ -2317,6 +2329,7 @@ export interface FileRouteTypes {
     | '/api/public/hooks/dns-watch'
     | '/api/public/hooks/email-flush'
     | '/api/public/hooks/enquiry-followup'
+    | '/api/public/hooks/gmail-booking-scan'
     | '/api/public/hooks/import-tripadvisor-reviews'
     | '/api/public/hooks/stripe-webhook-health'
     | '/api/public/hooks/viator-drift-check'
@@ -2491,6 +2504,7 @@ export interface RootRouteChildren {
   ApiPublicHooksDnsWatchRoute: typeof ApiPublicHooksDnsWatchRoute
   ApiPublicHooksEmailFlushRoute: typeof ApiPublicHooksEmailFlushRoute
   ApiPublicHooksEnquiryFollowupRoute: typeof ApiPublicHooksEnquiryFollowupRoute
+  ApiPublicHooksGmailBookingScanRoute: typeof ApiPublicHooksGmailBookingScanRoute
   ApiPublicHooksImportTripadvisorReviewsRoute: typeof ApiPublicHooksImportTripadvisorReviewsRoute
   ApiPublicHooksStripeWebhookHealthRoute: typeof ApiPublicHooksStripeWebhookHealthRoute
   ApiPublicHooksViatorDriftCheckRoute: typeof ApiPublicHooksViatorDriftCheckRoute
@@ -3777,6 +3791,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicHooksImportTripadvisorReviewsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/hooks/gmail-booking-scan': {
+      id: '/api/public/hooks/gmail-booking-scan'
+      path: '/api/public/hooks/gmail-booking-scan'
+      fullPath: '/api/public/hooks/gmail-booking-scan'
+      preLoaderRoute: typeof ApiPublicHooksGmailBookingScanRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/public/hooks/enquiry-followup': {
       id: '/api/public/hooks/enquiry-followup'
       path: '/api/public/hooks/enquiry-followup'
@@ -4071,6 +4092,7 @@ const rootRouteChildren: RootRouteChildren = {
   ApiPublicHooksDnsWatchRoute: ApiPublicHooksDnsWatchRoute,
   ApiPublicHooksEmailFlushRoute: ApiPublicHooksEmailFlushRoute,
   ApiPublicHooksEnquiryFollowupRoute: ApiPublicHooksEnquiryFollowupRoute,
+  ApiPublicHooksGmailBookingScanRoute: ApiPublicHooksGmailBookingScanRoute,
   ApiPublicHooksImportTripadvisorReviewsRoute:
     ApiPublicHooksImportTripadvisorReviewsRoute,
   ApiPublicHooksStripeWebhookHealthRoute:
