@@ -12,6 +12,41 @@ import { getOpsIntegrationStatus, runOpsEmailIngestion } from "@/lib/bookingsOps
 
 type Outcome = { action: string; subject: string; reason: string | null; bookingId: string | null };
 
+const CADENCE_MINUTES = 15;
+
+function formatMoment(value: string | null): string {
+  if (!value) return "—";
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return "—";
+  return date.toLocaleString("en-GB", {
+    day: "2-digit",
+    month: "short",
+    hour: "2-digit",
+    minute: "2-digit",
+  });
+}
+
+function readGmailHealth(state: Array<Record<string, unknown>>) {
+  const row = state.find((entry) => entry["id"] === "gmail_bookings");
+  if (!row) return null;
+  const detail = (row["detail"] ?? {}) as Record<string, unknown>;
+  const lastRunAt = typeof row["last_run_at"] === "string" ? row["last_run_at"] : null;
+  const lastSuccessAt = typeof detail["last_success_at"] === "string" ? detail["last_success_at"] : null;
+  const nextRunAt = lastRunAt
+    ? new Date(new Date(lastRunAt).getTime() + CADENCE_MINUTES * 60_000).toISOString()
+    : null;
+  return {
+    lastRunAt,
+    lastSuccessAt,
+    nextRunAt,
+    lastStatus: typeof row["last_status"] === "string" ? row["last_status"] : null,
+    lastError: typeof row["last_error"] === "string" ? row["last_error"] : null,
+    scanned: typeof detail["scanned"] === "number" ? detail["scanned"] : null,
+    trigger: typeof detail["last_trigger"] === "string" ? detail["last_trigger"] : "manual",
+    summary: (detail["summary"] ?? {}) as Record<string, number>,
+  };
+}
+
 export function OpsIntegrationsPanel({ onChanged }: { onChanged?: () => void }) {
   const loadStatus = useServerFn(getOpsIntegrationStatus);
   const run = useServerFn(runOpsEmailIngestion);
