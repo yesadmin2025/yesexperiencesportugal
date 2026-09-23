@@ -187,6 +187,7 @@ export function parseWhatsAppMessage(input: { body: string | null | undefined })
   const confirmed = hit(CONFIRM, text) && !hedged && !cancelled && !refund;
 
   const { date, time } = statedDate(text);
+  const dates = statedDates(text);
 
   const pickupRaw =
     capture(text, /pick(?:\s|-)?up(?:\s+(?:is|at|from|point|location))?\s*:?\s*([^\n.!?]{3,140})/i) ??
