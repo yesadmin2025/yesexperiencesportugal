@@ -87,6 +87,55 @@ export function OpsIntegrationsPanel({ onChanged }: { onChanged?: () => void }) 
         </p>
       </section>
 
+      {gmailHealth ? (
+        <section className="rounded-lg border border-[color:var(--charcoal)]/12 bg-white p-4">
+          <h3 className="text-[12px] font-semibold uppercase tracking-[0.18em] text-[color:var(--teal)]">
+            Automatic scan health
+          </h3>
+          <dl className="mt-2 grid grid-cols-1 gap-x-6 gap-y-1 text-[13px] sm:grid-cols-2">
+            <div className="flex justify-between gap-3">
+              <dt className="text-[color:var(--charcoal-soft)]">Last run</dt>
+              <dd className="font-medium">{formatMoment(gmailHealth.lastRunAt)}</dd>
+            </div>
+            <div className="flex justify-between gap-3">
+              <dt className="text-[color:var(--charcoal-soft)]">Result</dt>
+              <dd className={gmailHealth.lastStatus === "error" ? "font-medium text-[#9B2C2C]" : "font-medium"}>
+                {gmailHealth.lastStatus === "ok" ? "Successful" : gmailHealth.lastStatus === "error" ? "Failed" : "—"}
+              </dd>
+            </div>
+            <div className="flex justify-between gap-3">
+              <dt className="text-[color:var(--charcoal-soft)]">Last successful scan</dt>
+              <dd className="font-medium">{formatMoment(gmailHealth.lastSuccessAt)}</dd>
+            </div>
+            <div className="flex justify-between gap-3">
+              <dt className="text-[color:var(--charcoal-soft)]">Next expected run</dt>
+              <dd className="font-medium">{formatMoment(gmailHealth.nextRunAt)}</dd>
+            </div>
+            <div className="flex justify-between gap-3">
+              <dt className="text-[color:var(--charcoal-soft)]">Emails read</dt>
+              <dd className="font-medium">{gmailHealth.scanned ?? "—"}</dd>
+            </div>
+            <div className="flex justify-between gap-3">
+              <dt className="text-[color:var(--charcoal-soft)]">Started by</dt>
+              <dd className="font-medium">{gmailHealth.trigger === "cron" ? "Automatic schedule" : "Manual run"}</dd>
+            </div>
+          </dl>
+          {Object.keys(gmailHealth.summary).length > 0 ? (
+            <p className="mt-2 text-[12.5px] text-[color:var(--charcoal-soft)]">
+              {Object.entries(gmailHealth.summary)
+                .map(([action, count]) => `${count} ${action}`)
+                .join(" · ")}
+            </p>
+          ) : null}
+          {gmailHealth.lastError ? (
+            <p className="mt-2 text-[12.5px] text-[#9B2C2C]">Last problem: {gmailHealth.lastError}</p>
+          ) : null}
+          <p className="mt-2 text-[12px] text-[color:var(--charcoal-soft)]">
+            The scan runs by itself every 15 minutes and also updates here after a manual run.
+          </p>
+        </section>
+      ) : null}
+
       <section className="rounded-lg border border-[color:var(--charcoal)]/12 bg-white p-4">
         <h3 className="text-[12px] font-semibold uppercase tracking-[0.18em] text-[color:var(--teal)]">Bókun direct sync</h3>
         <p className="mt-1 text-[13px]">
