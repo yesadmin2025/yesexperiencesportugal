@@ -1820,7 +1820,7 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
 
   {
     slug: "fatima-day-trip-from-lisbon",
-    title: "Fátima Day Trip from Lisbon: Private Tour Guide (2026)",
+    title: "Fátima, Nazaré & Óbidos Day Trip from Lisbon (2026)",
     metaDescription:
       "Planning a Fátima day trip from Lisbon? Drive time, what you see at the sanctuary, how Nazaré and Óbidos fit the same day, and how our private tour runs.",
     h1: "Fátima Day Trip from Lisbon — What the Day Actually Looks Like",

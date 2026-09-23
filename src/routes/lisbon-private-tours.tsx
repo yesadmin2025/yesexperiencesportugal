@@ -35,9 +35,9 @@ import { CANCELLATION, LICENSE_LABEL, WEBSITE_URL } from "@/config/business-nap"
 
 const PATH = "/lisbon-private-tours";
 const PAGE_URL = `${WEBSITE_URL}${PATH}`;
-const TITLE = "Private Lisbon Tours & Day Trips — Local, Instantly Bookable";
+const TITLE = "Lisbon Portugal Tours — Private Day Tours & Day Trips";
 const DESCRIPTION =
-  "Private Lisbon tours and day trips with a licensed local guide: Arrábida wine, Sintra & Cascais, Évora and the Atlantic coast. Hotel pickup, your group only.";
+  "Lisbon Portugal tours and private Portugal day tours with a licensed local guide: Arrábida wine, Sintra & Cascais, Évora, Azeitão and the Atlantic coast. Hotel pickup, your group only.";
 
 const crumbs = [
   { name: "Home", path: "/" },
