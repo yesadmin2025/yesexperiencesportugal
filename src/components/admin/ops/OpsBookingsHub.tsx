@@ -151,6 +151,7 @@ export function OpsBookingsHub() {
       </div>
 
       {view === "review" ? <OpsReviewInbox onChanged={refresh} /> : null}
+      {view === "reconciliation" ? <OpsReconciliationPanel onOpenBooking={setSelected} /> : null}
       {view === "integrations" ? <OpsIntegrationsPanel onChanged={refresh} /> : null}
 
       {view === "list" || view === "calendar" ? (
