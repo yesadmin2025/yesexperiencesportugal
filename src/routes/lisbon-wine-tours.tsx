@@ -19,6 +19,7 @@ import {
 } from "@/lib/jsonld";
 import { REVIEW_CERTIFICATE } from "@/config/trust-certificate";
 import { CANCELLATION, LICENSE_LABEL, WEBSITE_URL } from "@/config/business-nap";
+import arrabidaWineImage from "@/assets/tours/arrabida-wine-allinclusive/hero.jpg";
 
 /**
  * /lisbon-wine-tours — wine-intent hub ("Lisbon wine tour", "best Lisbon
@@ -101,7 +102,10 @@ const FAQS = [
 export const Route = createFileRoute("/lisbon-wine-tours")({
   head: () => ({
     meta: [
-      ...socialImageMeta(),
+      ...socialImageMeta(
+        arrabidaWineImage,
+        "Guests tasting wine among the vines on a private Arrábida wine day from Lisbon",
+      ),
       { title: TITLE },
       { name: "description", content: DESCRIPTION },
       { property: "og:title", content: TITLE },
