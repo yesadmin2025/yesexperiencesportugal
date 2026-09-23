@@ -37,7 +37,7 @@ describe("targeted production fixes", () => {
     expect(homepage).toContain("t.rating.toFixed(1)");
     expect(homepage).toContain("signatureDurationLabel(t.id, t.durationHours)");
     expect(homepage).toContain("€{t.priceFrom}");
-    expect(homepage).toContain("CTA_LABELS.reserveDay");
+    expect(homepage).toContain("See dates &amp; reserve");
   });
 
   it("prefers durable bundled imagery for Signature cards", () => {
