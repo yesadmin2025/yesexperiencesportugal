@@ -319,6 +319,20 @@ export async function ingestParsedBooking(
   const row = bookingRow(booking, ctx);
 
   if (existing) {
+    // A later cancellation or refund is the authoritative state: an older
+    // confirmation email must never bring the reservation back as active.
+    if (existing.status === "cancelled" || existing.status === "refunded") {
+      const reason = `existing_${existing.status}_wins`;
+      if (!dryRun) {
+        await logIngestion(supabaseAdmin, ctx, {
+          parser: booking.parser, parseStatus: "parsed", action: "ignored",
+          bookingId: existing.id, reason, confidence: booking.confidence,
+          dedupeKey, channel: booking.sourceChannel,
+        });
+      }
+      return { ...base, action: "ignored", bookingId: existing.id, candidateId: null, reason };
+    }
+
     if (!dryRun) {
       const patch: Record<string, unknown> = { ...row };
       delete patch["booking_type"];
@@ -328,6 +342,15 @@ export async function ingestParsedBooking(
         delete patch["status"];
         delete patch["payment_status"];
       }
+      if (isStripeAuthoritative(existing)) {
+        // Stripe is the record of payment: keep its state, amount and origin.
+        delete patch["payment_status"];
+        delete patch["amount_paid"];
+        delete patch["currency"];
+        delete patch["source"];
+        if (existing.status === "paid") delete patch["status"];
+        if (existing.source_channel) delete patch["source_channel"];
+      }
       Object.keys(patch).forEach((key) => {
         if (patch[key] === null || patch[key] === undefined) delete patch[key];
       });
@@ -335,7 +358,8 @@ export async function ingestParsedBooking(
       await logIngestion(supabaseAdmin, ctx, {
         parser: booking.parser, parseStatus: "parsed", action: "updated",
         bookingId: existing.id, confidence: booking.confidence, dedupeKey,
-        channel: booking.sourceChannel, payload: { keys },
+        channel: booking.sourceChannel,
+        payload: { keys, enriched: Object.keys(patch), stripe_authoritative: isStripeAuthoritative(existing) },
       });
     }
     return { ...base, action: "updated", bookingId: existing.id, candidateId: null, reason: null };
