@@ -51,13 +51,38 @@ export function collectStripeRefs(text: string): string[] {
   return [...out];
 }
 
+/** Refund, cancellation and dispute threads are never a voucher. */
+const NOT_A_VOUCHER = /\b(refund|refunded|cancellation|cancelled|canceled|dispute|chargeback)\b/i;
+
 export function isConfirmationVoucher(subject: string, body: string): boolean {
+  if (NOT_A_VOUCHER.test(subject)) return false;
   const haystack = `${subject}\n${body}`;
   return (
     DIRECT_CONFIRM_MARKERS.some((re) => re.test(haystack)) ||
     DIRECT_PRECONFIRM_MARKERS.some((re) => re.test(haystack))
   );
 }
+
+/**
+ * A usable tour title, or null. Guards against the heading heuristic picking up
+ * a signature line, a link or a phone number — we never write a guessed value.
+ */
+export function cleanTourTitle(value: string | null): string | null {
+  if (!value) return null;
+  const text = value.replace(/\s+/g, " ").trim();
+  if (text.length < 6 || text.length > 90) return null;
+  if (/https?:|www\.|@|\+\d|\d{6,}/.test(text)) return null;
+  const letters = text.replace(/[^A-Za-zÀ-ÿ]/g, "").length;
+  if (letters < text.length * 0.6) return null;
+  return text;
+}
+
+/** Title stated in the subject of a confirmation YES sent ("Re: Your X"). */
+export function titleFromSubject(subject: string): string | null {
+  const match = /^(?:re\s*:\s*|fwd\s*:\s*)*your\s+(.{6,90})$/i.exec(subject.trim());
+  return cleanTourTitle(match?.[1] ?? null);
+}
+
 
 function moneyFrom(text: string): { amount: number | null; currency: string | null } {
   return parseMoney(
