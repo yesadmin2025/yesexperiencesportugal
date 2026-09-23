@@ -12,6 +12,41 @@ import { getOpsIntegrationStatus, runOpsEmailIngestion } from "@/lib/bookingsOps
 
 type Outcome = { action: string; subject: string; reason: string | null; bookingId: string | null };
 
+const CADENCE_MINUTES = 15;
+
+function formatMoment(value: string | null): string {
+  if (!value) return "—";
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return "—";
+  return date.toLocaleString("en-GB", {
+    day: "2-digit",
+    month: "short",
+    hour: "2-digit",
+    minute: "2-digit",
+  });
+}
+
+function readGmailHealth(state: Array<Record<string, unknown>>) {
+  const row = state.find((entry) => entry["id"] === "gmail_bookings");
+  if (!row) return null;
+  const detail = (row["detail"] ?? {}) as Record<string, unknown>;
+  const lastRunAt = typeof row["last_run_at"] === "string" ? row["last_run_at"] : null;
+  const lastSuccessAt = typeof detail["last_success_at"] === "string" ? detail["last_success_at"] : null;
+  const nextRunAt = lastRunAt
+    ? new Date(new Date(lastRunAt).getTime() + CADENCE_MINUTES * 60_000).toISOString()
+    : null;
+  return {
+    lastRunAt,
+    lastSuccessAt,
+    nextRunAt,
+    lastStatus: typeof row["last_status"] === "string" ? row["last_status"] : null,
+    lastError: typeof row["last_error"] === "string" ? row["last_error"] : null,
+    scanned: typeof detail["scanned"] === "number" ? detail["scanned"] : null,
+    trigger: typeof detail["last_trigger"] === "string" ? detail["last_trigger"] : "manual",
+    summary: (detail["summary"] ?? {}) as Record<string, number>,
+  };
+}
+
 export function OpsIntegrationsPanel({ onChanged }: { onChanged?: () => void }) {
   const loadStatus = useServerFn(getOpsIntegrationStatus);
   const run = useServerFn(runOpsEmailIngestion);
@@ -25,6 +60,7 @@ export function OpsIntegrationsPanel({ onChanged }: { onChanged?: () => void }) 
   const [outcomes, setOutcomes] = useState<Outcome[]>([]);
   const [summary, setSummary] = useState<Record<string, number>>({});
   const [dryRun, setDryRun] = useState(true);
+  const gmailHealth = status ? readGmailHealth(status.state) : null;
 
   const refresh = async () => {
     try {
@@ -86,6 +122,55 @@ export function OpsIntegrationsPanel({ onChanged }: { onChanged?: () => void }) 
           Only reservations dated today or later are recorded. Anything unclear goes to Needs Review.
         </p>
       </section>
+
+      {gmailHealth ? (
+        <section className="rounded-lg border border-[color:var(--charcoal)]/12 bg-white p-4">
+          <h3 className="text-[12px] font-semibold uppercase tracking-[0.18em] text-[color:var(--teal)]">
+            Automatic scan health
+          </h3>
+          <dl className="mt-2 grid grid-cols-1 gap-x-6 gap-y-1 text-[13px] sm:grid-cols-2">
+            <div className="flex justify-between gap-3">
+              <dt className="text-[color:var(--charcoal-soft)]">Last run</dt>
+              <dd className="font-medium">{formatMoment(gmailHealth.lastRunAt)}</dd>
+            </div>
+            <div className="flex justify-between gap-3">
+              <dt className="text-[color:var(--charcoal-soft)]">Result</dt>
+              <dd className={gmailHealth.lastStatus === "error" ? "font-medium text-[#9B2C2C]" : "font-medium"}>
+                {gmailHealth.lastStatus === "ok" ? "Successful" : gmailHealth.lastStatus === "error" ? "Failed" : "—"}
+              </dd>
+            </div>
+            <div className="flex justify-between gap-3">
+              <dt className="text-[color:var(--charcoal-soft)]">Last successful scan</dt>
+              <dd className="font-medium">{formatMoment(gmailHealth.lastSuccessAt)}</dd>
+            </div>
+            <div className="flex justify-between gap-3">
+              <dt className="text-[color:var(--charcoal-soft)]">Next expected run</dt>
+              <dd className="font-medium">{formatMoment(gmailHealth.nextRunAt)}</dd>
+            </div>
+            <div className="flex justify-between gap-3">
+              <dt className="text-[color:var(--charcoal-soft)]">Emails read</dt>
+              <dd className="font-medium">{gmailHealth.scanned ?? "—"}</dd>
+            </div>
+            <div className="flex justify-between gap-3">
+              <dt className="text-[color:var(--charcoal-soft)]">Started by</dt>
+              <dd className="font-medium">{gmailHealth.trigger === "cron" ? "Automatic schedule" : "Manual run"}</dd>
+            </div>
+          </dl>
+          {Object.keys(gmailHealth.summary).length > 0 ? (
+            <p className="mt-2 text-[12.5px] text-[color:var(--charcoal-soft)]">
+              {Object.entries(gmailHealth.summary)
+                .map(([action, count]) => `${count} ${action}`)
+                .join(" · ")}
+            </p>
+          ) : null}
+          {gmailHealth.lastError ? (
+            <p className="mt-2 text-[12.5px] text-[#9B2C2C]">Last problem: {gmailHealth.lastError}</p>
+          ) : null}
+          <p className="mt-2 text-[12px] text-[color:var(--charcoal-soft)]">
+            The scan runs by itself every 15 minutes and also updates here after a manual run.
+          </p>
+        </section>
+      ) : null}
 
       <section className="rounded-lg border border-[color:var(--charcoal)]/12 bg-white p-4">
         <h3 className="text-[12px] font-semibold uppercase tracking-[0.18em] text-[color:var(--teal)]">Bókun direct sync</h3>

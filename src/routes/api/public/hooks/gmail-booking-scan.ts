@@ -55,8 +55,16 @@ export const Route = createFileRoute("/api/public/hooks/gmail-booking-scan")({
 
         const days = body.days ?? 7;
         const maxMessages = body.maxMessages ?? 40;
+        const trigger = (request.headers.get("lovable-context") || "manual").slice(0, 32);
         const summary: Record<string, number> = {};
         let scanned = 0;
+
+        const { data: existing } = await supabaseAdmin
+          .from("integration_state")
+          .select("detail")
+          .eq("id", "gmail_bookings")
+          .maybeSingle();
+        const previous = (existing?.detail ?? {}) as Record<string, unknown>;
 
         try {
           for (const { query, mailbox } of buildQueries(days)) {
@@ -90,17 +98,31 @@ export const Route = createFileRoute("/api/public/hooks/gmail-booking-scan")({
             last_run_at: new Date().toISOString(),
             last_status: "error",
             last_error: detail.slice(0, 500),
+            detail: {
+              ...previous,
+              last_error_at: new Date().toISOString(),
+              last_trigger: trigger,
+            } as never,
           });
           return Response.json({ ok: false, error: "scan_failed", scanned }, { status: 502 });
         }
 
+        const finishedAt = new Date().toISOString();
         await supabaseAdmin.from("integration_state").upsert({
           id: "gmail_bookings",
           enabled: true,
-          last_run_at: new Date().toISOString(),
+          last_run_at: finishedAt,
           last_status: "ok",
           last_error: null,
-          detail: { scanned, summary, days } as never,
+          detail: {
+            ...previous,
+            scanned,
+            summary,
+            days,
+            last_trigger: trigger,
+            last_success_at: finishedAt,
+            cadence_minutes: 15,
+          } as never,
         });
 
         return Response.json({ ok: true, scanned, summary });
