@@ -48,7 +48,7 @@
     {
       "name": "Design your day",
       "short_name": "Studio",
-      "url": "/studio-v3?source=pwa",
+      "url": "/studio?source=pwa",
       "icons": [
         {
           "src": "/icon-192.png",
