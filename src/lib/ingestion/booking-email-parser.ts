@@ -175,7 +175,7 @@ function listAfter(body: string, label: string): string[] {
 
 /** Lines written under the "Product" label, before the next labelled row. */
 function productBlock(body: string): string[] {
-  const match = body.match(/^[>\s*]*Product\s*[:：]?[ \t]*\n([\s\S]{0,600}?)(?=\n[>\s*]*(?:Supplier|Sold by|Booking channel|Customer|Rate|Date|Product booking ref)\b|$)/im);
+  const match = body.match(/^[>\s*]*Product\s*[:：]?[ \t]*\n([\s\S]{0,600}?)(?=\n[>\s*]*(?:Supplier|Sold by|Booking channel|Customer|Rate|Date|Product booking ref)\b|(?![\s\S]))/im);
   if (!match) return [];
   return match[1]!
     .split("\n")
