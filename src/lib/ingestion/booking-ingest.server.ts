@@ -354,17 +354,18 @@ async function createCandidate(
         source_channel: booking.sourceChannel,
         gmail_message_id: message.gmailMessageId,
         gmail_thread_id: message.gmailThreadId,
+        slot: booking.slot,
         source_email_url: gmailUrl(message.gmailMessageId),
         subject: message.subject,
         received_at: message.receivedAt,
-        detected: { ...booking, slot: String(booking.slot) } as never,
+        detected: booking as never,
         missing_fields: booking.missingFields as never,
         confidence: booking.confidence,
         reason,
         status: "pending",
         raw_payload: { from: message.from, body: message.body.slice(0, 20000) } as never,
       },
-      { onConflict: "gmail_message_id,detected" },
+      { onConflict: "gmail_message_id,slot" },
     )
     .select("id")
     .maybeSingle();
