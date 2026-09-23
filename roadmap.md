@@ -11,5 +11,5 @@
 - [x] Replace invalid theme-color with brand teal hex
 - [x] Restore Sintra & Cascais homepage card details
 - [x] Verify reciprocal EN/PT hreflang and list EN-only pages
-- [ ] Verify production GA4 collection — blocked: GTM loads but contains no firing GA4 tag/measurement destination
-- [ ] Connect verified GA4 property to SiteGuru — blocked: no SiteGuru connector or authenticated account access
+- [ ] Verify production GA4 collection — GA4 property linked and preview collection proven; awaiting the scheduled deployment before a production confirmation
+- [ ] Connect verified GA4 property to SiteGuru — blocked: SiteGuru is not available as a connector and no authenticated SiteGuru account is accessible
