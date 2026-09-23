@@ -152,9 +152,13 @@ const normaliseBody = (body: string) =>
  */
 function labelled(body: string, label: string): string | null {
   const escaped = label.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-  const inline = body.match(new RegExp(`^[>\\s*]*${escaped}\\s*[:：-]?[ \\t]*(.+)$`, "im"));
+  // The separator is required so the label "Product" cannot swallow the value
+  // of the neighbouring label "Product booking ref.".
+  const inline = body.match(new RegExp(`^[>\\s*]*${escaped}\\s*[:：][ \\t]*(.+)$`, "im"));
   if (inline && clean(inline[1])) return clean(inline[1]);
-  const block = body.match(new RegExp(`^[>\\s*]*${escaped}\\s*[:：-]?[ \\t]*\\n+\\s*(.+)$`, "im"));
+  const spaced = body.match(new RegExp(`^[>\\s*]*${escaped}(?:[ \\t]{2,}|\\t)(.+)$`, "im"));
+  if (spaced && clean(spaced[1])) return clean(spaced[1]);
+  const block = body.match(new RegExp(`^[>\\s*]*${escaped}\\s*[:：]?[ \\t]*\\n+[ \\t]*(.+)$`, "im"));
   return block ? clean(block[1]) : null;
 }
 
