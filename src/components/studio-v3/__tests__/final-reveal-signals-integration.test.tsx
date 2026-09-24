@@ -71,9 +71,17 @@ function renderReveal(answers: Answers) {
 
 import { filterRevealSignals } from "../studioAcknowledgement";
 
+function renderedSignals(): string[] {
+  const list = screen.queryByTestId("studio-v3-final-reveal-signals");
+  if (!list) return [];
+  return within(list)
+    .getAllByRole("listitem")
+    .map((li) => li.textContent?.trim() ?? "");
+}
+
 describe("FinalRevealStory — rendered signals match the reveal narrative module", () => {
   for (const testCase of CASES) {
-    it(`renders exactly the unit-tested signals for the ${testCase.name}`, () => {
+    it(`renders exactly the genuinely new signals for the ${testCase.name}`, () => {
       const expected = buildRevealNarrative({
         ...testCase.answers,
         region: regionLabelFor(testCase.answers.destinationIntent),
@@ -81,15 +89,12 @@ describe("FinalRevealStory — rendered signals match the reveal narrative modul
       });
 
       renderReveal(testCase.answers);
-
-      const list = screen.getByTestId("studio-v3-final-reveal-signals");
-      const rendered = within(list)
-        .getAllByRole("listitem")
-        .map((li) => li.textContent?.trim() ?? "");
+      const rendered = renderedSignals();
 
       // P6 "acknowledge once": the reveal renders the narrative signals minus
-      // the themes the traveller already heard earlier in the flow — same
-      // module, same order, no extras, no invented prose.
+      // every semantic theme the traveller already heard earlier in the flow.
+      // Zero is valid: the editorial intro, facts and route already carry the
+      // payoff, so repeated reasons are never restored merely to fill a list.
       const expectedShown = filterRevealSignals([...expected.signals], {
         state: {
           feeling: testCase.answers.feeling,
@@ -99,7 +104,6 @@ describe("FinalRevealStory — rendered signals match the reveal narrative modul
         refinementShown: testCase.answers.refinement != null,
       });
       expect(rendered).toEqual(expectedShown);
-      expect(rendered.length).toBeGreaterThanOrEqual(2);
       expect(rendered.length).toBeLessThanOrEqual(3);
       expect(new Set(rendered).size).toBe(rendered.length);
     });
@@ -127,19 +131,14 @@ describe("FinalRevealStory — rendered signals match the reveal narrative modul
     if (expected.signals.length === 0) {
       expect(screen.queryByTestId("studio-v3-final-reveal-signals")).toBeNull();
     } else {
-      const rendered = within(screen.getByTestId("studio-v3-final-reveal-signals"))
-        .getAllByRole("listitem")
-        .map((li) => li.textContent?.trim() ?? "");
-      expect(rendered).toEqual([...expected.signals]);
+      expect(renderedSignals()).toEqual([...expected.signals]);
     }
   });
 
   it("keeps the rendered signals stable across repeated mounts of the same answers", () => {
     const read = () => {
       renderReveal(CASES[0].answers);
-      const rendered = within(screen.getByTestId("studio-v3-final-reveal-signals"))
-        .getAllByRole("listitem")
-        .map((li) => li.textContent?.trim() ?? "");
+      const rendered = renderedSignals();
       cleanup();
       return rendered;
     };

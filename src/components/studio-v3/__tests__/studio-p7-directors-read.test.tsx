@@ -51,9 +51,9 @@ describe("composeDirectorsRead — determinism", () => {
     expect(JSON.stringify(state)).toBe(snapshot);
   });
 
-  it("recomputes when a meaningful answer changes (back-navigation)", () => {
+  it("recomputes when a meaningful interpreted answer changes (back-navigation)", () => {
     const before = composeDirectorsRead(coastalCouple);
-    const after = composeDirectorsRead({ ...coastalCouple, rhythm: "immersive" });
+    const after = composeDirectorsRead({ ...coastalCouple, companions: "family" });
     expect(after.signature).not.toBe(before.signature);
     expect(after.body).not.toEqual(before.body);
   });
@@ -67,10 +67,13 @@ describe("composeDirectorsRead — meaningfully different reads", () => {
     expect(new Set(copies).size).toBe(feelings.length);
   });
 
-  it("writes a distinct read for slow vs full rhythm", () => {
-    expect(copyOf({ ...coastalCouple, rhythm: "slow" })).not.toBe(
-      copyOf({ ...coastalCouple, rhythm: "full" }),
-    );
+  it("does not replay the Director when only rhythm changes", () => {
+    const slow = composeDirectorsRead({ ...coastalCouple, rhythm: "slow" });
+    const full = composeDirectorsRead({ ...coastalCouple, rhythm: "full" });
+    expect(full.headline).toBe(slow.headline);
+    expect(full.body).toEqual(slow.body);
+    expect(full.signature).toBe(slow.signature);
+    expect(full.themes).not.toContain("pace.rhythm");
   });
 
   it("writes a distinct read for different company", () => {
@@ -106,8 +109,8 @@ describe("composeDirectorsRead — never a label dump", () => {
       expect(line.trim().endsWith(".")).toBe(true);
       expect(line.length).toBeLessThan(180);
     }
-    expect(read.body.length).toBeGreaterThanOrEqual(2);
-    expect(read.body.length).toBeLessThanOrEqual(3);
+    expect(read.body.length).toBeGreaterThanOrEqual(1);
+    expect(read.body.length).toBeLessThanOrEqual(2);
   });
 });
 
@@ -124,7 +127,9 @@ describe("composeDirectorsRead — inherited intent woven, not repeated", () => 
 
     expect(taste).toHaveLength(0);
     expect(copy).not.toMatch(/Atlantic|shoreline/i);
+    expect(copy).not.toMatch(/rushed|fewer places|longer in each/i);
     expect(read.themes).not.toContain("theme.coast");
+    expect(read.themes).not.toContain("pace.rhythm");
     expect(read.body).toContain("This is for the two of you.");
   });
 
@@ -145,6 +150,7 @@ describe("composeDirectorsRead — inherited intent woven, not repeated", () => 
       const copy = [read.headline, ...read.body].join(" ");
       expect(copy).not.toMatch(c.echo);
       expect(read.themes).not.toContain(c.theme);
+      expect(read.themes).not.toContain("pace.rhythm");
       expect(read.body).toContain("This is for the two of you.");
     }
   });
@@ -160,6 +166,7 @@ describe("composeDirectorsRead — inherited intent woven, not repeated", () => 
     expect(read.body.some((l) => l.includes("wine with room to linger"))).toBe(true);
     expect(read.themes).toContain("theme.wine");
     expect(read.themes).not.toContain("theme.coast");
+    expect(read.themes).not.toContain("pace.rhythm");
   });
 });
 
@@ -172,8 +179,15 @@ describe("composeDirectorsRead — safe neutral bridge", () => {
     expect(read.headline).toBe("Let me read this back to you.");
   });
 
-  it("is not neutral as soon as one real signal exists", () => {
-    expect(composeDirectorsRead({ rhythm: "slow" }).neutral).toBe(false);
+  it("does not manufacture a second interpretation from rhythm alone", () => {
+    const read = composeDirectorsRead({ rhythm: "slow" });
+    expect(read.neutral).toBe(true);
+    expect(read.themes).toEqual([]);
+    expect(read.body).toHaveLength(1);
+  });
+
+  it("is not neutral as soon as one interpreted signal exists", () => {
+    expect(composeDirectorsRead({ companions: "couple" }).neutral).toBe(false);
   });
 });
 
@@ -233,7 +247,7 @@ describe("DirectorsRead — presentation", () => {
     expect(screen.queryAllByRole("listitem")).toHaveLength(0);
   });
 
-  it("fires the view callback once per read, not on every re-render", () => {
+  it("fires the view callback once per real read, not for rhythm-only replay", () => {
     const onView = vi.fn();
     const read = composeDirectorsRead(coastalCouple);
     const { rerender } = render(
@@ -243,7 +257,11 @@ describe("DirectorsRead — presentation", () => {
     rerender(<DirectorsRead read={read} onContinue={() => {}} onView={onView} />);
     expect(onView).toHaveBeenCalledTimes(1);
 
-    const changed = composeDirectorsRead({ ...coastalCouple, rhythm: "full" });
+    const rhythmOnly = composeDirectorsRead({ ...coastalCouple, rhythm: "full" });
+    rerender(<DirectorsRead read={rhythmOnly} onContinue={() => {}} onView={onView} />);
+    expect(onView).toHaveBeenCalledTimes(1);
+
+    const changed = composeDirectorsRead({ ...coastalCouple, companions: "family" });
     rerender(<DirectorsRead read={changed} onContinue={() => {}} onView={onView} />);
     expect(onView).toHaveBeenCalledTimes(2);
   });

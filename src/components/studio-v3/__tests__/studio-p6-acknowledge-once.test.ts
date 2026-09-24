@@ -5,6 +5,7 @@ import {
   acknowledgementSignalsFor,
   acknowledgementSummaryFor,
   filterRevealSignals,
+  inferredDirectorsReadThemes,
   interestsAcknowledgedThemes,
   themeOfSignal,
   themesAcknowledgedBefore,
@@ -117,23 +118,33 @@ describe("P6 — reveal", () => {
     expect(kept).not.toContain("Coast first");
     expect(kept).not.toContain("Fewer moments, held longer");
     expect(kept).toContain("Led by heritage");
+    expect(kept).toContain("The private wine tasting is built into the day");
   });
 
-  it("never empties the reveal — the floor restores original order", () => {
+  it("renders silence rather than restoring reasons already heard", () => {
     const signals = ["Coast first", "Fewer moments, held longer"];
-    const kept = filterRevealSignals(signals, c);
-    expect(kept.length).toBe(2);
-    expect(kept).toEqual(signals);
+    expect(filterRevealSignals(signals, c)).toEqual([]);
   });
 
-  it("keeps a single-signal reveal intact", () => {
-    expect(filterRevealSignals(["Coast first"], c)).toEqual(["Coast first"]);
+  it("drops even a single repeated reason instead of using it as filler", () => {
+    expect(filterRevealSignals(["Coast first"], c)).toEqual([]);
   });
 
   it("leaves reveal reasons untouched when nothing was acknowledged earlier", () => {
     const empty = ctx(null, [], null, false);
     const signals = ["Led by coast", "An even rhythm, with time to stop"];
     expect(filterRevealSignals(signals, empty)).toEqual(signals);
+  });
+
+  it("reconstructs Director themes at the terminal reveal without transient UI history", () => {
+    const terminal = ctx("coastal", ["wine"], null, false);
+    expect(inferredDirectorsReadThemes(terminal.state)).toEqual(["theme.wine"]);
+    expect(
+      filterRevealSignals(
+        ["Wine with room to linger", "Led by heritage", "Something entirely new"],
+        terminal,
+      ),
+    ).toEqual(["Led by heritage", "Something entirely new"]);
   });
 });
 
