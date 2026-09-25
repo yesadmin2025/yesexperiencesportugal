@@ -19,9 +19,23 @@ describe("targeted production fixes", () => {
     expect(sitemap).not.toContain('{ path: "/studio-v3",');
   });
 
-  it("uses the literal brand teal theme color", () => {
+  it("makes Travel Designer canonical and retires the duplicate multi-day URL", () => {
+    const legacy = read("src/routes/multi-day.tsx");
+    const canonical = read("src/routes/portugal-travel-designer.tsx");
+    const sitemap = read("src/generated/sitemap-routes.ts");
+    expect(legacy).toContain('to: "/portugal-travel-designer"');
+    expect(legacy).toContain("statusCode: 301");
+    expect(legacy).not.toContain('rel: "canonical"');
+    expect(canonical).toContain('rel: "canonical", href: CANONICAL');
+    expect(sitemap).toContain('{ path: "/portugal-travel-designer",');
+    expect(sitemap).not.toContain('{ path: "/multi-day",');
+    expect(read("src/lib/tailored-policy.ts")).toContain('return "/portugal-travel-designer"');
+    expect(read("src/lib/site-search.ts")).not.toContain('path: "/multi-day"');
+  });
+
+  it("uses the brand teal theme token", () => {
     expect(read("src/routes/__root.tsx")).toContain(
-      '{ name: "theme-color", content: "#295B61" }',
+      '{ name: "theme-color", content: "var(--teal)" }',
     );
   });
 

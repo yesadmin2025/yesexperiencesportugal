@@ -58,14 +58,6 @@ const SERVICE_PAGES: SearchDoc[] = [
     keywords: "travel designer multi day itinerary journey private portugal",
   },
   {
-    id: "page-multi-day",
-    kind: "page",
-    title: "Multi-day journeys",
-    summary: "Longer private routes across Portugal, paced day by day.",
-    path: "/multi-day",
-    keywords: "multi day itinerary road trip week portugal",
-  },
-  {
     id: "page-corporate",
     kind: "page",
     title: "Corporate & incentive experiences",

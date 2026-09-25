@@ -55,7 +55,7 @@ export const LEGACY_REDIRECT_MAP: Readonly<Record<string, string>> = {
   "/tours": "/experiences",
   "/experiences": "/experiences",
   "/day-tours": "/day-tours",
-  "/multi-day": "/multi-day",
+  "/multi-day": "/portugal-travel-designer",
   "/private-tours": "/portugal-tours",
   "/luxury-tours": "/luxury-tours-portugal",
 

@@ -20,7 +20,7 @@ const read = (p: string) => readFileSync(resolve(process.cwd(), p), "utf8");
 const ROOT = read("src/routes/__root.tsx");
 const HOME = read("src/routes/index.tsx");
 const STUDIO = read("src/routes/studio.tsx");
-const MULTI = read("src/routes/multi-day.tsx");
+const DESIGNER = read("src/routes/portugal-travel-designer.tsx");
 
 /** Match helper call inside a jsonLdScript(...) wrapper anywhere in the file. */
 const emits = (source: string, helper: string) =>
@@ -44,10 +44,9 @@ describe("JSON-LD per-template contract", () => {
     it("emits Service (never omitted)", () => expect(emits(STUDIO, "studioServiceLd")).toBe(true));
   });
 
-  describe("/multi-day", () => {
-    it("emits BreadcrumbList", () => expect(emits(MULTI, "breadcrumbLd")).toBe(true));
-    it("emits FAQPage", () => expect(emits(MULTI, "faqPageLd")).toBe(true));
+  describe("/portugal-travel-designer", () => {
+    it("emits BreadcrumbList", () => expect(emits(DESIGNER, "breadcrumbLd")).toBe(true));
     it("emits Service (never omitted)", () =>
-      expect(emits(MULTI, "travelDesignerServiceLd")).toBe(true));
+      expect(emits(DESIGNER, "travelDesignerServiceLd")).toBe(true));
   });
 });

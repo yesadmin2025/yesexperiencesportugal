@@ -26,12 +26,11 @@ describe("public page header grammar (editorial calm pass)", () => {
     expect(about.match(/page-header-support/g)?.length ?? 0).toBe(1);
   });
 
-  it("keeps the multi-day hero free of the tertiary all-caps line", () => {
-    const multiDay = read("src/routes/multi-day.tsx");
-    const heroEnd = multiDay.indexOf("public-page-header");
-    const firstSection = multiDay.indexOf("section-y", heroEnd);
-    expect(multiDay.slice(heroEnd, firstSection)).not.toContain("Delivered as a travel file");
-    expect(multiDay).toContain("Delivered as a travel file");
+  it("keeps the Travel Designer hero free of tertiary all-caps copy", () => {
+    const designer = read("src/routes/portugal-travel-designer.tsx");
+    const heroEnd = designer.indexOf("public-page-header");
+    const firstSection = designer.indexOf("section-y", heroEnd);
+    expect(designer.slice(heroEnd, firstSection)).not.toContain("Delivered as a travel file");
   });
 
   it("defines the shared calm spacing and motion tokens once", () => {

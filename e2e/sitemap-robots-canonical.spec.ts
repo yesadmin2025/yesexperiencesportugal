@@ -22,7 +22,6 @@ const REQUIRED_CANONICAL_PATHS = [
   "/experiences",
   "/studio",
   "/day-tours",
-  "/multi-day",
   "/portugal-travel-designer",
   "/proposal-in-portugal",
   "/corporate",
@@ -62,6 +61,8 @@ const FORBIDDEN_PATHS = [
   "/studio-living-atlas-preview",
   "/experience-studio",
   "/studio-v2",
+  "/studio-v3",
+  "/multi-day",
   "/typography-audit",
   "/unsubscribe",
   "/moments",
@@ -103,10 +104,9 @@ const REQUIRED_DISALLOWS = [
 ];
 
 const CANONICAL_ORIGIN = "https://yesexperiencesportugal.com";
-const CANONICAL_HOST = "yesexperiencesportugal.com";
 
 async function fetchText(url: string): Promise<string> {
-  const ctx = await request.newContext({ extraHTTPHeaders: { Host: CANONICAL_HOST } });
+  const ctx = await request.newContext();
   const res = await ctx.get(url);
   expect(res.status(), `GET ${url}`).toBe(200);
   const body = await res.text();

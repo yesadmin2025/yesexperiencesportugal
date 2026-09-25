@@ -62,7 +62,6 @@ const OVERRIDES = {
   "/": { changefreq: "weekly", priority: "1.0" },
   "/experiences": { changefreq: "weekly", priority: "0.9" },
   "/studio": { changefreq: "weekly", priority: "0.9" },
-  "/multi-day": { changefreq: "weekly", priority: "0.9" },
   "/portugal-tours": { changefreq: "monthly", priority: "0.9" },
   "/day-tours": { changefreq: "weekly", priority: "0.8" },
   "/local-stories": { changefreq: "weekly", priority: "0.7" },
