@@ -42,6 +42,7 @@ describe("Experiences editorial collection", () => {
     expect(source).not.toContain('className="reveal section-y bg-[color:var(--ivory)]');
     expect(source).not.toContain("<Scene className=");
     expect(source).toContain('<div className="experiences-editorial-grid');
+    expect(source).toContain("motion-skip section-y");
   });
 
 });
