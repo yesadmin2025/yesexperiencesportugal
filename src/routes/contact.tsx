@@ -49,7 +49,7 @@ const contactSchema = z.object({
 });
 
 /** Map a single Name field onto the existing first/last contract. */
-export function splitFullName(full: string): { first: string; last: string } {
+function splitFullName(full: string): { first: string; last: string } {
   const parts = full.trim().split(/\s+/).filter(Boolean);
   const first = (parts.shift() ?? "").slice(0, 80);
   return { first, last: parts.join(" ").slice(0, 80) };
