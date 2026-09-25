@@ -106,7 +106,7 @@ export const SOCIAL = {
   /**
    * Canonical Google Business Profile share URL, supplied by the owner.
    * Use exactly this link in sameAs and any public profile reference.
-   * Do NOT substitute a Maps URL or the obsolete Rua Central do Meco listing.
+   * Do NOT substitute a Maps short link or any obsolete listing address.
    */
   google: "https://share.google/BaSl6G0cnoLKgXXay" as string,
   viator: "" as string,
