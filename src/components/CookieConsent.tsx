@@ -100,6 +100,34 @@ export function CookieConsent() {
     };
   }, [conversionOverlayOpen, hydrated, open]);
 
+  // While the banner is visible, publish its height (+ a small gap) as
+  // --cookie-banner-lift so floating buttons (WhatsApp support, FloatingActions)
+  // sit above it instead of being covered. Removed as soon as the banner
+  // closes, returning the buttons to their normal position.
+  React.useEffect(() => {
+    if (!hydrated || !open || conversionOverlayOpen) return;
+    const root = document.documentElement;
+    const card = cardRef.current;
+    if (!card) return;
+    const GAP_PX = 12;
+    const apply = () => {
+      root.style.setProperty(
+        "--cookie-banner-lift",
+        `${Math.ceil(card.getBoundingClientRect().height) + GAP_PX}px`,
+      );
+    };
+    apply();
+    const observer =
+      typeof ResizeObserver !== "undefined" ? new ResizeObserver(apply) : null;
+    observer?.observe(card);
+    window.addEventListener("resize", apply);
+    return () => {
+      observer?.disconnect();
+      window.removeEventListener("resize", apply);
+      root.style.removeProperty("--cookie-banner-lift");
+    };
+  }, [conversionOverlayOpen, hydrated, open, customize]);
+
   React.useEffect(() => {
     if (!hydrated) return;
     const existing = readStored();
@@ -172,6 +200,7 @@ export function CookieConsent() {
       className="fixed inset-x-0 bottom-0 z-[70] pointer-events-none px-0 pb-0 sm:px-5 sm:pb-4"
     >
       <div
+        ref={cardRef}
         className="cookie-consent-card pointer-events-auto mx-auto max-w-none overflow-hidden rounded-t-[8px] border-t border-[color:var(--charcoal)]/[0.1] bg-[color:var(--ivory)] shadow-[var(--shadow-elevated)] sm:max-w-[980px] sm:rounded-[6px] sm:border"
       >
         <div
