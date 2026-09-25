@@ -44,6 +44,35 @@ export interface ResolvedJourneyStop {
   readonly blueprintStopId?: string | null;
 }
 
+export interface ComposableDisplayLine {
+  readonly stopId: string;
+  readonly label: string;
+  readonly quantity: number;
+  readonly unitEur: number;
+  readonly totalEur: number;
+  readonly pricingUnit: string;
+}
+
+/** Attach the visible stop label to each owner-priced composable line. */
+export function toComposableDisplayLines(
+  lines: readonly ComposableStopLine[],
+  stops: ReadonlyArray<{ label: string; inventoryStopId?: string | null; blueprintStopId?: string | null }>,
+): ComposableDisplayLine[] {
+  return lines.map((line) => {
+    const stop = stops.find(
+      (s) => s.inventoryStopId === line.stopId || s.blueprintStopId === line.stopId,
+    );
+    return {
+      stopId: line.stopId,
+      label: stop?.label ?? line.stopId.replace(/[-_]/g, " "),
+      quantity: line.quantity,
+      unitEur: Math.round(line.unitEurCents) / 100,
+      totalEur: Math.round(line.totalEurCents) / 100,
+      pricingUnit: line.pricingUnit,
+    };
+  });
+}
+
 export interface ResolvedJourney {
   readonly adults: number | null;
   readonly minorAges: readonly number[];
@@ -71,6 +100,8 @@ export interface ResolvedJourney {
   /** Unit-aware party total of the selected additions (sum of `amount`). */
   readonly addOnsPartyTotalEur: number;
   readonly composableLines: readonly ComposableStopLine[];
+  /** Same lines with the customer-facing stop label — for itemisation. */
+  readonly composableDisplayLines: readonly ComposableDisplayLine[];
   readonly composablePartyTotalEur: number;
   readonly totalEur: number | null;
   /**
@@ -228,6 +259,7 @@ export function useResolvedJourney(
       baseTotalEur,
       addOnsPartyTotalEur: Math.round(addOnsPartyTotalEur),
       composableLines,
+      composableDisplayLines: toComposableDisplayLines(composableLines, stops),
       composablePartyTotalEur,
       totalEur,
       composedSupplementPerPaxEur: composedSupplementPerPax,
