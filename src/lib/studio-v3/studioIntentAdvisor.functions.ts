@@ -115,6 +115,9 @@ export const adviseStudioIntent = createServerFn({ method: "POST" })
         },
         body: JSON.stringify({
           model: STUDIO_INTENT_MODEL,
+          // Function tools on gpt-5.6-luna via /v1/chat/completions must not use reasoning.
+          // The gateway otherwise defaults to a reasoning effort and OpenAI rejects the request.
+          reasoning_effort: "none",
           temperature: 0.1,
           messages: [
             {
