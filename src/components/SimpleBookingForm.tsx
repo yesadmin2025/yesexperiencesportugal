@@ -61,6 +61,41 @@ const BrandedCheckoutDrawer = lazy(() =>
  * Human-readable echo of an ISO date, e.g. "Sat, 4 Oct 2026".
  * Parsed as UTC so the label never drifts a day by timezone.
  */
+const signatureSelectionStorageKey = (tourId: string) =>
+  `yes:signature-booking:${tourId}`;
+
+function readStoredSignatureSelection(
+  tourId: string,
+): { date: string; composition: TravellerComposition } | null {
+  if (typeof window === "undefined") return null;
+  try {
+    const raw = window.sessionStorage.getItem(signatureSelectionStorageKey(tourId));
+    if (!raw) return null;
+    const parsed = JSON.parse(raw) as {
+      date?: unknown;
+      composition?: { adults?: unknown; minorAges?: unknown };
+    };
+    const date = typeof parsed.date === "string" ? parsed.date : "";
+    const adults = Number(parsed.composition?.adults);
+    const minorAges = Array.isArray(parsed.composition?.minorAges)
+      ? parsed.composition.minorAges
+          .map(Number)
+          .filter(
+            (age) => Number.isInteger(age) && age >= 0 && age <= 17,
+          )
+      : [];
+    if (!Number.isInteger(adults) || adults < 1) return null;
+    // Session storage is tab-scoped, but never restore an already-past day.
+    if (date && date < computeMinDateISO(0)) {
+      window.sessionStorage.removeItem(signatureSelectionStorageKey(tourId));
+      return null;
+    }
+    return { date, composition: { adults, minorAges } };
+  } catch {
+    return null;
+  }
+}
+
 function readableDateLabel(iso: string): string {
   const [y, m, d] = iso.split("-").map(Number);
   if (!y || !m || !d) return iso;
@@ -89,6 +124,29 @@ export function SimpleBookingForm({ tour }: { tour: SignatureTour }) {
     adults: 2,
     minorAges: [],
   });
+  const [selectionHydrated, setSelectionHydrated] = useState(false);
+
+  useEffect(() => {
+    const stored = readStoredSignatureSelection(tour.id);
+    if (stored) {
+      setDate(stored.date);
+      setComposition(stored.composition);
+    }
+    setSelectionHydrated(true);
+  }, [tour.id]);
+
+  useEffect(() => {
+    if (!selectionHydrated || typeof window === "undefined") return;
+    try {
+      window.sessionStorage.setItem(
+        signatureSelectionStorageKey(tour.id),
+        JSON.stringify({ date, composition }),
+      );
+    } catch {
+      // Storage can be unavailable in strict/private browser contexts.
+    }
+  }, [selectionHydrated, tour.id, date, composition]);
+
   const guests = totalGuests(composition);
   const compositionReady = isCompositionComplete(composition);
   const [language, setLanguage] = useState<"en" | "pt">("en");
