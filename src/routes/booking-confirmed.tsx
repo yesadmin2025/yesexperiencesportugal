@@ -154,6 +154,16 @@ function BookingConfirmedPage() {
   }, [state, session_id, tour]);
 
   const paid = state.kind === "ok" && state.data.paymentStatus === "paid";
+
+  useEffect(() => {
+    if (!paid || !tour || typeof window === "undefined") return;
+    try {
+      window.sessionStorage.removeItem(`yes:signature-booking:${tour}`);
+    } catch {
+      // Session storage may be unavailable; a failed cleanup never affects confirmation.
+    }
+  }, [paid, tour]);
+
   const pending = state.kind === "ok" && !paid;
   const amountLabel =
     state.kind === "ok" && state.data.amountTotal != null && state.data.currency
