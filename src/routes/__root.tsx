@@ -32,7 +32,6 @@ import { captureAcquisitionFromLocation, captureUtmsFromLocation } from "@/lib/u
 import { captureGuideRefFromLocation } from "@/lib/guide-attribution";
 import { LocaleProvider } from "@/i18n/locale-context";
 import { LOCALE_BCP47, parseLocaleFromPath } from "@/i18n/config";
-import { Analytics } from "@vercel/analytics/react";
 import { usePublicEditorialMotion } from "@/hooks/use-marketing-motion";
 import { initializeGoogleAnalytics } from "@/lib/google-analytics";
 
@@ -358,7 +357,6 @@ function RootComponent() {
           <WhatsAppSupportButton />
           <InstallAppPrompt />
           <Toaster position="bottom-left" richColors closeButton />
-          <Analytics />
         </TooltipProvider>
       </LocaleProvider>
     </QueryClientProvider>
