@@ -24,7 +24,6 @@ export const SITEMAP_STATIC_ROUTES: SitemapRoute[] = [
   { path: "/lisbon-wine-tours", changefreq: "monthly", priority: "0.7" },
   { path: "/local-stories", changefreq: "weekly", priority: "0.7" },
   { path: "/luxury-tours-portugal", changefreq: "monthly", priority: "0.85" },
-  { path: "/multi-day", changefreq: "weekly", priority: "0.9" },
   { path: "/portugal-for-american-travelers", changefreq: "monthly", priority: "0.7" },
   { path: "/portugal-itinerary", changefreq: "monthly", priority: "0.7" },
   { path: "/portugal-tours", changefreq: "monthly", priority: "0.9" },
