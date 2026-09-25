@@ -98,7 +98,36 @@ const FILES = walk(ROOT).map((f) => ({
 
 const SCANNABLE = FILES.filter((f) => !f.rel.startsWith(TESTS_REL));
 
+// Legacy domains in importer/source URLs, sender infrastructure, redirect
+// monitoring and admin history are operational evidence, not public NAP.
+// Guard actual public identity surfaces instead of erasing those references.
+const PUBLIC_IDENTITY = FILES.filter((f) =>
+  f.rel.startsWith("routes/") &&
+  !f.rel.startsWith("routes/admin.") &&
+  !f.rel.startsWith("routes/api/") &&
+  !f.rel.startsWith("routes/lovable/") &&
+  !f.rel.startsWith("routes/_authenticated/") ||
+  ["config/business-nap.ts", "lib/jsonld.ts", "lib/site-search.ts"].includes(f.rel),
+);
+const STALE_IDENTITY = [
+  /\+351\s?912\s?839\s?500/g,
+  /912839500/g,
+  /info@yesexperiences\.pt/gi,
+  /Rua Central do Meco/gi,
+  /https?:\/\/(?:www\.)?yesexperiences\.pt\b/gi,
+];
+
 describe("NAP + license consistency", () => {
+  it("does not publish stale identity in public pages or structured data", () => {
+    const violations: string[] = [];
+    for (const { rel, text } of PUBLIC_IDENTITY) {
+      for (const needle of STALE_IDENTITY) {
+        needle.lastIndex = 0;
+        if (needle.test(text)) violations.push(`${rel}: ${needle.source}`);
+      }
+    }
+    expect(violations, violations.join("\n")).toEqual([]);
+  });
   it("never uses the forbidden RNAVT / Lisbon-team tokens", () => {
     const violations: string[] = [];
     for (const { rel, text } of SCANNABLE) {
@@ -129,6 +158,14 @@ describe("NAP + license consistency", () => {
     expect(nap.PHONE_DISPLAY).toBe("+351 911 889 992");
     expect(nap.WHATSAPP_NUMBER).toBe("351911889992");
     expect(nap.BASED_IN).toBe("Sesimbra, Portugal");
+    expect(nap.STRUCTURED_ADDRESS).toEqual({
+      "@type": "PostalAddress",
+      streetAddress: "Avenida 25 de Abril",
+      postalCode: "2970-130",
+      addressLocality: "Sesimbra",
+      addressRegion: "Setúbal",
+      addressCountry: "PT",
+    });
     expect(nap.whatsappUrl("hi")).toBe("https://wa.me/351911889992?text=hi");
     expect(nap.TRUST_LINE).toBe(
       "Licensed Portuguese tour operator · RNAAT nº 31/2023 · Based in Sesimbra, Portugal",

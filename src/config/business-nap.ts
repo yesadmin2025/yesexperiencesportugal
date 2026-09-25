@@ -20,6 +20,20 @@ export const LICENSE_LONG =
 
 export const CITY = "Sesimbra" as const;
 export const COUNTRY_CODE = "PT" as const;
+/** Current public listing address; use for every machine-readable business address. */
+export const STREET_ADDRESS = "Avenida 25 de Abril" as const;
+export const POSTAL_CODE = "2970-130" as const;
+export const ADDRESS_LOCALITY = CITY;
+export const ADDRESS_REGION = "Setúbal" as const;
+export const ADDRESS_COUNTRY = COUNTRY_CODE;
+export const STRUCTURED_ADDRESS = {
+  "@type": "PostalAddress",
+  streetAddress: STREET_ADDRESS,
+  postalCode: POSTAL_CODE,
+  addressLocality: ADDRESS_LOCALITY,
+  addressRegion: ADDRESS_REGION,
+  addressCountry: ADDRESS_COUNTRY,
+} as const;
 export const BASED_IN = "Sesimbra, Portugal" as const;
 export const BASED_IN_SHORT =
   "Based in Sesimbra, designing private journeys across Portugal." as const;
@@ -90,11 +104,8 @@ export const SOCIAL = {
   tripadvisor:
     "https://www.tripadvisor.com/Attraction_Review-g227946-d34430097-Reviews-Yes_Experiences_Portugal-Sesimbra_Setubal_District_Alentejo.html",
   /**
-   * Google Business Profile. Intentionally EMPTY: the old knowledge-panel
-   * entity (stale `stick=` search link and the `maps.app.goo.gl/hbVa3Yw...`
-   * short link) is NOT ours and must never be published as sameAs. Only fill
-   * this in with the canonical Lisbon profile (establishment code
-   * 02179561410319006295) once it is verified and live on Maps.
+   * Google Business Profile. Intentionally EMPTY until the owner connects
+   * and verifies the current profile; do not infer identity from a Maps link.
    */
   google: "" as string,
   viator: "" as string,
