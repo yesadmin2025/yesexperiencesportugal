@@ -14,7 +14,7 @@ import { describe, expect, it } from "vitest";
 
 const ROOT = process.cwd();
 const read = (file: string) =>
-  fs.readFileSync(path.join(ROOT, "src/components/studio", file), "utf8");
+  fs.readFileSync(path.join(ROOT, "src/components/studio-v3", file), "utf8");
 
 describe("P0-6 Your Day first reveal", () => {
   const studio = read("StudioV3.tsx");
