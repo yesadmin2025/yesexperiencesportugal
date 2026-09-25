@@ -10,10 +10,10 @@
  * Update here when the public certificate changes.
  */
 export const REVIEW_CERTIFICATE = {
-  ratingValue: "4.9",
+  ratingValue: "4.8",
   bestRating: "5",
   worstRating: "1",
-  reviewCount: 1000,
+  reviewCount: 660,
   url: "https://www.trustindex.io/reviews/yesexperiencesportugal.com",
   provider: "Trustindex",
   /**
