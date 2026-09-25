@@ -11,7 +11,7 @@ export const HERO_COPY_SPEC = {
   headlineLine1: "Portugal is the stage.",
   headlineLine2: "You write the story.",
   subheadline:
-    "Private days, journeys and special moments across Portugal, guided by local knowledge.",
+    "Private & customized day experiences and full journeys across Portugal.",
   primaryCta: "DESIGN YOUR DAY",
   secondaryCta: "EXPLORE EXPERIENCES",
   microcopy: "4.9/5 · 1,000 guest reviews · Private · Local support · Secure checkout",

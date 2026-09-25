@@ -19,6 +19,7 @@ import { test, expect } from "@playwright/test";
 const FIELDS = [
   '[data-hero-cinematic] [data-hero-field="headlineLine1"]',
   '[data-hero-cinematic] [data-hero-field="headlineLine2"]',
+  '[data-hero-cinematic] [data-hero-field="subheadline"]',
   '[data-hero-cinematic] [data-hero-field="primaryCta"]',
   '[data-hero-cinematic] [data-hero-field="secondaryCta"]',
 ];

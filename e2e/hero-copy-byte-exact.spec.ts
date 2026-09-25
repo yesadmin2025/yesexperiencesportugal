@@ -27,6 +27,7 @@ import { HERO_COPY_SPEC } from "../src/content/hero-copy.spec";
 const FIELDS_TO_CHECK = [
   "headlineLine1",
   "headlineLine2",
+  "subheadline",
   "primaryCta",
   "secondaryCta",
 ] as const satisfies readonly (keyof typeof HERO_COPY_SPEC)[];

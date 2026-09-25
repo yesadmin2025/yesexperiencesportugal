@@ -23,9 +23,10 @@ describe("homepage approved brand restoration", () => {
     expect(fiveWays).toContain("font-normal text-[color:var(--teal)]");
     expect(styles).toContain('--font-display: "Fraunces", serif');
     expect(styles).toContain('--font-serif: "Fraunces", serif');
-    // The approved visual Hero stays deliberately sparse: no descriptive
-    // service paragraph is rendered inside the visible composition.
-    expect(hero).not.toContain('data-hero-field="subheadline"');
+    // The short service descriptor must be visibly present, not only in data.
+    expect(hero).toContain('data-hero-field="subheadline"');
+    expect(hero).toContain("{HERO_COPY.subheadline}");
+    expect(hero).toContain('to="/portugal-travel-designer"');
     expect(hero).toContain("data-hero-subheadline={HERO_COPY.subheadline}");
   });
 

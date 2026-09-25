@@ -8,10 +8,8 @@
  *   support  → its own breathing room below the stanza
  *   CTAs     → anchored low, as in the original composition
  *
- * The eyebrow and support line are independent overlays inside space the
- * original composition already left empty — they never reflow the original
- * stanza or low CTA block. Reduced motion and `?hero=last` render the final
- * actionable state immediately.
+ * The descriptor sits with the stanza; the journey link follows the two
+ * main actions. Reduced motion and `?hero=last` render the final state.
  */
 
 import { useEffect, useRef, useState } from "react";
@@ -195,7 +193,7 @@ export function CinematicHero() {
       <div className="hero-cinematic-layout absolute inset-0 z-10 grid px-5 sm:px-10 md:px-16">
       <div className="hero-stanza-zone flex min-w-0 items-center justify-center">
         <div className="w-full text-center">
-          <h1
+           <h1
             data-hero-stanza="true"
             data-mixed-emphasis="exempt"
             className="hero-h1 m-0 text-center font-serif"
@@ -219,19 +217,21 @@ export function CinematicHero() {
               </span>
             </span>
           </h1>
+            <p data-hero-field="subheadline" className="hero-support mx-auto mt-5 max-w-[32ch] font-sans text-[14px] leading-[1.5] sm:max-w-[48ch] sm:text-[16px]">{HERO_COPY.subheadline}</p>
         </div>
       </div>
 
       {/* Original low CTA anchor. */}
       <div
-        className="hero-cta-group z-20 flex flex-col items-center gap-3 sm:flex-row sm:justify-center sm:gap-4"
+        className="hero-cta-group z-20 flex flex-col items-center gap-3"
         data-hero-composed="true"
         style={{
           opacity: 1,
-          animation: `heroApprovedReveal ${CTA_FADE_MS}ms ${EASE} 3100ms both`,
+          animation: `heroApprovedReveal ${CTA_FADE_MS}ms ${EASE} 1200ms both`,
           pointerEvents: "auto",
         }}
       >
+        <div className="flex flex-col items-center gap-3 sm:flex-row sm:justify-center sm:gap-4">
         <Link
           to="/studio"
           data-hero-field="primaryCta"
@@ -254,6 +254,14 @@ export function CinematicHero() {
         >
           <span className="hero-cta__sheen" aria-hidden="true" />
           <span className="relative z-10">{HERO_COPY.secondaryCta}</span>
+        </Link>
+        </div>
+        <Link
+          to="/portugal-travel-designer"
+          data-testid="hero-travel-designer"
+          className="inline-flex min-h-[44px] max-w-[260px] items-center justify-center text-center font-sans text-[12px] leading-[1.4] text-[color:var(--ivory)] underline decoration-[color:var(--gold-soft)]/70 underline-offset-4 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)] sm:max-w-full sm:text-[13px]"
+        >
+          Planning a full Portugal journey? Work with a Travel Designer →
         </Link>
       </div>
       </div>

@@ -1,4 +1,4 @@
-import { Link, useRouterState } from "@tanstack/react-router";
+import { Link } from "@tanstack/react-router";
 import { useState } from "react";
 import { Menu, X, Globe } from "lucide-react";
 import { Logo } from "@/components/Logo";
@@ -36,7 +36,6 @@ const mobileSocialLinks = [
 
 export function Navbar() {
   const [open, setOpen] = useState(false);
-  const pathname = useRouterState({ select: (s) => s.location.pathname });
   const primaryLinks = usePrimaryLinks();
   const secondaryLinks = useSecondaryLinks();
 
@@ -89,7 +88,7 @@ export function Navbar() {
               <Globe size={13} strokeWidth={1.6} aria-hidden />
               <LanguageSwitcher variant="header" />
             </span>
-            <CtaButton to="/studio" variant={pathname === "/" || pathname === "/pt" ? "ghost" : "primary"} size="sm" className="ml-1">
+            <CtaButton to="/studio" variant="primary" size="sm" className="ml-1">
               Design your day
             </CtaButton>
           </nav>

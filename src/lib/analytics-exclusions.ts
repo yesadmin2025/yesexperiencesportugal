@@ -113,3 +113,15 @@ export function isTrackingDisabled(): boolean {
   }
   return false;
 }
+
+/** Database-only guard: never write internal diagnostics/funnel events from QA or previews.
+ * Kept separate from marketing consent and its manual test override. */
+export function isInternalTelemetryDisabled(): boolean {
+  if (!isBrowser()) return true;
+  if (isAutomatedSession()) return true;
+  try {
+    return isExcludedHost(window.location.hostname) || isExcludedPath(window.location.pathname);
+  } catch {
+    return true;
+  }
+}
