@@ -1,5 +1,11 @@
 # Roadmap — Operations hub upgrade
 
+## 25 Sep review correction and targeted audit
+- [x] Restore 4.9 / 1,000 review proof and byte-exact hero trust line
+- [ ] Verify CRO/mobile/telemetry guardrails and seven public routes, direct links, and legacy aliases
+- [ ] Inspect wine-tour intent cluster; fix only demonstrated contextual-link or duplicate-intent defects
+- [ ] Run focused tests and typecheck; report findings
+
 ## B. Data model (migration)
 - [x] Extend `bookings` with operational columns (source, channel, external refs, start_time, pickup/dropoff, pax_breakdown, language, payment_status, amount_paid, assigned_guide_id, notes, inclusions/exclusions/extras, source_raw_payload, sync_status, last_synced_at, cancelled_at, review_required/reason)
 - [x] `booking_ingestion_log` (audit: parser result, action, matched booking, reason)

@@ -243,7 +243,7 @@ function Page() {
               </a>{" "}
               or explore{" "}
               <a
-                href="/multi-day"
+                href="/portugal-travel-designer"
                 className="text-[color:var(--teal)] underline underline-offset-4 decoration-[color:var(--gold)]/60 hover:decoration-[color:var(--gold)] transition-colors"
               >
                 private multi-day journeys

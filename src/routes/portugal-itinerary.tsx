@@ -217,7 +217,7 @@ function PortugalItinerary() {
               wine days
             </Link>{" "}
             and{" "}
-            <Link to="/multi-day" className="underline underline-offset-4">
+            <Link to="/portugal-travel-designer" className="underline underline-offset-4">
               multi-day journeys
             </Link>
             . Still deciding on length? See{" "}

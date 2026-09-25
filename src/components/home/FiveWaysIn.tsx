@@ -62,7 +62,7 @@ const PATHS: ReadonlyArray<Path> = [
     titleEmphasis: "designed for you.",
     body: "From a few days to a full journey across Portugal, shaped around your time, rhythm and interests.",
     cta: "Begin with a designer",
-    href: "/multi-day",
+    href: "/portugal-travel-designer",
     analyticsEvent: "home_path_designer_click",
   },
   {

@@ -180,7 +180,7 @@ function Page() {
                   </Link>
                 </li>
                 <li>
-                  <Link to="/multi-day" className="hover:text-[color:var(--teal)]">
+                  <Link to="/portugal-travel-designer" className="hover:text-[color:var(--teal)]">
                     Multi-day journeys →
                   </Link>
                 </li>

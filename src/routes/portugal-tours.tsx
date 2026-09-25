@@ -195,11 +195,6 @@ function Page() {
                   </Link>
                 </li>
                 <li>
-                  <Link to="/multi-day" className="hover:text-[color:var(--teal)]">
-                    Explore multi-day Portugal →
-                  </Link>
-                </li>
-                <li>
                   <Link to="/luxury-tours-portugal" className="hover:text-[color:var(--teal)]">
                     Luxury Portugal tours →
                   </Link>

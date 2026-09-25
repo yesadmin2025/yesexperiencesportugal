@@ -624,7 +624,7 @@ export function RecentJourney() {
               competed with the same intent and has been removed. */}
           <CtaPair justify="center" className="gap-x-10">
             <CtaButton
-              to="/multi-day"
+              to="/portugal-travel-designer"
               variant="hairline"
               aria-label="Design my journey with a Travel Designer"
               className="opacity-100"

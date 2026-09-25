@@ -520,7 +520,7 @@ function buildResultContent(s: QuizState, r: ResultKey): ResultContent {
     subtitle:
       "Let's plan your Portugal properly — multi-day, fully designed, every night confirmed.",
     pills: ["Multi-day", "Private", "Curated"],
-    ctas: [{ label: CTA_LABELS.travelDesigner, to: "/multi-day", variant: "ivory" }],
+    ctas: [{ label: CTA_LABELS.travelDesigner, to: "/portugal-travel-designer", variant: "ivory" }],
   };
 }
 

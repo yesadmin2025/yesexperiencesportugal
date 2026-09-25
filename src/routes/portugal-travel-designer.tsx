@@ -138,10 +138,10 @@ function PortugalTravelDesignerPage() {
           </Link>{" "}
           to build something more personal.{" "}
           <Link
-            to="/multi-day"
+            to="/itineraries/10-day-private-portugal-tour"
             className="text-[color:var(--teal)] underline underline-offset-4 decoration-[color:var(--gold)]/60 hover:decoration-[color:var(--gold)]"
           >
-            Multi-day journeys
+            A sample ten-day itinerary
           </Link>{" "}
           can connect different regions while preserving the same private, flexible approach.
         </p>
@@ -245,10 +245,10 @@ function PortugalTravelDesignerPage() {
               "Build your own Portugal day online: choose the region, stops and rhythm and watch the route and pricing evolve, then reserve directly or ask for a local review.",
           },
           {
-            to: "/multi-day",
-            label: "Private multi-day tours in Portugal",
+            to: "/itineraries/10-day-private-portugal-tour",
+             label: "See a sample ten-day private Portugal itinerary",
             description:
-              "The multi-day product itself — several regions connected into one private journey with the same guide and vehicle.",
+               "An example route to discuss with your designer, not a fixed package or quoted journey.",
           },
           {
             to: "/trade",

@@ -17,7 +17,7 @@ test.describe("homepage conversion paths", () => {
 
     await expect(primary.nth(0)).toHaveAttribute("href", "/experiences");
     await expect(primary.nth(1)).toHaveAttribute("href", "/studio");
-    await expect(primary.nth(2)).toHaveAttribute("href", "/multi-day");
+    await expect(primary.nth(2)).toHaveAttribute("href", "/portugal-travel-designer");
     await expect(primary.nth(3)).toHaveAttribute("href", "/proposal-in-portugal");
     await expect(primary.nth(4)).toHaveAttribute("href", "/corporate");
 
