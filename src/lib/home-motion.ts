@@ -134,7 +134,7 @@ export function startHomeMotion(): () => void {
     const nodes = homeScope.querySelectorAll<HTMLElement>(revealSelector);
     nodes.forEach((el) => {
       if (el.hasAttribute("data-motion")) return;
-      if (el.closest('[data-section="hero"], [aria-live], .sr-only, form, dialog, nav')) return;
+      if (el.closest('[data-section="hero"], [aria-live], .sr-only, form, dialog, nav, [data-motion-skip]')) return;
       if (el.closest(".reveal, .reveal-stagger, .section-enter")) return;
       if (el.parentElement?.closest("[data-motion]")) return;
 
@@ -183,7 +183,7 @@ export function startHomeMotion(): () => void {
     );
     supportingNodes.forEach((el) => {
       if (el.hasAttribute("data-motion")) return;
-      if (el.closest('[data-section="hero"], [aria-live], form, dialog, nav')) return;
+      if (el.closest('[data-section="hero"], [aria-live], form, dialog, nav, [data-motion-skip]')) return;
       if (el.closest(".reveal, .reveal-stagger, .section-enter")) return;
       if (el.parentElement?.closest("[data-motion]")) return;
       el.setAttribute("data-motion", "card-reveal");

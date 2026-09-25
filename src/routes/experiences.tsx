@@ -182,6 +182,7 @@ function ExperiencesPage() {
       <section
         className="section-y bg-[color:var(--ivory)] border-b border-[color:var(--border)]"
         aria-label="Signature collection"
+        data-motion-skip="true"
       >
         <div className="container-x">
           {/* Keeps the heading order h1 → h2 → h3 without adding visible chrome
