@@ -154,7 +154,8 @@ export const Route = createRootRoute({
       { name: "theme-color", content: "var(--teal)" },
       { name: "mobile-web-app-capable", content: "yes" },
       { name: "apple-mobile-web-app-capable", content: "yes" },
-      { name: "apple-mobile-web-app-title", content: "YES Experiences" },
+      { name: "application-name", content: "YES Experiences Portugal" },
+      { name: "apple-mobile-web-app-title", content: "YES Experiences Portugal" },
       { name: "apple-mobile-web-app-status-bar-style", content: "black-translucent" },
       {
         name: "google-site-verification",
