@@ -12,7 +12,6 @@ import ogImg from "@/assets/hero-coast.jpg";
 import { Eyebrow } from "@/components/ui/Eyebrow";
 import { SectionTitle } from "@/components/ui/SectionTitle";
 import { CtaButton } from "@/components/ui/CtaButton";
-import { Scene } from "@/components/motion/Scene";
 import { useMarketingMotion } from "@/hooks/use-marketing-motion";
 import { PriceCurrencyChip } from "@/components/PriceCurrencyChip";
 import { PriceEur } from "@/components/ui/PriceEur";
@@ -39,8 +38,26 @@ function matchesExperienceFilter(tour: SignatureTour, filter: ExperienceFilter) 
   return tour.theme === "Heritage";
 }
 
+// The catalogue is source-controlled; editorial overrides are optional. Never
+// let a slow or failing override read hold the page: cap it and fall back to
+// the code copy, and cache it so homepage → Experiences and back/forward
+// navigations render instantly instead of waiting on a server round trip.
+const OVERRIDE_READ_BUDGET_MS = 1200;
+async function readOverridesWithinBudget() {
+  try {
+    return await Promise.race([
+      listPublishedExperienceContent(),
+      new Promise<[]>((resolve) => setTimeout(() => resolve([]), OVERRIDE_READ_BUDGET_MS)),
+    ]);
+  } catch {
+    return [];
+  }
+}
+
 export const Route = createFileRoute("/experiences")({
-  loader: async () => ({ contentOverrides: await listPublishedExperienceContent() }),
+  loader: async () => ({ contentOverrides: await readOverridesWithinBudget() }),
+  staleTime: 5 * 60_000,
+  preloadStaleTime: 5 * 60_000,
   head: () => ({
     meta: [
       { title: "Signature Private Tours in Portugal — Designed by Locals" },
@@ -167,19 +184,22 @@ function ExperiencesPage() {
         </div>
       </section>
 
+      {/* The collection is the page's purpose: it renders visible from the
+          first server paint. No section/scene reveal gates the cards —
+          those hid SSR cards at hydration and re-showed them later. */}
       <section
-        className="reveal section-y bg-[color:var(--ivory)] border-b border-[color:var(--border)]"
+        className="motion-skip section-y bg-[color:var(--ivory)] border-b border-[color:var(--border)]"
         aria-label="Signature collection"
       >
         <div className="container-x">
           {/* Keeps the heading order h1 → h2 → h3 without adding visible chrome
               to the conversion-first collection layout. */}
           <h2 className="sr-only">Signature Experiences</h2>
-          <Scene className="experiences-editorial-grid experiences-story grid gap-6 md:grid-cols-2 md:gap-7 lg:gap-8">
+          <div className="experiences-editorial-grid experiences-story grid gap-6 md:grid-cols-2 md:gap-7 lg:gap-8">
             {visibleTours.map((tour, index) => (
               <TourCard key={tour.id} tour={tour} resolveImg={resolveImg} featured={index < 2} compareActive={selectedTours.includes(tour.id)} compareDisabled={selectedTours.length >= 2 && !selectedTours.includes(tour.id)} onCompare={() => toggleComparison(tour.id)} />
             ))}
-          </Scene>
+          </div>
           <ExperienceCompare tours={tours} selected={selectedTours} onToggle={toggleComparison} onClear={() => setSelectedTours([])} />
         </div>
       </section>
