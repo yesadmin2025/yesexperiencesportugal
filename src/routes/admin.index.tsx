@@ -71,14 +71,16 @@ function TodayPage() {
   const today = lisbonDay(0);
   const tomorrow = lisbonDay(1);
   const weekEnd = lisbonDay(7);
+  const [year, monthIdx] = today.split("-").map(Number);
   const monthStart = `${today.slice(0, 7)}-01`;
+  const monthEnd = `${today.slice(0, 7)}-${String(new Date(Date.UTC(year, monthIdx, 0)).getUTCDate()).padStart(2, "0")}`;
 
   const refresh = useCallback(async () => {
     try {
       const [weekResult, paidResult, monthResult] = await Promise.all([
         loadBookings({ data: { dateFrom: today, dateTo: weekEnd, status: "all", limit: 300 } }),
         loadBookings({ data: { status: "paid", limit: 500 } }),
-        loadBookings({ data: { dateFrom: monthStart, dateTo: `${today.slice(0, 7)}-31`, status: "paid", limit: 500 } }),
+        loadBookings({ data: { dateFrom: monthStart, dateTo: monthEnd, status: "paid", limit: 500 } }),
       ]);
       setWeek(((weekResult.bookings ?? []) as unknown as Row[]).filter(active));
       setUndated(((paidResult.bookings ?? []) as unknown as Row[]).filter((row) => !row.preferred_date));
@@ -106,7 +108,7 @@ function TodayPage() {
       setAutomationProblem(null);
     }
     setLoaded(true);
-  }, [loadBookings, loadIntegrations, today, weekEnd, monthStart]);
+  }, [loadBookings, loadIntegrations, today, weekEnd, monthStart, monthEnd]);
 
   useEffect(() => {
     void refresh();
