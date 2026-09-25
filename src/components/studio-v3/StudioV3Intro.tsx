@@ -87,13 +87,14 @@ export function StudioV3Intro({ onComplete }: Props) {
       <div className="relative z-10 mx-auto flex min-h-screen min-h-[100svh] min-h-[100dvh] w-full max-w-md flex-col items-center justify-center px-6 pt-[max(4rem,env(safe-area-inset-top))] pb-[max(4rem,env(safe-area-inset-bottom))] text-center">
         {step === "welcome" ? (
           <div className="animate-in fade-in slide-in-from-bottom-2 duration-[700ms] motion-reduce:animate-none">
-            <p
+            <h1
+              data-testid="studio-v3-page-h1"
               className="text-[11px] uppercase font-semibold"
               style={{ color: "var(--gold)", letterSpacing: "0.28em" }}
             >
-              — Studio
-            </p>
-            <h1
+              Design your own private day in Portugal
+            </h1>
+            <p
               data-testid="studio-v3-intro-headline"
                className="mt-5 text-[40px] leading-[1.08] tracking-normal font-normal md:text-[60px] md:leading-[1.02]"
               style={{
@@ -112,7 +113,7 @@ export function StudioV3Intro({ onComplete }: Props) {
                 Portugal
               </span>{" "}
               is the stage. You write the story.
-            </h1>
+            </p>
             <p
               className="mt-5 text-[13px] leading-[1.6]"
               style={{
