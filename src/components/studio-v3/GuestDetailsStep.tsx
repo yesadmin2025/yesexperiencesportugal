@@ -38,6 +38,8 @@ import {
   minimumStudioBookingDateIso,
 } from "@/components/studio-v3/dateGuards";
 import { toast } from "sonner";
+import { PickupLaterToggle, PICKUP_TO_BE_CONFIRMED, isPickupToBeConfirmed } from "@/components/checkout/PickupLaterToggle";
+
 import { cn } from "@/lib/utils";
 import {
   CollapsibleFieldGroup,
@@ -118,6 +120,7 @@ export function GuestDetailsStep({
       : hydrateLegacyComposition(initial),
   );
   const [pickupAddress, setPickupAddress] = useState(initial?.pickupAddress ?? "");
+  const [pickupLater, setPickupLater] = useState(isPickupToBeConfirmed(initial?.pickupAddress));
   const [language, setLanguage] = useState<GuestDetails["language"]>(initial?.language ?? "en");
   const [mainContact, setMainContact] = useState("");
   // Secondary by default: only surfaced when the guest says they are booking
@@ -187,7 +190,7 @@ export function GuestDetailsStep({
       nextErrors.tourDate = `Please choose a date from ${minimumStudioBookingDateIso()} onwards — we need three days, counted in Lisbon time.`;
       missing.push("tour date");
     }
-    if (!pickupAddress.trim()) {
+    if (!pickupLater && !pickupAddress.trim()) {
       nextErrors.pickupAddress = "Please tell us where the day should start.";
       missing.push("pickup address");
     }
@@ -197,7 +200,8 @@ export function GuestDetailsStep({
     }
     setErrors(nextErrors);
     if (missing.length) {
-      toast.error(`Please complete: ${missing.join(", ")}`);
+      // Top of screen: never overlays or intercepts the sticky final CTA.
+      toast.error(`Please complete: ${missing.join(", ")}`, { position: "top-center" });
       const order: FieldKey[] = [
         "fullName",
         "email",
@@ -243,7 +247,8 @@ export function GuestDetailsStep({
         guests: totalGuests(composition),
         adults: composition.adults,
         minorAges: [...composition.minorAges],
-        pickupAddress: pickupAddress.trim(),
+        pickupAddress: pickupLater ? PICKUP_TO_BE_CONFIRMED : pickupAddress.trim(),
+        pickupToBeConfirmed: pickupLater,
         language,
         mainContact: mainContact.trim() || fullName.trim(),
         dietary: dietary.trim() || undefined,
@@ -482,7 +487,7 @@ export function GuestDetailsStep({
 
           <GuestField
             label="Pickup address / hotel"
-            required
+            required={!pickupLater}
             error={errors.pickupAddress}
             errorId="studio-v3-error-pickupAddress"
           >
@@ -491,10 +496,19 @@ export function GuestDetailsStep({
                 fieldRefs.current.pickupAddress = el;
               }}
               {...errorProps("pickupAddress")}
-              value={pickupAddress}
+              value={isPickupToBeConfirmed(pickupAddress) ? "" : pickupAddress}
               onChange={(e) => setPickupAddress(e.target.value)}
-              placeholder="Hotel, address or meeting point"
+              disabled={pickupLater}
+              placeholder={pickupLater ? "We'll confirm pickup with you" : "Hotel, address or meeting point"}
               className={guestInputClass}
+            />
+            <PickupLaterToggle
+              checked={pickupLater}
+              onChange={(v) => {
+                setPickupLater(v);
+                if (v) setErrors((e) => ({ ...e, pickupAddress: undefined }));
+              }}
+              testId="studio-v3-pickup-later"
             />
           </GuestField>
           <GuestField label="Preferred tour language" required as="div">

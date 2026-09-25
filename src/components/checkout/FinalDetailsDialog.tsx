@@ -1,3 +1,4 @@
+import { PickupLaterToggle, PICKUP_TO_BE_CONFIRMED, isPickupToBeConfirmed } from "@/components/checkout/PickupLaterToggle";
 import type React from "react";
 import { useEffect, useId, useRef, useState } from "react";
 
@@ -63,6 +64,8 @@ export interface GuestDetails {
   /** Exact integer age per minor (0..17). Empty when adults-only. */
   minorAges: number[];
   pickupAddress: string;
+  /** True when the guest deliberately chose to confirm pickup later. */
+  pickupToBeConfirmed?: boolean;
   language: "en" | "pt";
   mainContact: string;
   dietary?: string;
@@ -140,6 +143,7 @@ export function FinalDetailsDialog({
     hydrateLegacyComposition(initial),
   );
   const [pickupAddress, setPickupAddress] = useState(initial?.pickupAddress ?? "");
+  const [pickupLater, setPickupLater] = useState(isPickupToBeConfirmed(initial?.pickupAddress));
   const [language, setLanguage] = useState<GuestDetails["language"]>(initial?.language ?? "en");
   const [startTime, setStartTime] = useState<string>(initial?.startTime ?? "");
   const [mainContact, setMainContact] = useState("");
@@ -190,7 +194,7 @@ export function FinalDetailsDialog({
       setEditDay(true);
       requestAnimationFrame(() => dateInputRef.current?.focus());
     }
-    if (!pickupAddress.trim()) missing.push("pickup address");
+    if (!pickupLater && !pickupAddress.trim()) missing.push("pickup address");
     if (!compositionComplete) missing.push("age for every child");
     if (tourDate && dateRule) {
       const dateCheck = validateDateISO(tourDate, dateRule);
@@ -221,7 +225,8 @@ export function FinalDetailsDialog({
 
       adults: composition.adults,
       minorAges: [...composition.minorAges],
-      pickupAddress: pickupAddress.trim(),
+      pickupAddress: pickupLater ? PICKUP_TO_BE_CONFIRMED : pickupAddress.trim(),
+      pickupToBeConfirmed: pickupLater,
       language,
       mainContact: mainContact.trim() || fullName.trim(),
       dietary: dietary.trim() || undefined,
@@ -380,13 +385,16 @@ export function FinalDetailsDialog({
                   />
                 </GuestField>
               </GuestRow>
-              <GuestField label="Pickup address / hotel" required>
-                <input
-                  value={pickupAddress}
-                  onChange={(e) => setPickupAddress(e.target.value)}
-                  placeholder="Hotel, address or meeting point"
-                  className={guestInputClass}
-                />
+              <GuestField label="Pickup address / hotel" required={!pickupLater}>
+                {pickupLater ? null : (
+                  <input
+                    value={isPickupToBeConfirmed(pickupAddress) ? "" : pickupAddress}
+                    onChange={(e) => setPickupAddress(e.target.value)}
+                    placeholder="Hotel, address or meeting point"
+                    className={guestInputClass}
+                  />
+                )}
+                <PickupLaterToggle checked={pickupLater} onChange={setPickupLater} />
               </GuestField>
               {altContact ? (
                 <GuestField label="Main contact person">
