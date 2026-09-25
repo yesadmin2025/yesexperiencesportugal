@@ -71,18 +71,37 @@ export function CinematicHero() {
     v.defaultMuted = true;
     v.playsInline = true;
 
-    try {
-      const small = window.matchMedia?.("(max-width: 767px)").matches;
-      if (small && !v.currentSrc.includes(HERO_FILM.src720)) {
-        v.src = HERO_FILM.src720;
-        v.load();
+    // PERF — the poster owns LCP. Film bytes are attached only after the
+    // page has loaded and the main thread is idle, and never on Save-Data or
+    // 2G connections (the poster simply stays).
+    const conn = (navigator as Navigator & {
+      connection?: { saveData?: boolean; effectiveType?: string };
+    }).connection;
+    const lowData = Boolean(conn?.saveData) || /(^|-)2g$/.test(conn?.effectiveType ?? "");
+    let idleHandle: number | null = null;
+    const attachFilm = () => {
+      if (lowData || v.getAttribute("src")) return;
+      let small = false;
+      try {
+        small = Boolean(window.matchMedia?.("(max-width: 767px)").matches);
+      } catch {
+        /* default to the full film */
       }
-    } catch {
-      /* keep the declarative sources */
-    }
+      v.src = small ? HERO_FILM.src720 : HERO_FILM.src1080;
+      v.load();
+    };
+    const scheduleFilm = () => {
+      const w = window as Window & { requestIdleCallback?: (cb: () => void, o?: { timeout: number }) => number };
+      idleHandle = w.requestIdleCallback
+        ? w.requestIdleCallback(attachFilm, { timeout: 2500 })
+        : window.setTimeout(attachFilm, 1200);
+    };
+    if (document.readyState === "complete") scheduleFilm();
+    else window.addEventListener("load", scheduleFilm, { once: true });
 
     const markPlaying = () => setVideoStarted(true);
     const kick = () => {
+      if (!v.getAttribute("src")) return;
       const attempt = v.play();
       if (attempt && typeof attempt.catch === "function") {
         void attempt.catch(() => {
@@ -105,6 +124,12 @@ export function CinematicHero() {
     document.addEventListener("visibilitychange", retryOnVisible);
 
     return () => {
+      window.removeEventListener("load", scheduleFilm);
+      if (idleHandle != null) {
+        const w = window as Window & { cancelIdleCallback?: (h: number) => void };
+        if (w.cancelIdleCallback) w.cancelIdleCallback(idleHandle);
+        else window.clearTimeout(idleHandle);
+      }
       v.removeEventListener("playing", markPlaying);
       v.removeEventListener("loadeddata", kick);
       v.removeEventListener("canplay", kick);
@@ -148,7 +173,7 @@ export function CinematicHero() {
           loop
           playsInline
           // Metadata preload keeps LCP light; autoplay recovery retries on real user intent.
-          preload="metadata"
+          preload="none"
           poster={HERO_FILM.poster}
           controls={false}
           disablePictureInPicture
@@ -156,12 +181,7 @@ export function CinematicHero() {
           className={`hero-film-video absolute inset-0 h-full w-full object-cover transition-opacity duration-700 ${videoStarted ? "opacity-100" : "opacity-0"}`}
           aria-hidden="true"
         >
-          <source
-            src={HERO_FILM.src720}
-            media="(max-width: 767px)"
-            type="video/mp4"
-          />
-          <source src={HERO_FILM.src1080} type="video/mp4" />
+          {/* Film source is attached after load + idle (see effect). */}
         </video>
 
         {/* Original grading: lifted blacks, gentle vignette, mobile stanza band. */}
