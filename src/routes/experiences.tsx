@@ -1,6 +1,6 @@
 import { localeAlternateLinks } from "@/i18n/seo";
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { breadcrumbLd, itemListLd, jsonLdScript } from "@/lib/jsonld";
 import { SiteLayout } from "@/components/SiteLayout";
 import { SiteBreadcrumbs } from "@/components/SiteBreadcrumbs";
@@ -12,14 +12,13 @@ import ogImg from "@/assets/hero-coast.jpg";
 import { Eyebrow } from "@/components/ui/Eyebrow";
 import { SectionTitle } from "@/components/ui/SectionTitle";
 import { CtaButton } from "@/components/ui/CtaButton";
-import { Scene } from "@/components/motion/Scene";
 import { useMarketingMotion } from "@/hooks/use-marketing-motion";
 import { PriceCurrencyChip } from "@/components/PriceCurrencyChip";
 import { PriceEur } from "@/components/ui/PriceEur";
 import { CTA_LABELS } from "@/content/cta-vocabulary";
 import { getViatorMeta } from "@/data/signatureToursViator";
 import { Star } from "lucide-react";
-import { listPublishedExperienceContent } from "@/lib/experienceContent.functions";
+import { listPublishedExperienceContent, type ExperienceContentOverride } from "@/lib/experienceContent.functions";
 import { CompareControl, ExperienceCompare } from "@/components/experiences/ExperienceCompare";
 import { getSignatureCardHighlights } from "@/lib/signatureCardHighlights";
 
@@ -40,7 +39,6 @@ function matchesExperienceFilter(tour: SignatureTour, filter: ExperienceFilter) 
 }
 
 export const Route = createFileRoute("/experiences")({
-  loader: async () => ({ contentOverrides: await listPublishedExperienceContent() }),
   head: () => ({
     meta: [
       { title: "Signature Private Tours in Portugal — Designed by Locals" },
@@ -94,8 +92,22 @@ export const Route = createFileRoute("/experiences")({
 });
 
 function ExperiencesPage() {
-  const { contentOverrides } = Route.useLoaderData();
+  const [contentOverrides, setContentOverrides] = useState<ExperienceContentOverride[]>([]);
   useMarketingMotion();
+
+  // The catalogue is source-controlled and must never wait on a network call.
+  // Published editorial overrides enhance the already-visible cards after hydration.
+  useEffect(() => {
+    let cancelled = false;
+    void listPublishedExperienceContent()
+      .then((rows) => {
+        if (!cancelled) setContentOverrides(rows);
+      })
+      .catch(() => undefined);
+    return () => {
+      cancelled = true;
+    };
+  }, []);
   const { resolveImg } = useImportedTourImages();
   const [selectedTours, setSelectedTours] = useState<string[]>([]);
   const [activeFilter, setActiveFilter] = useState<ExperienceFilter>("all");
@@ -168,18 +180,18 @@ function ExperiencesPage() {
       </section>
 
       <section
-        className="reveal section-y bg-[color:var(--ivory)] border-b border-[color:var(--border)]"
+        className="section-y bg-[color:var(--ivory)] border-b border-[color:var(--border)]"
         aria-label="Signature collection"
       >
         <div className="container-x">
           {/* Keeps the heading order h1 → h2 → h3 without adding visible chrome
               to the conversion-first collection layout. */}
           <h2 className="sr-only">Signature Experiences</h2>
-          <Scene className="experiences-editorial-grid experiences-story grid gap-6 md:grid-cols-2 md:gap-7 lg:gap-8">
+          <div className="experiences-editorial-grid experiences-story grid gap-6 md:grid-cols-2 md:gap-7 lg:gap-8">
             {visibleTours.map((tour, index) => (
               <TourCard key={tour.id} tour={tour} resolveImg={resolveImg} featured={index < 2} compareActive={selectedTours.includes(tour.id)} compareDisabled={selectedTours.length >= 2 && !selectedTours.includes(tour.id)} onCompare={() => toggleComparison(tour.id)} />
             ))}
-          </Scene>
+          </div>
           <ExperienceCompare tours={tours} selected={selectedTours} onToggle={toggleComparison} onClear={() => setSelectedTours([])} />
         </div>
       </section>
