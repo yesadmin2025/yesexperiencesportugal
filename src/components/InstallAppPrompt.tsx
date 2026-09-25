@@ -1,4 +1,8 @@
 import { useEffect, useState } from "react";
+import { useRouterState } from "@tanstack/react-router";
+
+/** Never cover a booking CTA: the prompt stays off conversion surfaces. */
+const CONVERSION_PATH = /^\/(?:pt\/)?(?:studio|tours\/|checkout|book|contact|booking-confirmed|portugal-travel-designer)/;
 
 /**
  * InstallAppPrompt — quiet, dismissible invitation to install YES as a real app.
@@ -27,6 +31,7 @@ export function InstallAppPrompt() {
   const [deferred, setDeferred] = useState<InstallPromptEvent | null>(null);
   const [iosHint, setIosHint] = useState(false);
   const [visible, setVisible] = useState(false);
+  const pathname = useRouterState({ select: (st) => st.location.pathname });
 
   useEffect(() => {
     if (isStandalone()) return;
@@ -69,7 +74,7 @@ export function InstallAppPrompt() {
     setVisible(false);
   };
 
-  if (!visible) return null;
+  if (!visible || CONVERSION_PATH.test(pathname)) return null;
 
   return (
     <div
