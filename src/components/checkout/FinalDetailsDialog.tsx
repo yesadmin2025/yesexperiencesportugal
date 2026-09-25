@@ -63,6 +63,8 @@ export interface GuestDetails {
   /** Exact integer age per minor (0..17). Empty when adults-only. */
   minorAges: number[];
   pickupAddress: string;
+  /** True when the guest deliberately chose to confirm the pickup later. */
+  pickupLater?: boolean;
   language: "en" | "pt";
   mainContact: string;
   dietary?: string;
@@ -79,6 +81,7 @@ export interface FinalDetailsInitial {
   adults?: number;
   minorAges?: number[];
   pickupAddress?: string | null;
+  pickupLater?: boolean;
   language?: GuestDetails["language"];
   fullName?: string | null;
   email?: string | null;
@@ -139,7 +142,12 @@ export function FinalDetailsDialog({
   const [composition, setComposition] = useState<TravellerComposition>(() =>
     hydrateLegacyComposition(initial),
   );
-  const [pickupAddress, setPickupAddress] = useState(initial?.pickupAddress ?? "");
+  const [pickupAddress, setPickupAddress] = useState(
+    initial?.pickupAddress === "To be confirmed" ? "" : (initial?.pickupAddress ?? ""),
+  );
+  const [pickupLater, setPickupLater] = useState(
+    initial?.pickupLater === true || initial?.pickupAddress === "To be confirmed",
+  );
   const [language, setLanguage] = useState<GuestDetails["language"]>(initial?.language ?? "en");
   const [startTime, setStartTime] = useState<string>(initial?.startTime ?? "");
   const [mainContact, setMainContact] = useState("");
@@ -163,7 +171,12 @@ export function FinalDetailsDialog({
     prewarmStripeScript();
     if (initial?.tourDate) setTourDate(initial.tourDate);
     if (initial) setComposition(hydrateLegacyComposition(initial));
-    if (initial?.pickupAddress) setPickupAddress(initial.pickupAddress);
+    if (initial?.pickupAddress && initial.pickupAddress !== "To be confirmed") {
+      setPickupAddress(initial.pickupAddress);
+    }
+    setPickupLater(
+      initial?.pickupLater === true || initial?.pickupAddress === "To be confirmed",
+    );
     if (initial?.language) setLanguage(initial.language);
     if (initial?.startTime) setStartTime(initial.startTime);
     setDateError(null);
@@ -190,7 +203,7 @@ export function FinalDetailsDialog({
       setEditDay(true);
       requestAnimationFrame(() => dateInputRef.current?.focus());
     }
-    if (!pickupAddress.trim()) missing.push("pickup address");
+    if (!pickupLater && !pickupAddress.trim()) missing.push("pickup address");
     if (!compositionComplete) missing.push("age for every child");
     if (tourDate && dateRule) {
       const dateCheck = validateDateISO(tourDate, dateRule);
@@ -221,7 +234,8 @@ export function FinalDetailsDialog({
 
       adults: composition.adults,
       minorAges: [...composition.minorAges],
-      pickupAddress: pickupAddress.trim(),
+      pickupAddress: pickupLater ? "To be confirmed" : pickupAddress.trim(),
+      pickupLater,
       language,
       mainContact: mainContact.trim() || fullName.trim(),
       dietary: dietary.trim() || undefined,
@@ -380,13 +394,28 @@ export function FinalDetailsDialog({
                   />
                 </GuestField>
               </GuestRow>
-              <GuestField label="Pickup address / hotel" required>
+              <GuestField
+                label="Pickup address / hotel"
+                required={!pickupLater}
+                hint={pickupLater ? "You can send us the hotel or address later." : undefined}
+              >
                 <input
                   value={pickupAddress}
                   onChange={(e) => setPickupAddress(e.target.value)}
                   placeholder="Hotel, address or meeting point"
                   className={guestInputClass}
+                  disabled={pickupLater}
+                  autoComplete="street-address"
                 />
+                <button
+                  type="button"
+                  aria-pressed={pickupLater}
+                  data-testid="final-details-pickup-later"
+                  onClick={() => setPickupLater((value) => !value)}
+                  className="mt-2 inline-flex min-h-[44px] items-center text-left text-[12px] font-medium text-[color:var(--teal)] underline underline-offset-4 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)]/45"
+                >
+                  {pickupLater ? "Add pickup address now" : "I’ll confirm my pickup later"}
+                </button>
               </GuestField>
               {altContact ? (
                 <GuestField label="Main contact person">
