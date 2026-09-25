@@ -67,6 +67,7 @@ export function CookieConsent() {
   // Conversion-critical UI (guest details, checkout, validation toasts) must
   // never be blocked by the consent bar on small screens.
   const [conversionOverlayOpen, setConversionOverlayOpen] = React.useState(false);
+  const cardRef = React.useRef<HTMLDivElement | null>(null);
 
   React.useEffect(() => {
     if (!hydrated) return;
