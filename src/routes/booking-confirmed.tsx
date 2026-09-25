@@ -1,3 +1,4 @@
+import { clearSignatureSelection } from "@/lib/booking/signature-selection-storage";
 import { createFileRoute, Link, useSearch } from "@tanstack/react-router";
 import {
   Check,
@@ -124,6 +125,7 @@ function BookingConfirmedPage() {
     if (state.data.paymentStatus !== "paid") return;
     if (!session_id || purchaseFiredFor.current === session_id) return;
     purchaseFiredFor.current = session_id;
+    clearSignatureSelection();
     const t = tour ? findTour(tour) : null;
     const valueEur = state.data.amountTotal != null ? state.data.amountTotal / 100 : 0;
     const item = t
