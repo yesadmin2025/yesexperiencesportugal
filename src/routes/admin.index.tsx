@@ -108,7 +108,7 @@ function TodayPage() {
       setAutomationProblem(null);
     }
     setLoaded(true);
-  }, [loadBookings, loadIntegrations, today, weekEnd, monthStart]);
+  }, [loadBookings, loadIntegrations, today, weekEnd, monthStart, monthEnd]);
 
   useEffect(() => {
     void refresh();
