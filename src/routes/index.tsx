@@ -307,13 +307,21 @@ export const Route = createFileRoute("/")({
       // homepage. Marking it fetchpriority=high lets the browser pull
       // the bytes in parallel with critical CSS instead of waiting for
       // the <video> tag to be discovered during layout.
+      // Media-scoped so each device fetches exactly one poster, matching the
+      // <picture> source (high-DPR phones previously pulled the 1920w file too).
       {
         rel: "preload",
         as: "image",
         href: "/video/hero-sunset-road-poster-720.webp",
-        imageSrcSet:
-          "/video/hero-sunset-road-poster-720.webp 1080w, /video/hero-sunset-road-poster.webp 1920w",
-        imageSizes: "(max-width: 767px) 100vw, 100vw",
+        media: "(max-width: 767px)",
+        type: "image/webp",
+        fetchPriority: "high",
+      },
+      {
+        rel: "preload",
+        as: "image",
+        href: "/video/hero-sunset-road-poster.webp",
+        media: "(min-width: 768px)",
         type: "image/webp",
         fetchPriority: "high",
       },
