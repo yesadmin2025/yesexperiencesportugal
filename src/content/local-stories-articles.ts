@@ -1299,7 +1299,7 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
       { path: "/portugal-travel-designer", label: "Design your own Portugal journey" },
     ],
     datePublished: "2026-07-24",
-    dateModified: "2026-09-22",
+    dateModified: "2026-09-25",
   },
   {
     slug: "portugal-coastal-drives-from-lisbon",
