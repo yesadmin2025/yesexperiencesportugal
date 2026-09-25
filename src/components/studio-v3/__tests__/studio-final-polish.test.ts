@@ -19,7 +19,7 @@ import {
   INVESTMENT_TIERS,
 } from "../types";
 
-const src = (f: string) => readFileSync(join(process.cwd(), "src/components/studio", f), "utf8");
+const src = (f: string) => readFileSync(join(process.cwd(), "src/components/studio-v3", f), "utf8");
 
 describe("reaction copy paraphrases instead of parroting", () => {
   const studio = src("StudioV3.tsx");
