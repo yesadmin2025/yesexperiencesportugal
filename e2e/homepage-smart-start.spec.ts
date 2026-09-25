@@ -21,16 +21,16 @@ test.describe("homepage conversion paths", () => {
     await expect(primary.nth(3)).toHaveAttribute("href", "/proposal-in-portugal");
     await expect(primary.nth(4)).toHaveAttribute("href", "/corporate");
 
-    await expect(smartStart.getByText("A private day, ready to go", { exact: true })).toBeVisible();
-    await expect(smartStart.getByText("Shape a day around you", { exact: true })).toBeVisible();
+    await expect(smartStart.getByText("Private days, already designed by YES.", { exact: true })).toBeVisible();
+    await expect(smartStart.getByText("Your day, designed by you.", { exact: true })).toBeVisible();
     await expect(
-      smartStart.getByText("Plan a whole Portugal journey", { exact: true }),
+      smartStart.getByText("Full Portugal journeys, designed for you.", { exact: true }),
     ).toBeVisible();
     await expect(
-      smartStart.getByText("A private moment, planned discreetly", { exact: true }),
+      smartStart.getByText("Proposals & celebrations, held with care.", { exact: true }),
     ).toBeVisible();
     await expect(
-      smartStart.getByText("Bring people together in Portugal", { exact: true }),
+      smartStart.getByText("Team days, incentives & private groups.", { exact: true }),
     ).toBeVisible();
   });
 
