@@ -52,7 +52,7 @@ describe("Wine intent split contract", () => {
 
   it("keeps the guide owning best-wine comparison intent without changing protected signals", () => {
     const guide = article("best-wine-tours-from-lisbon");
-    expect(guide.title).toBe("Best Wine Tours from Lisbon — Private Day Trips 2026");
+    expect(guide.title).toBe("The Best Private Wine Tours from Lisbon (2026 Expert Guide)");
     expect(guide.h1).toBe("The Best Wine Tours from Lisbon");
     expect(guide.datePublished).toBe("2026-07-24");
     expect(guide.dateModified).toBe("2026-09-22");
