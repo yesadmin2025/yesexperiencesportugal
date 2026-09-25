@@ -34,8 +34,7 @@ const REQUEST_TYPES = [
 const requestTypeValues = REQUEST_TYPES.map((r) => r.value) as [string, ...string[]];
 
 const contactSchema = z.object({
-  first: z.string().trim().min(1, "Please enter your first name").max(80),
-  last: z.string().trim().min(1, "Please enter your last name").max(80),
+  name: z.string().trim().min(1, "Please enter your name").max(160),
   email: z.string().trim().toLowerCase().email("Enter a valid email").max(254),
   requestType: z.enum(requestTypeValues as [string, ...string[]], {
     errorMap: () => ({ message: "Please choose what we can help you plan" }),
@@ -46,12 +45,15 @@ const contactSchema = z.object({
     .regex(/^\d{4}-\d{2}-\d{2}$/, "Enter a valid date")
     .optional()
     .or(z.literal("").transform(() => undefined)),
-  message: z
-    .string()
-    .trim()
-    .min(10, "Please share a little more so we can help")
-    .max(4000, "Message is too long"),
+  message: z.string().trim().max(4000, "Message is too long"),
 });
+
+/** Map a single Name field onto the existing first/last contract. */
+export function splitFullName(full: string): { first: string; last: string } {
+  const parts = full.trim().split(/\s+/).filter(Boolean);
+  const first = (parts.shift() ?? "").slice(0, 80);
+  return { first, last: parts.join(" ").slice(0, 80) };
+}
 
 type Status = "idle" | "submitting" | "success" | "error";
 
@@ -187,8 +189,7 @@ function Page() {
                   const form = e.currentTarget;
                   const data = new FormData(form);
                   const parsed = contactSchema.safeParse({
-                    first: String(data.get("first") ?? ""),
-                    last: String(data.get("last") ?? ""),
+                    name: String(data.get("name") ?? ""),
                     email: String(data.get("email") ?? ""),
                     requestType: String(data.get("requestType") ?? ""),
                     travelDate: String(data.get("travelDate") ?? ""),
@@ -204,8 +205,8 @@ function Page() {
                       method: "POST",
                       headers: { "Content-Type": "application/json" },
                       body: JSON.stringify({
-                        first: parsed.data.first,
-                        last: parsed.data.last,
+                        // One Name field → existing first/last payload.
+                        ...splitFullName(parsed.data.name),
                         email: parsed.data.email,
                         requestType: parsed.data.requestType,
                         travelDate: parsed.data.travelDate ?? null,
@@ -253,10 +254,7 @@ function Page() {
                 className="space-y-6"
                 noValidate
               >
-                <div className="grid sm:grid-cols-2 gap-6">
-                  <Field label="First Name" name="first" autoComplete="given-name" />
-                  <Field label="Last Name" name="last" autoComplete="family-name" />
-                </div>
+                <Field label="Name" name="name" autoComplete="name" />
                 <Field label="Email" name="email" type="email" autoComplete="email" />
                 <SelectField
                   label="What can we help you plan?"
@@ -273,9 +271,10 @@ function Page() {
                   autoComplete="off"
                 />
                 <Field
-                  label="What are you dreaming of?"
+                  label="What are you dreaming of? (optional)"
                   name="message"
                   textarea
+                  required={false}
                   autoComplete="off"
                   defaultValue={
                     presetPlace
