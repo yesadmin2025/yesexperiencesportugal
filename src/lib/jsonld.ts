@@ -183,7 +183,7 @@ export function organizationLd() {
         name: "YES Travel Designer — full Portugal journeys, designed for you",
         description:
           "A local Travel Designer composes full private journeys across Portugal, from a few days to a full trip, shaped around your time, rhythm and interests. Personalized itineraries built around you, with local hidden gems. Delivered as a curated travel file.",
-        url: `${SITE_URL}/multi-day`,
+        url: `${SITE_URL}/portugal-travel-designer`,
         category: "Bespoke multi-day Portugal travel design",
       },
     ],
@@ -708,7 +708,7 @@ export function tripItineraryLd(args: {
       "@type": "PlanAction",
       target: {
         "@type": "EntryPoint",
-        urlTemplate: `${SITE_URL}/multi-day`,
+        urlTemplate: `${SITE_URL}/portugal-travel-designer`,
         actionPlatform: [
           "https://schema.org/DesktopWebPlatform",
           "https://schema.org/MobileWebPlatform",
@@ -815,7 +815,7 @@ export function studioServiceLd(args: { path: string; name: string; description:
 }
 
 /**
- * Travel Designer Service — /multi-day.
+ * Travel Designer Service — /portugal-travel-designer.
  *
  * A local human designer composes full private multi-day Portugal journeys.
  * Emitted as Service so Google can distinguish it from the Studio (day) and

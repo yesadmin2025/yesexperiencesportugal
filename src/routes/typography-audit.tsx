@@ -27,7 +27,7 @@ const ROUTES = [
   "/contact",
   "/corporate",
   "/day-tours",
-  "/multi-day",
+  "/portugal-travel-designer",
   "/local-stories",
 ];
 

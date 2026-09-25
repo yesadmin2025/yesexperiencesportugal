@@ -151,7 +151,7 @@ const ALL_ROUTES = [
   "/day-tours",
   "/experiences",
   "/local-stories",
-  "/multi-day",
+  "/portugal-travel-designer",
   "/proposals",
   "/hero-verify",
 ] as const;

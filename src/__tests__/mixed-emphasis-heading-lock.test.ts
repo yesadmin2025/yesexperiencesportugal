@@ -41,7 +41,7 @@ const TARGET_GLOBS = [
   "src/routes/contact.tsx",
   "src/routes/experiences.tsx",
   "src/routes/day-tours.tsx",
-  "src/routes/multi-day.tsx",
+  "src/routes/portugal-travel-designer.tsx",
   "src/routes/corporate.tsx",
   "src/routes/proposals.tsx",
   "src/routes/day-trips-from-lisbon.tsx",

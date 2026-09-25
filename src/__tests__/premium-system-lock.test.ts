@@ -110,7 +110,7 @@ describe("Premium System Lock", () => {
       "src/components/home/RecentJourney.tsx",
       "src/components/travel-designer/TravelFilePreview.tsx",
       "src/components/ui/GuestMomentsStrip.tsx",
-      "src/routes/multi-day.tsx",
+      "src/routes/portugal-travel-designer.tsx",
     ].map(read).join("\n");
 
     expect(publicUi).not.toMatch(/font-\[family-name:var\(--font-display\)\][^"\n]*(?:uppercase|text-\[1[012](?:\.5)?px\])/);

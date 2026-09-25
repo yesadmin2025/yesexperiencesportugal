@@ -23,7 +23,7 @@ const CANONICAL_PATHS = [
   "/",
   "/experiences",
   "/studio",
-  "/multi-day",
+  "/portugal-travel-designer",
   "/reviews",
   "/sitemap.xml",
   "/robots.txt",
