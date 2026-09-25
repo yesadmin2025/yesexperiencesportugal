@@ -33,9 +33,9 @@ describe("targeted production fixes", () => {
     expect(read("src/lib/site-search.ts")).not.toContain('path: "/multi-day"');
   });
 
-  it("uses the literal brand teal theme color", () => {
+  it("uses the brand teal theme token", () => {
     expect(read("src/routes/__root.tsx")).toContain(
-      '{ name: "theme-color", content: "#295B61" }',
+      '{ name: "theme-color", content: "var(--teal)" }',
     );
   });
 
