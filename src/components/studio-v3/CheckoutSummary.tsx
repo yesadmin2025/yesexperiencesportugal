@@ -32,6 +32,7 @@ import { CANCELLATION } from "@/config/business-nap";
 import { PriceBreakdownRows } from "@/components/checkout/PriceBreakdownRows";
 import { PerPersonBands } from "@/components/checkout/PerPersonBands";
 import { ComposableLineItems } from "./ComposableLineItems";
+import { isPickupToBeConfirmed } from "@/components/checkout/PickupLaterToggle";
 import type { ComposableDisplayLine } from "./useResolvedJourney";
 
 // One Stripe instance per publishable key, memoized across renders.
@@ -226,6 +227,12 @@ export function CheckoutSummary({
       typeof guestDetails.guests === "number" ? guestDetails.guests : null,
     ) ?? "—";
 
+  // Real inclusions from the resolved Signature source of truth only.
+  const inclusions: string[] = (tour?.included ?? [])
+    .map((i: string) => i.trim())
+    .filter(Boolean)
+    .slice(0, 5);
+
   // Same priority chain as FinalRevealStory — labels only, no stories.
   // Canonical labels are resolved first (order/count are authoritative), then
   // passed through the centralized winery presentation guard for DISPLAY only.
@@ -318,6 +325,17 @@ export function CheckoutSummary({
           editLabel="Edit your party"
           editTestId="studio-v3-checkout-summary-edit-guests"
         />
+        <Row
+          label="Pickup"
+          value={
+            isPickupToBeConfirmed(guestDetails.pickupAddress) || !guestDetails.pickupAddress?.trim()
+              ? "To be confirmed"
+              : guestDetails.pickupAddress
+          }
+          onEdit={onEditGuestDetails}
+          editLabel="Edit your pickup"
+          editTestId="studio-v3-checkout-summary-edit-pickup"
+        />
 
         {stopLabels.length > 0 ? (
           <div
@@ -346,6 +364,26 @@ export function CheckoutSummary({
             >
               {stopLabels.map((label, i) => (
                 <li key={`${i}-${label}`}>· {label}</li>
+              ))}
+            </ul>
+          </div>
+        ) : null}
+
+        {inclusions.length > 0 ? (
+          <div
+            className="pt-3 border-t"
+            style={{ borderColor: "color-mix(in oklab, var(--charcoal) 10%, transparent)" }}
+            data-testid="studio-v3-checkout-summary-inclusions"
+          >
+            <p
+              className="mb-2 text-[12px] uppercase tracking-[0.2em]"
+              style={{ color: "var(--charcoal-soft)" }}
+            >
+              Included
+            </p>
+            <ul className="space-y-1 text-[14.5px] leading-[1.55]" style={{ color: "var(--charcoal)" }}>
+              {inclusions.map((item) => (
+                <li key={item}>· {item}</li>
               ))}
             </ul>
           </div>
