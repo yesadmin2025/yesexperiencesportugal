@@ -594,7 +594,7 @@ export function GuestDetailsStep({
               </CtaButton>
             )}
             <p className="mt-2 text-center text-[12.5px] uppercase tracking-[0.12em] text-[color:var(--charcoal)]">
-              Secure checkout · Final price shown at payment
+              Secure checkout · This total is what you pay
             </p>
           </div>
         </div>
