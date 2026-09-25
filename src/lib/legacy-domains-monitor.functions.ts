@@ -305,5 +305,4 @@ export const getLegacyDomainsHistory = createServerFn({ method: "GET" })
       pointsToLovable: !!r.points_to_lovable,
       ready: !!r.ready,
     }));
-  },
-);
+  });
