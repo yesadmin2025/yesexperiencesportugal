@@ -71,9 +71,9 @@ function TodayPage() {
   const today = lisbonDay(0);
   const tomorrow = lisbonDay(1);
   const weekEnd = lisbonDay(7);
-  const [year, month] = today.split("-").map(Number);
+  const [year, monthIdx] = today.split("-").map(Number);
   const monthStart = `${today.slice(0, 7)}-01`;
-  const monthEnd = `${today.slice(0, 7)}-${String(new Date(Date.UTC(year, month, 0)).getUTCDate()).padStart(2, "0")}`;
+  const monthEnd = `${today.slice(0, 7)}-${String(new Date(Date.UTC(year, monthIdx, 0)).getUTCDate()).padStart(2, "0")}`;
 
   const refresh = useCallback(async () => {
     try {
