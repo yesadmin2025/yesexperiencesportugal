@@ -1101,6 +1101,41 @@ export function StudioV3() {
     writePersistedStudioState(state);
   }, [hydratedState, state]);
 
+  // P1 — BROWSER BACK/FORWARD. One history entry per real phase change (no
+  // spam: same-phase updates are ignored). Popstate restores the phase from
+  // the entry; all answers already persist, so nothing is lost.
+  const fromPopRef = useRef(false);
+  const lastHistoryPhaseRef = useRef<StudioV3Phase | null>(null);
+  useEffect(() => {
+    if (!hydratedState || typeof window === "undefined") return;
+    const phase = state.phase;
+    if (lastHistoryPhaseRef.current === phase) return;
+    const first = lastHistoryPhaseRef.current === null;
+    lastHistoryPhaseRef.current = phase;
+    const entry = { ...(window.history.state ?? {}), studioPhase: phase };
+    if (first || fromPopRef.current) window.history.replaceState(entry, "");
+    else window.history.pushState(entry, "");
+    fromPopRef.current = false;
+    // P1 — every phase opens at its heading, never stranded mid-scroll.
+    if (!first) {
+      const reduce = window.matchMedia?.("(prefers-reduced-motion: reduce)").matches;
+      window.requestAnimationFrame(() =>
+        window.scrollTo({ top: 0, behavior: reduce ? "auto" : "auto" }),
+      );
+    }
+  }, [hydratedState, state.phase]);
+  useEffect(() => {
+    const onPop = (e: PopStateEvent) => {
+      const target = (e.state as { studioPhase?: StudioV3Phase } | null)?.studioPhase;
+      if (!target) return;
+      fromPopRef.current = true;
+      lastHistoryPhaseRef.current = target;
+      setState((s) => (s.phase === target ? s : { ...s, phase: target }));
+    };
+    window.addEventListener("popstate", onPop);
+    return () => window.removeEventListener("popstate", onPop);
+  }, []);
+
   // Studio is instant-bookable: there is no lead-capture / curator exit.
 
   /**
@@ -3596,6 +3631,8 @@ export function StudioV3() {
           progress={studioV3Progress(state, state.phase)}
           anticipation={anticipation}
         >
+          {/* P1 — date, pickup and party stay editable from the first question. */}
+          <BackLink onClick={() => back("logistics")} />
           <PhaseHeader
             eyebrow="The feeling"
             title="How would you like"
