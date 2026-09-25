@@ -1,4 +1,5 @@
 import { createServerFn } from "@tanstack/react-start";
+import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 import { LEGACY_HOSTS } from "@/lib/legacy-domain-redirect";
 
 /**
@@ -280,8 +281,14 @@ export type HistoryPoint = {
   ready: boolean;
 };
 
-export const getLegacyDomainsHistory = createServerFn({ method: "GET" }).handler(
-  async (): Promise<HistoryPoint[]> => {
+export const getLegacyDomainsHistory = createServerFn({ method: "GET" })
+  .middleware([requireSupabaseAuth])
+  .handler(async ({ context }): Promise<HistoryPoint[]> => {
+    const { data: isAdmin } = await context.supabase.rpc("has_role", {
+      _user_id: context.userId,
+      _role: "admin",
+    });
+    if (!isAdmin) throw new Response("Forbidden", { status: 403 });
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const since = new Date(Date.now() - 7 * 24 * 3600 * 1000).toISOString();
     const { data, error } = await supabaseAdmin

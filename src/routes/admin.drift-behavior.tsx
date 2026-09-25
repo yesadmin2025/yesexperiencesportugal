@@ -52,7 +52,9 @@ function todayIso(offsetDays = 0): string {
 
 function csvEscape(value: unknown): string {
   if (value === null || value === undefined) return "";
-  const s = typeof value === "string" ? value : JSON.stringify(value);
+  let s = typeof value === "string" ? value : JSON.stringify(value);
+  // Neutralize spreadsheet formula injection.
+  if (/^[=+\-@\t\r]/.test(s)) s = `'${s}`;
   if (/[",\n\r]/.test(s)) return `"${s.replace(/"/g, '""')}"`;
   return s;
 }
