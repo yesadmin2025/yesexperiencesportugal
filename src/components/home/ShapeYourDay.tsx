@@ -4,7 +4,7 @@
  * Sits over the cinematic hero (desktop: bottom-left card; mobile:
  * collapsible bottom button). Three dropdowns (intent · group · pickup)
  * route to /studio with searchParams, EXCEPT when the user picks a
- * full multi-day journey → /multi-day, with an explicit override per spec.
+  * full multi-day journey → /portugal-travel-designer, with an explicit override per spec.
  *
  * Strict rules respected:
  * - No raw colors; only brand tokens.
@@ -62,9 +62,9 @@ export function ShapeYourDay() {
   }, [expanded]);
 
   const handleSubmit = () => {
-    // Spec: group = full journey → always /multi-day
+    // A full journey goes straight to the Travel Designer.
     if (group === "journey") {
-      void navigate({ to: "/multi-day" });
+      void navigate({ to: "/portugal-travel-designer" });
       return;
     }
     // Spec: pickup = other → /studio-v2 (with note flag) - studio still
@@ -332,7 +332,7 @@ function ShapeYourDayPanel(props: {
           <span aria-hidden="true">→</span>
         </button>
 
-        <Link to="/multi-day" className="syd-secondary">
+        <Link to="/portugal-travel-designer" className="syd-secondary">
           Or plan a multi-day journey →
         </Link>
       </div>

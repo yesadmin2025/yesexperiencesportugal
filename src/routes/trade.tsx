@@ -125,7 +125,7 @@ const WHAT_WE_DESIGN = [
   {
     label: "Travel Designer",
     body: "Tailor-made multi-day journeys across Portugal, balancing the places clients expect with the people, traditions and landscapes that make the country feel real.",
-    to: "/multi-day",
+    to: "/portugal-travel-designer",
   },
   {
     label: "Moments",

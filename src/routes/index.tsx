@@ -654,7 +654,7 @@ function HomePage() {
                 <p className="reveal-stagger mt-4 text-[13px] text-[color:var(--charcoal-soft)]">
                   Prefer a human hand?{" "}
                   <a
-                    href="/multi-day"
+                    href="/portugal-travel-designer"
                     className="inline-flex min-h-11 items-center text-[color:var(--teal)] underline underline-offset-4 decoration-[color:var(--gold)]/60 hover:decoration-[color:var(--gold)] transition-colors"
                   >
                     Portugal Travel Designer →
@@ -1076,7 +1076,7 @@ function HomePage() {
                       Design one private day
                     </Link>
                     <Link
-                      to="/multi-day"
+                      to="/portugal-travel-designer"
                       className="inline-flex min-h-11 items-center text-[color:var(--charcoal)] underline decoration-[color:var(--gold)]/60 underline-offset-4 hover:decoration-[color:var(--gold)]"
                     >
                       Plan a Portugal journey

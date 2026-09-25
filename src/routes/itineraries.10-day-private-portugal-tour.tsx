@@ -13,7 +13,7 @@ import ogSocialImg from "@/assets/cat-multiday.jpg";
  * A SAMPLE ten-day shape — not a fixed, bookable package. Every day is
  * drawn from Signature experiences we already run; the actual itinerary,
  * stays, transfers and dinners are composed with a human Travel Designer
- * at /multi-day and only exist once they are written into the guest's
+ * at /portugal-travel-designer and only exist once they are written into the guest's
  * travel file. Per brand rules we never fabricate stops, partners,
  * inclusions or prices, and no multi-day price is published here.
  */
@@ -196,7 +196,7 @@ export const Route = createFileRoute("/itineraries/10-day-private-portugal-tour"
       jsonLdScript(
         breadcrumbLd([
           { name: "Home", path: "/" },
-          { name: "Multi-day journeys", path: "/multi-day" },
+           { name: "Multi-day journeys", path: "/portugal-travel-designer" },
           { name: "10-day private Portugal tour", path: PAGE_PATH },
         ]),
       ),
@@ -225,7 +225,7 @@ function Page() {
             in a written travel file.
           </p>
           <div className="mt-8 flex flex-wrap gap-3 justify-center">
-            <CtaButton to="/multi-day">Work with a travel designer</CtaButton>
+            <CtaButton to="/portugal-travel-designer">Work with a travel designer</CtaButton>
             <CtaButton to="/experiences" variant="ghost">
               Browse Signature experiences
             </CtaButton>
@@ -330,7 +330,7 @@ function Page() {
             your travel file.
           </p>
           <div className="mt-8 flex flex-wrap gap-3 justify-center">
-            <CtaButton to="/multi-day">Start composing your journey</CtaButton>
+            <CtaButton to="/portugal-travel-designer">Start composing your journey</CtaButton>
             <CtaButton to="/day-tours" variant="ghost">
               See the day tours behind it
             </CtaButton>

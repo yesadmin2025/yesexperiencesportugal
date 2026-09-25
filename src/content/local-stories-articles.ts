@@ -821,7 +821,7 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
         path: "/local-stories/alentejo-wine-tour-from-lisbon",
         label: "Explore an Alentejo wine day",
       },
-      { path: "/multi-day", label: "Design a multi-day Portugal wine journey" },
+      { path: "/portugal-travel-designer", label: "Design a multi-day Portugal wine journey" },
     ],
     datePublished: "2026-07-04",
   },
@@ -1100,6 +1100,7 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
     ],
     relatedReads: [
       { path: "/tours/arrabida-wine-allinclusive", label: "Reserve the private Arrábida wine day" },
+      { path: "/lisbon-wine-tours", label: "Compare bookable Lisbon wine days" },
       { path: "/local-stories/best-wine-tours-from-lisbon", label: "Private wine tour from Lisbon" },
       { path: "/local-stories/setubal-wine-guide", label: "Local guide to Setúbal wine" },
     ],
@@ -1291,6 +1292,8 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
         path: "/local-stories/arrabida-wine-tour-from-lisbon",
         label: "The Arrábida wine day in detail",
       },
+      { path: "/lisbon-wine-tours", label: "Compare Lisbon wine tours and dates" },
+      { path: "/lisbon-wine-tour-prices-and-inclusions", label: "Wine day prices and inclusions" },
       { path: "/local-stories/setubal-wine-guide", label: "Setúbal wine country guide" },
       { path: "/local-stories/best-wineries-near-lisbon", label: "Best wineries near Lisbon" },
       { path: "/portugal-travel-designer", label: "Design your own Portugal journey" },
@@ -1443,6 +1446,7 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
       { slug: "evora-alentejo", label: "Évora & Alentejo Signature" },
     ],
     relatedReads: [
+      { path: "/lisbon-wine-tours", label: "Compare and reserve Lisbon wine days" },
       { path: "/local-stories/setubal-wine-guide", label: "Setúbal wine country guide" },
       { path: "/local-stories/best-wineries-near-lisbon", label: "Best wineries near Lisbon" },
       {
