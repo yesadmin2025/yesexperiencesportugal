@@ -1171,7 +1171,7 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
     slug: "best-wine-tours-from-lisbon",
     title: "The Best Private Wine Tours from Lisbon (2026 Expert Guide)",
     metaDescription:
-      "A local operator compares the best private wine tours from Lisbon — Arrábida, Azeitão and Alentejo. Family cellars, hotel pickup, tastings and a long local lunch, private to your party.",
+      "A local operator compares the best private wine tours from Lisbon — Arrábida, Azeitão and Alentejo. Family cellars, hotel pickup, tastings and lunch, private to you.",
     h1: "The Best Wine Tours from Lisbon",
     eyebrow: "Lisbon · Wine",
     standfirst:
