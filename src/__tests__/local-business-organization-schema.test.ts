@@ -5,6 +5,7 @@ import {
   organizationLd,
   localBusinessLd,
 } from "@/lib/jsonld";
+import { EMAIL, PHONE_TEL, STRUCTURED_ADDRESS, WEBSITE_URL } from "@/config/business-nap";
 
 /**
  * Validates that the sitewide Organization / LocalBusiness JSON-LD
@@ -48,12 +49,7 @@ describe("Organization / LocalBusiness structured data", () => {
   });
 
   it("Organization has Sesimbra address and geo coordinates", () => {
-    expect(org.address).toMatchObject({
-      "@type": "PostalAddress",
-      addressLocality: "Sesimbra",
-      addressRegion: "Setúbal",
-      addressCountry: "PT",
-    });
+    expect(org.address).toEqual(STRUCTURED_ADDRESS);
     expect(org.geo).toMatchObject({
       "@type": "GeoCoordinates",
       latitude: 38.4438,
@@ -62,7 +58,14 @@ describe("Organization / LocalBusiness structured data", () => {
   });
 
   it("Organization publishes phone and daily 09:00-20:00 opening hours", () => {
-    expect(org.telephone).toBe("+351911889992");
+    expect(org.telephone).toBe(PHONE_TEL);
+    expect(org.email).toBe(EMAIL);
+    expect(org.contactPoint.email).toBe(EMAIL);
+    expect(org.url).toBe(`${WEBSITE_URL}/`);
+    expect(org.disambiguatingDescription).toBe(
+      "Official website and current contact identity for YES Experiences Portugal, licensed Portuguese tour operator RNAAT nº 31/2023, based in Sesimbra.",
+    );
+    expect(org.sameAs).not.toContain("");
     expect(org.openingHoursSpecification).toHaveLength(1);
     const spec = org.openingHoursSpecification[0];
     expect(spec.opens).toBe("09:00");
@@ -98,8 +101,9 @@ describe("Organization / LocalBusiness structured data", () => {
     expect(lb.parentOrganization).toMatchObject({
       "@id": "https://yesexperiencesportugal.com/#organization",
     });
-    expect(lb.telephone).toBe("+351911889992");
-    expect(lb.address.addressLocality).toBe("Sesimbra");
+    expect(lb.telephone).toBe(PHONE_TEL);
+    expect(lb.email).toBe(EMAIL);
+    expect(lb.address).toEqual(STRUCTURED_ADDRESS);
     expect(lb.potentialAction).toMatchObject({
       "@type": "ReserveAction",
       target: {

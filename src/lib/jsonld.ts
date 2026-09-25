@@ -16,6 +16,7 @@ import {
   PHONE_TEL,
   SERVICE_AREAS,
   SOCIAL,
+  STRUCTURED_ADDRESS,
   WEBSITE_URL,
 } from "@/config/business-nap";
 
@@ -71,7 +72,7 @@ export function organizationLd() {
     keywords:
       "private tours Portugal, personalized Portugal tours, local Portugal tours, hidden gems Portugal, Portugal around you, real-time tour builder, interactive private tour design, Arrábida wine tour, Costa Vicentina private tour, Vinho de Talha Alentejo, Tróia Comporta private day, Travel Designer Portugal",
     disambiguatingDescription:
-      'The only active and canonical entity for the YES Experiences Portugal brand is operated from https://yesexperiencesportugal.com. Any third-party listing using the spelling "Yes!experiences Portugal" or marked as permanently closed is unrelated to this business and is not endorsed, owned, or operated by us.',
+      "Official website and current contact identity for YES Experiences Portugal, licensed Portuguese tour operator RNAAT nº 31/2023, based in Sesimbra.",
     knowsAbout: [
       "Private personalized tours in Portugal",
       "Local Portugal tours with hidden gems",
@@ -194,12 +195,7 @@ export function organizationLd() {
       name: "Registo Nacional dos Agentes de Viagens e Turismo",
       description: "Licensed Portuguese tour operator — RNAAT nº 31/2023.",
     },
-    address: {
-      "@type": "PostalAddress",
-      addressLocality: "Sesimbra",
-      addressRegion: "Setúbal",
-      addressCountry: "PT",
-    },
+    address: STRUCTURED_ADDRESS,
     geo: {
       "@type": "GeoCoordinates",
       latitude: 38.4438,
@@ -219,10 +215,12 @@ export function organizationLd() {
       ...SERVICE_AREAS.map((name) => ({ "@type": "AdministrativeArea", name })),
     ],
     telephone: PHONE_TEL,
+    email: EMAIL,
     contactPoint: {
       "@type": "ContactPoint",
       contactType: "customer service",
       telephone: PHONE_TEL,
+      email: EMAIL,
       availableLanguage: ["English", "Portuguese", "Spanish", "French"],
       areaServed: "PT",
     },
@@ -1291,12 +1289,7 @@ export function localBusinessLd(args: {
           })),
         }
       : {}),
-    address: {
-      "@type": "PostalAddress",
-      addressLocality: "Sesimbra",
-      addressRegion: "Setúbal",
-      addressCountry: "PT",
-    },
+    address: STRUCTURED_ADDRESS,
     openingHoursSpecification: [
       {
         "@type": "OpeningHoursSpecification",
