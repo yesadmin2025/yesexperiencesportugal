@@ -1171,7 +1171,7 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
     slug: "best-wine-tours-from-lisbon",
     title: "The Best Private Wine Tours from Lisbon (2026 Expert Guide)",
     metaDescription:
-      "A local operator compares the best private wine tours from Lisbon — Arrábida, Azeitão and Alentejo. Family cellars, hotel pickup, tastings and lunch, private to you.",
+      "Which wine day from Lisbon is worth it? A licensed local operator compares Arrábida, Azeitão, Setúbal and Alentejo — drive times, wineries, lunches, prices.",
     h1: "The Best Wine Tours from Lisbon",
     eyebrow: "Lisbon · Wine",
     standfirst:
@@ -1211,7 +1211,7 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
       },
       {
         heading: "The wine regions themselves, compared.",
-        body: "Setúbal is the closest — twenty-five minutes south, Moscatel country, family estates and quiet tastings along the Sado estuary. Palmela next door is Castelão red country: dark, structured, some of the best value bottles in Portugal. Arrábida is the one with the view, vineyards sitting between a limestone natural park and the Atlantic, with lunch in Sesimbra or Portinho. Alentejo, ninety minutes east, changes the landscape completely: cork oaks, wheat plains, white villages, and cellars still fermenting in buried clay talhas.\n\nShort on time and you want one beautiful day, choose Arrábida. Wine-obsessed and happy to drive, choose Alentejo. First trip to Portugal and you want something genuinely local without the distance, Setúbal and Azeitão together are the answer.",
+        body: "Setúbal is the closest — twenty-five minutes south across the bridge, and Moscatel country: an aromatic fortified wine, sweet but kept fresh by its acidity, made here like almost nowhere else. Alongside it come structured Castelão reds from Palmela, some of the best-value bottles in Portugal, and family estates along the Sado estuary. Azeitão, just beyond, is the craft corner of the peninsula — small family cellars, sheep's cheese made the same way for generations, and tile workshops when you want food culture beside the wine. Arrábida is the one with the view: vineyards between a limestone natural park and the Atlantic, with lunch in Sesimbra or Portinho da Arrábida. Alentejo, ninety minutes east, changes the landscape completely — cork oaks, wheat plains, white villages, and cellars still fermenting in buried clay talhas, with bigger reds and bigger distances that reward a full day.\n\nIn practice, the regions differ most in what fills the space between tastings. On the Setúbal Peninsula the drives are short enough for wine to share the day with a market, a cheese workshop or the coast. The Alentejo rewards the longer drive with scale: Roman Évora, amphora wines and a landscape you simply do not see near Lisbon.\n\nShort on time and you want one beautiful day, choose Arrábida. Wine-obsessed and happy to drive, choose Alentejo. First trip to Portugal and you want something genuinely local without the distance, Setúbal and Azeitão together are the answer.",
       },
       {
         heading: "Is a wine tour from Lisbon actually worth it?",
