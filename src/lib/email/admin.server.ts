@@ -145,7 +145,12 @@ async function buildBookingData(ref: string): Promise<{
     .select(
       "id, stripe_session_id, customer_name, customer_email, guests, preferred_date, notes, amount_total, currency, booking_details, metadata",
     )
-    .or(`stripe_session_id.eq.${ref},id.eq.${ref}`)
+    .eq(
+      /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(ref)
+        ? "id"
+        : "stripe_session_id",
+      /^[A-Za-z0-9_-]{1,255}$/.test(ref) ? ref : "__invalid__",
+    )
     .maybeSingle();
 
   const sessionId = booking?.stripe_session_id ?? ref;

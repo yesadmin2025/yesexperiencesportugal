@@ -71,6 +71,10 @@ export const generateStoryOpener = createServerFn({ method: "POST" })
     } satisfies StoryInput;
   })
   .handler(async ({ data }) => {
+    // Paid AI only for verified signed-in callers; everyone else gets the
+    // deterministic editorial fallback.
+    const { getVerifiedUserId } = await import("@/lib/verifiedCaller.server");
+    if (!(await getVerifiedUserId())) return fallback(data);
     const ipGuard = await guardAiCaller({
       bucket: "studio_v2_story",
       limit: 30,

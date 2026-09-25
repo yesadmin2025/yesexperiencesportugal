@@ -149,7 +149,14 @@ function BookingReceiptPage() {
       {reservationLd ? (
         <script
           type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(reservationLd) }}
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify(reservationLd)
+              .replace(/</g, "\\u003c")
+              .replace(/>/g, "\\u003e")
+              .replace(/&/g, "\\u0026")
+              .replace(/\u2028/g, "\\u2028")
+              .replace(/\u2029/g, "\\u2029"),
+          }}
         />
       ) : null}
       <div className="container-x max-w-2xl">

@@ -124,6 +124,8 @@ export const generateChapter = createServerFn({ method: "POST" })
       ),
       source: "fallback",
     };
+    const { getVerifiedUserId } = await import("@/lib/verifiedCaller.server");
+    if (!(await getVerifiedUserId())) return fallback;
 
     const ipGuard = await guardAiCaller({ bucket: "builder_chapter", limit: 50, windowSec: 300 });
     if (!ipGuard.ok) return { ...fallback, source: "rate_limited" };
