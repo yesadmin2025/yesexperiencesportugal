@@ -172,9 +172,9 @@ export function CinematicHero() {
           muted
           loop
           playsInline
-          // Metadata preload keeps LCP light; autoplay recovery retries on real user intent.
+          // No poster attribute: the <picture> underneath already paints the
+          // right-sized still, so phones never download the desktop poster.
           preload="none"
-          poster={HERO_FILM.poster}
           controls={false}
           disablePictureInPicture
           disableRemotePlayback
