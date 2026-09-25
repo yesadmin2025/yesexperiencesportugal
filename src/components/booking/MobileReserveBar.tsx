@@ -7,7 +7,7 @@
  * the in-page CTAs. No pricing, availability or payment logic lives here.
  *
  * Behaviour:
- *   • hidden until the guest scrolls past the hero (≈70% of the viewport);
+ *   • shown immediately on phones whenever the booking block is off screen;
  *   • hidden again once the booking form itself is on screen (no duplicate CTA);
  *   • hidden on ≥640px, where the booking panel is always in reach.
  */
@@ -40,7 +40,6 @@ export function MobileReserveBar({
 
   useEffect(() => {
     const onScroll = () => {
-      const pastHero = window.scrollY > window.innerHeight * 0.7;
       const book = document.getElementById("book");
       let bookOnScreen = false;
       if (book) {
@@ -50,7 +49,7 @@ export function MobileReserveBar({
       // Never stack two bottom bars: the cookie notice owns the bottom edge
       // until the guest answers it.
       const cookieNotice = document.querySelector(".cookie-consent-card");
-      setVisible(pastHero && !bookOnScreen && !cookieNotice);
+      setVisible(Boolean(book) && !bookOnScreen && !cookieNotice);
     };
     onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
@@ -89,7 +88,18 @@ export function MobileReserveBar({
         ) : null}
         <a
           href="#book"
-          onClick={() => dispatchSignatureReserveIntent({ tourId, placement: "mobile-bar" })}
+          onClick={(e) => {
+            dispatchSignatureReserveIntent({ tourId, placement: "mobile-bar" });
+            const book = document.getElementById("book");
+            if (!book) return;
+            e.preventDefault();
+            const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+            book.scrollIntoView({ behavior: reduce ? "auto" : "smooth", block: "start" });
+            const focusable = book.querySelector<HTMLElement>(
+              "input, button, select, [tabindex]:not([tabindex='-1'])",
+            );
+            window.setTimeout(() => (focusable ?? book).focus({ preventScroll: true }), reduce ? 0 : 450);
+          }}
           className="ml-auto inline-flex min-h-[48px] flex-1 items-center justify-center rounded-[2px] border border-[color:var(--gold)]/55 bg-[color:var(--teal)] px-5 text-[12px] font-semibold uppercase tracking-[0.12em] text-[color:var(--ivory)] transition-[background-color,transform] duration-150 hover:bg-[color:var(--teal-2)] active:scale-[0.985] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)] focus-visible:ring-offset-2"
         >
           {CTA_LABELS.signatureBooking}
