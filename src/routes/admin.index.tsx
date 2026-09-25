@@ -80,7 +80,7 @@ function TodayPage() {
       const [weekResult, paidResult, monthResult] = await Promise.all([
         loadBookings({ data: { dateFrom: today, dateTo: weekEnd, status: "all", limit: 300 } }),
         loadBookings({ data: { status: "paid", limit: 500 } }),
-        loadBookings({ data: { dateFrom: monthStart, dateTo: `${today.slice(0, 7)}-31`, status: "paid", limit: 500 } }),
+        loadBookings({ data: { dateFrom: monthStart, dateTo: monthEnd, status: "paid", limit: 500 } }),
       ]);
       setWeek(((weekResult.bookings ?? []) as unknown as Row[]).filter(active));
       setUndated(((paidResult.bookings ?? []) as unknown as Row[]).filter((row) => !row.preferred_date));
