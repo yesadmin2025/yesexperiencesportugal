@@ -5,6 +5,7 @@ import {
   isAuthPath,
   isAutomatedSession,
   isExcludedHost,
+  isInternalTelemetryDisabled,
 } from "../analytics-exclusions";
 
 describe("analytics traffic exclusions", () => {
@@ -43,5 +44,10 @@ describe("analytics traffic exclusions", () => {
     expect(isAutomatedSession({ webdriver: true })).toBe(true);
     expect(isAutomatedSession({ userAgent: "Chrome-Lighthouse" })).toBe(true);
     expect(isAutomatedSession({ userAgent: "Mozilla/5.0 iPhone Safari" })).toBe(false);
+  });
+
+  it("blocks internal table writes on local/preview hosts even with the marketing QA override", () => {
+    window.localStorage.setItem("YES_ANALYTICS_FORCE", "1");
+    expect(isInternalTelemetryDisabled()).toBe(true);
   });
 });

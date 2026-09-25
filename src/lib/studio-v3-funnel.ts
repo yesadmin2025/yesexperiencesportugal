@@ -22,6 +22,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { trackEvent, type YesAnalyticsEvent } from "@/lib/analytics-events";
 import { enrichStudioFunnelTiming } from "@/lib/studio-v3/funnelTiming";
 import { assignP14YourDayCtaVariant } from "@/lib/studio-v3/experiments";
+import { isInternalTelemetryDisabled } from "@/lib/analytics-exclusions";
 
 const SESSION_KEY = "studio-v3.funnel.session.v1";
 const VARIANT_KEY = "studio-v3.funnel.variant.v1";
@@ -193,7 +194,7 @@ function persistViaSupabase(row: FunnelRow): void {
  * publishable REST target is unavailable, falls back to the normal client.
  */
 function trackKeepalive(input: TrackInput): void {
-  if (!isBrowser() || isTest()) return;
+  if (!isBrowser() || isTest() || isInternalTelemetryDisabled()) return;
   const { input: enrichedInput, row } = enrichedRow(input);
   mirrorToGa(enrichedInput);
 
@@ -222,7 +223,7 @@ function trackKeepalive(input: TrackInput): void {
 
 /** Fire one event. Never awaits, never throws. */
 export function trackStep(input: TrackInput): void {
-  if (!isBrowser() || isTest()) return;
+  if (!isBrowser() || isTest() || isInternalTelemetryDisabled()) return;
 
   // The browser may navigate immediately after payment success. Persist this
   // terminal event with keepalive rather than relying on a cancellable request.

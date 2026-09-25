@@ -21,6 +21,7 @@
 import { supabase } from "@/integrations/supabase/client";
 import type { Json } from "@/integrations/supabase/types";
 import type { HeroExperiment, HeroCopyVariant } from "@/content/hero-scene-variants";
+import { isInternalTelemetryDisabled } from "@/lib/analytics-exclusions";
 
 const ANON_KEY = "yes_anon_id";
 const ASSIGNMENT_KEY_PREFIX = "yes_ab_";
@@ -151,7 +152,7 @@ export async function recordAssignment(
   experiment: HeroExperiment,
   variant: HeroCopyVariant,
 ): Promise<void> {
-  if (!isBrowser()) return;
+  if (isInternalTelemetryDisabled()) return;
   const anonId = getOrCreateAnonId();
   if (!anonId) return;
   const sessionKey = SESSION_LOGGED_PREFIX + experiment.key;
@@ -189,7 +190,7 @@ export async function trackAbEvent(
   event: AbEvent,
   meta?: { sceneId?: string; route?: string; extra?: Record<string, unknown> },
 ): Promise<void> {
-  if (!isBrowser()) return;
+  if (isInternalTelemetryDisabled()) return;
   const anonId = getOrCreateAnonId();
   if (!anonId) return;
 

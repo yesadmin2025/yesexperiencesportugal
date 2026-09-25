@@ -12,6 +12,7 @@
 import { supabase } from "@/integrations/supabase/client";
 import type { Json } from "@/integrations/supabase/types";
 import { getOrCreateAnonId } from "@/lib/ab-testing";
+import { isInternalTelemetryDisabled } from "@/lib/analytics-exclusions";
 
 export type StudioExperiment = {
   key: string;
@@ -108,7 +109,7 @@ export async function recordStudioAssignment(
   experiment: StudioExperiment,
   variantId: string,
 ): Promise<void> {
-  if (!isBrowser()) return;
+  if (isInternalTelemetryDisabled()) return;
   const anonId = getOrCreateAnonId();
   if (!anonId) return;
   const sessionKey = SESSION_LOGGED_PREFIX + experiment.key;
@@ -137,7 +138,7 @@ export async function trackStudioAbEvent(
   event: StudioAbEvent,
   meta?: { sceneId?: string; route?: string; extra?: Record<string, unknown> },
 ): Promise<void> {
-  if (!isBrowser()) return;
+  if (isInternalTelemetryDisabled()) return;
   const anonId = getOrCreateAnonId();
   if (!anonId) return;
 

@@ -1,6 +1,7 @@
 import { supabase } from "@/integrations/supabase/client";
 import type { Json } from "@/integrations/supabase/types";
 import { getDriftSessionId } from "./session";
+import { isInternalTelemetryDisabled } from "@/lib/analytics-exclusions";
 
 /**
  * Drift telemetry — fire-and-forget client helper. Never blocks the
@@ -37,7 +38,7 @@ interface RecordOpts {
 }
 
 export async function recordDriftEvent(event: DriftEvent, opts: RecordOpts = {}): Promise<void> {
-  if (typeof window === "undefined") return;
+  if (isInternalTelemetryDisabled()) return;
   const sessionId = getDriftSessionId();
   try {
     await supabase.from("drift_session_events").insert([
@@ -86,7 +87,7 @@ export async function recordDriftBehaviorEvent(
   signalType: BehaviorSignalType,
   opts: BehaviorEventOpts = {},
 ): Promise<void> {
-  if (typeof window === "undefined") return;
+  if (isInternalTelemetryDisabled()) return;
   const sessionId = getDriftSessionId();
   const cap = (v: string | undefined | null, n: number) =>
     v == null ? null : String(v).slice(0, n);

@@ -34,9 +34,10 @@ test.describe("Hero — approved copy lock", () => {
     expect(text).toBe(`${HERO_COPY.headlineLine1} ${HERO_COPY.headlineLine2}`);
   });
 
-  test("service-support copy stays in the hidden verification contract, not the visual Hero", async ({ page }) => {
+  test("service-support copy is visible as well as in the verification contract", async ({ page }) => {
     await gotoHero(page);
-    await expect(page.locator('[data-section="hero"] [data-hero-field="subheadline"]')).toHaveCount(0);
+    await expect(page.locator('[data-section="hero"] [data-hero-field="subheadline"]')).toBeVisible();
+    await expect(page.locator('[data-section="hero"] [data-hero-field="subheadline"]')).toHaveText(HERO_COPY.subheadline);
     await expect(page.locator('[data-testid="hero-copy-version"]')).toHaveAttribute(
       "data-hero-subheadline",
       HERO_COPY.subheadline,

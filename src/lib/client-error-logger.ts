@@ -8,6 +8,7 @@
 import { supabase } from "@/integrations/supabase/client";
 import { sanitizeLocation } from "@/lib/url-sanitize";
 import { classifyClientError } from "@/lib/error-classification";
+import { isInternalTelemetryDisabled } from "@/lib/analytics-exclusions";
 
 type Severity = "error" | "warning" | "info" | "unhandled_rejection" | "resource";
 
@@ -57,7 +58,7 @@ function shouldDedupe(signature: string): boolean {
 }
 
 export async function reportClientError(input: ReportInput): Promise<void> {
-  if (typeof window === "undefined") return;
+  if (isInternalTelemetryDisabled()) return;
   if (sentCount >= MAX_PER_SESSION) return;
 
   const message = trim(input.message, 4000) ?? "Unknown error";

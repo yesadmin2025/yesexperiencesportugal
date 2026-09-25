@@ -1,6 +1,7 @@
 import { supabase } from "@/integrations/supabase/client";
 import type { Json } from "@/integrations/supabase/types";
 import { getOrCreateAnonId } from "@/lib/ab-testing";
+import { isInternalTelemetryDisabled } from "@/lib/analytics-exclusions";
 
 export type BuilderEvent =
   | "reset"
@@ -45,7 +46,7 @@ export async function trackBuilderEvent(
   event: BuilderEvent,
   meta?: Record<string, unknown>,
 ): Promise<void> {
-  if (typeof window === "undefined") return;
+  if (isInternalTelemetryDisabled()) return;
   const anonId = getOrCreateAnonId();
   if (!anonId) return;
   try {
