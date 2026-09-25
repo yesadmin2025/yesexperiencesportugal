@@ -19,7 +19,7 @@ import {
   studioExtraWineryCountFromMoments,
   studioTradedBlueprintStopIds,
 } from "./studioWineryPresentation";
-import { composableStopLine } from "@/lib/studio-v3/composableStopAuthority";
+import { composableStopLine, composableStopLineFromRows } from "@/lib/studio-v3/composableStopAuthority";
 import { useComposableStops } from "@/hooks/use-composable-stops";
 import { ArrowLeft, ArrowRight, Check, X } from "lucide-react";
 
@@ -1559,7 +1559,11 @@ export function StudioV3() {
         .map((action) => action.actionId.slice("composable:".length))
         .filter((stopId) => stopId.length > 0);
       const composableLines = composableStopIds
-        .map((stopId) => composableStopLine(stopId, details.guests))
+        .map(
+          (stopId) =>
+            composableStopLineFromRows(composableRows, stopId, details.guests) ??
+            composableStopLine(stopId, details.guests),
+        )
         .filter((line): line is NonNullable<typeof line> => line !== null);
       const composablePartyTotalEur = Math.round(
         composableLines.reduce((sum, line) => sum + line.totalEurCents, 0) / 100,
@@ -4167,8 +4171,17 @@ export function StudioV3() {
 
               if (!j) return null;
               const addOns = addOnsPartyTotal(selectedAddOnItems, guests);
+              // P0 PRICE TRUTH — owner-priced composed moments are part of
+              // the amount sent to checkout, so the quote must carry them too.
+              const composableEur = Math.round(
+                resolvedJourney.composableLines.reduce((sum, line) => {
+                  const l = composableStopLineFromRows(composableRows, line.stopId, guests);
+                  return sum + (l ? l.totalEurCents : line.totalEurCents);
+                }, 0) / 100,
+              );
               return {
-                totalEur: Math.round(j.totalEur + addOns),
+                totalEur: Math.round(j.totalEur + addOns + composableEur),
+                composableEur,
                 perPaxAdultEur: j.perPaxAdultEur,
                 hasMinors: minorAges.length > 0,
                 adults,
@@ -4276,6 +4289,7 @@ export function StudioV3() {
             perPaxEur={resolvedJourney.perPaxEur}
             totalEur={resolvedJourney.totalEur}
             journeyLines={resolvedJourney.journeyLines}
+            composableLines={resolvedJourney.composableDisplayLines}
             submitting={checkoutPending}
             onBack={() => back("guestDetails")}
             onEditGuestDetails={() => back("guestDetails")}

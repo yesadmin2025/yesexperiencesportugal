@@ -31,6 +31,8 @@ import { trackEvent } from "@/lib/analytics-events";
 import { CANCELLATION } from "@/config/business-nap";
 import { PriceBreakdownRows } from "@/components/checkout/PriceBreakdownRows";
 import { PerPersonBands } from "@/components/checkout/PerPersonBands";
+import { ComposableLineItems } from "./ComposableLineItems";
+import type { ComposableDisplayLine } from "./useResolvedJourney";
 
 // One Stripe instance per publishable key, memoized across renders.
 const stripeCache = new Map<string, Promise<Stripe | null>>();
@@ -66,6 +68,8 @@ export interface CheckoutSummaryProps {
    * stops match the refine page exactly.
    */
   readonly composedStops?: ReadonlyArray<{ label: string }>;
+  /** Owner-priced composed moments, itemised with quantity and amount. */
+  readonly composableLines?: readonly ComposableDisplayLine[];
   readonly submitting?: boolean;
   readonly onEditGuestDetails: () => void;
   /**
@@ -123,6 +127,7 @@ export function CheckoutSummary({
   minorAges = [],
   journeyLines = null,
   composedStops,
+  composableLines = [],
   submitting = false,
   onEditGuestDetails,
   onEditOperational,
@@ -350,6 +355,12 @@ export function CheckoutSummary({
           journeyLines={journeyLines}
           label="Travellers"
           testId="studio-v3-checkout-summary-price-breakdown"
+        />
+
+        <ComposableLineItems
+          lines={composableLines}
+          testId="studio-v3-checkout-summary-composable-lines"
+          className="pt-3 border-t"
         />
 
         {selectedAddOns.length > 0 ? (
