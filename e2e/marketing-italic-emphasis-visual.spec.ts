@@ -32,7 +32,6 @@ const ROUTES: Array<{ slug: string; path: string; waitFor?: string }> = [
   { slug: "home", path: "/?hero=last" },
   { slug: "experiences", path: "/experiences" },
   { slug: "about", path: "/about" },
-  { slug: "multi-day", path: "/multi-day" },
   { slug: "proposals", path: "/proposals" },
   { slug: "corporate", path: "/corporate" },
   // NOTE: /day-trips-from-lisbon is now a 301 to /local-stories/best-day-trips-from-lisbon,

@@ -32,6 +32,12 @@ test("legacy Studio redirects preserve query parameters", async ({ page }) => {
   await expect(page).toHaveURL(/\/studio\?source=qa$/);
 });
 
+test("legacy Studio responds with a direct permanent HTTP redirect", async ({ request }) => {
+  const response = await request.get("/studio-v3?source=qa", { maxRedirects: 0 });
+  expect(response.status()).toBe(301);
+  expect(response.headers().location).toBe("/studio?source=qa");
+});
+
 test("desktop navigation enters the new Studio", async ({ page }) => {
   await page.setViewportSize({ width: 1280, height: 900 });
   await page.goto("/", { waitUntil: "domcontentloaded" });

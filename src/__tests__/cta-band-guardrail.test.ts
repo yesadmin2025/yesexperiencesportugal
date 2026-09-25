@@ -79,12 +79,6 @@ const DUPLICATE_BAND_EXEMPTIONS: { route: string; label: string; reason: string 
       "Hero band + closing band both end on Talk to a Local — corporate flow is human-only (no Builder), so the second band is the only conversion path. Tracked: design pass to consolidate corporate page CTAs.",
   },
   {
-    route: "multi-day.tsx",
-    label: "Talk to a Local",
-    reason:
-      "Hero band (Plan a Multi-Day Journey + Talk to a Local) and closing band (Open the Studio + Talk to a Local) repeat the secondary CTA. Tracked: replace closing-band secondary with WhatsApp or remove it.",
-  },
-  {
     route: "proposals.tsx",
     label: "Talk to a Local",
     reason:
