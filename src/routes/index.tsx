@@ -57,10 +57,10 @@ const LIVE_REVIEW_FALLBACK_TOURS = [
  * dedicated landing pages own Lisbon and day-trip search intent.
  */
 const HOME_SEO_TITLE =
-  "Portugal Tours & Private Day Tours from Lisbon | YES";
-const HOME_SEO_SOCIAL_TITLE = `${HERO_COPY.headlineLine1} ${HERO_COPY.headlineLine2} | YES Experiences Portugal`;
+  "Private Portugal Experiences & Tailor-Made Journeys | YES";
+const HOME_SEO_SOCIAL_TITLE = "Private Portugal Days & Journeys | YES Experiences Portugal";
 const HOME_SEO_DESCRIPTION =
-  "Private Portugal tours and day tours from Lisbon: Arrábida wine, Sintra & Cascais, Évora and Azeitão. Design your own day, or plan a full journey with a local expert.";
+  "Design a private day in real time, reserve a Signature experience, or shape a multi-day Portugal journey with a local expert. Wine, coast, food and culture, your way.";
 
 
 /** Homepage Journal row — three evergreen Local Stories guides.
