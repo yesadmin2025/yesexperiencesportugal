@@ -16,6 +16,7 @@ import { Eyebrow } from "@/components/ui/Eyebrow";
 import { CtaButton } from "@/components/ui/CtaButton";
 import { BookingCtaSkeleton } from "@/components/ui/BookingCtaSkeleton";
 import { findTour } from "@/data/signatureTours";
+import { getTourContent } from "@/lib/tourContent";
 import { buildWineryDisplayLabels, studioDisplayLabel } from "./studioWineryPresentation";
 import { formatGuestComposition } from "./formatGuests";
 import {
@@ -31,6 +32,9 @@ import { trackEvent } from "@/lib/analytics-events";
 import { CANCELLATION } from "@/config/business-nap";
 import { PriceBreakdownRows } from "@/components/checkout/PriceBreakdownRows";
 import { PerPersonBands } from "@/components/checkout/PerPersonBands";
+import { ComposableLineItems } from "./ComposableLineItems";
+import { isPickupToBeConfirmed } from "@/components/checkout/PickupLaterToggle";
+import type { ComposableDisplayLine } from "./useResolvedJourney";
 
 // One Stripe instance per publishable key, memoized across renders.
 const stripeCache = new Map<string, Promise<Stripe | null>>();
@@ -66,6 +70,8 @@ export interface CheckoutSummaryProps {
    * stops match the refine page exactly.
    */
   readonly composedStops?: ReadonlyArray<{ label: string }>;
+  /** Owner-priced composed moments, itemised with quantity and amount. */
+  readonly composableLines?: readonly ComposableDisplayLine[];
   readonly submitting?: boolean;
   readonly onEditGuestDetails: () => void;
   /**
@@ -123,6 +129,7 @@ export function CheckoutSummary({
   minorAges = [],
   journeyLines = null,
   composedStops,
+  composableLines = [],
   submitting = false,
   onEditGuestDetails,
   onEditOperational,
@@ -221,6 +228,12 @@ export function CheckoutSummary({
       typeof guestDetails.guests === "number" ? guestDetails.guests : null,
     ) ?? "—";
 
+  // Real inclusions from the resolved Signature source of truth only.
+  const inclusions: string[] = (tour ? getTourContent(tour.id).included : [])
+    .map((i: string) => i.trim())
+    .filter(Boolean)
+    .slice(0, 5);
+
   // Same priority chain as FinalRevealStory — labels only, no stories.
   // Canonical labels are resolved first (order/count are authoritative), then
   // passed through the centralized winery presentation guard for DISPLAY only.
@@ -313,6 +326,17 @@ export function CheckoutSummary({
           editLabel="Edit your party"
           editTestId="studio-v3-checkout-summary-edit-guests"
         />
+        <Row
+          label="Pickup"
+          value={
+            isPickupToBeConfirmed(guestDetails.pickupAddress) || !guestDetails.pickupAddress?.trim()
+              ? "To be confirmed"
+              : guestDetails.pickupAddress
+          }
+          onEdit={onEditGuestDetails}
+          editLabel="Edit your pickup"
+          editTestId="studio-v3-checkout-summary-edit-pickup"
+        />
 
         {stopLabels.length > 0 ? (
           <div
@@ -346,10 +370,36 @@ export function CheckoutSummary({
           </div>
         ) : null}
 
+        {inclusions.length > 0 ? (
+          <div
+            className="pt-3 border-t"
+            style={{ borderColor: "color-mix(in oklab, var(--charcoal) 10%, transparent)" }}
+            data-testid="studio-v3-checkout-summary-inclusions"
+          >
+            <p
+              className="mb-2 text-[12px] uppercase tracking-[0.2em]"
+              style={{ color: "var(--charcoal-soft)" }}
+            >
+              Included
+            </p>
+            <ul className="space-y-1 text-[14.5px] leading-[1.55]" style={{ color: "var(--charcoal)" }}>
+              {inclusions.map((item) => (
+                <li key={item}>· {item}</li>
+              ))}
+            </ul>
+          </div>
+        ) : null}
+
         <PriceBreakdownRows
           journeyLines={journeyLines}
           label="Travellers"
           testId="studio-v3-checkout-summary-price-breakdown"
+        />
+
+        <ComposableLineItems
+          lines={composableLines}
+          testId="studio-v3-checkout-summary-composable-lines"
+          className="pt-3 border-t"
         />
 
         {selectedAddOns.length > 0 ? (

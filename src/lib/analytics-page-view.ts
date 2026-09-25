@@ -18,6 +18,16 @@ import { useRouterState } from "@tanstack/react-router";
 import { trackEvent } from "@/lib/analytics-events";
 import { sanitizeLocation } from "@/lib/url-sanitize";
 
+/**
+ * GA4 "Page changes based on browser history events" (enhanced measurement on
+ * the G-9LPHHSEFW6 stream) already sends one page_view per SPA route change —
+ * verified in a browser: it produced a page_view even where site code sends
+ * nothing. Sending our own as well double-counted every navigation, so the
+ * site no longer emits route-change page_views. If that GA4 setting is ever
+ * switched off, flip this flag back to true.
+ */
+export const SITE_SENDS_SPA_PAGE_VIEW = false;
+
 export function usePageViewTracking(): void {
   const href = useRouterState({
     select: (s) => `${s.location.pathname}${s.location.searchStr ?? ""}`,
@@ -32,6 +42,7 @@ export function usePageViewTracking(): void {
     }
     if (last.current === href) return;
     last.current = href;
+    if (!SITE_SENDS_SPA_PAGE_VIEW) return;
     // P0 privacy: never send the raw href/query string. Path + sanitized
     // query only; `page_location` is rebuilt from the origin + clean path.
     const { path, query } = sanitizeLocation(href);

@@ -1,3 +1,7 @@
+import {
+  readSignatureSelection,
+  writeSignatureSelection,
+} from "@/lib/booking/signature-selection-storage";
 import { lazy, Suspense, useEffect, useId, useRef, useState } from "react";
 import { trackEvent } from "@/lib/analytics-events";
 import { Calendar, Sparkles, ChevronDown } from "lucide-react";
@@ -97,6 +101,26 @@ export function SimpleBookingForm({ tour }: { tour: SignatureTour }) {
   const [blockMessage, setBlockMessage] = useState<string | null>(null);
   const [prefsOpen, setPrefsOpen] = useState(false);
 
+
+  // P1 — remember date + party per tour for this browser session so Back /
+  // Forward or leaving and returning never loses the selection.
+  const restoredRef = useRef(false);
+  useEffect(() => {
+    const saved = readSignatureSelection(tour.id);
+    if (saved) {
+      if (saved.date) setDate(saved.date);
+      setComposition({ adults: saved.adults, minorAges: [...saved.minorAges] });
+    }
+    restoredRef.current = true;
+  }, [tour.id]);
+  useEffect(() => {
+    if (!restoredRef.current) return;
+    writeSignatureSelection(tour.id, {
+      date,
+      adults: composition.adults,
+      minorAges: composition.minorAges,
+    });
+  }, [tour.id, date, composition.adults, composition.minorAges]);
 
   // Availability rule from public.tour_operating_rules (with safe defaults).
   const [rule, setRule] = useState<OperatingRule | null>(null);

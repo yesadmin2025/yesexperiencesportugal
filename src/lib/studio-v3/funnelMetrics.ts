@@ -21,12 +21,13 @@ export interface StudioFunnelStep {
  */
 export const STUDIO_FUNNEL_STEPS: readonly StudioFunnelStep[] = [
   { key: "intro", label: "Invitation" },
+  // Live sequence: practical facts (date, pickup, party) come first.
+  { key: "logistics", label: "Logistics" },
   { key: "feeling", label: "Feeling" },
   { key: "who", label: "Who" },
   { key: "interests", label: "Interests" },
   { key: "rhythm", label: "Rhythm" },
   { key: "refinement", label: "Refinement", optional: true },
-  { key: "logistics", label: "Logistics" },
   { key: "storyboard", label: "Your Day" },
   { key: "guestDetails", label: "Guest details" },
   { key: "checkoutSummary", label: "Checkout", terminal: true },

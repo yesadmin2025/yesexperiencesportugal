@@ -31,12 +31,12 @@ describe("P11 · live Studio funnel shape", () => {
     const keys = STUDIO_FUNNEL_STEPS.map((step) => step.key);
     expect(keys).toEqual([
       "intro",
+      "logistics",
       "feeling",
       "who",
       "interests",
       "rhythm",
       "refinement",
-      "logistics",
       "storyboard",
       "guestDetails",
       "checkoutSummary",

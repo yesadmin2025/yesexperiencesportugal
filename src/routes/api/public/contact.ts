@@ -16,9 +16,16 @@ import { TEAM_NOTIFICATION_RECIPIENTS } from "@/lib/email/team-recipients";
 
 const contactSchema = z.object({
   first: z.string().trim().min(1).max(80),
-  last: z.string().trim().min(1).max(80),
+  // Single-name forms send an empty last name; keep the column compatible.
+  last: z.string().trim().max(80).default(""),
   email: z.string().trim().toLowerCase().email().max(254),
-  message: z.string().trim().min(10).max(4000),
+  // Optional message: an empty enquiry is stored with an explicit marker.
+  message: z
+    .string()
+    .trim()
+    .max(4000)
+    .default("")
+    .transform((m) => (m.length === 0 ? "No message provided." : m)),
   source: z.string().trim().max(80).optional(),
   locale: z.string().trim().max(20).nullable().optional(),
   userAgent: z.string().trim().max(500).nullable().optional(),

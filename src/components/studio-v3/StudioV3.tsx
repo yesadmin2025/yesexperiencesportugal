@@ -19,7 +19,7 @@ import {
   studioExtraWineryCountFromMoments,
   studioTradedBlueprintStopIds,
 } from "./studioWineryPresentation";
-import { composableStopLine } from "@/lib/studio-v3/composableStopAuthority";
+import { composableStopLine, composableStopLineFromRows } from "@/lib/studio-v3/composableStopAuthority";
 import { useComposableStops } from "@/hooks/use-composable-stops";
 import { ArrowLeft, ArrowRight, Check, X } from "lucide-react";
 
@@ -1101,6 +1101,41 @@ export function StudioV3() {
     writePersistedStudioState(state);
   }, [hydratedState, state]);
 
+  // P1 — BROWSER BACK/FORWARD. One history entry per real phase change (no
+  // spam: same-phase updates are ignored). Popstate restores the phase from
+  // the entry; all answers already persist, so nothing is lost.
+  const fromPopRef = useRef(false);
+  const lastHistoryPhaseRef = useRef<StudioV3Phase | null>(null);
+  useEffect(() => {
+    if (!hydratedState || typeof window === "undefined") return;
+    const phase = state.phase;
+    if (lastHistoryPhaseRef.current === phase) return;
+    const first = lastHistoryPhaseRef.current === null;
+    lastHistoryPhaseRef.current = phase;
+    const entry = { ...(window.history.state ?? {}), studioPhase: phase };
+    if (first || fromPopRef.current) window.history.replaceState(entry, "");
+    else window.history.pushState(entry, "");
+    fromPopRef.current = false;
+    // P1 — every phase opens at its heading, never stranded mid-scroll.
+    if (!first) {
+      const reduce = window.matchMedia?.("(prefers-reduced-motion: reduce)").matches;
+      window.requestAnimationFrame(() =>
+        window.scrollTo({ top: 0, behavior: reduce ? "auto" : "auto" }),
+      );
+    }
+  }, [hydratedState, state.phase]);
+  useEffect(() => {
+    const onPop = (e: PopStateEvent) => {
+      const target = (e.state as { studioPhase?: StudioV3Phase } | null)?.studioPhase;
+      if (!target) return;
+      fromPopRef.current = true;
+      lastHistoryPhaseRef.current = target;
+      setState((s) => (s.phase === target ? s : { ...s, phase: target }));
+    };
+    window.addEventListener("popstate", onPop);
+    return () => window.removeEventListener("popstate", onPop);
+  }, []);
+
   // Studio is instant-bookable: there is no lead-capture / curator exit.
 
   /**
@@ -1559,7 +1594,11 @@ export function StudioV3() {
         .map((action) => action.actionId.slice("composable:".length))
         .filter((stopId) => stopId.length > 0);
       const composableLines = composableStopIds
-        .map((stopId) => composableStopLine(stopId, details.guests))
+        .map(
+          (stopId) =>
+            composableStopLineFromRows(composableRows, stopId, details.guests) ??
+            composableStopLine(stopId, details.guests),
+        )
         .filter((line): line is NonNullable<typeof line> => line !== null);
       const composablePartyTotalEur = Math.round(
         composableLines.reduce((sum, line) => sum + line.totalEurCents, 0) / 100,
@@ -1698,7 +1737,7 @@ export function StudioV3() {
         setCheckoutPending(false);
       }
     },
-    [checkoutPending, tourPriceTiers, selectedAddOnItems, selectedAddOnMinutes],
+    [checkoutPending, tourPriceTiers, selectedAddOnItems, selectedAddOnMinutes, composableRows],
   );
 
   // Phase 7D — hydrate a saved Signature directly into the final reveal.
@@ -3592,6 +3631,8 @@ export function StudioV3() {
           progress={studioV3Progress(state, state.phase)}
           anticipation={anticipation}
         >
+          {/* P1 — date, pickup and party stay editable from the first question. */}
+          <BackLink onClick={() => back("logistics")} />
           <PhaseHeader
             eyebrow="The feeling"
             title="How would you like"
@@ -4167,8 +4208,24 @@ export function StudioV3() {
 
               if (!j) return null;
               const addOns = addOnsPartyTotal(selectedAddOnItems, guests);
+              // P0 PRICE TRUTH — owner-priced composed moments are part of
+              // the amount sent to checkout, so the quote must carry them too.
+              const composableAdjustments = resolvedJourney.composableDisplayLines.map((line) => {
+                const l = composableStopLineFromRows(composableRows, line.stopId, guests);
+                const cents = l ? l.totalEurCents : line.totalEur * 100;
+                const qty = l ? l.quantity : line.quantity;
+                const unit = (l ? l.unitEurCents : line.unitEur * 100) / 100;
+                return {
+                  label: qty > 1 ? `${line.label} (€${unit} × ${qty})` : line.label,
+                  amountEur: cents / 100,
+                };
+              });
+              const composableEur = Math.round(
+                composableAdjustments.reduce((sum, a) => sum + a.amountEur, 0),
+              );
               return {
-                totalEur: Math.round(j.totalEur + addOns),
+                totalEur: Math.round(j.totalEur + addOns + composableEur),
+                adjustments: composableAdjustments,
                 perPaxAdultEur: j.perPaxAdultEur,
                 hasMinors: minorAges.length > 0,
                 adults,
@@ -4276,6 +4333,7 @@ export function StudioV3() {
             perPaxEur={resolvedJourney.perPaxEur}
             totalEur={resolvedJourney.totalEur}
             journeyLines={resolvedJourney.journeyLines}
+            composableLines={resolvedJourney.composableDisplayLines}
             submitting={checkoutPending}
             onBack={() => back("guestDetails")}
             onEditGuestDetails={() => back("guestDetails")}

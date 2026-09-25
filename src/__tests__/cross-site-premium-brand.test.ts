@@ -13,8 +13,9 @@ describe("cross-site premium brand contract", () => {
     expect(manifest).toContain('const FILM_1080 = "/video/hero-sunset-road-27s-1080.mp4"');
     expect(manifest).toContain("durationSeconds: 27.133333");
     expect(hero.match(/^\s*<video\b/gm)).toHaveLength(1);
-    expect(hero).toContain('preload="metadata"');
-    expect(hero).toMatch(/src=\{HERO_FILM\.src720\}[\s\S]*?media="\(max-width: 767px\)"/);
+    // Poster owns LCP; the film is attached after load + idle, mobile-first.
+    expect(hero).toContain('preload="none"');
+    expect(hero).toMatch(/small \? HERO_FILM\.src720 : HERO_FILM\.src1080/);
   });
 
   it("uses the shared title emphasis and real editorial destinations", () => {

@@ -43,7 +43,7 @@ function fillRequired() {
   fireEvent.change(screen.getByLabelText(/full name/i), { target: { value: "Ana Test" } });
   fireEvent.change(screen.getByLabelText(/^email/i), { target: { value: "ana@example.com" } });
   fireEvent.change(screen.getByLabelText(/phone/i), { target: { value: "+351912345678" } });
-  fireEvent.change(screen.getByLabelText(/pickup/i), {
+  fireEvent.change(screen.getAllByLabelText(/pickup/i).find((el) => el.getAttribute("type") !== "checkbox")!, {
     target: { value: "Hotel Avenida, Lisbon" },
   });
 }
