@@ -7,8 +7,8 @@
  * the in-page CTAs. No pricing, availability or payment logic lives here.
  *
  * Behaviour:
- *   • hidden until the guest scrolls past the hero (≈70% of the viewport);
- *   • hidden again once the booking form itself is on screen (no duplicate CTA);
+ *   • visible immediately on mobile once cookie consent is out of the way;
+ *   • hidden whenever the booking form itself is on screen (no duplicate CTA);
  *   • hidden on ≥640px, where the booking panel is always in reach.
  */
 
@@ -40,7 +40,6 @@ export function MobileReserveBar({
 
   useEffect(() => {
     const onScroll = () => {
-      const pastHero = window.scrollY > window.innerHeight * 0.7;
       const book = document.getElementById("book");
       let bookOnScreen = false;
       if (book) {
@@ -50,7 +49,7 @@ export function MobileReserveBar({
       // Never stack two bottom bars: the cookie notice owns the bottom edge
       // until the guest answers it.
       const cookieNotice = document.querySelector(".cookie-consent-card");
-      setVisible(pastHero && !bookOnScreen && !cookieNotice);
+      setVisible(!bookOnScreen && !cookieNotice);
     };
     onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
