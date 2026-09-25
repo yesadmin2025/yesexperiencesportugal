@@ -188,9 +188,8 @@ function ExperiencesPage() {
           first server paint. No section/scene reveal gates the cards —
           those hid SSR cards at hydration and re-showed them later. */}
       <section
-        className="section-y bg-[color:var(--ivory)] border-b border-[color:var(--border)]"
+        className="motion-skip section-y bg-[color:var(--ivory)] border-b border-[color:var(--border)]"
         aria-label="Signature collection"
-        data-motion-skip="true"
       >
         <div className="container-x">
           {/* Keeps the heading order h1 → h2 → h3 without adding visible chrome
