@@ -35,4 +35,13 @@ describe("Experiences editorial collection", () => {
     expect(source.indexOf("{hasReviews ? (")).toBeLessThan(source.indexOf("{duration ? <span>{duration}</span> : null}"));
     expect(source.indexOf("{duration ? <span>{duration}</span> : null}")).toBeLessThan(source.indexOf("{location ? <span>{location}</span> : null}"));
   });
+  it("renders the source-controlled catalogue immediately, without a blocking loader or reveal gate", () => {
+    expect(source).not.toContain("loader: async () => ({ contentOverrides");
+    expect(source).toContain("useState<ExperienceContentOverride[]>([])");
+    expect(source).toContain("void listPublishedExperienceContent()");
+    expect(source).not.toContain('className="reveal section-y bg-[color:var(--ivory)]');
+    expect(source).not.toContain("<Scene className=");
+    expect(source).toContain('<div className="experiences-editorial-grid');
+  });
+
 });
