@@ -1702,7 +1702,7 @@ export function StudioV3() {
         setCheckoutPending(false);
       }
     },
-    [checkoutPending, tourPriceTiers, selectedAddOnItems, selectedAddOnMinutes],
+    [checkoutPending, tourPriceTiers, selectedAddOnItems, selectedAddOnMinutes, composableRows],
   );
 
   // Phase 7D — hydrate a saved Signature directly into the final reveal.
@@ -4173,15 +4173,22 @@ export function StudioV3() {
               const addOns = addOnsPartyTotal(selectedAddOnItems, guests);
               // P0 PRICE TRUTH — owner-priced composed moments are part of
               // the amount sent to checkout, so the quote must carry them too.
+              const composableAdjustments = resolvedJourney.composableDisplayLines.map((line) => {
+                const l = composableStopLineFromRows(composableRows, line.stopId, guests);
+                const cents = l ? l.totalEurCents : line.totalEur * 100;
+                const qty = l ? l.quantity : line.quantity;
+                const unit = (l ? l.unitEurCents : line.unitEur * 100) / 100;
+                return {
+                  label: qty > 1 ? `${line.label} (€${unit} × ${qty})` : line.label,
+                  amountEur: cents / 100,
+                };
+              });
               const composableEur = Math.round(
-                resolvedJourney.composableLines.reduce((sum, line) => {
-                  const l = composableStopLineFromRows(composableRows, line.stopId, guests);
-                  return sum + (l ? l.totalEurCents : line.totalEurCents);
-                }, 0) / 100,
+                composableAdjustments.reduce((sum, a) => sum + a.amountEur, 0),
               );
               return {
                 totalEur: Math.round(j.totalEur + addOns + composableEur),
-                composableEur,
+                adjustments: composableAdjustments,
                 perPaxAdultEur: j.perPaxAdultEur,
                 hasMinors: minorAges.length > 0,
                 adults,
