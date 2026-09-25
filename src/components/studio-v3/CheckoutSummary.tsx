@@ -16,6 +16,7 @@ import { Eyebrow } from "@/components/ui/Eyebrow";
 import { CtaButton } from "@/components/ui/CtaButton";
 import { BookingCtaSkeleton } from "@/components/ui/BookingCtaSkeleton";
 import { findTour } from "@/data/signatureTours";
+import { getTourContent } from "@/lib/tourContent";
 import { buildWineryDisplayLabels, studioDisplayLabel } from "./studioWineryPresentation";
 import { formatGuestComposition } from "./formatGuests";
 import {
@@ -228,7 +229,7 @@ export function CheckoutSummary({
     ) ?? "—";
 
   // Real inclusions from the resolved Signature source of truth only.
-  const inclusions: string[] = (tour?.included ?? [])
+  const inclusions: string[] = (tour ? getTourContent(tour.id).included : [])
     .map((i: string) => i.trim())
     .filter(Boolean)
     .slice(0, 5);
