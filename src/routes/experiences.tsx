@@ -180,7 +180,7 @@ function ExperiencesPage() {
       </section>
 
       <section
-        className="section-y bg-[color:var(--ivory)] border-b border-[color:var(--border)]"
+        className="motion-skip section-y bg-[color:var(--ivory)] border-b border-[color:var(--border)]"
         aria-label="Signature collection"
       >
         <div className="container-x">
