@@ -55,7 +55,7 @@ describe("Wine intent split contract", () => {
     expect(guide.title).toBe("The Best Private Wine Tours from Lisbon (2026 Expert Guide)");
     expect(guide.h1).toBe("The Best Wine Tours from Lisbon");
     expect(guide.datePublished).toBe("2026-07-24");
-    expect(guide.dateModified).toBe("2026-09-22");
+    expect(guide.dateModified).toBe("2026-09-25");
     expect(guide.sections[0]).toMatchObject({
       heading: "The short answer: which wine tour from Lisbon is best?",
     });
