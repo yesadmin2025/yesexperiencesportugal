@@ -15,7 +15,7 @@
  * reads like a human question rather than an operations dropdown.
  */
 
-import { useMemo, useState, type ReactNode } from "react";
+import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { ChoiceGrid } from "./ChoiceGrid";
 import { Composition } from "./Composition";
 import { DatePhaseControls, dateDisplayLabel } from "./DatePhase";
@@ -133,6 +133,15 @@ export function LogisticsPhase({
   checking = false,
 }: Props) {
   const [moment, setMoment] = useState<LogisticsMoment>(() => initialLogisticsMoment(state));
+  // P1 — each booking-detail moment opens at its heading, not mid-scroll.
+  const firstMomentRef = useRef(true);
+  useEffect(() => {
+    if (firstMomentRef.current) {
+      firstMomentRef.current = false;
+      return;
+    }
+    if (typeof window !== "undefined") window.scrollTo({ top: 0, behavior: "auto" });
+  }, [moment]);
 
   const group = pickupGroupOf(state.pickup);
   const showLisbonArrivals = group === "lisbon";
