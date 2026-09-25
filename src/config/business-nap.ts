@@ -104,10 +104,11 @@ export const SOCIAL = {
   tripadvisor:
     "https://www.tripadvisor.com/Attraction_Review-g227946-d34430097-Reviews-Yes_Experiences_Portugal-Sesimbra_Setubal_District_Alentejo.html",
   /**
-   * Google Business Profile. Intentionally EMPTY until the owner connects
-   * and verifies the current profile; do not infer identity from a Maps link.
+   * Canonical Google Business Profile share URL, supplied by the owner.
+   * Use exactly this link in sameAs and any public profile reference.
+   * Do NOT substitute a Maps short link or any obsolete listing address.
    */
-  google: "" as string,
+  google: "https://share.google/BaSl6G0cnoLKgXXay" as string,
   viator: "" as string,
 } as const;
 
