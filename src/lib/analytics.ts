@@ -83,6 +83,13 @@ function inferDevice(): AnalyticsParams["device"] {
 /**
  * Fire an analytics event. Safe to call from anywhere.
  */
+let lastPageView: { path: string; at: number } | null = null;
+
+/** Test seam. */
+export function __resetPageViewDedupe(): void {
+  lastPageView = null;
+}
+
 export function track(event: AnalyticsEvent | string, params: AnalyticsParams = {}): void {
   if (!isBrowser() || isTest() || isTrackingDisabled()) return;
   const w = window as AnalyticsWindow;
@@ -96,9 +103,21 @@ export function track(event: AnalyticsEvent | string, params: AnalyticsParams = 
     ...params,
     _ts: Date.now(),
   };
+  // ONE canonical page_view: when gtag is present it is the single channel
+  // (a parallel dataLayer `event: page_view` can be picked up by a GTM
+  // trigger and counted again). Identical path within 2s is dropped.
+  const isPageView = event === "page_view";
+  if (isPageView) {
+    const path = String(params.page_path ?? (typeof location !== "undefined" ? location.pathname : ""));
+    const now = Date.now();
+    if (lastPageView && lastPageView.path === path && now - lastPageView.at < 2000) return;
+    lastPageView = { path, at: now };
+  }
   try {
-    w.dataLayer = w.dataLayer ?? [];
-    w.dataLayer.push(enriched);
+    if (!(isPageView && typeof w.gtag === "function")) {
+      w.dataLayer = w.dataLayer ?? [];
+      w.dataLayer.push(enriched);
+    }
   } catch {
     /* silent */
   }
