@@ -64,7 +64,7 @@ export function WhatsAppSupportButton() {
         data-analytics-placement="fab"
         className="
         fixed z-40
-        bottom-[calc(max(1rem,env(safe-area-inset-bottom)+0.75rem)+var(--fab-lift,0px))]
+        bottom-[calc(max(1rem,env(safe-area-inset-bottom)+0.75rem)+var(--fab-lift,0px)+var(--cookie-banner-lift,0px))]
         right-4 md:right-6
         inline-flex items-center justify-center
         h-[48px] w-[48px] md:h-[56px] md:w-[56px]

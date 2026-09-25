@@ -49,7 +49,7 @@ export function FloatingActions() {
       // (104px) clears the larger md+ FAB. Safe-area inset is folded into
       // the calc so iPhone home-indicator devices keep the same gap.
       data-testid="floating-actions"
-      className="fixed right-5 md:right-8 z-40 flex flex-col items-end gap-3 print:hidden bottom-[calc(5.5rem+env(safe-area-inset-bottom,0px)+var(--fab-lift,0px))] md:bottom-[calc(6.5rem+env(safe-area-inset-bottom,0px)+var(--fab-lift,0px))]"
+      className="fixed right-5 md:right-8 z-40 flex flex-col items-end gap-3 print:hidden bottom-[calc(5.5rem+env(safe-area-inset-bottom,0px)+var(--fab-lift,0px)+var(--cookie-banner-lift,0px))] md:bottom-[calc(6.5rem+env(safe-area-inset-bottom,0px)+var(--fab-lift,0px)+var(--cookie-banner-lift,0px))]"
       // Single source of truth for the hidden state — removes children
       // from focus, AT, and pointer hit-testing while pre-hero.
       aria-hidden={allHidden}
