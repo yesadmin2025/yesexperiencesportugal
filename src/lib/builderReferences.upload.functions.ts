@@ -18,9 +18,17 @@ import { supabaseAdmin } from "@/integrations/supabase/client.server";
  *   have been dropped. All writes now flow through this server
  *   function, which uses the RLS-bypassing `supabaseAdmin` client
  *   AFTER validating that the caller's `sessionId` matches what
- *   the file path claims. The session id is the only credential
- *   anonymous builder users have — treated as an unguessable
- *   bearer token, exactly like the existing delete/list flows.
+ *   the file path claims.
+ *
+ * Ownership proof (server-issued upload pass):
+ *   Knowing a sessionId alone is not enough to write into it. The
+ *   first upload for a session "claims" it: the server mints a
+ *   random pass, stores it in `builder_session_passes` (service-role
+ *   only, no client access) and returns it to the caller, who keeps
+ *   it in localStorage. Every later upload must present that pass;
+ *   a missing or wrong pass is rejected. A stranger who learns a
+ *   sessionId (e.g. via a shared link) cannot upload into a session
+ *   that has already been claimed.
  */
 
 const MAX_BYTES = 10 * 1024 * 1024; // 10 MB
