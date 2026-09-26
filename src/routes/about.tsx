@@ -78,7 +78,7 @@ function Page() {
   return (
     <SiteLayout>
       {/* Hero */}
-      <section className="page-hero public-page-header reveal about-story text-center">
+      <section className="page-hero public-page-header text-center">
         <div className="container-x">
           <Scene>
               <div className="scene-atmosphere">
@@ -151,7 +151,7 @@ function Page() {
 
             <MaskReveal as="figure" className="mt-10 lg:hidden">
               <img
-                src={founderAsset.url}
+                src={`${founderAsset.url}?w=900&q=78`}
                 srcSet={founderSrcSet}
                 alt="Nídia Almeida hosting a private wine experience with YES Experiences Portugal guests."
                 loading="lazy"
@@ -186,7 +186,7 @@ function Page() {
 
           <MaskReveal as="figure" className="hidden lg:block lg:sticky lg:top-28">
             <img
-              src={founderAsset.url}
+              src={`${founderAsset.url}?w=900&q=78`}
                 srcSet={founderSrcSet}
               alt="Nídia Almeida hosting a private wine experience with YES Experiences Portugal guests."
               loading="lazy"

@@ -218,9 +218,9 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
   },
   {
     slug: "what-to-do-in-sesimbra",
-    title: "Things to Do in Sesimbra: A Local's Guide (Castle, Coves, Fish)",
+    title: "Sesimbra, Portugal: Things to Do — A Local's Guide",
     metaDescription:
-      "Sesimbra is our home town: climb the castle for the bay view, swim a quiet Arrábida cove, eat the morning's catch by the harbour. 40 minutes from Lisbon.",
+      "What to do in Sesimbra, Portugal, from locals who live here: the castle bay view, quiet Arrábida coves and the morning's catch by the harbour. 40 min from Lisbon.",
 
     h1: "Things to Do in Sesimbra — Castle, Coves & a Harbour Lunch",
     eyebrow: "Sesimbra · Coast",
@@ -1065,9 +1065,9 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
   },
   {
     slug: "best-wine-tasting-near-lisbon",
-    title: "Best Wine Tasting Near Lisbon: Setúbal & Azeitão",
+    title: "Wine Tasting Near Lisbon: Best Family Wineries Close By",
     metaDescription:
-      "The best wine tasting near Lisbon — family wineries in Setúbal, Azeitão and Arrábida, with Moscatel, local reds and a long lunch. Private days.",
+      "Looking for wine tasting near you in Lisbon? Family wineries in Azeitão, Setúbal and Arrábida are under an hour away — Moscatel, local reds and a long lunch.",
     h1: "Best Wine Tasting Near Lisbon — by a Local",
     eyebrow: "Lisbon · Wine Tasting",
     standfirst:

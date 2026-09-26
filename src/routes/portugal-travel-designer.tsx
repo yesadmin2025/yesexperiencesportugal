@@ -11,7 +11,7 @@ import ogImg from "@/assets/hero-coast.jpg";
 import { CTA_LABELS } from "@/content/cta-vocabulary";
 
 const CANONICAL = "https://yesexperiencesportugal.com/portugal-travel-designer";
-const TITLE = "Portugal Travel Designer — Plan a Private Trip With a Local";
+const TITLE = "Travel Designer in Portugal — Plan a Private Trip With a Local";
 const DESC =
   "Work one-to-one with a travel designer who lives in Portugal: private day experiences, wine days and multi-day routes, shaped around how you like to travel.";
 const OG_IMAGE = `https://yesexperiencesportugal.com${ogImg}`;
