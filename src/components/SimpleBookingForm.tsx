@@ -683,7 +683,7 @@ export function SimpleBookingForm({ tour }: { tour: SignatureTour }) {
         </CtaButton>
       )}
 
-      <div className="mt-3 text-center">
+      {tour.id !== "p23-artisan-pottery-cork" && <div className="mt-3 text-center">
         <Link
           to="/tours/$tourId/tailor"
           params={{ tourId: tour.id }}
@@ -691,7 +691,7 @@ export function SimpleBookingForm({ tour }: { tour: SignatureTour }) {
         >
           Tailor this day
         </Link>
-      </div>
+      </div>}
 
 
       {detailsOpen ? <Suspense fallback={null}><FinalDetailsDialog

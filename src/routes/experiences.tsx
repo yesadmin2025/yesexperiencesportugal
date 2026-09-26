@@ -308,7 +308,7 @@ function TourCard({
           >
             {CTA_LABELS.signatureCardBooking}
           </CtaButton>
-          <CtaButton
+          {tour.id !== "p23-artisan-pottery-cork" && <CtaButton
             to="/tours/$tourId/tailor"
             params={{ tourId: tour.id }}
             variant="hairline"
@@ -316,7 +316,7 @@ function TourCard({
             aria-label={`Tailor this day — ${tour.title}`}
           >
             {CTA_LABELS.tailor}
-          </CtaButton>
+          </CtaButton>}
           <div className="mt-1 hidden justify-end md:flex">
             <CompareControl
               active={compareActive}
