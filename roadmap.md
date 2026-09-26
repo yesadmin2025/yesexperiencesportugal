@@ -1,5 +1,11 @@
 # Roadmap — Operations hub upgrade
 
+## 27 Sep — Signature and private operations panel
+- [ ] Confirm published footer/Signature state and apply only missing cleanup
+- [ ] Remove Signature map and show each experience's real itinerary in checkout, without changing payment authority
+- [ ] Add private operations view for bookings, collected/outstanding totals by experience and guest-file history
+- [ ] Verify mobile checkout and admin flows, then publish and confirm live pages
+
 ## 26 Sep — SiteGuru recommendations and footer refinement
 - [x] Cross-check the supplied SiteGuru reports against current SEO fixes, preserving intentional noindex pages and confirmed business facts
 - [x] Separate the Trustindex certificate and Livro de Reclamações seal on phones; keep both linked, visible and legally accessible
