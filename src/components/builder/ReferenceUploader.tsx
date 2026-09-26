@@ -148,12 +148,18 @@ export function ReferenceUploader({ sessionId, onToneReady }: Props) {
               mimeType: file.type,
               fileSizeBytes: file.size,
               base64,
+              pass: readPass(sessionId),
             },
           });
           if (!result.ok) {
             console.error("upload failed:", result.reason);
             toast.error(`Upload failed: ${file.name}`);
             continue;
+          }
+          // First upload for this session: the server minted an
+          // ownership pass — keep it for all future uploads.
+          if (result.pass) {
+            storePass(sessionId, result.pass);
           }
         } catch (err) {
           console.error(err);
