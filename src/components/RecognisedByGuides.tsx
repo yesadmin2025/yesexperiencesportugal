@@ -13,7 +13,8 @@ import { getMentionsForPlacement, type AuthorityPlacement } from "@/data/externa
  *  • For other entries the card says "Featured the tour we operate" — never
  *    "featured YES Experiences" — because the article ranks the product on
  *    Viator/GetYourGuide without naming the brand.
- *  • Links are real, visible, open in a new tab with rel="noopener nofollow".
+ *  • Citations are plain text: quotes and publication names only. No outbound
+ *    "Read article" links and no "opens in a new tab" note.
  *
  * Mobile-first: vertical stack with elegant spacing. Desktop: 3 columns.
  */
@@ -33,7 +34,7 @@ export interface RecognisedByGuidesProps {
 const DEFAULT_LIMITS: Record<AuthorityPlacement, number> = {
   homepage: 4,
   "wine-landing": 5,
-  "arrabida-tour": 3,
+  "arrabida-tour": 4,
   alentejo: 4,
   "inventory-only": 0,
 };
