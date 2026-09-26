@@ -127,11 +127,12 @@ export const narrateBuilderRoute = createServerFn({ method: "POST" })
       limit: 10,
       windowSec: 300,
     });
-    const openaiKey = process.env.OPENAI_API_KEY;
     // Paid AI is reserved for verified signed-in callers; anonymous
     // visitors get the deterministic fallback (no metered call).
     const { getVerifiedUserId: __verify } = await import("@/lib/verifiedCaller.server");
-    const lovableKey = (await __verify()) ? process.env.LOVABLE_API_KEY : undefined;
+    const __verified = Boolean(await __verify());
+    const openaiKey = __verified ? process.env.OPENAI_API_KEY : undefined;
+    const lovableKey = __verified ? process.env.LOVABLE_API_KEY : undefined;
     const { regions, stops, rules, compatibility } = await loadCatalog();
     const route = generateRoute(
       {
