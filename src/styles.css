@@ -8061,7 +8061,10 @@ html[data-motion-scope="marketing"] .cta-breathe::after {
    without changing the visible alignment of editorial headings. */
 .editorial-title-safe {
   padding: 0.08em 0.06em 0.12em;
-  margin: -0.08em -0.06em -0.12em;
+  /* Horizontal bleed protects Fraunces overhangs without cancelling the
+     intentional mt-* rhythm between an eyebrow and its heading. */
+  margin-left: -0.06em;
+  margin-right: -0.06em;
   overflow: visible;
 }
 [data-motion-ready="1"] .motion-split.is-visible .motion-split-line {

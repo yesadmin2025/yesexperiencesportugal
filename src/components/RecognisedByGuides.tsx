@@ -1,4 +1,5 @@
 import { Eyebrow } from "@/components/ui/Eyebrow";
+import { SectionTitle } from "@/components/ui/SectionTitle";
 import { getMentionsForPlacement, type AuthorityPlacement } from "@/data/externalAuthorityMentions";
 
 /**
@@ -63,17 +64,20 @@ export function RecognisedByGuides({
           : "container-x py-16 md:py-20 border-t border-[color:var(--gold-soft)]/35"
       }
     >
-      <div className="max-w-2xl mx-auto text-center mb-10 md:mb-12">
-        <Eyebrow className="mb-4">Mentions in independent guides</Eyebrow>
-        <h2
+      <div className="editorial-label-stack max-w-2xl mx-auto text-center mb-10 md:mb-12">
+        <Eyebrow>Mentions in independent guides</Eyebrow>
+        <SectionTitle
+          as="h2"
+          size="compact"
+          spacing="loose"
           id="recognised-by-guides-title"
-          className="font-display font-medium text-[1.55rem] md:text-[2rem] leading-[1.2] tracking-[-0.01em] text-[color:var(--charcoal)] mb-5"
+          className="mb-5"
         >
           {heading.split("travel guides")[0]}
-          <span className="font-serif italic text-[color:var(--teal)]">travel guides</span>
+          <SectionTitle.Em>travel guides</SectionTitle.Em>
           {heading.split("travel guides")[1] ?? ""}
-        </h2>
-        <p className="text-[14.5px] md:text-[15.5px] text-[color:var(--charcoal-soft)] leading-[1.75]">
+        </SectionTitle>
+        <p className="text-[15px] md:text-base text-[color:var(--charcoal-soft)] leading-[1.75]">
           {intro}
         </p>
       </div>

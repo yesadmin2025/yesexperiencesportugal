@@ -38,9 +38,9 @@ export interface SectionTitleProps extends React.HTMLAttributes<HTMLHeadingEleme
 }
 
 const spacingClasses = {
-  tight: "mt-2",
-  normal: "mt-3",
-  loose: "mt-4",
+  tight: "mt-4",
+  normal: "mt-5",
+  loose: "mt-6",
 } as const;
 
 function SectionTitleRoot({

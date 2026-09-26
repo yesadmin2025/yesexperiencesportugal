@@ -60,7 +60,7 @@ function RegionsPage() {
               <section key={chapter.name} className="grid gap-5 border-t border-[color:var(--border)] py-10 md:grid-cols-[minmax(0,1fr)_minmax(0,1.4fr)] md:gap-12 md:py-14">
                 <div>
                   <Eyebrow>{String(index + 1).padStart(2, "0")} / 07</Eyebrow>
-                  <h2 className="mt-3 font-serif text-3xl text-[color:var(--charcoal)] md:text-4xl">{chapter.name}</h2>
+                  <h2 className="mt-4 font-serif text-3xl text-[color:var(--charcoal)] md:text-4xl">{chapter.name}</h2>
                   <p className="mt-3 text-sm leading-relaxed text-[color:var(--charcoal-soft)]">{chapter.note}</p>
                 </div>
                 <div className="self-center divide-y divide-[color:var(--border)]">
@@ -77,7 +77,7 @@ function RegionsPage() {
           })}
           <div className="border-t border-[color:var(--border)] pt-12">
             <Eyebrow>Across Portugal</Eyebrow>
-            <h2 className="mt-3 font-serif text-3xl text-[color:var(--charcoal)]">Stay longer. See more slowly.</h2>
+            <h2 className="mt-4 font-serif text-3xl text-[color:var(--charcoal)]">Stay longer. See more slowly.</h2>
             <div className="mt-7"><CtaButton to="/portugal-travel-designer" variant="primary">Design my journey</CtaButton></div>
           </div>
         </div>
