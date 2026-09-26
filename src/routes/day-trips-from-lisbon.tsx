@@ -1,5 +1,5 @@
 import { socialImageMeta } from "@/lib/seo";
-import { PRICE_GROUP_QUALIFIER } from "@/lib/price-copy";
+import { PriceQualifier } from "@/components/ui/PriceQualifier";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { Clock, MapPin, Phone, Mail, Star, Car } from "lucide-react";
 
@@ -234,7 +234,7 @@ function DayTripsFromLisbon() {
                   {tour.blurb}
                 </p>
                 <p className="mt-4 font-sans text-[11.5px] uppercase tracking-[0.16em] text-[color:var(--charcoal-soft)]">
-                  {tour.durationHours} · from €{tour.priceFrom} per person {PRICE_GROUP_QUALIFIER}
+                  {tour.durationHours} · from €{tour.priceFrom} per person <PriceQualifier />
                 </p>
                 <div className="mt-5 flex flex-col gap-2">
                   <Link

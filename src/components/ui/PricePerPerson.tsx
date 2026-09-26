@@ -1,5 +1,5 @@
 import * as React from "react";
-import { PRICE_GROUP_QUALIFIER } from "@/lib/price-copy";
+import { PriceQualifier } from "@/components/ui/PriceQualifier";
 import { cn } from "@/lib/utils";
 import { useCurrency, formatPrice } from "@/lib/currency";
 
@@ -71,7 +71,7 @@ export function PricePerPerson(props: PricePerPersonProps) {
       >
         <span className="text-[14px] font-medium">From {eur(props.fromEur)}</span>
         <span className="text-[12px] uppercase tracking-[0.12em] text-[color:var(--charcoal-soft)]">
-          per person {PRICE_GROUP_QUALIFIER}
+          per person <PriceQualifier />
         </span>
       </span>
     );
@@ -91,7 +91,7 @@ export function PricePerPerson(props: PricePerPersonProps) {
           From {eur(props.fromEur)}
         </span>
         <span className="text-[12px] uppercase tracking-[0.12em] text-[color:var(--charcoal-soft)]">
-          per person {PRICE_GROUP_QUALIFIER}
+          per person <PriceQualifier />
         </span>
         {chargedHint}
       </span>
