@@ -912,6 +912,24 @@ export type Database = {
         }
         Relationships: []
       }
+      builder_session_passes: {
+        Row: {
+          created_at: string
+          pass: string
+          session_id: string
+        }
+        Insert: {
+          created_at?: string
+          pass: string
+          session_id: string
+        }
+        Update: {
+          created_at?: string
+          pass?: string
+          session_id?: string
+        }
+        Relationships: []
+      }
       builder_stops: {
         Row: {
           blurb: string | null
