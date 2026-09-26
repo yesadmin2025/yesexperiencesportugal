@@ -108,9 +108,14 @@ export function RecognisedByGuides({
                 {badge}
               </span>
 
-              <p className="font-display font-semibold text-[15.5px] leading-[1.45] text-[color:var(--charcoal)] mb-3">
+              <a
+                href={m.articleUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="font-display font-semibold text-[15.5px] leading-[1.45] text-[color:var(--charcoal)] mb-3 underline decoration-[color:var(--gold-soft)] decoration-1 underline-offset-4 transition-colors hover:decoration-[color:var(--gold)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[color:var(--teal)]"
+              >
                 {m.articleTitle}
-              </p>
+              </a>
 
               <blockquote className="font-serif text-[13.5px] leading-[1.7] text-[color:var(--charcoal-soft)] italic mb-4 border-l-2 border-[color:var(--gold-soft)] pl-3">
                 "{m.quote}"
