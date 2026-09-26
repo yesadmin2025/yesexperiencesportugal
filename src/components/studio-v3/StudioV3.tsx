@@ -1784,6 +1784,20 @@ export function StudioV3() {
     };
   }, [load]);
 
+  // Optional place preset from homepage links (`/studio?destination=<id>`).
+  // Only pre-selects the traveller's destination answer; composition,
+  // pricing and question flow are unchanged. Saved-day links take priority.
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const params = new URLSearchParams(window.location.search);
+    if (params.has("saved")) return;
+    const preset = params.get("destination");
+    if (!preset) return;
+    const valid = DESTINATION_INTENTS.some((o) => o.id === preset && o.id !== "anywhere-special");
+    if (!valid) return;
+    setState((s) => ({ ...s, destinationIntent: preset as StudioV3State["destinationIntent"] }));
+  }, []);
+
   // Funnel analytics: emit `enter` whenever the active phase changes, and
   // `abandon` if the tab is hidden / page is unloaded mid-flow. Reveal
   // (storyboard) is the terminal step — no abandon counted there.
