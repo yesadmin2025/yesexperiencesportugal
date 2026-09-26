@@ -3,8 +3,9 @@
 ## 26 Sep — SiteGuru recommendations and footer refinement
 - [x] Cross-check the supplied SiteGuru reports against current SEO fixes, preserving intentional noindex pages and confirmed business facts
 - [x] Separate the Trustindex certificate and Livro de Reclamações seal on phones; keep both linked, visible and legally accessible
-- [ ] Verify the revised footer on phone and desktop without clipped seals or horizontal overflow
-- [ ] Outside-site recommendations: obtain the 13 similar-page pairs, then differentiate only confirmed overlaps; earn genuine backlinks externally
+- [x] Verify the revised footer at 320px, 393px and 1280px without clipped seals or horizontal overflow
+- [ ] SiteGuru report lists 13 similar pages without identifying the pairs; obtain its detailed list before changing copy (blocked by missing report detail)
+- [ ] Earn genuine backlinks and verify Google Business Profile externally (blocked by third-party outreach and owner access)
 
 ## Current request — public mobile polish and publication
 - [ ] Verify heading spacing and typography across representative public pages on phone and desktop
