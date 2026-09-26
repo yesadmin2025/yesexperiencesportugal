@@ -232,27 +232,27 @@ export const signatureTours: SignatureTour[] = [
     title: "Arrábida Private Wine Tour from Lisbon — All-Inclusive",
     seoTitle: "Arrábida Wine Tour from Lisbon — Private, All-Inclusive",
     seoDescription:
-      "Private wine tour from Lisbon through Arrábida: 2–3 family wineries, Moscatel de Setúbal tastings, Livramento market and a long Azeitão lunch, door to door.",
+      "Private wine tour from Lisbon through Arrábida: 2 family wineries included, up to 4 when tailored, Moscatel de Setúbal tastings, Livramento market and a long Azeitão lunch, door to door.",
     region: "Setúbal · Arrábida",
     duration: "Full Day",
     durationHours: "7–9h",
     priceFrom: 135,
     wineriesRule:
-      "You'll visit 2 or 3 of these wineries — the exact count depends on the experience you choose and same-day availability.",
+      "2 family wineries included, up to 4 when tailored — which ones run is confirmed by same-day availability.",
     theme: "Wine",
     blurb:
-      "A private wine tour from Lisbon to the Arrábida hills — two or three family wineries, Livramento market and a long traditional lunch in Azeitão, handled door to door.",
+      "A private wine tour from Lisbon to the Arrábida hills — 2 family wineries included, up to 4 when tailored, Livramento market and a long traditional lunch in Azeitão, handled door to door.",
 
     intro:
-      "The most-loved YES private wine tour from Lisbon, in one word: complete. We leave the city for the Arrábida hills, walk the Livramento market, sit down for an unhurried Portuguese lunch in Azeitão and visit two or three small family wineries. An optional viewpoint at Cristo Rei or Sesimbra Castle closes the day.",
+      "The most-loved YES private wine tour from Lisbon, in one word: complete. We leave the city for the Arrábida hills, walk the Livramento market, sit down for an unhurried Portuguese lunch in Azeitão and visit small family wineries — 2 included, up to 4 when tailored. An optional viewpoint at Cristo Rei or Sesimbra Castle closes the day.",
     contextParagraph:
-      "A private Arrábida wine tour from Lisbon runs about 7–9 hours door to door, with hotel or apartment pickup in Lisbon and a private vehicle and guide for your group only. The day combines Arrábida, Setúbal and Azeitão: the Livramento market early, two or three small family wineries with tastings of Moscatel de Setúbal and small-producer reds, and an unhurried traditional lunch in Azeitão, with an optional viewpoint at Cristo Rei or Sesimbra Castle to close. Wine tastings, lunch and all transport are included in the price from €135 per person. YES Experiences Portugal is a licensed Portuguese tour operator with more than 1,000 guest reviews, and dates confirm instantly — so you can book the day rather than negotiate it.",
+      "A private Arrábida wine tour from Lisbon runs about 7–9 hours door to door, with hotel or apartment pickup in Lisbon and a private vehicle and guide for your group only. The day combines Arrábida, Setúbal and Azeitão: the Livramento market early, small family wineries — 2 included, up to 4 when tailored — with tastings of Moscatel de Setúbal and small-producer reds, and an unhurried traditional lunch in Azeitão, with an optional viewpoint at Cristo Rei or Sesimbra Castle to close. Wine tastings, lunch and all transport are included in the price from €135 per person · price per person varies with group size. YES Experiences Portugal is a licensed Portuguese tour operator rated 4.9/5 · 1,000+ reviews across platforms, and dates confirm instantly — so you can book the day rather than negotiate it.",
     contextLink: {
       href: "/local-stories/arrabida-wine-tour-from-lisbon",
       label: "Read more about wine in Arrábida and Setúbal",
     },
-    fitsBest: "Couples · friends · wine-curious travelers",
-    pace: ["Two or three wineries", "Long Azeitão lunch", "Optional viewpoint close"],
+    fitsBest: "Couples, friends and wine-curious travelers",
+    pace: ["2 wineries included, up to 4 when tailored", "Long Azeitão lunch", "Optional viewpoint close"],
     stops: [
       {
         label: "Mercado do Livramento",
@@ -327,7 +327,7 @@ export const signatureTours: SignatureTour[] = [
       },
     ],
     highlights: [
-      "2 or 3 private tastings at family-run wineries in Azeitão and Setúbal",
+      "2 family wineries included, up to 4 when tailored, in Azeitão and Setúbal",
       "Taste Moscatel de Setúbal and small-producer reds",
       "Cristo Rei panorama over Lisbon and the Tagus",
       "Traditional Portuguese lunch with paired wines",
@@ -336,7 +336,7 @@ export const signatureTours: SignatureTour[] = [
       "Door-to-door private transfers from Lisbon",
     ],
     included: [
-      "Visit 2 or 3 wineries (depending on the experience you choose)",
+      "2 family wineries included, up to 4 when tailored",
       "Alcoholic Beverages",
       "Snacks",
       "Lunch",
@@ -351,7 +351,7 @@ export const signatureTours: SignatureTour[] = [
       "Friends wanting one well-organised day out of the city",
     ],
     notes: [
-      "Designation of origin in Setúbal is famous for Moscatel — your guide tailors the order to your palate.",
+      "Setúbal is famous for its Moscatel. Your guide adjusts the tasting order to your palate.",
     ],
     img: imgArrabidaWineHero,
     focal: "50% 45%",

@@ -30,7 +30,7 @@ export function TourEditorialNote({ tour }: { tour: SignatureTour }) {
             {tour.blurb}
           </p>
           <p>
-            It fits best when {tour.fitsBest.charAt(0).toLowerCase() + tour.fitsBest.slice(1)}.
+            It fits {tour.fitsBest.charAt(0).toLowerCase() + tour.fitsBest.slice(1)}.
             {pace.length > 0
               ? ` The rhythm we hold is ${pace.join(", ").toLowerCase()} — private guide, private vehicle, no group to wait for.`
               : " Private guide, private vehicle, no group to wait for."}

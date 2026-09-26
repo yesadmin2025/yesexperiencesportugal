@@ -97,7 +97,7 @@ const SIGNATURE_TOURS: FooterLink[] = [
   {
     to: "/tours/$tourId",
     params: { tourId: "arrabida-wine-allinclusive" },
-    label: "Arrábida Wine & Coast",
+    label: "Arrábida Wine Tour",
   },
   {
     to: "/tours/$tourId",

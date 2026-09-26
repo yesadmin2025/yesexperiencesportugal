@@ -924,9 +924,9 @@ export const SIGNATURE_SOURCE_OF_TRUTH: Partial<Record<string, SignatureSourceOf
     ],
     variesByOption: ["Which wineries run is confirmed with you based on availability"],
     itinerary: [
-      stop(1, "Lisbon", "Starting point entry.", 5, "origin", true),
+      stop(1, "Lisbon", "Private pickup at your Lisbon hotel or apartment.", 5, "origin", true),
       stop(2, "Sesimbra", "The route may pass through town.", null, "pass-by", true),
-      stop(3, "Parque Natural da Arrábida", "Scenic route.", 30, "core", true),
+      stop(3, "Parque Natural da Arrábida", "The ridge road above the Atlantic, with a stop at the best viewpoint of the day.", 30, "core", true),
       stop(
         4,
         "José Maria da Fonseca",
@@ -936,8 +936,8 @@ export const SIGNATURE_SOURCE_OF_TRUTH: Partial<Record<string, SignatureSourceOf
         false,
         { poolId: "wineries" },
       ),
-      stop(5, "Mercado do Livramento", "Market.", 30, "core", true),
-      stop(6, "Azeitão", "Village and the included lunch.", 60, "core", true),
+      stop(5, "Mercado do Livramento", "Setúbal's historic covered market — fresh fish, Azeitão cheese and Moscatel.", 30, "core", true),
+      stop(6, "Azeitão", "An unhurried traditional lunch in the village, included.", 60, "core", true),
       stop(
         7,
         "Quinta do Piloto",
@@ -965,7 +965,7 @@ export const SIGNATURE_SOURCE_OF_TRUTH: Partial<Record<string, SignatureSourceOf
         false,
         { poolId: "wineries" },
       ),
-      stop(10, "Azulejos de Azeitão", "Tile factory.", 30, "core", true),
+      stop(10, "Azulejos de Azeitão", "A working hand-painted tile studio.", 30, "core", true),
       stop(
         11,
         "Farm Catralvos",

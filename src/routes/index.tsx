@@ -180,7 +180,7 @@ const FEATURED_TOUR_IDS = [
 // Concise SEO-friendly titles used on mobile signature cards so long
 // Viator names don't clip on the left edge. Desktop keeps the full title.
 const MOBILE_TITLE_OVERRIDES: Record<string, string> = {
-  "arrabida-wine-allinclusive": "Arrábida Wine Day from Lisbon",
+  "arrabida-wine-allinclusive": "Arrábida Private Wine Tour from Lisbon — All-Inclusive",
   "sintra-cascais": "Sintra & Cascais Private Day",
   "arrabida-boat": "Arrábida Boat & Wine Day",
   "troia-comporta": "Tróia & Comporta Coastal Day",
