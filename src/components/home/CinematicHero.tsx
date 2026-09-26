@@ -237,7 +237,7 @@ export function CinematicHero() {
               </span>
             </span>
           </div>
-            <h1 data-hero-field="subheadline" style={{ fontFamily: "var(--font-sans)", textWrap: "wrap" }} className="hero-support mx-auto mt-5 max-w-[32ch] font-sans font-normal text-[14px] leading-[1.5] sm:max-w-[48ch] sm:text-[16px]">{HERO_COPY.subheadline.replace(/\.$/, "")}</h1>
+            <h1 data-hero-field="subheadline" style={{ fontFamily: "var(--font-sans)", textWrap: "wrap" }} className="hero-support mx-auto mt-5 max-w-[32ch] font-sans font-normal text-[14px] leading-[1.5] sm:max-w-[48ch] sm:text-[16px]">{HERO_COPY.subheadline}</h1>
         </div>
       </div>
 
