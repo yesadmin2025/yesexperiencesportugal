@@ -203,7 +203,7 @@ export const signatureTours: SignatureTour[] = [
     id: "p23-artisan-pottery-cork",
     title: "Private Lisbon to Alentejo Tour: Artisan Pottery & Cork Workshops",
     seoTitle: "Private Alentejo Cork & Pottery Workshops | YES Portugal",
-    seoDescription: "Meet Alentejo makers on a private day of hands-on cork and pottery workshops. Three-hour ceramics session, local guide, lunch and transport included. From €203 per person.",
+    seoDescription: "Meet Alentejo makers on a private day of hands-on cork and pottery workshops. Ceramics session, local guide, lunch and transport included. From €203 per person.",
     region: "Alentejo",
     duration: "Full Day",
     durationHours: "~9h",
@@ -232,7 +232,7 @@ export const signatureTours: SignatureTour[] = [
     title: "Arrábida Private Wine Tour from Lisbon — All-Inclusive",
     seoTitle: "Arrábida Wine Tour from Lisbon — Private, All-Inclusive",
     seoDescription:
-      "Private wine tour from Lisbon through Arrábida: 2 family wineries included, up to 4 when tailored, Moscatel de Setúbal tastings, Livramento market and a long Azeitão lunch, door to door.",
+      "Private Arrábida wine tour from Lisbon: 2 family wineries included, up to 4 when tailored, Moscatel tastings, Livramento market and a long Azeitão lunch.",
     region: "Setúbal · Arrábida",
     duration: "Full Day",
     durationHours: "7–9h",
