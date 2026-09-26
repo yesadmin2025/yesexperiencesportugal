@@ -164,28 +164,24 @@ function AdminEnquiriesPage() {
 
   return (
     <SiteLayout>
-      <section className="bg-[color:var(--sand)] pt-10 pb-10">
+      <section className="bg-[color:var(--sand)] pt-10 pb-12">
         <div className="container-x">
           <Eyebrow flank>Enquiries</Eyebrow>
-          <SectionTitle as="h1" size="anchor" spacing="tight">
-            Every day someone <SectionTitle.Em>asked us to design</SectionTitle.Em>.
+          <SectionTitle as="h1" size="default" spacing="loose">
+            Guest enquiries
           </SectionTitle>
-          <p className="mt-4 max-w-2xl text-[color:var(--charcoal-soft)] leading-relaxed">
-            Requests arrive here the moment they are sent, alongside the notification email. Date,
-            party and preferences, newest first.
-          </p>
         </div>
       </section>
 
       <section className="py-10">
         <div className="container-x">
-          <div className="flex flex-wrap items-center gap-2">
+          <div className="flex flex-wrap items-center gap-3">
             {(["all", ...STATUSES] as const).map((s) => (
               <button
                 key={s}
                 type="button"
                 onClick={() => setFilter(s)}
-                className={`min-h-[40px] rounded-full border px-4 font-sans text-[11px] uppercase tracking-[0.18em] font-semibold ${
+                className={`min-h-[44px] rounded-full border px-4 font-sans text-[12px] uppercase tracking-[0.12em] font-semibold ${
                   filter === s
                     ? "border-[color:var(--gold)] bg-[color:var(--gold)]/15 text-[color:var(--charcoal)]"
                     : "border-[color:var(--charcoal)]/15 text-[color:var(--charcoal-soft)] hover:border-[color:var(--gold)]"
@@ -197,7 +193,7 @@ function AdminEnquiriesPage() {
             <button
               type="button"
               onClick={() => load()}
-              className="ml-auto inline-flex min-h-[40px] items-center gap-2 rounded-full border border-[color:var(--charcoal)]/15 px-4 font-sans text-[11px] uppercase tracking-[0.18em] font-semibold text-[color:var(--charcoal-soft)] hover:border-[color:var(--gold)]"
+              className="ml-auto inline-flex min-h-[44px] items-center gap-2 rounded-full border border-[color:var(--charcoal)]/15 px-4 font-sans text-[12px] uppercase tracking-[0.12em] font-semibold text-[color:var(--charcoal-soft)] hover:border-[color:var(--gold)]"
             >
               {loading ? (
                 <Loader2 size={13} className="animate-spin" aria-hidden />
@@ -225,7 +221,7 @@ function AdminEnquiriesPage() {
                       <h2 className="font-display text-[1.15rem] text-[color:var(--charcoal)]">
                         {row.name}
                       </h2>
-                      <span className="font-sans text-[10.5px] uppercase tracking-[0.2em] font-bold text-[color:var(--charcoal-soft)]">
+                      <span className="font-sans text-[12px] leading-relaxed uppercase tracking-[0.12em] font-semibold text-[color:var(--charcoal-soft)]">
                         {formatDate(row.created_at)} · {row.status}
                       </span>
                     </div>

@@ -69,15 +69,15 @@ function Section({
       className={`reveal section-y-major chapter-flow ${tone === "sand" ? "bg-[color:var(--sand)]" : "bg-[color:var(--ivory)]"}`}
     >
       <div className="container-x max-w-3xl">
-        {eyebrow && <Eyebrow>{eyebrow}</Eyebrow>}
+        {eyebrow && <Eyebrow className="max-w-full text-[12px] leading-[1.5] tracking-[0.14em] md:text-[11px] md:tracking-[0.24em]">{eyebrow}</Eyebrow>}
         {title && (
           <SplitLines
             as="h2"
-            className="mt-4 font-display text-[29px] font-medium leading-[1.15] tracking-normal text-balance text-[color:var(--charcoal)] md:text-[36px] md:leading-[1.1]"
+            className="mt-6 font-display text-[30px] font-medium leading-[1.22] tracking-normal text-balance text-[color:var(--charcoal)] md:mt-5 md:text-[36px] md:leading-[1.14]"
             lines={[title]}
           />
         )}
-        <div className="mt-6 space-y-5 text-[color:var(--charcoal-soft)] leading-relaxed">
+        <div className="mt-9 space-y-9 text-[color:var(--charcoal-soft)] leading-[1.75] md:mt-7 md:space-y-7">
           {children}
         </div>
       </div>
