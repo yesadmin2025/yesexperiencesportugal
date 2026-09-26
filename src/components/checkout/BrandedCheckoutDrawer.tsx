@@ -346,7 +346,7 @@ function ExperienceSummaryCard({
             data-testid="checkout-drawer-details-toggle"
             className="mt-1 flex min-h-[44px] w-full items-center justify-between gap-2 text-left text-[12.5px] uppercase tracking-[0.2em] text-[color:var(--charcoal-soft)] hover:text-[color:var(--charcoal)]"
           >
-            <span>What you're paying for</span>
+            <span>Your day at a glance</span>
             <ChevronDown
               size={14}
               aria-hidden
