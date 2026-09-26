@@ -99,7 +99,7 @@ export const VIATOR_META: Record<string, ViatorMeta> = {
     viatorUrl: "https://www.viator.com/tours/Lisbon/Bokun-Free-Product-June-2026/d538-349639P23",
     priceFromUSD: null,
     viatorReviewCount: 0,
-    reviewCount: 20,
+    reviewCount: 0,
     rating: 5,
     recommendedPct: null,
     overview: "A private full-day Alentejo craft experience built around cork and clay, including hands-on workshops with local makers and a three-hour pottery session in the afternoon.",

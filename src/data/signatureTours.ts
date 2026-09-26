@@ -221,7 +221,7 @@ export const signatureTours: SignatureTour[] = [
     highlights: ["Hands-on cork workshop with local makers", "Three-hour pottery workshop", "Private guide, transport and lunch included"],
     included: ["Private transportation", "Air-conditioned vehicle", "Cork Workshop", "Pottery Workshop", "Bottled water", "Admission Fee", "Private Local Guide", "Lunch"],
     idealFor: ["Couples curious about Portuguese craft", "Travelers who enjoy hands-on making", "Private groups exploring Alentejo traditions"],
-    notes: ["Workshop venue names are confirmed by your guide; the Viator listing does not identify them."],
+    notes: ["Workshop venue names are not published on the Viator listing."],
     img: imgArtisanPotteryCork,
     gallery: [imgArtisanPotteryCork],
     bookingUrl: "https://www.viator.com/tours/Lisbon/Bokun-Free-Product-June-2026/d538-349639P23",

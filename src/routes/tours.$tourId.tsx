@@ -681,7 +681,7 @@ function ItineraryTimeline({ tour, meta }: { tour: SignatureTour; meta?: ViatorM
             Your day, <SectionTitle.Em>stop by stop</SectionTitle.Em>
           </SectionTitle>
           <p className="mt-2 text-[13px] text-[color:var(--charcoal-soft)]">
-            {stops.length} places across the day · {signatureDurationLabel(tour.id, tour.durationHours)}
+            {tour.id === "p23-artisan-pottery-cork" ? "The shape of your day" : `${stops.length} places across the day`} · {signatureDurationLabel(tour.id, tour.durationHours)}
           </p>
         </div>
 
