@@ -301,7 +301,7 @@ function StaticArticleView({ article }: { article: LocalStoryArticle }) {
                 By {LOCAL_GUIDES_AUTHOR.replace(/^The /, "the ")}, YES Experiences Portugal
               </p>
               <p className="mt-2 font-sans text-[13px] leading-[1.6] text-[color:var(--charcoal-soft)]">
-                A decade designing private days across Portugal.
+                A decade designing private days across Portugal.{" "}
                 <br />
                 Licensed operator {LICENSE_LABEL}.
               </p>
