@@ -23,7 +23,7 @@ export function GroupSizePriceRow({ tour }: { tour: SignatureTour }) {
   return (
     <div
       data-testid="group-size-price-row"
-      className="container-x max-w-6xl pt-8"
+      className="mb-4"
     >
       <p className="text-[11px] uppercase tracking-[0.22em] text-[color:var(--charcoal-soft)]">
         Price per person by group size

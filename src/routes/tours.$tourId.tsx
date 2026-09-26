@@ -44,6 +44,8 @@ import { getTourGallery, getHeroAlt } from "@/lib/tour-gallery";
 import { getTourContent, signatureDurationLabel } from "@/lib/tourContent";
 import { projectPublicSotItinerary } from "@/lib/publicItineraryProjection";
 import { TourReviews } from "@/components/TourReviews";
+import { PRICE_GROUP_QUALIFIER } from "@/lib/price-copy";
+import { GroupSizePriceRow } from "@/components/tours/GroupSizePriceRow";
 import { GuestReviewForm } from "@/components/reviews/GuestReviewForm";
 import { RecognisedByGuides } from "@/components/RecognisedByGuides";
 import { CredentialStrip } from "@/components/ui/CredentialStrip";
@@ -505,7 +507,7 @@ function TourHero({
                   <PriceEur amountEur={(tour as { priceFrom: number }).priceFrom} role="from" />
                 </span>
                 <span className="text-[12px] uppercase tracking-[0.12em] text-[color:var(--charcoal-soft)]">
-                  per person
+                  per person {PRICE_GROUP_QUALIFIER}
                 </span>
                 <PriceCurrencyChip align="start" />
               </div>
@@ -881,6 +883,7 @@ function BookingBlock({ tour }: { tour: SignatureTour }) {
       className="py-16 md:py-24 bg-[color:var(--sand)]/50 scroll-mt-24 md:scroll-mt-28"
     >
       <div className="container-x max-w-3xl">
+        <GroupSizePriceRow tour={tour} />
         <SimpleBookingForm tour={tour} />
       </div>
     </section>
