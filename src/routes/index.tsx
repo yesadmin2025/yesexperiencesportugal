@@ -82,7 +82,7 @@ const homepageJournalLinks: {
     eyebrow: "Wine",
     title: "The best wine tours from Lisbon",
     blurb:
-      "Three real wine regions within 90 minutes of the city — Arrábida, Azeitão and the Alentejo — and how to choose between them.",
+      "Two wine regions within 90 minutes of the city — the Setúbal Peninsula and the Alentejo — and how to choose between them.",
     // Photographed on the Azeitão cheese & wine day — deliberately NOT one of
     // the four Signature tours featured above, so the Journal row never
     // repeats a card image already on this page.

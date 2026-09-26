@@ -833,7 +833,7 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
     h1: "Private Wine Tours from Lisbon",
     eyebrow: "Lisbon · Private Wine Days",
     standfirst:
-      "Three real wine regions within reach of your hotel. Family producers, long Portuguese lunches, your own driver and guide.",
+      "The Setúbal Peninsula and the Alentejo, within reach of your hotel. Family producers, long Portuguese lunches, your own driver and guide.",
     sections: [
       {
         heading: "Wine tours from Lisbon at their best",
