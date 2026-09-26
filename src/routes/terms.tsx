@@ -3,7 +3,15 @@ import { createFileRoute } from "@tanstack/react-router";
 import { SiteLayout } from "@/components/SiteLayout";
 import { Eyebrow } from "@/components/ui/Eyebrow";
 import { SectionTitle } from "@/components/ui/SectionTitle";
-import { CANCELLATION, EMAIL, EMAIL_HREF, LICENSE_LABEL } from "@/config/business-nap";
+import {
+  ADDRESS_LINE,
+  CANCELLATION,
+  EMAIL,
+  EMAIL_HREF,
+  LICENSE_LABEL,
+  NIF_LABEL,
+  RAL_ENTITIES_URL,
+} from "@/config/business-nap";
 import { breadcrumbLd, jsonLdScript } from "@/lib/jsonld";
 import ogImg from "@/assets/hero-coast.jpg";
 
@@ -62,11 +70,11 @@ function TermsPage() {
 
           <div className="mt-10 space-y-7 text-[15px] leading-[1.75] text-[color:var(--charcoal-soft)]">
             <p>
-              YES Experiences Portugal is a licensed Portuguese tour operator ({LICENSE_LABEL})
-              based in Sesimbra, designing private journeys across Portugal, with pickups from
-              Lisbon, Cascais, Sintra, Sesimbra and Setúbal. By making a reservation with us you
-              agree to the terms below, which govern the booking, payment, cancellation and conduct
-              of your private experience.
+              YES Experiences Portugal is a licensed Portuguese tour operator ({LICENSE_LABEL},{" "}
+              {NIF_LABEL}) based at {ADDRESS_LINE}, designing private journeys across Portugal,
+              with pickups from Lisbon, Cascais, Sintra, Sesimbra and Setúbal. By making a
+              reservation with us you agree to the terms below, which govern the booking, payment,
+              cancellation and conduct of your private experience.
             </p>
             <h2 className="serif text-[1.4rem] text-[color:var(--charcoal)] font-medium">
               Bookings & payment
@@ -109,13 +117,22 @@ function TermsPage() {
               list of authorised RAL entities is published on the Portuguese Consumer Portal at{" "}
               <a
                 className="underline decoration-[color:var(--gold)]/50 hover:text-[color:var(--teal)]"
-                href="https://www.consumidor.gov.pt"
+                href={RAL_ENTITIES_URL}
                 target="_blank"
                 rel="noopener noreferrer"
               >
                 www.consumidor.gov.pt
               </a>
-              . Complaints can also be submitted through the official Livro de Reclamações.
+              . Complaints can also be submitted through the official{" "}
+              <a
+                className="underline decoration-[color:var(--gold)]/50 hover:text-[color:var(--teal)]"
+                href="https://www.livroreclamacoes.pt/"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                Livro de Reclamações
+              </a>
+              .
             </p>
             <p className="text-[13px] text-[color:var(--charcoal-soft)]/80">
               For the full operator terms, contact us at{" "}
