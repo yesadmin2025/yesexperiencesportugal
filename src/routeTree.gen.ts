@@ -24,6 +24,7 @@ import { Route as SitemapImagesDotxmlRouteImport } from './routes/sitemap-images
 import { Route as SintraDayTourFromLisbonRouteImport } from './routes/sintra-day-tour-from-lisbon'
 import { Route as SearchRouteImport } from './routes/search'
 import { Route as ReviewsRouteImport } from './routes/reviews'
+import { Route as RegionsOfPortugalRouteImport } from './routes/regions-of-portugal'
 import { Route as PtRouteImport } from './routes/pt'
 import { Route as ProposalsRouteImport } from './routes/proposals'
 import { Route as ProposalInPortugalRouteImport } from './routes/proposal-in-portugal'
@@ -279,6 +280,11 @@ const SearchRoute = SearchRouteImport.update({
 const ReviewsRoute = ReviewsRouteImport.update({
   id: '/reviews',
   path: '/reviews',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const RegionsOfPortugalRoute = RegionsOfPortugalRouteImport.update({
+  id: '/regions-of-portugal',
+  path: '/regions-of-portugal',
   getParentRoute: () => rootRouteImport,
 } as any)
 const PtRoute = PtRouteImport.update({
@@ -1288,6 +1294,7 @@ export interface FileRoutesByFullPath {
   '/proposal-in-portugal': typeof ProposalInPortugalRoute
   '/proposals': typeof ProposalsRoute
   '/pt': typeof PtRouteWithChildren
+  '/regions-of-portugal': typeof RegionsOfPortugalRoute
   '/reviews': typeof ReviewsRoute
   '/search': typeof SearchRoute
   '/sintra-day-tour-from-lisbon': typeof SintraDayTourFromLisbonRoute
@@ -1482,6 +1489,7 @@ export interface FileRoutesByTo {
   '/private-wine-tour-lisbon': typeof PrivateWineTourLisbonRoute
   '/proposal-in-portugal': typeof ProposalInPortugalRoute
   '/proposals': typeof ProposalsRoute
+  '/regions-of-portugal': typeof RegionsOfPortugalRoute
   '/reviews': typeof ReviewsRoute
   '/search': typeof SearchRoute
   '/sintra-day-tour-from-lisbon': typeof SintraDayTourFromLisbonRoute
@@ -1680,6 +1688,7 @@ export interface FileRoutesById {
   '/proposal-in-portugal': typeof ProposalInPortugalRoute
   '/proposals': typeof ProposalsRoute
   '/pt': typeof PtRouteWithChildren
+  '/regions-of-portugal': typeof RegionsOfPortugalRoute
   '/reviews': typeof ReviewsRoute
   '/search': typeof SearchRoute
   '/sintra-day-tour-from-lisbon': typeof SintraDayTourFromLisbonRoute
@@ -1879,6 +1888,7 @@ export interface FileRouteTypes {
     | '/proposal-in-portugal'
     | '/proposals'
     | '/pt'
+    | '/regions-of-portugal'
     | '/reviews'
     | '/search'
     | '/sintra-day-tour-from-lisbon'
@@ -2073,6 +2083,7 @@ export interface FileRouteTypes {
     | '/private-wine-tour-lisbon'
     | '/proposal-in-portugal'
     | '/proposals'
+    | '/regions-of-portugal'
     | '/reviews'
     | '/search'
     | '/sintra-day-tour-from-lisbon'
@@ -2270,6 +2281,7 @@ export interface FileRouteTypes {
     | '/proposal-in-portugal'
     | '/proposals'
     | '/pt'
+    | '/regions-of-portugal'
     | '/reviews'
     | '/search'
     | '/sintra-day-tour-from-lisbon'
@@ -2468,6 +2480,7 @@ export interface RootRouteChildren {
   ProposalInPortugalRoute: typeof ProposalInPortugalRoute
   ProposalsRoute: typeof ProposalsRoute
   PtRoute: typeof PtRouteWithChildren
+  RegionsOfPortugalRoute: typeof RegionsOfPortugalRoute
   ReviewsRoute: typeof ReviewsRoute
   SearchRoute: typeof SearchRoute
   SintraDayTourFromLisbonRoute: typeof SintraDayTourFromLisbonRoute
@@ -2636,6 +2649,13 @@ declare module '@tanstack/react-router' {
       path: '/reviews'
       fullPath: '/reviews'
       preLoaderRoute: typeof ReviewsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/regions-of-portugal': {
+      id: '/regions-of-portugal'
+      path: '/regions-of-portugal'
+      fullPath: '/regions-of-portugal'
+      preLoaderRoute: typeof RegionsOfPortugalRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/pt': {
@@ -4150,6 +4170,7 @@ const rootRouteChildren: RootRouteChildren = {
   ProposalInPortugalRoute: ProposalInPortugalRoute,
   ProposalsRoute: ProposalsRoute,
   PtRoute: PtRouteWithChildren,
+  RegionsOfPortugalRoute: RegionsOfPortugalRoute,
   ReviewsRoute: ReviewsRoute,
   SearchRoute: SearchRoute,
   SintraDayTourFromLisbonRoute: SintraDayTourFromLisbonRoute,
