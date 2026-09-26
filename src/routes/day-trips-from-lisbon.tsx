@@ -33,7 +33,7 @@ import {
   US_TRAVELER_NOTES,
 } from "@/content/lisbon-day-trip-comparison";
 
-import { REVIEW_CERTIFICATE, SITE_RATING_LABEL } from "@/config/trust-certificate";
+import { SITE_RATING_LABEL } from "@/config/trust-certificate";
 import {
   BASED_IN,
   EMAIL,

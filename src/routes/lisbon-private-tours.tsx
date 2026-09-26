@@ -22,7 +22,7 @@ import {
 } from "@/lib/jsonld";
 import { LiveReviews } from "@/components/reviews/LiveReviews";
 import { areaProfilesFor } from "@/content/lisbon-regions";
-import { REVIEW_CERTIFICATE, SITE_RATING_LABEL } from "@/config/trust-certificate";
+import { SITE_RATING_LABEL } from "@/config/trust-certificate";
 import { CANCELLATION, LICENSE_LABEL, WEBSITE_URL } from "@/config/business-nap";
 
 /**

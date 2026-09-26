@@ -10,7 +10,7 @@ import { Eyebrow } from "@/components/ui/Eyebrow";
 import { SectionTitle } from "@/components/ui/SectionTitle";
 import { CtaButton } from "@/components/ui/CtaButton";
 import { TeamEnquiriesLink } from "@/components/team/TeamEnquiriesLink";
-import { REVIEW_CERTIFICATE, REVIEW_COUNT_DISPLAY, SITE_RATING_LABEL } from "@/config/trust-certificate";
+import { SITE_RATING_LABEL } from "@/config/trust-certificate";
 import { CTA_LABELS } from "@/content/cta-vocabulary";
 
 import founderAsset from "@/assets/about-founder-wine-experience.jpg.asset.json";

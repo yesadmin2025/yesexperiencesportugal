@@ -15,7 +15,7 @@ import {
   getCuratedHomepageReviews,
   type PublicReview,
 } from "@/lib/reviews.functions";
-import { REVIEW_CERTIFICATE, REVIEW_COUNT_DISPLAY } from "@/config/trust-certificate";
+import { SITE_RATING_LABEL } from "@/config/trust-certificate";
 import { ReviewSourceLink } from "@/components/ui/ReviewSourceLink";
 
 export function GuestQuotes() {

@@ -18,7 +18,7 @@ import {
   GetYourGuideIcon,
 } from "@/components/BrandIcon";
 
-import { REVIEW_CERTIFICATE, REVIEW_COUNT_DISPLAY, SITE_RATING_LABEL } from "@/config/trust-certificate";
+import { SITE_RATING_LABEL } from "@/config/trust-certificate";
 import { openCookieConsent } from "@/components/CookieConsent";
 import {
   BASED_IN,
