@@ -65,6 +65,8 @@ export interface CheckoutSummary {
   heroSrc?: string | null;
   /** Short list (max 4) of inclusions / signature beats. */
   beats?: string[];
+  /** Verified itinerary in public display order; optional stops are never guaranteed. */
+  itinerary?: ReadonlyArray<{ label: string; optional?: boolean }>;
   flowLabel?: "Signature" | "Tailored" | "Tailored Signature" | "Studio";
   /** Selected reveal add-ons, kept in sync with SignaturePriceCard. */
   addOns?: CheckoutAddOnLine[];
@@ -294,7 +296,8 @@ function ExperienceSummaryCard({
   const hasBands = hasCompleteJourneyPricing(summary.journeyLines);
   const hasAddOns = !!summary.addOns && summary.addOns.length > 0;
   const hasBeats = !!summary.beats && summary.beats.length > 0;
-  const hasDetails = hasBands || hasAddOns || hasBeats;
+  const hasItinerary = !!summary.itinerary && summary.itinerary.length > 0;
+  const hasDetails = hasBands || hasAddOns || hasBeats || hasItinerary;
   const productLine = [
     summary.durationHours != null ? formatDuration(summary.durationHours) : null,
     summary.region || null,
@@ -424,13 +427,27 @@ function ExperienceSummaryCard({
                 </div>
               ) : null}
 
-              {hasBeats ? (
+               {hasItinerary ? (
+                 <div className="mt-3 border-t border-[color:var(--border)] pt-2" data-testid="checkout-drawer-itinerary">
+                   <p className="text-[12px] uppercase tracking-[0.26em] text-[color:var(--charcoal)]">Your route</p>
+                   <ol className="mt-2 space-y-2">
+                     {summary.itinerary?.map((stop, index) => (
+                       <li key={`${index}-${stop.label}`} className="flex gap-3 text-[12px] leading-snug text-[color:var(--charcoal)]">
+                         <span className="shrink-0 tabular-nums text-[color:var(--charcoal-soft)]">{String(index + 1).padStart(2, "0")}</span>
+                          <span>{stop.label}{stop.optional ? <span className="ml-1 text-[color:var(--charcoal-soft)]">· Optional, not included unless selected</span> : null}</span>
+                       </li>
+                     ))}
+                   </ol>
+                 </div>
+               ) : null}
+
+               {hasBeats && !isTailored ? (
                 <div className="mt-3 border-t border-[color:var(--border)] pt-2">
                   <p className="text-[12px] uppercase tracking-[0.26em] text-[color:var(--charcoal)]">
-                    {isTailored ? "Your chosen stops" : "What's included"}
+                     What's included
                   </p>
                   <ul className="mt-1.5 space-y-1">
-                    {(isTailored ? summary.beats! : summary.beats!.slice(0, 4)).map((b) => (
+                     {summary.beats!.slice(0, 4).map((b) => (
                     <li
                       key={b}
                       className="flex gap-2 text-[12px] leading-snug text-[color:var(--charcoal)]"

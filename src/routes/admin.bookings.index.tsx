@@ -11,6 +11,7 @@ import { AdminShell } from "@/components/admin/AdminShell";
 import { OpsBookingsHub, type QuickRange } from "@/components/admin/ops/OpsBookingsHub";
 import { BookingsAvailabilityCalendar } from "@/components/admin/BookingsAvailabilityCalendar";
 import { CalendarSubscribePanel } from "@/components/admin/CalendarSubscribePanel";
+import { OperationsOverview } from "@/components/admin/ops/OperationsOverview";
 
 const FOCUS: QuickRange[] = ["today", "week", "future", "attention"];
 
@@ -34,6 +35,7 @@ function AdminBookingsPage() {
   return (
     <AdminShell eyebrow="All channels" title="Bookings">
       <OpsBookingsHub initialRange={focus ?? (open ? "future" : "week")} initialOpen={open ?? null} />
+      <OperationsOverview />
 
       <details className="group mt-12 border-t border-[color:var(--charcoal)]/[0.07]">
         <summary className="flex min-h-14 cursor-pointer list-none items-center justify-between py-3 text-[11px] uppercase tracking-[0.2em] text-[color:var(--charcoal-soft)] [&::-webkit-details-marker]:hidden">

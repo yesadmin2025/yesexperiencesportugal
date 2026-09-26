@@ -962,6 +962,7 @@ function TailorPage() {
       totalEur: totalForSummary,
       heroSrc: metaForSummary?.localGallery?.[0]?.src ?? metaForSummary?.gallery?.[0] ?? tour.img,
       beats: stopLabels,
+      itinerary: stopLabels.map((label) => ({ label })),
       flowLabel: "Tailored Signature",
     });
 
@@ -1757,7 +1758,7 @@ function TailorPage() {
           flowLabel: "Tailored Signature",
           duration: tour.durationHours,
           region: tour.region,
-          beats: publicSelectionLabels.slice(0, 4),
+          beats: publicSelectionLabels,
         }}
         initial={{
           tourDate: date,
@@ -1794,7 +1795,8 @@ function TailorPage() {
              durationHours: tour.durationHours,
              dateExact: date || null,
              startTime: pickup,
-             beats: publicSelectionLabels.slice(0, 4),
+             beats: publicSelectionLabels,
+             itinerary: publicSelectionLabels.map((label) => ({ label })),
             guests,
             adults: composition.adults,
             minorAges: [...composition.minorAges],

@@ -55,7 +55,6 @@ import { useMarketingMotion } from "@/hooks/use-marketing-motion";
 import { PriceCurrencyChip } from "@/components/PriceCurrencyChip";
 import { PriceEur } from "@/components/ui/PriceEur";
 import { useAdminTourPhotos } from "@/lib/useAdminTourPhotos";
-// Lazy-loaded below the fold — keeps Leaflet (~140KB) out of the initial tour bundle
 
 import { CANCELLATION } from "@/config/business-nap";
 import { resolveLegacyTourId } from "@/lib/legacy-tour-redirects";
