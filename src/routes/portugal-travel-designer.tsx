@@ -69,15 +69,15 @@ function Section({
       className={`reveal section-y-major chapter-flow ${tone === "sand" ? "bg-[color:var(--sand)]" : "bg-[color:var(--ivory)]"}`}
     >
       <div className="container-x max-w-3xl">
-        {eyebrow && <Eyebrow className="max-w-full text-[12px] leading-[1.5] tracking-[0.14em] md:text-[11px] md:tracking-[0.24em]">{eyebrow}</Eyebrow>}
+        {eyebrow && <Eyebrow>{eyebrow}</Eyebrow>}
         {title && (
           <SplitLines
             as="h2"
-            className="mt-6 font-display text-[30px] font-medium leading-[1.22] tracking-normal text-balance text-[color:var(--charcoal)] md:mt-5 md:text-[36px] md:leading-[1.14]"
+            className="mt-5 font-display text-[29px] font-medium leading-[1.18] tracking-normal text-balance text-[color:var(--charcoal)] md:text-[36px] md:leading-[1.1]"
             lines={[title]}
           />
         )}
-        <div className="mt-9 space-y-9 text-[color:var(--charcoal-soft)] leading-[1.75] md:mt-7 md:space-y-7">
+        <div className="mt-7 space-y-6 text-[color:var(--charcoal-soft)] leading-relaxed md:mt-8">
           {children}
         </div>
       </div>
@@ -92,7 +92,7 @@ function PortugalTravelDesignerPage() {
       <section className="page-hero public-page-header reveal">
         <div className="container-x max-w-3xl text-center header-seq">
           <Eyebrow flank>Portugal Travel Designer</Eyebrow>
-           <SectionTitle as="h1" size="anchor" spacing="loose" className="text-[40px] leading-[1.08] md:text-[60px] md:leading-[1.02]">
+           <SectionTitle as="h1" size="anchor" spacing="loose" className="text-[40px] leading-[1.12] md:text-[60px] md:leading-[1.02]">
             Portugal, <SectionTitle.Em>shaped around you.</SectionTitle.Em>
           </SectionTitle>
           <p className="page-header-support mt-6 mx-auto max-w-2xl text-[16px] md:text-[17px] text-[color:var(--charcoal-soft)]">
@@ -246,9 +246,9 @@ function PortugalTravelDesignerPage() {
           },
           {
             to: "/itineraries/10-day-private-portugal-tour",
-             label: "See a sample ten-day private Portugal itinerary",
+            label: "See a sample ten-day private Portugal itinerary",
             description:
-               "An example route to discuss with your designer, not a fixed package or quoted journey.",
+              "An example route to discuss with your designer, not a fixed package or quoted journey.",
           },
           {
             to: "/trade",
