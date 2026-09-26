@@ -160,9 +160,9 @@ export function ProposalInPortugalPage() {
 
                 <div className="section-seq">
                   <Eyebrow icon={<Icon strokeWidth={1.8} />}>{b.eyebrow}</Eyebrow>
-                   <h3 className="mt-4 font-serif text-[24px] font-medium leading-[1.08] text-[color:var(--charcoal)] md:text-[26px]">
-                     {b.title}
-                   </h3>
+                  <h2 className="mt-4 font-serif text-[24px] font-medium leading-[1.08] text-[color:var(--charcoal)] md:text-[26px]">
+                    {b.title}
+                  </h2>
                   <p className="mt-4 font-serif italic text-[1.1rem] md:text-[1.2rem] text-[color:var(--teal)] leading-snug">
                     {b.emotional}
                   </p>
