@@ -402,18 +402,29 @@ function StaticArticleView({ article }: { article: LocalStoryArticle }) {
               */}
               {article.signatureSlug ? (
                 <>
-                  <CtaButton
-                    to="/tours/$tourId"
-                    params={{ tourId: article.signatureSlug }}
-                    variant="primary"
-                    {...guideRefDataAttrs(article.slug, "article_cta")}
-                    onClick={trackGuideLink("article_cta",
-                      "signature",
-                      `/tours/${article.signatureSlug}`,
-                    )}
-                  >
-                    {article.ctaLabel}
-                  </CtaButton>
+                  {article.ctaLabel === "See all Signature Experiences" ? (
+                    <CtaButton
+                      to="/experiences"
+                      variant="primary"
+                      {...guideRefDataAttrs(article.slug, "article_cta")}
+                      onClick={trackGuideLink("article_cta", "signature", "/experiences")}
+                    >
+                      {article.ctaLabel}
+                    </CtaButton>
+                  ) : (
+                    <CtaButton
+                      to="/tours/$tourId"
+                      params={{ tourId: article.signatureSlug }}
+                      variant="primary"
+                      {...guideRefDataAttrs(article.slug, "article_cta")}
+                      onClick={trackGuideLink("article_cta",
+                        "signature",
+                        `/tours/${article.signatureSlug}`,
+                      )}
+                    >
+                      {article.ctaLabel}
+                    </CtaButton>
+                  )}
                   <p className="mt-6 text-[13px] text-[color:var(--charcoal-soft)] leading-[1.7]">
                     Or{" "}
                     <Link

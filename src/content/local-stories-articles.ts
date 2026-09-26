@@ -1175,7 +1175,7 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
     h1: "The Best Wine Tours from Lisbon",
     eyebrow: "Lisbon · Wine",
     standfirst:
-      "Three real wine regions sit within 90 minutes of Lisbon. Here are the private days we actually run — what each one feels like, what it costs you in time, and how to choose between them.",
+      "Two wine regions sit within 90 minutes of Lisbon — the Setúbal Peninsula and the Alentejo — plus one small coastal appellation worth knowing. Here are the private days we actually run — what each one feels like, what it costs you in time, and how to choose between them.",
     sections: [
       {
         heading: "The short answer: which wine tour from Lisbon is best?",
@@ -1183,7 +1183,7 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
       },
       {
         heading: "Lisbon is closer to serious wine country than travelers expect.",
-        body: "South of the 25 de Abril Bridge, the Setúbal Peninsula makes Moscatel de Setúbal and structured reds around Azeitão. Ninety minutes inland, the Alentejo plains produce Portugal's most recognised big reds. And on the coast west of the city, the tiny Colares appellation still grows vines in sand. You do not need to travel to the Douro to taste real Portuguese wine — the best wine tours from Lisbon are day trips, private, and back in the city for dinner.",
+        body: "South of the 25 de Abril Bridge, the Setúbal Peninsula makes Moscatel de Setúbal and structured reds around Azeitão. Ninety minutes inland, the Alentejo plains produce Portugal's most recognised big reds. And on the coast west of the city, Colares is a coastal appellation worth knowing: a tiny area that still grows vines in sand. It is a wine to look for on a Lisbon wine list rather than a day we run. You do not need to travel to the Douro to taste real Portuguese wine — the best wine tours from Lisbon are day trips, private, and back in the city for dinner.",
       },
       {
         heading: "Arrábida All-Inclusive Day — the complete wine-and-coast day.",
@@ -1215,7 +1215,7 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
       },
       {
         heading: "Is a wine tour from Lisbon actually worth it?",
-        body: "Yes — if you go private, go south, and skip the coach. Within an hour of the city you have three serious wine regions, and within two, Alentejo opens up. The mistake most travelers make is booking a forty-seat bus with three rushed tastings and a buffet lunch. That is not a wine tour; it is a logistics exercise with wine in it.\n\nIt is worth it when the day is private and paced around one or two real wineries instead of five, when lunch is sit-down and local and lasts longer than the tastings, and when the host actually knows the winemakers. If you have only one day in Lisbon and have never seen the city, do Lisbon instead. If you do not drink, a wine-led day will feel long.",
+        body: "Yes — if you go private, go south, and skip the coach. Within an hour of the city you have the Setúbal Peninsula, and within two, Alentejo opens up. The mistake most travelers make is booking a forty-seat bus with three rushed tastings and a buffet lunch. That is not a wine tour; it is a logistics exercise with wine in it.\n\nIt is worth it when the day is private and paced around one or two real wineries instead of five, when lunch is sit-down and local and lasts longer than the tastings, and when the host actually knows the winemakers. If you have only one day in Lisbon and have never seen the city, do Lisbon instead. If you do not drink, a wine-led day will feel long.",
       },
       {
         heading: "What a private wine day from Lisbon includes.",

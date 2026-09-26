@@ -73,15 +73,26 @@ export function GuideNextSteps({ article }: { article: LocalStoryArticle }) {
             <p className="font-sans text-[11px] uppercase tracking-[0.22em] text-[color:var(--charcoal-soft)] mb-2">
               Book this day
             </p>
-            <Link
-              to="/tours/$tourId"
-              params={{ tourId: next.signatureSlug }}
-              className={linkClass}
-              {...guideRefDataAttrs(article.slug, "next_signature")}
-              onClick={onClick("next_signature", "signature", `/tours/${next.signatureSlug}`)}
-            >
-              {article.ctaLabel}
-            </Link>
+            {article.ctaLabel === "See all Signature Experiences" ? (
+              <Link
+                to="/experiences"
+                className={linkClass}
+                {...guideRefDataAttrs(article.slug, "next_signature")}
+                onClick={onClick("next_signature", "signature", "/experiences")}
+              >
+                {article.ctaLabel}
+              </Link>
+            ) : (
+              <Link
+                to="/tours/$tourId"
+                params={{ tourId: next.signatureSlug }}
+                className={linkClass}
+                {...guideRefDataAttrs(article.slug, "next_signature")}
+                onClick={onClick("next_signature", "signature", `/tours/${next.signatureSlug}`)}
+              >
+                {article.ctaLabel}
+              </Link>
+            )}
           </div>
         )}
 
