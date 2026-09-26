@@ -1,3 +1,4 @@
+import { socialImageMeta } from "@/lib/seo";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { SiteLayout } from "@/components/SiteLayout";
 import { Eyebrow } from "@/components/ui/Eyebrow";
@@ -20,6 +21,7 @@ export const Route = createFileRoute("/regions-of-portugal")({
       { property: "og:type", content: "website" },
       { property: "og:url", content: url },
       { name: "twitter:card", content: "summary_large_image" },
+      ...socialImageMeta(),
     ],
     links: [{ rel: "canonical", href: url }],
   }),
