@@ -185,5 +185,5 @@ export const uploadBuilderReference = createServerFn({ method: "POST" })
       return { ok: false as const, reason: "insert_failed" };
     }
 
-    return { ok: true as const, rowId: row.id, filePath: path };
+    return { ok: true as const, rowId: row.id, filePath: path, pass: issuedPass };
   });
