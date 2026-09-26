@@ -17,7 +17,7 @@ import {
   jsonLdScript,
   localBusinessLd,
 } from "@/lib/jsonld";
-import { REVIEW_CERTIFICATE } from "@/config/trust-certificate";
+import { REVIEW_CERTIFICATE, SITE_RATING_LABEL } from "@/config/trust-certificate";
 import { CANCELLATION, LICENSE_LABEL, WEBSITE_URL } from "@/config/business-nap";
 import arrabidaWineImage from "@/assets/tours/arrabida-wine-allinclusive/hero.jpg";
 
@@ -171,8 +171,7 @@ function LisbonWineTours() {
           <p className="page-header-secondary mt-6 flex flex-wrap items-center gap-x-5 gap-y-2 font-sans text-[11.5px] uppercase tracking-[0.18em] text-[color:var(--charcoal-soft)]">
             <span className="inline-flex items-center gap-1.5">
               <Star size={13} className="text-[color:var(--gold)]" aria-hidden />
-              {REVIEW_CERTIFICATE.ratingValue} / {REVIEW_CERTIFICATE.bestRating} ·{" "}
-              {REVIEW_CERTIFICATE.reviewCount} reviews
+              {SITE_RATING_LABEL}
             </span>
             <span>{LICENSE_LABEL}</span>
           </p>

@@ -14,7 +14,7 @@ export const HERO_COPY_SPEC = {
     "Private & customized day experiences and full journeys across Portugal.",
   primaryCta: "DESIGN YOUR DAY",
   secondaryCta: "EXPLORE EXPERIENCES",
-  microcopy: "4.9/5 · 1,000 guest reviews · Private · Local support · Secure checkout",
+  microcopy: "4.9/5 · 1,000+ reviews across platforms · Private · Local support · Secure checkout",
 } as const;
 
 export type HeroSpecKey = keyof typeof HERO_COPY_SPEC;

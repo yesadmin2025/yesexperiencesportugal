@@ -1,4 +1,4 @@
-import { REVIEW_CERTIFICATE, REVIEW_COUNT_DISPLAY } from "@/config/trust-certificate";
+import { REVIEW_CERTIFICATE, REVIEW_COUNT_DISPLAY, SITE_RATING_LABEL } from "@/config/trust-certificate";
 /**
  * StudioTrustStrip — micro 18px-tall trust line that sits just below the
  * conversion HUD inside the cinematic Studio.
@@ -39,7 +39,7 @@ export function StudioTrustStrip({ reviewsLabel: _r = "reviews" }: Props) {
         <span aria-hidden="true" style={{ color: "var(--gold)", letterSpacing: "0.04em" }}>
           ★★★★★
         </span>
-        <span>{REVIEW_CERTIFICATE.ratingValue} · {REVIEW_COUNT_DISPLAY} reviews</span>
+        <span>{SITE_RATING_LABEL}</span>
         <span className="hidden sm:contents">
           <span aria-hidden="true" className="opacity-40">
             ·

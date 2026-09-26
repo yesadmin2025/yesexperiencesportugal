@@ -18,7 +18,7 @@ import {
   GetYourGuideIcon,
 } from "@/components/BrandIcon";
 
-import { REVIEW_CERTIFICATE, REVIEW_COUNT_DISPLAY } from "@/config/trust-certificate";
+import { REVIEW_CERTIFICATE, REVIEW_COUNT_DISPLAY, SITE_RATING_LABEL } from "@/config/trust-certificate";
 import { openCookieConsent } from "@/components/CookieConsent";
 import {
   BASED_IN,
@@ -218,7 +218,7 @@ export function Footer() {
               style={{ fontWeight: 400, letterSpacing: "0.005em" }}
             >
               Private Portugal, shown the way a local shows a friend. Intimate, real, and genuinely
-              different — designed with you and confirmed in minutes.{!isHomeOrAbout && ` ${REVIEW_CERTIFICATE.ratingValue}/5 across ${REVIEW_COUNT_DISPLAY} guest reviews.`}
+              different — designed with you and confirmed in minutes.{!isHomeOrAbout && ` ${SITE_RATING_LABEL}.`}
             </p>
             {/* Canonical NAP — one quiet line, single source of truth. */}
             <address className="mt-4 not-italic font-[family-name:var(--font-sans)] text-[13px] leading-[1.7] text-[color:var(--ivory)]/70">

@@ -33,7 +33,7 @@ import {
   US_TRAVELER_NOTES,
 } from "@/content/lisbon-day-trip-comparison";
 
-import { REVIEW_CERTIFICATE } from "@/config/trust-certificate";
+import { REVIEW_CERTIFICATE, SITE_RATING_LABEL } from "@/config/trust-certificate";
 import {
   BASED_IN,
   EMAIL,
@@ -201,8 +201,7 @@ function DayTripsFromLisbon() {
           <p className="mt-6 flex flex-wrap items-center gap-x-5 gap-y-2 font-sans text-[11.5px] uppercase tracking-[0.18em] text-[color:var(--charcoal-soft)]">
             <span className="inline-flex items-center gap-1.5">
               <Star size={13} className="text-[color:var(--gold)]" aria-hidden />
-              {REVIEW_CERTIFICATE.ratingValue} / {REVIEW_CERTIFICATE.bestRating} ·{" "}
-              {REVIEW_CERTIFICATE.reviewCount} reviews
+              {SITE_RATING_LABEL}
             </span>
             <span className="inline-flex items-center gap-1.5">
               <Car size={13} className="text-[color:var(--gold)]" aria-hidden />

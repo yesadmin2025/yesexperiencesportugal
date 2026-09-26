@@ -52,7 +52,7 @@ export function GuestQuotes() {
       </div>
 
       <p className="font-sans text-[11px] font-semibold uppercase tracking-[0.18em] text-[color:var(--charcoal-soft)]">
-        {REVIEW_CERTIFICATE.ratingValue}/5 · {REVIEW_COUNT_DISPLAY} guest reviews
+        {SITE_RATING_LABEL}
       </p>
       <h2 className="editorial-title-safe mt-1.5 font-serif text-[1.25rem] font-medium leading-[1.2] text-[color:var(--charcoal)] md:text-[1.5rem]">
         Real guests. <span className="italic font-normal text-[color:var(--teal)]">Real Portugal.</span>

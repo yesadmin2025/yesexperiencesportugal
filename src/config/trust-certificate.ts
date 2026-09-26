@@ -29,3 +29,10 @@ export const TRUSTINDEX_LOADER_SRC = `https://cdn.trustindex.io/loader-cert.js?$
 
 /** Display string for the review count, e.g. "1000 customer reviews". */
 export const REVIEW_COUNT_DISPLAY = REVIEW_CERTIFICATE.reviewCount.toLocaleString("en-US");
+
+/**
+ * Standard public label for the site-wide rating. Use this everywhere the
+ * aggregate appears (hero, footer, trust lines, tour context) so the count
+ * reads identically across the site.
+ */
+export const SITE_RATING_LABEL = `${REVIEW_CERTIFICATE.ratingValue}/5 · ${REVIEW_COUNT_DISPLAY}+ reviews across platforms`;

@@ -10,7 +10,7 @@ import { Eyebrow } from "@/components/ui/Eyebrow";
 import { SectionTitle } from "@/components/ui/SectionTitle";
 import { CtaButton } from "@/components/ui/CtaButton";
 import { TeamEnquiriesLink } from "@/components/team/TeamEnquiriesLink";
-import { REVIEW_CERTIFICATE, REVIEW_COUNT_DISPLAY } from "@/config/trust-certificate";
+import { REVIEW_CERTIFICATE, REVIEW_COUNT_DISPLAY, SITE_RATING_LABEL } from "@/config/trust-certificate";
 import { CTA_LABELS } from "@/content/cta-vocabulary";
 
 import founderAsset from "@/assets/about-founder-wine-experience.jpg.asset.json";
@@ -338,7 +338,7 @@ function Page() {
               <div className="text-xs uppercase tracking-[0.22em] text-[color:var(--charcoal)]">
                 Reviews
               </div>
-              <p className="mt-2 font-display text-lg">{REVIEW_CERTIFICATE.ratingValue}/5 · {REVIEW_COUNT_DISPLAY} reviews</p>
+              <p className="mt-2 font-display text-lg">{SITE_RATING_LABEL}</p>
               <p className="mt-1 text-sm text-[color:var(--charcoal-soft)]">
                 Verified guest reviews across Tripadvisor, Viator, Google, GetYourGuide and other
                 major travel platforms.
