@@ -94,6 +94,11 @@ export const TOUR_STOP_INTENTS: Record<string, Record<string, StopIntent[]>> = {
     Sesimbra: ["coast", "local-life", "gastronomy"],
     "Cabo Espichel": ["coast", "nature", "spiritual", "view"],
   },
+  "p23-artisan-pottery-cork": {
+    "Cork workshop": ["craft", "heritage", "local-life"],
+    "Pottery workshop": ["craft", "culture", "heritage"],
+    Lunch: ["gastronomy", "local-life"],
+  },
   "tiles-workshop": {
     "Mercado do Livramento": ["gastronomy", "local-life", "wine"],
     "Tile Painting Workshop – Sesimbra": ["craft", "heritage", "culture"],
