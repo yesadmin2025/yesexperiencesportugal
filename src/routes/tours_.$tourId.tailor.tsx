@@ -976,7 +976,7 @@ function TailorPage() {
         itemCategory: "Signature",
       });
       item.price = estimatedPrice;
-      gaBeginCheckout({ items: [item], valueEur: Math.round(estimatedPrice * details.guests) });
+      gaBeginCheckout({ items: [item], valueEur: Math.round(estimatedPrice * details.guests), productLine: "signature" });
       trackEvent("checkout_started", {
         experience_id: tour.id,
         experience_type: "tailor",

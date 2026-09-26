@@ -232,6 +232,7 @@ function TradePage() {
           leadSource: "trade_form",
           method: "email",
           requestType: "trade",
+          formType: "trade",
         }),
       );
     } catch (err) {

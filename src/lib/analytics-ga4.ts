@@ -209,11 +209,16 @@ export function gaAddToCartStudioTier(args: {
 }
 
 /** GA4: begin_checkout — right before Stripe redirect / embedded init. */
-export function gaBeginCheckout(args: { items: GA4Item[]; valueEur: number }): void {
+export function gaBeginCheckout(args: {
+  items: GA4Item[];
+  valueEur: number;
+  productLine?: "signature" | "studio";
+}): void {
   pushEcommerce("begin_checkout", {
     currency: "EUR",
     value: args.valueEur,
     items: args.items,
+    ...(args.productLine ? { product_line: args.productLine } : {}),
   });
 }
 
@@ -238,6 +243,16 @@ export function gaPurchase(args: {
   items: GA4Item[];
   currency?: string;
 }): void {
+  // Fire once per transaction_id — reloads / back-nav never double count.
+  try {
+    const key = `yes_ga_purchase_${args.transactionId}`;
+    if (typeof sessionStorage !== "undefined") {
+      if (sessionStorage.getItem(key)) return;
+      sessionStorage.setItem(key, "1");
+    }
+  } catch {
+    /* storage unavailable — still fire */
+  }
   pushEcommerce("purchase", {
     transaction_id: args.transactionId,
     currency: args.currency ?? "EUR",
@@ -251,10 +266,12 @@ export function gaGenerateLead(args: {
   leadSource: string;
   method: string;
   requestType?: string;
+  formType?: string;
 }): void {
   pushEvent("generate_lead", {
     lead_source: args.leadSource,
     method: args.method,
+    ...(args.formType ? { form_type: args.formType } : {}),
     ...(args.requestType ? { request_type: args.requestType } : {}),
   });
 }
@@ -344,4 +361,25 @@ export function gaCheckoutDrawerAbandoned(args: BookingBase & { timeOpenMs: numb
     surface: args.surface,
     time_open_ms: args.timeOpenMs,
   });
+}
+
+/** GA4: select_item — a tour card link was clicked. */
+export function gaSelectItem(args: { itemId: string; itemName: string; listName: string }): void {
+  pushEcommerce("select_item", {
+    item_list_name: args.listName,
+    items: [{ item_id: args.itemId, item_name: args.itemName, item_brand: BRAND, quantity: 1 }],
+  });
+}
+
+/** Custom: contact_whatsapp — any WhatsApp click (path only, no PII). */
+export function gaContactWhatsapp(pagePath: string): void {
+  pushEvent("contact_whatsapp", { page_path: pagePath });
+}
+
+let studioPriceViewedFired = false;
+/** Custom: studio_price_viewed — first time a Studio price is shown per page life. */
+export function gaStudioPriceViewed(args: { valueEur: number }): void {
+  if (studioPriceViewedFired) return;
+  studioPriceViewedFired = true;
+  pushEvent("studio_price_viewed", { value: args.valueEur, currency: "EUR" });
 }

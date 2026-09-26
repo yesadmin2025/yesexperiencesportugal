@@ -1642,7 +1642,7 @@ export function StudioV3() {
           { id: tour.id, title: tour.title ?? tour.id, priceFrom: perPaxBase },
           { quantity: details.guests, tier: "studio", itemCategory: "Studio" },
         );
-        gaBeginCheckout({ items: [item], valueEur: totalEur });
+        gaBeginCheckout({ items: [item], valueEur: totalEur, productLine: "studio" });
       } catch {
         /* silent */
       }

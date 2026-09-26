@@ -148,6 +148,28 @@ export function installAnalyticsAttrs(): void {
 
     // Auto-track outbound review links + tel: / mailto: without needing data attrs.
     const anchor = target.closest<HTMLAnchorElement>("a[href]");
+    if (anchor) {
+      const rawHref = anchor.getAttribute("href") ?? "";
+      if (/(?:wa\.me|whatsapp\.com)/i.test(rawHref)) {
+        void import("@/lib/analytics-ga4").then((m) => m.gaContactWhatsapp(window.location.pathname));
+      }
+      const tourMatch = rawHref.match(/^(?:https?:\/\/[^/]+)?\/tours\/([a-z0-9-]+)\/?(?:[?#].*)?$/i);
+      if (tourMatch && !window.location.pathname.startsWith(`/tours/${tourMatch[1]}`)) {
+        const slug = tourMatch[1];
+        const section = anchor.closest("section");
+        const heading = section?.querySelector("h2, h1");
+        const listName =
+          section?.getAttribute("aria-label") ||
+          heading?.textContent?.trim().slice(0, 80) ||
+          window.location.pathname;
+        void Promise.all([import("@/lib/analytics-ga4"), import("@/data/signatureTours")]).then(
+          ([m, d]) => {
+            const t = d.signatureTours.find((x) => x.id === slug);
+            m.gaSelectItem({ itemId: slug, itemName: t?.title ?? slug, listName });
+          },
+        );
+      }
+    }
     if (anchor && !anchor.dataset.analytics) {
       const href = anchor.getAttribute("href") ?? "";
       const auto = detectAutoEvent(href);
