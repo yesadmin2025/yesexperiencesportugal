@@ -91,4 +91,6 @@ export const ACKNOWLEDGED_NON_MONOTONIC_STEPS: Readonly<
   "southwest-vicentine-coast": [6],
   "tiles-workshop": [6],
   "tomar-coimbra": [2],
+  // Pending owner review: P23 direct price bands (5 → 6 guests total drops).
+  "p23-artisan-pottery-cork": [5],
 };

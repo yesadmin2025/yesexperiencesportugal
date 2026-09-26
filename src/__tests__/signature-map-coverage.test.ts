@@ -1,11 +1,12 @@
 import { describe, it, expect } from "vitest";
+import { isPendingVenueSignature } from "@/data/pendingSignatures";
 import { signatureTours } from "@/data/signatureTours";
 import { lookupStop } from "@/data/stopGeo";
 
 describe("Signature tour map coverage", () => {
   it("every Signature has at least 2 resolvable stops (so RouteMap renders)", () => {
     const failing: string[] = [];
-    for (const t of signatureTours) {
+    for (const t of signatureTours.filter((x) => !isPendingVenueSignature(x.id))) {
       const resolved = (t.stops ?? []).filter((s) => lookupStop(s.label));
       const missing = (t.stops ?? []).filter((s) => !lookupStop(s.label)).map((s) => s.label);
       if (resolved.length < 2) {

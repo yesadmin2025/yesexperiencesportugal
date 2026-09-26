@@ -50,6 +50,16 @@ export const SIGNATURE_SEO: Record<string, SignatureSeoEntry> = {
     ogDescription:
       "A private coastal day with Arrábida by road, a Sesimbra boat ride into hidden coves and Atlantic viewpoints.",
   },
+  "p23-artisan-pottery-cork": {
+    primaryKeyword: "cork and pottery workshop alentejo",
+    supportingKeywords: ["pottery workshop portugal", "private alentejo day trip from lisbon"],
+    title: "Private Alentejo Cork & Pottery Workshops | YES Portugal",
+    description:
+      "Meet Alentejo makers on a private day of hands-on cork and pottery workshops. Ceramics session, local guide, lunch and transport included. From €203 per person.",
+    ogTitle: "Private Alentejo Cork & Pottery Workshops",
+    ogDescription:
+      "A private, hands-on day with Alentejo cork and clay makers. Guide, lunch and transport included.",
+  },
   "tiles-workshop": {
     primaryKeyword: "azulejo tile painting workshop lisbon",
     supportingKeywords: ["portuguese tile workshop lisbon", "things to do in lisbon portugal"],

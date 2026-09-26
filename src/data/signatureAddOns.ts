@@ -1,3 +1,4 @@
+import { isPendingVenueSignature } from "./pendingSignatures";
 // Signature add-ons — region-mapped, but every add-on is a real
 // experience pulled from a *sibling* signature in the same region.
 //
@@ -552,6 +553,8 @@ export function isAddOnStructurallyEligible(
   resolvedTour: StructuralEligibilityTour | null | undefined,
 ): boolean {
   if (!resolvedTour) return false;
+  // Unverified venues: no add-ons (mirrors the server whitelist).
+  if (isPendingVenueSignature(resolvedTour.id)) return false;
   const bucket = regionBucket(resolvedTour.region);
   const pool = ADD_ON_CATALOG[bucket] ?? [];
   if (!pool.some((a) => a.id === addOn.id)) return false;
