@@ -78,7 +78,7 @@ export const externalAuthorityMentions: ExternalAuthorityMention[] = [
     quote:
       "We opted to use Yes!experiences, the same tour operator that we used to visit the Setubal wine region, since we liked the variety of the tour and knew that the two wineries included were top-notch.",
     quality: "high",
-    placement: ["homepage", "wine-landing", "alentejo"],
+    placement: ["homepage", "wine-landing", "alentejo", "arrabida-tour"],
     lastCheckedAt: "2026-06-29",
   },
   {

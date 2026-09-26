@@ -77,7 +77,12 @@ export function RecognisedByGuides({
         </p>
       </div>
 
-      <ul className="grid grid-cols-1 md:grid-cols-3 gap-5 md:gap-6 max-w-5xl mx-auto">
+      <ul
+        className={
+          "grid grid-cols-1 gap-5 md:gap-6 max-w-5xl mx-auto " +
+          (mentions.length % 3 === 1 ? "md:grid-cols-2 lg:grid-cols-2" : "md:grid-cols-3")
+        }
+      >
         {mentions.map((m) => {
           const isBrand = m.mentionType === "brand-direct";
           const badge = isBrand
@@ -110,26 +115,13 @@ export function RecognisedByGuides({
                 "{m.quote}"
               </blockquote>
 
-              <div className="mt-auto flex items-center justify-between text-[11.5px] uppercase tracking-[0.2em] text-[color:var(--charcoal-soft)]">
+              <div className="mt-auto text-[11.5px] uppercase tracking-[0.2em] text-[color:var(--charcoal-soft)]">
                 <span>{m.sourceName}</span>
-                <a
-                  href={m.articleUrl}
-                  target="_blank"
-                  rel="noopener nofollow"
-                  className="inline-flex min-h-[44px] items-center text-[color:var(--teal)] hover:text-[color:var(--gold-ink)] transition-colors"
-                  aria-label={`Read the article on ${m.sourceName}`}
-                >
-                  Read article →
-                </a>
               </div>
             </li>
           );
         })}
       </ul>
-
-      <p className="mt-8 md:mt-10 text-center text-[12px] uppercase tracking-[0.22em] text-[color:var(--charcoal-soft)]/80">
-        External articles · opens in a new tab
-      </p>
     </section>
   );
 }
