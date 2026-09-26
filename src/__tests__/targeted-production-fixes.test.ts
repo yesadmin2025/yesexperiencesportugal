@@ -35,7 +35,7 @@ describe("targeted production fixes", () => {
 
   it("uses the brand teal theme token", () => {
     expect(read("src/routes/__root.tsx")).toContain(
-      '{ name: "theme-color", content: "#295B61" }',
+      '{ name: "theme-color", content: BRAND_COLORS.teal }',
     );
   });
 
