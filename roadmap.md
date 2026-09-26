@@ -1,12 +1,12 @@
 # Roadmap — Operations hub upgrade
 
 ## 26 Sep requests
-- [ ] Add a truthful region-by-region Portugal travel page and discoverable metadata
-- [ ] Ensure admin bookings shows Studio and Signature reservations with date, guests and total
-- [ ] Add admin editing for each experience's title, search description and H1 without changing live copy until publishing
-- [ ] Include verified paid reservation details in visitor-initiated WhatsApp message
-- [ ] Verify P23 live booking and confirmation email safely (no unapproved charge or invented guest)
-- [ ] Publish after security review, then measure real mobile homepage loading and report results
+- [x] Add a truthful region-by-region Portugal travel page and discoverable metadata
+- [x] Ensure admin bookings shows Studio and Signature reservations with date, guests and total
+- [x] Add admin-only drafts for each experience's title, search description and H1; saving never changes public copy
+- [x] Include verified paid reservation details in visitor-initiated WhatsApp message
+- [ ] Verify P23 live booking and confirmation email: no paid P23 booking exists yet; use the standard Signature checkout and automatic email on first real paid reservation, without initiating a charge or sending a fictitious confirmation
+- [ ] Publishing requested and scheduled; verify deployment of new pages when available (immediate public checks still returned 404). Mobile homepage measurement captured during rollout.
 
 ## 25 Sep review correction and targeted audit
 - [x] Restore 4.9 / 1,000 review proof and byte-exact hero trust line
