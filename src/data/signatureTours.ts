@@ -361,7 +361,7 @@ export const signatureTours: SignatureTour[] = [
       imgArrabidaWineLunch,
       imgArrabidaWineSesimbra,
     ],
-    bookingUrl: "https://yesexperiences.pt/tour/private-full-day-wine-tour-setubal-arrabida/",
+    bookingUrl: "https://yesexperiencesportugal.com/tour/private-full-day-wine-tour-setubal-arrabida/",
     seed: {
       region: "lisbon",
       duration: "fullday",
@@ -469,7 +469,7 @@ export const signatureTours: SignatureTour[] = [
     img: imgWildBeachesPicnic,
     focal: "50% 50%",
     bookingUrl:
-      "https://yesexperiences.pt/tour/4x4-jeep-and-beach-private-tour-in-arrabida-sesimbra-with-picnic/",
+      "https://yesexperiencesportugal.com/tour/4x4-jeep-and-beach-private-tour-in-arrabida-sesimbra-with-picnic/",
     seed: {
       region: "lisbon",
       duration: "fullday",
@@ -673,7 +673,7 @@ export const signatureTours: SignatureTour[] = [
     img: imgTilesWorkshop,
     focal: "50% 50%",
     bookingUrl:
-      "https://yesexperiences.pt/tour/tiles-painting-workshop-with-wine-tasting-and-sesimbra-private-tour/",
+      "https://yesexperiencesportugal.com/tour/tiles-painting-workshop-with-wine-tasting-and-sesimbra-private-tour/",
     seed: {
       region: "lisbon",
       duration: "fullday",
@@ -768,7 +768,7 @@ export const signatureTours: SignatureTour[] = [
     focal: "50% 45%",
     gallery: [imgAzeitaoWorkshop, imgAzeitaoWinery, imgAzeitaoSesimbra, imgAzeitaoExtra],
     bookingUrl:
-      "https://yesexperiences.pt/tour/journey-through-azeitao-a-unique-cheese-making-and-wine-tasting-day-out/",
+      "https://yesexperiencesportugal.com/tour/journey-through-azeitao-a-unique-cheese-making-and-wine-tasting-day-out/",
     seed: {
       region: "lisbon",
       duration: "fullday",
@@ -876,7 +876,7 @@ export const signatureTours: SignatureTour[] = [
     focal: "50% 45%",
     gallery: [imgSintraEstates, imgSintraCabo, imgSintraCascais2, imgSintraExtra],
     bookingUrl:
-      "https://yesexperiences.pt/tour/hidden-gems-sintra-cascais-private-tour-with-wine-tasting/",
+      "https://yesexperiencesportugal.com/tour/hidden-gems-sintra-cascais-private-tour-with-wine-tasting/",
     seed: {
       region: "lisbon",
       duration: "fullday",
@@ -988,7 +988,7 @@ export const signatureTours: SignatureTour[] = [
     img: imgTroiaComportaHero,
     focal: "50% 50%",
     gallery: [imgTroiaFerry, imgTroiaRuins, imgTroiaBeach, imgTroiaExtra],
-    bookingUrl: "https://yesexperiences.pt/tour/private-troia-comporta-tour-from-lisbon/",
+    bookingUrl: "https://yesexperiencesportugal.com/tour/private-troia-comporta-tour-from-lisbon/",
     seed: {
       region: "alentejo",
       duration: "fullday",
@@ -1096,7 +1096,7 @@ export const signatureTours: SignatureTour[] = [
     img: imgEvoraAlentejo,
     focal: "50% 50%",
     bookingUrl:
-      "https://yesexperiences.pt/tour/private-full-day-evora-and-alentejo-wine-tour-from-lisbon/",
+      "https://yesexperiencesportugal.com/tour/private-full-day-evora-and-alentejo-wine-tour-from-lisbon/",
     seed: {
       region: "alentejo",
       duration: "fullday",
@@ -1187,7 +1187,7 @@ export const signatureTours: SignatureTour[] = [
     focal: "50% 45%",
     gallery: [imgTomarConvento, imgTomarCoimbra2, imgTomarMondego, imgTomarExtra],
     bookingUrl:
-      "https://yesexperiences.pt/tour/private-private-full-day-tour-from-lisbon-to-tomar-coimbra/",
+      "https://yesexperiencesportugal.com/tour/private-private-full-day-tour-from-lisbon-to-tomar-coimbra/",
     seed: {
       region: "alentejo",
       duration: "fullday",
@@ -1279,7 +1279,7 @@ export const signatureTours: SignatureTour[] = [
     focal: "50% 45%",
     gallery: [imgFatimaSanctuary, imgFatimaNazare, imgFatimaObidos, imgFatimaExtra],
     bookingUrl:
-      "https://yesexperiences.pt/tour/private-full-day-tour-from-lisbon-discover-fatima-nazare-and-obidos/",
+      "https://yesexperiencesportugal.com/tour/private-full-day-tour-from-lisbon-discover-fatima-nazare-and-obidos/",
     seed: {
       region: "alentejo",
       duration: "fullday",
