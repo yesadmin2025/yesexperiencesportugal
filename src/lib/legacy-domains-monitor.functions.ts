@@ -136,8 +136,19 @@ async function probeOneHost(host: string): Promise<LegacyHostReport> {
   } satisfies LegacyHostReport;
 }
 
-export const probeLegacyDomains = createServerFn({ method: "GET" }).handler(
-  async (): Promise<LegacyHostReport[]> => {
+async function assertAdmin(context: { supabase: any; userId: string }) {
+  const { data: isAdmin } = await context.supabase.rpc("has_role", {
+    _user_id: context.userId,
+    _role: "admin",
+  });
+  if (!isAdmin) throw new Response("Forbidden", { status: 403 });
+}
+
+export const probeLegacyDomains = createServerFn({ method: "GET" })
+  .middleware([requireSupabaseAuth])
+  .handler(
+  async ({ context }): Promise<LegacyHostReport[]> => {
+    await assertAdmin(context);
     const hosts = Array.from(LEGACY_HOSTS);
     const reports = await Promise.all(hosts.map((h) => probeOneHost(h)));
 
@@ -157,6 +168,7 @@ export const probeLegacyDomains = createServerFn({ method: "GET" }).handler(
  * against the most recent snapshot of the other hosts.
  */
 export const probeLegacyHost = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
   .inputValidator((input: { host: string }) => {
     if (!input?.host || typeof input.host !== "string") {
       throw new Error("host is required");
@@ -166,7 +178,8 @@ export const probeLegacyHost = createServerFn({ method: "POST" })
     }
     return { host: input.host };
   })
-  .handler(async ({ data }): Promise<LegacyHostReport> => {
+  .handler(async ({ data, context }): Promise<LegacyHostReport> => {
+    await assertAdmin(context);
     const report = await probeOneHost(data.host);
 
     void (async () => {

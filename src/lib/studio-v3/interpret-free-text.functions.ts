@@ -74,7 +74,10 @@ export const interpretFreeTextWithAi = createServerFn({ method: "POST" })
     });
     if (!rl.ok) return { events: [], source: "fallback" };
 
-    const key = process.env.LOVABLE_API_KEY;
+    // Paid AI is reserved for verified signed-in callers; anonymous
+    // visitors get the deterministic fallback (no metered call).
+    const { getVerifiedUserId: __verify } = await import("@/lib/verifiedCaller.server");
+    const key = (await __verify()) ? process.env.LOVABLE_API_KEY : undefined;
     if (!key) return { events: [], source: "fallback" };
 
     try {
