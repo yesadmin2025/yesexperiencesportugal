@@ -21,7 +21,7 @@ import {
 import { SITE_RATING_LABEL } from "@/config/trust-certificate";
 import { openCookieConsent } from "@/components/CookieConsent";
 import {
-  BASED_IN,
+  ADDRESS_LINE,
   BUSINESS_NAME,
   EMAIL,
   EMAIL_HREF,
@@ -31,11 +31,11 @@ import {
   LICENSE_SHORT,
   PHONE_DISPLAY,
   PHONE_HREF,
+  RAL_ENTITIES_URL,
   SOCIAL,
   whatsappUrl,
 } from "@/config/business-nap";
 
-const LEGAL_META_LINE = BASED_IN;
 
 /* ---------------------------------------------------------------------------
    Footer — three zones, one rhythm.
@@ -224,15 +224,18 @@ export function Footer() {
             </p>
             {/* Canonical NAP — one quiet line, single source of truth. */}
             <address className="mt-4 not-italic font-[family-name:var(--font-sans)] text-[13px] leading-[1.7] text-[color:var(--ivory)]/70">
-              <a href={EMAIL_HREF} className={LINK_CLASS}>
-                {EMAIL}
-              </a>
-              <span aria-hidden="true" className="mx-2 text-[color:var(--ivory)]/35">
-                ·
+              <span className="block">{ADDRESS_LINE}</span>
+              <span className="mt-1 flex flex-wrap items-center">
+                <a href={EMAIL_HREF} className={LINK_CLASS}>
+                  {EMAIL}
+                </a>
+                <span aria-hidden="true" className="mx-2 text-[color:var(--ivory)]/35">
+                  ·
+                </span>
+                <a href={PHONE_HREF} className={LINK_CLASS}>
+                  {PHONE_DISPLAY}
+                </a>
               </span>
-              <a href={PHONE_HREF} className={LINK_CLASS}>
-                {PHONE_DISPLAY}
-              </a>
             </address>
           </div>
 
@@ -342,12 +345,24 @@ export function Footer() {
               className="flex flex-col gap-4 font-[family-name:var(--font-sans)] text-[12px] text-[color:var(--ivory)]/75 md:flex-row md:items-center md:justify-between"
               style={{ fontWeight: 400 }}
             >
-              <p className="leading-[1.6] text-[color:var(--ivory)]/75">
-                © {new Date().getFullYear()} Yes Experiences Portugal · {NIF_LABEL} · {LICENSE_LABEL} · {LEGAL_META_LINE} ·{" "}
-                <Link to="/terms" hash="dispute-resolution" className={`${LINK_CLASS} text-[12px] text-[color:var(--ivory)]/75`}>
+              {/* Legal identity — quiet stacked lines on mobile, one inline
+                  row from md up (dot separators come from the ::after marks). */}
+              <div className="flex min-w-0 flex-col gap-1.5 leading-[1.6] text-[color:var(--ivory)]/75 md:flex-row md:flex-wrap md:items-center md:gap-y-0">
+                <span className="md:after:mx-2 md:after:content-['·']">
+                  © {new Date().getFullYear()} Yes Experiences Portugal
+                </span>
+                <span className="md:after:mx-2 md:after:content-['·']">
+                  {NIF_LABEL} · {LICENSE_LABEL}
+                </span>
+                <span className="md:after:mx-2 md:after:content-['·']">{ADDRESS_LINE}</span>
+                <Link
+                  to="/terms"
+                  hash="dispute-resolution"
+                  className={`${LINK_CLASS} text-[12px] text-[color:var(--ivory)]/75`}
+                >
                   Dispute resolution (RAL)
                 </Link>
-              </p>
+              </div>
               <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
                 <LanguageSwitcher variant="footer" className="text-[color:var(--ivory)]/75" />
                 <span aria-hidden="true" className="text-[color:var(--text-on-dark-muted)]">

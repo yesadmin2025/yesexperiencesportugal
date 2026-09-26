@@ -42,6 +42,12 @@ export const BASED_IN_SHORT =
 export const BASED_IN_LONG =
   "Based in Sesimbra, designing private journeys across Portugal, with pickups from Lisbon, Cascais, Sintra, Sesimbra and Setúbal." as const;
 
+/** Owner-supplied street line — the visible business address for footer and legal pages. */
+export const ADDRESS_LINE = "Av. 25 de Abril, Sesimbra, Portugal" as const;
+/** Official Consumer Portal list of authorised RAL entities (Law no. 144/2015). */
+export const RAL_ENTITIES_URL =
+  "https://www.consumidor.gov.pt/pages/publico/entidades_ral.php" as const;
+
 /**
  * Service areas published on the Google Business Profile and echoed
  * sitewide. Keep this list in sync with GBP; order is alphabetical.

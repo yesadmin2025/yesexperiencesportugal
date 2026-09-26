@@ -3,7 +3,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { SiteLayout } from "@/components/SiteLayout";
 import { Eyebrow } from "@/components/ui/Eyebrow";
 import { SectionTitle } from "@/components/ui/SectionTitle";
-import { EMAIL, EMAIL_HREF } from "@/config/business-nap";
+import { ADDRESS_LINE, EMAIL, EMAIL_HREF, NIF_LABEL } from "@/config/business-nap";
 import { breadcrumbLd, jsonLdScript } from "@/lib/jsonld";
 
 export const Route = createFileRoute("/cookies")({
@@ -60,6 +60,9 @@ function CookiesPage() {
               This site uses a small number of cookies and similar technologies so the experience
               works reliably and so we can keep improving it. We do not use cookies to build
               advertising profiles.
+            </p>
+            <p className="text-[13px] text-[color:var(--charcoal-soft)]/80">
+              Yes Experiences Portugal · {NIF_LABEL} · {ADDRESS_LINE}
             </p>
 
             <h2 className="serif text-[1.4rem] text-[color:var(--charcoal)] font-medium">

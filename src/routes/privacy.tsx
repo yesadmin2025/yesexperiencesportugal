@@ -3,7 +3,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { SiteLayout } from "@/components/SiteLayout";
 import { Eyebrow } from "@/components/ui/Eyebrow";
 import { SectionTitle } from "@/components/ui/SectionTitle";
-import { EMAIL, EMAIL_HREF } from "@/config/business-nap";
+import { ADDRESS_LINE, EMAIL, EMAIL_HREF, NIF_LABEL } from "@/config/business-nap";
 import { breadcrumbLd, jsonLdScript } from "@/lib/jsonld";
 
 export const Route = createFileRoute("/privacy")({
@@ -60,6 +60,9 @@ function PrivacyPage() {
               We keep things simple. YES Experiences Portugal only collects the information needed
               to design your private experience, confirm your booking, and stay in touch about your
               trip.
+            </p>
+            <p className="text-[13px] text-[color:var(--charcoal-soft)]/80">
+              Data controller: Yes Experiences Portugal · {NIF_LABEL} · {ADDRESS_LINE}
             </p>
             <h2 className="serif text-[1.4rem] text-[color:var(--charcoal)] font-medium">
               What we collect
