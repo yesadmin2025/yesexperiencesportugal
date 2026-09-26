@@ -1,7 +1,6 @@
-import { useRouterState } from "@tanstack/react-router";
 import { Link } from "@tanstack/react-router";
-import { useState, type ReactNode } from "react";
-import { ShieldCheck, BadgeCheck, Lock, ChevronDown } from "lucide-react";
+import { useState } from "react";
+import { ChevronDown } from "lucide-react";
 import { Logo } from "@/components/Logo";
 import { PaymentMethodsRow } from "@/components/trust/PaymentMethodsRow";
 import { LivroReclamacoesBadge } from "@/components/trust/LivroReclamacoesBadge";
@@ -18,17 +17,13 @@ import {
   GetYourGuideIcon,
 } from "@/components/BrandIcon";
 
-import { SITE_RATING_LABEL } from "@/config/trust-certificate";
 import { openCookieConsent } from "@/components/CookieConsent";
 import {
   ADDRESS_LINE,
-  BUSINESS_NAME,
   EMAIL,
   EMAIL_HREF,
-  LICENSE_NUMBER,
   LICENSE_LABEL,
   NIF_LABEL,
-  LICENSE_SHORT,
   PHONE_DISPLAY,
   PHONE_HREF,
   SOCIAL,
@@ -165,18 +160,6 @@ const POPULAR_SEARCHES: FooterLink[] = [
   { to: "/proposal-in-portugal", label: "Proposal in Portugal" },
 ];
 
-const CREDENTIALS: { Icon: typeof BadgeCheck; label: ReactNode }[] = [
-  {
-    Icon: BadgeCheck,
-    label: (
-      <>
-        {LICENSE_SHORT} <span className="tabular-nums">nº {LICENSE_NUMBER}</span>
-      </>
-    ),
-  },
-  { Icon: ShieldCheck, label: "Turismo de Portugal" },
-  { Icon: Lock, label: "Secure checkout · Stripe" },
-];
 
 const LEGAL_LINKS: FooterLink[] = [
   { to: "/terms", label: "Terms & Conditions" },
@@ -186,8 +169,6 @@ const LEGAL_LINKS: FooterLink[] = [
 ];
 
 export function Footer() {
-  const pathname = useRouterState({ select: (s) => s.location.pathname });
-  const isHomeOrAbout = pathname === "/" || pathname === "/pt" || pathname === "/about" || pathname === "/pt.about";
   return (
     <footer className="relative bg-[color:var(--charcoal)] text-[color:var(--ivory)]">
       {/* Champagne hairline — handoff from the ivory section above. */}
@@ -220,7 +201,7 @@ export function Footer() {
               style={{ fontWeight: 400, letterSpacing: "0.005em" }}
             >
               Private Portugal, shown the way a local shows a friend. Intimate, real, and genuinely
-              different — designed with you and confirmed in minutes.{!isHomeOrAbout && ` ${SITE_RATING_LABEL}.`}
+              different — designed with you and confirmed in minutes.
             </p>
             {/* Canonical NAP — one quiet line, single source of truth. */}
             <address className="mt-4 not-italic font-[family-name:var(--font-sans)] text-[13px] leading-[1.7] text-[color:var(--ivory)]/70">
@@ -243,7 +224,6 @@ export function Footer() {
             {[
               { href: SOCIAL.instagram, label: "Instagram", Icon: InstagramIcon },
               { href: SOCIAL.facebook, label: "Facebook", Icon: FacebookIcon },
-              { href: SOCIAL.tripadvisor, label: "Tripadvisor", Icon: TripadvisorIcon },
               { href: whatsappUrl(), label: "WhatsApp", Icon: WhatsAppIcon },
             ].map(({ href, label, Icon }) => (
               <li key={label}>
@@ -276,32 +256,33 @@ export function Footer() {
           </div>
         </div>
 
-        {/* ── ZONE C — TRUST & LEGAL ─────────────────────────────────── */}
-        <div className="mt-8 pt-8 border-t border-[color:var(--gold-warm)]/15 md:mt-10 md:pt-10">
-          <div className="grid gap-8 md:grid-cols-[minmax(0,1fr)_auto] md:items-start">
-            {/* Credentials */}
-            <ul
-              className="flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:gap-x-6"
-              aria-label="Credentials and secure checkout"
-            >
-              {CREDENTIALS.map(({ Icon, label }, i) => (
-                <li key={i} className="flex min-w-0 items-center gap-2.5">
-                  <span className="inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-full ring-1 ring-[color:var(--gold-warm)]/40 text-[color:var(--gold-warm)]">
-                    <Icon size={14} strokeWidth={1.5} aria-hidden="true" />
-                  </span>
-                  <span
-                    className={`${EYEBROW_CLASS} text-[11px] tracking-[0.2em] leading-[1.5]`}
-                    style={{ fontWeight: 600 }}
-                  >
-                    {label}
-                  </span>
-                </li>
-              ))}
-            </ul>
+        {/* ── ZONE C — TRUST & LEGAL ───────────────────────────────────
+            PaymentMethodsRow opens the zone with its own hairline, so the
+            wrapper stays border-free — one line, never two. */}
+        <div>
+          {/* Secure payments */}
+          <PaymentMethodsRow />
 
-            {/* Also listed on */}
-            <div className="min-w-0">
-              <h2 className={`${EYEBROW_CLASS} mb-3`} style={{ fontWeight: 600 }}>
+          {/* Certificates — each seal gets its own space on phones; nothing
+              competes with them. */}
+          <div
+            className="mt-8 flex flex-col items-start gap-7 sm:flex-row sm:items-center sm:gap-12"
+            aria-label="Review certificate and official complaints book"
+          >
+            <TrustindexBadge />
+            <LivroReclamacoesBadge />
+          </div>
+
+          {/* Vendor verification is layout-free; the visible certificate above
+              remains the sole review badge. */}
+          <TrustindexWidget />
+
+          {/* Closing band — distribution partners, then the quiet legal
+              identity. Address and contacts live once in the brand block
+              above, so nothing repeats here. */}
+          <div className="mt-8 pt-8 border-t border-[color:var(--gold-warm)]/15">
+            <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+              <h2 className={`${EYEBROW_CLASS} shrink-0`} style={{ fontWeight: 600 }}>
                 Also listed on
               </h2>
               <ul className="flex items-center gap-2.5" aria-label="Distribution partners">
@@ -332,61 +313,39 @@ export function Footer() {
                 ))}
               </ul>
             </div>
-          </div>
 
-          {/* Payments */}
-          <PaymentMethodsRow />
-
-          {/* Each certificate gets its own space on phones; the legal identity
-              closes the footer below rather than competing with the seals. */}
-          <div className="mt-8 flex flex-col items-start gap-7 border-t border-[color:var(--gold-warm)]/15 pt-8 sm:flex-row sm:items-center sm:gap-12" aria-label="Review certificate and official complaints book">
-            <TrustindexBadge />
-            <LivroReclamacoesBadge />
-          </div>
-
-          {/* Vendor verification is layout-free; the visible certificate above
-              remains the sole review badge. */}
-          <TrustindexWidget />
-
-          {/* Legal bar */}
-          <div className="mt-8 pt-6 border-t border-[color:var(--gold-warm)]/15">
+            {/* Legal identity — one quiet close (dot separators come from the
+                ::after marks from md up). */}
             <div
-              className="flex flex-col gap-4 font-[family-name:var(--font-sans)] text-[12px] text-[color:var(--ivory)]/75 md:flex-row md:items-center md:justify-between"
-              style={{ fontWeight: 400 }}
+              className="mt-8 flex min-w-0 flex-col gap-1.5 font-[family-name:var(--font-sans)] text-[12px] font-normal leading-[1.6] text-[color:var(--ivory)]/75 md:flex-row md:flex-wrap md:items-center md:gap-y-0"
             >
-              {/* Legal identity — quiet stacked lines on mobile, one inline
-                  row from md up (dot separators come from the ::after marks). */}
-              <div className="flex min-w-0 flex-col gap-1.5 leading-[1.6] text-[color:var(--ivory)]/75 md:flex-row md:flex-wrap md:items-center md:gap-y-0">
-                <span className="md:after:mx-2 md:after:content-['·']">
-                  © {new Date().getFullYear()} Yes Experiences Portugal
-                </span>
-                <span className="md:after:mx-2 md:after:content-['·']">
-                  {NIF_LABEL} · {LICENSE_LABEL}
-                </span>
-                <span className="md:after:mx-2 md:after:content-['·']">{ADDRESS_LINE}</span>
-                <Link
-                  to="/terms"
-                  hash="dispute-resolution"
-                  className={`${LINK_CLASS} text-[12px] text-[color:var(--ivory)]/75`}
-                >
-                  Dispute resolution (RAL)
-                </Link>
-              </div>
-              <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
-                <LanguageSwitcher variant="footer" className="text-[color:var(--ivory)]/75" />
-                <span aria-hidden="true" className="text-[color:var(--text-on-dark-muted)]">
-                  ·
-                </span>
-                <button
-                  type="button"
-                  onClick={openCookieConsent}
-                  className={`${LINK_CLASS} text-[12px] text-[color:var(--ivory)]/75`}
-                >
-                  Cookie preferences
-                </button>
-              </div>
+              <span className="md:after:mx-2 md:after:content-['·']">
+                © {new Date().getFullYear()} Yes Experiences Portugal
+              </span>
+              <span className="md:after:mx-2 md:after:content-['·']">
+                {NIF_LABEL} · {LICENSE_LABEL}
+              </span>
+              <Link
+                to="/terms"
+                hash="dispute-resolution"
+                className={`${LINK_CLASS} text-[12px] text-[color:var(--ivory)]/75`}
+              >
+                Dispute resolution (RAL)
+              </Link>
             </div>
-
+            <div className="mt-4 flex flex-wrap items-center gap-x-4 gap-y-2">
+              <LanguageSwitcher variant="footer" className="text-[color:var(--ivory)]/75" />
+              <span aria-hidden="true" className="text-[color:var(--text-on-dark-muted)]">
+                ·
+              </span>
+              <button
+                type="button"
+                onClick={openCookieConsent}
+                className={`${LINK_CLASS} text-[12px] text-[color:var(--ivory)]/75`}
+              >
+                Cookie preferences
+              </button>
+            </div>
           </div>
         </div>
       </div>
