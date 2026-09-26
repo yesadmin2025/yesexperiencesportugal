@@ -211,7 +211,7 @@ export const signatureTours: SignatureTour[] = [
     theme: "Culture",
     blurb: "Meet the makers behind Alentejo's cork and clay traditions on a private, hands-on day with lunch included.",
     intro: "Step into the Alentejo's living craft traditions. Work with cork alongside local makers, then spend the afternoon shaping clay in a three-hour pottery workshop. A private guide, transport and lunch are part of the day.",
-    fitsBest: "Couples · craft lovers · curious travelers",
+    fitsBest: "Couples, craft lovers and curious travelers",
     pace: ["Hands-on cork workshop", "Lunch included", "Afternoon pottery workshop"],
     stops: [
       { label: "Cork workshop", story: "Work directly with cork alongside local makers.", imageTheme: "p23-artisan-pottery-cork" },
@@ -386,7 +386,7 @@ export const signatureTours: SignatureTour[] = [
       "A private coastal day — Arrábida viewpoints, hidden coves and a slow picnic on a quiet beach.",
     intro:
       "The good parts of the Lisbon coast aren't on the postcards. We take the small roads into Arrábida, drop down to the coves locals keep to themselves, and set a picnic on the sand with the natural park behind us. No queues, no rush.",
-    fitsBest: "Couples · families · slow travelers",
+    fitsBest: "Couples, families and slow travelers",
     pace: ["Arrábida viewpoints", "Hidden cove picnic", "Sesimbra"],
     stops: [
       {
@@ -494,7 +494,7 @@ export const signatureTours: SignatureTour[] = [
       "A private Arrábida day with the Sesimbra Coastal Boat Tour, Lapa de Santa Margarida and the cliffs of Cabo Espichel.",
     intro:
       "A day told by the sea. It begins at Livramento Market, then follows the coast into the Arrábida Natural Park, past Lapa de Santa Margarida and out on the Sesimbra Coastal Boat Tour. The afternoon eases into Sesimbra and the cliffs of Cabo Espichel. Lunch can be added when you tailor the day.",
-    fitsBest: "Couples · families · active travelers",
+    fitsBest: "Couples, families and active travelers",
     pace: ["Arrábida by road", "Boat into the coves", "Sesimbra at dusk"],
     stops: [
       {
@@ -599,7 +599,7 @@ export const signatureTours: SignatureTour[] = [
       "Paint your own azulejo in a centuries-old Azeitão atelier, taste a selected regional wine, then unwind by the sea in Sesimbra.",
     intro:
       "Five centuries of tile-making in one quiet courtyard. You meet the master, mix the cobalt blue, and paint a single azulejo that becomes yours forever. The day softens from there — a glass of local wine, then the salt and sun of Sesimbra.",
-    fitsBest: "Couples · creatives · families with teens",
+    fitsBest: "Couples, creatives and families with teens",
     pace: ["Tile atelier", "Wine tasting", "Sesimbra coast"],
     stops: [
       {
@@ -699,7 +699,7 @@ export const signatureTours: SignatureTour[] = [
 
     intro:
       "You won't watch — you'll work. In a small Azeitão dairy, hands deep in fresh curd, you shape the cheese that built this village's reputation. The afternoon answers with wine from the next farm and a quiet table by the sea in Sesimbra.",
-    fitsBest: "Foodies · couples · curious first-timers",
+    fitsBest: "Foodies, couples and curious first-timers",
     pace: ["Cheese workshop", "Winery tasting", "Sesimbra"],
     stops: [
       {
@@ -793,7 +793,7 @@ export const signatureTours: SignatureTour[] = [
       "A flexible palace selection in Sintra — one palace and a Colares wine visit, or two palaces — plus Cabo da Roca and Cascais.",
     intro:
       "Sintra, chosen your way: one palace visit plus a Colares wine visit, or two palace visits. From there the day heads to Azenhas do Mar, the cliffs of Cabo da Roca — the western edge of Europe — and a slow finish in Cascais.",
-    fitsBest: "Couples · culture lovers · first-timers",
+    fitsBest: "Couples, culture lovers and first-timers",
     pace: ["Sintra forests", "Cabo da Roca", "Cascais tasting"],
     stops: [
       {
@@ -901,7 +901,7 @@ export const signatureTours: SignatureTour[] = [
       "Cross the Sado by ferry to the Roman ruins of Tróia, then Comporta's stilt pier, Atlantic beaches and a Herdade da Comporta tasting.",
     intro:
       "A quiet day in the Alentejo most visitors miss. We board the ferry across the Sado to the Roman Ruins of Tróia, pause at the Carrasqueira stilt pier, then drift down to Comporta — long Atlantic beaches, rice paddies, white-and-blue villages — with a wine tasting at Herdade da Comporta. Lunch is not included, so the pace stays yours.",
-    fitsBest: "Couples · slow travelers · style-led explorers",
+    fitsBest: "Couples, slow travelers and style-led explorers",
     pace: ["Sado ferry", "Tróia ruins", "Comporta beach & lunch"],
     stops: [
       {
@@ -1013,7 +1013,7 @@ export const signatureTours: SignatureTour[] = [
       "The Roman Temple and Chapel of Bones in Évora, two selected Alentejo wineries and a traditional cork-production visit.",
     intro:
       "Alentejo unwinds you. We walk Évora's historic centre slowly — the Roman Temple, the Chapel of Bones — then head into two selected Alentejo wineries and a traditional cork-production visit. Lunch is not included, so the day keeps its own rhythm.",
-    fitsBest: "History buffs · wine lovers · couples",
+    fitsBest: "History buffs, wine lovers and couples",
     pace: ["Évora old town", "Chapel of Bones", "Alentejo winery"],
     stops: [
       {
@@ -1121,7 +1121,7 @@ export const signatureTours: SignatureTour[] = [
       "The Templar Convento de Cristo in Tomar, then Coimbra's ancient university and old town along the Mondego.",
     intro:
       "Two cities, eight centuries, one quiet day inland. Tomar holds the Templar convent that shaped Portugal's discoveries; Coimbra holds the oldest university library in the country. Between them, a slow lunch and a river that has watched it all.",
-    fitsBest: "History lovers · couples · culture seekers",
+    fitsBest: "History lovers, couples and culture seekers",
     pace: ["Convento de Cristo", "Coimbra University", "Old town walk"],
     stops: [
       {
@@ -1212,7 +1212,7 @@ export const signatureTours: SignatureTour[] = [
       "The Sanctuary of Fátima, Nazaré's cliff viewpoint and Atlantic coast, the medieval lanes of Óbidos and a Ginjinha tasting.",
     intro:
       "Three landmarks, one perfectly composed day. Faith in Fátima, the awe of Nazaré's giant Atlantic waves, and the medieval streets of Óbidos finished off with a small ceramic cup of cherry liqueur.",
-    fitsBest: "Pilgrims · couples · families",
+    fitsBest: "Pilgrims, couples and families",
     pace: ["Fátima sanctuary", "Nazaré cliffs", "Óbidos & Ginjinha"],
     stops: [
       {
@@ -1304,7 +1304,7 @@ export const signatureTours: SignatureTour[] = [
       "Roman ruins, amphora wines and a hidden Alentejo most travelers never reach — a quiet inland day with deep roots.",
     intro:
       "Two thousand years ago the Romans were already making wine in this corner of the Alentejo. We follow their road south — to the ruins of São Cucufate, a tiny family cellar still pressing wine into clay amphorae the old way, and a river beach almost no one knows. The slowest day in our catalogue. The most surprising.",
-    fitsBest: "Couples · wine lovers · curious travelers",
+    fitsBest: "Couples, wine lovers and curious travelers",
     pace: ["Roman ruins", "Talha winery", "River beach"],
     stops: [
       {
@@ -1403,7 +1403,7 @@ export const signatureTours: SignatureTour[] = [
       "Whitewashed fishing villages, protected cliffs and the wild river-meets-ocean beach at Odeceixe — a hidden Atlantic Portugal few travelers reach.",
     intro:
       "Between Alentejo and Algarve lies another Portugal — raw, open, breathtakingly quiet. We follow the Vicentine Coast south from Lisbon, through Porto Covo, Vila Nova de Milfontes and the natural park, to Odeceixe, where the Rio Seixe meets the Atlantic. A slow, cinematic day of secret coves, whitewashed villages and untouched coastal scenery.",
-    fitsBest: "Couples · slow travelers · coastal romantics",
+    fitsBest: "Couples, slow travelers and coastal romantics",
     pace: ["Six coastal stops", "Long lunch in Milfontes", "Odeceixe as the finale"],
     stops: [
       {

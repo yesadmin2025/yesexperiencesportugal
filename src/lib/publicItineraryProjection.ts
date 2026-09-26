@@ -20,7 +20,7 @@ import { getSot, type SotItineraryChapter } from "@/data/signatureToursSourceOfT
 export const WINERY_POOL_ID = "wineries";
 
 /** Generic display label used for an unresolved winery pool pin/chapter. */
-export const GENERIC_WINERY_PIN_LABEL = "Local winery visit";
+export const GENERIC_WINERY_PIN_LABEL = "Partner winery (2 visited, by availability)";
 
 export type PublicItineraryChapter = {
   order: number;
