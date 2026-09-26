@@ -961,7 +961,7 @@ function TailorPage() {
       pricePerPaxEur: estimatedPrice,
       totalEur: totalForSummary,
       heroSrc: metaForSummary?.localGallery?.[0]?.src ?? metaForSummary?.gallery?.[0] ?? tour.img,
-      beats: stopLabels.slice(0, 4),
+      beats: stopLabels,
       flowLabel: "Tailored Signature",
     });
 

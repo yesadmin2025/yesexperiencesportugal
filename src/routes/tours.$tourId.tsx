@@ -25,7 +25,7 @@ import {
   validateTour,
   logTourValidation,
 } from "@/lib/viatorValidation";
-import { useEffect, lazy, Suspense } from "react";
+import { useEffect } from "react";
 import { SimpleBookingForm } from "@/components/SimpleBookingForm";
 import { MobileReserveBar } from "@/components/booking/MobileReserveBar";
 import { dispatchSignatureReserveIntent } from "@/lib/booking/reserve-intent";
@@ -56,11 +56,7 @@ import { PriceCurrencyChip } from "@/components/PriceCurrencyChip";
 import { PriceEur } from "@/components/ui/PriceEur";
 import { useAdminTourPhotos } from "@/lib/useAdminTourPhotos";
 // Lazy-loaded below the fold — keeps Leaflet (~140KB) out of the initial tour bundle
-import { SignatureRouteMapShell } from "@/components/SignatureRouteMapShell";
 
-const SignatureRouteMap = lazy(() =>
-  import("@/components/SignatureRouteMap").then((m) => ({ default: m.SignatureRouteMap })),
-);
 import { CANCELLATION } from "@/config/business-nap";
 import { resolveLegacyTourId } from "@/lib/legacy-tour-redirects";
 import { TourEditorialNote } from "@/components/tours/TourEditorialNote";
@@ -333,18 +329,6 @@ function TourDetailPage() {
 
       {/* ── D · THE ROUTE — real stops, in order ───────────────── */}
       <ItineraryTimeline tour={tour} meta={meta} />
-
-      {/* ── E · MAP — real geographic route (lazy) ────────────────
-          The reveal class lives on THIS wrapper, not inside the lazy
-          component: the reveal sweep adds `.is-visible` before the lazy
-          chunk hydrates, which made React report an attribute mismatch. */}
-      {tour.id !== "p23-artisan-pottery-cork" && (
-        <div className="reveal">
-          <Suspense fallback={<SignatureRouteMapShell />}>
-            <SignatureRouteMap tour={tour} />
-          </Suspense>
-        </div>
-      )}
 
       {/* ── F · GALLERY (real photos) ─────────────────────────── */}
       <GalleryStrip tour={tour} resolveImg={resolveImg} meta={meta} adminPhotos={adminPhotos} />
