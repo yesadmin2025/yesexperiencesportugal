@@ -184,21 +184,46 @@ export function TourReviews({
   return (
     <section className="mt-16 md:mt-20" aria-labelledby="tour-reviews-heading">
       <div className="text-center">
-        <div className="text-[11px] uppercase tracking-[0.22em] text-[color:var(--text-muted)]">
-          {useFallback
-            ? `Verified platform reviews · ${displayTotal}`
-            : `Reviews collected directly by YES · ${initialFirstParty?.count ?? displayTotal}`}
-        </div>
-        <h2
-          id="tour-reviews-heading"
-          className="mt-2 text-[1.8rem] md:text-[2.2rem] font-medium text-[color:var(--charcoal)] leading-tight"
-        >
-          <span className="tabular-nums">{displayRating.toFixed(1)}</span>
-          <span className="text-[color:var(--teal)] mx-2">★</span>
-          <span className="font-normal text-[color:var(--charcoal)]/75">
-            across <span className="tabular-nums">{displayTotal}</span> reviews
-          </span>
-        </h2>
+        {(() => {
+          const directCount = initialFirstParty?.count ?? displayTotal;
+          const showHeadline = useFallback || directCount >= 5;
+          const eyebrowText = useFallback
+            ? `Reviews across platforms · ${displayTotal}`
+            : "Reviews left on our website";
+          return (
+            <>
+              {showHeadline ? (
+                <div className="text-[11px] uppercase tracking-[0.22em] text-[color:var(--text-muted)]">
+                  {eyebrowText}
+                </div>
+              ) : (
+                <h2
+                  id="tour-reviews-heading"
+                  className="text-[11px] font-normal uppercase tracking-[0.22em] text-[color:var(--text-muted)]"
+                >
+                  {eyebrowText}
+                </h2>
+              )}
+              {!useFallback && (
+                <p className="mt-2 text-[12px] text-[color:var(--charcoal)]/70">
+                  Collected directly by YES. Our platform reviews are verified by Trustindex.
+                </p>
+              )}
+              {showHeadline && (
+                <h2
+                  id="tour-reviews-heading"
+                  className="mt-2 text-[1.8rem] md:text-[2.2rem] font-medium text-[color:var(--charcoal)] leading-tight"
+                >
+                  <span className="tabular-nums">{displayRating.toFixed(1)}</span>
+                  <span className="text-[color:var(--teal)] mx-2">★</span>
+                  <span className="font-normal text-[color:var(--charcoal)]/75">
+                    across <span className="tabular-nums">{displayTotal}</span> reviews
+                  </span>
+                </h2>
+              )}
+            </>
+          );
+        })()}
 
         {perSource.length > 0 && (
           <ul className="mt-4 flex flex-wrap items-center justify-center gap-x-4 gap-y-2 text-[12px] text-[color:var(--charcoal)]/70">
@@ -310,7 +335,7 @@ export function TourReviews({
 
       <p className="mt-8 text-center text-[12px] text-[color:var(--charcoal)]/60">
         {useFallback
-          ? "Based on verified guest reviews across major booking platforms."
+          ? "Based on reviews across major booking platforms."
           : "Collected directly by YES Experiences Portugal."}
       </p>
     </section>

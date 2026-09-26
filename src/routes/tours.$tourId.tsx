@@ -483,7 +483,7 @@ function TourHero({
                     />
                     <span className="font-semibold">{meta.rating.toFixed(1)}</span>
                     <span className="text-[color:var(--charcoal-soft)]">
-                      · {meta.reviewCount} verified platform reviews
+                      · {meta.reviewCount} reviews across platforms
                     </span>
                   </span>
                 </>

@@ -46,7 +46,7 @@ export function LandingTourCredibility({
           <span className="tabular-nums">{meta.rating.toFixed(1)}</span>
           <span className="text-[color:var(--charcoal-soft)] font-normal">
             {" "}
-            · {meta.reviewCount} verified guest reviews
+            · {meta.reviewCount} reviews across platforms
           </span>
         </h2>
         <p className="mt-3 text-[13px] text-[color:var(--charcoal-soft)]">
