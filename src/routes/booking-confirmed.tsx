@@ -18,6 +18,7 @@ import { SectionTitle } from "@/components/ui/SectionTitle";
 import { findTour } from "@/data/signatureTours";
 import { gaPurchase, buildTourItem } from "@/lib/analytics-ga4";
 import { trackEvent } from "@/lib/analytics-events";
+import { whatsappUrl } from "@/config/business-nap";
 
 interface Search {
   session_id?: string;
@@ -164,6 +165,21 @@ function BookingConfirmedPage() {
           currency: state.data.currency.toUpperCase(),
         }).format(state.data.amountTotal / 100)
       : null;
+  const bookingMessage = paid && state.kind === "ok"
+    ? [
+        "Hi YES Experiences Portugal — I have a confirmed reservation.",
+        `Experience: ${state.data.metadata?.journey_title || (tour ? findTour(tour)?.title : null) || "YES experience"}`,
+        state.data.metadata?.date_exact ? `Date: ${formatBookingDate(state.data.metadata.date_exact)}` : null,
+        guestLabel(state.data.metadata ?? {}) ? `Guests: ${guestLabel(state.data.metadata ?? {})}` : null,
+        amountLabel ? `Total paid: ${amountLabel}` : null,
+        session_id ? `Reference: ${session_id.slice(-12)}` : null,
+      ].filter(Boolean).join("\n")
+    : null;
+
+  useEffect(() => {
+    window.dispatchEvent(new CustomEvent("whatsapp-support:booking-message", { detail: { message: bookingMessage } }));
+    return () => window.dispatchEvent(new CustomEvent("whatsapp-support:booking-message", { detail: { message: null } }));
+  }, [bookingMessage]);
 
   return (
     <SiteLayout>
@@ -346,6 +362,12 @@ function BookingConfirmedPage() {
                 body="Dietary, pickup, occasion — write to us and we’ll adapt."
               />
             </ul>
+          ) : null}
+
+          {bookingMessage ? (
+            <a href={whatsappUrl(bookingMessage)} target="_blank" rel="noopener noreferrer" data-analytics="whatsapp_click" data-analytics-placement="booking-confirmed" className="mt-6 inline-flex min-h-12 items-center gap-2 border border-[color:var(--teal)] px-5 text-sm text-[color:var(--teal)] hover:bg-[color:var(--sand)]">
+              <MessageCircle size={18} aria-hidden /> Message us about this reservation
+            </a>
           ) : null}
 
           {!paid && state.kind !== "loading" ? (
