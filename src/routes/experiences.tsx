@@ -1,4 +1,5 @@
 import { localeAlternateLinks } from "@/i18n/seo";
+import { PRICE_GROUP_QUALIFIER } from "@/lib/price-copy";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { breadcrumbLd, itemListLd, jsonLdScript } from "@/lib/jsonld";
@@ -293,7 +294,7 @@ function TourCard({
 
         <div className="mt-4">
           <span className="font-sans text-[1.125rem] font-semibold text-[color:var(--charcoal)]">
-            From <PriceEur amountEur={tour.priceFrom} role="from" /> per person
+            From <PriceEur amountEur={tour.priceFrom} role="from" /> per person {PRICE_GROUP_QUALIFIER}
           </span>
         </div>
 

@@ -10,6 +10,7 @@
  * so the destination stays a clean canonical URL.
  */
 
+import { PRICE_GROUP_QUALIFIER } from "@/lib/price-copy";
 import { Link } from "@tanstack/react-router";
 
 import { signatureTours } from "@/data/signatureTours";
@@ -51,7 +52,7 @@ export function GuideBookingCta({
       <ul className="mt-5 flex flex-wrap gap-x-6 gap-y-2 font-sans text-[12px] uppercase tracking-[0.16em] text-[color:var(--charcoal-soft)] list-none p-0">
         <li>Private to your party</li>
         <li>{tour.durationHours}</li>
-        <li>From €{tour.priceFrom} per person</li>
+        <li>From €{tour.priceFrom} per person {PRICE_GROUP_QUALIFIER}</li>
       </ul>
 
       <div className="mt-7 flex flex-col gap-4 sm:flex-row sm:items-center">
