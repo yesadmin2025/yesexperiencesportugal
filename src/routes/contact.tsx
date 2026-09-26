@@ -228,6 +228,14 @@ function Page() {
                         leadSource: "contact_form",
                         method: "email",
                         requestType: parsed.data.requestType,
+                        formType:
+                          parsed.data.requestType === "multi_day"
+                            ? "travel_designer"
+                            : parsed.data.requestType === "corporate"
+                              ? "corporate"
+                              : parsed.data.requestType === "proposal"
+                                ? "moments"
+                                : "contact",
                       }),
                     );
                     // Privacy-safe funnel events — request type only, no PII.

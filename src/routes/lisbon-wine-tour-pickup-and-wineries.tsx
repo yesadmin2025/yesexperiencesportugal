@@ -73,7 +73,7 @@ const WINERIES = [
 const FAQS = [
   {
     q: "How many wineries does a Lisbon wine tour visit?",
-    a: "Two or three. The exact count depends on the experience you choose and on same-day availability at the family cellars — we confirm the pairing with you before the day rather than promising five doors we cannot open.",
+    a: "2 family wineries included, up to 4 when tailored. Which cellars run depends on same-day availability at the family cellars — we confirm the pairing with you before the day rather than promising five doors we cannot open.",
   },
   {
     q: "Where does the wine tour from Lisbon pick me up?",
@@ -193,7 +193,7 @@ function PickupAndWineries() {
             The wineries on a <SectionTitle.Em>Lisbon wine tour</SectionTitle.Em>.
           </SectionTitle>
           <p className="mt-5 text-[15.5px] leading-[1.8] text-[color:var(--charcoal-soft)]">
-            You visit two or three of these on the day — the count depends on the experience you
+            You visit 2 of these on the day, up to 4 when tailored — the pairing depends on the experience you
             choose and on availability at the family cellars.
           </p>
           <ul className="mt-8 space-y-5 list-none p-0">

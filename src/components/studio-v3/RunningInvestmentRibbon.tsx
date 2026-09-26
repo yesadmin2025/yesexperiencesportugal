@@ -56,6 +56,13 @@ export function RunningInvestmentRibbon({
   // exists we feed null and the hook reports no change.
   const isResolvedTotal = state.tourId != null && totalEur != null && totalEur > 0;
   const delta = useInvestmentDelta(isResolvedTotal ? totalEur! : null);
+  useEffect(() => {
+    if (isResolvedTotal) {
+      void import("@/lib/analytics-ga4").then((m) =>
+        m.gaStudioPriceViewed({ valueEur: Math.round(totalEur!) }),
+      );
+    }
+  }, [isResolvedTotal, totalEur]);
 
   if (hidden || dismissed) return null;
 

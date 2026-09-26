@@ -124,7 +124,7 @@ export const VIATOR_META: Record<string, ViatorMeta> = {
     overview:
       "Escape Lisbon on a private, all-inclusive journey through the Arrabida and Setubal wine regions, where picturesque bays and rolling vineyards set the scene for an indulgent day of wine, food, and culture. Visit handpicked wineries for tastings of award-winning varietals—with a delicious Portuguese lunch in between tastings. Along the way, explore the bustling Livramento Market to sample local cheese, fresh oysters, and traditional pastries. Plus, witness centuries-old craftsmanship in action at a traditional Portuguese tile factory.",
     included: [
-      "Visit 2 or 3 wineries (depending on the experience you choose)",
+      "2 family wineries included, up to 4 when tailored",
       "Alcoholic Beverages",
       "Snacks",
       "Lunch",

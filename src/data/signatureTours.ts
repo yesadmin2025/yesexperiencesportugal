@@ -203,7 +203,7 @@ export const signatureTours: SignatureTour[] = [
     id: "p23-artisan-pottery-cork",
     title: "Private Lisbon to Alentejo Tour: Artisan Pottery & Cork Workshops",
     seoTitle: "Private Alentejo Cork & Pottery Workshops | YES Portugal",
-    seoDescription: "Meet Alentejo makers on a private day of hands-on cork and pottery workshops. Three-hour ceramics session, local guide, lunch and transport included. From €203 per person.",
+    seoDescription: "Meet Alentejo makers on a private day of hands-on cork and pottery workshops. Ceramics session, local guide, lunch and transport included. From €203 per person.",
     region: "Alentejo",
     duration: "Full Day",
     durationHours: "~9h",
@@ -211,7 +211,7 @@ export const signatureTours: SignatureTour[] = [
     theme: "Culture",
     blurb: "Meet the makers behind Alentejo's cork and clay traditions on a private, hands-on day with lunch included.",
     intro: "Step into the Alentejo's living craft traditions. Work with cork alongside local makers, then spend the afternoon shaping clay in a three-hour pottery workshop. A private guide, transport and lunch are part of the day.",
-    fitsBest: "Couples · craft lovers · curious travelers",
+    fitsBest: "Couples, craft lovers and curious travelers",
     pace: ["Hands-on cork workshop", "Lunch included", "Afternoon pottery workshop"],
     stops: [
       { label: "Cork workshop", story: "Work directly with cork alongside local makers.", imageTheme: "p23-artisan-pottery-cork" },
@@ -232,27 +232,27 @@ export const signatureTours: SignatureTour[] = [
     title: "Arrábida Private Wine Tour from Lisbon — All-Inclusive",
     seoTitle: "Arrábida Wine Tour from Lisbon — Private, All-Inclusive",
     seoDescription:
-      "Private wine tour from Lisbon through Arrábida: 2–3 family wineries, Moscatel de Setúbal tastings, Livramento market and a long Azeitão lunch, door to door.",
+      "Private Arrábida wine tour from Lisbon: 2 family wineries included, up to 4 when tailored, Moscatel tastings, Livramento market and a long Azeitão lunch.",
     region: "Setúbal · Arrábida",
     duration: "Full Day",
     durationHours: "7–9h",
     priceFrom: 135,
     wineriesRule:
-      "You'll visit 2 or 3 of these wineries — the exact count depends on the experience you choose and same-day availability.",
+      "2 family wineries included, up to 4 when tailored — which ones run is confirmed by same-day availability.",
     theme: "Wine",
     blurb:
-      "A private wine tour from Lisbon to the Arrábida hills — two or three family wineries, Livramento market and a long traditional lunch in Azeitão, handled door to door.",
+      "A private wine tour from Lisbon to the Arrábida hills — 2 family wineries included, up to 4 when tailored, Livramento market and a long traditional lunch in Azeitão, handled door to door.",
 
     intro:
-      "The most-loved YES private wine tour from Lisbon, in one word: complete. We leave the city for the Arrábida hills, walk the Livramento market, sit down for an unhurried Portuguese lunch in Azeitão and visit two or three small family wineries. An optional viewpoint at Cristo Rei or Sesimbra Castle closes the day.",
+      "The most-loved YES private wine tour from Lisbon, in one word: complete. We leave the city for the Arrábida hills, walk the Livramento market, sit down for an unhurried Portuguese lunch in Azeitão and visit small family wineries — 2 included, up to 4 when tailored. An optional viewpoint at Cristo Rei or Sesimbra Castle closes the day.",
     contextParagraph:
-      "A private Arrábida wine tour from Lisbon runs about 7–9 hours door to door, with hotel or apartment pickup in Lisbon and a private vehicle and guide for your group only. The day combines Arrábida, Setúbal and Azeitão: the Livramento market early, two or three small family wineries with tastings of Moscatel de Setúbal and small-producer reds, and an unhurried traditional lunch in Azeitão, with an optional viewpoint at Cristo Rei or Sesimbra Castle to close. Wine tastings, lunch and all transport are included in the price from €135 per person. YES Experiences Portugal is a licensed Portuguese tour operator with more than 1,000 guest reviews, and dates confirm instantly — so you can book the day rather than negotiate it.",
+      "A private Arrábida wine tour from Lisbon runs about 7–9 hours door to door, with hotel or apartment pickup in Lisbon and a private vehicle and guide for your group only. The day combines Arrábida, Setúbal and Azeitão: the Livramento market early, small family wineries — 2 included, up to 4 when tailored — with tastings of Moscatel de Setúbal and small-producer reds, and an unhurried traditional lunch in Azeitão, with an optional viewpoint at Cristo Rei or Sesimbra Castle to close. Wine tastings, lunch and all transport are included in the price from €135 per person · price per person varies with group size. YES Experiences Portugal is a licensed Portuguese tour operator rated 4.9/5 · 1,000+ reviews across platforms, and dates confirm instantly — so you can book the day rather than negotiate it.",
     contextLink: {
       href: "/local-stories/arrabida-wine-tour-from-lisbon",
       label: "Read more about wine in Arrábida and Setúbal",
     },
-    fitsBest: "Couples · friends · wine-curious travelers",
-    pace: ["Two or three wineries", "Long Azeitão lunch", "Optional viewpoint close"],
+    fitsBest: "Couples, friends and wine-curious travelers",
+    pace: ["2 wineries included, up to 4 when tailored", "Long Azeitão lunch", "Optional viewpoint close"],
     stops: [
       {
         label: "Mercado do Livramento",
@@ -327,7 +327,7 @@ export const signatureTours: SignatureTour[] = [
       },
     ],
     highlights: [
-      "2 or 3 private tastings at family-run wineries in Azeitão and Setúbal",
+      "2 family wineries included, up to 4 when tailored, in Azeitão and Setúbal",
       "Taste Moscatel de Setúbal and small-producer reds",
       "Cristo Rei panorama over Lisbon and the Tagus",
       "Traditional Portuguese lunch with paired wines",
@@ -336,7 +336,7 @@ export const signatureTours: SignatureTour[] = [
       "Door-to-door private transfers from Lisbon",
     ],
     included: [
-      "Visit 2 or 3 wineries (depending on the experience you choose)",
+      "2 family wineries included, up to 4 when tailored",
       "Alcoholic Beverages",
       "Snacks",
       "Lunch",
@@ -351,7 +351,7 @@ export const signatureTours: SignatureTour[] = [
       "Friends wanting one well-organised day out of the city",
     ],
     notes: [
-      "Designation of origin in Setúbal is famous for Moscatel — your guide tailors the order to your palate.",
+      "Setúbal is famous for its Moscatel. Your guide adjusts the tasting order to your palate.",
     ],
     img: imgArrabidaWineHero,
     focal: "50% 45%",
@@ -386,7 +386,7 @@ export const signatureTours: SignatureTour[] = [
       "A private coastal day — Arrábida viewpoints, hidden coves and a slow picnic on a quiet beach.",
     intro:
       "The good parts of the Lisbon coast aren't on the postcards. We take the small roads into Arrábida, drop down to the coves locals keep to themselves, and set a picnic on the sand with the natural park behind us. No queues, no rush.",
-    fitsBest: "Couples · families · slow travelers",
+    fitsBest: "Couples, families and slow travelers",
     pace: ["Arrábida viewpoints", "Hidden cove picnic", "Sesimbra"],
     stops: [
       {
@@ -494,7 +494,7 @@ export const signatureTours: SignatureTour[] = [
       "A private Arrábida day with the Sesimbra Coastal Boat Tour, Lapa de Santa Margarida and the cliffs of Cabo Espichel.",
     intro:
       "A day told by the sea. It begins at Livramento Market, then follows the coast into the Arrábida Natural Park, past Lapa de Santa Margarida and out on the Sesimbra Coastal Boat Tour. The afternoon eases into Sesimbra and the cliffs of Cabo Espichel. Lunch can be added when you tailor the day.",
-    fitsBest: "Couples · families · active travelers",
+    fitsBest: "Couples, families and active travelers",
     pace: ["Arrábida by road", "Boat into the coves", "Sesimbra at dusk"],
     stops: [
       {
@@ -599,7 +599,7 @@ export const signatureTours: SignatureTour[] = [
       "Paint your own azulejo in a centuries-old Azeitão atelier, taste a selected regional wine, then unwind by the sea in Sesimbra.",
     intro:
       "Five centuries of tile-making in one quiet courtyard. You meet the master, mix the cobalt blue, and paint a single azulejo that becomes yours forever. The day softens from there — a glass of local wine, then the salt and sun of Sesimbra.",
-    fitsBest: "Couples · creatives · families with teens",
+    fitsBest: "Couples, creatives and families with teens",
     pace: ["Tile atelier", "Wine tasting", "Sesimbra coast"],
     stops: [
       {
@@ -699,7 +699,7 @@ export const signatureTours: SignatureTour[] = [
 
     intro:
       "You won't watch — you'll work. In a small Azeitão dairy, hands deep in fresh curd, you shape the cheese that built this village's reputation. The afternoon answers with wine from the next farm and a quiet table by the sea in Sesimbra.",
-    fitsBest: "Foodies · couples · curious first-timers",
+    fitsBest: "Foodies, couples and curious first-timers",
     pace: ["Cheese workshop", "Winery tasting", "Sesimbra"],
     stops: [
       {
@@ -793,7 +793,7 @@ export const signatureTours: SignatureTour[] = [
       "A flexible palace selection in Sintra — one palace and a Colares wine visit, or two palaces — plus Cabo da Roca and Cascais.",
     intro:
       "Sintra, chosen your way: one palace visit plus a Colares wine visit, or two palace visits. From there the day heads to Azenhas do Mar, the cliffs of Cabo da Roca — the western edge of Europe — and a slow finish in Cascais.",
-    fitsBest: "Couples · culture lovers · first-timers",
+    fitsBest: "Couples, culture lovers and first-timers",
     pace: ["Sintra forests", "Cabo da Roca", "Cascais tasting"],
     stops: [
       {
@@ -901,7 +901,7 @@ export const signatureTours: SignatureTour[] = [
       "Cross the Sado by ferry to the Roman ruins of Tróia, then Comporta's stilt pier, Atlantic beaches and a Herdade da Comporta tasting.",
     intro:
       "A quiet day in the Alentejo most visitors miss. We board the ferry across the Sado to the Roman Ruins of Tróia, pause at the Carrasqueira stilt pier, then drift down to Comporta — long Atlantic beaches, rice paddies, white-and-blue villages — with a wine tasting at Herdade da Comporta. Lunch is not included, so the pace stays yours.",
-    fitsBest: "Couples · slow travelers · style-led explorers",
+    fitsBest: "Couples, slow travelers and style-led explorers",
     pace: ["Sado ferry", "Tróia ruins", "Comporta beach & lunch"],
     stops: [
       {
@@ -1013,7 +1013,7 @@ export const signatureTours: SignatureTour[] = [
       "The Roman Temple and Chapel of Bones in Évora, two selected Alentejo wineries and a traditional cork-production visit.",
     intro:
       "Alentejo unwinds you. We walk Évora's historic centre slowly — the Roman Temple, the Chapel of Bones — then head into two selected Alentejo wineries and a traditional cork-production visit. Lunch is not included, so the day keeps its own rhythm.",
-    fitsBest: "History buffs · wine lovers · couples",
+    fitsBest: "History buffs, wine lovers and couples",
     pace: ["Évora old town", "Chapel of Bones", "Alentejo winery"],
     stops: [
       {
@@ -1121,7 +1121,7 @@ export const signatureTours: SignatureTour[] = [
       "The Templar Convento de Cristo in Tomar, then Coimbra's ancient university and old town along the Mondego.",
     intro:
       "Two cities, eight centuries, one quiet day inland. Tomar holds the Templar convent that shaped Portugal's discoveries; Coimbra holds the oldest university library in the country. Between them, a slow lunch and a river that has watched it all.",
-    fitsBest: "History lovers · couples · culture seekers",
+    fitsBest: "History lovers, couples and culture seekers",
     pace: ["Convento de Cristo", "Coimbra University", "Old town walk"],
     stops: [
       {
@@ -1212,7 +1212,7 @@ export const signatureTours: SignatureTour[] = [
       "The Sanctuary of Fátima, Nazaré's cliff viewpoint and Atlantic coast, the medieval lanes of Óbidos and a Ginjinha tasting.",
     intro:
       "Three landmarks, one perfectly composed day. Faith in Fátima, the awe of Nazaré's giant Atlantic waves, and the medieval streets of Óbidos finished off with a small ceramic cup of cherry liqueur.",
-    fitsBest: "Pilgrims · couples · families",
+    fitsBest: "Pilgrims, couples and families",
     pace: ["Fátima sanctuary", "Nazaré cliffs", "Óbidos & Ginjinha"],
     stops: [
       {
@@ -1304,7 +1304,7 @@ export const signatureTours: SignatureTour[] = [
       "Roman ruins, amphora wines and a hidden Alentejo most travelers never reach — a quiet inland day with deep roots.",
     intro:
       "Two thousand years ago the Romans were already making wine in this corner of the Alentejo. We follow their road south — to the ruins of São Cucufate, a tiny family cellar still pressing wine into clay amphorae the old way, and a river beach almost no one knows. The slowest day in our catalogue. The most surprising.",
-    fitsBest: "Couples · wine lovers · curious travelers",
+    fitsBest: "Couples, wine lovers and curious travelers",
     pace: ["Roman ruins", "Talha winery", "River beach"],
     stops: [
       {
@@ -1403,7 +1403,7 @@ export const signatureTours: SignatureTour[] = [
       "Whitewashed fishing villages, protected cliffs and the wild river-meets-ocean beach at Odeceixe — a hidden Atlantic Portugal few travelers reach.",
     intro:
       "Between Alentejo and Algarve lies another Portugal — raw, open, breathtakingly quiet. We follow the Vicentine Coast south from Lisbon, through Porto Covo, Vila Nova de Milfontes and the natural park, to Odeceixe, where the Rio Seixe meets the Atlantic. A slow, cinematic day of secret coves, whitewashed villages and untouched coastal scenery.",
-    fitsBest: "Couples · slow travelers · coastal romantics",
+    fitsBest: "Couples, slow travelers and coastal romantics",
     pace: ["Six coastal stops", "Long lunch in Milfontes", "Odeceixe as the finale"],
     stops: [
       {

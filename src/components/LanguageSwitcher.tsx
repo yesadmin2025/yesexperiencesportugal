@@ -76,11 +76,16 @@ export function LanguageSwitcher({ variant = "header", className }: LanguageSwit
       {LOCALES.map((loc, i) => {
         const prefix = localePrefix(loc);
         // Resolve 301 stubs so the switcher never links through a redirect.
-        const target = resolveLocalePath(
-          `${prefix}${localeNeutralPath === "/" ? "" : localeNeutralPath}` || "/",
-        );
+        // Pages without a Portuguese twin link PT to the Portuguese homepage
+        // instead of rendering a dead label.
+        const noPtTwin = loc === "pt" && !ptReady && active !== "pt";
+        const target = noPtTwin
+          ? "/pt"
+          : resolveLocalePath(
+              `${prefix}${localeNeutralPath === "/" ? "" : localeNeutralPath}` || "/",
+            );
         const isActive = loc === active;
-        const isDisabled = loc === "pt" && !ptReady && active !== "pt";
+        const isDisabled = false;
 
         const label = LOCALE_LABELS[loc].short;
         const fullName = t(FULL_LOCALE_KEY[loc]);
@@ -116,7 +121,7 @@ export function LanguageSwitcher({ variant = "header", className }: LanguageSwit
           <span key={loc} className="inline-flex items-center gap-2">
             {sep}
             <Link
-              to={`${target}${search}${hash}` as string}
+              to={`${target}${noPtTwin ? "" : search}${hash}` as string}
               onClick={() => {
                 persistLocale(loc);
                 if (loc !== active) {

@@ -12,6 +12,7 @@
  *   • hidden on ≥640px, where the booking panel is always in reach.
  */
 
+import { PRICE_GROUP_QUALIFIER } from "@/lib/price-copy";
 import { useEffect, useState } from "react";
 import { PriceEur } from "@/components/ui/PriceEur";
 import { dispatchSignatureReserveIntent } from "@/lib/booking/reserve-intent";
@@ -83,6 +84,9 @@ export function MobileReserveBar({
             </span>
             <span className="serif text-[18px] font-semibold text-[color:var(--charcoal)]">
               <PriceEur amountEur={priceFrom} role="from" />
+            </span>
+            <span className="block text-[11px] text-[color:var(--charcoal-soft)]">
+              per person {PRICE_GROUP_QUALIFIER}
             </span>
           </div>
         ) : null}

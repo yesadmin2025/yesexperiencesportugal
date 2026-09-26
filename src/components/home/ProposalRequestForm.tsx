@@ -68,6 +68,9 @@ export function ProposalRequestForm({ id = "proposal-request" }: { id?: string }
       const body = (await res.json()) as { ok?: boolean };
       if (!res.ok || !body.ok) throw new Error("request_failed");
       setState("sent");
+      void import("@/lib/analytics-ga4").then((m) =>
+        m.gaGenerateLead({ leadSource: "proposal_form", method: "email", formType: "moments" }),
+      );
       trackEvent("proposal_form_submitted", {
         placement: "proposal-page",
         group_size: payload.groupSize,

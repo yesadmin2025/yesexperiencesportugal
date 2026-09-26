@@ -20,7 +20,12 @@ import { getSot, type SotItineraryChapter } from "@/data/signatureToursSourceOfT
 export const WINERY_POOL_ID = "wineries";
 
 /** Generic display label used for an unresolved winery pool pin/chapter. */
-export const GENERIC_WINERY_PIN_LABEL = "Local winery visit";
+export const GENERIC_WINERY_PIN_LABEL = "Partner winery (2 visited, by availability)";
+
+/** Pin label using the tour's own default winery count. */
+export function wineryPinLabel(count: number): string {
+  return `Partner winery (${count} visited, by availability)`;
+}
 
 export type PublicItineraryChapter = {
   order: number;
@@ -133,7 +138,9 @@ export function sanitizePublicMapStopLabels<T extends { label: string }>(
 ): T[] {
   const named = new Set(wineryPoolCandidateLabels(tourId));
   if (named.size === 0) return stops;
+  const count = Math.max(1, getSot(tourId)?.poolPick?.[WINERY_POOL_ID]?.min ?? 2);
+  const label = wineryPinLabel(count);
   return stops.map((s) =>
-    named.has(s.label) ? ({ ...s, label: GENERIC_WINERY_PIN_LABEL } as T) : s,
+    named.has(s.label) ? ({ ...s, label } as T) : s,
   );
 }

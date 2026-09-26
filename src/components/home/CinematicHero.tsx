@@ -213,7 +213,7 @@ export function CinematicHero() {
       <div className="hero-cinematic-layout absolute inset-0 z-10 grid px-5 sm:px-10 md:px-16">
       <div className="hero-stanza-zone flex min-w-0 items-center justify-center">
         <div className="w-full text-center">
-           <h1
+           <div
             data-hero-stanza="true"
             data-mixed-emphasis="exempt"
             className="hero-h1 m-0 text-center font-serif"
@@ -236,8 +236,8 @@ export function CinematicHero() {
                 {HERO_PHRASES[1]}
               </span>
             </span>
-          </h1>
-            <p data-hero-field="subheadline" className="hero-support mx-auto mt-5 max-w-[32ch] font-sans text-[14px] leading-[1.5] sm:max-w-[48ch] sm:text-[16px]">{HERO_COPY.subheadline}</p>
+          </div>
+            <h1 data-hero-field="subheadline" style={{ fontFamily: "var(--font-sans)" }} className="hero-support mx-auto mt-5 max-w-[32ch] font-sans font-normal text-[14px] leading-[1.5] sm:max-w-[48ch] sm:text-[16px]">{HERO_COPY.subheadline}</h1>
         </div>
       </div>
 

@@ -18,7 +18,7 @@ import {
   GetYourGuideIcon,
 } from "@/components/BrandIcon";
 
-import { REVIEW_CERTIFICATE, REVIEW_COUNT_DISPLAY } from "@/config/trust-certificate";
+import { SITE_RATING_LABEL } from "@/config/trust-certificate";
 import { openCookieConsent } from "@/components/CookieConsent";
 import {
   BASED_IN,
@@ -26,6 +26,8 @@ import {
   EMAIL,
   EMAIL_HREF,
   LICENSE_NUMBER,
+  LICENSE_LABEL,
+  NIF_LABEL,
   LICENSE_SHORT,
   PHONE_DISPLAY,
   PHONE_HREF,
@@ -97,7 +99,7 @@ const SIGNATURE_TOURS: FooterLink[] = [
   {
     to: "/tours/$tourId",
     params: { tourId: "arrabida-wine-allinclusive" },
-    label: "Arrábida Wine & Coast",
+    label: "Arrábida Wine Tour",
   },
   {
     to: "/tours/$tourId",
@@ -218,7 +220,7 @@ export function Footer() {
               style={{ fontWeight: 400, letterSpacing: "0.005em" }}
             >
               Private Portugal, shown the way a local shows a friend. Intimate, real, and genuinely
-              different — designed with you and confirmed in minutes.{!isHomeOrAbout && ` ${REVIEW_CERTIFICATE.ratingValue}/5 across ${REVIEW_COUNT_DISPLAY} guest reviews.`}
+              different — designed with you and confirmed in minutes.{!isHomeOrAbout && ` ${SITE_RATING_LABEL}.`}
             </p>
             {/* Canonical NAP — one quiet line, single source of truth. */}
             <address className="mt-4 not-italic font-[family-name:var(--font-sans)] text-[13px] leading-[1.7] text-[color:var(--ivory)]/70">
@@ -341,8 +343,10 @@ export function Footer() {
               style={{ fontWeight: 400 }}
             >
               <p className="leading-[1.6] text-[color:var(--ivory)]/75">
-                © {new Date().getFullYear()} {BUSINESS_NAME}. All rights reserved. ·{" "}
-                {LEGAL_META_LINE}.
+                © {new Date().getFullYear()} Yes Experiences Portugal · {NIF_LABEL} · {LICENSE_LABEL} · {LEGAL_META_LINE} ·{" "}
+                <Link to="/terms" hash="dispute-resolution" className={`${LINK_CLASS} text-[12px] text-[color:var(--ivory)]/75`}>
+                  Dispute resolution (RAL)
+                </Link>
               </p>
               <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
                 <LanguageSwitcher variant="footer" className="text-[color:var(--ivory)]/75" />

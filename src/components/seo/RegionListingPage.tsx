@@ -10,7 +10,7 @@ import { CtaButton } from "@/components/ui/CtaButton";
 import { CTA_LABELS } from "@/content/cta-vocabulary";
 import { LiveReviews } from "@/components/reviews/LiveReviews";
 import { signatureTours } from "@/data/signatureTours";
-import { REVIEW_CERTIFICATE } from "@/config/trust-certificate";
+import { SITE_RATING_LABEL } from "@/config/trust-certificate";
 import {
   areaProfilesFor,
   regionFaq,
@@ -96,8 +96,7 @@ export function RegionListingPage({ region }: { region: LisbonRegion }) {
           <p className="mt-6 flex flex-wrap items-center gap-x-5 gap-y-2 font-sans text-[11.5px] uppercase tracking-[0.18em] text-[color:var(--charcoal-soft)]">
             <span className="inline-flex items-center gap-1.5">
               <Star size={13} className="text-[color:var(--gold)]" aria-hidden />
-              {REVIEW_CERTIFICATE.ratingValue} / {REVIEW_CERTIFICATE.bestRating} ·{" "}
-              {REVIEW_CERTIFICATE.reviewCount} reviews
+              {SITE_RATING_LABEL}
             </span>
             <span className="inline-flex items-center gap-1.5">
               <Car size={13} className="text-[color:var(--gold)]" aria-hidden />
@@ -235,9 +234,9 @@ export function RegionListingPage({ region }: { region: LisbonRegion }) {
                 <MapPin size={15} className="mt-1 shrink-0 text-[color:var(--gold)]" aria-hidden />
                 <span>
                   YES Experiences Portugal
-                  <br />
+                  {" "}<br />
                   {BASED_IN} (Setúbal district)
-                  <br />
+                  {" "}<br />
                   {LICENSE_LABEL}
                 </span>
               </p>
@@ -251,9 +250,9 @@ export function RegionListingPage({ region }: { region: LisbonRegion }) {
                 <Clock size={15} className="mt-1 shrink-0 text-[color:var(--gold)]" aria-hidden />
                 <span>
                   {OPENING_HOURS}
-                  <br />
+                  {" "}<br />
                   {region.driveTime}.
-                  <br />
+                  {" "}<br />
                   {region.bestSeason}
                 </span>
               </p>

@@ -254,7 +254,7 @@ export function MotionQaPanel() {
       {t && (
         <div style={{ opacity: 0.75, paddingTop: 4, borderTop: "1px solid rgba(255,255,255,0.1)" }}>
           reveal io/init/late: {t.reveal.io}/{t.reveal.sweepInitial}/{t.reveal.sweepDelayed}
-          <br />
+          {" "}<br />
           section io/init/late: {t.sectionEnter.io}/{t.sectionEnter.sweepInitial}/
           {t.sectionEnter.sweepDelayed}
         </div>

@@ -563,7 +563,7 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
       },
       {
         heading: "Driving, pace, and how a day actually feels",
-        body: "Arrábida: forty-minute transfer, two stops, long lunch, scenic coast drive home — about 8 hours door to door. Alentejo: ninety-minute transfer each way, fewer stops but deeper ones, slower lunch — closer to 10 hours and the right call only if you want the drive to be part of the day. Neither is better. They are answering different questions.",
+        body: "Arrábida: forty-minute transfer, two stops, long lunch, scenic coast drive home — 7–9h door to door. Alentejo: ninety-minute transfer each way, fewer stops but deeper ones, slower lunch — closer to 10 hours and the right call only if you want the drive to be part of the day. Neither is better. They are answering different questions.",
       },
       {
         heading: "Our honest recommendation",
@@ -653,7 +653,7 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
       },
       {
         heading: "Market, cellars, a long lunch, then the light.",
-        body: "The day opens at Setúbal's Livramento market — 145 years old, still the town's kitchen at eight in the morning: fish, cheese, bread, noise. From there we climb to two or three family wineries in Azeitão, where the pours are generous and the person pouring usually shares a surname with the barrel.\n\nLunch is Portuguese and unhurried, which is to say it is part of the day rather than a pause in it. Afterwards, an optional close — Cristo Rei for the Lisbon panorama, or Sesimbra Castle when the Atlantic light is worth the detour.",
+        body: "The day opens at Setúbal's Livramento market — 145 years old, still the town's kitchen at eight in the morning: fish, cheese, bread, noise. From there we climb to family wineries — 2 included, up to 4 when tailored — in Azeitão, where the pours are generous and the person pouring usually shares a surname with the barrel.\n\nLunch is Portuguese and unhurried, which is to say it is part of the day rather than a pause in it. Afterwards, an optional close — Cristo Rei for the Lisbon panorama, or Sesimbra Castle when the Atlantic light is worth the detour.",
       },
       {
         heading: "A private car, and your own pace.",
@@ -833,7 +833,7 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
     h1: "Private Wine Tours from Lisbon",
     eyebrow: "Lisbon · Private Wine Days",
     standfirst:
-      "Three real wine regions within reach of your hotel. Family producers, long Portuguese lunches, your own driver and guide.",
+      "The Setúbal Peninsula and the Alentejo, within reach of your hotel. Family producers, long Portuguese lunches, your own driver and guide.",
     sections: [
       {
         heading: "Wine tours from Lisbon at their best",
@@ -866,18 +866,18 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
     slug: "private-wine-tour-lisbon",
     title: "Private Wine Tour from Lisbon: Arrábida & Azeitão",
     metaDescription:
-      "A private wine tour from Lisbon to Arrábida and Azeitão — two or three family wineries, a long Portuguese lunch and door-to-door driving.",
+      "A private wine tour from Lisbon to Arrábida and Azeitão — 2 family wineries included, up to 4 when tailored, a long Portuguese lunch and door-to-door driving.",
     h1: "Private Wine Tour from Lisbon — Arrábida & Azeitão",
     eyebrow: "Lisbon · Private Wine Day",
     standfirst:
-      "Two or three family wineries, a long Portuguese lunch and a panoramic close — handled door to door from Lisbon.",
+      "2 family wineries included, up to 4 when tailored, a long Portuguese lunch and a panoramic close — handled door to door from Lisbon.",
     sections: [
       {
         heading: "The closest serious wine country to Lisbon.",
         body: "Cross the 25 de Abril Bridge and within forty minutes the road climbs into the Arrábida hills. Cork oaks, low whitewashed wineries, and the Atlantic glinting below. Azeitão is the village at the centre — home to Moscatel de Setúbal and small family producers who have been pouring for seven generations.",
       },
       {
-        heading: "Two or three wineries, one long lunch, no rush.",
+        heading: "Two wineries, one long lunch, no rush.",
         body: "We start with Setúbal's 145-year-old Livramento market — oysters, cheese, the first glass of Moscatel — then move between family wineries with a long traditional lunch in Azeitão in the middle. Optional close at Cristo Rei or Sesimbra Castle for Atlantic light. The full-day version is our [Arrábida private wine tour from Lisbon](/tours/arrabida-wine-allinclusive); the hands-on cheese-making version is the [Azeitão cheese and wine day near Lisbon](/tours/azeitao-cheese). Pickup and drop-off at your Lisbon hotel; the driving is on us.",
       },
       {
@@ -1175,7 +1175,7 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
     h1: "The Best Wine Tours from Lisbon",
     eyebrow: "Lisbon · Wine",
     standfirst:
-      "Three real wine regions sit within 90 minutes of Lisbon. Here are the private days we actually run — what each one feels like, what it costs you in time, and how to choose between them.",
+      "Two wine regions sit within 90 minutes of Lisbon — the Setúbal Peninsula and the Alentejo — plus one small coastal appellation worth knowing. Here are the private days we actually run — what each one feels like, what it costs you in time, and how to choose between them.",
     sections: [
       {
         heading: "The short answer: which wine tour from Lisbon is best?",
@@ -1183,7 +1183,7 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
       },
       {
         heading: "Lisbon is closer to serious wine country than travelers expect.",
-        body: "South of the 25 de Abril Bridge, the Setúbal Peninsula makes Moscatel de Setúbal and structured reds around Azeitão. Ninety minutes inland, the Alentejo plains produce Portugal's most recognised big reds. And on the coast west of the city, the tiny Colares appellation still grows vines in sand. You do not need to travel to the Douro to taste real Portuguese wine — the best wine tours from Lisbon are day trips, private, and back in the city for dinner.",
+        body: "South of the 25 de Abril Bridge, the Setúbal Peninsula makes Moscatel de Setúbal and structured reds around Azeitão. Ninety minutes inland, the Alentejo plains produce Portugal's most recognised big reds. And on the coast west of the city, Colares is a coastal appellation worth knowing: a tiny area that still grows vines in sand. It is a wine to look for on a Lisbon wine list rather than a day we run. You do not need to travel to the Douro to taste real Portuguese wine — the best wine tours from Lisbon are day trips, private, and back in the city for dinner.",
       },
       {
         heading: "Arrábida All-Inclusive Day — the complete wine-and-coast day.",
@@ -1215,7 +1215,7 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
       },
       {
         heading: "Is a wine tour from Lisbon actually worth it?",
-        body: "Yes — if you go private, go south, and skip the coach. Within an hour of the city you have three serious wine regions, and within two, Alentejo opens up. The mistake most travelers make is booking a forty-seat bus with three rushed tastings and a buffet lunch. That is not a wine tour; it is a logistics exercise with wine in it.\n\nIt is worth it when the day is private and paced around one or two real wineries instead of five, when lunch is sit-down and local and lasts longer than the tastings, and when the host actually knows the winemakers. If you have only one day in Lisbon and have never seen the city, do Lisbon instead. If you do not drink, a wine-led day will feel long.",
+        body: "Yes — if you go private, go south, and skip the coach. Within an hour of the city you have the Setúbal Peninsula, and within two, Alentejo opens up. The mistake most travelers make is booking a forty-seat bus with three rushed tastings and a buffet lunch. That is not a wine tour; it is a logistics exercise with wine in it.\n\nIt is worth it when the day is private and paced around one or two real wineries instead of five, when lunch is sit-down and local and lasts longer than the tastings, and when the host actually knows the winemakers. If you have only one day in Lisbon and have never seen the city, do Lisbon instead. If you do not drink, a wine-led day will feel long.",
       },
       {
         heading: "What a private wine day from Lisbon includes.",
@@ -1229,7 +1229,7 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
         [
           "Arrábida Wine — All Inclusive",
           "Azeitão · Setúbal · Arrábida",
-          "About 8 hours",
+          "7–9h",
           "First wine day from Lisbon: cellars, market, coast and a long lunch",
         ],
         [
@@ -1457,11 +1457,11 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
     faq: [
       {
         q: "How long is an Arrábida wine tour from Lisbon?",
-        a: "Door to door from your Lisbon accommodation, usually eight to nine hours including two or three tastings and a proper lunch. The drive each way is about forty minutes.",
+        a: "Door to door from your Lisbon accommodation, 7–9h, with 2 family wineries included (up to 4 when tailored) and a proper lunch. The drive each way is about forty minutes.",
       },
       {
         q: "How many wineries do you visit?",
-        a: "Two or three. More than that and the tastings blur together and lunch gets cut short — which is the part guests remember.",
+        a: "2 family wineries included, up to 4 when tailored. More than that and the tastings blur together and lunch gets cut short — which is the part guests remember.",
       },
       {
         q: "Is Moscatel de Setúbal very sweet?",

@@ -1,4 +1,5 @@
 import { socialImageMeta } from "@/lib/seo";
+import { PRICE_GROUP_QUALIFIER } from "@/lib/price-copy";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { Clock, MapPin, Phone, Mail, Star, Car } from "lucide-react";
 
@@ -33,7 +34,7 @@ import {
   US_TRAVELER_NOTES,
 } from "@/content/lisbon-day-trip-comparison";
 
-import { REVIEW_CERTIFICATE } from "@/config/trust-certificate";
+import { SITE_RATING_LABEL } from "@/config/trust-certificate";
 import {
   BASED_IN,
   EMAIL,
@@ -201,8 +202,7 @@ function DayTripsFromLisbon() {
           <p className="mt-6 flex flex-wrap items-center gap-x-5 gap-y-2 font-sans text-[11.5px] uppercase tracking-[0.18em] text-[color:var(--charcoal-soft)]">
             <span className="inline-flex items-center gap-1.5">
               <Star size={13} className="text-[color:var(--gold)]" aria-hidden />
-              {REVIEW_CERTIFICATE.ratingValue} / {REVIEW_CERTIFICATE.bestRating} ·{" "}
-              {REVIEW_CERTIFICATE.reviewCount} reviews
+              {SITE_RATING_LABEL}
             </span>
             <span className="inline-flex items-center gap-1.5">
               <Car size={13} className="text-[color:var(--gold)]" aria-hidden />
@@ -234,7 +234,7 @@ function DayTripsFromLisbon() {
                   {tour.blurb}
                 </p>
                 <p className="mt-4 font-sans text-[11.5px] uppercase tracking-[0.16em] text-[color:var(--charcoal-soft)]">
-                  {tour.durationHours} · from €{tour.priceFrom} per person
+                  {tour.durationHours} · from €{tour.priceFrom} per person {PRICE_GROUP_QUALIFIER}
                 </p>
                 <div className="mt-5 flex flex-col gap-2">
                   <Link
@@ -461,9 +461,9 @@ function DayTripsFromLisbon() {
                 <MapPin size={15} className="mt-1 shrink-0 text-[color:var(--gold)]" aria-hidden />
                 <span>
                   YES Experiences Portugal
-                  <br />
+                  {" "}<br />
                   {BASED_IN} (Setúbal district)
-                  <br />
+                  {" "}<br />
                   {LICENSE_LABEL}
                 </span>
               </p>
@@ -477,7 +477,7 @@ function DayTripsFromLisbon() {
                 <Clock size={15} className="mt-1 shrink-0 text-[color:var(--gold)]" aria-hidden />
                 <span>
                   {OPENING_HOURS}
-                  <br />
+                  {" "}<br />
                   Pickups across Lisbon, Cascais, Sintra, Sesimbra and Setúbal.
                 </span>
               </p>

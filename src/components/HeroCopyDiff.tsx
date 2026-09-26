@@ -981,11 +981,11 @@ export function HeroCopyDiff() {
           </div>
           <div style={{ opacity: 0.75, marginBottom: 8 }}>
             status: <code>{state.status}</code>
-            <br />
+            {" "}<br />
             baseline: <code>{state.baselineVersion ?? "—"}</code>
-            <br />
+            {" "}<br />
             current: <code>{state.currentVersion}</code>
-            <br />
+            {" "}<br />
             changed: <code>{state.rows.length}</code>
           </div>
           <div

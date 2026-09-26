@@ -569,7 +569,7 @@ function OpeningScene({
           }}
         >
           Let instinct
-          <br />
+          {" "}<br />
           guide the way.
         </h1>
 

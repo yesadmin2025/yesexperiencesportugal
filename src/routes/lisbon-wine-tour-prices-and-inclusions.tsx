@@ -1,4 +1,5 @@
 import { socialImageMeta } from "@/lib/seo";
+import { PRICE_GROUP_QUALIFIER } from "@/lib/price-copy";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { Receipt } from "lucide-react";
 
@@ -150,7 +151,7 @@ function PricesAndInclusions() {
                   {tour.title}
                 </h3>
                 <p className="mt-3 font-sans text-[11.5px] uppercase tracking-[0.16em] text-[color:var(--charcoal-soft)]">
-                  {tour.durationHours} · from €{tour.priceFrom} per person
+                  {tour.durationHours} · from €{tour.priceFrom} per person {PRICE_GROUP_QUALIFIER}
                 </p>
                 <ul className="mt-4 flex-1 space-y-2 list-none p-0 text-[14px] leading-[1.7] text-[color:var(--charcoal-soft)]">
                   {tour.includedLines.slice(0, 6).map((line) => (

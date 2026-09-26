@@ -30,8 +30,8 @@ describe("surgical final-pass truth locks", () => {
   it("labels platform and direct review proof without changing schema boundaries", () => {
     const route = read("src/routes/tours.$tourId.tsx");
     const reviews = read("src/components/TourReviews.tsx");
-    expect(route).toContain("verified platform reviews");
-    expect(reviews).toContain("Reviews collected directly by YES");
+    expect(route).toContain("reviews across platforms");
+    expect(reviews).toContain("Collected directly by YES");
     expect(route).toContain("withFirstPartyReviews");
     expect(route).not.toMatch(/aggregateRating.*meta\.rating/s);
   });

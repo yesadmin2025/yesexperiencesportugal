@@ -168,7 +168,7 @@ function InvitationPage() {
           >
             For you —
           </span>
-          <br />
+          {" "}<br />
           {whisper}.
         </h1>
 

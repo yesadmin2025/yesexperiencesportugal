@@ -337,6 +337,9 @@ export function breadcrumbLd(crumbs: Crumb[]) {
  * `imageUrl` must be an absolute URL (or a root-relative "/…" path that the
  * helper will prefix with SITE_URL).
  */
+/** Public byline for Local Stories guides (owner request: no personal name). */
+export const LOCAL_GUIDES_AUTHOR = "The YES local guides" as const;
+
 export function localStoryArticleLd(args: {
   slug: string;
   headline: string;
@@ -354,12 +357,14 @@ export function localStoryArticleLd(args: {
   const author = args.authorName
     ? { "@type": "Person" as const, name: args.authorName }
     : {
-        // Reference-only (see publisher note below): the Person entity is
-        // defined by the founder node emitted elsewhere on the page.
-        "@type": "Person" as const,
-        "@id": FOUNDER_ID,
-        name: "Nidia Almeida",
+        // Guides are written by the YES local guide team; no personal name
+        // is published by owner request. The team node links to the
+        // Organization so authorship resolves to the licensed operator.
+        "@type": "Organization" as const,
+        "@id": `${SITE_URL}/#local-guides`,
+        name: LOCAL_GUIDES_AUTHOR,
         url: `${SITE_URL}/about`,
+        parentOrganization: { "@id": `${SITE_URL}/#organization` },
       };
   return {
     "@context": "https://schema.org",
@@ -420,8 +425,8 @@ interface StopForLd {
  */
 /**
  * MerchantReturnPolicy mirroring the published Signature cancellation
- * truth (src/config/business-nap.ts: "Free cancellation up to 24h
- * before, when applicable."). Mapped to Google's merchant-listing
+ * truth (src/config/business-nap.ts: "Free cancellation up to 24 hours
+ * before the experience."). Mapped to Google's merchant-listing
  * fields: a 1-day finite window with a full refund and no fees.
  */
 const SIGNATURE_CANCELLATION_POLICY_LD = {

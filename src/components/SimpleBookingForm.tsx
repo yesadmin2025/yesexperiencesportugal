@@ -324,7 +324,7 @@ export function SimpleBookingForm({ tour }: { tour: SignatureTour }) {
         itemCategory: "Signature",
       });
       item.price = perPaxForSummary;
-      gaBeginCheckout({ items: [item], valueEur: Math.round(perPaxForSummary * details.guests) });
+      gaBeginCheckout({ items: [item], valueEur: Math.round(perPaxForSummary * details.guests), productLine: "signature" });
       trackEvent("checkout_started", {
         experience_id: tour.id,
         experience_type: "signature",

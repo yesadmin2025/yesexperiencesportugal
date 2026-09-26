@@ -1,4 +1,5 @@
 import { socialImageMeta } from "@/lib/seo";
+import { PRICE_GROUP_QUALIFIER } from "@/lib/price-copy";
 import { lazy, Suspense, useMemo, useState } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { z } from "zod";
@@ -377,7 +378,7 @@ function BookPage() {
                       {chosenTour ? (
                         <>
                           <p className="mt-2 text-[13px] leading-relaxed text-[color:var(--charcoal-soft)]">
-                            From €{chosenTour.priceFrom} per person · private, hotel pickup included.
+                            From €{chosenTour.priceFrom} per person {PRICE_GROUP_QUALIFIER} · private, hotel pickup included.
                           </p>
                           <p className="mt-1.5 text-[13px] leading-relaxed text-[color:var(--charcoal-soft)]">
                             Prefer instant confirmation?{" "}

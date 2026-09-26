@@ -57,8 +57,8 @@ const LIVE_REVIEW_FALLBACK_TOURS = [
  * dedicated landing pages own Lisbon and day-trip search intent.
  */
 const HOME_SEO_TITLE =
-  "Private Portugal Experiences & Tailor-Made Journeys | YES";
-const HOME_SEO_SOCIAL_TITLE = "Private Portugal Days & Journeys | YES Experiences Portugal";
+  "Private Portugal Tours & Tailor-Made Journeys | YES Experiences";
+const HOME_SEO_SOCIAL_TITLE = HOME_SEO_TITLE;
 const HOME_SEO_DESCRIPTION =
   "Design a private day in real time, reserve a Signature experience, or shape a multi-day Portugal journey with a local expert. Wine, coast, food and culture, your way.";
 
@@ -82,7 +82,7 @@ const homepageJournalLinks: {
     eyebrow: "Wine",
     title: "The best wine tours from Lisbon",
     blurb:
-      "Three real wine regions within 90 minutes of the city — Arrábida, Azeitão and the Alentejo — and how to choose between them.",
+      "Two wine regions within 90 minutes of the city — the Setúbal Peninsula and the Alentejo — and how to choose between them.",
     // Photographed on the Azeitão cheese & wine day — deliberately NOT one of
     // the four Signature tours featured above, so the Journal row never
     // repeats a card image already on this page.
@@ -180,7 +180,7 @@ const FEATURED_TOUR_IDS = [
 // Concise SEO-friendly titles used on mobile signature cards so long
 // Viator names don't clip on the left edge. Desktop keeps the full title.
 const MOBILE_TITLE_OVERRIDES: Record<string, string> = {
-  "arrabida-wine-allinclusive": "Arrábida Wine Day from Lisbon",
+  "arrabida-wine-allinclusive": "Arrábida Private Wine Tour from Lisbon — All-Inclusive",
   "sintra-cascais": "Sintra & Cascais Private Day",
   "arrabida-boat": "Arrábida Boat & Wine Day",
   "troia-comporta": "Tróia & Comporta Coastal Day",
@@ -289,7 +289,7 @@ export const Route = createFileRoute("/")({
       { name: "description", content: HOME_SEO_DESCRIPTION },
       { property: "og:title", content: HOME_SEO_SOCIAL_TITLE },
       { property: "og:description", content: HOME_SEO_DESCRIPTION },
-      { property: "twitter:title", content: HOME_SEO_SOCIAL_TITLE },
+      { name: "twitter:title", content: HOME_SEO_SOCIAL_TITLE },
       { property: "twitter:description", content: HOME_SEO_DESCRIPTION },
       { property: "og:image", content: `https://yesexperiencesportugal.com${heroImg}` },
       { property: "og:image:alt", content: "A private coastal journey with YES Experiences Portugal" },

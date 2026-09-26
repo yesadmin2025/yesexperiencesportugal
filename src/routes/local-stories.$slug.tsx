@@ -1,3 +1,4 @@
+import { LICENSE_LABEL } from "@/config/business-nap";
 import type React from "react";
 import { createFileRoute, Link, notFound, redirect, useRouter } from "@tanstack/react-router";
 
@@ -12,6 +13,7 @@ import {
   localStoryArticleLd,
   faqPageLd,
   regionDestinationLd,
+  LOCAL_GUIDES_AUTHOR,
 } from "@/lib/jsonld";
 import { PLANNER_REGIONS } from "@/content/portugal-planner-map";
 import {
@@ -294,6 +296,16 @@ function StaticArticleView({ article }: { article: LocalStoryArticle }) {
                 {article.standfirst}
               </p>
             )}
+            <div className="mt-6">
+              <p className="text-[12px] uppercase tracking-[0.24em] text-[color:var(--charcoal-soft)]">
+                By {LOCAL_GUIDES_AUTHOR.replace(/^The /, "the ")}, YES Experiences Portugal
+              </p>
+              <p className="mt-2 font-sans text-[13px] leading-[1.6] text-[color:var(--charcoal-soft)]">
+                A decade designing private days across Portugal.{" "}
+                <br />
+                Licensed operator {LICENSE_LABEL}.
+              </p>
+            </div>
           </div>
         </header>
 
@@ -402,18 +414,29 @@ function StaticArticleView({ article }: { article: LocalStoryArticle }) {
               */}
               {article.signatureSlug ? (
                 <>
-                  <CtaButton
-                    to="/tours/$tourId"
-                    params={{ tourId: article.signatureSlug }}
-                    variant="primary"
-                    {...guideRefDataAttrs(article.slug, "article_cta")}
-                    onClick={trackGuideLink("article_cta",
-                      "signature",
-                      `/tours/${article.signatureSlug}`,
-                    )}
-                  >
-                    {article.ctaLabel}
-                  </CtaButton>
+                  {article.ctaLabel === "See all Signature Experiences" ? (
+                    <CtaButton
+                      to="/experiences"
+                      variant="primary"
+                      {...guideRefDataAttrs(article.slug, "article_cta")}
+                      onClick={trackGuideLink("article_cta", "signature", "/experiences")}
+                    >
+                      {article.ctaLabel}
+                    </CtaButton>
+                  ) : (
+                    <CtaButton
+                      to="/tours/$tourId"
+                      params={{ tourId: article.signatureSlug }}
+                      variant="primary"
+                      {...guideRefDataAttrs(article.slug, "article_cta")}
+                      onClick={trackGuideLink("article_cta",
+                        "signature",
+                        `/tours/${article.signatureSlug}`,
+                      )}
+                    >
+                      {article.ctaLabel}
+                    </CtaButton>
+                  )}
                   <p className="mt-6 text-[13px] text-[color:var(--charcoal-soft)] leading-[1.7]">
                     Or{" "}
                     <Link
