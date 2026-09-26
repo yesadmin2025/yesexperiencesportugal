@@ -1,3 +1,4 @@
+import { BRAND_COLORS } from "@/lib/brand-tokens";
 import {
   Outlet,
   Link,
@@ -150,7 +151,7 @@ export const Route = createRootRoute({
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1, viewport-fit=cover" },
-      { name: "theme-color", content: "var(--teal)" },
+      { name: "theme-color", content: BRAND_COLORS.teal },
       { name: "mobile-web-app-capable", content: "yes" },
       { name: "apple-mobile-web-app-capable", content: "yes" },
       { name: "application-name", content: "YES Experiences Portugal" },
