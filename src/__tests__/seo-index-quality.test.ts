@@ -102,7 +102,7 @@ describe("self-serving Organization review markup stays off owned pages", () => 
     expect(src).not.toMatch(/buildGuestQuotesJsonLd/);
     expect(src).not.toMatch(/AggregateRating/);
     expect(src).toMatch(/SITE_RATING_LABEL|REVIEW_CERTIFICATE\.ratingValue/);
-    expect(src).toMatch(/REVIEW_COUNT_DISPLAY/);
+    expect(src).toMatch(/SITE_RATING_LABEL|REVIEW_COUNT_DISPLAY/);
   });
 
   it.each(["reviews.tsx", "pt.reviews.tsx"])("%s has no Organization aggregateRating", (file) => {

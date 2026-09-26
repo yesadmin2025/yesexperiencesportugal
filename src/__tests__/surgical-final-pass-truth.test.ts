@@ -31,7 +31,7 @@ describe("surgical final-pass truth locks", () => {
     const route = read("src/routes/tours.$tourId.tsx");
     const reviews = read("src/components/TourReviews.tsx");
     expect(route).toContain("reviews across platforms");
-    expect(reviews).toContain("Reviews collected directly by YES");
+    expect(reviews).toContain("Collected directly by YES");
     expect(route).toContain("withFirstPartyReviews");
     expect(route).not.toMatch(/aggregateRating.*meta\.rating/s);
   });
