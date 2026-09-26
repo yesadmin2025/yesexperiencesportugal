@@ -65,7 +65,7 @@ describe("brand-critical SERP snippets", () => {
   it("homepage title and description are locked", () => {
     const home = read("src/routes/index.tsx");
     expect(home).toContain(
-      '"Private Portugal Experiences & Tailor-Made Journeys | YES"',
+      '"Private Portugal Tours & Tailor-Made Journeys | YES Experiences"',
     );
     expect(home).toContain(
       "Design a private day in real time, reserve a Signature experience, or shape a multi-day Portugal journey with a local expert. Wine, coast, food and culture, your way.",
