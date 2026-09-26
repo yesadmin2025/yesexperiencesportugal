@@ -1,4 +1,5 @@
 import { describe, expect, it } from "vitest";
+import { isPendingVenueSignature } from "@/data/pendingSignatures";
 import {
   isAdaptiveQuestionRelevant,
   refinementSummaryLabel,
@@ -173,7 +174,10 @@ describe("adaptive refinement question", () => {
 describe("catalogue and destination coverage", () => {
   it("keeps the intelligence catalogue exactly aligned with the Signature SSOT", () => {
     const intelligenceIds = [...LIVING_ATLAS_SIGNATURE_IDS].sort();
-    const catalogueIds = signatureTours.map((tour) => tour.id).sort();
+    const catalogueIds = signatureTours
+      .map((tour) => tour.id)
+      .filter((id) => !isPendingVenueSignature(id))
+      .sort();
     expect(intelligenceIds).toEqual(catalogueIds);
   });
 

@@ -231,6 +231,16 @@ export const DESTINATION_FAQ_BY_ID: Record<string, FaqItem[]> = {
       a: "Yes. Your group only, with an English-speaking guide and driver, hotel pickup and drop-off included, and a full day of 8 to 10 hours at a relaxed pace.",
     },
   ],
+  "p23-artisan-pottery-cork": [
+    {
+      q: "What happens on the Alentejo cork and pottery day?",
+      a: "You work hands-on with cork alongside local makers, have lunch, then spend a three-hour afternoon pottery workshop at a ceramics and earth arts centre.",
+    },
+    {
+      q: "What is included in the cork and pottery workshop tour?",
+      a: "Private transport in an air-conditioned vehicle, a private local guide, both workshops, admission fees, lunch and bottled water are included.",
+    },
+  ],
   "tiles-workshop": [
     {
       q: "Where can I do a tile painting workshop near Lisbon?",

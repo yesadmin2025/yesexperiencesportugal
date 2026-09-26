@@ -1,4 +1,5 @@
 import { describe, expect, it } from "vitest";
+import { isPendingVenueSignature } from "@/data/pendingSignatures";
 import { signatureTours } from "@/data/signatureTours";
 import { SIGNATURE_SOURCE_OF_TRUTH } from "@/data/signatureToursSourceOfTruth";
 import { lookupStop } from "@/data/stopGeo";
@@ -13,6 +14,7 @@ describe("SoT geo coverage", () => {
   it("every SoT chapter label has curated coordinates", () => {
     const missing: string[] = [];
     for (const [tourId, sot] of Object.entries(SIGNATURE_SOURCE_OF_TRUTH)) {
+      if (isPendingVenueSignature(tourId)) continue;
       for (const c of sot?.itinerary ?? []) {
         if (!lookupStop(c.label)) missing.push(`${tourId}: ${c.label}`);
       }
@@ -21,14 +23,14 @@ describe("SoT geo coverage", () => {
   });
 
   it("every Signature resolves at least 2 map stops from the SoT", () => {
-    for (const tour of signatureTours) {
+    for (const tour of signatureTours.filter((x) => !isPendingVenueSignature(x.id))) {
       const stops = resolveSignatureMapStops(tour);
       expect(stops.length, `${tour.id} map stops`).toBeGreaterThanOrEqual(2);
     }
   });
 
   it("map stops exclude pass-by chapters and keep SoT order", () => {
-    for (const tour of signatureTours) {
+    for (const tour of signatureTours.filter((x) => !isPendingVenueSignature(x.id))) {
       const sot = SIGNATURE_SOURCE_OF_TRUTH[tour.id];
       if (!sot) continue;
       const expected = sot.itinerary

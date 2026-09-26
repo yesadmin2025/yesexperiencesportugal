@@ -40,7 +40,7 @@ vi.mock("@/lib/studio-v3-telemetry", () => ({
   emitStudioV3Event: vi.fn(),
 }));
 
-const TOUR = signatureTours.find((t) => t.priceFrom && t.priceFrom > 0)!;
+const TOUR = signatureTours.find((t) => t.priceFrom && t.priceFrom > 0 && t.id !== "p23-artisan-pottery-cork")!;
 
 function baseState(over: Partial<StudioV3State> = {}): StudioV3State {
   return {

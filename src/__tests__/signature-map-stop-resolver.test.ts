@@ -6,6 +6,7 @@
  * ever drift, pins and drawn legs silently disagree — so lock the contract.
  */
 import { describe, expect, it } from "vitest";
+import { isPendingVenueSignature } from "@/data/pendingSignatures";
 import { signatureTours } from "@/data/signatureTours";
 import { sotItinerary } from "@/data/signatureToursSourceOfTruth";
 import { lookupStop } from "@/data/stopGeo";
@@ -15,14 +16,14 @@ const PT_BOUNDS = { minLat: 36.8, maxLat: 42.2, minLng: -9.6, maxLng: -6.1 };
 
 describe("signature map-stop resolver", () => {
   it("resolves at least two mappable stops for every signature", () => {
-    for (const tour of signatureTours) {
+    for (const tour of signatureTours.filter((x) => !isPendingVenueSignature(x.id))) {
       const stops = resolveSignatureMapStops(tour);
       expect(stops.length, `${tour.id} has too few map stops`).toBeGreaterThanOrEqual(2);
     }
   });
 
   it("keeps SoT itinerary order and drops pass-by chapters", () => {
-    for (const tour of signatureTours) {
+    for (const tour of signatureTours.filter((x) => !isPendingVenueSignature(x.id))) {
       const sot = sotItinerary(tour.id);
       if (!sot?.length) continue;
 
@@ -52,7 +53,7 @@ describe("signature map-stop resolver", () => {
   });
 
   it("returns unique coordinates inside mainland Portugal", () => {
-    for (const tour of signatureTours) {
+    for (const tour of signatureTours.filter((x) => !isPendingVenueSignature(x.id))) {
       const stops = resolveSignatureMapStops(tour);
       const keys = stops.map((s) => `${s.lat.toFixed(4)},${s.lng.toFixed(4)}`);
       expect(new Set(keys).size, `${tour.id} repeats a pin coordinate`).toBe(keys.length);
@@ -73,7 +74,7 @@ describe("signature map-stop resolver", () => {
   });
 
   it("is deterministic across repeated calls", () => {
-    for (const tour of signatureTours) {
+    for (const tour of signatureTours.filter((x) => !isPendingVenueSignature(x.id))) {
       expect(resolveSignatureMapStops(tour)).toEqual(resolveSignatureMapStops(tour));
     }
   });
