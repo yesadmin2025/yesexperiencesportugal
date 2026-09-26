@@ -420,8 +420,8 @@ interface StopForLd {
  */
 /**
  * MerchantReturnPolicy mirroring the published Signature cancellation
- * truth (src/config/business-nap.ts: "Free cancellation up to 24h
- * before, when applicable."). Mapped to Google's merchant-listing
+ * truth (src/config/business-nap.ts: "Free cancellation up to 24 hours
+ * before the experience."). Mapped to Google's merchant-listing
  * fields: a 1-day finite window with a full refund and no fees.
  */
 const SIGNATURE_CANCELLATION_POLICY_LD = {
