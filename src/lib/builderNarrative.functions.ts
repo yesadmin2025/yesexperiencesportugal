@@ -59,7 +59,10 @@ export const parseNarrative = createServerFn({ method: "POST" })
         return { source: "rate_limited" };
       }
 
-      const lovableKey = process.env.LOVABLE_API_KEY;
+      // Paid AI is reserved for verified signed-in callers; anonymous
+    // visitors get the deterministic fallback (no metered call).
+    const { getVerifiedUserId: __verify } = await import("@/lib/verifiedCaller.server");
+    const lovableKey = (await __verify()) ? process.env.LOVABLE_API_KEY : undefined;
       if (!lovableKey) return { source: "fallback" };
 
       const configHash = hashConfig({ narrative: data.narrative.slice(0, 80) });

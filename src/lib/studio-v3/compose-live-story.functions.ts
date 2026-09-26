@@ -115,7 +115,10 @@ export const composeLiveStory = createServerFn({ method: "POST" })
     if (!rl.ok) {
       return { text: deterministicFallback(data), source: "fallback" as const };
     }
-    const key = process.env.LOVABLE_API_KEY;
+    // Paid AI is reserved for verified signed-in callers; anonymous
+    // visitors get the deterministic fallback (no metered call).
+    const { getVerifiedUserId: __verify } = await import("@/lib/verifiedCaller.server");
+    const key = (await __verify()) ? process.env.LOVABLE_API_KEY : undefined;
     // No key → graceful fallback, never throw to client.
     if (!key) {
       return { text: deterministicFallback(data), source: "fallback" as const };

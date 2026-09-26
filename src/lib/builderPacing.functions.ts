@@ -80,7 +80,10 @@ export const suggestPacing = createServerFn({ method: "POST" })
       return { ...fallback, source: "rate_limited" };
     }
 
-    const lovableKey = process.env.LOVABLE_API_KEY;
+    // Paid AI is reserved for verified signed-in callers; anonymous
+    // visitors get the deterministic fallback (no metered call).
+    const { getVerifiedUserId: __verify } = await import("@/lib/verifiedCaller.server");
+    const lovableKey = (await __verify()) ? process.env.LOVABLE_API_KEY : undefined;
     if (!lovableKey) return fallback;
 
     const configHash = hashConfig({
