@@ -234,9 +234,9 @@ export function RegionListingPage({ region }: { region: LisbonRegion }) {
                 <MapPin size={15} className="mt-1 shrink-0 text-[color:var(--gold)]" aria-hidden />
                 <span>
                   YES Experiences Portugal
-                  <br />
+                  {" "}<br />
                   {BASED_IN} (Setúbal district)
-                  <br />
+                  {" "}<br />
                   {LICENSE_LABEL}
                 </span>
               </p>
@@ -250,9 +250,9 @@ export function RegionListingPage({ region }: { region: LisbonRegion }) {
                 <Clock size={15} className="mt-1 shrink-0 text-[color:var(--gold)]" aria-hidden />
                 <span>
                   {OPENING_HOURS}
-                  <br />
+                  {" "}<br />
                   {region.driveTime}.
-                  <br />
+                  {" "}<br />
                   {region.bestSeason}
                 </span>
               </p>

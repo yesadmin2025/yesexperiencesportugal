@@ -5929,7 +5929,7 @@ export function StoryboardHandoff({
         title={
           <span data-testid="studio-v3-signature-hero">
             {name ? `${name}\u2019s day.` : "Your day."}
-            <br />
+            {" "}<br />
             <span className="italic" style={{ color: "var(--teal)" }}>
               {yourDayEditorialTitle}
             </span>

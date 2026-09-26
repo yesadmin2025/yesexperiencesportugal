@@ -407,12 +407,12 @@ function Page() {
             <a href={EMAIL_HREF} className="underline">
               {EMAIL}
             </a>
-            <br />
+            {" "}<br />
             WhatsApp{" "}
             <a href={whatsappUrl()} className="underline">
               {PHONE_DISPLAY}
             </a>
-            <br />
+            {" "}<br />
             {BASED_IN_SHORT}
           </p>
           <p className="mt-5 serif italic text-xl text-[color:var(--teal)]">

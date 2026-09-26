@@ -461,9 +461,9 @@ function DayTripsFromLisbon() {
                 <MapPin size={15} className="mt-1 shrink-0 text-[color:var(--gold)]" aria-hidden />
                 <span>
                   YES Experiences Portugal
-                  <br />
+                  {" "}<br />
                   {BASED_IN} (Setúbal district)
-                  <br />
+                  {" "}<br />
                   {LICENSE_LABEL}
                 </span>
               </p>
@@ -477,7 +477,7 @@ function DayTripsFromLisbon() {
                 <Clock size={15} className="mt-1 shrink-0 text-[color:var(--gold)]" aria-hidden />
                 <span>
                   {OPENING_HOURS}
-                  <br />
+                  {" "}<br />
                   Pickups across Lisbon, Cascais, Sintra, Sesimbra and Setúbal.
                 </span>
               </p>

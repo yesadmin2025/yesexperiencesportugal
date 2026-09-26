@@ -234,7 +234,7 @@ export function Postcard({
           }}
         >
           <span style={{ fontWeight: 600 }}>{headlineOwner} Portugal</span>
-          <br />
+          {" "}<br />
           <span
             className="italic"
             style={{

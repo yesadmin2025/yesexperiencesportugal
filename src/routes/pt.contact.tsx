@@ -116,7 +116,7 @@ function PtContactPage() {
             </dt>
             <dd className="mt-1 text-[color:var(--charcoal-soft)]">
               {BUSINESS_NAME} · {BASED_IN}
-              <br />
+              {" "}<br />
               {TRUST_LINE_PT}
             </dd>
           </div>
