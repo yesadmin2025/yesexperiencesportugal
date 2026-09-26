@@ -131,8 +131,8 @@ export const TRUST_LINE_PT =
  */
 export const CANCELLATION = {
   signature: {
-    en: "Free cancellation up to 24 hours before the experience, for every Signature day, whether reserved as designed or tailored.",
-    pt: "Cancelamento gratuito até 24 horas antes da experiência, em todas as Signature, reservadas tal como desenhadas ou personalizadas.",
+    en: "Free cancellation up to 24 hours before the experience.",
+    pt: "Cancelamento gratuito até 24 horas antes da experiência.",
   },
   custom: {
     en: "Cancellation terms are shown clearly before checkout or confirmation.",
