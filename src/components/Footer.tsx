@@ -26,6 +26,8 @@ import {
   EMAIL,
   EMAIL_HREF,
   LICENSE_NUMBER,
+  LICENSE_LABEL,
+  NIF_LABEL,
   LICENSE_SHORT,
   PHONE_DISPLAY,
   PHONE_HREF,
@@ -341,8 +343,10 @@ export function Footer() {
               style={{ fontWeight: 400 }}
             >
               <p className="leading-[1.6] text-[color:var(--ivory)]/75">
-                © {new Date().getFullYear()} {BUSINESS_NAME}. All rights reserved. ·{" "}
-                {LEGAL_META_LINE}.
+                © {new Date().getFullYear()} Yes Experiences Portugal · {NIF_LABEL} · {LICENSE_LABEL} · {LEGAL_META_LINE} ·{" "}
+                <Link to="/terms" hash="dispute-resolution" className={`${LINK_CLASS} text-[12px] text-[color:var(--ivory)]/75`}>
+                  Dispute resolution (RAL)
+                </Link>
               </p>
               <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
                 <LanguageSwitcher variant="footer" className="text-[color:var(--ivory)]/75" />

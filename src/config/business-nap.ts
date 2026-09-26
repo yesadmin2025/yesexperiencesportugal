@@ -15,6 +15,8 @@ export const BUSINESS_LEGAL_NAME = "YES Experiences Portugal" as const;
 export const LICENSE_SHORT = "RNAAT" as const;
 export const LICENSE_NUMBER = "31/2023" as const;
 export const LICENSE_LABEL = "RNAAT nº 31/2023" as const;
+/** Portuguese tax number (NIF) as supplied by the owner. */
+export const NIF_LABEL = "NIF PT 518210910" as const;
 export const LICENSE_LONG =
   "Registered Portuguese tourism operator (Registo Nacional dos Agentes de Animação Turística)" as const;
 
@@ -129,8 +131,8 @@ export const TRUST_LINE_PT =
  */
 export const CANCELLATION = {
   signature: {
-    en: "Free cancellation up to 24h before, when applicable.",
-    pt: "Cancelamento gratuito até 24 horas antes, quando aplicável.",
+    en: "Free cancellation up to 24 hours before the experience, for every Signature day, whether reserved as designed or tailored.",
+    pt: "Cancelamento gratuito até 24 horas antes da experiência, em todas as Signature, reservadas tal como desenhadas ou personalizadas.",
   },
   custom: {
     en: "Cancellation terms are shown clearly before checkout or confirmation.",

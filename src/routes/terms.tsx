@@ -97,6 +97,26 @@ function TermsPage() {
               Guests participate in activities at their own discretion and must disclose any
               condition that affects their ability to take part.
             </p>
+            <h2
+              id="dispute-resolution"
+              className="serif scroll-mt-28 text-[1.4rem] text-[color:var(--charcoal)] font-medium"
+            >
+              Alternative dispute resolution (RAL)
+            </h2>
+            <p>
+              If a dispute with us cannot be resolved directly, consumers may turn to an
+              alternative dispute resolution (RAL) entity under Portuguese Law no. 144/2015. The
+              list of authorised RAL entities is published on the Portuguese Consumer Portal at{" "}
+              <a
+                className="underline decoration-[color:var(--gold)]/50 hover:text-[color:var(--teal)]"
+                href="https://www.consumidor.gov.pt"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                www.consumidor.gov.pt
+              </a>
+              . Complaints can also be submitted through the official Livro de Reclamações.
+            </p>
             <p className="text-[13px] text-[color:var(--charcoal-soft)]/80">
               For the full operator terms, contact us at{" "}
               <a
