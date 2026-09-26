@@ -18,6 +18,11 @@ export const Route = createFileRoute("/admin/experiences")({
   head: () => ({
     meta: [
       { title: "Experiences & operations — YES Admin" },
+      { name: "description", content: "Private editing tools for YES Experiences Portugal." },
+      { property: "og:title", content: "Experiences & operations — YES Admin" },
+      { property: "og:description", content: "Private editing tools for YES Experiences Portugal." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary" },
       { name: "robots", content: "noindex, nofollow" },
     ],
   }),

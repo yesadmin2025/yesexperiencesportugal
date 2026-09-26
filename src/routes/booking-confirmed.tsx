@@ -72,6 +72,11 @@ export const Route = createFileRoute("/booking-confirmed")({
   head: () => ({
     meta: [
       { title: "Booking status — YES Experiences Portugal" },
+      { name: "description", content: "Check your YES Experiences Portugal reservation status." },
+      { property: "og:title", content: "Booking status — YES Experiences Portugal" },
+      { property: "og:description", content: "Check your YES Experiences Portugal reservation status." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary" },
       { name: "robots", content: "noindex,nofollow" },
     ],
   }),
