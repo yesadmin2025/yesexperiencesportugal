@@ -25,7 +25,7 @@ import {
   validateTour,
   logTourValidation,
 } from "@/lib/viatorValidation";
-import { useEffect, lazy, Suspense } from "react";
+import { useEffect } from "react";
 import { SimpleBookingForm } from "@/components/SimpleBookingForm";
 import { MobileReserveBar } from "@/components/booking/MobileReserveBar";
 import { dispatchSignatureReserveIntent } from "@/lib/booking/reserve-intent";
