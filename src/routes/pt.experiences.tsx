@@ -185,15 +185,17 @@ function ExperiencesPage() {
                     >
                       Ver disponibilidade e reservar
                     </CtaButton>
-                    <CtaButton
-                      to="/tours/$tourId/tailor"
-                      params={{ tourId: tour.id }}
-                      variant="hairline"
-                      size="sm"
-                      aria-label={`Adaptar ${tour.title} ao seu dia`}
-                    >
-                      Adaptar este dia
-                    </CtaButton>
+                    {tour.id !== "p23-artisan-pottery-cork" && (
+                      <CtaButton
+                        to="/tours/$tourId/tailor"
+                        params={{ tourId: tour.id }}
+                        variant="hairline"
+                        size="sm"
+                        aria-label={`Adaptar ${tour.title} ao seu dia`}
+                      >
+                        Adaptar este dia
+                      </CtaButton>
+                    )}
                   </div>
                 </article>
               );
