@@ -183,7 +183,7 @@ function BookingConfirmedPage() {
 
   useEffect(() => {
     window.dispatchEvent(new CustomEvent("whatsapp-support:booking-message", { detail: { message: bookingMessage } }));
-    return () => window.dispatchEvent(new CustomEvent("whatsapp-support:booking-message", { detail: { message: null } }));
+    return () => { window.dispatchEvent(new CustomEvent("whatsapp-support:booking-message", { detail: { message: null } })); };
   }, [bookingMessage]);
 
   return (
