@@ -26,6 +26,25 @@ import { PORTUGAL_MAINLAND_PATH } from "@/content/portugal-outline";
 const VB_W = PLANNER_MAP.width;
 const VB_H = PLANNER_MAP.height;
 
+/** Map places Studio can compose a day around → Studio destination preset. */
+const STUDIO_DESTINATION_BY_PLACE: Record<string, string> = {
+  sintra: "lisbon-sintra-cascais",
+  "cabo-da-roca": "lisbon-sintra-cascais",
+  cascais: "lisbon-sintra-cascais",
+  setubal: "arrabida-setubal-azeitao",
+  azeitao: "arrabida-setubal-azeitao",
+  arrabida: "arrabida-setubal-azeitao",
+  sesimbra: "arrabida-setubal-azeitao",
+  troia: "comporta-troia",
+  comporta: "comporta-troia",
+  evora: "alentejo-evora-wine",
+  "reguengos-monsaraz": "alentejo-evora-wine",
+  vidigueira: "alentejo-roman-talha",
+  "porto-covo": "vicentine-coast",
+  "vila-nova-de-milfontes": "vicentine-coast",
+  odeceixe: "vicentine-coast",
+};
+
 function pct(value: number, span: number) {
   return `${(value / span) * 100}%`;
 }
@@ -211,14 +230,25 @@ export function PortugalPlannerMap() {
           </ul>
         )}
 
-        <CtaButton
-          to="/contact"
-          search={{ type: "multi_day", place: active.label }}
-          size="sm"
-          className="mt-5"
-        >
-          Design a day in {active.label}
-        </CtaButton>
+        {STUDIO_DESTINATION_BY_PLACE[active.id] ? (
+          <CtaButton
+            to="/studio"
+            search={{ destination: STUDIO_DESTINATION_BY_PLACE[active.id] } as never}
+            size="sm"
+            className="mt-5"
+          >
+            Design a day in {active.label}
+          </CtaButton>
+        ) : (
+          <CtaButton
+            to="/contact"
+            search={{ type: "multi_day", place: active.label }}
+            size="sm"
+            className="mt-5"
+          >
+            Plan a journey including {active.label}
+          </CtaButton>
+        )}
 
       </div>
       </div>
