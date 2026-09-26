@@ -5,6 +5,7 @@ import { useServerFn } from "@tanstack/react-start";
 import { SiteLayout } from "@/components/SiteLayout";
 import { supabase } from "@/integrations/supabase/client";
 import { signatureTours } from "@/data/signatureTours";
+import { ExperienceSeoDraftEditor } from "@/components/admin/ExperienceSeoDraftEditor";
 import {
   listExperienceContent,
   saveExperienceContent,
@@ -125,6 +126,7 @@ function AdminExperiencesHub() {
           </p>
 
           <ExperienceCopyEditor />
+          <ExperienceSeoDraftEditor />
 
           <div className="mt-10 grid gap-4 md:grid-cols-3">
             <ToolCard
