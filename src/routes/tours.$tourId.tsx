@@ -335,11 +335,13 @@ function TourDetailPage() {
           The reveal class lives on THIS wrapper, not inside the lazy
           component: the reveal sweep adds `.is-visible` before the lazy
           chunk hydrates, which made React report an attribute mismatch. */}
-      <div className="reveal">
-        <Suspense fallback={<SignatureRouteMapShell />}>
-          <SignatureRouteMap tour={tour} />
-        </Suspense>
-      </div>
+      {tour.id !== "p23-artisan-pottery-cork" && (
+        <div className="reveal">
+          <Suspense fallback={<SignatureRouteMapShell />}>
+            <SignatureRouteMap tour={tour} />
+          </Suspense>
+        </div>
+      )}
 
       {/* ── F · GALLERY (real photos) ─────────────────────────── */}
       <GalleryStrip tour={tour} resolveImg={resolveImg} meta={meta} adminPhotos={adminPhotos} />
@@ -523,7 +525,7 @@ function TourHero({
             >
               Reserve this day
             </CtaButton>
-            <Link
+            {tour.id !== "p23-artisan-pottery-cork" && <Link
               to="/tours/$tourId/tailor"
               params={{ tourId: tour.id }}
               data-analytics="signature_tailor_click"
@@ -533,7 +535,7 @@ function TourHero({
               className="editorial-action inline-flex min-h-[44px] items-center gap-2 font-sans text-[11px] font-medium uppercase tracking-[0.16em] text-[color:var(--charcoal-soft)] underline decoration-[color:var(--gold)]/60 underline-offset-4 transition-colors duration-[var(--dur-quick)] hover:text-[color:var(--teal)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)]"
             >
               Tailor this day <CtaMotionArrow />
-            </Link>
+            </Link>}
           </div>
         </div>
       </section>
@@ -679,7 +681,7 @@ function ItineraryTimeline({ tour, meta }: { tour: SignatureTour; meta?: ViatorM
             Your day, <SectionTitle.Em>stop by stop</SectionTitle.Em>
           </SectionTitle>
           <p className="mt-2 text-[13px] text-[color:var(--charcoal-soft)]">
-            {stops.length} places across the day · {signatureDurationLabel(tour.id, tour.durationHours)}
+            {tour.id === "p23-artisan-pottery-cork" ? "The shape of your day" : `${stops.length} places across the day`} · {signatureDurationLabel(tour.id, tour.durationHours)}
           </p>
         </div>
 
@@ -933,7 +935,7 @@ function FinalCta({ tour }: { tour: SignatureTour }) {
           >
              Reserve this day
           </CtaButton>
-          <Link
+          {tour.id !== "p23-artisan-pottery-cork" && <Link
             to="/tours/$tourId/tailor"
             params={{ tourId: tour.id }}
             data-analytics="signature_tailor_click"
@@ -946,7 +948,7 @@ function FinalCta({ tour }: { tour: SignatureTour }) {
             <span aria-hidden="true" className="text-[color:var(--gold)]">
               →
             </span>
-          </Link>
+          </Link>}
         </div>
 
         <CredentialStrip variant="dark" className="mt-8" />

@@ -1,5 +1,5 @@
 import { trackEvent } from "@/lib/analytics-events";
-import { createFileRoute, Link, notFound, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, Link, notFound, redirect, useNavigate } from "@tanstack/react-router";
 import { lazy, Suspense, useMemo, useRef, useState } from "react";
 import {
   ArrowLeft,
@@ -110,6 +110,11 @@ export const Route = createFileRoute("/tours_/$tourId/tailor")({
   loader: ({ params }) => {
     const tour = findTour(params.tourId);
     if (!tour) throw notFound();
+    // The P23 workshop venues have not been identified, so there are no
+    // verified stop alternatives to offer in the Tailor flow.
+    if (tour.id === "p23-artisan-pottery-cork") {
+      throw redirect({ to: "/tours/$tourId", params: { tourId: tour.id } });
+    }
     return { tour };
   },
   head: ({ params, loaderData }) => {

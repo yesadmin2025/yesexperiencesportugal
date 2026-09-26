@@ -131,6 +131,7 @@ export function FinalDetailsDialog({
   onConfirm,
   initial,
   submitting = false,
+  tourId,
   priceQuote,
   dateRule = null,
   productRecap,
@@ -463,9 +464,9 @@ export function FinalDetailsDialog({
                 <GuestField label="Preferred start time" as="div">
                   <div
                     data-testid="final-details-start-time"
-                    className="grid grid-cols-3 border border-[color:var(--border)]"
+                    className={`grid ${tourId === "p23-artisan-pottery-cork" ? "grid-cols-1" : "grid-cols-3"} border border-[color:var(--border)]`}
                   >
-                    {START_TIMES.map((t) => (
+                    {START_TIMES.filter((t) => tourId !== "p23-artisan-pottery-cork" || t === "08:00").map((t) => (
                       <button
                         key={t}
                         type="button"

@@ -88,7 +88,9 @@ function readableDateLabel(iso: string): string {
 export function SimpleBookingForm({ tour }: { tour: SignatureTour }) {
   const navigate = useNavigate();
   const [date, setDate] = useState("");
-  const [pickup, setPickup] = useState<"08:00" | "09:00" | "10:00">("09:00");
+  const [pickup, setPickup] = useState<"08:00" | "09:00" | "10:00">(
+    tour.id === "p23-artisan-pottery-cork" ? "08:00" : "09:00",
+  );
   const [composition, setComposition] = useState<TravellerComposition>({
     adults: 2,
     minorAges: [],
@@ -541,7 +543,9 @@ export function SimpleBookingForm({ tour }: { tour: SignatureTour }) {
           <div className="pb-2 pt-1 space-y-3" data-testid="signature-trip-preferences">
             <Field label="Pickup time">
               <div className="grid grid-cols-3 border border-[color:var(--border)]">
-                {(["08:00", "09:00", "10:00"] as const).map((t) => (
+                {(["08:00", "09:00", "10:00"] as const)
+                  .filter((t) => tour.id !== "p23-artisan-pottery-cork" || t === "08:00")
+                  .map((t) => (
                   <button
                     key={t}
                     type="button"
@@ -679,7 +683,7 @@ export function SimpleBookingForm({ tour }: { tour: SignatureTour }) {
         </CtaButton>
       )}
 
-      <div className="mt-3 text-center">
+      {tour.id !== "p23-artisan-pottery-cork" && <div className="mt-3 text-center">
         <Link
           to="/tours/$tourId/tailor"
           params={{ tourId: tour.id }}
@@ -687,7 +691,7 @@ export function SimpleBookingForm({ tour }: { tour: SignatureTour }) {
         >
           Tailor this day
         </Link>
-      </div>
+      </div>}
 
 
       {detailsOpen ? <Suspense fallback={null}><FinalDetailsDialog
