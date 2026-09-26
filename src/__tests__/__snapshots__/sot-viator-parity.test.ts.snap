@@ -498,6 +498,57 @@ exports[`SoT locked snapshot > fatima-nazare-obidos: rendered content snapshot 1
 }
 `;
 
+exports[`SoT locked snapshot > p23-artisan-pottery-cork: rendered content snapshot 1`] = `
+{
+  "highlights": [
+    "Hands-on cork workshop with local makers",
+    "Three-hour pottery workshop at a ceramics and earth arts centre",
+    "Private local guide and air-conditioned transport",
+    "Lunch included",
+  ],
+  "included": [
+    "Private transportation",
+    "Air-conditioned vehicle",
+    "Cork Workshop",
+    "Pottery Workshop",
+    "Bottled water",
+    "Admission Fee",
+    "Private Local Guide",
+    "Lunch",
+  ],
+  "itinerary": [
+    {
+      "description": "Work with cork and learn about the Alentejo's craft traditions alongside local makers.",
+      "durationMinutes": null,
+      "label": "Cork workshop",
+      "optional": false,
+      "order": 1,
+      "travelToNextMinutes": null,
+    },
+    {
+      "description": "Lunch is included in the private day.",
+      "durationMinutes": null,
+      "label": "Lunch",
+      "optional": false,
+      "order": 2,
+      "travelToNextMinutes": null,
+    },
+    {
+      "description": "A three-hour hands-on pottery workshop at a ceramics and earth arts centre in the afternoon.",
+      "durationMinutes": 180,
+      "label": "Pottery workshop",
+      "optional": false,
+      "order": 3,
+      "travelToNextMinutes": null,
+    },
+  ],
+  "notIncluded": [],
+  "overview": "A private full-day experience of Alentejo's living craft traditions. Work hands-on with cork and clay alongside local makers; the afternoon includes a three-hour pottery workshop at a ceramics and earth arts centre. Lunch is included.",
+  "source": "sot",
+  "tourId": "p23-artisan-pottery-cork",
+}
+`;
+
 exports[`SoT locked snapshot > roman-heritage-alentejo: rendered content snapshot 1`] = `
 {
   "highlights": [
