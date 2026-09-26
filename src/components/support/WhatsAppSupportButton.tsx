@@ -32,12 +32,14 @@ const HIDE_PATTERNS: RegExp[] = [
 declare global {
   interface WindowEventMap {
     "whatsapp-support:set-hidden": CustomEvent<{ hidden: boolean }>;
+    "whatsapp-support:booking-message": CustomEvent<{ message: string | null }>;
   }
 }
 
 export function WhatsAppSupportButton() {
   const pathname = useRouterState({ select: (s) => s.location.pathname });
   const [hiddenByForm, setHiddenByForm] = useState(false);
+  const [bookingMessage, setBookingMessage] = useState<string | null>(null);
 
   useEffect(() => {
     const onToggle = (e: WindowEventMap["whatsapp-support:set-hidden"]) => {
@@ -47,10 +49,16 @@ export function WhatsAppSupportButton() {
     return () => window.removeEventListener("whatsapp-support:set-hidden", onToggle);
   }, []);
 
+  useEffect(() => {
+    const onBooking = (event: WindowEventMap["whatsapp-support:booking-message"]) => setBookingMessage(event.detail.message);
+    window.addEventListener("whatsapp-support:booking-message", onBooking);
+    return () => window.removeEventListener("whatsapp-support:booking-message", onBooking);
+  }, []);
+
   const hiddenByPath = HIDE_PATTERNS.some((re) => re.test(pathname));
   if (hiddenByPath || hiddenByForm) return null;
 
-  const href = whatsappUrl(WA_DEFAULT_MESSAGE);
+  const href = whatsappUrl(pathname === "/booking-confirmed" && bookingMessage ? bookingMessage : WA_DEFAULT_MESSAGE);
 
   return (
     <aside aria-label="Support">

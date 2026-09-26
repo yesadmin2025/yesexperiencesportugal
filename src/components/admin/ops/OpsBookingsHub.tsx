@@ -19,6 +19,7 @@ import { OpsReviewInbox } from "./OpsReviewInbox";
 
 type Row = {
   id: string;
+  booking_type: string;
   created_at: string;
   source: string | null;
   source_channel: string | null;
@@ -121,6 +122,7 @@ export function OpsBookingsHub({
   const [paymentStatus, setPaymentStatus] = useState<"all" | "PAID" | "PENDING_PAYMENT">("all");
   const [guide, setGuide] = useState<string>("all");
   const [tour, setTour] = useState("");
+  const [kind, setKind] = useState<"all" | "studio" | "signature">("all");
 
   const refresh = async () => {
     setLoading(true);
@@ -162,8 +164,11 @@ export function OpsBookingsHub({
   const guideName = (id: string | null) => guides.find((entry) => entry.id === id)?.name ?? null;
 
   const visible = useMemo(
-    () => (range === "attention" ? rows.filter((row) => attentionReasons(row).length > 0) : rows),
-    [rows, range],
+    () => rows.filter((row) =>
+      (range !== "attention" || attentionReasons(row).length > 0) &&
+      (kind === "all" || (kind === "studio" ? row.booking_type === "builder" : row.booking_type === "signature"))
+    ),
+    [rows, range, kind],
   );
 
   const byDate = useMemo(() => {
@@ -248,6 +253,14 @@ export function OpsBookingsHub({
               <span className="ml-1.5 text-[#8A6B23]">· {reviewCount} to decide</span>
             ) : null}
           </button>
+        ))}
+      </div>
+
+      <div className="mt-4 flex gap-2" role="group" aria-label="Reservation type">
+        {(["all", "studio", "signature"] as const).map((value) => (
+          <Button key={value} type="button" size="sm" variant={kind === value ? "default" : "outline"} aria-pressed={kind === value} onClick={() => setKind(value)}>
+            {value === "all" ? "All" : value === "studio" ? "Studio" : "Signature tours"}
+          </Button>
         ))}
       </div>
 
@@ -375,7 +388,7 @@ export function OpsBookingsHub({
                     {row.tour_title ?? row.source_tour_id ?? "Tour to confirm"}
                   </span>
                   <span className="block truncate text-[12.5px] text-[color:var(--charcoal-soft)]">
-                    {row.customer_name ?? row.customer_email} · {row.guests} · {channelLabel(row)}
+                    {row.customer_name ?? row.customer_email} · {row.guests} guests · {row.booking_type === "builder" ? "Studio" : row.booking_type === "signature" ? "Signature" : channelLabel(row)}
                     {guideName(row.assigned_guide_id) ? ` · ${guideName(row.assigned_guide_id)}` : ""}
                   </span>
                 </span>

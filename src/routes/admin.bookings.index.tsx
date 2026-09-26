@@ -23,7 +23,7 @@ export const Route = createFileRoute("/admin/bookings/")({
   }),
   component: AdminBookingsPage,
   head: () => ({
-    meta: [{ title: "Bookings · YES Operations" }, { name: "robots", content: "noindex, nofollow" }],
+    meta: [{ title: "Bookings · YES Operations" }, { name: "description", content: "Private operations view of Studio and Signature reservations." }, { property: "og:title", content: "Bookings · YES Operations" }, { property: "og:description", content: "Private operations view of Studio and Signature reservations." }, { property: "og:type", content: "website" }, { name: "twitter:card", content: "summary" }, { name: "robots", content: "noindex, nofollow" }],
   }),
   errorComponent: ({ error }) => <div className="p-8 text-red-700">Error: {error.message}</div>,
   notFoundComponent: () => <div className="p-8">Not found</div>,

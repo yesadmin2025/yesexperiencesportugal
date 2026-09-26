@@ -5,6 +5,7 @@ import { useServerFn } from "@tanstack/react-start";
 import { SiteLayout } from "@/components/SiteLayout";
 import { supabase } from "@/integrations/supabase/client";
 import { signatureTours } from "@/data/signatureTours";
+import { ExperienceSeoDraftEditor } from "@/components/admin/ExperienceSeoDraftEditor";
 import {
   listExperienceContent,
   saveExperienceContent,
@@ -17,6 +18,11 @@ export const Route = createFileRoute("/admin/experiences")({
   head: () => ({
     meta: [
       { title: "Experiences & operations — YES Admin" },
+      { name: "description", content: "Private editing tools for YES Experiences Portugal." },
+      { property: "og:title", content: "Experiences & operations — YES Admin" },
+      { property: "og:description", content: "Private editing tools for YES Experiences Portugal." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary" },
       { name: "robots", content: "noindex, nofollow" },
     ],
   }),
@@ -125,6 +131,7 @@ function AdminExperiencesHub() {
           </p>
 
           <ExperienceCopyEditor />
+          <ExperienceSeoDraftEditor />
 
           <div className="mt-10 grid gap-4 md:grid-cols-3">
             <ToolCard
