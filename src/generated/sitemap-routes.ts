@@ -36,6 +36,7 @@ export const SITEMAP_STATIC_ROUTES: SitemapRoute[] = [
   { path: "/private-tours-comporta-troia", changefreq: "monthly", priority: "0.7" },
   { path: "/private-tours-sintra-cascais", changefreq: "monthly", priority: "0.7" },
   { path: "/proposal-in-portugal", changefreq: "monthly", priority: "0.8" },
+  { path: "/regions-of-portugal", changefreq: "monthly", priority: "0.7" },
   { path: "/reviews", changefreq: "monthly", priority: "0.5" },
   { path: "/studio", changefreq: "weekly", priority: "0.9" },
   { path: "/terms", changefreq: "yearly", priority: "0.4" },
