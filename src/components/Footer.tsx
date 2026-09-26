@@ -256,8 +256,10 @@ export function Footer() {
           </div>
         </div>
 
-        {/* ── ZONE C — TRUST & LEGAL ─────────────────────────────────── */}
-        <div className="mt-8 pt-8 border-t border-[color:var(--gold-warm)]/15 md:mt-10 md:pt-10">
+        {/* ── ZONE C — TRUST & LEGAL ───────────────────────────────────
+            PaymentMethodsRow opens the zone with its own hairline, so the
+            wrapper stays border-free — one line, never two. */}
+        <div>
           {/* Secure payments */}
           <PaymentMethodsRow />
 
