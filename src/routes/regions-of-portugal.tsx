@@ -28,12 +28,12 @@ export const Route = createFileRoute("/regions-of-portugal")({
 
 const chapters = [
   { name: "The North", note: "Porto, the Douro and the green Minho", slugs: ["porto-and-the-douro-valley-guide", "minho-geres-braga-guimaraes-guide"] },
-  { name: "Centro", note: "The central coast, Coimbra and the high mountains", slugs: ["aveiro-and-central-coast-guide", "serra-da-estrela-guide", "leiria-and-pine-coast-guide"] },
+  { name: "Centro", note: "The central coast, Coimbra and the high mountains", slugs: ["aveiro-and-the-central-coast-guide", "serra-da-estrela-guide", "leiria-and-the-pine-coast-guide"] },
   { name: "Lisbon & the coast", note: "City streets, Sintra and the Atlantic south of the Tagus", slugs: [] },
-  { name: "Alentejo", note: "Évora, cork country and the walled border towns", slugs: ["marvao-and-castelo-de-vide-guide"] },
-  { name: "Algarve", note: "The western cliffs and the Ria Formosa lagoon", slugs: ["western-algarve-guide", "eastern-algarve-guide"] },
-  { name: "Madeira", note: "Atlantic island landscapes and levada paths", slugs: ["madeira-and-porto-santo-guide"] },
-  { name: "The Azores", note: "Volcanic islands, crater lakes and ocean crossings", slugs: ["azores-guide"] },
+  { name: "Alentejo", note: "Évora, cork country and the walled border towns", slugs: ["marvao-castelo-de-vide-guide"] },
+  { name: "Algarve", note: "The western cliffs and the Ria Formosa lagoon", slugs: ["western-algarve-lagos-sagres-guide", "eastern-algarve-ria-formosa-tavira-guide"] },
+  { name: "Madeira", note: "Atlantic island landscapes and levada paths", slugs: ["madeira-travel-guide"] },
+  { name: "The Azores", note: "Volcanic islands, crater lakes and ocean crossings", slugs: ["azores-sao-miguel-pico-guide"] },
 ] as const;
 
 function RegionsPage() {
