@@ -31,7 +31,6 @@ import {
   LICENSE_SHORT,
   PHONE_DISPLAY,
   PHONE_HREF,
-  RAL_ENTITIES_URL,
   SOCIAL,
   whatsappUrl,
 } from "@/config/business-nap";
@@ -336,9 +335,18 @@ export function Footer() {
           </div>
 
           {/* Payments */}
-          <div className="mt-8">
-            <PaymentMethodsRow />
+          <PaymentMethodsRow />
+
+          {/* Each certificate gets its own space on phones; the legal identity
+              closes the footer below rather than competing with the seals. */}
+          <div className="mt-8 flex flex-col items-start gap-7 border-t border-[color:var(--gold-warm)]/15 pt-8 sm:flex-row sm:items-center sm:gap-12" aria-label="Review certificate and official complaints book">
+            <TrustindexBadge />
+            <LivroReclamacoesBadge />
           </div>
+
+          {/* Vendor verification is layout-free; the visible certificate above
+              remains the sole review badge. */}
+          <TrustindexWidget />
 
           {/* Legal bar */}
           <div className="mt-8 pt-6 border-t border-[color:var(--gold-warm)]/15">
@@ -379,17 +387,6 @@ export function Footer() {
               </div>
             </div>
 
-            {/* Trust seals — review certificate + official complaints book,
-                side by side on one line at every width (scaled down on very
-                narrow phones instead of wrapping). */}
-            <div className="mt-6 flex w-full min-w-0 flex-nowrap items-center justify-center gap-x-3 text-center max-[359px]:scale-[0.86] sm:gap-x-6 md:justify-start">
-              <TrustindexBadge />
-              <LivroReclamacoesBadge />
-            </div>
-
-            {/* Vendor loader — verifies the domain with Trustindex. Renders no
-                layout of its own; the visible seal above stays ours. */}
-            <TrustindexWidget />
           </div>
         </div>
       </div>
