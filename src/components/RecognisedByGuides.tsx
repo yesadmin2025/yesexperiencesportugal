@@ -13,8 +13,9 @@ import { getMentionsForPlacement, type AuthorityPlacement } from "@/data/externa
  *  • For other entries the card says "Featured the tour we operate" — never
  *    "featured YES Experiences" — because the article ranks the product on
  *    Viator/GetYourGuide without naming the brand.
- *  • Citations are plain text: quotes and publication names only. No outbound
- *    "Read article" links and no "opens in a new tab" note.
+ *  • Citations carry no "Read article" label and no "opens in a new tab"
+ *    note — the article title itself links to the original source.
+ *  • Quotes and publication names stay verbatim plain text.
  *
  * Mobile-first: vertical stack with elegant spacing. Desktop: 3 columns.
  */
