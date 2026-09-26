@@ -35,6 +35,8 @@ import { useTourPriceTiers } from "@/hooks/use-tour-price-tiers";
 import { resolvePerPaxEur, resolveJourneyPricing } from "@/data/signatureTourPricing";
 import { resolveClientIncludedItems } from "@/lib/checkout/inclusions";
 import { getTourContent } from "@/lib/tourContent";
+import { projectPublicSotItinerary } from "@/lib/publicItineraryProjection";
+import { toEditorialChapters } from "@/lib/tailor-chapters";
 import {
   gaAddPaymentInfo,
   gaAddToCartSignature,
@@ -240,6 +242,17 @@ export function SimpleBookingForm({ tour }: { tour: SignatureTour }) {
     if (content.highlights.length > 0) return content.highlights.slice(0, 4);
     return (tour.highlights ?? []).slice(0, 4);
   })();
+  // Use the same verified, public-facing itinerary as the tour page. Supplier
+  // alternatives stay generic and optional chapters are not sold as guarantees.
+  const itinerary = (() => {
+    const verified = projectPublicSotItinerary(tour.id)?.filter((chapter) => chapter.stopType !== "pass-by");
+    if (verified?.length) return verified.map((chapter) => ({ label: chapter.label, optional: chapter.optional }));
+    const chapters = toEditorialChapters(tour.id);
+    if (chapters?.length) return chapters.map((chapter) => ({ label: chapter.label, optional: chapter.optional }));
+    const viatorStops = getViatorMeta(tour.id)?.stops?.filter((stop) => !stop.passBy);
+    if (viatorStops?.length) return viatorStops.map((stop) => ({ label: stop.name, optional: false }));
+    return (tour.stops ?? []).map((stop) => ({ label: stop.label, optional: false }));
+  })();
 
   const handleReserve = async (details: GuestDetails) => {
     if (pending) return;
@@ -305,7 +318,8 @@ export function SimpleBookingForm({ tour }: { tour: SignatureTour }) {
       pricePerPaxEur: perPaxForSummary,
       totalEur: totalForSummary,
       heroSrc: meta?.localGallery?.[0]?.src ?? meta?.gallery?.[0] ?? tour.img,
-       beats: signatureBeats,
+      beats: signatureBeats,
+      itinerary,
       flowLabel: "Signature",
     });
 
@@ -770,7 +784,8 @@ export function SimpleBookingForm({ tour }: { tour: SignatureTour }) {
              dateExact: date || null,
              startTime: pickup,
              pickupLabel: pickup,
-             beats: signatureBeats,
+              beats: signatureBeats,
+              itinerary,
             guests,
             adults: composition.adults,
             minorAges: [...composition.minorAges],
