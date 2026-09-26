@@ -1730,6 +1730,36 @@ export type Database = {
           },
         ]
       }
+      experience_seo_drafts: {
+        Row: {
+          created_at: string
+          h1: string
+          meta_description: string
+          page_title: string
+          tour_id: string
+          updated_at: string
+          updated_by: string | null
+        }
+        Insert: {
+          created_at?: string
+          h1?: string
+          meta_description?: string
+          page_title?: string
+          tour_id: string
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Update: {
+          created_at?: string
+          h1?: string
+          meta_description?: string
+          page_title?: string
+          tour_id?: string
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Relationships: []
+      }
       gbp_removal_evidence: {
         Row: {
           caption: string
