@@ -272,7 +272,10 @@ function ExperienceSummaryCard({
   summary: CheckoutSummary;
   total: number | null;
 }) {
-  const [open, setOpen] = useState(false);
+  // Open by default: guests must see exactly what they are paying for
+  // (travellers, chosen stops, add-ons) without hunting for a toggle.
+  const [open, setOpen] = useState(true);
+  const isTailored = summary.flowLabel === "Tailored" || summary.flowLabel === "Tailored Signature";
 
   const partyLine =
     summary.adults != null && summary.minorAges
@@ -343,7 +346,7 @@ function ExperienceSummaryCard({
             data-testid="checkout-drawer-details-toggle"
             className="mt-1 flex min-h-[44px] w-full items-center justify-between gap-2 text-left text-[12.5px] uppercase tracking-[0.2em] text-[color:var(--charcoal-soft)] hover:text-[color:var(--charcoal)]"
           >
-            <span>Your Signature details</span>
+            <span>What you're paying for</span>
             <ChevronDown
               size={14}
               aria-hidden
@@ -424,10 +427,10 @@ function ExperienceSummaryCard({
               {hasBeats ? (
                 <div className="mt-3 border-t border-[color:var(--border)] pt-2">
                   <p className="text-[12px] uppercase tracking-[0.26em] text-[color:var(--charcoal)]">
-                    What's included
+                    {isTailored ? "Your chosen stops" : "What's included"}
                   </p>
                   <ul className="mt-1.5 space-y-1">
-                    {summary.beats!.slice(0, 4).map((b) => (
+                    {(isTailored ? summary.beats! : summary.beats!.slice(0, 4)).map((b) => (
                     <li
                       key={b}
                       className="flex gap-2 text-[12px] leading-snug text-[color:var(--charcoal)]"
