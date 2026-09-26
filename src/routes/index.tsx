@@ -57,8 +57,8 @@ const LIVE_REVIEW_FALLBACK_TOURS = [
  * dedicated landing pages own Lisbon and day-trip search intent.
  */
 const HOME_SEO_TITLE =
-  "Private Portugal Experiences & Tailor-Made Journeys | YES";
-const HOME_SEO_SOCIAL_TITLE = "Private Portugal Days & Journeys | YES Experiences Portugal";
+  "Private Portugal Tours & Tailor-Made Journeys | YES Experiences";
+const HOME_SEO_SOCIAL_TITLE = HOME_SEO_TITLE;
 const HOME_SEO_DESCRIPTION =
   "Design a private day in real time, reserve a Signature experience, or shape a multi-day Portugal journey with a local expert. Wine, coast, food and culture, your way.";
 
@@ -289,7 +289,7 @@ export const Route = createFileRoute("/")({
       { name: "description", content: HOME_SEO_DESCRIPTION },
       { property: "og:title", content: HOME_SEO_SOCIAL_TITLE },
       { property: "og:description", content: HOME_SEO_DESCRIPTION },
-      { property: "twitter:title", content: HOME_SEO_SOCIAL_TITLE },
+      { name: "twitter:title", content: HOME_SEO_SOCIAL_TITLE },
       { property: "twitter:description", content: HOME_SEO_DESCRIPTION },
       { property: "og:image", content: `https://yesexperiencesportugal.com${heroImg}` },
       { property: "og:image:alt", content: "A private coastal journey with YES Experiences Portugal" },
