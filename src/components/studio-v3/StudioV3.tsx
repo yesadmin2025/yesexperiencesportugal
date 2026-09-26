@@ -5867,8 +5867,7 @@ export function StoryboardHandoff({
             >
               <img
                 src={skeletonTour.img}
-                alt=""
-                aria-hidden
+                alt={skeletonTour.title ? `${skeletonTour.title} — the Signature day you selected` : "The Signature day you selected"}
                 loading="lazy"
                 decoding="async"
                 className="absolute inset-0 h-full w-full object-cover"
