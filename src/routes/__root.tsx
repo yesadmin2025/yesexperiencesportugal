@@ -176,7 +176,6 @@ export const Route = createRootRoute({
       { property: "og:site_name", content: "YES Experiences Portugal" },
       { property: "og:type", content: "website" },
       { property: "og:locale", content: "en_US" },
-      { property: "og:locale:alternate", content: "pt_PT" },
       { name: "twitter:card", content: "summary_large_image" },
       { name: "twitter:site", content: "@yesexperiencespt" },
     ],
