@@ -126,7 +126,7 @@ export type SignatureSourceOfTruth = {
 const VERIFIED = "2026-07-27";
 const CANCEL_24H = "You can cancel up to 24 hours in advance of the experience for a full refund.";
 
-/** Terse builder so the 12 canonical blocks stay readable. */
+/** Terse builder so the canonical blocks stay readable. */
 function stop(
   order: number,
   label: string,
@@ -150,9 +150,53 @@ function stop(
 }
 
 /**
- * Registry — all 12 Signatures, canonical per the Bible.
+ * Registry — verified Signatures, canonical per the Bible and owner-approved P23 listing.
  */
 export const SIGNATURE_SOURCE_OF_TRUTH: Partial<Record<string, SignatureSourceOfTruth>> = {
+  /* ── Artisan Pottery & Cork — P23 ────────────────────────── */
+  "p23-artisan-pottery-cork": {
+    tourId: "p23-artisan-pottery-cork",
+    viatorUrl: "https://www.viator.com/tours/Lisbon/Bokun-Free-Product-June-2026/d538-349639P23",
+    productCode: "P23",
+    title: "Private Lisbon to Alentejo Tour: Artisan Pottery & Cork Workshops",
+    durationText: "~9h",
+    durationMinutes: 540,
+    pickupWindow: "8:00am",
+    pickupZone: "Pickup offered; the guide will contact guests the day before to arrange details.",
+    groupType: "Private tour",
+    maxGroup: null,
+    overview: "A private full-day experience of Alentejo's living craft traditions. Work hands-on with cork and clay alongside local makers; the afternoon includes a three-hour pottery workshop at a ceramics and earth arts centre. Lunch is included.",
+    highlights: [
+      "Hands-on cork workshop with local makers",
+      "Three-hour pottery workshop at a ceramics and earth arts centre",
+      "Private local guide and air-conditioned transport",
+      "Lunch included",
+    ],
+    included: [
+      "Private transportation",
+      "Air-conditioned vehicle",
+      "Cork Workshop",
+      "Pottery Workshop",
+      "Bottled water",
+      "Admission Fee",
+      "Private Local Guide",
+      "Lunch",
+    ],
+    notIncluded: [],
+    variesByOption: [],
+    // The listing does not name the workshop venues or give their coordinates.
+    // Activities are ordered only where the listing specifies a time of day;
+    // unpublished stop durations remain null. Never pin a guessed location.
+    itinerary: [
+      stop(1, "Cork workshop", "Work with cork and learn about the Alentejo's craft traditions alongside local makers.", null, "core", true),
+      stop(2, "Lunch", "Lunch is included in the private day.", null, "core", true),
+      stop(3, "Pottery workshop", "A three-hour hands-on pottery workshop at a ceramics and earth arts centre in the afternoon.", 180, "core", true),
+    ],
+    cancellation: CANCEL_24H,
+    languages: ["English"], // Viator lists two more without naming them.
+    meetingPoint: null,
+    verifiedAt: "2026-07-27",
+  },
   /* ── 1 · Tróia & Comporta — P18 ─────────────────────────── */
   "troia-comporta": {
     tourId: "troia-comporta",
@@ -1016,12 +1060,14 @@ export const SIGNATURE_SOURCE_OF_TRUTH: Partial<Record<string, SignatureSourceOf
 };
 
 /**
- * Canonical Viator URL registry for the 12 Signature tours.
+ * Canonical Viator URL registry for the Signature tours.
  * Route ids are preserved for SEO continuity — two ids intentionally point
  * at Viator products whose published names differ from the internal id.
  * Unresolved product-code mismatches are reported, never silently changed.
  */
 export const CANONICAL_VIATOR_URLS: Record<string, string> = {
+  "p23-artisan-pottery-cork":
+    "https://www.viator.com/tours/Lisbon/Bokun-Free-Product-June-2026/d538-349639P23",
   "arrabida-wine-allinclusive":
     "https://www.viator.com/tours/Lisbon/Private-Wine-Tour-with-Food-and-Wine-Tasting-in-Southern-Lisbon/d538-349639P3",
   "wild-beaches-picnic":

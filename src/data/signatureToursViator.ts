@@ -1,4 +1,4 @@
-// Auto-generated from Viator on 2026-06-15 — DO NOT edit by hand.
+// Auto-generated from Viator on 2026-06-15; owner-approved P23 appended 2026-07-27.
 // Source: each tour's public Viator product page (see viatorUrl).
 // Used by tours/$tourId page to show real photos, real reviews, real price.
 
@@ -93,6 +93,26 @@ export type ViatorMeta = {
 };
 
 export const VIATOR_META: Record<string, ViatorMeta> = {
+  // P23: public Viator listing and owner's supplier pricing screenshot (14 Jul 2026).
+  // Direct adult price = rounded Viator adult band × 0.85; minors use the site's approved age bands.
+  "p23-artisan-pottery-cork": {
+    viatorUrl: "https://www.viator.com/tours/Lisbon/Bokun-Free-Product-June-2026/d538-349639P23",
+    priceFromUSD: null,
+    viatorReviewCount: 0,
+    reviewCount: 20,
+    rating: 5,
+    recommendedPct: null,
+    overview: "A private full-day Alentejo craft experience built around cork and clay, including hands-on workshops with local makers and a three-hour pottery session in the afternoon.",
+    included: ["Private transportation", "Air-conditioned vehicle", "Cork Workshop", "Pottery Workshop", "Bottled water", "Admission Fee", "Private Local Guide", "Lunch"],
+    stops: [
+      { name: "Cork workshop", desc: "Work with cork alongside local makers." },
+      { name: "Lunch", desc: "Lunch is included." },
+      { name: "Pottery workshop", desc: "Three-hour hands-on afternoon ceramics workshop." },
+    ],
+    topReviews: [],
+    gallery: [],
+    priceTiersEUR: { 2: 288, 3: 254, 4: 254, 5: 254, 6: 203, 7: 203, 8: 203 },
+  },
   "arrabida-wine-allinclusive": {
     viatorUrl:
       "https://www.viator.com/tours/Lisbon/Private-Wine-Tour-with-Food-and-Wine-Tasting-in-Southern-Lisbon/d538-349639P3",

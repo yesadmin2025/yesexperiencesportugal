@@ -32,6 +32,11 @@ describe("all Signature pages resolve a useful map", () => {
     "%s renders a map with enough trustworthy stops",
     (id, tour) => {
       const stops = resolveSignatureMapStops(tour);
+      // P23's supplier has not named its workshop venues: no invented pins.
+      if (id === "p23-artisan-pottery-cork") {
+        expect(stops).toEqual([]);
+        return;
+      }
       expect(stops.length, `${id} resolved only ${stops.length} map stops`).toBeGreaterThanOrEqual(
         MIN_USEFUL_STOPS,
       );
@@ -59,6 +64,7 @@ describe("all Signature pages resolve a useful map", () => {
   it("has a coordinate for every visited SoT label (reports gaps, never invents)", () => {
     const gaps: string[] = [];
     for (const tour of signatureTours) {
+      if (tour.id === "p23-artisan-pottery-cork") continue; // venues not published
       for (const chapter of sotItinerary(tour.id) ?? []) {
         if (chapter.stopType === "pass-by") continue;
         if (!lookupStop(chapter.label)) gaps.push(`${tour.id} → "${chapter.label}"`);

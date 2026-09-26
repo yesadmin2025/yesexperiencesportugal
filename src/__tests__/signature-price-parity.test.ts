@@ -16,6 +16,7 @@ import { signatureTours } from "@/data/signatureTours";
  * card advertises a price Stripe will never charge.
  */
 const TIER_8: Record<string, number> = {
+  "p23-artisan-pottery-cork": 203,
   "arrabida-boat": 135,
   "arrabida-wine-allinclusive": 135,
   "azeitao-cheese": 101,

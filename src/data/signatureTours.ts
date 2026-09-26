@@ -30,6 +30,8 @@ import imgFatimaNazareObidosHero from "@/assets/tours/fatima-nazare-obidos/hero.
 import imgEvoraAlentejo from "@/assets/tours/evora-alentejo.jpg";
 import imgTilesWorkshop from "@/assets/tours/tiles-workshop.jpg";
 import imgWildBeachesPicnic from "@/assets/tours/wild-beaches-picnic.jpg";
+import imgArtisanPotteryCorkAsset from "@/assets/tours/p23-artisan-pottery-cork/hero.jpg.asset.json";
+const imgArtisanPotteryCork = imgArtisanPotteryCorkAsset.url;
 
 // ── Per-stop / gallery photos for the 7 tours with full Viator galleries ──
 import imgArrabidaWineViewpoint from "@/assets/tours/arrabida-wine-allinclusive/viewpoint.jpg";
@@ -87,6 +89,7 @@ export type TourSeed = {
 /** Used by older code paths to fall back to the tour hero when a stop has
  *  no explicit `image` override. */
 export type StopTheme =
+  | "p23-artisan-pottery-cork"
   | "arrabida-boat"
   | "arrabida-wine-allinclusive"
   | "azeitao-cheese"
@@ -196,6 +199,34 @@ export function filterValidTourIds(ids: ReadonlyArray<string | null | undefined>
 }
 
 export const signatureTours: SignatureTour[] = [
+  {
+    id: "p23-artisan-pottery-cork",
+    title: "Private Lisbon to Alentejo Tour: Artisan Pottery & Cork Workshops",
+    seoTitle: "Private Alentejo Cork & Pottery Workshops | YES Portugal",
+    seoDescription: "Meet Alentejo makers on a private day of hands-on cork and pottery workshops. Three-hour ceramics session, local guide, lunch and transport included. From €203 per person.",
+    region: "Alentejo",
+    duration: "Full Day",
+    durationHours: "~9h",
+    priceFrom: 203,
+    theme: "Culture",
+    blurb: "Meet the makers behind Alentejo's cork and clay traditions on a private, hands-on day with lunch included.",
+    intro: "Step into the Alentejo's living craft traditions. Work with cork alongside local makers, then spend the afternoon shaping clay in a three-hour pottery workshop. A private guide, transport and lunch are part of the day.",
+    fitsBest: "Couples · craft lovers · curious travelers",
+    pace: ["Hands-on cork workshop", "Lunch included", "Afternoon pottery workshop"],
+    stops: [
+      { label: "Cork workshop", story: "Work directly with cork alongside local makers.", imageTheme: "p23-artisan-pottery-cork" },
+      { label: "Lunch", story: "Lunch is included.", imageTheme: "p23-artisan-pottery-cork" },
+      { label: "Pottery workshop", story: "A three-hour hands-on afternoon with clay at a ceramics and earth arts centre.", imageTheme: "p23-artisan-pottery-cork" },
+    ],
+    highlights: ["Hands-on cork workshop with local makers", "Three-hour pottery workshop", "Private guide, transport and lunch included"],
+    included: ["Private transportation", "Air-conditioned vehicle", "Cork Workshop", "Pottery Workshop", "Bottled water", "Admission Fee", "Private Local Guide", "Lunch"],
+    idealFor: ["Couples curious about Portuguese craft", "Travelers who enjoy hands-on making", "Private groups exploring Alentejo traditions"],
+    notes: ["Workshop venue names are confirmed by your guide; the Viator listing does not identify them."],
+    img: imgArtisanPotteryCork,
+    gallery: [imgArtisanPotteryCork],
+    bookingUrl: "https://www.viator.com/tours/Lisbon/Bokun-Free-Product-June-2026/d538-349639P23",
+    seed: { region: "alentejo", duration: "fullday", styles: ["heritage", "gastronomy"], pace: "slow", tier: "signature" },
+  },
   {
     id: "arrabida-wine-allinclusive",
     title: "Arrábida Private Wine Tour from Lisbon — All-Inclusive",
@@ -1468,6 +1499,7 @@ export function seedToSearchParams(tour: SignatureTour): string {
 /** Per-tour hero image map. Used as the fallback for stops that don't have
  *  an explicit `image`. */
 export const STOP_THEME_IMG: Record<StopTheme, string> = {
+  "p23-artisan-pottery-cork": imgArtisanPotteryCork,
   "arrabida-boat": imgArrabidaBoatHero,
   "arrabida-wine-allinclusive": imgArrabidaWineHero,
   "azeitao-cheese": imgAzeitaoCheeseHero,

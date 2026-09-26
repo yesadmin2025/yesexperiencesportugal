@@ -335,11 +335,13 @@ function TourDetailPage() {
           The reveal class lives on THIS wrapper, not inside the lazy
           component: the reveal sweep adds `.is-visible` before the lazy
           chunk hydrates, which made React report an attribute mismatch. */}
-      <div className="reveal">
-        <Suspense fallback={<SignatureRouteMapShell />}>
-          <SignatureRouteMap tour={tour} />
-        </Suspense>
-      </div>
+      {tour.id !== "p23-artisan-pottery-cork" && (
+        <div className="reveal">
+          <Suspense fallback={<SignatureRouteMapShell />}>
+            <SignatureRouteMap tour={tour} />
+          </Suspense>
+        </div>
+      )}
 
       {/* ── F · GALLERY (real photos) ─────────────────────────── */}
       <GalleryStrip tour={tour} resolveImg={resolveImg} meta={meta} adminPhotos={adminPhotos} />

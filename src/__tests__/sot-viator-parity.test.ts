@@ -16,7 +16,7 @@ import { describe, expect, it } from "vitest";
 import { SIGNATURE_SOURCE_OF_TRUTH } from "@/data/signatureToursSourceOfTruth";
 import { getTourContent } from "@/lib/tourContent";
 
-const EXPECTED_SOT_COUNT = 12;
+const EXPECTED_SOT_COUNT = 13;
 const sotIds = Object.keys(SIGNATURE_SOURCE_OF_TRUTH).sort();
 
 describe("SoT coverage", () => {

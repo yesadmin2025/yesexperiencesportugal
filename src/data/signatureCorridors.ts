@@ -44,6 +44,8 @@ export interface SignatureCorridor {
 }
 
 export const SIGNATURE_CORRIDORS: Readonly<Record<string, SignatureCorridor>> = {
+  // P23's workshop venues are unpublished. The geographic region is known,
+  // but no Studio corridor is assigned until their actual locations are verified.
   "troia-comporta": {
     region: "comporta-troia",
     routeCluster: "troia-comporta-coast",
