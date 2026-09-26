@@ -44,7 +44,7 @@ import { getTourGallery, getHeroAlt } from "@/lib/tour-gallery";
 import { getTourContent, signatureDurationLabel } from "@/lib/tourContent";
 import { projectPublicSotItinerary } from "@/lib/publicItineraryProjection";
 import { TourReviews } from "@/components/TourReviews";
-import { PRICE_GROUP_QUALIFIER } from "@/lib/price-copy";
+import { PriceQualifier } from "@/components/ui/PriceQualifier";
 import { GroupSizePriceRow } from "@/components/tours/GroupSizePriceRow";
 import { GuestReviewForm } from "@/components/reviews/GuestReviewForm";
 import { RecognisedByGuides } from "@/components/RecognisedByGuides";
@@ -508,7 +508,7 @@ function TourHero({
                   <PriceEur amountEur={(tour as { priceFrom: number }).priceFrom} role="from" />
                 </span>
                 <span className="text-[12px] uppercase tracking-[0.12em] text-[color:var(--charcoal-soft)]">
-                  per person {PRICE_GROUP_QUALIFIER}
+                  per person <PriceQualifier />
                 </span>
                 <PriceCurrencyChip align="start" />
               </div>
