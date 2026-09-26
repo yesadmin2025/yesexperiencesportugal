@@ -18,9 +18,17 @@ import { supabaseAdmin } from "@/integrations/supabase/client.server";
  *   have been dropped. All writes now flow through this server
  *   function, which uses the RLS-bypassing `supabaseAdmin` client
  *   AFTER validating that the caller's `sessionId` matches what
- *   the file path claims. The session id is the only credential
- *   anonymous builder users have — treated as an unguessable
- *   bearer token, exactly like the existing delete/list flows.
+ *   the file path claims.
+ *
+ * Ownership proof (server-issued upload pass):
+ *   Knowing a sessionId alone is not enough to write into it. The
+ *   first upload for a session "claims" it: the server mints a
+ *   random pass, stores it in `builder_session_passes` (service-role
+ *   only, no client access) and returns it to the caller, who keeps
+ *   it in localStorage. Every later upload must present that pass;
+ *   a missing or wrong pass is rejected. A stranger who learns a
+ *   sessionId (e.g. via a shared link) cannot upload into a session
+ *   that has already been claimed.
  */
 
 const MAX_BYTES = 10 * 1024 * 1024; // 10 MB
@@ -48,15 +56,63 @@ const Input = z.object({
     .string()
     .min(4)
     .max(Math.ceil((MAX_BYTES * 4) / 3) + 64),
+  // Server-issued ownership pass for this session. Absent only on the
+  // very first upload, which claims the session and receives the pass.
+  pass: z
+    .string()
+    .min(16)
+    .max(128)
+    .regex(/^[a-zA-Z0-9_-]+$/)
+    .optional(),
 });
+
+function newPass(): string {
+  const bytes = new Uint8Array(24);
+  crypto.getRandomValues(bytes);
+  // base64url, 32 chars, ~144 bits of entropy
+  return btoa(String.fromCharCode(...bytes))
+    .replace(/\+/g, "-")
+    .replace(/\//g, "_")
+    .replace(/=+$/, "");
+}
 
 export const uploadBuilderReference = createServerFn({ method: "POST" })
   .inputValidator((input: unknown) => Input.parse(input))
   .handler(async ({ data }) => {
-    const { sessionId, fileName, mimeType, fileSizeBytes, base64 } = data;
+    const { sessionId, fileName, mimeType, fileSizeBytes, base64, pass } = data;
 
     if (!ALLOWED_MIME.has(mimeType)) {
       return { ok: false as const, reason: "unsupported_type" };
+    }
+
+    // Ownership check: the session must either be unclaimed (first
+    // upload — we mint and return a pass) or the caller must present
+    // the pass issued when the session was claimed.
+    const { data: passRow, error: passErr } = await supabaseAdmin
+      .from("builder_session_passes")
+      .select("pass")
+      .eq("session_id", sessionId)
+      .maybeSingle();
+    if (passErr) {
+      return { ok: false as const, reason: "ownership_check_failed" };
+    }
+
+    let issuedPass: string | null = null;
+    if (passRow) {
+      if (!pass || pass !== passRow.pass) {
+        return { ok: false as const, reason: "forbidden" };
+      }
+    } else {
+      // Claim the session. If two callers race, the loser's insert
+      // violates the primary key and is rejected — only the winner's
+      // pass is ever returned.
+      issuedPass = newPass();
+      const { error: claimErr } = await supabaseAdmin
+        .from("builder_session_passes")
+        .insert({ session_id: sessionId, pass: issuedPass });
+      if (claimErr) {
+        return { ok: false as const, reason: "forbidden" };
+      }
     }
 
     // Enforce per-session cap server-side (defence-in-depth; the UI
@@ -129,5 +185,5 @@ export const uploadBuilderReference = createServerFn({ method: "POST" })
       return { ok: false as const, reason: "insert_failed" };
     }
 
-    return { ok: true as const, rowId: row.id, filePath: path };
+    return { ok: true as const, rowId: row.id, filePath: path, pass: issuedPass };
   });

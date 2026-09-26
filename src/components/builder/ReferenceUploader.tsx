@@ -32,6 +32,29 @@ const MAX_FILES = 5;
 const MAX_BYTES = 10 * 1024 * 1024;
 const ACCEPT = "image/jpeg,image/png,image/webp,image/heic,image/heif,application/pdf";
 
+// Server-issued ownership pass for this builder session. The first
+// upload claims the session and the server returns a pass; we keep it
+// here and present it on every later upload. Without it the server
+// rejects writes into a session that someone else has claimed.
+const passKey = (sessionId: string) => `yes:builder:uploadPass:${sessionId}`;
+
+function readPass(sessionId: string): string | undefined {
+  try {
+    return window.localStorage.getItem(passKey(sessionId)) ?? undefined;
+  } catch {
+    return undefined;
+  }
+}
+
+function storePass(sessionId: string, pass: string) {
+  try {
+    window.localStorage.setItem(passKey(sessionId), pass);
+  } catch {
+    // localStorage blocked — uploads still work for this page load
+    // only if the session stays unclaimed; nothing more we can do.
+  }
+}
+
 interface ReferenceRow {
   id: string;
   file_path: string;
@@ -125,12 +148,18 @@ export function ReferenceUploader({ sessionId, onToneReady }: Props) {
               mimeType: file.type,
               fileSizeBytes: file.size,
               base64,
+              pass: readPass(sessionId),
             },
           });
           if (!result.ok) {
             console.error("upload failed:", result.reason);
             toast.error(`Upload failed: ${file.name}`);
             continue;
+          }
+          // First upload for this session: the server minted an
+          // ownership pass — keep it for all future uploads.
+          if (result.pass) {
+            storePass(sessionId, result.pass);
           }
         } catch (err) {
           console.error(err);
