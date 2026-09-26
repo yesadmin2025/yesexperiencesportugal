@@ -1,5 +1,10 @@
 # Roadmap — Operations hub upgrade
 
+## Current request — public mobile polish and publication
+- [ ] Verify heading spacing and typography across representative public pages on phone and desktop
+- [ ] Check mobile footer and clickable article citations on the public tour page
+- [ ] Publish requested changes, then measure live mobile homepage load and inspect live SEO and citations
+
 ## 26 Sep requests
 - [x] Add a truthful region-by-region Portugal travel page and discoverable metadata
 - [x] Ensure admin bookings shows Studio and Signature reservations with date, guests and total
