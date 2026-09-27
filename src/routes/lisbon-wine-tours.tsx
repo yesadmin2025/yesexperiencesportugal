@@ -52,6 +52,9 @@ const WINE_DAYS = WINE_IDS.map((id) => signatureTours.find((t) => t.id === id)).
   (t): t is (typeof signatureTours)[number] => Boolean(t),
 );
 
+const WINE_FROM = Math.min(...WINE_DAYS.map((t) => t.priceFrom));
+const DESCRIPTION = `Reserve a private wine tour from Lisbon online: Arrábida, Azeitão or the Alentejo, from €${WINE_FROM} per person, with hotel pickup and tastings.`;
+
 const BOOKABLE_IDS = [
   "arrabida-wine-allinclusive",
   "azeitao-cheese",
