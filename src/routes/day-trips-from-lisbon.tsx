@@ -573,7 +573,7 @@ function DayTripsFromLisbon() {
             </Link>{" "}
             ·{" "}
             <Link
-              to="/portugal-itinerary"
+              to="/how-many-days-in-portugal"
               className="underline underline-offset-4"
             >
               how many days in Portugal
