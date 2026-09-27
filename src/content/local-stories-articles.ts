@@ -1654,7 +1654,7 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
       ],
     },
     ctaLead: "Tell us your dates and we will tell you honestly what that month does best.",
-    ctaLabel: "Design your day",
+    ctaLabel: "Design my experience",
     signatureSlug: "arrabida-wine-allinclusive",
     relatedReads: [
       { path: "/day-trips-from-lisbon", label: "Best day trips from Lisbon" },
