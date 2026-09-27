@@ -69,14 +69,14 @@ export const LISBON_REGIONS: readonly LisbonRegion[] = [
     path: "/private-tours-arrabida-sesimbra",
     slug: "arrabida-sesimbra",
     name: "Arrábida & Sesimbra",
-    title: "Private Wine Tours Lisbon to Arrábida & Sesimbra",
+    title: "Private Arrábida & Sesimbra Tours from Lisbon: Coast & Boat",
     description:
-      "Private wine tours from Lisbon to Arrábida and Sesimbra, with Azeitão cellars, Atlantic viewpoints and a fishing-town lunch. Hotel pickup; your group only.",
+      "Private days on the Arrábida coast and in Sesimbra: hidden coves, the boat trip under the cliffs, viewpoints and a fishing-town lunch. Door-to-door pickup.",
     eyebrow: "Setúbal district · 40 minutes from Lisbon",
-    h1Lead: "Private wine tours from Lisbon,",
-    h1Em: "through Arrábida & Sesimbra.",
+    h1Lead: "Private Arrábida & Sesimbra tours,",
+    h1Em: "where the hills meet the sea.",
     standfirst:
-      "This is where we are based, and it is the closest real wine country to Lisbon. The Serra da Arrábida drops straight into green water, Azeitão makes wine and cheese a few kilometres inland, and Sesimbra still lands its fish every morning.",
+      "This is our home coast. The Serra da Arrábida drops straight into green water, the coves are reached by boat or on foot, and Sesimbra still lands its fish every morning. Come for the sea; the cellars are a short detour inland.",
     guideLink: {
       lead: "Still choosing between the wine regions? Our local guide lets you ",
       anchor: "compare wine days from Lisbon",
@@ -86,8 +86,6 @@ export const LISBON_REGIONS: readonly LisbonRegion[] = [
       "arrabida-wine-allinclusive",
       "arrabida-boat",
       "wild-beaches-picnic",
-      "azeitao-cheese",
-      "tiles-workshop",
     ],
     driveTime: "About 40 minutes from central Lisbon",
     bestSeason: "Good all year; the coves and the boat days are best April to October.",
@@ -121,7 +119,7 @@ export const LISBON_REGIONS: readonly LisbonRegion[] = [
     path: "/private-tours-azeitao-setubal",
     slug: "azeitao-setubal",
     name: "Azeitão & Setúbal",
-    title: "Private Wine Tours Lisbon to Azeitão & Setúbal",
+    title: "Private Azeitão & Setúbal Wine Tours: Cellars, Cheese, Tiles",
     description:
       "Private wine tours from Lisbon to Azeitão and Setúbal: family cellars, Moscatel, cheese-making, tile painting and the Setúbal market, with hotel pickup.",
     eyebrow: "Azeitão · Setúbal · 40 minutes from Lisbon",
