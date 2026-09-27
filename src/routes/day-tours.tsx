@@ -97,8 +97,9 @@ function DayToursPage() {
               Day <SectionTitle.Em>Tours</SectionTitle.Em>
             </SectionTitle>
             <p className="page-header-support mt-5 max-w-xl mx-auto text-[color:var(--charcoal-soft)]">
-              Private guides, refined pace, and the parts of Portugal you'll remember most. Reserve
-              instantly — or adjust a few details within the experience to match your rhythm.
+              Choose your day by how much time you have. Each card shows the duration, the region
+              and the price from, so you can compare a half day with a full one at a glance, then
+              reserve it online with hotel pickup.
             </p>
           </div>
         </div>
