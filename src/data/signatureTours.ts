@@ -386,6 +386,8 @@ export const signatureTours: SignatureTour[] = [
       "A private coastal day — Arrábida viewpoints, hidden coves and a slow picnic on a quiet beach.",
     intro:
       "The good parts of the Lisbon coast aren't on the postcards. We take the small roads into Arrábida, drop down to the coves locals keep to themselves, and set a picnic on the sand with the natural park behind us. No queues, no rush.",
+    contextParagraph:
+      "This private coastal day from Lisbon runs about 7h30 door to door, with hotel or apartment pickup and a private vehicle and guide for your group only. The picnic is chosen together at the Livramento market — fresh bread, cheese, fruit, cured meats and wine — and served on a quiet Arrábida cove, with time in Sesimbra to finish. The day is priced from €118 per person · price per person varies with group size, and dates confirm instantly.",
     fitsBest: "Couples, families and slow travelers",
     pace: ["Arrábida viewpoints", "Hidden cove picnic", "Sesimbra"],
     stops: [
@@ -494,6 +496,8 @@ export const signatureTours: SignatureTour[] = [
       "A private Arrábida day with the Sesimbra Coastal Boat Tour, Lapa de Santa Margarida and the cliffs of Cabo Espichel.",
     intro:
       "A day told by the sea. It begins at Livramento Market, then follows the coast into the Arrábida Natural Park, past Lapa de Santa Margarida and out on the Sesimbra Coastal Boat Tour. The afternoon eases into Sesimbra and the cliffs of Cabo Espichel. Lunch can be added when you tailor the day.",
+    contextParagraph:
+      "This private Arrábida and Sesimbra day from Lisbon runs about 6–8 hours door to door, with pickup in Lisbon, Setúbal, Sesimbra or Almada and a private vehicle and guide for your group only. The Sesimbra Coastal Boat Tour is included in the price, alongside the Livramento market, Lapa de Santa Margarida and the Cabo Espichel cliffs; lunch is own expense, or added when you tailor the day. Priced from €135 per person · price per person varies with group size, and dates confirm instantly.",
     fitsBest: "Couples, families and active travelers",
     pace: ["Arrábida by road", "Boat into the coves", "Sesimbra at dusk"],
     stops: [
