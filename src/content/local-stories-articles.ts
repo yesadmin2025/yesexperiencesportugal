@@ -2444,6 +2444,8 @@ export const CONSOLIDATED_LOCAL_STORY_PATHS: Readonly<Record<string, string>> = 
   "must-visit-places-near-lisbon": "/day-trips-from-lisbon",
   "private-tours-from-lisbon": "/lisbon-private-tours",
   "best-private-day-tours-from-lisbon": "/lisbon-private-tours",
+  // Duplicated the established /how-many-days-in-portugal planning page.
+  "how-many-days-in-portugal": "/how-many-days-in-portugal",
 } as const;
 
 /** Surviving site path for a retired guide, or undefined when it still publishes. */

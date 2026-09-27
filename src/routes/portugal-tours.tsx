@@ -226,8 +226,7 @@ function Page() {
                 </li>
                 <li>
                   <Link
-                    to="/local-stories/$slug"
-                    params={{ slug: "how-many-days-in-portugal" }}
+                    to="/how-many-days-in-portugal"
                     className="hover:text-[color:var(--teal)]"
                   >
                     How many days in Portugal →
