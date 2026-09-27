@@ -149,6 +149,7 @@ describe("review structured data is first-party only", () => {
       "@type": "MerchantReturnPolicy",
       returnPolicyCategory: "https://schema.org/MerchantReturnFiniteReturnWindow",
       merchantReturnDays: 1,
+      returnMethod: "https://schema.org/ReturnByMail",
       returnFees: "https://schema.org/FreeReturn",
       refundType: "https://schema.org/FullRefund",
     });

@@ -29,6 +29,8 @@ describe("Every Signature has a unique US purchase-intent target", () => {
     expect(new Set(ids.map((id) => SIGNATURE_SEO[id]?.title)).size).toBe(ids.length);
     expect(new Set(ids.map((id) => SIGNATURE_SEO[id]?.description)).size).toBe(ids.length);
     expect(new Set(ids.map((id) => SIGNATURE_SEO[id]?.primaryKeyword)).size).toBe(ids.length);
+    expect(new Set(ids.map((id) => SIGNATURE_SEO[id]?.h1)).size).toBe(ids.length);
+    expect(new Set(ids.map((id) => SIGNATURE_SEO[id]?.opening)).size).toBe(ids.length);
   });
 
   for (const tour of signatureTours) {
@@ -37,6 +39,8 @@ describe("Every Signature has a unique US purchase-intent target", () => {
       expect(seo).toBeTruthy();
       expect(seo?.primaryKeyword.length).toBeGreaterThan(5);
       expect(seo?.supportingKeywords.length).toBeGreaterThanOrEqual(2);
+      expect(seo?.h1.length).toBeGreaterThan(20);
+      expect(seo?.opening.length).toBeGreaterThan(90);
     });
   }
 });
