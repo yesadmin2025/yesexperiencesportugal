@@ -74,17 +74,21 @@ export const Route = createFileRoute("/local-stories/")({
 function Page() {
   useMarketingMotion();
   const staticSlugs = LOCAL_STORIES_ARTICLES.map((article) => article.slug);
-  // One lead story per experience; companion reads remain accessible without
-  // presenting the same Signature as another full-size story card.
+  // Only cluster closely related readings. A shared tour reference alone does
+  // not mean two articles have the same editorial subject.
+  const relatedReading: Record<string, string> = {
+    "arrabida-wine-tour-what-to-expect": "arrabida-wine-tour-from-lisbon",
+    "arrabida-day-trip-from-lisbon": "arrabida-wine-tour-from-lisbon",
+  };
   const storyGroups = Array.from(
     LOCAL_STORIES_ARTICLES.reduce((groups, article) => {
-      const key = article.signatureSlug ?? article.slug;
+      const key = relatedReading[article.slug] ?? article.slug;
       const group = groups.get(key) ?? [];
       group.push(article);
       groups.set(key, group);
       return groups;
     }, new Map<string, typeof LOCAL_STORIES_ARTICLES>()),
-  ).map(([, articles]) => articles);
+  ).map(([, articles]) => articles.sort((a, b) => Number(a.slug !== (relatedReading[b.slug] ?? b.slug)) - Number(b.slug !== (relatedReading[a.slug] ?? a.slug))));
   const regionalGroups = storyGroups.filter(([article]) => !article.signatureSlug);
   const experienceGroups = storyGroups.filter(([article]) => Boolean(article.signatureSlug));
 
