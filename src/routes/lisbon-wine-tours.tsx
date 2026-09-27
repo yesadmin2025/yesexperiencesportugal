@@ -30,9 +30,9 @@ import arrabidaWineImage from "@/assets/tours/arrabida-wine-allinclusive/hero.jp
 
 const PATH = "/lisbon-wine-tours";
 const PAGE_URL = `${WEBSITE_URL}${PATH}`;
-const TITLE = "Lisbon Wine Tours — Best Private Wine Days from Lisbon";
+const TITLE = "Book a Private Lisbon Wine Tour: Dates, Prices, Pickup";
 const DESCRIPTION =
-  "Private wine tours from Lisbon to Azeitão, Arrábida and the Alentejo, with local cellars, tastings, hotel pickup and private transport.";
+  "Reserve a private wine tour from Lisbon online: Arrábida, Azeitão or the Alentejo, from €"+"101"+" per person, with hotel pickup and tastings included.";
 
 const crumbs = [
   { name: "Home", path: "/" },
@@ -75,8 +75,8 @@ const REGIONS = [
 
 const FAQS = [
   {
-    q: "Which is the best wine tour from Lisbon?",
-    a: "For a first visit, the Arrábida day: two family wineries in Azeitão, the park road, a long lunch and Sesimbra on the way back. It is our most-reviewed day and the shortest drive.",
+    q: "How do I book a wine tour from Lisbon?",
+    a: "Choose a wine day on this page, pick your date and number of guests, and pay securely online. Your booking is confirmed instantly and your host contacts you about the pickup.",
   },
   {
     q: "Are your Lisbon wine tours private?",
@@ -159,9 +159,9 @@ function LisbonWineTours() {
             </SectionTitle.Em>
           </SectionTitle>
           <p className="page-header-support mt-6 text-[16px] md:text-[17px] leading-[1.8] text-[color:var(--charcoal-soft)]">
-            The wine country nearest Lisbon is not a marketing region — it is our own. We live forty
-            minutes from the Azeitão cellars, and the people pouring are people we know. Every day
-            here is private, includes hotel pickup, and can be reserved online.
+            In short: private wine days from Lisbon, 7 to 11 hours door to door, with hotel pickup,
+            your own host and vehicle, and instant online confirmation. Pick a day below and choose
+            your date.
           </p>
           <div className="mt-8 flex flex-col gap-3 sm:flex-row">
             <CtaButton href="#reserve">Reserve a wine day</CtaButton>
@@ -183,8 +183,7 @@ function LisbonWineTours() {
         <div className="container-x">
           <Eyebrow>The wine days</Eyebrow>
           <SectionTitle as="h2" spacing="tight">
-            The best wine tours from Lisbon,{" "}
-            <SectionTitle.Em>as we actually run them</SectionTitle.Em>.
+            Wine days you can <SectionTitle.Em>reserve today</SectionTitle.Em>.
           </SectionTitle>
           <p className="mt-5 max-w-2xl text-[15.5px] leading-[1.8] text-[color:var(--charcoal-soft)]">
             Still deciding between Arrábida, Azeitão and the Alentejo? Our guide to the{" "}
