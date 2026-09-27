@@ -154,6 +154,12 @@ function Page() {
                 travelers who want a real day, not a bus route. Every trip below is a real Signature
                 — run by us, priced with everything included, and confirmed in minutes.
               </p>
+              <p className="editorial-body mt-6">
+                A single private day, or a journey of any length — we design for whatever time you
+                have, starting wherever in Portugal you arrive: Lisbon, Porto, the Algarve, or a
+                small town nobody else writes about. One day or three weeks, the principle is the
+                same: your party only, your pace, a local on the ground.
+              </p>
 
               {REGIONS.map((r, i) => (
                 <div key={i} className="mt-16 md:mt-20">
@@ -216,6 +222,24 @@ function Page() {
                 <li>
                   <Link to="/day-trips-from-lisbon" className="hover:text-[color:var(--teal)]">
                     Day trips from Lisbon →
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    to="/local-stories/$slug"
+                    params={{ slug: "how-many-days-in-portugal" }}
+                    className="hover:text-[color:var(--teal)]"
+                  >
+                    How many days in Portugal →
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    to="/local-stories/$slug"
+                    params={{ slug: "private-tours-portugal-cost" }}
+                    className="hover:text-[color:var(--teal)]"
+                  >
+                    What private tours cost →
                   </Link>
                 </li>
               </ul>
