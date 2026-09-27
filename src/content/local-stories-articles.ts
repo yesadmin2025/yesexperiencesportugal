@@ -2190,6 +2190,171 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
     ],
     datePublished: "2026-09-19",
   },
+  {
+    slug: "how-many-days-in-portugal",
+    title: "How Many Days in Portugal? An Honest Itinerary Guide",
+    metaDescription:
+      "How many days you really need in Portugal — 3, 7, 10 or more. An honest local guide to pacing a Portugal itinerary, region by region.",
+    h1: "How Many Days in Portugal? An Honest Answer",
+    eyebrow: "Portugal · Itineraries",
+    standfirst:
+      "The question every traveler asks first — and the answer depends less on the map than on how you like to travel.",
+    sections: [
+      {
+        heading: "Three days is a city break, not a Portugal trip.",
+        body: "With three days, stay in Lisbon and take one day trip — Sintra for palaces, or the Arrábida coast for wine and the sea. Trying to add Porto or the Algarve turns the trip into airports and check-ins. A short trip done slowly beats a long trip done in transit.",
+      },
+      {
+        heading: "Seven days is the sweet spot for a first visit.",
+        body: "A week lets you hold a base in Lisbon, take two or three day trips — wine country, the coast, Évora across the plains — and still have unplanned evenings. Add a second base only if the north calls: Porto and the Douro deserve at least two nights of their own.",
+      },
+      {
+        heading: "Ten days is when Portugal opens up.",
+        body: "With ten days you can link Lisbon, the Alentejo, and the north without rushing — cork forests and talha wine villages between the cities, a slow lunch that costs you an afternoon and is worth it. This is the length where a journey stops being a list of stops and starts having a rhythm.",
+      },
+      {
+        heading: "More than ten days, and the map is yours.",
+        body: "Two weeks or more lets you cross the whole country — the Vicentine coast, the Schist Villages, the Douro terraces, the islands if you want them. There is no upper limit we cannot design for: we shape journeys of any length, starting from anywhere in Portugal, not only Lisbon.",
+      },
+      {
+        heading: "The real question is not how many days, but how many moves.",
+        body: "Every change of base costs half a day. Fewer bases with well-chosen day trips almost always beats more bases with less time in each. That is the principle behind every journey we design — depth over distance.",
+      },
+    ],
+    ctaLead:
+      "Tell us your dates and how you like to travel — a local travel designer shapes the journey around them, for any length of stay.",
+    ctaLabel: "Design my journey",
+    relatedReads: [
+      { path: "/portugal-travel-designer", label: "Travel Designer — multi-day journeys" },
+      { path: "/itineraries/10-day-private-portugal-tour", label: "A 10-day private Portugal journey" },
+      { path: "/day-trips-from-lisbon", label: "Day trips from Lisbon" },
+    ],
+    faq: [
+      {
+        q: "Is 3 days enough for Portugal?",
+        a: "Three days covers Lisbon well with one day trip. For the country beyond the capital, plan at least a week.",
+      },
+      {
+        q: "Can you do Lisbon and Porto in 5 days?",
+        a: "Yes, but it is tight — two nights in each with the train between them. With five days we usually recommend one base and day trips instead.",
+      },
+      {
+        q: "Do your journeys only start in Lisbon?",
+        a: "No. We design journeys starting anywhere in Portugal — Porto, the Algarve, or wherever you arrive — and of any length.",
+      },
+    ],
+    datePublished: "2026-09-27",
+  },
+  {
+    slug: "private-tours-portugal-cost",
+    title: "Private Tours in Portugal: What They Actually Cost",
+    metaDescription:
+      "What a private tour in Portugal really costs — honest per-person prices by group size, what is included, and how private compares to group tours.",
+    h1: "What a Private Tour in Portugal Actually Costs",
+    eyebrow: "Portugal · Planning",
+    standfirst:
+      "No vague 'contact us for pricing' — here are real numbers from the days we run, and what drives them.",
+    sections: [
+      {
+        heading: "The honest range.",
+        body: "Our private full-day experiences from Lisbon start between €101 and €254 per person, depending on the day and the group size. Wine days in Arrábida start around €135 per person; longer or more remote days — the Vicentine Coast, deep Alentejo — sit higher because the drive is longer and the day runs 9 to 12 hours.",
+      },
+      {
+        heading: "The price per person moves with the group.",
+        body: "A private day is one vehicle, one guide, one plan — the cost is shared by the party. Two travelers pay more per person than six. That is why every one of our pages shows the price per person by group size before you book, not after.",
+      },
+      {
+        heading: "What is included matters more than the headline.",
+        body: "On our wine days, tastings at family wineries, a traditional lunch, private transport and hotel pickup are included in the price. When you compare offers, check whether tastings, lunch and entrances are inside the number or added on the day — that is where 'cheaper' tours catch up.",
+      },
+      {
+        heading: "Private versus group, in money terms.",
+        body: "A seat on a shared group tour costs less per person — typically a third to a half of a private day. What you give up is the rhythm: fixed stops, fixed timing, a fixed menu. For couples and small groups who want the day to bend around them, the difference is the point of the trip.",
+      },
+      {
+        heading: "Multi-day journeys are priced as one design.",
+        body: "For journeys of several days, the cost depends on the route, the stays and the pace — there is no honest fixed number before the journey exists. A travel designer shapes it with you and prices the whole journey transparently before you commit to anything.",
+      },
+    ],
+    ctaLead:
+      "Every Signature day shows its real price per person by group size — choose one and see your date instantly.",
+    ctaLabel: "Explore Signature Experiences",
+    relatedReads: [
+      { path: "/portugal-tours", label: "All private tours in Portugal" },
+      { path: "/experiences", label: "Signature experiences with live prices" },
+      { path: "/local-stories/private-tour-vs-group-tour", label: "Private vs group tours, honestly" },
+    ],
+    faq: [
+      {
+        q: "How much is a private wine tour from Lisbon?",
+        a: "Our Arrábida wine day starts from €135 per person, with tastings, lunch, private transport and hotel pickup included. The per-person price varies with group size.",
+      },
+      {
+        q: "Are there hidden extras?",
+        a: "No. The price shown for your group size includes what the page lists — tastings, lunch and transport on wine days. Optional additions are shown separately before you pay.",
+      },
+      {
+        q: "Do prices change by season?",
+        a: "Our published from-prices hold across the year. What changes with the season is availability, so popular dates confirm first.",
+      },
+    ],
+    datePublished: "2026-09-27",
+  },
+  {
+    slug: "planning-a-proposal-in-portugal",
+    title: "Planning a Proposal in Portugal: Places, Timing, Privacy",
+    metaDescription:
+      "Planning a marriage proposal in Portugal — the places, the timing, and how to keep it private. A local guide to getting the moment right.",
+    h1: "Planning a Proposal in Portugal",
+    eyebrow: "Portugal · Proposals",
+    standfirst:
+      "The setting matters, but so does the hour, the wind, and whether a busload of strangers is watching. Here is how we think about it.",
+    sections: [
+      {
+        heading: "The place sets the tone — the timing saves it.",
+        body: "Portugal's most beautiful proposal settings are also its most visited. Cabo da Roca at midday is a queue; at golden hour on a weekday, it is a cliff above the Atlantic with room to breathe. The same view, a different hour — that is most of the work.",
+      },
+      {
+        heading: "Coast, vineyard, or old stone.",
+        body: "The wild cliffs of the Arrábida coast and Cabo Espichel suit couples who want the sea and scale. A private winery in Azeitão or the Alentejo suits a slower, candlelit mood. Óbidos and the Alentejo hill towns give you old stone and quiet lanes. The right choice is the one that sounds like the two of you.",
+      },
+      {
+        heading: "Privacy is planned, not hoped for.",
+        body: "A proposal fails quietly when it depends on luck — luck with crowds, with weather, with a restaurant table. We plan the moment the other way: the spot scouted, the hour chosen, a backup for wind or rain, and someone local making sure the path is clear before you arrive.",
+      },
+      {
+        heading: "The details around the question.",
+        body: "Flowers waiting at the viewpoint, a photographer who looks like a passerby until the moment, a table held for after, the car that appears when your legs are shaking. Small logistics, arranged in advance, are what let you think about only one sentence.",
+      },
+      {
+        heading: "Start with a conversation, not a form.",
+        body: "Every proposal we help with begins as a private conversation — what they love, what you have in mind, what must stay secret. From there we shape the day or the moment, anywhere in Portugal, and keep it invisible until the question is asked.",
+      },
+    ],
+    ctaLead:
+      "Tell us what you have in mind — privately, and with no obligation. We will help you get the moment right.",
+    ctaLabel: "Plan a special moment",
+    relatedReads: [
+      { path: "/proposals", label: "Proposals & special moments" },
+      { path: "/proposal-in-portugal", label: "Proposal in Portugal — how it works" },
+      { path: "/moments", label: "Moments — private celebrations" },
+    ],
+    faq: [
+      {
+        q: "What is the best place to propose in Portugal?",
+        a: "It depends on the couple — the Arrábida cliffs and Cabo da Roca for the sea, a private winery for intimacy, Óbidos or an Alentejo hill town for old stone. The hour and privacy matter more than the postcode.",
+      },
+      {
+        q: "Can you keep it a surprise?",
+        a: "Yes. Everything is arranged around the surprise — scouting, timing, photography and transport stay invisible until the moment.",
+      },
+      {
+        q: "Do you only work around Lisbon?",
+        a: "No. We plan proposals and special moments anywhere in Portugal, from the Arrábida coast to the Douro and the Alentejo.",
+      },
+    ],
+    datePublished: "2026-09-27",
+  },
 ];
 
 
