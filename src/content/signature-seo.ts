@@ -41,11 +41,11 @@ export const SIGNATURE_SEO: Record<string, SignatureSeoEntry> = {
       "Leave Lisbon for Arrábida viewpoints, quiet coves, a private beach picnic and a relaxed end in Sesimbra.",
   },
   "arrabida-boat": {
-    primaryKeyword: "private boat tour lisbon",
-    supportingKeywords: ["arrabida day trip from lisbon", "sesimbra day trip from lisbon"],
-    title: "Private Boat Tour from Lisbon — Arrábida & Sesimbra",
+    primaryKeyword: "arrabida boat tour",
+    supportingKeywords: ["private boat tour lisbon", "arrabida day trip from lisbon", "sesimbra day trip from lisbon"],
+    title: "Arrábida Boat Tour from Lisbon — Private Coastal Day",
     description:
-      "Private day from Lisbon to Arrábida and Sesimbra with a coastal boat ride into hidden coves, market visit and dramatic Atlantic viewpoints.",
+      "Arrábida boat tour from Lisbon: a private coastal day with a boat ride into hidden coves, a market visit and Atlantic viewpoints in Sesimbra.",
     ogTitle: "Arrábida & Sesimbra Private Boat Day from Lisbon",
     ogDescription:
       "A private coastal day with Arrábida by road, a Sesimbra boat ride into hidden coves and Atlantic viewpoints.",
