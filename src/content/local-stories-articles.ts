@@ -926,6 +926,14 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
         heading: "Your driver-guide, your pace.",
         body: "Hotel pickup in Lisbon, a comfortable car, and the freedom to linger an extra glass at a cellar you like or skip a stop you don't. The route is built around you — not a coach schedule.",
       },
+      {
+        heading: "The wines are bigger here — and so is the landscape.",
+        body: "Alentejo reds are Portugal's most recognised: full, warm, built for the table. Around Évora, family estates pour them under cork oaks and old olive trees, and some cellars still ferment in clay talhas the way the Romans did. The drive east is part of the day — the plains open up, the light changes, and the pace of Lisbon falls away.",
+      },
+      {
+        heading: "Who this day suits — and who should choose Arrábida instead.",
+        body: "Choose the Alentejo if you want heritage with your wine: Évora's Roman temple, medieval walls and the Chapel of Bones, plus a longer, deeper wine story. If you would rather a shorter drive with coast and market in the same day, the [Arrábida wine day](/local-stories/arrabida-wine-tour-from-lisbon) is the better fit — our [side-by-side comparison](/local-stories/best-wine-tours-from-lisbon) lays out both.",
+      },
     ],
     ctaLead:
       "This day lives inside our Évora & Alentejo Signature — reserve it, or tailor the wineries and Évora time in the Studio.",
@@ -935,7 +943,27 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
       { slug: "roman-heritage-alentejo", label: "Roman Heritage & Talha Wines" },
       { slug: "troia-comporta", label: "Tróia & Comporta" },
     ],
+    relatedReads: [
+      { path: "/local-stories/roman-heritage-alentejo-talha-wines", label: "Talha wines of Alentejo" },
+      { path: "/local-stories/best-wine-tours-from-lisbon", label: "Best wine tours from Lisbon, compared" },
+      { path: "/local-stories/private-tours-portugal-cost", label: "What private tours in Portugal cost" },
+    ],
+    faq: [
+      {
+        q: "How long is an Alentejo wine tour from Lisbon?",
+        a: "A full day — Évora is around ninety minutes east of Lisbon, and the day runs roughly eleven hours door to door with wineries, lunch and the old town.",
+      },
+      {
+        q: "Is the Alentejo worth the longer drive?",
+        a: "If you want heritage and bigger reds with your wine, yes — Évora's UNESCO old town, cork country and family estates are a completely different landscape from the coast. For a shorter wine day, choose Arrábida.",
+      },
+      {
+        q: "What is talha wine?",
+        a: "Wine fermented in large clay amphorae, a Roman-era method still used in the Alentejo. Our Roman Heritage day is built around it.",
+      },
+    ],
     datePublished: "2026-07-07",
+    dateModified: "2026-09-27",
   },
   {
     slug: "evora-alentejo-wine-tour",
