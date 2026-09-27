@@ -1,8 +1,8 @@
 # Roadmap — Operations hub upgrade
 
 ## 27 Sep — Publish Signature search updates
-- [ ] Refine search title, H1 and opening paragraph for all 13 Signature experiences using verified itinerary facts
-- [ ] Confirm sitemap and structured data reflect the correction without inventing cancellation conditions
+- [x] Refine search title, H1 and opening paragraph for all 13 Signature experiences using verified itinerary facts
+- [x] Confirm sitemap and structured data reflect the correction without inventing cancellation conditions
 - [ ] Verify changes, request publication and submit the changed sitemap; explain manual URL indexing limitations
 
 ## 27 Sep — Nationwide positioning and Local Stories
