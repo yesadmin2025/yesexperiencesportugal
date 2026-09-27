@@ -17,6 +17,7 @@ import { useEffect, useState } from "react";
 import { PriceEur } from "@/components/ui/PriceEur";
 import { dispatchSignatureReserveIntent } from "@/lib/booking/reserve-intent";
 import { CTA_LABELS } from "@/content/cta-vocabulary";
+import { CtaButton } from "@/components/ui/CtaButton";
 
 export function MobileReserveBar({
   tourId,
@@ -32,7 +33,7 @@ export function MobileReserveBar({
     // bar. The FAB already reads --fab-lift; only set it while the reserve bar
     // is actually visible so the primary booking action remains unobstructed.
     const root = document.documentElement;
-    if (visible) root.style.setProperty("--fab-lift", "72px");
+    if (visible) root.style.setProperty("--fab-lift", "104px");
     else root.style.removeProperty("--fab-lift");
     return () => {
       root.style.removeProperty("--fab-lift");
@@ -71,26 +72,24 @@ export function MobileReserveBar({
       className={[
         "sm:hidden fixed inset-x-0 bottom-0 z-40",
         "border-t border-[color:var(--charcoal)]/10 bg-[color:var(--ivory)]",
-        "px-4 pt-2.5 pb-[max(0.625rem,env(safe-area-inset-bottom))]",
+        "px-4 pt-3 pb-[max(0.75rem,env(safe-area-inset-bottom))]",
         "transition-opacity duration-200",
         visible ? "opacity-100" : "pointer-events-none opacity-0",
       ].join(" ")}
     >
+      <div className="mx-auto max-w-lg">
       <div className="flex items-center gap-3">
         {typeof priceFrom === "number" ? (
-          <div className="min-w-0 leading-tight">
-            <span className="block text-xs uppercase tracking-[0.12em] text-[color:var(--charcoal-soft)]">
+          <div className="min-w-0 shrink-0 leading-tight">
+            <span className="block text-[11px] uppercase tracking-[0.12em] text-[color:var(--charcoal-soft)]">
               From
             </span>
-            <span className="serif text-[18px] font-semibold text-[color:var(--charcoal)]">
+            <span className="serif block text-[22px] font-medium text-[color:var(--charcoal)]">
               <PriceEur amountEur={priceFrom} role="from" />
-            </span>
-            <span className="block text-[11px] text-[color:var(--charcoal-soft)]">
-              per person <PriceQualifier />
             </span>
           </div>
         ) : null}
-        <a
+        <CtaButton
           href="#book"
           onClick={(e) => {
             dispatchSignatureReserveIntent({ tourId, placement: "mobile-bar" });
@@ -104,10 +103,17 @@ export function MobileReserveBar({
             );
             window.setTimeout(() => (focusable ?? book).focus({ preventScroll: true }), reduce ? 0 : 450);
           }}
-          className="ml-auto inline-flex min-h-[48px] flex-1 items-center justify-center rounded-[2px] border border-[color:var(--gold)]/55 bg-[color:var(--teal)] px-5 text-[12px] font-semibold uppercase tracking-[0.12em] text-[color:var(--ivory)] transition-[background-color,transform] duration-150 hover:bg-[color:var(--teal-2)] active:scale-[0.985] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)] focus-visible:ring-offset-2"
+          size="sm"
+          className="ml-auto min-w-0 flex-1 justify-between gap-2.5 px-3.5 text-[11px] whitespace-nowrap"
         >
           {CTA_LABELS.signatureBooking}
-        </a>
+        </CtaButton>
+      </div>
+      {typeof priceFrom === "number" ? (
+        <p className="mt-1.5 text-[11px] leading-[1.35] text-[color:var(--charcoal-soft)]">
+          per person <PriceQualifier />
+        </p>
+      ) : null}
       </div>
     </div>
   );

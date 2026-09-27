@@ -60,7 +60,7 @@ export function RecognisedByGuides({
       aria-labelledby="recognised-by-guides-title"
       className={
         compact
-          ? "container-x py-10"
+           ? "container-x py-16 md:py-20"
           : "container-x py-16 md:py-20 border-t border-[color:var(--gold-soft)]/35"
       }
     >
