@@ -38,6 +38,10 @@ export const FAQ_PAGE_GROUPS: FaqGroup[] = [
         a: "Yes. A local Travel Designer composes full Portugal journeys, from a few days to a full trip across the country, shaped around your time, rhythm and interests — delivered as a curated travel file.",
       },
       {
+        q: "How many days do I need in Portugal?",
+        a: "Seven days covers Lisbon, Sintra, Cascais and one wine region such as Arrábida or Alentejo. Ten days adds Évora or the Silver Coast (Óbidos, Nazaré). Fourteen days lets you add Porto and the Douro or the Algarve at a gentler pace. A Travel Designer shapes the exact route around you.",
+      },
+      {
         q: "Do you plan proposals and corporate days?",
         a: "Yes. Proposals are one of our specialities — cliff-top viewpoints, quiet vineyards, a candle-lit table at sunset, arranged discreetly. For companies we handle corporate days, client hospitality and incentives end to end, with invoice and DMC support.",
       },
@@ -97,6 +101,10 @@ export const FAQ_PAGE_GROUPS: FaqGroup[] = [
       {
         q: "How do I book?",
         a: "Two ways. Reserve a Signature day instantly on its page, or send a booking request with your date, party and preferences and a local designer replies personally.",
+      },
+      {
+        q: "Can I book a private tour in Portugal online with instant confirmation?",
+        a: "Yes. Signature days and days you design in Studio are reserved online with secure payment and confirmed instantly, with free cancellation up to 24 hours before the experience.",
       },
       {
         q: "How far in advance should I book?",
