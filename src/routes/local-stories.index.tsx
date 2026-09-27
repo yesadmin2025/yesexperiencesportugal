@@ -88,7 +88,7 @@ function Page() {
       groups.set(key, group);
       return groups;
     }, new Map<string, typeof LOCAL_STORIES_ARTICLES>()),
-  ).map(([, articles]) => articles.sort((a, b) => Number(a.slug !== (relatedReading[b.slug] ?? b.slug)) - Number(b.slug !== (relatedReading[a.slug] ?? a.slug))));
+  ).map(([, articles]) => articles.sort((a, b) => Number(Boolean(relatedReading[a.slug])) - Number(Boolean(relatedReading[b.slug]))));
   const regionalGroups = storyGroups.filter(([article]) => !article.signatureSlug);
   const experienceGroups = storyGroups.filter(([article]) => Boolean(article.signatureSlug));
 
