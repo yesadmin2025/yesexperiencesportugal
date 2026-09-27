@@ -402,10 +402,12 @@ function StaticArticleView({ article }: { article: LocalStoryArticle }) {
 
             <aside className="mt-16 pt-10 border-t border-[color:var(--gold-soft)]/40 text-center">
               <span className="block font-sans text-[12px] uppercase tracking-[0.28em] text-[color:var(--gold-ink)] mb-4">
-                Travel this story
+                Make it yours
               </span>
               <p className="text-[15px] text-[color:var(--charcoal-soft)] mb-6 max-w-xl mx-auto leading-[1.75]">
-                {article.ctaLead}
+                {GUIDE_INLINE_BOOKING[article.slug]
+                  ? "Looking for a different pace, starting point or a longer journey? Tell us what you have in mind."
+                  : article.ctaLead}
               </p>
               {/*
                 Guide → booking links are clean canonical URLs. Attribution is
@@ -467,7 +469,7 @@ function StaticArticleView({ article }: { article: LocalStoryArticle }) {
                 </>
               )}
 
-              {article.relatedSignatures && article.relatedSignatures.length > 0 && (
+              {!GUIDE_INLINE_BOOKING[article.slug] && article.relatedSignatures && article.relatedSignatures.length > 0 && (
                 <ul className="mt-10 flex flex-wrap justify-center gap-x-6 gap-y-3 text-[13px] uppercase tracking-[0.2em] text-[color:var(--charcoal-soft)]">
                   {article.relatedSignatures.map((related) => (
                     <li key={related.slug}>
