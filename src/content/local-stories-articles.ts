@@ -593,7 +593,7 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
       },
       {
         heading: "Setúbal Moscatel — sweet, salty, and very Portuguese",
-        body: "Moscatel de Setúbal is one of Portugal's great fortified wines and one of the clearest expressions of this region. It begins with intensely aromatic grapes and develops greater complexity through ageing.\n\nOrange blossom, candied citrus, honey, dried fruit and spices are common notes. Some wines remain bright and floral, while older Moscatel can become deep, nutty and almost savoury. That contrast between sweetness, acidity and a subtle saline character is what makes it so distinctive.\n\nIt is traditionally associated with dessert, but locally it also appears beside Azeitão cheese or as the final glass after a long lunch. For many visitors, Moscatel becomes the unexpected discovery of a wine tour near Lisbon — and it is the reason we point first-time guests towards a a private wine day from Lisbon.",
+        body: "Moscatel de Setúbal is one of Portugal's great fortified wines and one of the clearest expressions of this region. It begins with intensely aromatic grapes and develops greater complexity through ageing.\n\nOrange blossom, candied citrus, honey, dried fruit and spices are common notes. Some wines remain bright and floral, while older Moscatel can become deep, nutty and almost savoury. That contrast between sweetness, acidity and a subtle saline character is what makes it so distinctive.\n\nIt is traditionally associated with dessert, but locally it also appears beside Azeitão cheese or as the final glass after a long lunch. For many visitors, Moscatel becomes the unexpected discovery of a wine tour near Lisbon — and it is the reason we point first-time guests towards a private wine day from Lisbon.",
       },
       {
         heading: "Alentejo talha wines — buried clay, ancient method",
@@ -628,8 +628,8 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
         a: "Yes if you want to visit small family cellars that don't take walk-ins, taste with the producer rather than a counter assistant, and have a proper long lunch in between. The price difference vs a coach tour buys you access, pace, and a licensed local guide.",
       },
       {
-        q: "Arrábida or Alentejo — which wine region should I choose?",
-        a: "Arrábida is closer, cooler, coastal, and pairs naturally with a beach or Setúbal seafood lunch. Alentejo is warmer, older, and the talha (clay-amphora) wines are unlike anything else in Portugal. If it's your first wine day from Lisbon, start with Arrábida.",
+        q: "What is Moscatel de Setúbal?",
+        a: "A fortified wine made from aromatic Moscatel grapes on the Setúbal Peninsula, with notes of orange blossom, honey and dried fruit. Older bottles turn deep and nutty. Locally it is served with Azeitão cheese or after a long lunch.",
       },
     ],
   },
