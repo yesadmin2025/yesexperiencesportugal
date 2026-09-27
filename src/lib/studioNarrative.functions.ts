@@ -486,10 +486,9 @@ export const composeStudioMoment = createServerFn({ method: "POST" })
     });
     if (!rl.ok) return { ...buildFallback(), source: "rate_limited" } as StudioNarrativeResult;
 
-    // Paid AI is reserved for verified signed-in callers; anonymous
-    // visitors get the deterministic fallback (no metered call).
-    const { getVerifiedUserId: __verify } = await import("@/lib/verifiedCaller.server");
-    const lovableKey = (await __verify()) ? process.env.LOVABLE_API_KEY : undefined;
+    // Guests allowed within server-side IP + daily caps (see aiGate.server).
+    const { allowAiCall } = await import("@/lib/aiGate.server");
+    const lovableKey = await allowAiCall("studio_narrative");
     if (!lovableKey) return buildFallback();
 
     const configHash = hashConfig({

@@ -57,10 +57,9 @@ export const suggestFromIntent = createServerFn({ method: "POST" })
       };
     }
 
-    // Paid AI is reserved for verified signed-in callers; anonymous
-    // visitors get the deterministic fallback (no metered call).
-    const { getVerifiedUserId: __verify } = await import("@/lib/verifiedCaller.server");
-    const lovableKey = (await __verify()) ? process.env.LOVABLE_API_KEY : undefined;
+    // Guests allowed within server-side IP + daily caps (see aiGate.server).
+    const { allowAiCall } = await import("@/lib/aiGate.server");
+    const lovableKey = await allowAiCall("builder_intent");
 
     const { data: stops, error } = await supabaseAdmin
       .from("builder_stops")
