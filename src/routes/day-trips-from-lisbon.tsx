@@ -570,6 +570,22 @@ function DayTripsFromLisbon() {
             ·{" "}
             <Link to="/portugal-itinerary" className="underline underline-offset-4">
               planning a Portugal itinerary
+            </Link>{" "}
+            ·{" "}
+            <Link
+              to="/local-stories/$slug"
+              params={{ slug: "how-many-days-in-portugal" }}
+              className="underline underline-offset-4"
+            >
+              how many days in Portugal
+            </Link>{" "}
+            ·{" "}
+            <Link
+              to="/local-stories/$slug"
+              params={{ slug: "private-tours-portugal-cost" }}
+              className="underline underline-offset-4"
+            >
+              what private tours cost
             </Link>
           </p>
         </div>
