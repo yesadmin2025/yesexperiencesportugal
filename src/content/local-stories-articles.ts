@@ -2365,7 +2365,7 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
     relatedReads: [
       { path: "/proposals", label: "Proposals & special moments" },
       { path: "/proposal-in-portugal", label: "Proposal in Portugal — how it works" },
-      { path: "/moments", label: "Moments — private celebrations" },
+      { path: "/proposal-in-portugal", label: "Moments — private celebrations" },
     ],
     faq: [
       {
