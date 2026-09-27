@@ -162,6 +162,12 @@ export const Route = createFileRoute("/tours/$tourId")({
       seo?.description ??
       t.seoDescription ??
       (t.blurb.length + BOOK_INTENT.length <= 165 ? `${t.blurb}${BOOK_INTENT}` : t.blurb);
+    const sharePrice = (t as { priceFrom?: number }).priceFrom;
+    const shareBase = seo?.ogDescription ?? pageDescription;
+    const shareDescription =
+      typeof sharePrice === "number" && !shareBase.includes("€")
+        ? `From €${Math.round(sharePrice)} per person · ${shareBase}`
+        : shareBase;
 
     return {
       meta: [
