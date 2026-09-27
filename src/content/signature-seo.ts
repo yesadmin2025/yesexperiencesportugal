@@ -25,7 +25,7 @@ export const SIGNATURE_SEO: Record<string, SignatureSeoEntry> = {
       "private arrabida wine tour from lisbon",
       "azeitao wine tasting",
     ],
-    title: "Lisbon Wine Tour — Private Arrábida Day | YES",
+    title: "Private Lisbon Wine Tour — Arrábida & Azeitão | YES",
     h1: "Private Arrábida wine tour from Lisbon",
     opening: "Explore Arrábida and Azeitão on a private wine day from Lisbon, with two family wineries included, Setúbal Moscatel, Livramento Market and lunch.",
     description:
@@ -37,7 +37,7 @@ export const SIGNATURE_SEO: Record<string, SignatureSeoEntry> = {
   "wild-beaches-picnic": {
     primaryKeyword: "day trips from lisbon",
     supportingKeywords: ["arrabida day trip from lisbon", "lisbon coastal tour"],
-    title: "Arrábida Day Trip from Lisbon — Private Beach Picnic",
+    title: "Arrábida Beach Picnic from Lisbon — Private Day Trip",
     h1: "Private Arrábida beach picnic from Lisbon",
     opening: "Take a private day trip from Lisbon to Arrábida's coastal viewpoints and coves, with a beach picnic chosen at Livramento Market and time in Sesimbra.",
     description:
@@ -49,7 +49,7 @@ export const SIGNATURE_SEO: Record<string, SignatureSeoEntry> = {
   "arrabida-boat": {
     primaryKeyword: "arrabida boat tour",
     supportingKeywords: ["private boat tour lisbon", "arrabida day trip from lisbon", "sesimbra day trip from lisbon"],
-    title: "Arrábida Boat Tour from Lisbon — Private Coastal Day",
+    title: "Private Arrábida Boat Tour from Lisbon & Sesimbra",
     h1: "Private Arrábida boat tour and Sesimbra coast",
     opening: "Travel from Lisbon to Arrábida and Sesimbra for a private coastal day with the Sesimbra boat tour, Lapa de Santa Margarida and Cabo Espichel.",
     description:
@@ -61,7 +61,7 @@ export const SIGNATURE_SEO: Record<string, SignatureSeoEntry> = {
   "p23-artisan-pottery-cork": {
     primaryKeyword: "cork and pottery workshop alentejo",
     supportingKeywords: ["pottery workshop portugal", "private alentejo day trip from lisbon"],
-    title: "Private Alentejo Cork & Pottery Workshops | YES Portugal",
+    title: "Alentejo Cork & Pottery Workshops from Lisbon | YES",
     h1: "Private Alentejo cork and pottery workshops",
     opening: "Spend a private day from Lisbon with Alentejo makers: work with cork, enjoy the included lunch and shape clay in a three-hour pottery workshop.",
     description:
@@ -73,7 +73,7 @@ export const SIGNATURE_SEO: Record<string, SignatureSeoEntry> = {
   "tiles-workshop": {
     primaryKeyword: "azulejo tile painting workshop lisbon",
     supportingKeywords: ["portuguese tile workshop lisbon", "things to do in lisbon portugal"],
-    title: "Azulejo Tile Painting Workshop from Lisbon | YES",
+    title: "Private Azulejo Painting Workshop from Lisbon | YES",
     h1: "Private azulejo tile painting workshop from Lisbon",
     opening: "Paint a Portuguese azulejo with an artisan in Azeitão, then taste regional wine and visit Sesimbra on this private day from Lisbon.",
     description:
@@ -85,7 +85,7 @@ export const SIGNATURE_SEO: Record<string, SignatureSeoEntry> = {
   "azeitao-cheese": {
     primaryKeyword: "wine tasting lisbon",
     supportingKeywords: ["lisbon wine tour", "wine tasting near lisbon"],
-    title: "Wine Tasting Near Lisbon — Azeitão Cheese Day",
+    title: "Azeitão Cheese Making & Wine Tasting near Lisbon",
     h1: "Azeitão cheese making and wine tasting near Lisbon",
     opening: "Make Azeitão cheese by hand, taste wine at a family winery and finish in Sesimbra on a private food-and-wine day from Lisbon.",
     description:
@@ -97,7 +97,7 @@ export const SIGNATURE_SEO: Record<string, SignatureSeoEntry> = {
   "sintra-cascais": {
     primaryKeyword: "sintra day tour from lisbon",
     supportingKeywords: ["sintra tours from lisbon", "sintra private tour"],
-    title: "Sintra Day Tour from Lisbon — Private Cascais & Wine",
+    title: "Private Sintra & Cascais Tour from Lisbon | YES",
     h1: "Private Sintra and Cascais day tour from Lisbon",
     opening: "Choose one Sintra palace and a Colares wine visit, or two palaces, before Cabo da Roca and Cascais on a private day from Lisbon.",
     description:
@@ -109,7 +109,7 @@ export const SIGNATURE_SEO: Record<string, SignatureSeoEntry> = {
   "troia-comporta": {
     primaryKeyword: "comporta day trip from lisbon",
     supportingKeywords: ["private tours lisbon", "troia tour from lisbon"],
-    title: "Comporta Day Trip from Lisbon — Private Tróia Tour",
+    title: "Private Tróia & Comporta Day Trip from Lisbon",
     h1: "Private Tróia and Comporta day trip from Lisbon",
     opening: "Cross the Sado by ferry to Tróia's Roman ruins, the Carrasqueira stilt pier, Comporta's Atlantic beaches and a local winery tasting.",
     description:
@@ -121,7 +121,7 @@ export const SIGNATURE_SEO: Record<string, SignatureSeoEntry> = {
   "evora-alentejo": {
     primaryKeyword: "evora day trip from lisbon",
     supportingKeywords: ["alentejo wine tour", "portugal wine tours"],
-    title: "Évora Day Trip from Lisbon — Private Alentejo Wine Tour",
+    title: "Private Évora & Alentejo Wine Tour from Lisbon",
     h1: "Private Évora and Alentejo wine tour from Lisbon",
     opening: "Visit Évora's Roman Temple and Chapel of Bones, two selected Alentejo wineries and a traditional cork-production site on a private day from Lisbon.",
     description:
@@ -133,7 +133,7 @@ export const SIGNATURE_SEO: Record<string, SignatureSeoEntry> = {
   "tomar-coimbra": {
     primaryKeyword: "tomar day trip from lisbon",
     supportingKeywords: ["coimbra day trip from lisbon", "private tours portugal"],
-    title: "Tomar & Coimbra Day Trip from Lisbon — Private Tour",
+    title: "Private Tomar & Coimbra Templar Tour from Lisbon",
     h1: "Private Tomar and Coimbra tour from Lisbon",
     opening: "Travel privately from Lisbon to Tomar's Convent of Christ and Coimbra's historic university and old town in one inland day.",
     description:
@@ -145,7 +145,7 @@ export const SIGNATURE_SEO: Record<string, SignatureSeoEntry> = {
   "fatima-nazare-obidos": {
     primaryKeyword: "fatima day trip from lisbon",
     supportingKeywords: ["nazare day trip from lisbon", "obidos day trip from lisbon"],
-    title: "Fátima Day Trip from Lisbon — Nazaré & Óbidos Private Tour",
+    title: "Private Fátima, Nazaré & Óbidos Tour from Lisbon",
     h1: "Private Fátima, Nazaré and Óbidos day trip",
     opening: "Visit the Sanctuary of Fátima, Nazaré's Atlantic viewpoint and medieval Óbidos, with a Ginjinha tasting, on a private day from Lisbon.",
     description:
@@ -157,7 +157,7 @@ export const SIGNATURE_SEO: Record<string, SignatureSeoEntry> = {
   "roman-heritage-alentejo": {
     primaryKeyword: "alentejo wine tour",
     supportingKeywords: ["portugal wine tours", "private tours portugal"],
-    title: "Alentejo Wine Tour — Private Roman Heritage Day",
+    title: "Alentejo Talha Wine & Roman Heritage Tour | YES",
     h1: "Private Alentejo talha wine and Roman heritage tour",
     opening: "Explore São Cucufate's Roman ruins and Alentejo's clay-amphora wine tradition with a family cellar on a private inland day from Lisbon.",
     description:
@@ -169,7 +169,7 @@ export const SIGNATURE_SEO: Record<string, SignatureSeoEntry> = {
   "southwest-vicentine-coast": {
     primaryKeyword: "vicentine coast tour from lisbon",
     supportingKeywords: ["southwest portugal coast tour", "private portugal coastal tour"],
-    title: "Vicentine Coast Day Trip from Lisbon — Private Tour",
+    title: "Private Vicentine Coast Day Trip from Lisbon | YES",
     h1: "Private Vicentine Coast tour from Lisbon",
     opening: "Follow Portugal's southwest coast from Lisbon through Porto Covo and Vila Nova de Milfontes to protected Atlantic cliffs, Odeceixe and Aljezur.",
     description:

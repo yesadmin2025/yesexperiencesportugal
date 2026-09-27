@@ -224,8 +224,8 @@ export const Route = createFileRoute("/tours/$tourId")({
                   : (t.stops ?? []).map((s) => ({ label: s.label, story: s.story }));
               return tourProductLd({
                 id: params.tourId,
-                title: t.title,
-                blurb: t.blurb,
+                title: seo?.h1 ?? t.title,
+                blurb: seo?.opening ?? t.blurb,
                 img: t.img,
                 priceFrom: (t as { priceFrom?: number }).priceFrom,
                 currency: "EUR",
@@ -450,10 +450,10 @@ function TourHero({
           <div className="mt-5 sm:mt-8 lg:mt-0">
             <Eyebrow>Private Signature Experience</Eyebrow>
             <h1 className="serif mt-3 max-w-3xl text-[40px] font-medium leading-[1.08] tracking-normal text-[color:var(--charcoal)] md:text-[60px] md:leading-[1.02]">
-              {tour.title}
+              {getSignatureSeo(tour.id)?.h1 ?? tour.title}
             </h1>
             <p className="serif font-normal not-italic mt-4 text-[16px] sm:text-lg md:text-xl text-[color:var(--teal)] max-w-2xl leading-snug">
-              {tour.blurb}
+              {getSignatureSeo(tour.id)?.opening ?? tour.blurb}
             </p>
 
             <div className="mt-5 flex flex-wrap items-center gap-x-5 gap-y-2 text-[12px] uppercase tracking-[0.12em] text-[color:var(--charcoal-soft)]">
