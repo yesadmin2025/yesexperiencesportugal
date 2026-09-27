@@ -30,6 +30,7 @@ export const Route = createFileRoute("/local-stories/")({
         content: "Guides to Portugal’s wine regions, day trips and hidden places, written by the locals who design our private experiences.",
       },
       { property: "og:url", content: "https://yesexperiencesportugal.com/local-stories" },
+      { property: "og:type", content: "website" },
       { property: "og:image", content: `https://yesexperiencesportugal.com${ogImg}` },
       { property: "og:image:width", content: "1200" },
       { property: "og:image:height", content: "630" },
@@ -73,6 +74,66 @@ export const Route = createFileRoute("/local-stories/")({
 function Page() {
   useMarketingMotion();
   const staticSlugs = LOCAL_STORIES_ARTICLES.map((article) => article.slug);
+  // One lead story per experience; companion reads remain accessible without
+  // presenting the same Signature as another full-size story card.
+  const storyGroups = Array.from(
+    LOCAL_STORIES_ARTICLES.reduce((groups, article) => {
+      const key = article.signatureSlug ?? article.slug;
+      const group = groups.get(key) ?? [];
+      group.push(article);
+      groups.set(key, group);
+      return groups;
+    }, new Map<string, typeof LOCAL_STORIES_ARTICLES>()),
+  ).map(([, articles]) => articles);
+  const regionalGroups = storyGroups.filter(([article]) => !article.signatureSlug);
+  const experienceGroups = storyGroups.filter(([article]) => Boolean(article.signatureSlug));
+
+  const renderStories = (groups: typeof storyGroups) => (
+    <div className="grid gap-x-16 gap-y-12 md:grid-cols-2 md:gap-y-16">
+      {groups.map(([lead, ...related]) => (
+        <article key={lead.slug} className="reveal-stagger border-t border-[color:var(--gold-soft)]/60 pt-7 md:pt-8">
+          <Link
+            to="/local-stories/$slug"
+            params={{ slug: lead.slug }}
+            className="group block focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)] focus-visible:ring-offset-2"
+          >
+            <span className="block font-sans text-[11px] uppercase tracking-[0.17em] text-[color:var(--gold-ink)] mb-4">
+              {lead.eyebrow}
+            </span>
+            <h3 className="mb-4 font-serif text-[26px] leading-[1.22] text-[color:var(--charcoal)] transition-colors duration-300 group-hover:text-[color:var(--teal)] md:text-[28px]">
+              {lead.h1}
+            </h3>
+            <p className="text-[16px] text-[color:var(--charcoal-soft)] leading-[1.7] max-w-[52ch]">
+              {lead.standfirst}
+            </p>
+            <span className="mt-5 inline-flex min-h-[44px] items-center font-sans text-[12px] uppercase tracking-[0.17em] text-[color:var(--teal)]">
+              Read the story →
+            </span>
+          </Link>
+          {related.length > 0 && (
+            <div className="mt-5 border-t border-[color:var(--gold-soft)]/40 pt-5">
+              <span className="font-sans text-[11px] uppercase tracking-[0.17em] text-[color:var(--gold-ink)]">
+                More local reading
+              </span>
+              <ul className="mt-2">
+                {related.map((article) => (
+                  <li key={article.slug}>
+                    <Link
+                      to="/local-stories/$slug"
+                      params={{ slug: article.slug }}
+                      className="inline-flex min-h-[44px] items-center text-[15px] leading-[1.45] text-[color:var(--teal)] underline-offset-4 hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)]"
+                    >
+                      {article.h1} →
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+        </article>
+      ))}
+    </div>
+  );
 
   return (
     <SiteLayout>
@@ -102,40 +163,27 @@ function Page() {
 
       <section className="py-16 md:py-24 bg-[color:var(--ivory)]">
         <div className="container-x">
-          <div className="grid md:grid-cols-2 gap-10 md:gap-14">
-            {LOCAL_STORIES_ARTICLES.map((article) => (
-              <article key={article.slug} className="group reveal-stagger">
-                <Link
-                  to="/local-stories/$slug"
-                  params={{ slug: article.slug }}
-                  className="block focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)] focus-visible:ring-offset-2"
-                >
-                  <div>
-                    <span className="block font-sans text-[12px] uppercase tracking-[0.28em] text-[color:var(--gold-ink)] mb-3">
-                      {article.eyebrow}
-                    </span>
-                    <h2 className="mb-3 font-serif text-[24px] leading-[1.2] text-[color:var(--charcoal)] transition-colors duration-300 group-hover:text-[color:var(--teal)] md:text-[26px]">
-                      {article.h1}
-                    </h2>
-                    <p className="text-[15.5px] text-[color:var(--charcoal-soft)] leading-[1.75] max-w-[52ch]">
-                      {article.standfirst}
-                    </p>
-                    <span className="mt-4 inline-flex min-h-[44px] items-center font-sans text-[12px] uppercase tracking-[0.22em] text-[color:var(--teal)]">
-                      Read the story →
-                    </span>
-                  </div>
-                </Link>
-              </article>
-            ))}
+          <div className="mb-10 max-w-2xl md:mb-14">
+            <Eyebrow>Across Portugal</Eyebrow>
+            <h2 className="mt-5 font-serif text-[29px] leading-[1.2] text-[color:var(--charcoal)] md:text-[36px]">Places worth knowing</h2>
+          </div>
+          {renderStories(regionalGroups)}
 
-            <Suspense fallback={null}>
-              <DeferredJournalPosts staticSlugs={staticSlugs} />
-            </Suspense>
+          <div className="mb-10 mt-20 max-w-2xl md:mb-14 md:mt-24">
+            <Eyebrow>On the road</Eyebrow>
+            <h2 className="mt-5 font-serif text-[29px] leading-[1.2] text-[color:var(--charcoal)] md:text-[36px]">Days, details and local perspectives</h2>
+          </div>
+          {renderStories(experienceGroups)}
+          <div className="grid gap-x-16 gap-y-12 md:grid-cols-2 md:gap-y-16">
+            <Suspense fallback={null}><DeferredJournalPosts staticSlugs={staticSlugs} /></Suspense>
           </div>
 
-          <div className="reveal mt-20 text-center">
-            <CtaButton to="/studio" variant="primary">
-              Design your day
+          <div className="reveal mt-20 border-t border-[color:var(--gold-soft)]/60 pt-12 text-center md:mt-24 md:pt-16">
+            <p className="mx-auto mb-7 max-w-md font-serif text-[26px] leading-[1.3] text-[color:var(--charcoal)] md:text-[30px]">
+              Let a place become your own story.
+            </p>
+            <CtaButton to="/contact" variant="primary">
+              Design my experience
             </CtaButton>
           </div>
         </div>
