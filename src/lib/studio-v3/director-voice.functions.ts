@@ -112,10 +112,9 @@ export const composeDirectorVoice = createServerFn({ method: "POST" })
     });
     if (!rl.ok) return { candidate: null, source: "fallback" as const };
 
-    // Paid AI is reserved for verified signed-in callers; anonymous
-    // visitors get the deterministic fallback (no metered call).
-    const { getVerifiedUserId: __verify } = await import("@/lib/verifiedCaller.server");
-    const key = (await __verify()) ? process.env.LOVABLE_API_KEY : undefined;
+    // Guests allowed within server-side IP + daily caps (see aiGate.server).
+    const { allowAiCall } = await import("@/lib/aiGate.server");
+    const key = await allowAiCall("studio_director_voice");
     if (!key) return { candidate: null, source: "fallback" as const };
 
     try {
