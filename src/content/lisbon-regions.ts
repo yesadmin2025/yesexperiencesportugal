@@ -76,7 +76,7 @@ export const LISBON_REGIONS: readonly LisbonRegion[] = [
     h1Lead: "Private Arrábida & Sesimbra tours,",
     h1Em: "where the hills meet the sea.",
     standfirst:
-      "This is our home coast. The Serra da Arrábida drops straight into green water, the coves are reached by boat or on foot, and Sesimbra still lands its fish every morning. Come for the sea; the cellars are a short detour inland.",
+      "A private Arrábida & Sesimbra day runs six to eight hours, door-to-door from your Lisbon address — about 40 minutes each way. This is our home coast: the Serra da Arrábida drops straight into green water, the coves are reached by boat or on foot, and Sesimbra still lands its fish every morning.",
     guideLink: {
       lead: "Still choosing between the wine regions? Our local guide lets you ",
       anchor: "compare wine days from Lisbon",

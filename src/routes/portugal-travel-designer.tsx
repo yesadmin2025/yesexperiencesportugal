@@ -11,7 +11,7 @@ import ogImg from "@/assets/hero-coast.jpg";
 import { CTA_LABELS } from "@/content/cta-vocabulary";
 
 const CANONICAL = "https://yesexperiencesportugal.com/portugal-travel-designer";
-const TITLE = "Private Portugal Journeys, Designed Around You | YES";
+const TITLE = "Portugal Travel Designer — Private Journeys | YES";
 const DESC =
   "Plan a private Portugal journey of any length with a local travel designer. Your route, pace and starting point, shaped around you across the country.";
 const OG_IMAGE = `https://yesexperiencesportugal.com${ogImg}`;
