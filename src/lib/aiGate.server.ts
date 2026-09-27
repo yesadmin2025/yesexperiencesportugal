@@ -11,8 +11,8 @@ import { getVerifiedUserId } from "@/lib/verifiedCaller.server";
  * Signed-in callers skip the IP cap but still count toward the daily cap.
  * Any cap reached → false, and the caller uses its deterministic fallback.
  */
-export const GUEST_IP_LIMIT = 20;
-export const GLOBAL_DAILY_LIMIT = 3000;
+export const GUEST_IP_LIMIT = 60;
+export const GLOBAL_DAILY_LIMIT = 10000;
 const IP_SLOT_SEC = 600;
 
 async function sha(text: string): Promise<string> {
