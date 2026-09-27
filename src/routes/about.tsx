@@ -9,7 +9,6 @@ import { SplitLines } from "@/components/motion/SplitLines";
 import { Eyebrow } from "@/components/ui/Eyebrow";
 import { SectionTitle } from "@/components/ui/SectionTitle";
 import { CtaButton } from "@/components/ui/CtaButton";
-import { TeamEnquiriesLink } from "@/components/team/TeamEnquiriesLink";
 import { SITE_RATING_LABEL } from "@/config/trust-certificate";
 import { CTA_LABELS } from "@/content/cta-vocabulary";
 
@@ -489,9 +488,6 @@ function Page() {
             </Link>{" "}
             — trips, pricing, cancellations and booking.
           </p>
-          <div className="mt-6 flex justify-center">
-            <TeamEnquiriesLink />
-          </div>
         </div>
       </section>
 

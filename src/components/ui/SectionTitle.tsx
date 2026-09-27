@@ -22,7 +22,7 @@ const sizeClasses = {
   default:
     "text-[1.8125rem] md:text-[2.25rem] leading-[1.18] md:leading-[1.1] text-balance",
   anchor:
-    "text-[2.5rem] md:text-[3.75rem] leading-[1.08] md:leading-[1.02] text-balance",
+    "text-[2.5rem] md:text-[3.75rem] leading-[1.14] md:leading-[1.08] text-balance",
   compact:
     "text-[1.5rem] md:text-[1.875rem] leading-[1.2] md:leading-[1.12] text-balance",
 } as const;

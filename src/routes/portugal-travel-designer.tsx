@@ -73,11 +73,11 @@ function Section({
         {title && (
           <SplitLines
             as="h2"
-            className="mt-4 font-display text-[29px] font-medium leading-[1.15] tracking-normal text-balance text-[color:var(--charcoal)] md:text-[36px] md:leading-[1.1]"
+            className="mt-5 font-display text-[29px] font-medium leading-[1.18] tracking-normal text-balance text-[color:var(--charcoal)] md:text-[36px] md:leading-[1.1]"
             lines={[title]}
           />
         )}
-        <div className="mt-6 space-y-5 text-[color:var(--charcoal-soft)] leading-relaxed">
+        <div className="mt-7 space-y-6 text-[color:var(--charcoal-soft)] leading-relaxed md:mt-8">
           {children}
         </div>
       </div>
@@ -92,7 +92,7 @@ function PortugalTravelDesignerPage() {
       <section className="page-hero public-page-header reveal">
         <div className="container-x max-w-3xl text-center header-seq">
           <Eyebrow flank>Portugal Travel Designer</Eyebrow>
-           <SectionTitle as="h1" size="anchor" spacing="loose" className="text-[40px] leading-[1.08] md:text-[60px] md:leading-[1.02]">
+           <SectionTitle as="h1" size="anchor" spacing="loose" className="text-[40px] leading-[1.12] md:text-[60px] md:leading-[1.02]">
             Portugal, <SectionTitle.Em>shaped around you.</SectionTitle.Em>
           </SectionTitle>
           <p className="page-header-support mt-6 mx-auto max-w-2xl text-[16px] md:text-[17px] text-[color:var(--charcoal-soft)]">
@@ -246,9 +246,9 @@ function PortugalTravelDesignerPage() {
           },
           {
             to: "/itineraries/10-day-private-portugal-tour",
-             label: "See a sample ten-day private Portugal itinerary",
+            label: "See a sample ten-day private Portugal itinerary",
             description:
-               "An example route to discuss with your designer, not a fixed package or quoted journey.",
+              "An example route to discuss with your designer, not a fixed package or quoted journey.",
           },
           {
             to: "/trade",
