@@ -169,8 +169,8 @@ export const Route = createFileRoute("/tours/$tourId")({
         { name: "description", content: pageDescription },
         { property: "og:title", content: pageTitle },
         { name: "twitter:title", content: pageTitle },
-        { property: "og:description", content: seo?.ogDescription ?? pageDescription },
-        { name: "twitter:description", content: seo?.ogDescription ?? pageDescription },
+        { property: "og:description", content: shareDescription },
+        { name: "twitter:description", content: shareDescription },
 
         { property: "og:image", content: img },
         { property: "og:image:alt", content: `${t.title} with YES Experiences Portugal` },
@@ -523,6 +523,11 @@ function TourHero({
             >
               Tailor this day <CtaMotionArrow />
             </Link>}
+            <ShareDayButton
+              path={`/tours/${tour.id}`}
+              title={tour.title}
+              experienceId={tour.id}
+            />
           </div>
         </div>
       </section>
