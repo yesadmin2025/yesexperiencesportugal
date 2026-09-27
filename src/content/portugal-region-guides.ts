@@ -14,8 +14,8 @@
 import type { LocalStoryArticle } from "./local-stories-articles";
 
 const DESIGN_CTA_LEAD =
-  "We do not sell a fixed departure here. We design the day privately — your dates, your pace, your pickup — and come back with a plan and a price.";
-const DESIGN_CTA_LABEL = "Request a designed day";
+  "Tell us what draws you here. We can shape a private experience or a longer journey around your time, interests and starting point.";
+const DESIGN_CTA_LABEL = "Design my experience";
 
 export const PORTUGAL_REGION_GUIDES: LocalStoryArticle[] = [
   {

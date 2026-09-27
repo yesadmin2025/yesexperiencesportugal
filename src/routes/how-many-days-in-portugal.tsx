@@ -21,9 +21,9 @@ import { WEBSITE_URL } from "@/config/business-nap";
 
 const PATH = "/how-many-days-in-portugal";
 const PAGE_URL = `${WEBSITE_URL}${PATH}`;
-const TITLE = "How Many Days Do You Need in Portugal? 5, 7, 10 or 14";
+const TITLE = "How Many Days in Portugal? Ideas for Any Length | YES";
 const DESCRIPTION =
-  "How many days you need in Portugal, from a local operator: what fits in 5, 7, 10 and 14 days, what to cut, and which private days are worth the drive from Lisbon.";
+  "Planning a Portugal trip? See what fits in 5, 7, 10 or 14 days as examples, then design a private journey of any length with a local travel designer.";
 
 const crumbs = [
   { name: "Home", path: "/" },
@@ -90,7 +90,7 @@ const SHAPES: TripShape[] = [
 const FAQS = [
   {
     q: "How many days do you need in Portugal?",
-    a: "Seven is the sweet spot for a first trip: two days in Lisbon, three day trips in different directions, and two days with nothing planned. Five works if you stay near Lisbon; ten or fourteen lets you add a second region properly.",
+    a: "It depends on where you want to go and how slowly you like to travel. Five, seven, ten and fourteen days are examples, not limits; we can design a private journey for the time you have, starting in the region that suits your plans.",
   },
   {
     q: "Is 5 days enough for Portugal?",
@@ -161,13 +161,13 @@ function HowManyDays() {
           <SectionTitle as="h1" size="anchor" spacing="loose">
             How many days do you need in Portugal?{" "}
             <SectionTitle.Em>
-              Seven, if you are asking.
+              As long as it takes to feel it.
             </SectionTitle.Em>
           </SectionTitle>
           <p className="page-header-support mt-6 text-[16px] md:text-[17px] leading-[1.8] text-[color:var(--charcoal-soft)]">
-            Below is what genuinely fits in five, seven, ten and fourteen days, what we would cut
-            first, and which private days are worth the drive. We are a licensed Portuguese
-            operator based south of Lisbon, and these are the trips we build for guests every week.
+            Five, seven, ten and fourteen days are starting points, not packages or limits. See
+            what fits without rushing, then let us shape the journey around your own time and
+            starting point anywhere in Portugal.
           </p>
           <div className="mt-8 flex flex-col gap-3 sm:flex-row">
             <CtaButton to="/portugal-travel-designer">Design my trip</CtaButton>
@@ -180,7 +180,7 @@ function HowManyDays() {
 
       <section className="py-16 md:py-24">
         <div className="container-x max-w-3xl">
-          <Eyebrow>Four trip shapes</Eyebrow>
+            <Eyebrow>Four examples · no fixed length</Eyebrow>
           <SectionTitle as="h2" spacing="tight">
             What actually fits, <SectionTitle.Em>without the motorway</SectionTitle.Em>.
           </SectionTitle>

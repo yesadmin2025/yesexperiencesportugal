@@ -324,7 +324,7 @@ function Page() {
             <Info
               icon={<MapPin size={16} />}
               label="Based in"
-              value="Sesimbra, designing private journeys across Portugal, with pickups from Lisbon, Cascais, Sintra, Sesimbra and Setúbal"
+              value="Based in Sesimbra · designing private experiences and journeys across Portugal. We agree your starting point with you."
             />
 
             <div className="gold-divider" />

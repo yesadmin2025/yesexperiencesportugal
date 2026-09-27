@@ -2227,6 +2227,7 @@ export const CONSOLIDATED_LOCAL_STORY_SLUGS: Readonly<Record<string, string>> = 
   "arrabida-vs-alentejo": "best-wine-tours-from-lisbon",
   "arrabida-wine-tour": "arrabida-wine-tour-from-lisbon",
   "evora-alentejo-wine-tour": "alentejo-wine-tour-from-lisbon",
+  "evora-private-tour-from-lisbon": "alentejo-wine-tour-from-lisbon",
 } as const;
 
 /** Surviving slug for a retired one, or undefined when the slug still publishes. */

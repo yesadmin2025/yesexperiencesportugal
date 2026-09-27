@@ -27,7 +27,7 @@ export const FAQ_PAGE_GROUPS: FaqGroup[] = [
       },
       {
         q: "Where do you pick us up?",
-        a: "From your hotel or address in Lisbon and the surrounding area, including Cascais, Sintra, Sesimbra and Setúbal. The pickup point and time are confirmed with you before the day.",
+        a: "For Lisbon-area Signature days, pickup is typically from your hotel or address in Lisbon, Cascais, Sintra, Sesimbra or Setúbal. For journeys elsewhere in Portugal, tell us where you will be and we will arrange the starting point with you. We confirm the pickup point and time before your experience.",
       },
       {
         q: "Can I customise a Signature day?",
@@ -39,7 +39,7 @@ export const FAQ_PAGE_GROUPS: FaqGroup[] = [
       },
       {
         q: "How many days do I need in Portugal?",
-        a: "Seven days covers Lisbon, Sintra, Cascais and one wine region such as Arrábida or Alentejo. Ten days adds Évora or the Silver Coast (Óbidos, Nazaré). Fourteen days lets you add Porto and the Douro or the Algarve at a gentler pace. A Travel Designer shapes the exact route around you.",
+        a: "There is no fixed length. A week can focus on one or two regions; a longer journey can move through more of Portugal without rushing. Our Travel Designer shapes the route, starting point and length around your plans, whether you have a few days or several weeks.",
       },
       {
         q: "Do you plan proposals and corporate days?",
