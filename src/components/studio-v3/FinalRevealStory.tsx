@@ -17,6 +17,8 @@ import * as React from "react";
 import { useEffect } from "react";
 import { Eyebrow } from "@/components/ui/Eyebrow";
 import { findTour } from "@/data/signatureTours";
+import { buildStudioProposal } from "@/lib/studio-v3/studioProposal";
+import { StudioProposalCard } from "./StudioProposalCard";
 import { getTourContent } from "@/lib/tourContent";
 import { pickupCityLabel } from "./curation";
 import {
@@ -480,6 +482,10 @@ export function FinalRevealStory({
               </p>
             ))}
           </div>
+          {(() => {
+            const proposal = buildStudioProposal(tour, state.pickup, perPaxEur);
+            return proposal ? <StudioProposalCard proposal={proposal} tourTitle={title} /> : null;
+          })()}
         </div>
       </article>
 

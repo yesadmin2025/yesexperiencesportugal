@@ -1,6 +1,6 @@
 import { describe, it, expect } from "vitest";
 import { buildStudioProposal } from "../studioProposal";
-import { SIGNATURE_TOURS } from "@/data/signatureTours";
+import { signatureTours as SIGNATURE_TOURS } from "@/data/signatureTours";
 
 describe("buildStudioProposal", () => {
   it("returns null without a tour", () => {
