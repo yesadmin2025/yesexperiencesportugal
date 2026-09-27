@@ -22,4 +22,19 @@ describe("MobileReserveBar", () => {
     expect(screen.getAllByTestId("mobile-reserve-bar").at(-1)!.getAttribute("aria-hidden")).toBe("true");
     notice.remove();
   });
+
+  it("keeps the price separate from the reserve label so the action does not wrap", async () => {
+    const book = document.createElement("div");
+    book.id = "book";
+    book.getBoundingClientRect = () => ({ top: 5000, bottom: 5600 }) as DOMRect;
+    document.body.appendChild(book);
+    render(<MobileReserveBar tourId="sintra-cascais" priceFrom={161} />);
+    await act(async () => {});
+    const bar = screen.getAllByTestId("mobile-reserve-bar").at(-1);
+    expect(bar?.textContent).toContain("From");
+    expect(bar?.textContent).toContain("price per person varies with group size");
+    expect(bar?.querySelector("a")?.textContent).toContain("Reserve this day");
+    expect(bar?.querySelector("a")?.className).toContain("whitespace-nowrap");
+    book.remove();
+  });
 });
