@@ -573,8 +573,7 @@ function DayTripsFromLisbon() {
             </Link>{" "}
             ·{" "}
             <Link
-              to="/local-stories/$slug"
-              params={{ slug: "how-many-days-in-portugal" }}
+              to="/portugal-itinerary"
               className="underline underline-offset-4"
             >
               how many days in Portugal
