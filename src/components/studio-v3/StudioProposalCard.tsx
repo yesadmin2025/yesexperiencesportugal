@@ -62,7 +62,7 @@ export function StudioProposalCard({
             <dt className={labelCls} style={labelStyle}>Included</dt>
             <dd className="mt-1">
               <ul className="space-y-1 text-[14px] leading-[1.5]" style={valueStyle}>
-                {proposal.included.map((i) => (
+                {(showAll ? proposal.allIncluded : proposal.included).map((i) => (
                   <li key={i}>· {i}</li>
                 ))}
               </ul>

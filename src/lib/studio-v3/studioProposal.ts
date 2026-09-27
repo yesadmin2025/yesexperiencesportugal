@@ -13,6 +13,7 @@ export interface StudioProposal {
   readonly pickup: string;
   readonly included: ReadonlyArray<string>;
   readonly moreIncluded: number;
+  readonly allIncluded: ReadonlyArray<string>;
   readonly perPaxEur?: number;
 }
 
@@ -41,6 +42,7 @@ export function buildStudioProposal(
     ...(duration ? { duration } : {}),
     pickup: (pickup && PICKUP_LABELS[pickup]) || "Door-to-door from your address in Lisbon",
     included: all.slice(0, MAX_INCLUDED_LINES),
+    allIncluded: all,
     moreIncluded: Math.max(0, all.length - MAX_INCLUDED_LINES),
     ...(perPaxEur != null && Number.isFinite(perPaxEur) && perPaxEur > 0
       ? { perPaxEur: Math.round(perPaxEur) }
