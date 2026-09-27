@@ -697,14 +697,15 @@ export function SimpleBookingForm({ tour }: { tour: SignatureTour }) {
         </CtaButton>
       )}
 
-      {tour.id !== "p23-artisan-pottery-cork" && <div className="mt-3 text-center">
-        <Link
+      {tour.id !== "p23-artisan-pottery-cork" && <div className="mt-3">
+        <CtaButton
           to="/tours/$tourId/tailor"
           params={{ tourId: tour.id }}
-          className="inline-flex min-h-[44px] items-center gap-1.5 text-[12px] uppercase tracking-[0.22em] text-[color:var(--teal)] hover:text-[color:var(--charcoal)]"
+          variant="ghost"
+          className="w-full justify-between"
         >
           Tailor this day
-        </Link>
+        </CtaButton>
       </div>}
 
 

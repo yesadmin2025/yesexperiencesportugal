@@ -519,17 +519,19 @@ function TourHero({
             >
               Reserve this day
             </CtaButton>
-            {tour.id !== "p23-artisan-pottery-cork" && <Link
+             {tour.id !== "p23-artisan-pottery-cork" && <CtaButton
               to="/tours/$tourId/tailor"
               params={{ tourId: tour.id }}
+               variant="ghost"
+               size="sm"
               data-analytics="signature_tailor_click"
               data-analytics-placement="hero"
               data-analytics-experience-id={tour.id}
               data-analytics-experience-type="signature"
-              className="editorial-action inline-flex min-h-[44px] items-center gap-2 font-sans text-[11px] font-medium uppercase tracking-[0.16em] text-[color:var(--charcoal-soft)] underline decoration-[color:var(--gold)]/60 underline-offset-4 transition-colors duration-[var(--dur-quick)] hover:text-[color:var(--teal)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)]"
+               className="w-full justify-between sm:w-auto"
             >
-              Tailor this day <CtaMotionArrow />
-            </Link>}
+               Tailor this day
+             </CtaButton>}
             <ShareDayButton
               path={`/tours/${tour.id}`}
               title={tour.title}
@@ -922,7 +924,7 @@ function FinalCta({ tour }: { tour: SignatureTour }) {
           Confirm in real time. The day is yours.
         </p>
 
-        <div className="mt-8 flex flex-col items-center gap-4">
+        <div className="mt-8 flex flex-col items-stretch gap-3 sm:items-center">
           <CtaButton
             href="#book"
             variant="primary"
@@ -935,20 +937,18 @@ function FinalCta({ tour }: { tour: SignatureTour }) {
           >
              Reserve this day
           </CtaButton>
-          {tour.id !== "p23-artisan-pottery-cork" && <Link
+           {tour.id !== "p23-artisan-pottery-cork" && <CtaButton
             to="/tours/$tourId/tailor"
             params={{ tourId: tour.id }}
+             variant="ghostDark"
             data-analytics="signature_tailor_click"
             data-analytics-placement="final"
             data-analytics-experience-id={tour.id}
             data-analytics-experience-type="signature"
-            className="inline-flex items-center gap-2 text-[13px] uppercase tracking-[0.12em] text-[color:var(--ivory)]/85 hover:text-[color:var(--gold)] transition-colors min-h-[44px]"
+             className="justify-between"
           >
-            Tailor this day{" "}
-            <span aria-hidden="true" className="text-[color:var(--gold)]">
-              →
-            </span>
-          </Link>}
+             Tailor this day
+           </CtaButton>}
         </div>
 
         <CredentialStrip variant="dark" className="mt-8" />
