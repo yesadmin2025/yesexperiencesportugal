@@ -167,9 +167,10 @@ export const Route = createFileRoute("/tours/$tourId")({
       meta: [
         { title: pageTitle },
         { name: "description", content: pageDescription },
-        { property: "og:title", content: t.title },
-        { name: "twitter:title", content: t.title },
+        { property: "og:title", content: pageTitle },
+        { name: "twitter:title", content: pageTitle },
         { property: "og:description", content: seo?.ogDescription ?? pageDescription },
+        { name: "twitter:description", content: seo?.ogDescription ?? pageDescription },
 
         { property: "og:image", content: img },
         { property: "og:image:alt", content: `${t.title} with YES Experiences Portugal` },
