@@ -224,8 +224,8 @@ export const Route = createFileRoute("/tours/$tourId")({
                   : (t.stops ?? []).map((s) => ({ label: s.label, story: s.story }));
               return tourProductLd({
                 id: params.tourId,
-                title: t.title,
-                 blurb: seo?.opening ?? t.blurb,
+                title: seo?.h1 ?? t.title,
+                blurb: seo?.opening ?? t.blurb,
                 img: t.img,
                 priceFrom: (t as { priceFrom?: number }).priceFrom,
                 currency: "EUR",
