@@ -1,3 +1,4 @@
+import { ShareDayButton } from "@/components/ShareDayButton";
 import {
   createFileRoute,
   Link,
