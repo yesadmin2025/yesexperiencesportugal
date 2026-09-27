@@ -11,9 +11,9 @@ import ogImg from "@/assets/hero-coast.jpg";
 import { CTA_LABELS } from "@/content/cta-vocabulary";
 
 const CANONICAL = "https://yesexperiencesportugal.com/portugal-travel-designer";
-const TITLE = "Private Portugal Itinerary — 7, 10 or 14 Days With a Local";
+const TITLE = "Private Portugal Journeys, Designed Around You | YES";
 const DESC =
-  "Plan a private multi-day Portugal trip with a local travel designer: a 7, 10 or 14-day itinerary across Lisbon, Sintra, wine country and the coast, built around you.";
+  "Plan a private Portugal journey of any length with a local travel designer. Your route, pace and starting point, shaped around you across the country.";
 const OG_IMAGE = `https://yesexperiencesportugal.com${ogImg}`;
 
 export const Route = createFileRoute("/portugal-travel-designer")({
@@ -175,8 +175,8 @@ function PortugalTravelDesignerPage() {
         title={<>A route with geographical <SectionTitle.Em>and emotional sense.</SectionTitle.Em></>}
       >
         <p>
-          Travel design may begin with a single day from Lisbon or extend across several regions of
-          Portugal.
+          Travel design can begin wherever you are in Portugal and last as long as your journey calls
+          for — one private day or a route across several regions.
         </p>
         <p>
           A private itinerary can connect Lisbon and Arrábida with Alentejo, the Atlantic coast,

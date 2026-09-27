@@ -75,9 +75,9 @@ const FAQS: { q: string; a: ReactNode }[] = [
     q: "Do you offer private tours from Lisbon?",
     a: (
       <>
-        Yes. Every YES experience is fully private — your group only, your own local host, and a car
-        dedicated to your day. We depart from Lisbon (hotel or address pickup) across Sintra,
-        Arrábida, Comporta, Évora, Alentejo and beyond.
+        Yes. Our Lisbon-area Signature days can begin with hotel or address pickup for your private
+        group. We also design private journeys across Portugal, with the starting point agreed
+        around your plans.
       </>
     ),
   },

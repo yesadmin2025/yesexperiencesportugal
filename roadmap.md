@@ -1,5 +1,11 @@
 # Roadmap — Operations hub upgrade
 
+## 27 Sep — Nationwide positioning and Local Stories
+- [ ] Remove implied 14-day ceiling and Lisbon-only brand-wide pickup language
+- [ ] Consolidate duplicate Évora/Alentejo story intent without breaking old links
+- [ ] Give Local Stories a calmer mobile reading rhythm and a flexible experience enquiry CTA
+- [ ] Verify live preview on mobile and desktop; do not publish without request
+
 ## 27 Sep — Mobile reading and search appearance
 - [x] Give the illustrated Travel Designer chapters and private enquiry screen clearer mobile hierarchy and breathing room
 - [x] Keep private guest enquiries in the team area only; verify signed-out access and database policy

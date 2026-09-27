@@ -346,7 +346,7 @@ export const Route = createFileRoute("/")({
           path: "/",
           name: "YES Experiences Portugal — private Portugal tours, day trips from Lisbon & tailor-made journeys",
           description:
-            "Private Portugal tours and day trips from Lisbon with local guides — Signature day tours, a real-time Studio to design your own day, and a human Travel Designer for tailor-made multi-day Portugal itineraries across Lisbon, Sintra, Cascais, Arrábida, Sesimbra, Comporta, Alentejo wine country and the Vicentine Coast.",
+            "Private Portugal experiences with local guides — Signature day tours from Lisbon, a real-time Studio to design your own day, and a human Travel Designer for journeys of any length across Portugal, beginning where your plans take you.",
         }),
       ),
     ],

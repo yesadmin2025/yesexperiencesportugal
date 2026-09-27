@@ -1,13 +1,13 @@
 import { createFileRoute, redirect } from "@tanstack/react-router";
 
 /**
- * /evora-private-tour-from-lisbon → /local-stories/evora-private-tour-from-lisbon (301).
+ * /evora-private-tour-from-lisbon → surviving Alentejo guide (301).
  */
 export const Route = createFileRoute("/evora-private-tour-from-lisbon")({
   beforeLoad: () => {
     throw redirect({
       to: "/local-stories/$slug",
-      params: { slug: "evora-private-tour-from-lisbon" },
+      params: { slug: "alentejo-wine-tour-from-lisbon" },
       statusCode: 301,
     });
   },

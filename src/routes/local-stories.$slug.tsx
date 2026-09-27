@@ -402,17 +402,19 @@ function StaticArticleView({ article }: { article: LocalStoryArticle }) {
 
             <aside className="mt-16 pt-10 border-t border-[color:var(--gold-soft)]/40 text-center">
               <span className="block font-sans text-[12px] uppercase tracking-[0.28em] text-[color:var(--gold-ink)] mb-4">
-                Travel this story
+                Make it yours
               </span>
               <p className="text-[15px] text-[color:var(--charcoal-soft)] mb-6 max-w-xl mx-auto leading-[1.75]">
-                {article.ctaLead}
+                {GUIDE_INLINE_BOOKING[article.slug]
+                  ? "Looking for a different pace, starting point or a longer journey? Tell us what you have in mind."
+                  : article.ctaLead}
               </p>
               {/*
                 Guide → booking links are clean canonical URLs. Attribution is
                 persisted at click time (recordGuideLinkClick) — no tracking
                 query string, so crawlers never see duplicate URL variants.
               */}
-              {article.signatureSlug ? (
+              {article.signatureSlug && !GUIDE_INLINE_BOOKING[article.slug] ? (
                 <>
                   {article.ctaLabel === "See all Signature Experiences" ? (
                     <CtaButton
@@ -440,12 +442,12 @@ function StaticArticleView({ article }: { article: LocalStoryArticle }) {
                   <p className="mt-6 text-[13px] text-[color:var(--charcoal-soft)] leading-[1.7]">
                     Or{" "}
                     <Link
-                      to="/studio"
-                      {...guideRefDataAttrs(article.slug, "article_studio")}
-                    onClick={trackGuideLink("article_studio", "studio", "/studio")}
+                       to="/contact"
+                       {...guideRefDataAttrs(article.slug, "article_contact")}
+                       onClick={trackGuideLink("article_contact", "contact", "/contact")}
                       className="underline decoration-[color:var(--gold)]/60 underline-offset-4 hover:text-[color:var(--teal)] transition-colors"
                     >
-                      design your own private Portugal day in the Studio
+                       ask us to design something entirely your own
                     </Link>
                     .
                   </p>
@@ -454,15 +456,12 @@ function StaticArticleView({ article }: { article: LocalStoryArticle }) {
                 <>
                   <CtaButton
                     to="/contact"
-                    search={{
-                      type: "multi_day",
-                      place: article.h1,
-                    }}
+                     search={{ type: "other", place: article.h1 }}
                     variant="primary"
                     {...guideRefDataAttrs(article.slug, "article_cta")}
                     onClick={trackGuideLink("article_cta", "contact", "/contact")}
                   >
-                    {article.ctaLabel}
+                     Design my experience
                   </CtaButton>
                   <p className="mt-6 text-[13px] text-[color:var(--charcoal-soft)] leading-[1.7]">
                     A local designer reads every request and replies personally, usually within a few hours.
@@ -470,7 +469,7 @@ function StaticArticleView({ article }: { article: LocalStoryArticle }) {
                 </>
               )}
 
-              {article.relatedSignatures && article.relatedSignatures.length > 0 && (
+              {!GUIDE_INLINE_BOOKING[article.slug] && article.relatedSignatures && article.relatedSignatures.length > 0 && (
                 <ul className="mt-10 flex flex-wrap justify-center gap-x-6 gap-y-3 text-[13px] uppercase tracking-[0.2em] text-[color:var(--charcoal-soft)]">
                   {article.relatedSignatures.map((related) => (
                     <li key={related.slug}>
