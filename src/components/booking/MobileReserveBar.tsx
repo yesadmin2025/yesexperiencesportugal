@@ -51,7 +51,7 @@ export function MobileReserveBar({
       // Never stack two bottom bars: the cookie notice owns the bottom edge
       // until the guest answers it.
       const cookieNotice = document.querySelector(".cookie-consent-card");
-      setVisible(Boolean(book) && window.innerWidth < 640 && !bookOnScreen && !cookieNotice);
+      setVisible(Boolean(book) && !bookOnScreen && !cookieNotice);
     };
     onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
