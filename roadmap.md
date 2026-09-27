@@ -1,9 +1,9 @@
 # Roadmap — Operations hub upgrade
 
 ## 27 Sep — Mobile reading and search appearance
-- [ ] Give the illustrated Travel Designer chapters and private enquiry screen clearer mobile hierarchy and breathing room
-- [ ] Keep private guest enquiries in the team area only; verify signed-out access and database policy
-- [ ] Verify live search titles and distinguish the retired-domain Google listing from the current website
+- [x] Give the illustrated Travel Designer chapters and private enquiry screen clearer mobile hierarchy and breathing room
+- [x] Keep private guest enquiries in the team area only; verify signed-out access and database policy
+- [x] Verify live search titles and distinguish the retired-domain Google listing from the current website
 
 ## 27 Sep — Signature and private operations panel
 - [ ] Confirm published footer/Signature state and apply only missing cleanup
