@@ -1,121 +1,41 @@
-# Admin simplification — audit and plan (no code changes yet)
+# Sharing each experience on social + US search boost
 
-## 1. How the admin is organised today
+## 1. Sharing each experience (recommended approach)
 
-```text
-/admin (overview, admin.index.tsx ~1,090 lines)
-  3 summary tiles · Latest bookings table · Payment webhook health widget
-  AdminNavIndex: 5 groups, 47 separate admin screens linked
-/admin/bookings (admin.bookings.index.tsx)
-  Toggle: "Operations" | "Day view"
-   Operations -> OpsBookingsHub: 5 tabs
-     List · Calendar · Needs review · Reconciliation · Sources
-     + 6 filters (date, channel, status, payment, guide, tour) + search
-     + OpsBookingDetail drawer (Customer, Booking, Payment, Choices,
-       Operations, Guide briefing, Ingestion history)
-   Day view -> BookingsAvailabilityCalendar + CalendarSubscribePanel
-     + PaidSalesSummary + date-bucket lists
-/admin/bookings/$id (separate full page, ~500 lines, "frozen snapshot")
-/admin/guides, /admin/availability, /admin/enquiries, /admin/emails,
-/admin/webhook-events, /admin/payments-env (all separate)
-```
+A second copy of each tour page would split Google's attention between two near-identical pages and weaken both. Instead, the existing tour page becomes the share page:
 
-Where the confusion comes from:
-- Two calendars (Ops Calendar tab and Day view calendar) and two booking lists (Ops List and Day view buckets).
-- Two booking detail surfaces (the drawer and `/admin/bookings/$id`) showing overlapping fields.
-- Three places for money/health: overview tiles, PaidSalesSummary, webhook health widget.
-- Machine plumbing shown as main tabs: Reconciliation and Sources (Gmail scans, dry runs, Bókun, and now WhatsApp) sit next to List/Calendar.
-- 47 screens in the nav, most of them SEO, audits and diagnostics the owner rarely needs.
-- Filters are always visible (6 selects) even when the owner just wants "today".
+- A quiet "Share this day" button on every Signature tour page (next to the price, and in the mobile reserve bar menu).
+- On phones it opens the native share sheet (WhatsApp, Instagram, Messages, email). On desktop it offers WhatsApp, Facebook, email and Copy link.
+- Shared links carry source tags (e.g. whatsapp / instagram / facebook) so GA4 shows which network brings visits and bookings.
+- The link preview already shows the tour photo, full name and itinerary summary. Its description will also mention "From €X per person".
+- The visitor lands on the real page with the itinerary, price by group size and "Reserve this day".
 
-## 2. Overloaded or duplicated pieces
+## 2. What Americans search (Semrush, US, monthly estimates)
 
-| Component | Problem |
-|---|---|
-| `OpsBookingsHub.tsx` | 5 tabs + 6 filters; mixes daily work with system tools |
-| `admin.bookings.index.tsx` | Second parallel UI ("Day view") duplicating the hub |
-| `OpsBookingDetail.tsx` vs `admin.bookings.$id.tsx` | Same booking, two layouts |
-| `OpsIntegrationsPanel.tsx` + `OpsWhatsAppPanel.tsx` + `OpsReconciliationPanel.tsx` | Three technical panels, many buttons (dry run 30/120, import, preview, apply) |
-| `admin.index.tsx` | Tiles, tables, webhook widget and a 47-link index on one page |
-| `AdminNavIndex.tsx` | Flat link wall, no priority |
-| `badges.tsx` | Up to 4 pills per row (channel, status, payment, guide) — visual noise |
+| Theme | Search | Volume | Difficulty |
+|---|---|---|---|
+| Private days | lisbon tours | ~1,600 | — |
+| Private days | day tours from lisbon | ~480 | — |
+| Private days | private tours portugal | ~170 | Low (29) |
+| Multi-day | portugal trip / vacation | ~1,600–1,900 | — |
+| Multi-day | portugal itinerary | ~1,300 | — |
+| Multi-day | portugal itinerary 10 days | ~880 | Low (18) |
+| Multi-day | portugal trips packages | ~590 | — |
+| Proposal | portugal / lisbon / porto proposal | ~50–70 each | Very low (5) |
+| Corporate | corporate events / team building portugal | ~0–10 | — |
+| Private driver | private driver portugal | ~20 | — |
 
-## 3. Proposed structure — four sections
+Key finding: Americans search with trip words ("itinerary", "10 days", "trip"), not "travel designer". Corporate searches are almost nonexistent in the US, so that page stays as it is.
 
-```text
-Today        (home: what needs me, today and next 7 days)
-Bookings     (all trips: list + calendar in one view, drawer detail)
-Guides       (directory + assignments; brief sending lives in the drawer)
-Settings     (everything else, grouped and collapsed)
-   Connections & automation  (Gmail, WhatsApp, Bókun, payments, reconciliation)
-   Prices & experiences      (pricing, catalogue, photos, source of truth)
-   Reviews
-   Search & visibility       (SEO, domains, GBP)
-   Diagnostics               (error log, tests, audits, drift, funnels)
-```
+## 3. Pages to strengthen (copy and search info only, no layout or price changes)
 
-All existing addresses keep working; only the menu and landing change.
+- **Travel Designer**: add "Portugal itinerary", "10-day Portugal trip" and "private multi-day trip" wording in the title, description and one short section with 7-, 10- and 14-day example journeys. These are drawn only from our real regions and marked as starting points for a private journey.
+- **Lisbon private tours / Experiences**: include "private day tours from Lisbon" and "private tours in Portugal" in the titles and opening lines. Add the differentiators: private car and local guide, instant online confirmation, free cancellation up to 24h.
+- **Proposal in Portugal**: add "Lisbon proposal" and "where to propose in Portugal" as a short section with real locations we already offer. Add one FAQ answer.
+- **Studio**: mention "design your own private day in Portugal and confirm instantly online" in the description.
+- **FAQ**: add 2 US-style questions ("How many days do I need in Portugal?", "Can I book a private tour online with instant confirmation?").
 
-## 4. The Today screen
-
-Top to bottom, one column on iPhone, two on desktop:
-
-1. One status sentence: "3 trips today · 1 needs a guide · everything else is running." Green/quiet when fine, gold when there is something to do.
-2. Needs you (only if not empty), max 5 rows, each one action:
-   - trip in the next 7 days without a guide -> Assign
-   - trip missing date, pickup or tour -> Complete
-   - Needs Review items (email or WhatsApp ambiguity) -> Decide
-   - guest cancellation/refund request on a paid trip -> Refund
-   - automation failing (Gmail scan, webhook, WhatsApp) -> one line, links to Settings
-3. Today and tomorrow: compact timeline (time · tour · guests · pickup · guide initials).
-4. Next 7 days: a single line per day with trip count; tap opens the day.
-5. A small footer line: paid this month and bookings count (replaces the tile rows).
-
-Each row opens the same drawer. No tables, no filters on this screen.
-
-## 5. Automatic vs visible
-
-Runs quietly in the background (unchanged): 15-minute Gmail scan, internal notification enrichment, Stripe webhook, WhatsApp receiver and matching, duplicate protection, confident-match enrichment.
-
-Shown to the owner only as exceptions: ambiguous matches, missing operational facts on upcoming trips, missing guide, cancellation/refund on a paid trip, any automation that has not succeeded in over an hour.
-
-## 6. Kept, but behind "More" or Settings
-
-- Dry-run / import / preview / apply buttons -> Settings > Connections (one "Run now" per source, dry run inside an "Advanced" disclosure).
-- Reconciliation report and per-row evidence -> Settings > Connections > History; in the drawer as a collapsed "Where this came from".
-- Ingestion history, raw source links, WhatsApp messages -> collapsed drawer sections.
-- Full filters -> a single "Filter" button on Bookings.
-- Calendar subscribe, sales summary -> Bookings "More" menu.
-- Channel/payment pills -> one pill per row; channel shown as a small text label.
-- `/admin/bookings/$id` -> becomes a full-page version of the same drawer component.
-
-## 7. Phases
-
-Phase 1 — layout only (no data or server changes)
-- New `AdminShell` with 4-item nav (sidebar desktop, bottom bar iPhone); rework `AdminNavIndex` into the grouped Settings page.
-- New Today route using existing server functions from `bookingsOps.functions.ts` (list, review count, integration status).
-- Bookings: merge list + calendar into one view inside `OpsBookingsHub`; remove the "Day view" toggle in `admin.bookings.index.tsx`; move Reconciliation/Sources tabs to Settings > Connections, reusing `OpsIntegrationsPanel`, `OpsWhatsAppPanel`, `OpsReconciliationPanel` unchanged.
-- Drawer: reorder `OpsBookingDetail` into Essentials (always open) + collapsed sections.
-
-Phase 2 — one detail surface
-- Make `admin.bookings.$id.tsx` render the drawer component full-page; retire the duplicate layout.
-- Simplify badges to one status pill.
-
-Phase 3 — exceptions engine
-- One read-only server function returning the "Needs you" list (computed from existing columns: guide, review flags, missing fields, integration_state freshness). No new tables needed.
-
-Phase 4 — polish and checks
-- iPhone (393px) and desktop visual pass, reduced-motion, 44px targets; update admin smoke tests.
-
-Separately: finish the pending WhatsApp admin wiring (drawer conversation section, badge) inside the new structure rather than adding another tab.
-
-## 8. Risks to avoid
-
-- Gmail cron: job 528 calls `/api/public/hooks/gmail-booking-scan`. Do not rename or move that route or change its secret check.
-- Stripe authority: do not touch `stripe-session-status`, `create-builder-checkout`, the Stripe webhook, or refund actions (`cancelAndRefundBooking`); the UI only links to them.
-- Reconciliation: keep `stripe-voucher-reconcile.server.ts`, parsers and `integration_state` ids (`gmail_bookings`, `whatsapp_*`) unchanged; panels move, their calls do not.
-- Guide assignment: keep the existing update server function and `assigned_guide_id`; the drawer is the only editor.
-- WhatsApp receiver path `/api/public/whatsapp/webhook` is a fixed contract.
-- Admin access: every new screen stays behind the existing admin role check; the Today function must use the same `assertAdmin`.
-- Old links: keep all 47 addresses reachable (Settings links) so bookmarks and email links don't break.
-- Nothing is published until you approve.
+## Technical notes
+- Share button uses the Web Share API with a fallback menu; UTM params: utm_source={network}&utm_medium=social&utm_campaign=signature_share. Canonical stays the clean URL.
+- No new routes, no sitemap changes, no changes to prices, booking, Stripe or tour facts.
+- Changes stay in preview until you ask to publish.
