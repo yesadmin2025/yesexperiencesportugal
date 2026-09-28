@@ -40,6 +40,7 @@ export const PT_READY_PATHS: readonly string[] = Array.from(READY_PATHS);
  */
 const LOCALE_STUB_DESTINATIONS: Record<string, string> = {
   "/moments": "/proposal-in-portugal",
+  "/proposals": "/proposal-in-portugal",
   "/pt/faq": "/pt/about",
   "/pt/moments": "/pt/contact",
   "/pt/proposals": "/pt/contact",
