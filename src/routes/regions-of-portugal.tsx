@@ -7,9 +7,10 @@ import { SectionTitle } from "@/components/ui/SectionTitle";
 import { CtaButton } from "@/components/ui/CtaButton";
 import { PORTUGAL_REGION_GUIDES } from "@/content/portugal-region-guides";
 import douroImage from "@/assets/drift/dawn-douro.jpg";
+import { DirectAnswer } from "@/components/DirectAnswer";
 
-const title = "Regions of Portugal | Private Travel Guide · YES";
-const description = "Explore Portugal by region: the North, Centro, Lisbon, Alentejo, Algarve, Madeira and the Azores. Find local guides and plan a private journey at your pace.";
+const title = "Best Places to Visit in Portugal, Region by Region";
+const description = "The best places to visit in Portugal, region by region: Porto and the Douro, Lisbon and Sintra, Évora, the Algarve, Madeira and the Azores — with local guides.";
 const url = "https://yesexperiencesportugal.com/regions-of-portugal";
 
 export const Route = createFileRoute("/regions-of-portugal")({
@@ -56,6 +57,12 @@ function RegionsPage() {
             <Eyebrow>Portugal · Place by place</Eyebrow>
             <SectionTitle as="h1" size="anchor" spacing="loose">Regions of <SectionTitle.Em>Portugal</SectionTitle.Em></SectionTitle>
             <p className="mt-5 max-w-2xl text-base leading-relaxed text-[color:var(--charcoal-soft)]">From the Douro terraces to the Atlantic islands, each region asks for a different pace. Choose a place, then follow the local stories that bring it into focus.</p>
+            <DirectAnswer>
+              The best places to visit in Portugal are Lisbon and Sintra, Porto and the Douro Valley, Évora and the Alentejo, the Algarve coast, and the islands of Madeira and the Azores. A first trip usually pairs Lisbon with Porto; a longer one adds the Alentejo and the Algarve.
+            </DirectAnswer>
+            <p className="mt-5 text-sm text-[color:var(--charcoal-soft)]">
+              Short on time? See the <Link to="/day-trips-from-lisbon" className="text-[color:var(--teal)] underline underline-offset-4">best day trips from Lisbon</Link> or our <Link to="/how-many-days-in-portugal" className="text-[color:var(--teal)] underline underline-offset-4">guide to how many days you need</Link>.
+            </p>
           </div>
         </header>
         <figure className="container-x max-w-6xl">

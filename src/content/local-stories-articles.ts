@@ -730,13 +730,15 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
   },
   {
     slug: "sintra-day-tour-from-lisbon",
-    title: "Private Tours in Sintra from Lisbon — Skip the Queues",
+    title: "Sintra Day Tour from Lisbon — Private, Skip the Queues",
     metaDescription:
-      "Private Sintra tours from Lisbon: Pena, Regaleira, Cabo da Roca and Cascais, timed around the crowds. Hotel pickup, licensed local guide, book online.",
+      "Private Sintra day tour from Lisbon: Pena, Regaleira, Cabo da Roca and Cascais, timed around the crowds. Hotel pickup, licensed local guide, book online.",
     h1: "Private Sintra Day Tour from Lisbon — without the queues",
     eyebrow: "Lisbon · Private Sintra Day",
     standfirst:
       "Quieter palaces and forest paths, Cabo da Roca and Cascais, finishing with a small private wine tasting.",
+    directAnswer:
+      "A private Sintra day tour from Lisbon lasts about 8–10 hours, from €161 per person, with pickup at your Lisbon address. It covers Sintra's palaces and gardens, Cabo da Roca and Cascais, and confirms instantly online.",
     sections: [
       {
         heading: "Sintra is the day everyone has heard of.",
