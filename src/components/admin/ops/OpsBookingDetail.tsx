@@ -385,18 +385,6 @@ export function OpsBookingDetail({
           <Row label="Drop-off" value={str(booking["dropoff_location"])} />
           <Row label="Language" value={str(booking["language"] ?? inner["language"])} />
           <Row label="Extras" value={list(booking["extras"]).join(", ") || "—"} />
-          <Row label="Included" value={list(booking["inclusions"]).join(", ") || "—"} />
-          <Row label="Not included" value={list(booking["exclusions"]).join(", ") || "—"} />
-          {itinerary.length > 0 ? (
-            <ol className="mt-2 space-y-1 text-[13px] text-[color:var(--charcoal)]">
-              {itinerary.map((stop, index) => (
-                <li key={index}>
-                  {index + 1}. {str(stop["label"] ?? stop["name"])}
-                  {typeof stop["note"] === "string" && stop["note"] ? ` — ${stop["note"] as string}` : ""}
-                </li>
-              ))}
-            </ol>
-          ) : null}
         </Fold>
 
         <Fold title="Status and payment actions">
