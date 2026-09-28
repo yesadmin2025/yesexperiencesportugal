@@ -759,9 +759,15 @@ function ItineraryTimeline({
                       </span>
                     )}
                   </h3>
-                  {typeof s.durationMinutes === "number" && s.durationMinutes > 0 && (
+                  {typeof s.durationMinutes === "number" && s.durationMinutes >= 20 && (
                     <p className="mt-1 text-[11px] uppercase tracking-[0.16em] text-[color:var(--charcoal-soft)]">
-                      About {s.durationMinutes} min here
+                      About{" "}
+                      {s.durationMinutes >= 60 && s.durationMinutes % 60 === 0
+                        ? `${s.durationMinutes / 60}h`
+                        : s.durationMinutes >= 60
+                          ? `${Math.floor(s.durationMinutes / 60)}h ${s.durationMinutes % 60}min`
+                          : `${s.durationMinutes} min`}{" "}
+                      here
                     </p>
                   )}
                   {s.story && (
