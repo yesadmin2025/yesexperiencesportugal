@@ -565,7 +565,7 @@ function TourHero({
  * ════════════════════════════════════════════════════════════ */
 function TrustStrip({ meta }: { meta?: ViatorMeta }) {
   const items = [
-    { icon: <Shield size={14} />, label: SITE_RATING_LABEL.replace(" · ", " · ") },
+    { icon: <Shield size={14} />, label: SITE_RATING_LABEL },
     { icon: <Shield size={14} />, label: "Instant confirmation · Secure payment" },
     { icon: <Check size={14} />, label: CANCELLATION.signature.en },
     { icon: <Check size={14} />, label: "A local on WhatsApp if you need help" },
