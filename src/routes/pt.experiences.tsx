@@ -110,7 +110,6 @@ function ExperiencesPage() {
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-8">
             {signatureTours.map((tour) => {
               const meta = VIATOR_META[tour.id];
-              const content = getTourContent(tour.id);
               const topHighlights = getSignatureCardHighlights(tour.id);
 
               return (

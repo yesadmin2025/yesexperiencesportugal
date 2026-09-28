@@ -225,7 +225,6 @@ function TourCard({
 }) {
   // Teaser reads through the tour-content getter so the collection stays
   // source-of-truth with the experience detail page.
-  const content = getTourContent(tour.id);
   const teaser = getSignatureCardPromise(tour.id);
   const meta = getViatorMeta(tour.id);
   const verifiedRating = meta?.rating;
