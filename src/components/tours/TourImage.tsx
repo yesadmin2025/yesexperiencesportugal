@@ -50,14 +50,29 @@ export function TourImage({
   const [loaded, setLoaded] = useState(false);
   const [errored, setErrored] = useState(false);
   const imageRef = useRef<HTMLImageElement | null>(null);
+  const previousSrc = useRef(src);
+  const showImage = loaded || (priority && !errored);
 
   useEffect(() => {
-    setLoaded(false);
-    setErrored(false);
+    let cancelled = false;
+    // Do not reset a photo that loaded before hydration's first effect.
+    if (previousSrc.current !== src) {
+      previousSrc.current = src;
+      setLoaded(false);
+      setErrored(false);
+    }
     const image = imageRef.current;
     // Cached eager images can finish before React attaches onLoad during
-    // hydration. Read the native state so a real image never stays hidden.
+    // hydration. Decode also covers an image that finishes between this
+    // check and React's load handler, so a real photo never stays hidden.
     if (image?.complete && image.naturalWidth > 0) setLoaded(true);
+    else if (image) {
+      image.decode().then(
+        () => { if (!cancelled) setLoaded(true); },
+        () => { if (!cancelled) setErrored(true); },
+      );
+    }
+    return () => { cancelled = true; };
   }, [src]);
 
   return (
@@ -92,7 +107,7 @@ export function TourImage({
         className={[
           "absolute inset-0 h-full w-full object-cover object-center",
           "transition-[opacity,filter,transform] duration-[220ms] ease-out motion-reduce:transition-none",
-          loaded ? "opacity-100 blur-0 scale-100" : "opacity-0 blur-[6px] scale-[1.02]",
+          showImage ? "opacity-100 blur-0 scale-100" : "opacity-0 blur-[6px] scale-[1.02]",
           imgClassName,
         ].join(" ")}
       />

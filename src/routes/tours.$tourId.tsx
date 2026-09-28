@@ -444,7 +444,6 @@ function TourHero({
               priority
               focal={tour.focal ?? "50% 50%"}
               sizes="(min-width: 1024px) 576px, 100vw"
-              imgClassName="signature-image-settle"
             />
           </div>
 
