@@ -4,6 +4,7 @@ import { useEffect, useRef } from "react";
 import { breadcrumbLd, corporateServiceLd, faqPageLd, jsonLdScript } from "@/lib/jsonld";
 import { SiteLayout } from "@/components/SiteLayout";
 import { ServiceCrossLinks } from "@/components/entity/ServiceCrossLinks";
+import { DirectAnswer } from "@/components/DirectAnswer";
 import { useMarketingMotion } from "@/hooks/use-marketing-motion";
 import {
   MessageCircle,

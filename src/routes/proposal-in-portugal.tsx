@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { breadcrumbLd, faqPageLd, jsonLdScript, momentsServiceLd } from "@/lib/jsonld";
 import { ServiceCrossLinks } from "@/components/entity/ServiceCrossLinks";
+import { DirectAnswer } from "@/components/DirectAnswer";
 import { SiteLayout } from "@/components/SiteLayout";
 import { useMarketingMotion } from "@/hooks/use-marketing-motion";
 import { MessageCircle, Heart, Sparkles, Users } from "lucide-react";

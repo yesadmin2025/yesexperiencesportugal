@@ -7,6 +7,7 @@ import { CtaButton } from "@/components/ui/CtaButton";
 import { SplitLines } from "@/components/motion/SplitLines";
 import { breadcrumbLd, jsonLdScript, travelDesignerServiceLd } from "@/lib/jsonld";
 import { ServiceCrossLinks } from "@/components/entity/ServiceCrossLinks";
+import { DirectAnswer } from "@/components/DirectAnswer";
 import ogImg from "@/assets/hero-coast.jpg";
 import { CTA_LABELS } from "@/content/cta-vocabulary";
 
