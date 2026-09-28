@@ -49,7 +49,7 @@ export function PriceCurrencyChip({ className, align = "end", surface = "light" 
     </div>
     {currency !== "EUR" && (
       <span className="text-[11px] normal-case tracking-normal text-[color:var(--charcoal-soft)]">
-        USD shown as an estimate · checkout is charged in EUR
+        USD shown for reference · Payment is processed in EUR.
       </span>
     )}
     </span>
