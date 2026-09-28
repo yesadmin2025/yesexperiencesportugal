@@ -2594,6 +2594,45 @@ export type Database = {
         }
         Relationships: []
       }
+      studio_proposals: {
+        Row: {
+          created_at: string
+          date_label: string | null
+          duration: string | null
+          guests: number | null
+          id: string
+          per_pax_eur: number | null
+          pickup: string | null
+          title: string
+          tour_id: string | null
+          visit_key: string
+        }
+        Insert: {
+          created_at?: string
+          date_label?: string | null
+          duration?: string | null
+          guests?: number | null
+          id?: string
+          per_pax_eur?: number | null
+          pickup?: string | null
+          title: string
+          tour_id?: string | null
+          visit_key: string
+        }
+        Update: {
+          created_at?: string
+          date_label?: string | null
+          duration?: string | null
+          guests?: number | null
+          id?: string
+          per_pax_eur?: number | null
+          pickup?: string | null
+          title?: string
+          tour_id?: string | null
+          visit_key?: string
+        }
+        Relationships: []
+      }
       studio_v2_bookings: {
         Row: {
           adults: number | null
