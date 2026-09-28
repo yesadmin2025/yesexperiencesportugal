@@ -99,6 +99,12 @@ function PortugalTravelDesignerPage() {
             One local hand connects the route, rhythm and private experiences into a journey that
             feels entirely your own.
           </p>
+          <DirectAnswer>
+            The YES Travel Designer service creates bespoke multi-day journeys across Portugal — of
+            any length, starting anywhere in the country, not only Lisbon. A local designer shapes
+            the route, stays and private experiences with you, and prices the whole journey
+            transparently before you commit to anything.
+          </DirectAnswer>
           <div className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
             <CtaButton to="/contact" search={{ type: "multi_day" }} variant="primary">
               {CTA_LABELS.travelDesigner}
