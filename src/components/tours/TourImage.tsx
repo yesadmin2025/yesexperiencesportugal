@@ -51,6 +51,7 @@ export function TourImage({
   const [errored, setErrored] = useState(false);
   const imageRef = useRef<HTMLImageElement | null>(null);
   const previousSrc = useRef(src);
+  const showImage = loaded || (priority && !errored);
 
   useEffect(() => {
     let cancelled = false;
@@ -106,7 +107,7 @@ export function TourImage({
         className={[
           "absolute inset-0 h-full w-full object-cover object-center",
           "transition-[opacity,filter,transform] duration-[220ms] ease-out motion-reduce:transition-none",
-          loaded ? "opacity-100 blur-0 scale-100" : "opacity-0 blur-[6px] scale-[1.02]",
+          showImage ? "opacity-100 blur-0 scale-100" : "opacity-0 blur-[6px] scale-[1.02]",
           imgClassName,
         ].join(" ")}
       />
