@@ -88,14 +88,14 @@ export function RouteGlance({
         <svg
           viewBox="0 0 100 220"
           preserveAspectRatio="xMidYMid meet"
-          className="h-32 w-auto shrink-0 md:h-40"
+          className="h-44 w-auto shrink-0 md:h-52"
           role="img"
           aria-label={`Where this day sits in Portugal: ${region ?? "Portugal"}`}
         >
           <path
             d={PT_PATH}
-            fill="color-mix(in oklab, var(--sand) 55%, transparent)"
-            stroke="color-mix(in oklab, var(--charcoal) 18%, transparent)"
+            fill="color-mix(in oklab, var(--sand) 90%, transparent)"
+            stroke="color-mix(in oklab, var(--charcoal) 26%, transparent)"
             strokeWidth={0.8}
             strokeLinejoin="round"
           />
@@ -112,7 +112,7 @@ export function RouteGlance({
               key={i}
               cx={d.x}
               cy={d.y}
-              r={i === 0 ? 3 : 2.2}
+              r={i === 0 ? 3.4 : 2.6}
               fill={i === 0 ? "var(--teal)" : "var(--gold)"}
             />
           ))}
