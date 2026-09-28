@@ -2,23 +2,56 @@
 
 > Private, premium experiences in Portugal — Signature day tours, an Experience Studio that designs and reserves in minutes, bespoke multi-day journeys with a Travel Designer, private moments and celebrations, and corporate or private-group experiences across Portugal. Licensed Portuguese tour operator (RNAAT nº 31/2023), based in Sesimbra, Portugal. 4.9/5 across 1,000 guest reviews on major booking and review platforms.
 
+## Facts
+
+- Licensed Portuguese tour operator: RNAAT nº 31/2023.
+- Rated 4.9/5 across 1,000 guest reviews on major booking and review platforms.
+- Private experiences only — never shared groups.
+- Pickup from anywhere in Portugal, not only Lisbon.
+- Journeys of any length: one day to multi-week, starting anywhere in the country.
+- Instant online confirmation on Signature experiences and Studio-designed days.
+- Free cancellation up to 24 hours before the experience, with full refund.
+- Contact: info@yesexperiencesportugal.com · WhatsApp available on the contact page.
+
 ## Pages
 
 - [Home](/): Overview of YES Experiences Portugal and the five ways to begin.
 - [Signature Experiences](/experiences): Complete private day experiences, reservable instantly.
 - [Day Tours](/day-tours): Half- and full-day private tours across Portugal.
 - [Experience Studio](/studio): Design your own private day with live pricing and instant reservation.
-- [Travel Designer (Multi-day)](/portugal-travel-designer): Bespoke multi-day journeys designed with you.
-- [Moments](/proposal-in-portugal): Proposals, anniversaries and private celebrations.
-- [Corporate](/corporate): Private corporate days and incentives.
+- [Travel Designer (Multi-day)](/portugal-travel-designer): Bespoke multi-day journeys designed with you, of any length and starting anywhere in Portugal.
+- [Moments & Proposals](/proposal-in-portugal): Proposals, anniversaries and private celebrations.
+- [Corporate](/corporate): Private corporate days, retreats and incentives.
 - [About](/about): Who we are and how we work.
-- [Contact](/contact): Get in touch.
-- [FAQ](/#faq): Common questions about booking, pricing and logistics.
+- [Contact](/contact): Email, phone and WhatsApp — a local answers personally.
+- [FAQ](/faq): Common questions about booking, pricing, cancellation and logistics.
+- [Guest Reviews](/reviews): What travelers say about their days with us.
 - [Local Stories](/local-stories): Editorial guides to Portugal's regions and experiences.
+
+## Signature Experiences
+
+Private full-day experiences with live per-person pricing by group size and instant confirmation. Prices shown are the per-person "from" rate (largest group tier); smaller groups pay more per person.
+
+- [Arrábida Private Wine Tour from Lisbon — All-Inclusive](/tours/arrabida-wine-allinclusive): 7–9h, from €135 per person. Two family wineries, Moscatel tastings, Livramento market, traditional lunch.
+- [Arrábida & Sesimbra Private Tour with Coastal Boat Ride](/tours/arrabida-boat): 6–8h, from €135 per person. Coast, coves, boat trip and a fishing-town lunch in Sesimbra.
+- [Lisbon Coastal Tour — Arrábida, Sesimbra & Beach Picnic](/tours/wild-beaches-picnic): 7h30, from €118 per person. Wild beaches and a private picnic on the sand.
+- [Tile Painting Workshop, Wine Tasting & Sesimbra](/tours/tiles-workshop): 8–9h, from €135 per person. Hands-on azulejo painting, wine tasting and Sesimbra.
+- [Azeitão Cheese-Making & Wine Private Tour](/tours/azeitao-cheese): 8–9h, from €101 per person. Make Azeitão cheese, taste wines, visit Setúbal.
+- [Sintra & Cascais Private Tour — Hidden Gems & Wine Tasting](/tours/sintra-cascais): 8–10h, from €161 per person. Palaces, coast and a wine tasting.
+- [Tróia & Comporta Private Tour — Ruins, Wine & Coast](/tours/troia-comporta): 8–9h, from €157 per person. Roman ruins, rice fields and Comporta's beaches.
+- [Évora & Alentejo Wine Private Tour — Local Traditions](/tours/evora-alentejo): 9–11h, from €169 per person. Évora's monuments and Alentejo wine country.
+- [Private Lisbon to Alentejo Tour: Artisan Pottery & Cork Workshops](/tours/p23-artisan-pottery-cork): ~9h, from €203 per person. Hands-on cork and pottery workshops with local makers, lunch included.
+- [Roman Heritage Wine Tour — Hidden Alentejo](/tours/roman-heritage-alentejo): 8–9h, from €254 per person. Roman sites and talha wine in the deep Alentejo.
+- [Tomar & Coimbra Private Tour — Templars & Heritage](/tours/tomar-coimbra): 8–9h, from €152 per person. Templar castle and Portugal's oldest university city.
+- [Fátima, Nazaré & Óbidos Private Tour — Spirit & Charm](/tours/fatima-nazare-obidos): 8–9h, from €135 per person. Sanctuary, giant-wave coast and a walled medieval town.
+- [Southwest Vicentine Coast — Secret Paradise](/tours/southwest-vicentine-coast): 9–10h, from €203 per person. Cliffs, wild beaches and fishing villages on the Costa Vicentina.
 
 ## Local Stories
 
 - [Best Day Trips from Lisbon](/day-trips-from-lisbon)
+- [How Many Days in Portugal? An Honest Itinerary Guide](/local-stories/how-many-days-in-portugal)
+- [Private Tours in Portugal: What They Actually Cost](/local-stories/private-tours-portugal-cost)
+- [Planning a Proposal in Portugal](/local-stories/planning-a-proposal-in-portugal)
 - [Arrábida vs Sintra](/local-stories/arrabida-vs-sintra)
 - [Setúbal Wine Guide](/local-stories/setubal-wine-guide)
 - [What to Do in Sesimbra](/local-stories/what-to-do-in-sesimbra)
