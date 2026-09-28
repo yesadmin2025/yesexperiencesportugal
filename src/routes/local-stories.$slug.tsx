@@ -26,6 +26,7 @@ import {
 import { localStoryShareImage } from "@/content/local-story-share-images";
 import { GuideNextSteps, useGuideLinkTracker } from "@/components/journal/GuideNextSteps";
 import { GuideBookingCta } from "@/components/journal/GuideBookingCta";
+import { DirectAnswer } from "@/components/DirectAnswer";
 import { guideRefDataAttrs } from "@/lib/guide-attribution-inline";
 import {
   getPublishedJournalPost,
