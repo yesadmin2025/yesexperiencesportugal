@@ -152,8 +152,8 @@ function ExperiencesPage() {
             Private days, <SectionTitle.Em>ready when you are.</SectionTitle.Em>
           </SectionTitle>
           <p className="mt-3 max-w-[52ch] mx-auto text-[15px] md:text-[16px] leading-[1.65] text-[color:var(--charcoal-soft)]">
-            Choose a private day from Lisbon or across Portugal. See what is included, check your
-            date and reserve instantly where available — or tailor the day around your group.
+            Private days across Portugal. See what is included, choose the experience that fits
+            you and reserve your date — or tailor the day around your group.
           </p>
           <div className="mt-5 flex justify-center">
             <PriceCurrencyChip />
