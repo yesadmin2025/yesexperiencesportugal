@@ -36,15 +36,12 @@ const TIER_PRICE_MULTIPLIER: Record<InvestmentTier, number | "range"> = {
   open: "range",
 };
 
-function priceHintFor(tier: InvestmentTier, base: number | null | undefined): string | null {
-  if (!base || base <= 0) return null;
-  const m = TIER_PRICE_MULTIPLIER[tier];
-  if (m === "range") {
-    const hi = Math.round((base * 1.9) / 5) * 5;
-    return `€${base} – €${hi}+ / guest`;
-  }
-  const v = Math.round((base * m) / 5) * 5;
-  return `from €${v} / guest`;
+// Per-tier price chips were multiplier estimates that never matched the
+// real private-day price (which depends on the experience and group size).
+// Tiers stay a style signal; only the real "from" anchor is shown below.
+void TIER_PRICE_MULTIPLIER;
+function priceHintFor(_tier: InvestmentTier, _base: number | null | undefined): string | null {
+  return null;
 }
 
 const TIER_META: Record<
@@ -240,8 +237,8 @@ export function InvestmentTierPicker({
           className="mt-3 text-center text-[11px] uppercase tracking-[0.22em] font-semibold"
           style={{ color: "color-mix(in oklab, var(--charcoal) 55%, transparent)" }}
         >
-          <span style={{ color: "var(--gold)" }}>—</span> Indicative
-          {guestLabel ? <> · {guestLabel}</> : null} · real per-pax confirmed on the next step
+          <span style={{ color: "var(--gold)" }}>—</span> Private days from €{priceFromEur} / guest
+          {guestLabel ? <> · exact price {guestLabel} shown with your day</> : <> · exact price shown with your day</>}
         </p>
       ) : null}
     </>

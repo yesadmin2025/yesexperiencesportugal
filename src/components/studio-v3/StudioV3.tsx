@@ -6197,7 +6197,7 @@ export function StoryboardHandoff({
                     index={i}
                     total={editedStops.length}
                     label={authorLabel(s.label)}
-                    story={s.story && !storySlot ? authorText(s.story) : undefined}
+                    story={s.story ? authorText(s.story) : undefined}
                     reason={
                       /* Pass 2B hardening: derived from the CURRENT stop
                          identity only. The former `composerRationales[i]`
