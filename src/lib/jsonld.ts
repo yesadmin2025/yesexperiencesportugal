@@ -506,10 +506,8 @@ export function tourProductLd(args: {
           },
         }
       : {}),
-    // No aggregateRating here: review structured data is added separately
-    // from FIRST-PARTY reviews only (see withFirstPartyReviews). Ratings from
-    // Viator/Tripadvisor/GetYourGuide/Google stay visible on-page but must
-    // never feed review structured data.
+    // No aggregateRating or Review schema. Guest proof stays visible on-page
+    // without self-serving review markup.
     potentialAction: {
       "@type": "ReserveAction",
       target: {

@@ -43,6 +43,7 @@ import { getFaqForTour } from "@/content/seo-faq";
 import { getTourGallery, getHeroAlt } from "@/lib/tour-gallery";
 import { getTourContent, signatureDurationLabel } from "@/lib/tourContent";
 import { getSignatureCardHighlights } from "@/lib/signatureCardHighlights";
+import { getFirstPartyReviewBundle } from "@/lib/reviews.functions";
 import { projectPublicSotItinerary } from "@/lib/publicItineraryProjection";
 import { publicItineraryStops, routeGlancePoints } from "@/lib/tourItineraryStops";
 import { RouteGlance } from "@/components/tours/RouteGlance";
@@ -106,7 +107,14 @@ export const Route = createFileRoute("/tours/$tourId")({
     } catch {
       /* copy overrides are optional — never block the page */
     }
-    return { tour };
+    // Keep visible guest reviews on the first request without rating schema.
+    let firstPartyReviews: Awaited<ReturnType<typeof getFirstPartyReviewBundle>> | null = null;
+    try {
+      firstPartyReviews = await getFirstPartyReviewBundle({ data: { tourId: params.tourId } });
+    } catch {
+      /* Guest reviews must never block the booking page. */
+    }
+    return { tour, firstPartyReviews };
   },
 
   head: ({ params, loaderData }) => {
@@ -279,7 +287,7 @@ export const Route = createFileRoute("/tours/$tourId")({
 
 function TourDetailPage() {
   useMarketingMotion();
-  const { tour } = Route.useLoaderData();
+  const { tour, firstPartyReviews } = Route.useLoaderData();
   const pathname = useRouterState({ select: (s) => s.location.pathname });
   const { resolveImg } = useImportedTourImages();
   const meta = getViatorMeta(tour.id);
@@ -350,7 +358,7 @@ function TourDetailPage() {
 
       {/* ── H · REVIEWS — proof right after the decision ───────── */}
       <section className="container-x py-6">
-        <TourReviews tourId={tour.id} />
+        <TourReviews tourId={tour.id} initialFirstParty={firstPartyReviews} />
         <GuestReviewForm lockedTour={{ tour_id: tour.id, title: tour.title }} />
       </section>
 
@@ -637,7 +645,7 @@ function HighlightsBlock({ tour }: { tour: SignatureTour }) {
           </SectionTitle>
         </div>
          <ul className="grid sm:grid-cols-2 gap-x-10 gap-y-4 max-w-3xl mx-auto">
-          {items.map((h) => (
+           {items.slice(0, 6).map((h) => (
             <li
               key={h}
               className="flex gap-3 text-[15px] leading-relaxed text-[color:var(--charcoal)]"

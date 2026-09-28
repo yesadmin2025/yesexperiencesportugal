@@ -382,6 +382,12 @@ function CtaStrip() {
               Build one private day around your mood, group and rhythm, then see the route and live
               price in the Studio.
             </p>
+            <p className="mt-3 text-[13px] leading-relaxed text-[color:var(--charcoal-soft)]">
+              Traveling for several days?{" "}
+              <Link to="/portugal-travel-designer" className="underline underline-offset-4 decoration-[color:var(--gold)]">
+                Plan a journey across Portugal
+              </Link>.
+            </p>
           </div>
           <CtaButton to="/studio" variant="primary" className="flex-shrink-0">
             {CTA_LABELS.studio}

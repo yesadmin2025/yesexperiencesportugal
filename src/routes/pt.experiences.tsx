@@ -222,6 +222,12 @@ function CtaStrip() {
               Comece à sua maneira — por um lugar, uma região ou um sentimento. Guiamo-lo enquanto
               constrói, dentro do que funciona melhor no terreno.
             </p>
+            <p className="mt-3 text-[13px] text-[color:var(--ivory)]/80">
+              Vai viajar durante vários dias?{" "}
+              <Link to="/portugal-travel-designer" className="underline underline-offset-4 decoration-[color:var(--gold)]">
+                Planeie uma viagem por Portugal
+              </Link>.
+            </p>
           </div>
           <CtaButton to="/studio" variant="ghostDark" className="flex-shrink-0">
             Abrir o Studio
