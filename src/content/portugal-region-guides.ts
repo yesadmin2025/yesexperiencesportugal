@@ -72,7 +72,7 @@ export const PORTUGAL_REGION_GUIDES: LocalStoryArticle[] = [
     slug: "minho-geres-braga-guimaraes-guide",
     title: "The Minho — Peneda-Gerês, Braga & Guimarães Guide",
     metaDescription:
-      "Portugal's green north: the country's only national park, the pilgrim stairway at Bom Jesus and the castle town where Portugal began. A private travel guide.",
+      "Portugal's green north: the country's only national park, the Bom Jesus stairway and the castle town where Portugal began. A private travel guide.",
     h1: "The Minho — Gerês, Braga and Guimarães",
     eyebrow: "North · Minho",
     standfirst: "Granite, water and the oldest idea of Portugal, all inside an hour of each other.",
