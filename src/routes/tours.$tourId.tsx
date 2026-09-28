@@ -696,28 +696,8 @@ function ItineraryTimeline({
     if (!assigned.has(key)) assigned.set(key, { src: p.src, srcSet: p.srcSet, alt: p.alt });
   }
 
-  const curated = new Map<string, { src: string; srcSet?: string; alt: string }>();
-  for (const s of tour.stops ?? []) {
-    if (!s.image) continue;
-    const src = s.image;
-    const key = normaliseStopKey(s.label);
-    if (!curated.has(key)) curated.set(key, { src, alt: `${s.label} — ${tour.title}` });
-  }
-
-  const photoForStop = (label: string) => {
-    const key = normaliseStopKey(label);
-    const exact = assigned.get(key) ?? curated.get(key);
-    if (exact) return exact;
-    // The curated stop photos were authored against the tour's own stop names,
-    // which sometimes carry a longer official form of the same place
-    // ("Santuário Nacional de Cristo Rei" vs "Cristo Rei"). Only an anchored
-    // match counts — never a loose substring that could move a photo to a
-    // different place.
-    for (const [k, v] of curated) {
-      if (k.length > key.length && (k.startsWith(key) || k.endsWith(key))) return v;
-    }
-    return null;
-  };
+  const photoForStop = (label: string) =>
+    assigned.get(normaliseStopKey(label)) ?? null;
 
   if (stops.length === 0) return null;
 
