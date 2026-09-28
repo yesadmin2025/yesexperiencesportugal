@@ -456,6 +456,13 @@ function TourHero({
               {getSignatureSeo(tour.id)?.opening ?? tour.blurb}
             </p>
 
+            <DirectAnswer>
+              {tour.title} is a private {tour.duration.toLowerCase()} experience in{" "}
+              {tour.region}, lasting {signatureDurationLabel(tour.id, tour.durationHours)}, from €
+              {tour.priceFrom} per person. It is reserved online with instant confirmation and
+              free cancellation up to 24 hours before the day.
+            </DirectAnswer>
+
             <div className="mt-5 flex flex-wrap items-center gap-x-5 gap-y-2 text-[12px] uppercase tracking-[0.12em] text-[color:var(--charcoal-soft)]">
               <span className="flex items-center gap-2">
                 <MapPin size={12} className="text-[color:var(--gold)]" /> {tour.region}
