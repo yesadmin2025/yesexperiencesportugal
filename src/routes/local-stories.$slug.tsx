@@ -26,6 +26,7 @@ import {
 import { localStoryShareImage } from "@/content/local-story-share-images";
 import { GuideNextSteps, useGuideLinkTracker } from "@/components/journal/GuideNextSteps";
 import { GuideBookingCta } from "@/components/journal/GuideBookingCta";
+import { DirectAnswer } from "@/components/DirectAnswer";
 import { guideRefDataAttrs } from "@/lib/guide-attribution-inline";
 import {
   getPublishedJournalPost,
@@ -295,6 +296,11 @@ function StaticArticleView({ article }: { article: LocalStoryArticle }) {
               <p className="page-header-support mt-6 font-sans text-[16px] md:text-[17px] text-[color:var(--charcoal-soft)] max-w-2xl mx-auto">
                 {article.standfirst}
               </p>
+            )}
+            {article.directAnswer && (
+              <div className="mx-auto max-w-2xl">
+                <DirectAnswer>{article.directAnswer}</DirectAnswer>
+              </div>
             )}
             <div className="mt-6">
               <p className="text-[12px] uppercase tracking-[0.24em] text-[color:var(--charcoal-soft)]">

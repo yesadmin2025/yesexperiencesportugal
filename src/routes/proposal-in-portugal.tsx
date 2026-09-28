@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { breadcrumbLd, faqPageLd, jsonLdScript, momentsServiceLd } from "@/lib/jsonld";
 import { ServiceCrossLinks } from "@/components/entity/ServiceCrossLinks";
+import { DirectAnswer } from "@/components/DirectAnswer";
 import { SiteLayout } from "@/components/SiteLayout";
 import { useMarketingMotion } from "@/hooks/use-marketing-motion";
 import { MessageCircle, Heart, Sparkles, Users } from "lucide-react";
@@ -120,6 +121,12 @@ export function ProposalInPortugalPage() {
             private moment shaped end to end by a local team, with the setting, timing and surprise
             handled quietly on your behalf.
           </p>
+          <DirectAnswer>
+            YES Experiences Portugal plans private marriage proposals anywhere in Portugal —
+            coastline, vineyard, palace garden or city terrace. A local team handles the setting,
+            timing and discreet coordination, and every enquiry is answered personally within 24
+            hours.
+          </DirectAnswer>
           <div className="mt-8 flex justify-center">
             <CtaButton href="#proposal-request" variant="primary">
               {CTA_LABELS.moments}

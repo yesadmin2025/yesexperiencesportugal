@@ -15,6 +15,7 @@ import { SectionTitle } from "@/components/ui/SectionTitle";
 import { CtaButton } from "@/components/ui/CtaButton";
 import { useMarketingMotion } from "@/hooks/use-marketing-motion";
 import { PriceCurrencyChip } from "@/components/PriceCurrencyChip";
+import { DirectAnswer } from "@/components/DirectAnswer";
 import { PriceEur } from "@/components/ui/PriceEur";
 import { CTA_LABELS } from "@/content/cta-vocabulary";
 import { getViatorMeta } from "@/data/signatureToursViator";
@@ -151,6 +152,14 @@ function ExperiencesPage() {
             Choose a private day, see the price and reserve it as designed. Prefer a different pace?
             Tailor the same experience around your group.
           </p>
+          <div className="mx-auto max-w-[52ch]">
+            <DirectAnswer>
+              YES Experiences Portugal offers 13 private Signature day experiences across Portugal,
+              from €101 to €254 per person depending on the day and group size. Each is reserved
+              online with instant confirmation, hotel pickup and free cancellation up to 24 hours
+              before.
+            </DirectAnswer>
+          </div>
           <div className="mt-5 flex justify-center">
             <PriceCurrencyChip />
           </div>

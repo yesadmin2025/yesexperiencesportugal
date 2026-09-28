@@ -32,6 +32,7 @@ import { MobileReserveBar } from "@/components/booking/MobileReserveBar";
 import { dispatchSignatureReserveIntent } from "@/lib/booking/reserve-intent";
 import { useImportedTourImages } from "@/hooks/use-imported-tour-images";
 import { Eyebrow } from "@/components/ui/Eyebrow";
+import { DirectAnswer } from "@/components/DirectAnswer";
 import { SectionTitle } from "@/components/ui/SectionTitle";
 import { CtaButton, CtaMotionArrow } from "@/components/ui/CtaButton";
 import { Scene } from "@/components/motion/Scene";
@@ -455,6 +456,13 @@ function TourHero({
             <p className="serif font-normal not-italic mt-4 text-[16px] sm:text-lg md:text-xl text-[color:var(--teal)] max-w-2xl leading-snug">
               {getSignatureSeo(tour.id)?.opening ?? tour.blurb}
             </p>
+
+            <DirectAnswer>
+              {tour.title} is a private {tour.duration.toLowerCase()} experience in{" "}
+              {tour.region}, lasting {signatureDurationLabel(tour.id, tour.durationHours)}, from €
+              {tour.priceFrom} per person. It is reserved online with instant confirmation and
+              free cancellation up to 24 hours before the day.
+            </DirectAnswer>
 
             <div className="mt-5 flex flex-wrap items-center gap-x-5 gap-y-2 text-[12px] uppercase tracking-[0.12em] text-[color:var(--charcoal-soft)]">
               <span className="flex items-center gap-2">
