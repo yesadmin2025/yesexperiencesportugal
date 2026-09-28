@@ -749,6 +749,10 @@ export function SimpleBookingForm({ tour }: { tour: SignatureTour }) {
               experience_id: tour.id,
               experience_type: "signature",
             });
+            trackEvent("booking_config_start", {
+              experience_id: tour.id,
+              experience_type: "signature",
+            });
           }
           if (o && tour.id) {
             // Eager-prewarm Stripe on intent so the drawer opens instantly.
