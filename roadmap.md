@@ -12,8 +12,8 @@
 
 # Conversion refinement pass
 
-- [ ] Clarify the homepage hierarchy between three primary and two secondary paths
-- [ ] Consolidate Signature reassurance into the booking decision area
-- [ ] Strengthen Studio chapter orientation without changing its flow
-- [ ] Add a Travel Designer action directly after operational proof
-- [ ] Validate key conversion routes at mobile and desktop sizes
+- [x] Clarify the homepage hierarchy between three primary and two secondary paths
+- [x] Consolidate Signature reassurance into the booking decision area
+- [x] Strengthen Studio chapter orientation without changing its flow
+- [x] Add a Travel Designer action directly after operational proof
+- [x] Validate key conversion routes at mobile and desktop sizes
