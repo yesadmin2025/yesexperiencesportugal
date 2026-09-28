@@ -94,8 +94,7 @@ function ExperiencesPage() {
             certa para si e reserve a sua data — ou adapte o dia ao seu grupo.
           </p>
           <p className="page-header-secondary mt-4 mx-auto max-w-xl text-[12px] uppercase tracking-[0.16em] text-[color:var(--charcoal-soft)]">
-            As páginas detalhadas de cada tour estão, para já, disponíveis em inglês. A tradução
-            editorial está em curso.
+            Os detalhes e a reserva de cada experiência estão disponíveis em inglês.
           </p>
         </div>
       </section>
@@ -109,7 +108,7 @@ function ExperiencesPage() {
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-8">
             {signatureTours.map((tour) => {
               const meta = VIATOR_META[tour.id];
-              const topHighlights = getSignatureCardHighlights(tour.id);
+               const topHighlights = getSignatureCardHighlights(tour.id, "pt");
 
               return (
                 <article key={tour.id} className="group flex flex-col text-left" aria-label={tour.title}>
@@ -140,7 +139,7 @@ function ExperiencesPage() {
                     {tour.title}
                   </Link>
                   <p className="mt-3 text-[14px] text-[color:var(--charcoal-soft)] leading-relaxed">
-                    {getSignatureCardPromise(tour.id)}
+                     {getSignatureCardPromise(tour.id, "pt")}
                   </p>
 
                   {topHighlights.length > 0 && (
@@ -221,6 +220,12 @@ function CtaStrip() {
             <p className="mt-3 text-[color:var(--ivory)]/80 max-w-lg">
               Comece à sua maneira — por um lugar, uma região ou um sentimento. Guiamo-lo enquanto
               constrói, dentro do que funciona melhor no terreno.
+            </p>
+            <p className="mt-3 text-[13px] text-[color:var(--ivory)]/80">
+              Vai viajar durante vários dias?{" "}
+              <Link to="/portugal-travel-designer" className="underline underline-offset-4 decoration-[color:var(--gold)]">
+                Planeie uma viagem por Portugal
+              </Link>.
             </p>
           </div>
           <CtaButton to="/studio" variant="ghostDark" className="flex-shrink-0">

@@ -27,7 +27,7 @@ import {
 
 const TITLE = "About YES Experiences Portugal | Local Travel Designers";
 const DESCRIPTION =
-  "Meet YES Experiences Portugal, a licensed private tour operator and local travel design company creating personal journeys from Lisbon and Sesimbra.";
+  "Meet YES Experiences Portugal, a licensed Portuguese travel studio and tour operator (RNAAT nº 31/2023) designing private days and multi-day journeys across Portugal.";
 const founderSrcSet = [480, 720, 900, 1200]
   .map((width) => `${founderAsset.url}?w=${width}&q=78 ${width}w`)
   .join(", ");
@@ -90,9 +90,9 @@ function Page() {
                 </SectionTitle>
               </div>
               <p className="page-header-support scene-body mt-6 max-w-2xl mx-auto text-[color:var(--charcoal-soft)] leading-relaxed">
-                YES Experiences Portugal is a licensed Portuguese private tour operator, founder-led
-                since 2022 and built around one idea: Portugal should feel personal, local and
-                genuinely yours.
+                 YES Experiences Portugal is a licensed Portuguese travel studio and tour operator
+                 (RNAAT nº 31/2023). Founded in 2022, we design private Signature days, custom Studio
+                 days and multi-day journeys across Portugal, alongside special moments and group travel.
               </p>
           </Scene>
         </div>

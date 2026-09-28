@@ -39,11 +39,11 @@ import { Scene } from "@/components/motion/Scene";
 
 import { CtaPair } from "@/components/ui/CtaPair";
 import { breadcrumbLd, tourProductLd, faqPageLd, jsonLdScript } from "@/lib/jsonld";
-import { withFirstPartyReviews } from "@/lib/first-party-review-schema";
-import { getFirstPartyReviewBundle } from "@/lib/reviews.functions";
 import { getFaqForTour } from "@/content/seo-faq";
 import { getTourGallery, getHeroAlt } from "@/lib/tour-gallery";
 import { getTourContent, signatureDurationLabel } from "@/lib/tourContent";
+import { getSignatureCardHighlights } from "@/lib/signatureCardHighlights";
+import { getFirstPartyReviewBundle } from "@/lib/reviews.functions";
 import { projectPublicSotItinerary } from "@/lib/publicItineraryProjection";
 import { publicItineraryStops, routeGlancePoints } from "@/lib/tourItineraryStops";
 import { RouteGlance } from "@/components/tours/RouteGlance";
@@ -107,14 +107,12 @@ export const Route = createFileRoute("/tours/$tourId")({
     } catch {
       /* copy overrides are optional — never block the page */
     }
-    // First-party reviews only — used for Product review structured data and
-    // rendered server-side inside <TourReviews /> so the schema always matches
-    // visible content. External-platform ratings never enter the schema.
+    // Keep visible guest reviews on the first request without rating schema.
     let firstPartyReviews: Awaited<ReturnType<typeof getFirstPartyReviewBundle>> | null = null;
     try {
       firstPartyReviews = await getFirstPartyReviewBundle({ data: { tourId: params.tourId } });
     } catch {
-      /* reviews are optional — never block the page, and never fall back */
+      /* Guest reviews must never block the booking page. */
     }
     return { tour, firstPartyReviews };
   },
@@ -205,7 +203,6 @@ export const Route = createFileRoute("/tours/$tourId")({
           ]),
         ),
         jsonLdScript(
-          withFirstPartyReviews(
             (() => {
               // Prefer the SoT itinerary (verified against Viator) for JSON-LD.
               // Falls back to legacy tour.stops when SoT is not populated for a tour.
@@ -241,8 +238,6 @@ export const Route = createFileRoute("/tours/$tourId")({
                 stops,
               });
             })(),
-            loaderData?.firstPartyReviews ?? null,
-          ),
         ),
         jsonLdScript(faqPageLd(getFaqForTour(params.tourId))),
       ],
@@ -462,13 +457,6 @@ function TourHero({
               {getSignatureSeo(tour.id)?.opening ?? tour.blurb}
             </p>
 
-            <DirectAnswer>
-              {tour.title} is a private {tour.duration.toLowerCase()} experience in{" "}
-              {tour.region}, lasting {signatureDurationLabel(tour.id, tour.durationHours)}, from €
-              {tour.priceFrom} per person. It is reserved online with instant confirmation and
-              free cancellation up to 24 hours before the day.
-            </DirectAnswer>
-
             <div className="mt-5 flex flex-wrap items-center gap-x-5 gap-y-2 text-[12px] uppercase tracking-[0.12em] text-[color:var(--charcoal-soft)]">
               <span className="flex items-center gap-2">
                 <MapPin size={12} className="text-[color:var(--gold)]" /> {tour.region}
@@ -497,8 +485,14 @@ function TourHero({
               )}
             </div>
 
-            {/* Inclusions are NOT repeated here — the full "What's included"
-                list sits in one place further down the page. */}
+             <ul className="mt-4 flex flex-wrap gap-x-4 gap-y-1.5 text-[12px] leading-snug text-[color:var(--charcoal)]" aria-label="Highlights of this day">
+               {getSignatureCardHighlights(tour.id).map((highlight) => (
+                 <li key={highlight} className="flex max-w-full items-start gap-1.5">
+                   <Check size={12} className="mt-0.5 shrink-0 text-[color:var(--teal)]" aria-hidden="true" />
+                   <span>{highlight}</span>
+                 </li>
+               ))}
+             </ul>
           </div>
 
 
@@ -588,12 +582,18 @@ function TrustStrip({ meta: _meta }: { meta?: ViatorMeta }) {
  * ════════════════════════════════════════════════════════════ */
 function IntroBlock({ tour }: { tour: SignatureTour }) {
   return (
-    <section className="py-16 md:py-24 reveal">
-      <div className="container-x max-w-3xl text-center">
-        <Eyebrow flank>The day, in short</Eyebrow>
+     <section className="py-10 md:py-16 reveal">
+       <div className="container-x max-w-3xl text-center">
+         <Eyebrow flank>Picture the day</Eyebrow>
         <p className="serif mt-5 text-[24px] leading-[1.25] text-[color:var(--charcoal)] md:text-[30px]">
           {tour.intro}
         </p>
+         <DirectAnswer>
+           {tour.title} is a private {tour.duration.toLowerCase()} experience in{" "}
+           {tour.region}, lasting {signatureDurationLabel(tour.id, tour.durationHours)}, from €
+           {tour.priceFrom} per person. It is reserved online with instant confirmation and
+           free cancellation up to 24 hours before the day.
+         </DirectAnswer>
       </div>
     </section>
   );
@@ -635,7 +635,7 @@ function HighlightsBlock({ tour }: { tour: SignatureTour }) {
   const items = tour.highlights?.length ? tour.highlights : content.highlights;
   if (items.length === 0) return null;
   return (
-    <section className="py-16 md:py-24 reveal">
+    <section className="py-12 md:py-20 reveal">
       <div className="container-x max-w-5xl">
         <div className="editorial-chapter-open text-center mb-8">
           <Eyebrow flank>Highlights</Eyebrow>
@@ -643,8 +643,8 @@ function HighlightsBlock({ tour }: { tour: SignatureTour }) {
             What you'll <SectionTitle.Em>actually do</SectionTitle.Em>
           </SectionTitle>
         </div>
-        <ul className="grid sm:grid-cols-2 gap-x-10 gap-y-4 max-w-3xl mx-auto">
-          {items.map((h) => (
+         <ul className="grid sm:grid-cols-2 gap-x-10 gap-y-4 max-w-3xl mx-auto">
+           {items.map((h) => (
             <li
               key={h}
               className="flex gap-3 text-[15px] leading-relaxed text-[color:var(--charcoal)]"

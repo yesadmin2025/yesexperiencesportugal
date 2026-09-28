@@ -17,3 +17,12 @@
 - [x] Strengthen Studio chapter orientation without changing its flow
 - [x] Add a Travel Designer action directly after operational proof
 - [x] Validate key conversion routes at mobile and desktop sizes
+
+# Public conversion and search clarity
+
+- [x] Keep the three homepage buying paths dominant and Portugal-wide
+- [x] Localize verified experience card copy and link multi-day alternatives
+- [x] Surface tour-specific moments in the first screen and keep booking proof factual
+- [x] Clarify About and structured organization identity without review schema
+- [x] Keep existing booking and Studio flow safeguards unchanged
+- [x] Check priority public pages at mobile and desktop widths
