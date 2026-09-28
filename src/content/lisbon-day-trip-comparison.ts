@@ -165,7 +165,7 @@ export const US_TRAVELER_NOTES: readonly { q: string; a: string }[] = [
   },
   {
     q: "Do we tip, and how much?",
-    a: "Tipping is not expected in Portugal the way it is in the US. Guests who have had a good day often leave 5 to 10 percent for their host; nobody will think anything of it if you do not.",
+    a: "Tipping is not compulsory in Portugal, but it has become increasingly common in private tourism, especially among international guests. If your guide made the day special, a gratuity is always genuinely appreciated. There is no fixed amount — it is entirely at your discretion.",
   },
   {
     q: "Do we need to rent a car?",
