@@ -81,6 +81,7 @@ export function OpsBookingDetail({
   const load = useServerFn(getOpsBooking);
   const update = useServerFn(updateOpsBooking);
   const saveDraft = useServerFn(saveOpsBriefDraft);
+  const sendBrief = useServerFn(sendGuideBrief);
 
   const [booking, setBooking] = useState<Booking | null>(null);
   const [guides, setGuides] = useState<Guide[]>([]);
@@ -248,8 +249,37 @@ export function OpsBookingDetail({
             </span>
             <div className="w-full sm:w-64">{guideSelect}</div>
           </div>
+          {assignedGuide ? (
+            <div className="flex flex-wrap gap-2 pb-2">
+              <Button size="sm" variant="outline" disabled={busy || !assignedGuide.email} onClick={() => void emailGuide(assignedGuide)}>
+                Email briefing to {assignedGuide.name.split(" ")[0]}
+              </Button>
+              {guideWa ? (
+                <Button asChild size="sm" variant="outline">
+                  <a href={guideWa} target="_blank" rel="noreferrer">
+                    Send briefing on WhatsApp
+                  </a>
+                </Button>
+              ) : (
+                <span className="self-center text-[12px] text-[color:var(--charcoal-soft)]">No phone saved for this guide</span>
+              )}
+            </div>
+          ) : null}
         </div>
       </section>
+
+      {/* ------------------------------------------ What the guest received */}
+      <Group title="What the guest received">
+        <p className="text-[12.5px] text-[color:var(--charcoal-soft)]">
+          The day exactly as it was confirmed to the guest at booking.
+        </p>
+        <ReceivedList title="Itinerary" items={received.itineraryLines} empty="No itinerary saved with this booking — check the source email." />
+        <ReceivedList title="Included" items={includedItems} empty="Not recorded" />
+        <ReceivedList title="Not included" items={excludedItems} />
+        <ReceivedList title="Removed from the day" items={received.removedOptions} />
+        <ReceivedList title="Add-ons" items={received.addOnLabels} />
+        <ReceivedList title="Guest requests" items={received.customerNotes} />
+      </Group>
 
       {/* ------------------------------------------------------ Operations */}
       <Group title="Operations">
