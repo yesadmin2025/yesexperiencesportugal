@@ -128,6 +128,7 @@ import { Route as AdminViatorValidationRouteImport } from './routes/admin.viator
 import { Route as AdminTourLinkAuditRouteImport } from './routes/admin.tour-link-audit'
 import { Route as AdminStudioV3FunnelRouteImport } from './routes/admin.studio-v3-funnel'
 import { Route as AdminStudioV3AuditRouteImport } from './routes/admin.studio-v3-audit'
+import { Route as AdminStudioProposalsRouteImport } from './routes/admin.studio-proposals'
 import { Route as AdminStopParityRouteImport } from './routes/admin.stop-parity'
 import { Route as AdminSotRefreshRouteImport } from './routes/admin.sot-refresh'
 import { Route as AdminSotDiffRouteImport } from './routes/admin.sot-diff'
@@ -816,6 +817,11 @@ const AdminStudioV3AuditRoute = AdminStudioV3AuditRouteImport.update({
   path: '/studio-v3-audit',
   getParentRoute: () => AdminRoute,
 } as any)
+const AdminStudioProposalsRoute = AdminStudioProposalsRouteImport.update({
+  id: '/studio-proposals',
+  path: '/studio-proposals',
+  getParentRoute: () => AdminRoute,
+} as any)
 const AdminStopParityRoute = AdminStopParityRouteImport.update({
   id: '/stop-parity',
   path: '/stop-parity',
@@ -1353,6 +1359,7 @@ export interface FileRoutesByFullPath {
   '/admin/sot-diff': typeof AdminSotDiffRoute
   '/admin/sot-refresh': typeof AdminSotRefreshRoute
   '/admin/stop-parity': typeof AdminStopParityRoute
+  '/admin/studio-proposals': typeof AdminStudioProposalsRoute
   '/admin/studio-v3-audit': typeof AdminStudioV3AuditRoute
   '/admin/studio-v3-funnel': typeof AdminStudioV3FunnelRoute
   '/admin/tour-link-audit': typeof AdminTourLinkAuditRoute
@@ -1548,6 +1555,7 @@ export interface FileRoutesByTo {
   '/admin/sot-diff': typeof AdminSotDiffRoute
   '/admin/sot-refresh': typeof AdminSotRefreshRoute
   '/admin/stop-parity': typeof AdminStopParityRoute
+  '/admin/studio-proposals': typeof AdminStudioProposalsRoute
   '/admin/studio-v3-audit': typeof AdminStudioV3AuditRoute
   '/admin/studio-v3-funnel': typeof AdminStudioV3FunnelRoute
   '/admin/tour-link-audit': typeof AdminTourLinkAuditRoute
@@ -1747,6 +1755,7 @@ export interface FileRoutesById {
   '/admin/sot-diff': typeof AdminSotDiffRoute
   '/admin/sot-refresh': typeof AdminSotRefreshRoute
   '/admin/stop-parity': typeof AdminStopParityRoute
+  '/admin/studio-proposals': typeof AdminStudioProposalsRoute
   '/admin/studio-v3-audit': typeof AdminStudioV3AuditRoute
   '/admin/studio-v3-funnel': typeof AdminStudioV3FunnelRoute
   '/admin/tour-link-audit': typeof AdminTourLinkAuditRoute
@@ -1947,6 +1956,7 @@ export interface FileRouteTypes {
     | '/admin/sot-diff'
     | '/admin/sot-refresh'
     | '/admin/stop-parity'
+    | '/admin/studio-proposals'
     | '/admin/studio-v3-audit'
     | '/admin/studio-v3-funnel'
     | '/admin/tour-link-audit'
@@ -2142,6 +2152,7 @@ export interface FileRouteTypes {
     | '/admin/sot-diff'
     | '/admin/sot-refresh'
     | '/admin/stop-parity'
+    | '/admin/studio-proposals'
     | '/admin/studio-v3-audit'
     | '/admin/studio-v3-funnel'
     | '/admin/tour-link-audit'
@@ -2340,6 +2351,7 @@ export interface FileRouteTypes {
     | '/admin/sot-diff'
     | '/admin/sot-refresh'
     | '/admin/stop-parity'
+    | '/admin/studio-proposals'
     | '/admin/studio-v3-audit'
     | '/admin/studio-v3-funnel'
     | '/admin/tour-link-audit'
@@ -3379,6 +3391,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminStudioV3AuditRouteImport
       parentRoute: typeof AdminRoute
     }
+    '/admin/studio-proposals': {
+      id: '/admin/studio-proposals'
+      path: '/studio-proposals'
+      fullPath: '/admin/studio-proposals'
+      preLoaderRoute: typeof AdminStudioProposalsRouteImport
+      parentRoute: typeof AdminRoute
+    }
     '/admin/stop-parity': {
       id: '/admin/stop-parity'
       path: '/stop-parity'
@@ -3963,6 +3982,7 @@ interface AdminRouteChildren {
   AdminSotDiffRoute: typeof AdminSotDiffRoute
   AdminSotRefreshRoute: typeof AdminSotRefreshRoute
   AdminStopParityRoute: typeof AdminStopParityRoute
+  AdminStudioProposalsRoute: typeof AdminStudioProposalsRoute
   AdminStudioV3AuditRoute: typeof AdminStudioV3AuditRoute
   AdminStudioV3FunnelRoute: typeof AdminStudioV3FunnelRoute
   AdminTourLinkAuditRoute: typeof AdminTourLinkAuditRoute
@@ -4015,6 +4035,7 @@ const AdminRouteChildren: AdminRouteChildren = {
   AdminSotDiffRoute: AdminSotDiffRoute,
   AdminSotRefreshRoute: AdminSotRefreshRoute,
   AdminStopParityRoute: AdminStopParityRoute,
+  AdminStudioProposalsRoute: AdminStudioProposalsRoute,
   AdminStudioV3AuditRoute: AdminStudioV3AuditRoute,
   AdminStudioV3FunnelRoute: AdminStudioV3FunnelRoute,
   AdminTourLinkAuditRoute: AdminTourLinkAuditRoute,

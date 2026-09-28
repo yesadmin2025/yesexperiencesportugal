@@ -19,6 +19,7 @@ import { Eyebrow } from "@/components/ui/Eyebrow";
 import { findTour } from "@/data/signatureTours";
 import { buildStudioProposal } from "@/lib/studio-v3/studioProposal";
 import { StudioProposalCard } from "./StudioProposalCard";
+import { ProposalLogger } from "./ProposalLogger";
 import { getTourContent } from "@/lib/tourContent";
 import { pickupCityLabel } from "./curation";
 import {
@@ -484,7 +485,18 @@ export function FinalRevealStory({
           </div>
           {(() => {
             const proposal = buildStudioProposal(tour, state.pickup, perPaxEur);
-            return proposal ? <StudioProposalCard proposal={proposal} tourTitle={title} /> : null;
+            return proposal ? (
+              <>
+                <StudioProposalCard proposal={proposal} tourTitle={title} />
+                <ProposalLogger
+                  tourId={state.tourId ?? null}
+                  perPaxEur={proposal.perPaxEur ?? null}
+                  guests={partySize}
+                  dateLabel={dateLabel}
+                  pickup={proposal.pickup}
+                />
+              </>
+            ) : null;
           })()}
         </div>
       </article>
