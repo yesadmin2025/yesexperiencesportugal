@@ -10,6 +10,7 @@ import { ServiceCrossLinks } from "@/components/entity/ServiceCrossLinks";
 import { DirectAnswer } from "@/components/DirectAnswer";
 import ogImg from "@/assets/hero-coast.jpg";
 import { CTA_LABELS } from "@/content/cta-vocabulary";
+import { whatsappUrl } from "@/config/business-nap";
 
 const CANONICAL = "https://yesexperiencesportugal.com/portugal-travel-designer";
 const TITLE = "Portugal Travel Designer — Private Journeys | YES";
@@ -231,6 +232,11 @@ function PortugalTravelDesignerPage() {
             <CtaButton to="/contact" search={{ type: "multi_day" }} variant="primary" onClick={() => void import("@/lib/analytics-events").then((a) => a.trackEvent("travel_designer_start", { placement: "travel_designer_proof" }))}>
               {CTA_LABELS.travelDesigner}
             </CtaButton>
+            <div className="mt-3">
+              <CtaButton href={whatsappUrl("Hello! I’d like to plan a private Portugal journey with YES.")} variant="ghost">
+                Talk to a local on WhatsApp
+              </CtaButton>
+            </div>
           </div>
         </div>
       </section>
