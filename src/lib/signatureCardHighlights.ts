@@ -5,8 +5,47 @@ type HighlightSelector =
   | { source: "included"; value: string; label?: string }
   | { source: "includedLunch"; label: string };
 
+/**
+ * Buyer-facing card promises derived only from each Signature's canonical
+ * overview, itinerary, highlights and inclusions. Operational detail remains
+ * owned by the tour data; this map only keeps catalogue copy concise.
+ */
+const CARD_PROMISES: Record<string, string> = {
+  "p23-artisan-pottery-cork":
+    "Work with Alentejo cork and clay artisans, with a three-hour pottery session and lunch included.",
+  "arrabida-wine-allinclusive":
+    "Walk Setúbal’s market, taste Arrábida wines and share an included Azeitão lunch between coast and vineyards.",
+  "wild-beaches-picnic":
+    "Choose picnic ingredients at Livramento Market, then follow Arrábida’s coves to a beach picnic and Sesimbra.",
+  "arrabida-boat":
+    "Cross Arrábida by road and explore the Sesimbra coast by boat, from Livramento Market to Cabo Espichel.",
+  "tiles-workshop":
+    "Paint your own Portuguese azulejo, taste Setúbal wine and finish the day beside the sea in Sesimbra.",
+  "azeitao-cheese":
+    "Make Azeitão cheese by hand, taste wine at a local winery and continue to Sesimbra Castle.",
+  "sintra-cascais":
+    "Choose a palace-and-wine or two-palace day, then follow the Atlantic through Cabo da Roca to Cascais.",
+  "troia-comporta":
+    "Cross the Sado by ferry for Roman ruins, Comporta’s stilt pier, Atlantic beaches and a wine tasting.",
+  "evora-alentejo":
+    "Walk UNESCO Évora, enter the Chapel of Bones and visit two Alentejo wineries plus a cork producer.",
+  "tomar-coimbra":
+    "Step inside Tomar’s Templar convent, then explore Coimbra University and the Joanina Library.",
+  "fatima-nazare-obidos":
+    "Move from Fátima’s sanctuary to Nazaré’s Atlantic cliffs and the medieval walls of Óbidos.",
+  "roman-heritage-alentejo":
+    "Trace Roman winemaking from São Cucufate to clay-talha wines and lunch at a family cellar.",
+  "southwest-vicentine-coast":
+    "Follow Portugal’s protected southwest coast through Porto Covo, Milfontes, Odeceixe and Aljezur.",
+};
+
 /** Presentation order only: each line must still resolve from canonical data. */
 const CARD_HIGHLIGHT_SELECTORS: Record<string, readonly HighlightSelector[]> = {
+  "p23-artisan-pottery-cork": [
+    { source: "highlight", value: "Hands-on cork workshop with local makers" },
+    { source: "highlight", value: "Three-hour pottery workshop at a ceramics and earth arts centre" },
+    { source: "includedLunch", label: "Lunch included" },
+  ],
   "troia-comporta": [
     { source: "highlight", value: "Guided Roman Ruins of Tróia visit with admission" },
     { source: "highlight", value: "Herdade da Comporta wine experience and tasting" },
@@ -58,9 +97,9 @@ const CARD_HIGHLIGHT_SELECTORS: Record<string, readonly HighlightSelector[]> = {
     { source: "highlight", value: "Livramento Market and Sesimbra" },
   ],
   "arrabida-wine-allinclusive": [
+    { source: "included", value: "Azeitão tile factory", label: "Working Azeitão azulejo factory visit" },
     { source: "highlight", value: "Two selected wineries included, up to four in Tailor" },
-    { source: "highlight", value: "Arrábida Natural Park" },
-    { source: "includedLunch", label: "Lunch included" },
+    { source: "includedLunch", label: "Traditional Azeitão lunch included" },
   ],
   "wild-beaches-picnic": [
     { source: "highlight", value: "Arrábida Natural Park and coastal viewpoints" },
@@ -68,6 +107,10 @@ const CARD_HIGHLIGHT_SELECTORS: Record<string, readonly HighlightSelector[]> = {
     { source: "highlight", value: "Private picnic with regional products" },
   ],
 };
+
+export function getSignatureCardPromise(tourId: string): string {
+  return CARD_PROMISES[tourId] ?? getTourContent(tourId).overview;
+}
 
 export function getSignatureCardHighlights(tourId: string): string[] {
   const content = getTourContent(tourId);

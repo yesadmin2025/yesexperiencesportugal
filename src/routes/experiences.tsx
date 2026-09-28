@@ -15,14 +15,13 @@ import { SectionTitle } from "@/components/ui/SectionTitle";
 import { CtaButton } from "@/components/ui/CtaButton";
 import { useMarketingMotion } from "@/hooks/use-marketing-motion";
 import { PriceCurrencyChip } from "@/components/PriceCurrencyChip";
-import { DirectAnswer } from "@/components/DirectAnswer";
 import { PriceEur } from "@/components/ui/PriceEur";
 import { CTA_LABELS } from "@/content/cta-vocabulary";
 import { getViatorMeta } from "@/data/signatureToursViator";
 import { Star } from "lucide-react";
 import { listPublishedExperienceContent, type ExperienceContentOverride } from "@/lib/experienceContent.functions";
 import { CompareControl, ExperienceCompare } from "@/components/experiences/ExperienceCompare";
-import { getSignatureCardHighlights } from "@/lib/signatureCardHighlights";
+import { getSignatureCardHighlights, getSignatureCardPromise } from "@/lib/signatureCardHighlights";
 
 const EXPERIENCE_FILTERS = [
   { id: "all", label: "All" },
@@ -153,22 +152,14 @@ function ExperiencesPage() {
             Private days, <SectionTitle.Em>ready when you are.</SectionTitle.Em>
           </SectionTitle>
           <p className="mt-3 max-w-[52ch] mx-auto text-[15px] md:text-[16px] leading-[1.65] text-[color:var(--charcoal-soft)]">
-            Choose a private day, see the price and reserve it as designed. Prefer a different pace?
-            Tailor the same experience around your group.
+            Choose a private day from Lisbon or across Portugal. See what is included, check your
+            date and reserve instantly where available — or tailor the day around your group.
           </p>
-          <div className="mx-auto max-w-[52ch]">
-            <DirectAnswer>
-              YES Experiences Portugal offers 13 private Signature day experiences across Portugal,
-              from €101 to €254 per person depending on the day and group size. Each is reserved
-              online with instant confirmation, hotel pickup and free cancellation up to 24 hours
-              before.
-            </DirectAnswer>
-          </div>
           <div className="mt-5 flex justify-center">
             <PriceCurrencyChip />
           </div>
           <p className="mt-4 text-[11px] font-medium uppercase tracking-[0.16em] text-[color:var(--charcoal-soft)]">
-            Private · Hotel pickup · Local support · Secure checkout
+            Clear inclusions · Hotel pickup on listed routes · Secure checkout
           </p>
           <div className="mt-6 flex flex-wrap items-center justify-center gap-2" aria-label="Filter Signature Experiences">
             {EXPERIENCE_FILTERS.map((filter) => {
@@ -235,12 +226,7 @@ function TourCard({
   // Teaser reads through the tour-content getter so the collection stays
   // source-of-truth with the experience detail page.
   const content = getTourContent(tour.id);
-  const rawTeaser = tour.blurb ?? content.overview ?? "";
-  // One complete idea per card. Previously clamped to two lines, which cut the
-  // sentence mid-word; instead we keep the first full sentence so nothing is
-  // visually truncated and the rest lives on the experience page.
-  const firstSentence = rawTeaser.match(/^[^.!?]+[.!?]/)?.[0]?.trim() ?? rawTeaser.trim();
-  const teaser = firstSentence.length > 0 ? firstSentence : rawTeaser;
+  const teaser = getSignatureCardPromise(tour.id);
   const meta = getViatorMeta(tour.id);
   const verifiedRating = meta?.rating;
   const verifiedReviewCount = meta?.reviewCount;
