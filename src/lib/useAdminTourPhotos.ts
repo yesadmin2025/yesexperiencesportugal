@@ -25,7 +25,10 @@ export type AdminTourPhoto = {
   srcSet?: string;
   alt: string;
   is_cover: boolean;
+  /** Itinerary stop this photo belongs to, when the editor assigned one. */
+  stopLabel: string | null;
 };
+
 
 type Options = {
   /** Fallback alt (usually "<tour title> — <region>") used when the editor
@@ -51,9 +54,17 @@ export function useAdminTourPhotos(
         if (cancelled) return;
         setPhotos(
           result.photos
-            .map((p) => ({ ...p, alt: p.alt || defaultAlt || "" }))
+            .map((p) => ({
+              id: p.id,
+              src: p.src,
+              srcSet: p.srcSet,
+              alt: p.alt || defaultAlt || "",
+              is_cover: p.is_cover,
+              stopLabel: p.stop_label ?? null,
+            }))
             .filter((p) => p.src && p.alt),
         );
+
       } catch {
         if (!cancelled) setPhotos([]);
       }
