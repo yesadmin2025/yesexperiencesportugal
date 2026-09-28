@@ -126,6 +126,7 @@ export function LanguageSwitcher({ variant = "header", className }: LanguageSwit
                 persistLocale(loc);
                 if (loc !== active) {
                   trackEvent("language_changed", { from: active, to: loc });
+                  trackEvent("language_switch", { from: active, to: loc });
                 }
               }}
               aria-current={isActive ? "page" : undefined}

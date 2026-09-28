@@ -21,6 +21,15 @@ import { isTrackingDisabled } from "@/lib/analytics-exclusions";
 export type YesAnalyticsEvent =
   // Lifecycle
   | "page_view"
+  | "view_item_list"
+  | "booking_config_start"
+  | "contact_submit"
+  | "currency_switch"
+  | "language_switch"
+  | "studio_route_generated"
+  | "studio_price_shown"
+  | "travel_designer_start"
+  | "travel_designer_submit"
   // Homepage
   | "hero_open_studio"
   | "hero_choose_experience"

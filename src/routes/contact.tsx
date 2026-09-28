@@ -242,11 +242,13 @@ function Page() {
                     trackEvent("contact_form_submitted", {
                       placement: parsed.data.requestType,
                     });
+                    trackEvent("contact_submit", { placement: "contact_form" });
                     if (parsed.data.requestType === "corporate") {
                       trackEvent("corporate_lead", { placement: "contact_form" });
                     }
                     if (parsed.data.requestType === "multi_day") {
                       trackEvent("travel_designer_lead", { placement: "contact_form" });
+                      trackEvent("travel_designer_submit", { placement: "contact_form" });
                     }
                     if (parsed.data.requestType === "proposal") {
                       trackEvent("moments_lead", { placement: "contact_form" });
