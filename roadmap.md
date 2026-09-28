@@ -25,4 +25,4 @@
 - [x] Surface tour-specific moments in the first screen and keep booking proof factual
 - [x] Clarify About and structured organization identity without review schema
 - [x] Keep existing booking and Studio flow safeguards unchanged
-- [ ] Check priority public pages at mobile and desktop widths
+- [x] Check priority public pages at mobile and desktop widths

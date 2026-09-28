@@ -80,7 +80,7 @@ const CARD_HIGHLIGHT_SELECTORS: Record<string, readonly HighlightSelector[]> = {
   ],
   "troia-comporta": [
     { source: "highlight", value: "Guided Roman Ruins of Tróia visit with admission" },
-    { source: "highlight", value: "Herdade da Comporta wine experience and tasting" },
+    { source: "highlight", value: "Herdade da Comporta wine experience and tasting", label: "Regional wine experience and tasting" },
     { source: "highlight", value: "Comporta village, Carrasqueira stilt pier and Atlantic beaches" },
   ],
   "roman-heritage-alentejo": [
