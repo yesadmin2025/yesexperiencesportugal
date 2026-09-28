@@ -11,7 +11,6 @@ import {
   DialogHeader,
   DialogTitle,
   DialogDescription,
-  DialogFooter,
 } from "@/components/ui/dialog";
 import { ChevronDown } from "lucide-react";
 import { CANCELLATION, LICENSE_LABEL } from "@/config/business-nap";
@@ -523,7 +522,7 @@ export function FinalDetailsDialog({
             </Disclosure>
           </div>
 
-          <DialogFooter className="shrink-0 px-5 sm:px-7 pt-4 pb-[calc(env(safe-area-inset-bottom)+1rem)] sm:py-4 border-t border-[color:var(--border)] bg-[color:var(--sand)]/40 sm:flex-col sm:items-stretch sm:space-x-0 gap-2">
+          <div className="flex flex-col shrink-0 px-5 sm:px-7 pt-4 pb-[calc(env(safe-area-inset-bottom)+1rem)] sm:py-4 border-t border-[color:var(--border)] bg-[color:var(--sand)]/40 gap-2">
             {priceQuote ? <ChargeSummaryLine quote={quote} /> : null}
             {/* Canonical cancellation + payment reassurance, never hand-authored. */}
             <p
@@ -548,7 +547,7 @@ export function FinalDetailsDialog({
                 Continue to payment
               </CtaButton>
             )}
-          </DialogFooter>
+          </div>
 
         </form>
       </DialogContent>
