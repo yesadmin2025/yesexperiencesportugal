@@ -39,6 +39,39 @@ const CARD_PROMISES: Record<string, string> = {
     "Follow Portugal’s wildest protected coast, from Porto Covo and Milfontes to where the river meets the ocean at Odeceixe, and on to Aljezur.",
 };
 
+// PT-PT editorial equivalents of the verified English card copy above.
+const CARD_PROMISES_PT: Record<string, string> = {
+  "p23-artisan-pottery-cork": "Trabalhe cortiça e barro com artesãos alentejanos, numa oficina de cerâmica de três horas com almoço incluído.",
+  "arrabida-wine-allinclusive": "Passe pelo Mercado do Livramento, veja pintar azulejos à mão e prove vinhos de adegas familiares durante um dia com almoço em Azeitão.",
+  "wild-beaches-picnic": "Escolha produtos no Mercado do Livramento, siga as enseadas da Arrábida para um piquenique na praia e termine em Sesimbra.",
+  "arrabida-boat": "Comece no Mercado do Livramento, atravesse a serra da Arrábida e descubra as falésias de Sesimbra de barco antes de chegar ao Cabo Espichel.",
+  "tiles-workshop": "Pinte um azulejo para levar consigo, prove vinho regional e termine junto ao mar em Sesimbra.",
+  "azeitao-cheese": "Faça queijo de Azeitão, prove vinho numa adega da região e suba ao Castelo de Sesimbra para ver a paisagem.",
+  "sintra-cascais": "Explore os palácios de Sintra ao seu ritmo — um com prova de vinho ou dois — e siga pela costa até Azenhas do Mar, Cabo da Roca e Cascais.",
+  "troia-comporta": "Atravesse o Sado de ferry até às ruínas romanas de Tróia, passe pelo cais palafítico da Carrasqueira e prove vinho da Comporta perto das praias atlânticas.",
+  "evora-alentejo": "Percorra o centro histórico de Évora, do Templo Romano à Capela dos Ossos, antes de visitar duas adegas alentejanas e um produtor de cortiça.",
+  "tomar-coimbra": "Descubra o Convento de Cristo em Tomar e siga até à Universidade de Coimbra e à Biblioteca Joanina.",
+  "fatima-nazare-obidos": "Passe pelo Santuário de Fátima, contemple o Atlântico na Nazaré e termine dentro das muralhas medievais de Óbidos.",
+  "roman-heritage-alentejo": "Passe pelas ruínas romanas de São Cucufate e prove vinho de talha durante o almoço numa adega familiar.",
+  "southwest-vicentine-coast": "Siga a costa protegida de Porto Covo e Milfontes até à foz do rio em Odeceixe e continue até Aljezur.",
+};
+
+const CARD_HIGHLIGHTS_PT: Record<string, readonly [string, string, string]> = {
+  "p23-artisan-pottery-cork": ["Oficina de cortiça com artesãos locais", "Oficina de cerâmica de três horas", "Almoço incluído"],
+  "arrabida-wine-allinclusive": ["Visita a uma fábrica de azulejos em Azeitão", "Duas adegas incluídas; até quatro no Tailor", "Almoço tradicional em Azeitão incluído"],
+  "wild-beaches-picnic": ["Parque Natural da Arrábida e miradouros costeiros", "Praias de Galapinhos, Bicas e zona do Meco", "Piquenique privado com produtos regionais"],
+  "arrabida-boat": ["Passeio de barco pela costa de Sesimbra", "Mercado do Livramento e Parque Natural da Arrábida", "Santuário no topo das falésias do Cabo Espichel"],
+  "tiles-workshop": ["Oficina prática de pintura de azulejos", "Prova numa adega regional selecionada", "Mercado do Livramento e Sesimbra"],
+  "azeitao-cheese": ["Oficina privada de queijo de Azeitão", "Visita e prova numa adega local", "Mercado do Livramento, Azeitão e Sesimbra"],
+  "sintra-cascais": ["Um palácio e prova de vinho, ou bilhetes para dois palácios", "Azenhas do Mar, Cabo da Roca e Cascais", "Escolha flexível de palácios com guia"],
+  "troia-comporta": ["Visita guiada às ruínas romanas de Tróia, com entrada", "Experiência e prova de vinhos da Comporta", "Aldeia da Comporta, cais palafítico da Carrasqueira e praias"],
+  "evora-alentejo": ["Centro histórico de Évora, Património Mundial da UNESCO", "Templo Romano e Capela dos Ossos", "Visitas e provas em duas adegas alentejanas selecionadas"],
+  "tomar-coimbra": ["Convento de Cristo e herança templária", "Universidade de Coimbra", "Entrada com horário marcado na Biblioteca Joanina"],
+  "fatima-nazare-obidos": ["Santuário de Fátima", "Miradouro, praia e vila piscatória da Nazaré", "Vila medieval muralhada e castelo de Óbidos"],
+  "roman-heritage-alentejo": ["Sítio arqueológico romano de São Cucufate", "Adega familiar com vinho feito em talhas de barro", "Prova de vinhos de talha e almoço tradicional na adega"],
+  "southwest-vicentine-coast": ["Porto Covo e Vila Nova de Milfontes", "Parque Natural do Sudoeste Alentejano e Costa Vicentina", "Paisagem da foz de Odeceixe"],
+};
+
 /** Presentation order only: each line must still resolve from canonical data. */
 const CARD_HIGHLIGHT_SELECTORS: Record<string, readonly HighlightSelector[]> = {
   "p23-artisan-pottery-cork": [
@@ -108,11 +141,11 @@ const CARD_HIGHLIGHT_SELECTORS: Record<string, readonly HighlightSelector[]> = {
   ],
 };
 
-export function getSignatureCardPromise(tourId: string): string {
-  return CARD_PROMISES[tourId] ?? getTourContent(tourId).overview;
+export function getSignatureCardPromise(tourId: string, locale: "en" | "pt" = "en"): string {
+  return (locale === "pt" ? CARD_PROMISES_PT[tourId] : CARD_PROMISES[tourId]) ?? getTourContent(tourId).overview;
 }
 
-export function getSignatureCardHighlights(tourId: string): string[] {
+export function getSignatureCardHighlights(tourId: string, locale: "en" | "pt" = "en"): string[] {
   const content = getTourContent(tourId);
   const selected = (CARD_HIGHLIGHT_SELECTORS[tourId] ?? []).flatMap((selector) => {
     if (selector.source === "includedLunch") {
@@ -124,5 +157,7 @@ export function getSignatureCardHighlights(tourId: string): string[] {
     const label = "label" in selector ? selector.label : undefined;
     return source.includes(selector.value) ? [label ?? selector.value] : [];
   });
-  return [...selected, ...content.highlights.filter((item) => !selected.includes(item))].slice(0, 3);
+  const verified = [...selected, ...content.highlights.filter((item) => !selected.includes(item))].slice(0, 3);
+  const translated = CARD_HIGHLIGHTS_PT[tourId];
+  return locale === "pt" && translated && verified.length === 3 ? [...translated] : verified;
 }
