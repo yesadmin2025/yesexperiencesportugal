@@ -50,11 +50,16 @@ export function TourImage({
   const [loaded, setLoaded] = useState(false);
   const [errored, setErrored] = useState(false);
   const imageRef = useRef<HTMLImageElement | null>(null);
+  const previousSrc = useRef(src);
 
   useEffect(() => {
     let cancelled = false;
-    setLoaded(false);
-    setErrored(false);
+    // Do not reset a photo that loaded before hydration's first effect.
+    if (previousSrc.current !== src) {
+      previousSrc.current = src;
+      setLoaded(false);
+      setErrored(false);
+    }
     const image = imageRef.current;
     // Cached eager images can finish before React attaches onLoad during
     // hydration. Decode also covers an image that finishes between this
