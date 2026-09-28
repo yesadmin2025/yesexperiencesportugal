@@ -580,7 +580,7 @@ function ProductRecap({
       data-testid="final-details-product-recap"
       className="border border-[color:var(--border)] bg-[color:var(--sand)]/30 px-4 py-4"
     >
-      <p className="text-[11px] uppercase tracking-[0.22em] text-[color:var(--charcoal-soft)]">
+      <p className="text-[12px] uppercase tracking-[0.22em] text-[color:var(--charcoal-soft)]">
         What your day includes
       </p>
       <h3 className="mt-1.5 font-serif text-[18px] font-medium leading-snug text-[color:var(--charcoal)]">
@@ -600,14 +600,14 @@ function ProductRecap({
         <ol className="mt-4 space-y-3" data-testid="final-details-day-itinerary">
           {itinerary.map((stop, index) => (
             <li key={`${stop.label}-${index}`} className="flex gap-3">
-              <span className="mt-0.5 shrink-0 text-[11px] font-semibold tabular-nums text-[color:var(--gold)]">
+              <span className="mt-0.5 shrink-0 text-[12px] font-semibold tabular-nums text-[color:var(--gold)]">
                 {String(index + 1).padStart(2, "0")}
               </span>
               <div className="min-w-0">
                 <p className="text-[13.5px] font-medium leading-snug text-[color:var(--charcoal)]">
                   {stop.label}
                   {stop.optional ? (
-                    <span className="ml-2 text-[10.5px] uppercase tracking-[0.16em] text-[color:var(--charcoal-soft)]">
+                    <span className="ml-2 text-[12px] uppercase tracking-[0.16em] text-[color:var(--charcoal-soft)]">
                       Optional
                     </span>
                   ) : null}
