@@ -29,7 +29,7 @@ export const SIGNATURE_SEO: Record<string, SignatureSeoEntry> = {
     h1: "Private Arrábida wine tour from Lisbon",
     opening: "Explore Arrábida and Azeitão on a private wine day from Lisbon, with two family wineries included, Setúbal Moscatel, Livramento Market and lunch.",
     description:
-      "Private Lisbon wine tour to Arrábida with 2 family wineries included (up to 4 when tailored), Setúbal Moscatel, Livramento Market, Azeitão lunch and hotel pickup.",
+      "Private Lisbon wine tour to Arrábida with 2 family wineries included, Setúbal Moscatel, Livramento Market, Azeitão lunch and hotel pickup. Instant confirmation.",
     ogTitle: "Private Lisbon Wine Tour in Arrábida",
     ogDescription:
       "A private wine day from Lisbon with family cellars, Setúbal Moscatel, market, lunch and door-to-door pickup.",

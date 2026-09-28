@@ -79,6 +79,7 @@ export const Route = createFileRoute("/book")({
           name: "YES Experiences Portugal — bookings & reservations",
           description:
             "Book a private day trip in Portugal directly with a licensed local tour operator: real prices per person, hotel pickup across Lisbon, Cascais, Sintra, Sesimbra and Setúbal, and instant card confirmation.",
+
           areaServed: SERVICE_AREAS,
         }),
       ),
