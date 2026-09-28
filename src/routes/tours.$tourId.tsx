@@ -339,7 +339,13 @@ function TourDetailPage() {
       <IncludedAndIdeal tour={tour} meta={meta} />
 
       {/* ── D · THE ROUTE — real stops, in order ───────────────── */}
-      <ItineraryTimeline tour={tour} meta={meta} />
+      <ItineraryTimeline
+        tour={tour}
+        meta={meta}
+        adminPhotos={adminPhotos}
+        resolveImg={resolveImg}
+      />
+
 
       {/* ── F · GALLERY (real photos) ─────────────────────────── */}
       <GalleryStrip tour={tour} resolveImg={resolveImg} meta={meta} adminPhotos={adminPhotos} />
