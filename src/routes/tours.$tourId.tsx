@@ -326,9 +326,6 @@ function TourDetailPage() {
         ]}
       />
 
-      {/* ── 2 · TRUST MICROCOPY ─────────────────────────────────── */}
-      <TrustStrip meta={meta} />
-
       {/* ── A · WHY THIS DAY ────────────────────────────────────── */}
       <IntroBlock tour={tour} />
 
@@ -357,7 +354,7 @@ function TourDetailPage() {
         tour.id === "azeitao-cheese") && <RecognisedByGuides placement="arrabida-tour" compact />}
 
       {/* ── G · CONVERSION — reserve this day ──────────────────── */}
-      <BookingBlock tour={tour} />
+      <BookingBlock tour={tour} meta={meta} />
 
       <MobileReserveBar
         tourId={tour.id}
@@ -563,7 +560,7 @@ function TourHero({
 /* ════════════════════════════════════════════════════════════════
  * 2 · TRUST STRIP
  * ════════════════════════════════════════════════════════════ */
-function TrustStrip({ meta }: { meta?: ViatorMeta }) {
+function TrustStrip({ meta: _meta }: { meta?: ViatorMeta }) {
   const items = [
     { icon: <Shield size={14} />, label: SITE_RATING_LABEL },
     { icon: <Shield size={14} />, label: "Instant confirmation · Secure payment" },
@@ -908,15 +905,26 @@ function GalleryStrip({
 /* ════════════════════════════════════════════════════════════════
  * 10 · BOOK — reserve the Signature as designed
  * ════════════════════════════════════════════════════════════ */
-function BookingBlock({ tour }: { tour: SignatureTour }) {
+function BookingBlock({ tour, meta }: { tour: SignatureTour; meta?: ViatorMeta }) {
   return (
     <section
       id="book"
       className="py-16 md:py-24 bg-[color:var(--sand)]/50 scroll-mt-24 md:scroll-mt-28"
     >
       <div className="container-x max-w-3xl">
-        <GroupSizePriceRow tour={tour} />
-        <SimpleBookingForm tour={tour} />
+        <div className="mb-5 text-center">
+          <Eyebrow flank>Reserve your day</Eyebrow>
+          <SectionTitle size="compact">
+            Date, party and price — <SectionTitle.Em>in one place.</SectionTitle.Em>
+          </SectionTitle>
+        </div>
+        <div className="border border-[color:var(--border)] bg-[color:var(--ivory)]">
+          <TrustStrip meta={meta} />
+          <div className="px-4 pt-5 sm:px-7 sm:pt-6">
+            <GroupSizePriceRow tour={tour} />
+          </div>
+          <SimpleBookingForm tour={tour} />
+        </div>
       </div>
     </section>
   );

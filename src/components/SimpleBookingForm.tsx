@@ -440,7 +440,7 @@ export function SimpleBookingForm({ tour }: { tour: SignatureTour }) {
   return (
     <div
       ref={formRef}
-      className="signature-booking-form min-w-0 overflow-hidden border-y border-[color:var(--border)] bg-[color:var(--ivory)] py-6 sm:border sm:bg-[color:var(--card)] sm:p-7"
+      className="signature-booking-form min-w-0 overflow-hidden border-t border-[color:var(--border)] bg-[color:var(--ivory)] px-4 py-6 sm:px-7 sm:pb-7"
     >
       <Eyebrow>Availability</Eyebrow>
       <SectionTitle size="compact" spacing="tight">
