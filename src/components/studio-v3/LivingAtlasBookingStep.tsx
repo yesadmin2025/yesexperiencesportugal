@@ -165,6 +165,10 @@ export function LivingAtlasBookingStep({
         <GuestDetailsStep
           tourId={tour.id}
           journeyTitle={handoff.journeyTitle}
+          daySummary={{
+            stops: (tour.stops ?? []).map((s) => ({ label: s.label, story: s.story ?? null })),
+            included: tour.included ?? [],
+          }}
           fixedTourDate={selectedDate}
           submitLabel="Continue to secure checkout"
           initial={{ tourDate: selectedDate, adults: 2, minorAges: [] }}
