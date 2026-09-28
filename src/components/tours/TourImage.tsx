@@ -52,12 +52,21 @@ export function TourImage({
   const imageRef = useRef<HTMLImageElement | null>(null);
 
   useEffect(() => {
+    let cancelled = false;
     setLoaded(false);
     setErrored(false);
     const image = imageRef.current;
     // Cached eager images can finish before React attaches onLoad during
-    // hydration. Read the native state so a real image never stays hidden.
+    // hydration. Decode also covers an image that finishes between this
+    // check and React's load handler, so a real photo never stays hidden.
     if (image?.complete && image.naturalWidth > 0) setLoaded(true);
+    else if (image) {
+      image.decode().then(
+        () => { if (!cancelled) setLoaded(true); },
+        () => { if (!cancelled) setErrored(true); },
+      );
+    }
+    return () => { cancelled = true; };
   }, [src]);
 
   return (
