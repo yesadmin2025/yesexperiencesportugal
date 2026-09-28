@@ -14,6 +14,26 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { getOpsBooking, saveOpsBriefDraft, updateOpsBooking } from "@/lib/bookingsOps.functions";
+import { sendGuideBrief } from "@/lib/guides.functions";
+import { buildSnapshotEmailPreview } from "@/lib/booking-snapshot-contract";
+
+function ReceivedList({ title, items, empty }: { title: string; items: string[]; empty?: string }) {
+  if (!items.length && !empty) return null;
+  return (
+    <div className="mt-3">
+      <p className="text-[11px] uppercase tracking-[0.14em] text-[color:var(--charcoal-soft)]">{title}</p>
+      {items.length ? (
+        <ul className="mt-1 space-y-1 text-[13.5px] leading-snug text-[color:var(--charcoal)]">
+          {items.map((item, index) => (
+            <li key={index}>{item}</li>
+          ))}
+        </ul>
+      ) : (
+        <p className="mt-1 text-[13px] text-[color:var(--charcoal-soft)]">{empty}</p>
+      )}
+    </div>
+  );
+}
 
 type Guide = { id: string; name: string; email?: string | null; phone?: string | null; active?: boolean | null };
 type Booking = Record<string, unknown> & { id: string };
@@ -61,6 +81,7 @@ export function OpsBookingDetail({
   const load = useServerFn(getOpsBooking);
   const update = useServerFn(updateOpsBooking);
   const saveDraft = useServerFn(saveOpsBriefDraft);
+  const sendBrief = useServerFn(sendGuideBrief);
 
   const [booking, setBooking] = useState<Booking | null>(null);
   const [guides, setGuides] = useState<Guide[]>([]);
@@ -111,15 +132,48 @@ export function OpsBookingDetail({
     }
   };
 
+  const assignedGuide = guides.find((guide) => guide.id === booking?.["assigned_guide_id"]) ?? null;
+
+  const emailGuide = async (guide: Guide) => {
+    if (!guide.email) {
+      toast.message(`${guide.name} has no email saved — use WhatsApp.`);
+      return;
+    }
+    try {
+      const result = await sendBrief({
+        data: { bookingId, guideId: guide.id, guideName: guide.name, email: guide.email },
+      });
+      if (result.ok) toast.success(`Briefing emailed to ${guide.name}.`);
+      else toast.error("Briefing email could not be sent.");
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : "Briefing email could not be sent.");
+    }
+  };
+
+  const assignGuide = async (guideId: string | null) => {
+    await apply({ assignedGuideId: guideId }, guideId ? "Guide assigned." : "Guide removed.");
+    const guide = guides.find((entry) => entry.id === guideId);
+    if (guide) await emailGuide(guide);
+  };
+
+  const whatsappGuideUrl = (guide: Guide | null): string | null => {
+    const digits = guide?.phone?.replace(/\D/g, "") ?? "";
+    if (!digits) return null;
+    return `https://wa.me/${digits}?text=${encodeURIComponent(briefDraft)}`;
+  };
+
   if (loading && !booking) {
     return <p className="p-4 text-sm text-[color:var(--charcoal-soft)]">Loading reservation…</p>;
   }
   if (!booking) return <p className="p-4 text-sm">Reservation not found.</p>;
 
   const snapshot = (booking["booking_details"] ?? {}) as Record<string, unknown>;
-  const inner = (snapshot["snapshot"] ?? {}) as Record<string, unknown>;
-  const itinerary = Array.isArray(inner["itinerary"]) ? (inner["itinerary"] as Array<Record<string, unknown>>) : [];
+  const inner = (snapshot["snapshot"] ?? snapshot) as Record<string, unknown>;
+  const received = buildSnapshotEmailPreview(inner);
+  const includedItems = list(booking["inclusions"]).length ? list(booking["inclusions"]) : received.includedItems;
+  const excludedItems = list(booking["exclusions"]);
   const pax = booking["pax_breakdown"] as Record<string, number> | null;
+  const guideWa = whatsappGuideUrl(assignedGuide);
   const emailUrl = booking["source_email_url"];
 
   const guideSelect = (
@@ -128,7 +182,7 @@ export function OpsBookingDetail({
       className="w-full rounded-md border border-[color:var(--charcoal)]/15 bg-white px-3 py-2 text-sm"
       value={(booking["assigned_guide_id"] as string | null) ?? ""}
       disabled={busy}
-      onChange={(event) => void apply({ assignedGuideId: event.target.value || null }, "Guide updated.")}
+      onChange={(event) => void assignGuide(event.target.value || null)}
     >
       <option value="">Unassigned</option>
       {guides.map((guide) => (
@@ -195,8 +249,37 @@ export function OpsBookingDetail({
             </span>
             <div className="w-full sm:w-64">{guideSelect}</div>
           </div>
+          {assignedGuide ? (
+            <div className="flex flex-wrap gap-2 pb-2">
+              <Button size="sm" variant="outline" disabled={busy || !assignedGuide.email} onClick={() => void emailGuide(assignedGuide)}>
+                Email briefing to {assignedGuide.name.split(" ")[0]}
+              </Button>
+              {guideWa ? (
+                <Button asChild size="sm" variant="outline">
+                  <a href={guideWa} target="_blank" rel="noreferrer">
+                    Send briefing on WhatsApp
+                  </a>
+                </Button>
+              ) : (
+                <span className="self-center text-[12px] text-[color:var(--charcoal-soft)]">No phone saved for this guide</span>
+              )}
+            </div>
+          ) : null}
         </div>
       </section>
+
+      {/* ------------------------------------------ What the guest received */}
+      <Group title="What the guest received">
+        <p className="text-[12.5px] text-[color:var(--charcoal-soft)]">
+          The day exactly as it was confirmed to the guest at booking.
+        </p>
+        <ReceivedList title="Itinerary" items={received.itineraryLines} empty="No itinerary saved with this booking — check the source email." />
+        <ReceivedList title="Included" items={includedItems} empty="Not recorded" />
+        <ReceivedList title="Not included" items={excludedItems} />
+        <ReceivedList title="Removed from the day" items={received.removedOptions} />
+        <ReceivedList title="Add-ons" items={received.addOnLabels} />
+        <ReceivedList title="Guest requests" items={received.customerNotes} />
+      </Group>
 
       {/* ------------------------------------------------------ Operations */}
       <Group title="Operations">
@@ -302,18 +385,6 @@ export function OpsBookingDetail({
           <Row label="Drop-off" value={str(booking["dropoff_location"])} />
           <Row label="Language" value={str(booking["language"] ?? inner["language"])} />
           <Row label="Extras" value={list(booking["extras"]).join(", ") || "—"} />
-          <Row label="Included" value={list(booking["inclusions"]).join(", ") || "—"} />
-          <Row label="Not included" value={list(booking["exclusions"]).join(", ") || "—"} />
-          {itinerary.length > 0 ? (
-            <ol className="mt-2 space-y-1 text-[13px] text-[color:var(--charcoal)]">
-              {itinerary.map((stop, index) => (
-                <li key={index}>
-                  {index + 1}. {str(stop["label"] ?? stop["name"])}
-                  {typeof stop["note"] === "string" && stop["note"] ? ` — ${stop["note"] as string}` : ""}
-                </li>
-              ))}
-            </ol>
-          ) : null}
         </Fold>
 
         <Fold title="Status and payment actions">
