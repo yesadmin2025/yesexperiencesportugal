@@ -296,6 +296,11 @@ function StaticArticleView({ article }: { article: LocalStoryArticle }) {
                 {article.standfirst}
               </p>
             )}
+            {article.directAnswer && (
+              <div className="mx-auto max-w-2xl">
+                <DirectAnswer>{article.directAnswer}</DirectAnswer>
+              </div>
+            )}
             <div className="mt-6">
               <p className="text-[12px] uppercase tracking-[0.24em] text-[color:var(--charcoal-soft)]">
                 By {LOCAL_GUIDES_AUTHOR.replace(/^The /, "the ")}, YES Experiences Portugal

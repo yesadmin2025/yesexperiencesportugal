@@ -17,6 +17,9 @@ export type LocalStoryArticle = {
   eyebrow: string;
   /** Optional short standfirst shown under the H1. */
   standfirst: string;
+  /** Optional 2–3 sentence factual answer shown under the standfirst, written
+   *  so AI assistants and AI Overviews can quote it verbatim. Facts only. */
+  directAnswer?: string;
   /** Section headings + placeholder paragraphs the founder will replace. */
   sections: { heading: string; body: string }[];
   /** Soft CTA copy at the end of the article. */
@@ -2227,6 +2230,8 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
     eyebrow: "Portugal · Itineraries",
     standfirst:
       "The question every traveler asks first — and the answer depends less on the map than on how you like to travel.",
+    directAnswer:
+      "Most first-time visitors need at least seven days in Portugal: a base in Lisbon with two or three day trips, plus time in the north if possible. Three days covers only Lisbon well; ten days or more lets you link Lisbon, the Alentejo and the north without rushing.",
     sections: [
       {
         heading: "Three days is a city break, not a Portugal trip.",
@@ -2282,6 +2287,8 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
     eyebrow: "Portugal · Planning",
     standfirst:
       "No vague 'contact us for pricing' — here are real numbers from the days we run, and what drives them.",
+    directAnswer:
+      "Private full-day tours in Portugal typically cost between €101 and €254 per person, depending on the day and the group size — the per-person price falls as the group grows. On YES Experiences wine days, tastings, lunch, private transport and hotel pickup are included in the price shown.",
     sections: [
       {
         heading: "The honest range.",
@@ -2337,6 +2344,8 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
     eyebrow: "Portugal · Proposals",
     standfirst:
       "The setting matters, but so does the hour, the wind, and whether a busload of strangers is watching. Here is how we think about it.",
+    directAnswer:
+      "The best proposal settings in Portugal combine privacy, light and a place that means something to you — a quiet beach cove, a vineyard at golden hour or a palace garden. A local team can handle the timing, the setting and the surprise discreetly, anywhere in the country.",
     sections: [
       {
         heading: "The place sets the tone — the timing saves it.",
