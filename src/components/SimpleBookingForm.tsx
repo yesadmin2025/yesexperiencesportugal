@@ -246,12 +246,28 @@ export function SimpleBookingForm({ tour }: { tour: SignatureTour }) {
   // alternatives stay generic and optional chapters are not sold as guarantees.
   const itinerary = (() => {
     const verified = projectPublicSotItinerary(tour.id)?.filter((chapter) => chapter.stopType !== "pass-by");
-    if (verified?.length) return verified.map((chapter) => ({ label: chapter.label, optional: chapter.optional }));
+    if (verified?.length) return verified.map((chapter) => ({
+      label: chapter.label,
+      story: chapter.description,
+      optional: chapter.optional,
+    }));
     const chapters = toEditorialChapters(tour.id);
-    if (chapters?.length) return chapters.map((chapter) => ({ label: chapter.label, optional: chapter.optional }));
+    if (chapters?.length) return chapters.map((chapter) => ({
+      label: chapter.label,
+      story: chapter.story,
+      optional: chapter.optional,
+    }));
     const viatorStops = getViatorMeta(tour.id)?.stops?.filter((stop) => !stop.passBy);
-    if (viatorStops?.length) return viatorStops.map((stop) => ({ label: stop.name, optional: false }));
-    return (tour.stops ?? []).map((stop) => ({ label: stop.label, optional: false }));
+    if (viatorStops?.length) return viatorStops.map((stop) => ({
+      label: stop.name,
+      story: stop.desc,
+      optional: false,
+    }));
+    return (tour.stops ?? []).map((stop) => ({
+      label: stop.label,
+      story: stop.story,
+      optional: false,
+    }));
   })();
 
   const handleReserve = async (details: GuestDetails) => {
@@ -749,6 +765,7 @@ export function SimpleBookingForm({ tour }: { tour: SignatureTour }) {
           duration: tour.durationHours,
           region: tour.region,
           beats: signatureBeats,
+          itinerary,
         }}
         initial={{
           tourDate: date,

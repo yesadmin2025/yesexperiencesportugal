@@ -97,6 +97,12 @@ export interface BookingProductRecap {
   duration?: string | number | null;
   region?: string | null;
   beats?: readonly string[];
+  /** Verified public itinerary, in the same order shown on the tour page. */
+  itinerary?: ReadonlyArray<{
+    label: string;
+    story?: string | null;
+    optional?: boolean;
+  }>;
 }
 
 /** The only start times the operation runs. */
@@ -561,21 +567,22 @@ function ProductRecap({
   composition: TravellerComposition;
   compositionComplete: boolean;
 }) {
-  const [includedOpen, setIncludedOpen] = useState(false);
+  const [includedOpen, setIncludedOpen] = useState(true);
   const context = [
     recap.duration != null ? formatDuration(recap.duration) : null,
     recap.region || null,
   ].filter(Boolean);
   const beats = (recap.beats ?? []).filter(Boolean).slice(0, 4);
+  const itinerary = (recap.itinerary ?? []).filter((stop) => Boolean(stop.label));
 
   return (
     <section
-      aria-label="Your Signature"
+      aria-label="What your day includes"
       data-testid="final-details-product-recap"
-      className="border-y border-[color:var(--border)] py-3"
+      className="border border-[color:var(--border)] bg-[color:var(--sand)]/30 px-4 py-4"
     >
       <p className="text-[11px] uppercase tracking-[0.22em] text-[color:var(--charcoal-soft)]">
-        Your Signature · {recap.flowLabel}
+        What your day includes
       </p>
       <h3 className="mt-1.5 font-serif text-[18px] font-medium leading-snug text-[color:var(--charcoal)]">
         {recap.title}
@@ -590,9 +597,35 @@ function ProductRecap({
         <span className="mx-1.5 text-[color:var(--charcoal-soft)]">·</span>
         {compositionComplete ? formatCompositionSummary(composition) : "Party details incomplete"}
       </p>
+      {itinerary.length > 0 ? (
+        <ol className="mt-4 space-y-3" data-testid="final-details-day-itinerary">
+          {itinerary.map((stop, index) => (
+            <li key={`${stop.label}-${index}`} className="flex gap-3">
+              <span className="mt-0.5 shrink-0 text-[11px] font-semibold tabular-nums text-[color:var(--gold)]">
+                {String(index + 1).padStart(2, "0")}
+              </span>
+              <div className="min-w-0">
+                <p className="text-[13.5px] font-medium leading-snug text-[color:var(--charcoal)]">
+                  {stop.label}
+                  {stop.optional ? (
+                    <span className="ml-2 text-[10.5px] uppercase tracking-[0.16em] text-[color:var(--charcoal-soft)]">
+                      Optional
+                    </span>
+                  ) : null}
+                </p>
+                {stop.story ? (
+                  <p className="mt-0.5 text-[12.5px] leading-relaxed text-[color:var(--charcoal-soft)]">
+                    {stop.story}
+                  </p>
+                ) : null}
+              </div>
+            </li>
+          ))}
+        </ol>
+      ) : null}
       {beats.length > 0 ? (
         <Disclosure
-          label="What's included"
+          label={`${includedOpen ? "Hide" : "See"} what's included`}
           open={includedOpen}
           onToggle={() => setIncludedOpen((value) => !value)}
           testId="final-details-product-inclusions"
