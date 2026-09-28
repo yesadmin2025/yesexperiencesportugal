@@ -2145,7 +2145,7 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
 
   {
     slug: "arrabida-boat-tour-from-lisbon",
-    title: "Arrábida Boat Tour from Lisbon — Private Day with Coastal Cruise",
+    title: "Arrábida Boat Tour from Lisbon — Private Coastal Day",
     metaDescription:
       "A private Arrábida day from Lisbon with a Sesimbra coastal boat ride into hidden coves, Cabo Espichel cliffs and golden-hour Sesimbra. What to expect.",
     h1: "Seeing Arrábida from the Water",

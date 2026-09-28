@@ -22,7 +22,7 @@ const PAGE_PATH = "/itineraries/10-day-private-portugal-tour";
 const PAGE_URL = `${SITE_URL}${PAGE_PATH}`;
 const TITLE = "10-Day Private Portugal Tour | Sample Itinerary by YES";
 const DESCRIPTION =
-  "A sample 10-day private Portugal itinerary — Lisbon, Sintra, Arrábida coast and Alentejo wine country — composed with a human Travel Designer around real Signature days.";
+  "A sample 10-day private Portugal itinerary — Lisbon, Sintra, the Arrábida coast and Alentejo wine country — composed with a human Travel Designer.";
 
 interface Day {
   span: string;

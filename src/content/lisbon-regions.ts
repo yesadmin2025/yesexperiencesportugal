@@ -200,7 +200,7 @@ export const LISBON_REGIONS: readonly LisbonRegion[] = [
     name: "Évora & the Alentejo",
     title: "Private Alentejo Wine Tours from Lisbon — Évora & Talha",
     description:
-      "Private Alentejo wine tours from Lisbon: Évora's Roman temple and walled streets, cork country, and talha wine still made in clay by the families who make it.",
+      "Private Alentejo wine tours from Lisbon: Évora's Roman temple and walled streets, cork country, and talha wine still made in clay by local families.",
     eyebrow: "Alentejo · 90 minutes from Lisbon",
     h1Lead: "Private Alentejo wine tours from Lisbon,",
     h1Em: "through Évora and talha country.",

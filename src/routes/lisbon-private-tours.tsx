@@ -38,7 +38,7 @@ const PATH = "/lisbon-private-tours";
 const PAGE_URL = `${WEBSITE_URL}${PATH}`;
 const TITLE = "Private Day Tours From Lisbon, Portugal | YES";
 const DESCRIPTION =
-  "Private day tours from Lisbon with a local guide: Arrábida wine, Sintra & Cascais, Évora and the coast. Hotel pickup, instant online confirmation, 24h free cancellation.";
+  "Private day tours from Lisbon with a local guide: Arrábida wine, Sintra & Cascais, Évora, the coast. Hotel pickup, instant confirmation, free 24h cancellation.";
 
 const crumbs = [
   { name: "Home", path: "/" },

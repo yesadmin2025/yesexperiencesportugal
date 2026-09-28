@@ -31,7 +31,7 @@ const PATH = "/portugal-for-american-travelers";
 const PAGE_URL = `${WEBSITE_URL}${PATH}`;
 const TITLE = "Portugal for American Travelers — A Local's Planning Guide";
 const DESCRIPTION =
-  "Planning Portugal from the US: flight times, jet lag, money and tipping, driving, best months to go, and how many days you need. Written by a licensed local operator.";
+  "Planning Portugal from the US: flight times, jet lag, money and tipping, driving, best months, and how many days you need. By a licensed local operator.";
 
 const crumbs = [
   { name: "Home", path: "/" },

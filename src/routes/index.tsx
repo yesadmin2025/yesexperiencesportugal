@@ -60,7 +60,7 @@ const HOME_SEO_TITLE =
   "YES Experiences Portugal | Private Tours & Tailor-Made Journeys";
 const HOME_SEO_SOCIAL_TITLE = HOME_SEO_TITLE;
 const HOME_SEO_DESCRIPTION =
-  "Design a private day in real time, reserve a Signature experience, or shape a multi-day Portugal journey with a local expert. Wine, coast, food and culture, your way.";
+  "Design a private day in real time, reserve a Signature experience, or shape a multi-day Portugal journey with a local expert. Wine, coast, food, culture.";
 
 
 /** Homepage Journal row — three evergreen Local Stories guides.

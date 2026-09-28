@@ -19,7 +19,7 @@ import { EMAIL, EMAIL_HREF, PHONE_DISPLAY, whatsappUrl } from "@/config/business
 
 const TITLE = "FAQs — Private Tours in Portugal | YES Experiences";
 const DESCRIPTION =
-  "Answers on our private days in Portugal: how trips are designed, what they cost, cancellation terms, pickups and how to book — written by the local team who run them.";
+  "Answers on private days in Portugal: how trips are designed, what they cost, cancellation terms, pickups and how to book — from the local team who run them.";
 const PAGE_URL = "https://yesexperiencesportugal.com/faq";
 
 const crumbs = [

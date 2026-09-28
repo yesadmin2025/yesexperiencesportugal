@@ -211,6 +211,7 @@ function CrossfadeImage({ media, className }: { media: StudioMedia; className?: 
           aria-hidden
           src={previous.src}
           alt=""
+          decoding="async"
           data-media-focal={previous.focal ?? undefined}
           // Each crossfade layer keeps ITS OWN verified focal point.
           style={previous.focal ? { objectPosition: previous.focal } : undefined}
