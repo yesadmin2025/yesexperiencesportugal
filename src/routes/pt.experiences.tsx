@@ -90,9 +90,8 @@ function ExperiencesPage() {
             Signature <SectionTitle.Em>Tours</SectionTitle.Em>
           </SectionTitle>
           <p className="page-header-support mt-5 max-w-xl mx-auto text-[color:var(--charcoal-soft)]">
-            Escolha um dia privado a partir de Lisboa ou noutras regiões de Portugal. Veja o que
-            está incluído, confirme a data e reserve de imediato quando disponível — ou adapte o
-            dia ao seu grupo.
+            Dias privados por todo o Portugal. Veja o que está incluído, escolha a experiência
+            certa para si e reserve a sua data — ou adapte o dia ao seu grupo.
           </p>
           <p className="page-header-secondary mt-4 mx-auto max-w-xl text-[12px] uppercase tracking-[0.16em] text-[color:var(--charcoal-soft)]">
             As páginas detalhadas de cada tour estão, para já, disponíveis em inglês. A tradução
