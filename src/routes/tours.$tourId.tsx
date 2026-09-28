@@ -45,6 +45,9 @@ import { getFaqForTour } from "@/content/seo-faq";
 import { getTourGallery, getHeroAlt } from "@/lib/tour-gallery";
 import { getTourContent, signatureDurationLabel } from "@/lib/tourContent";
 import { projectPublicSotItinerary } from "@/lib/publicItineraryProjection";
+import { publicItineraryStops, routeGlancePoints } from "@/lib/tourItineraryStops";
+import { RouteGlance } from "@/components/tours/RouteGlance";
+
 import { TourReviews } from "@/components/TourReviews";
 import { PriceQualifier } from "@/components/ui/PriceQualifier";
 import { GroupSizePriceRow } from "@/components/tours/GroupSizePriceRow";
@@ -656,28 +659,52 @@ function HighlightsBlock({ tour }: { tour: SignatureTour }) {
 /* ════════════════════════════════════════════════════════════════
  * 5 · THE ROUTE — plain numbered list of the real stops, in order
  * ════════════════════════════════════════════════════════════ */
-function ItineraryTimeline({ tour, meta }: { tour: SignatureTour; meta?: ViatorMeta }) {
-  // Source of truth (in order of preference):
-  //   1. Viator-verified SoT itinerary (pass-bys excluded)
-  //   2. Tailor blueprint, projected to editorial chapters
-  //   3. Raw Viator stops (passBy excluded)
-  //   4. Internal tour.stops — last resort
-  type Stop = { label: string; story?: string; optional?: boolean };
-  const sot = projectPublicSotItinerary(tour.id) ?? [];
-  const fromSot = sot
-    .filter((c) => c.stopType !== "pass-by")
-    .map((c) => ({ label: c.label, story: c.description, optional: c.optional }));
+function normaliseStopKey(label: string): string {
+  return label
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "");
+}
 
-  const fromBlueprint = toEditorialChapters(tour.id);
-  const viator = meta?.stops?.filter((s) => !s.passBy) ?? [];
-  const stops: Stop[] =
-    fromSot.length > 0
-      ? fromSot
-      : fromBlueprint && fromBlueprint.length > 0
-        ? fromBlueprint.map((c) => ({ label: c.label, story: c.story, optional: c.optional }))
-        : viator.length > 0
-          ? viator.map((s) => ({ label: s.name, story: s.desc }))
-          : (tour.stops ?? []).map((s) => ({ label: s.label, story: s.story }));
+function ItineraryTimeline({
+  tour,
+  meta,
+  adminPhotos,
+  resolveImg,
+}: {
+  tour: SignatureTour;
+  meta?: ViatorMeta;
+  adminPhotos: ReturnType<typeof useAdminTourPhotos>;
+  resolveImg: ReturnType<typeof useImportedTourImages>["resolveImg"];
+}) {
+  const stops = publicItineraryStops(tour, meta);
+  const points = routeGlancePoints(stops);
+
+  // A stop only ever shows a photo that is genuinely OF that stop:
+  //   1. an admin-uploaded photo the owner assigned to this stop
+  //   2. the curated per-stop image already baked into the tour data
+  // No fallback, no borrowed gallery shot — an unassigned stop stays text.
+  const assigned = new Map<string, { src: string; srcSet?: string; alt: string }>();
+  for (const p of adminPhotos) {
+    if (!p.stopLabel) continue;
+    const key = normaliseStopKey(p.stopLabel);
+    if (!assigned.has(key)) assigned.set(key, { src: p.src, srcSet: p.srcSet, alt: p.alt });
+  }
+
+  const curated = new Map<string, { src: string; alt: string }>();
+  for (const s of tour.stops ?? []) {
+    if (!s.image) continue;
+    const src = resolveImg(s.image);
+    if (!src) continue;
+    const key = normaliseStopKey(s.label);
+    if (!curated.has(key)) curated.set(key, { src, alt: `${s.label} — ${tour.title}` });
+  }
+
+  const photoForStop = (label: string) => {
+    const key = normaliseStopKey(label);
+    return assigned.get(key) ?? curated.get(key) ?? null;
+  };
 
   if (stops.length === 0) return null;
 
@@ -694,40 +721,63 @@ function ItineraryTimeline({ tour, meta }: { tour: SignatureTour; meta?: ViatorM
           </p>
         </div>
 
+        <RouteGlance tourId={tour.id} points={points} region={tour.region} />
+
         <Scene as="ol" className="m-0 list-none space-y-5 p-0">
-          {stops.map((s, i) => (
-            <li
-              key={s.label + i}
-              className="scene-item grid grid-cols-[2rem_minmax(0,1fr)] gap-x-3 border-t border-[color:var(--border)] pt-5 first:border-t-0 first:pt-0"
-            >
-              <span className="serif mt-[2px] text-[15px] tabular-nums text-[color:var(--charcoal-soft)]/75">
-                {String(i + 1).padStart(2, "0")}
-              </span>
-              <div className="min-w-0">
-                <h3
-                  className="serif text-[24px] leading-[1.08] text-[color:var(--charcoal)] font-medium md:text-[26px]"
-                  data-mixed-emphasis="exempt"
-                >
-                  {s.label}
-                  {s.optional && (
-                    <span className="ml-2 align-middle text-[11px] uppercase tracking-[0.16em] text-[color:var(--charcoal-soft)]">
-                      Optional
-                    </span>
+          {stops.map((s, i) => {
+            const photo = photoForStop(s.label);
+            return (
+              <li
+                key={s.label + i}
+                className="scene-item grid grid-cols-[2rem_minmax(0,1fr)] gap-x-3 border-t border-[color:var(--border)] pt-5 first:border-t-0 first:pt-0"
+              >
+                <span className="serif mt-[2px] text-[15px] tabular-nums text-[color:var(--charcoal-soft)]/75">
+                  {String(i + 1).padStart(2, "0")}
+                </span>
+                <div className="min-w-0">
+                  <h3
+                    className="serif text-[24px] leading-[1.08] text-[color:var(--charcoal)] font-medium md:text-[26px]"
+                    data-mixed-emphasis="exempt"
+                  >
+                    {s.label}
+                    {s.optional && (
+                      <span className="ml-2 align-middle text-[11px] uppercase tracking-[0.16em] text-[color:var(--charcoal-soft)]">
+                        Optional
+                      </span>
+                    )}
+                  </h3>
+                  {typeof s.durationMinutes === "number" && s.durationMinutes > 0 && (
+                    <p className="mt-1 text-[11px] uppercase tracking-[0.16em] text-[color:var(--charcoal-soft)]">
+                      About {s.durationMinutes} min here
+                    </p>
                   )}
-                </h3>
-                {s.story && (
-                  <p className="mt-1.5 text-[14px] leading-relaxed text-[color:var(--charcoal-soft)]">
-                    {s.story}
-                  </p>
-                )}
-              </div>
-            </li>
-          ))}
+                  {s.story && (
+                    <p className="mt-1.5 text-[14px] leading-relaxed text-[color:var(--charcoal-soft)]">
+                      {s.story}
+                    </p>
+                  )}
+                  {photo && (
+                    <figure className="mt-4 mb-0 overflow-hidden">
+                      <TourImage
+                        src={photo.src}
+                        srcSet={"srcSet" in photo ? photo.srcSet : undefined}
+                        sizes="(min-width: 768px) 42rem, 92vw"
+                        alt={photo.alt}
+                        ratio="3/2"
+                        loading="lazy"
+                      />
+                    </figure>
+                  )}
+                </div>
+              </li>
+            );
+          })}
         </Scene>
       </div>
     </section>
   );
 }
+
 
 /* ════════════════════════════════════════════════════════════════
  * 7 · INCLUDED / NOT INCLUDED + PRACTICAL DETAILS
