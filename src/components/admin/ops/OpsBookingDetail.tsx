@@ -14,6 +14,26 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { getOpsBooking, saveOpsBriefDraft, updateOpsBooking } from "@/lib/bookingsOps.functions";
+import { sendGuideBrief } from "@/lib/guides.functions";
+import { buildSnapshotEmailPreview } from "@/lib/booking-snapshot-contract";
+
+function ReceivedList({ title, items, empty }: { title: string; items: string[]; empty?: string }) {
+  if (!items.length && !empty) return null;
+  return (
+    <div className="mt-3">
+      <p className="text-[11px] uppercase tracking-[0.14em] text-[color:var(--charcoal-soft)]">{title}</p>
+      {items.length ? (
+        <ul className="mt-1 space-y-1 text-[13.5px] leading-snug text-[color:var(--charcoal)]">
+          {items.map((item, index) => (
+            <li key={index}>{item}</li>
+          ))}
+        </ul>
+      ) : (
+        <p className="mt-1 text-[13px] text-[color:var(--charcoal-soft)]">{empty}</p>
+      )}
+    </div>
+  );
+}
 
 type Guide = { id: string; name: string; email?: string | null; phone?: string | null; active?: boolean | null };
 type Booking = Record<string, unknown> & { id: string };
