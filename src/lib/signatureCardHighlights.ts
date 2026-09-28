@@ -1,7 +1,7 @@
 import { getTourContent, signatureIncludesLunch } from "@/lib/tourContent";
 
 type HighlightSelector =
-  | { source: "highlight"; value: string }
+  | { source: "highlight"; value: string; label?: string }
   | { source: "included"; value: string; label?: string }
   | { source: "includedLunch"; label: string };
 
