@@ -86,6 +86,11 @@ export interface GuestDetailsStepProps {
   readonly submitLabel?: string;
   readonly className?: string;
   readonly testId?: string;
+  /** Verified stops + inclusions of the day being booked (never invented). */
+  readonly daySummary?: {
+    readonly stops: ReadonlyArray<{ label: string; story?: string | null }>;
+    readonly included?: readonly string[];
+  } | null;
 }
 
 const isEmail = (v: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v.trim());
@@ -104,6 +109,7 @@ export function GuestDetailsStep({
   submitLabel,
   className,
   testId,
+  daySummary,
 }: GuestDetailsStepProps) {
   const [fullName, setFullName] = useState(initial?.fullName ?? "");
   const [email, setEmail] = useState(initial?.email ?? "");
@@ -309,6 +315,63 @@ export function GuestDetailsStep({
           >
             {journeyTitle}
           </p>
+        ) : null}
+        {daySummary && daySummary.stops.length > 0 ? (
+          <details
+            open
+            data-testid="studio-v3-guest-day-summary"
+            className="mt-5 rounded-[6px] border px-4 py-3"
+            style={{
+              background: "color-mix(in oklab, var(--sand) 45%, var(--ivory))",
+              borderColor: "color-mix(in oklab, var(--charcoal) 10%, transparent)",
+            }}
+          >
+            <summary
+              className="cursor-pointer min-h-[44px] flex items-center text-[11px] uppercase tracking-[0.22em] font-semibold"
+              style={{ color: "var(--teal)" }}
+            >
+              What your day includes
+            </summary>
+            <ol className="mt-1 space-y-2.5">
+              {daySummary.stops.map((s, i) => (
+                <li key={`${s.label}-${i}`} className="flex gap-3">
+                  <span
+                    className="mt-0.5 text-[11px] font-semibold tabular-nums"
+                    style={{ color: "var(--gold)" }}
+                  >
+                    {String(i + 1).padStart(2, "0")}
+                  </span>
+                  <div className="min-w-0">
+                    <p className="text-[14px] font-medium" style={{ color: "var(--charcoal)" }}>
+                      {s.label}
+                    </p>
+                    {s.story ? (
+                      <p
+                        className="mt-0.5 text-[12.5px] leading-snug"
+                        style={{ color: "color-mix(in oklab, var(--charcoal) 70%, transparent)" }}
+                      >
+                        {s.story}
+                      </p>
+                    ) : null}
+                  </div>
+                </li>
+              ))}
+            </ol>
+            {daySummary.included && daySummary.included.length > 0 ? (
+              <p
+                className="mt-3 pt-3 border-t text-[12.5px] leading-snug"
+                style={{
+                  borderColor: "color-mix(in oklab, var(--charcoal) 10%, transparent)",
+                  color: "color-mix(in oklab, var(--charcoal) 75%, transparent)",
+                }}
+              >
+                <span className="font-medium" style={{ color: "var(--charcoal)" }}>
+                  Included:{" "}
+                </span>
+                {daySummary.included.join(" · ")}
+              </p>
+            ) : null}
+          </details>
         ) : null}
         <p
           className="mt-3 text-[12px]"

@@ -4250,6 +4250,15 @@ export function StudioV3() {
             }}
             tourId={state.tourId ?? undefined}
             journeyTitle={state.journeyTitle ?? undefined}
+            daySummary={(() => {
+              const t = state.tourId ? findTour(state.tourId) : null;
+              const pts =
+                state.editedRoutePoints ?? state.committedRoutePoints ?? t?.stops ?? [];
+              return {
+                stops: pts.map((p) => ({ label: p.label, story: p.story ?? null })),
+                included: t?.included ?? [],
+              };
+            })()}
             submitting={false}
             // PREFLIGHT-OWNED FACTS — never asked twice.
             fixedTourDate={state.dateExact ?? undefined}
