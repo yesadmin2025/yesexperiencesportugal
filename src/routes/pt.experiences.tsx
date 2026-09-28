@@ -109,7 +109,7 @@ function ExperiencesPage() {
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-8">
             {signatureTours.map((tour) => {
               const meta = VIATOR_META[tour.id];
-              const topHighlights = getSignatureCardHighlights(tour.id);
+               const topHighlights = getSignatureCardHighlights(tour.id, "pt");
 
               return (
                 <article key={tour.id} className="group flex flex-col text-left" aria-label={tour.title}>
@@ -140,7 +140,7 @@ function ExperiencesPage() {
                     {tour.title}
                   </Link>
                   <p className="mt-3 text-[14px] text-[color:var(--charcoal-soft)] leading-relaxed">
-                    {getSignatureCardPromise(tour.id)}
+                     {getSignatureCardPromise(tour.id, "pt")}
                   </p>
 
                   {topHighlights.length > 0 && (

@@ -627,7 +627,10 @@ function DayTripsFromLisbon() {
             <Link to="/local-stories" className="underline underline-offset-4">
               local stories
             </Link>{" "}
-            we write about these regions.
+             we write about these regions. For travel beyond a day from Lisbon, explore our{" "}
+             <Link to="/portugal-travel-designer" className="underline underline-offset-4">
+               multi-day journeys across Portugal
+             </Link>.
           </p>
         </div>
       </section>
