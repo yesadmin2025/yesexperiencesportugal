@@ -36,7 +36,8 @@ export function buildStudioProposal(
   perPaxEur: number | null | undefined,
 ): StudioProposal | null {
   if (!tour) return null;
-  const all = (tour.included ?? []).map((s) => s.trim()).filter(Boolean);
+  const { included } = tour;
+  const all = (included ?? []).map((s) => s.trim()).filter(Boolean);
   const duration = tour.durationHours?.trim() || undefined;
   return {
     ...(duration ? { duration } : {}),

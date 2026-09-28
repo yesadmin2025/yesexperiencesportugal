@@ -220,9 +220,9 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
     slug: "what-to-do-in-sesimbra",
     title: "Sesimbra, Portugal: Things to Do — A Local's Guide",
     metaDescription:
-      "What to do in Sesimbra, Portugal, from locals who live here: the castle bay view, quiet Arrábida coves and the morning's catch by the harbour. 40 min from Lisbon.",
+      "Things to do in Sesimbra, Portugal, from locals: the castle bay view, the old town down to the harbour, quiet Arrábida coves and fresh fish. 40 min from Lisbon.",
 
-    h1: "Things to Do in Sesimbra — Castle, Coves & a Harbour Lunch",
+    h1: "Things to Do in Sesimbra — Castle, Old Town, Coves & Harbour Lunch",
     eyebrow: "Sesimbra · Coast",
     standfirst:
       "Sesimbra is our home town — forty minutes south of Lisbon, and a different country by the time you arrive. Climb the castle for the bay view, eat grilled fish beside the harbour, then escape to a quiet cove inside the Arrábida park. Half a day for the town; a full day if you want the coast too.",
@@ -2363,7 +2363,7 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
       "Tell us what you have in mind — privately, and with no obligation. We will help you get the moment right.",
     ctaLabel: "Plan a special moment",
     relatedReads: [
-      { path: "/proposals", label: "Proposals & special moments" },
+      { path: "/proposal-in-portugal", label: "Proposals & special moments" },
       { path: "/proposal-in-portugal", label: "Proposal in Portugal — how it works" },
       { path: "/proposal-in-portugal", label: "Moments — private celebrations" },
     ],

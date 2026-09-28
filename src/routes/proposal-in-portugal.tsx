@@ -26,7 +26,7 @@ const PAGE_URL = `${BASE_URL}${PAGE_PATH}`;
 // this page never competes with them for the same result.
 const TITLE = "Portugal Proposal Planning — Private Proposals in Lisbon";
 const DESCRIPTION =
-  "Where to propose in Portugal: Lisbon terraces, Sintra palaces, Arrábida cliffs or quiet vineyards. A licensed local team plans the setting, timing and surprise discreetly.";
+  "Plan a proposal in Portugal: Lisbon terraces, Sintra palaces, Arrábida cliffs or quiet vineyards. A licensed local team handles it all discreetly.";
 
 export const Route = createFileRoute("/proposal-in-portugal")({
   head: () => ({

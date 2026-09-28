@@ -36,7 +36,7 @@ import { whatsappUrl } from "@/config/business-nap";
 
 const TITLE = "Corporate Events & Team Building in Portugal | YES";
 const DESCRIPTION =
-  "Private corporate events, team building, incentive travel, executive retreats and group experiences across Portugal, designed and coordinated locally.";
+  "Corporate retreats in Portugal, team building, incentive travel and private group experiences, designed and coordinated locally from brief to delivery.";
 const OG_TITLE = "Corporate Experiences Across Portugal | YES";
 const OG_DESCRIPTION =
   "Team building, incentives, retreats, executive off-sites and private corporate groups across Portugal, coordinated from brief to delivery.";
