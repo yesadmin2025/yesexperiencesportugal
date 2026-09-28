@@ -681,7 +681,9 @@ function ItineraryTimeline({
   adminPhotos: ReturnType<typeof useAdminTourPhotos>;
 }) {
   const stops = publicItineraryStops(tour, meta);
-  const points = routeGlancePoints(stops);
+  // The glance map orients the guest: only the places the day always visits,
+  // so an optional add-on never reads as a fixed leg of the route.
+  const points = routeGlancePoints(stops.filter((s) => !s.optional));
 
   // A stop only ever shows a photo that is genuinely OF that stop:
   //   1. an admin-uploaded photo the owner assigned to this stop
@@ -704,7 +706,17 @@ function ItineraryTimeline({
 
   const photoForStop = (label: string) => {
     const key = normaliseStopKey(label);
-    return assigned.get(key) ?? curated.get(key) ?? null;
+    const exact = assigned.get(key) ?? curated.get(key);
+    if (exact) return exact;
+    // The curated stop photos were authored against the tour's own stop names,
+    // which sometimes carry a longer official form of the same place
+    // ("Santuário Nacional de Cristo Rei" vs "Cristo Rei"). Only an anchored
+    // match counts — never a loose substring that could move a photo to a
+    // different place.
+    for (const [k, v] of curated) {
+      if (k.length > key.length && (k.startsWith(key) || k.endsWith(key))) return v;
+    }
+    return null;
   };
 
   if (stops.length === 0) return null;

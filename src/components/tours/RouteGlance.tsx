@@ -19,14 +19,6 @@ function slug(label: string, i: number): string {
   return `${label.toLowerCase().replace(/[^a-z0-9]+/g, "-")}-${i}`;
 }
 
-function formatMinutes(total: number): string {
-  const h = Math.floor(total / 60);
-  const m = total % 60;
-  if (h === 0) return `${m} min`;
-  if (m === 0) return `${h}h`;
-  return `${h}h ${m}min`;
-}
-
 export function RouteGlance({
   tourId,
   points,
@@ -50,11 +42,9 @@ export function RouteGlance({
 
   if (safePoints.length < 2) return null;
 
-  const resolved = (legMinutes ?? []).filter(
-    (m): m is number => typeof m === "number" && Number.isFinite(m) && m > 0,
+  const hasAnyLeg = (legMinutes ?? []).some(
+    (m) => typeof m === "number" && Number.isFinite(m) && m > 0,
   );
-  const allResolved = !!legMinutes && resolved.length === safePoints.length - 1;
-  const totalDriving = resolved.reduce((sum, m) => sum + m, 0);
 
   return (
     <div className="mb-10 border border-[color:var(--border)] bg-[color:var(--ivory)]">
@@ -77,13 +67,10 @@ export function RouteGlance({
       />
 
       <div className="border-t border-[color:var(--border)] px-4 py-4 md:px-6">
-        {allResolved && totalDriving > 0 && (
+        {hasAnyLeg && (
           <p className="text-[13.5px] leading-relaxed text-[color:var(--charcoal)]">
-            <strong className="font-medium">
-              About {formatMinutes(totalDriving)} of driving
-            </strong>{" "}
-            in total, split across the day between stops — pickup and drop-off at your
-            address.
+            <strong className="font-medium">Short, scenic hops.</strong> Real driving time
+            between each pair of places on your route — pickup and drop-off at your address.
           </p>
         )}
 
