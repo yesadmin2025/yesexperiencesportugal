@@ -1,4 +1,5 @@
 import { socialImageMeta } from "@/lib/seo";
+import { breadcrumbLd, jsonLdScript } from "@/lib/jsonld";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { SiteLayout } from "@/components/SiteLayout";
 import { Eyebrow } from "@/components/ui/Eyebrow";
@@ -24,6 +25,14 @@ export const Route = createFileRoute("/regions-of-portugal")({
       ...socialImageMeta(),
     ],
     links: [{ rel: "canonical", href: url }],
+    scripts: [
+      jsonLdScript(
+        breadcrumbLd([
+          { name: "Home", path: "/" },
+          { name: "Regions of Portugal", path: "/regions-of-portugal" },
+        ]),
+      ),
+    ],
   }),
   component: RegionsPage,
 });
