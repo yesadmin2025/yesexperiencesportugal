@@ -63,6 +63,7 @@ export function CurrencyToggle({ variant = "header", surface = "light", classNam
                 if (c === currency) return;
                 setCurrency(c);
                 trackEvent("currency_changed", { from: currency, to: c });
+                trackEvent("currency_switch", { from: currency, to: c });
                 announce(t("currency.announce_change", { currency: fullName }));
               }}
               aria-pressed={active}

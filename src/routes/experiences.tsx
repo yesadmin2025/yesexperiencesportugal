@@ -100,6 +100,10 @@ function ExperiencesPage() {
   // The catalogue is source-controlled and must never wait on a network call.
   // Published editorial overrides enhance the already-visible cards after hydration.
   useEffect(() => {
+    void import("@/lib/analytics-events").then((a) => a.trackEvent("view_item_list", { list_id: "experiences", item_count: signatureTours.length }));
+  }, []);
+
+  useEffect(() => {
     let cancelled = false;
     void listPublishedExperienceContent()
       .then((rows) => {

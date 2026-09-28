@@ -107,7 +107,7 @@ function PortugalTravelDesignerPage() {
             transparently before you commit to anything.
           </DirectAnswer>
           <div className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
-            <CtaButton to="/contact" search={{ type: "multi_day" }} variant="primary">
+            <CtaButton to="/contact" search={{ type: "multi_day" }} variant="primary" onClick={() => void import("@/lib/analytics-events").then((a) => a.trackEvent("travel_designer_start", { placement: "travel_designer_page" }))}>
               {CTA_LABELS.travelDesigner}
             </CtaButton>
             <CtaButton to="/experiences" variant="ghost">
@@ -275,7 +275,7 @@ function PortugalTravelDesignerPage() {
        <section className="reveal section-y chapter-flow bg-[color:var(--sand)]">
         <div className="container-x max-w-2xl text-center">
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-             <CtaButton to="/contact" search={{ type: "multi_day" }} variant="primary">
+             <CtaButton to="/contact" search={{ type: "multi_day" }} variant="primary" onClick={() => void import("@/lib/analytics-events").then((a) => a.trackEvent("travel_designer_start", { placement: "travel_designer_page" }))}>
                {CTA_LABELS.travelDesigner}
             </CtaButton>
             <CtaButton to="/experiences" variant="ghost">

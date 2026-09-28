@@ -33,6 +33,9 @@ export function WhyRouteWorks({ reasons, className, testId, tourId }: WhyRouteWo
     void import("@/lib/analytics-ga4").then((m) =>
       m.gaStudioRecommendationRevealed({ tourId: tourId ?? null, reasonCount }),
     );
+    void import("@/lib/analytics-events").then((a) =>
+      a.trackEvent("studio_route_generated", { tour_id: tourId ?? null, reason_count: reasonCount }),
+    );
   }, [tourId, reasonCount]);
   if (!shown.length) return null;
   return (

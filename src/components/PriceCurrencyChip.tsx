@@ -13,6 +13,7 @@ import * as React from "react";
 import { CurrencyToggle } from "@/components/CurrencyToggle";
 import { useT } from "@/i18n/locale-context";
 import { cn } from "@/lib/utils";
+import { useCurrency } from "@/lib/currency";
 
 interface Props {
   className?: string;
@@ -32,13 +33,13 @@ function useChipLabelId() {
 export function PriceCurrencyChip({ className, align = "end", surface = "light" }: Props) {
   const t = useT();
   const labelId = useChipLabelId();
+  const { currency } = useCurrency();
   return (
+    <span className={cn("inline-flex flex-col gap-1", align === "end" ? "ml-auto items-end" : "items-start", className)}>
     <div
       data-a11y-scope="price-currency-chip"
       className={cn(
         "inline-flex items-center gap-2 text-[11px] uppercase tracking-[0.22em] text-[color:var(--charcoal-soft)]",
-        align === "end" && "ml-auto",
-        className,
       )}
     >
       <span id={labelId}>{t("currency.view_in") ?? "View in"}</span>
@@ -46,5 +47,11 @@ export function PriceCurrencyChip({ className, align = "end", surface = "light" 
         <CurrencyToggle variant="header" surface={surface} />
       </span>
     </div>
+    {currency !== "EUR" && (
+      <span className="text-[11px] normal-case tracking-normal text-[color:var(--charcoal-soft)]">
+        USD shown as an estimate · checkout is charged in EUR
+      </span>
+    )}
+    </span>
   );
 }
