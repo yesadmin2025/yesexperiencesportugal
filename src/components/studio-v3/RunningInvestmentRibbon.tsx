@@ -59,7 +59,7 @@ export function RunningInvestmentRibbon({
   useEffect(() => {
     if (isResolvedTotal) {
       void import("@/lib/analytics-ga4").then((m) =>
-        m.gaStudioPriceViewed({ valueEur: Math.round(totalEur!) }),
+        { m.gaStudioPriceViewed({ valueEur: Math.round(totalEur!) }); void import("@/lib/analytics-events").then((a) => a.trackEvent("studio_price_shown", { value_eur: Math.round(totalEur!) })); },
       );
     }
   }, [isResolvedTotal, totalEur]);
