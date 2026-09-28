@@ -220,6 +220,20 @@ function PortugalTravelDesignerPage() {
         </p>
       </Section>
 
+      <section className="reveal border-b border-[color:var(--border)] bg-[color:var(--ivory)] py-12 md:py-16">
+        <div className="container-x max-w-2xl text-center">
+          <Eyebrow flank>Designed and operated locally</Eyebrow>
+          <p className="mx-auto mt-4 max-w-xl text-[15px] leading-relaxed text-[color:var(--charcoal-soft)]">
+            Tell a local designer where you want to begin, how long you have and what matters most.
+          </p>
+          <div className="mt-7">
+            <CtaButton to="/contact" search={{ type: "multi_day" }} variant="primary" onClick={() => void import("@/lib/analytics-events").then((a) => a.trackEvent("travel_designer_start", { placement: "travel_designer_proof" }))}>
+              {CTA_LABELS.travelDesigner}
+            </CtaButton>
+          </div>
+        </div>
+      </section>
+
       <Section
         tone="ivory"
         eyebrow="Who travel design is for"

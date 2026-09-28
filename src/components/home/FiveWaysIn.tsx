@@ -1,9 +1,8 @@
 /**
  * Homepage decision block.
  *
- * Conversion rule: five first-class services, each with a clear intent.
- * Signature and Studio lead the commercial paths; Travel Designer,
- * Proposals and Corporate remain equally discoverable.
+ * Conversion rule: three primary buying paths, followed by two quieter
+ * specialist services. Their order stays locked.
  * No pricing, inventory, routing or checkout truth lives here.
  */
 
@@ -36,8 +35,8 @@ const PATHS: ReadonlyArray<Path> = [
     title: "Private days, already designed by YES.",
     titleLead: "Private days,",
     titleEmphasis: "already designed by YES.",
-    body: "Choose one of our private experiences and enjoy it as designed, or tailor a few details.",
-    cta: "Explore Signatures",
+    body: "Choose a ready-made private day and reserve it as designed, or tailor a few details.",
+    cta: "Explore Signature Experiences",
     href: "/experiences",
     analyticsEvent: "home_path_signature_click",
   },
@@ -49,7 +48,7 @@ const PATHS: ReadonlyArray<Path> = [
     titleLead: "Your day,",
     titleEmphasis: "designed by you.",
     body: "Choose the mood, rhythm and route in real time. See the live price and reserve instantly, with local support if you need it.",
-    cta: "Open the Studio",
+    cta: "Design your day",
     href: "/studio",
     analyticsEvent: "home_path_studio_click",
   },
@@ -61,7 +60,7 @@ const PATHS: ReadonlyArray<Path> = [
     titleLead: "Full Portugal journeys,",
     titleEmphasis: "designed for you.",
     body: "From a few days to a full journey across Portugal, shaped around your time, rhythm and interests.",
-    cta: "Begin with a designer",
+    cta: "Design my journey",
     href: "/portugal-travel-designer",
     analyticsEvent: "home_path_designer_click",
   },
@@ -73,7 +72,7 @@ const PATHS: ReadonlyArray<Path> = [
     titleLead: "Proposals & celebrations,",
     titleEmphasis: "held with care.",
     body: "The proposal on the cliff, the anniversary in a vineyard, the birthday nobody forgets — quietly composed, precisely held.",
-    cta: "Share the occasion",
+    cta: "Plan a special moment",
     href: "/proposal-in-portugal",
     analyticsEvent: "home_secondary_moments_click",
   },
@@ -85,7 +84,7 @@ const PATHS: ReadonlyArray<Path> = [
     titleLead: "Team days, incentives",
     titleEmphasis: "& private groups.",
     body: "From intimate boards to full incentives — transport, venues and timing handled with a single point of contact.",
-    cta: "Plan a group day",
+    cta: "Plan a private group experience",
     href: "/corporate",
     analyticsEvent: "home_secondary_corporate_click",
   },
@@ -168,6 +167,10 @@ export function FiveWaysIn() {
           <SectionTitle id="choose-path-title" className="five-ways-heading scene-title">
             Five ways to <SectionTitle.Em>shape your Portugal.</SectionTitle.Em>
           </SectionTitle>
+          <p className="scene-body mx-auto mt-5 max-w-xl text-[14.5px] leading-[1.65] text-[color:var(--charcoal-soft)] md:text-[16px]">
+            Begin with a ready-made private day, design one live in the Studio, or plan a complete
+            Portugal journey with a local Travel Designer.
+          </p>
         </Scene>
 
         <Scene
@@ -179,6 +182,7 @@ export function FiveWaysIn() {
               key={path.id}
               path={path}
               index={index}
+              primary={index < 3}
             />
           ))}
         </Scene>
@@ -211,12 +215,13 @@ export function FiveWaysIn() {
   );
 }
 
-function PathCard({ path, index }: { path: Path; index: number }) {
+function PathCard({ path, index, primary }: { path: Path; index: number; primary: boolean }) {
   const Icon = path.Icon;
   return (
     <Link
       to={path.href}
       data-home-primary-path={path.id}
+      data-path-priority={primary ? "primary" : "secondary"}
       data-analytics={path.analyticsEvent}
       className={`five-ways-card five-ways-card--${path.id} scene-item group no-underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--teal)] focus-visible:ring-offset-2`}
     >

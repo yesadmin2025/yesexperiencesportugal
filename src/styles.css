@@ -8183,6 +8183,21 @@ html.reveal-ready .about-story--quiet :is(li, a) { transition-delay: 0ms; }
   padding: 1.5rem;
   background: var(--ivory);
 }
+.five-ways-card[data-path-priority="primary"] {
+  border-color: color-mix(in oklab, var(--gold) 46%, var(--border));
+  box-shadow: 0 14px 32px -28px color-mix(in oklab, var(--charcoal) 32%, transparent);
+}
+.five-ways-card[data-path-priority="secondary"] {
+  background: color-mix(in oklab, var(--sand) 58%, var(--ivory));
+  border-color: var(--border);
+}
+.five-ways-card[data-path-priority="secondary"] .five-ways-copy {
+  min-height: 0;
+  background: transparent;
+}
+.five-ways-card[data-path-priority="secondary"] .five-ways-number {
+  font-size: 2.4rem;
+}
 .five-ways-icon {
   display: inline-flex;
   width: 2.75rem;
@@ -8243,6 +8258,7 @@ html.reveal-ready .about-story--quiet :is(li, a) { transition-delay: 0ms; }
   .five-ways-card--proposals { grid-column: 2 / span 2; }
   .five-ways-card--corporate { grid-column: 4 / span 2; }
   .five-ways-card .five-ways-copy { min-height: 21rem; }
+  .five-ways-card[data-path-priority="secondary"] .five-ways-copy { min-height: 16rem; }
 }
 
 @media (max-width: 767px) and (max-height: 680px) {

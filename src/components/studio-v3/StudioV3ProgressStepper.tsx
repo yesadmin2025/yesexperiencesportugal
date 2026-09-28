@@ -244,10 +244,11 @@ export function StudioV3ProgressStepper({
       </nav>
       <p
         data-testid="studio-v3-beat-reassurance"
-        className="hidden sm:block px-5 mb-2 text-center text-[11px] uppercase tracking-[0.22em] font-semibold"
+        className="px-5 mb-2 text-center text-[10.5px] uppercase tracking-[0.18em] font-semibold sm:text-[11px] sm:tracking-[0.22em]"
         style={{ color: "color-mix(in oklab, var(--charcoal) 55%, transparent)" }}
       >
-        <span style={{ color: "var(--gold)" }}>—</span>{" "}
+        <span className="sr-only">Chapter {active + 1} of 3. </span>
+        <span aria-hidden style={{ color: "var(--gold)" }}>—</span>{" "}
         {BEAT_REASSURANCE[STUDIO_V3_BEATS[active].id]}
       </p>
     </div>

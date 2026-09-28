@@ -9,3 +9,11 @@
 - [x] Audit and safely fix technical SEO hygiene (no defects found)
 - [x] Correct Press Kit link language
 - [x] Validate specified EN/PT routes on mobile and desktop
+
+# Conversion refinement pass
+
+- [ ] Clarify the homepage hierarchy between three primary and two secondary paths
+- [ ] Consolidate Signature reassurance into the booking decision area
+- [ ] Strengthen Studio chapter orientation without changing its flow
+- [ ] Add a Travel Designer action directly after operational proof
+- [ ] Validate key conversion routes at mobile and desktop sizes
