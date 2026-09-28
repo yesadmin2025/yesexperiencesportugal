@@ -24,6 +24,7 @@ export const ADMIN_GROUPS: AdminGroup[] = [
       { to: "/admin/activity", label: "Activity & payment health", hint: "Latest bookings, messages, payment events" },
       { to: "/admin/availability", label: "Availability calendar" },
       { to: "/admin/enquiries", label: "Enquiries & messages" },
+      { to: "/admin/studio-proposals", label: "Studio proposals", hint: "Every day revealed in Studio" },
       { to: "/admin/emails", label: "Email delivery" },
       { to: "/admin/webhook-events", label: "Payment events" },
       { to: "/admin/payments-env", label: "Payment settings" },
