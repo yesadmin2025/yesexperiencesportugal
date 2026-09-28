@@ -1,6 +1,6 @@
 import { localeAlternateLinks } from "@/i18n/seo";
 import { trackEvent } from "@/lib/analytics-events";
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { breadcrumbLd, jsonLdScript } from "@/lib/jsonld";
 import { SiteLayout } from "@/components/SiteLayout";
 import { Mail, Phone, MapPin, MessageCircle } from "lucide-react";
@@ -332,6 +332,31 @@ function Page() {
               "We design Portugal experiences with care. Every reply is personal."
             </p>
           </aside>
+        </div>
+
+        <div className="mx-auto max-w-5xl mt-16 md:mt-24 pt-10 border-t border-[color:var(--sand)]">
+          <p className="text-[11px] uppercase tracking-[0.22em] text-[color:var(--charcoal-soft)]">
+            Before you write
+          </p>
+          <ul className="mt-5 grid gap-x-10 gap-y-3 sm:grid-cols-2">
+            {[
+              { to: "/experiences", label: "Signature Experiences — private days already designed" },
+              { to: "/studio", label: "Experience Studio — design your own day" },
+              { to: "/portugal-travel-designer", label: "Travel Designer — multi-day journeys" },
+              { to: "/proposal-in-portugal", label: "Proposals & special moments" },
+              { to: "/corporate", label: "Private group and corporate days" },
+              { to: "/faq", label: "Answers to common questions" },
+            ].map((l) => (
+              <li key={l.to}>
+                <Link
+                  to={l.to}
+                  className="text-[color:var(--charcoal)] underline decoration-[color:var(--gold)] decoration-1 underline-offset-4 hover:text-[color:var(--teal)] transition-colors"
+                >
+                  {l.label}
+                </Link>
+              </li>
+            ))}
+          </ul>
         </div>
       </section>
     </SiteLayout>
