@@ -84,6 +84,8 @@ const NAV_COLUMNS: { title: string; links: FooterLink[] }[] = [
       { to: "/about", label: "About YES" },
       { to: "/local-stories", label: "Local Stories" },
       { to: "/regions-of-portugal", label: "Regions of Portugal" },
+      { to: "/reviews", label: "Guest reviews" },
+      { to: "/faq", label: "FAQ" },
       { to: "/trade", label: "For Travel Advisors & Agencies" },
       { to: "/contact", label: "Contact" },
     ],
