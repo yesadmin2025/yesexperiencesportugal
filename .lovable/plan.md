@@ -30,3 +30,11 @@ Preços, reservas, Stripe, factos das experiências, título e botões da págin
 - `docs/seo/disavow-2026-09.txt`: acrescentar os domínios novos.
 - Velocidade: medir com Lighthouse no telemóvel antes e depois, e aplicar só alterações de imagens e de carregamento.
 - Adicionar testes para: /proposals devolve 301, todas as descrições têm até 170 caracteres, e o sitemap não muda. Correr as verificações de SEO e confirmar que o site compila. Não publicar sem pedido seu.
+
+## Pedidos novos (28 Set)
+6. **Aviso do Google "Tipo de objeto inválido para o campo brand":** duas fichas de produto dizem que a marca é a própria empresa (TravelAgency), e o Google só aceita um objeto "Brand" nesse campo. Vamos passar a usar `{ "@type": "Brand", "name": "YES Experiences Portugal" }`, igual ao que as outras fichas já usam (`src/lib/jsonld.ts`, linhas 790 e 845). Nenhum preço nem avaliação muda. O aviso desaparece quando o Google voltar a ler as páginas.
+7. **Pesquisa pelo nome da marca mostra só a página inicial:** os sublinks do Google (sitelinks) são escolhidos automaticamente pelo Google e não se podem forçar. Crescem com o tempo e com o número de pesquisas pela marca. O que podemos fazer é dar sinais claros:
+   - acrescentar à página inicial dados estruturados "WebSite", com o nome oficial e nomes alternativos ("YES Experiences", "YES Experiences Portugal", "yesexperiences"), e um menu principal ("SiteNavigationElement") com Experiences, Studio, Travel Designer, Proposals, Corporate, Local Stories e Contact;
+   - confirmar que o menu e o rodapé usam nomes curtos e consistentes para essas páginas;
+   - ver no Search Console se "yes experiences" já mostra outras páginas nossas nas posições 2 a 10 (hoje há 30 aparições na posição 1).
+   Não mudamos o título nem os botões da página inicial.
