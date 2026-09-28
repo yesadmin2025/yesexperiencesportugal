@@ -2424,8 +2424,8 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
       },
     ],
     ctaLead:
-      "Design a day at your own pace in the Studio, or tell a local what you have in mind for a longer journey.",
-    ctaLabel: "Design your day",
+      "An easy first choice: a relaxed wine and lunch day in Arrábida, with pickup at your address.",
+    ctaLabel: "See the Arrábida Wine Signature",
     signatureSlug: "arrabida-wine-allinclusive",
     relatedSignatures: [
       { slug: "sintra-cascais", label: "Sintra & Cascais" },
