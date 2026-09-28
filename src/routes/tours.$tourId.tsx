@@ -685,20 +685,7 @@ function ItineraryTimeline({
   // so an optional add-on never reads as a fixed leg of the route.
   const points = routeGlancePoints(stops.filter((s) => !s.optional));
 
-  // A stop only ever shows a photo that is genuinely OF that stop:
-  //   1. an admin-uploaded photo the owner assigned to this stop
-  //   2. the curated per-stop image already baked into the tour data
-  // No fallback, no borrowed gallery shot — an unassigned stop stays text.
-  const assigned = new Map<string, { src: string; srcSet?: string; alt: string }>();
-  for (const p of adminPhotos) {
-    if (!p.stopLabel) continue;
-    const key = normaliseStopKey(p.stopLabel);
-    if (!assigned.has(key)) assigned.set(key, { src: p.src, srcSet: p.srcSet, alt: p.alt });
-  }
-
-  const photoForStop = (label: string) =>
-    assigned.get(normaliseStopKey(label)) ?? null;
-
+  void adminPhotos;
   if (stops.length === 0) return null;
 
   return (
@@ -718,7 +705,6 @@ function ItineraryTimeline({
 
         <Scene as="ol" className="m-0 list-none space-y-5 p-0">
           {stops.map((s, i) => {
-            const photo = photoForStop(s.label);
             return (
               <li
                 key={s.label + i}
@@ -754,17 +740,6 @@ function ItineraryTimeline({
                     <p className="mt-1.5 text-[14px] leading-relaxed text-[color:var(--charcoal-soft)]">
                       {s.story}
                     </p>
-                  )}
-                  {photo && (
-                    <figure className="mt-4 mb-0 overflow-hidden">
-                      <TourImage
-                        src={photo.src}
-                        srcSet={photo.srcSet}
-                        sizes="(min-width: 768px) 42rem, 92vw"
-                        alt={photo.alt}
-                        ratio="3/2"
-                      />
-                    </figure>
                   )}
                 </div>
               </li>
