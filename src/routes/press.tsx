@@ -55,7 +55,7 @@ const COMPANY_SHORT =
   "YES Experiences Portugal is a licensed Portuguese tour operator (RNAAT nº 31/2023) designing private, emotionally intelligent day tours and multi-day journeys nationwide across Portugal. Founded in 2022 by Nídia Almeida, the studio works with a curated network of family wineries, chefs and local hosts to deliver experiences you cannot book off a shelf.";
 
 const COMPANY_LONG =
-  "YES Experiences Portugal is an independent Portuguese travel studio and licensed tour operator (RNAAT nº 31/2023), founded in 2022 in Sesimbra by Nídia Almeida. The company designs private day tours, bespoke multi-day journeys and private occasions — proposals, anniversaries, corporate retreats — nationwide across Portugal, from Lisbon, Sintra, Arrábida, Sesimbra, the Setúbal Peninsula, Comporta, the Alentejo and the Costa Vicentina to Évora, the Douro Valley, Porto, the Azores and Madeira. Every itinerary is built around the guests rather than a fixed catalogue, drawing on long-standing relationships with family wineries, chefs, artisans and cultural hosts. YES has earned hundreds of five-star reviews across Google, Tripadvisor and Viator, and operates in English, Portuguese and Spanish.";
+  "YES Experiences Portugal is an independent Portuguese travel studio and licensed tour operator (RNAAT nº 31/2023), founded in 2022 in Sesimbra by Nídia Almeida. The company designs private day tours, bespoke multi-day journeys and private occasions — proposals, anniversaries, corporate retreats — nationwide across Portugal, from Lisbon, Sintra, Arrábida, Sesimbra, the Setúbal Peninsula, Comporta, the Alentejo and the Costa Vicentina to Évora, the Douro Valley, Porto, the Azores and Madeira. Every itinerary is built around the guests rather than a fixed catalogue, drawing on long-standing relationships with family wineries, chefs, artisans and cultural hosts. YES is rated 4.9/5 across 1,000 guest reviews on Google, Tripadvisor and Viator, and operates in English, Portuguese and Spanish.";
 
 const FOUNDER_BIO_SHORT =
   "Founder and lead travel designer of YES Experiences Portugal — a licensed Portuguese tour operator (RNAAT nº 31/2023) crafting private, meaningful experiences nationwide across Portugal.";
@@ -293,7 +293,7 @@ function PressPage() {
         <div className="mt-6 flex flex-wrap gap-2">
           <FactPill>Founded 2022</FactPill>
           <FactPill>RNAAT nº 31/2023</FactPill>
-          <FactPill>Hundreds of 5★ reviews</FactPill>
+          <FactPill>4.9/5 · 1,000 guest reviews</FactPill>
           <FactPill>EN · PT · ES</FactPill>
           <FactPill>Nationwide across Portugal</FactPill>
         </div>
@@ -349,12 +349,7 @@ function PressPage() {
         <section className="reveal mt-14">
           <h2 className="font-display text-xl font-semibold">Backlink &amp; embed snippets</h2>
           <p className="mt-2 text-sm text-[color:var(--charcoal)]/70">
-            Paste any of these into your CMS. Please link to{" "}
-            <code>https://yesexperiencesportugal.com</code> (or a relevant deeper page such as{" "}
-            <code>/portugal-tours</code>) using a <code>dofollow</code> link — no{" "}
-            <code>rel=&quot;nofollow&quot;</code>, no <code>rel=&quot;sponsored&quot;</code>, no URL
-            shorteners. Preferred anchor text: <em>YES Experiences Portugal</em>,{" "}
-            <em>private Portugal tours</em>, or <em>licensed Portuguese travel studio</em>.
+            Paste any of these into your CMS. When editorially relevant, please link to the most useful YES page for your readers. For commercial, sponsored or affiliate partnerships, please use the appropriate relationship attributes required by your publication and search-engine policies.
           </p>
           <Snippet label="HTML — text link" code={HTML_TEXT_LINK} filename="yes-text-link.html" />
           <Snippet label="HTML — logo + link" code={HTML_LOGO_LINK} filename="yes-logo-link.html" />
