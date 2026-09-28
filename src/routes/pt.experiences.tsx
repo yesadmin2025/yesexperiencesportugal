@@ -6,7 +6,7 @@ import { Clock, MapPin } from "lucide-react";
 import { signatureTours } from "@/data/signatureTours";
 import { VIATOR_META } from "@/data/signatureToursViator";
 import { getTourContent, signatureDurationLabel } from "@/lib/tourContent";
-import { getSignatureCardMoments } from "@/content/signature-card-moments";
+import { getSignatureCardHighlights, getSignatureCardPromise } from "@/lib/signatureCardHighlights";
 import { useImportedTourImages } from "@/hooks/use-imported-tour-images";
 import { TourImage } from "@/components/tours/TourImage";
 import ogImg from "@/assets/hero-coast.jpg";
@@ -90,8 +90,9 @@ function ExperiencesPage() {
             Signature <SectionTitle.Em>Tours</SectionTitle.Em>
           </SectionTitle>
           <p className="page-header-support mt-5 max-w-xl mx-auto text-[color:var(--charcoal-soft)]">
-            Uma coleção editada de dias privados em Portugal — Sintra, Arrábida, Évora e mais.
-            Reserve como desenhado, ou ajuste discretamente alguns detalhes.
+            Escolha um dia privado a partir de Lisboa ou noutras regiões de Portugal. Veja o que
+            está incluído, confirme a data e reserve de imediato quando disponível — ou adapte o
+            dia ao seu grupo.
           </p>
           <p className="page-header-secondary mt-4 mx-auto max-w-xl text-[12px] uppercase tracking-[0.16em] text-[color:var(--charcoal-soft)]">
             As páginas detalhadas de cada tour estão, para já, disponíveis em inglês. A tradução
@@ -109,8 +110,7 @@ function ExperiencesPage() {
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-8">
             {signatureTours.map((tour) => {
               const meta = VIATOR_META[tour.id];
-              const content = getTourContent(tour.id);
-              const topHighlights = (getSignatureCardMoments(tour.id) ?? content.highlights).slice(0, 3);
+              const topHighlights = getSignatureCardHighlights(tour.id);
 
               return (
                 <article key={tour.id} className="group flex flex-col text-left" aria-label={tour.title}>
@@ -141,7 +141,7 @@ function ExperiencesPage() {
                     {tour.title}
                   </Link>
                   <p className="mt-3 text-[14px] text-[color:var(--charcoal-soft)] leading-relaxed">
-                    {tour.blurb}
+                    {getSignatureCardPromise(tour.id)}
                   </p>
 
                   {topHighlights.length > 0 && (
