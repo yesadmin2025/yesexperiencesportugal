@@ -92,7 +92,7 @@ const RETIRED_ROUTES: RouteCheck[] = [
 const LIVE_ROUTES: RouteCheck[] = [
   { label: "Homepage", path: "/", expectStatus: 200 },
   { label: "Experiences", path: "/experiences", expectStatus: 200 },
-  { label: "Proposals", path: "/proposals", expectStatus: 200 },
+  { label: "Proposals", path: "/proposals", expectStatus: 301 },
   { label: "Contact", path: "/contact", expectStatus: 200 },
   { label: "Local Stories", path: "/local-stories", expectStatus: 200 },
   { label: "sitemap.xml", path: "/sitemap.xml", expectStatus: 200 },

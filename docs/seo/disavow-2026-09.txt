@@ -22,3 +22,26 @@ domain:blogerreviewers.com
 domain:betulcrime.com
 domain:8coint.com
 domain:archive-hu.com
+
+# Added 2026-09-28 from SiteGuru backlink report
+domain:onvaxs.com
+domain:bestonlinecasinogamescanada.online
+domain:onlinegamblingbonus.online
+domain:bestenglishonlinecasino.online
+domain:pecah77gacor.site
+domain:theforbestimes.com
+domain:clonidine01mg.store
+domain:stromectol-europe.site
+domain:bitproperty.online
+domain:quotesblom.com
+domain:betwinnermirror.com
+domain:leonlinks.org
+domain:kernelpanicpodcast.com
+domain:ggmap.us.com
+domain:uncledspizza.com
+domain:homesforsaleoldgreenwichct.com
+domain:bestseoquill.site
+domain:cvillico.com
+domain:plendo.shop
+domain:polva.shop
+domain:fashionclothingnews.com

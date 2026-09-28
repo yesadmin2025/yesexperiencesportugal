@@ -142,7 +142,7 @@ export const Route = createFileRoute("/tours_/$tourId/tailor")({
         { title: pageTitle },
         {
           name: "description",
-          content: `Adjust selected details inside the ${t.title} Signature — pace, timing, group needs and small additions, without redesigning the day.`,
+          content: `Adjust pace, timing, group needs and small additions to the ${shortTitle} Signature, keeping the heart of the day.`,
         },
         { property: "og:title", content: `Tailor this day — ${t.title}` },
         {

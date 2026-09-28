@@ -787,7 +787,7 @@ export function studioServiceLd(args: { path: string; name: string; description:
     serviceType: "Private personalized day tour design (real-time)",
     category: "Interactive private tour design",
     provider: { "@id": `${SITE_URL}/#organization` },
-    brand: { "@id": `${SITE_URL}/#organization` },
+    brand: { "@type": "Brand", name: "YES Experiences Portugal" },
     areaServed: [
       { "@type": "Country", name: "Portugal" },
       { "@type": "AdministrativeArea", name: "Lisbon" },
@@ -842,7 +842,7 @@ export function travelDesignerServiceLd(args: {
     serviceType: "Bespoke multi-day Portugal travel design",
     category: "Private personalized multi-day travel design",
     provider: { "@id": `${SITE_URL}/#organization` },
-    brand: { "@id": `${SITE_URL}/#organization` },
+    brand: { "@type": "Brand", name: "YES Experiences Portugal" },
     areaServed: { "@type": "Country", name: "Portugal" },
     url,
     audience: {
@@ -1059,7 +1059,7 @@ export function corporateServiceLd(args: { path: string }) {
     ],
     category: "Corporate event design and coordination",
     provider: { "@id": `${SITE_URL}/#organization` },
-    brand: { "@id": `${SITE_URL}/#organization` },
+    brand: { "@type": "Brand", name: "YES Experiences Portugal" },
     areaServed: { "@type": "Country", name: "Portugal" },
     url,
     audience: {
@@ -1106,7 +1106,7 @@ export function momentsServiceLd(args: { path: string }) {
     ],
     category: "Special occasion experience design",
     provider: { "@id": `${SITE_URL}/#organization` },
-    brand: { "@id": `${SITE_URL}/#organization` },
+    brand: { "@type": "Brand", name: "YES Experiences Portugal" },
     areaServed: { "@type": "Country", name: "Portugal" },
     url,
     audience: {
