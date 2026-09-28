@@ -1,109 +1,12 @@
-# Roadmap — Operations hub upgrade
+# Phase 1 optimization
 
-## 27 Sep — Publish Signature search updates
-- [x] Refine search title, H1 and opening paragraph for all 13 Signature experiences using verified itinerary facts
-- [x] Confirm sitemap and structured data reflect the correction without inventing cancellation conditions
-- [x] Verify changes and request publication; sitemap URLs are unchanged, so no resubmission is needed. Manual indexing requests must be made in Search Console's URL Inspection screen.
-
-## 27 Sep — Nationwide positioning and Local Stories
-- [ ] Remove implied 14-day ceiling and Lisbon-only brand-wide pickup language
-- [ ] Consolidate duplicate Évora/Alentejo story intent without breaking old links
-- [ ] Give Local Stories a calmer mobile reading rhythm and a flexible experience enquiry CTA
-- [ ] Verify live preview on mobile and desktop; do not publish without request
-
-## 27 Sep — Mobile reading and search appearance
-- [x] Give the illustrated Travel Designer chapters and private enquiry screen clearer mobile hierarchy and breathing room
-- [x] Keep private guest enquiries in the team area only; verify signed-out access and database policy
-- [x] Verify live search titles and distinguish the retired-domain Google listing from the current website
-
-## 27 Sep — Signature and private operations panel
-- [ ] Confirm published footer/Signature state and apply only missing cleanup
-- [ ] Remove Signature map and show each experience's real itinerary in checkout, without changing payment authority
-- [ ] Add private operations view for bookings, collected/outstanding totals by experience and guest-file history
-- [ ] Verify mobile checkout and admin flows, then publish and confirm live pages
-
-## 26 Sep — SiteGuru recommendations and footer refinement
-- [x] Cross-check the supplied SiteGuru reports against current SEO fixes, preserving intentional noindex pages and confirmed business facts
-- [x] Separate the Trustindex certificate and Livro de Reclamações seal on phones; keep both linked, visible and legally accessible
-- [x] Verify the revised footer at 320px, 393px and 1280px without clipped seals or horizontal overflow
-- [ ] SiteGuru report lists 13 similar pages without identifying the pairs; obtain its detailed list before changing copy (blocked by missing report detail)
-- [ ] Earn genuine backlinks and verify Google Business Profile externally (blocked by third-party outreach and owner access)
-
-## Current request — public mobile polish and publication
-- [ ] Verify heading spacing and typography across representative public pages on phone and desktop
-- [ ] Check mobile footer and clickable article citations on the public tour page
-- [ ] Publish requested changes, then measure live mobile homepage load and inspect live SEO and citations
-
-## 26 Sep requests
-- [x] Add a truthful region-by-region Portugal travel page and discoverable metadata
-- [x] Ensure admin bookings shows Studio and Signature reservations with date, guests and total
-- [x] Add admin-only drafts for each experience's title, search description and H1; saving never changes public copy
-- [x] Include verified paid reservation details in visitor-initiated WhatsApp message
-- [ ] Verify P23 live booking and confirmation email: no paid P23 booking exists yet; use the standard Signature checkout and automatic email on first real paid reservation, without initiating a charge or sending a fictitious confirmation
-- [ ] Publishing requested and scheduled; verify deployment of new pages when available (immediate public checks still returned 404). Mobile homepage measurement captured during rollout.
-
-## 25 Sep review correction and targeted audit
-- [x] Restore 4.9 / 1,000 review proof and byte-exact hero trust line
-- [ ] Verify CRO/mobile/telemetry guardrails and seven public routes, direct links, and legacy aliases
-- [ ] Inspect wine-tour intent cluster; fix only demonstrated contextual-link or duplicate-intent defects
-- [ ] Run focused tests and typecheck; report findings
-
-## B. Data model (migration)
-- [x] Extend `bookings` with operational columns (source, channel, external refs, start_time, pickup/dropoff, pax_breakdown, language, payment_status, amount_paid, assigned_guide_id, notes, inclusions/exclusions/extras, source_raw_payload, sync_status, last_synced_at, cancelled_at, review_required/reason)
-- [x] `booking_ingestion_log` (audit: parser result, action, matched booking, reason)
-- [x] `booking_ingestion_candidates` (needs-review queue)
-- [x] GRANTs + RLS admin-only on new tables
-
-## C/D. Email ingestion
-- [x] Deterministic Bókun parser (new booking / cancellation)
-- [x] Deterministic direct sent-voucher parser (multi-booking, pre-confirmation vs fully paid)
-- [x] Non-booking email rejection rules
-- [x] Dedupe ladder: external ref → gmail message id → thread+date+tour → email+date+product
-- [x] Gmail scan server route (server-side auth only)
-
-## A/E. Admin UI
-- [x] Bookings hub: calendar + list toggle, search, filters, badges
-- [x] Booking detail: grouped sections + quick actions
-- [x] Needs Review inbox with approve / match / ignore / edit
-
-## F. Guide briefing
-- [x] Structured, editable briefing from booking + tour source of truth (no money)
-
-## G. Bókun API prep
-- [x] Server-side service abstraction + disabled-until-credentials admin state
-
-## H. Backfill
-- [x] Admin dry-run + apply, 120-day email window, future tour dates only
-
-## J. Tests
-- [x] Bókun new booking, Bókun cancellation match, direct fully-paid, two-tour email, pre-confirm→paid update, inquiry ignored
-
-## Blocked on owner
-- [ ] Connect the Gmail account (read-only) that receives Bókun notifications and sends vouchers
-- [ ] Bókun access key / secret / webhook secret (endpoint stays disabled until then)
-
-## Stripe + email reconciliation (done, 23 Sep 2026)
-- [x] Voucher/confirmation emails enrich the matching Stripe-paid reservation (ref → guest+date → paid shell with no date) instead of duplicating
-- [x] Stripe authoritative for payment state, amount, currency and origin; email authoritative for operational detail
-- [x] Cancelled/refunded reservations never reactivated by an older confirmation
-- [x] Reconciliation tab: enriched / created / duplicate / skipped / conflict counts + paid reservations still missing operational detail
-- [x] Tests: src/__tests__/booking-stripe-reconciliation.test.ts
-- [ ] Blocked: connect the Google mailbox (read-only) before any real import
-- [ ] Blocked: Bókun access key / secret / webhook secret for direct sync
-
-## Admin simplification (Phase 1, 23 Sep 2026)
-- [x] Admin shell: Today · Bookings · Guides · Settings (sidebar desktop, bottom bar iPhone)
-- [x] Today home: status sentence, Needs you, Today/Tomorrow, next 7 days, month footer
-- [x] Bookings: one workspace, List | Calendar, quick filters, Filter button, no Reconciliation/Sources tabs
-- [x] Settings: grouped sections; Connections & automation hosts Gmail/Bókun/WhatsApp/reconciliation panels
-- [x] Booking drawer reorder: Essentials · Operations · Communication/evidence · History
-- [ ] Phase 2: single detail surface for /admin/bookings/$id, one status pill
-- [ ] WhatsApp: live conversation section in drawer (link-out added), channel badge — after owner connects WhatsApp
-
-## 23 Sep 2026 requests
-- [x] Full booking page uses the booking panel layout (purchase record folded below)
-- [x] Every admin page sits inside the new four-part menu (/admin layout)
-- [ ] Publish admin, then run live Gmail scan
-- [ ] Connect WhatsApp Business (owner action) → import past chats → reconcile
-- [ ] Missing date/tour/pickup: only fillable where a source states them — never invented
-- [ ] Preview admin sign-in: owner signs in with the existing admin account (shared backend)
+- [ ] Audit trust proof and centralize approved 4.9/5 · 1,000 reviews
+- [ ] Add quiet USD estimate / EUR checkout clarity
+- [ ] Strengthen tour detail reassurance and mobile booking CTA
+- [ ] Improve /experiences perceived speed and reliability
+- [ ] Apply safe media and third-party performance wins
+- [ ] Centralize typed analytics events and wire requested low-risk signals
+- [ ] Audit and safely fix technical SEO hygiene
+- [ ] Correct Press Kit link language if needed
+- [ ] Validate specified EN/PT routes on mobile and desktop
+- [ ] Review build diagnostics and summarize without publishing
