@@ -16,27 +16,27 @@ const CARD_PROMISES: Record<string, string> = {
   "arrabida-wine-allinclusive":
     "Browse Setúbal’s 145-year-old Livramento Market, watch artisans hand-paint azulejos, then taste at family wineries over an included Azeitão lunch.",
   "wild-beaches-picnic":
-    "Choose picnic ingredients at Livramento Market, then follow Arrábida’s coves to a beach picnic and Sesimbra.",
+    "Fill your basket at Livramento Market, follow Arrábida’s hidden coves to a private beach picnic, and end the afternoon in Sesimbra.",
   "arrabida-boat":
-    "Cross Arrábida by road and explore the Sesimbra coast by boat, from Livramento Market to Cabo Espichel.",
+    "Start among the stalls of Livramento Market, cross the Arrábida hills, then see Sesimbra’s cliffs from the water before Cabo Espichel’s clifftop sanctuary.",
   "tiles-workshop":
-    "Paint your own Portuguese azulejo, taste Setúbal wine and finish the day beside the sea in Sesimbra.",
+    "Paint your own azulejo to take home, taste Setúbal wine at a regional winery, and finish beside the sea in Sesimbra.",
   "azeitao-cheese":
-    "Make Azeitão cheese by hand, taste wine at a local winery and continue to Sesimbra Castle.",
+    "Shape Azeitão cheese with your own hands, pour local wine at a family winery, then climb to Sesimbra Castle for the view.",
   "sintra-cascais":
-    "Choose a palace-and-wine or two-palace day, then follow the Atlantic through Cabo da Roca to Cascais.",
+    "Wander Sintra’s palaces at your pace — one with a wine tasting, or two — then follow the Atlantic past Azenhas do Mar and Cabo da Roca to Cascais.",
   "troia-comporta":
-    "Cross the Sado by ferry for Roman ruins, Comporta’s stilt pier, Atlantic beaches and a wine tasting.",
+    "Ferry across the Sado to Tróia’s Roman ruins, walk Carrasqueira’s stilt pier, then taste Comporta wine between wide Atlantic beaches.",
   "evora-alentejo":
-    "Walk UNESCO Évora, enter the Chapel of Bones and visit two Alentejo wineries plus a cork producer.",
+    "Walk the UNESCO streets of Évora, from the Roman Temple to the Chapel of Bones, then slow down with two Alentejo wineries and a cork producer.",
   "tomar-coimbra":
-    "Step inside Tomar’s Templar convent, then explore Coimbra University and the Joanina Library.",
+    "Walk the Templar halls of Tomar’s Convent of Christ, then climb to Coimbra University and step inside the gilded Joanina Library.",
   "fatima-nazare-obidos":
-    "Move from Fátima’s sanctuary to Nazaré’s Atlantic cliffs and the medieval walls of Óbidos.",
+    "Pause at Fátima’s sanctuary, watch the Atlantic from Nazaré’s cliffs, and end within the medieval walls of Óbidos.",
   "roman-heritage-alentejo":
-    "Trace Roman winemaking from São Cucufate to clay-talha wines and lunch at a family cellar.",
+    "Walk São Cucufate’s Roman ruins, then taste wine still made in clay talhas over lunch at a family cellar.",
   "southwest-vicentine-coast":
-    "Follow Portugal’s protected southwest coast through Porto Covo, Milfontes, Odeceixe and Aljezur.",
+    "Follow Portugal’s wildest protected coast, from Porto Covo and Milfontes to where the river meets the ocean at Odeceixe, and on to Aljezur.",
 };
 
 /** Presentation order only: each line must still resolve from canonical data. */
