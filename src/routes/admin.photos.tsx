@@ -15,6 +15,7 @@ import { Upload, Star, Trash2, ArrowLeft, Loader2, Image as ImageIcon } from "lu
 import { SiteLayout } from "@/components/SiteLayout";
 import { supabase } from "@/integrations/supabase/client";
 import { signatureTours } from "@/data/signatureTours";
+import { publicItineraryStopsById } from "@/lib/tourItineraryStops";
 
 export const Route = createFileRoute("/admin/photos")({
   validateSearch: (search: Record<string, unknown>) => ({
@@ -44,6 +45,7 @@ type PhotoRow = {
   content_hash: string | null;
   width: number | null;
   height: number | null;
+  stop_label: string | null;
   signedUrl?: string;
 };
 
@@ -256,6 +258,20 @@ function AdminPhotosPage() {
     if (error) toast.error(error.message);
   }
 
+  async function updateStop(id: string, stop_label: string) {
+    const value = stop_label.trim() === "" ? null : stop_label;
+    const { error } = await supabase
+      .from("tour_gallery_photos")
+      .update({ stop_label: value })
+      .eq("id", id);
+    if (error) {
+      toast.error(error.message);
+      return;
+    }
+    setPhotos((prev) => prev.map((p) => (p.id === id ? { ...p, stop_label: value } : p)));
+    toast.success(value ? `Shown at: ${value}` : "Gallery only");
+  }
+
   async function movePhoto(id: string, direction: -1 | 1) {
     const idx = photos.findIndex((p) => p.id === id);
     const swapIdx = idx + direction;
@@ -358,6 +374,7 @@ function AdminPhotosPage() {
   }
 
   const tour = signatureTours.find((t) => t.id === tourId);
+  const itineraryStops = publicItineraryStopsById(tourId);
 
   return (
     <SiteLayout>
@@ -380,7 +397,8 @@ function AdminPhotosPage() {
 
           <h1 className="text-3xl mb-2">Tour photos</h1>
           <p className="text-sm text-[color:var(--charcoal-soft)] mb-8">
-            Pick a tour, add photos from your phone. They appear on the public tour page.
+            Pick a tour, add photos from your phone. They appear on the public tour page. Set
+            "Shown at stop" on a photo to place it beside that stop of the day.
           </p>
 
           <label className="block text-[11px] uppercase tracking-[0.22em] text-[color:var(--charcoal-soft)] mb-2">
@@ -457,6 +475,21 @@ function AdminPhotosPage() {
                       </span>
                     )}
                   </div>
+                  <label className="block text-[10px] uppercase tracking-[0.18em] text-[color:var(--charcoal-soft)] mb-1">
+                    Shown at stop
+                  </label>
+                  <select
+                    value={p.stop_label ?? ""}
+                    onChange={(e) => updateStop(p.id, e.target.value)}
+                    className="w-full text-xs border border-[color:var(--border)] p-1.5 mb-2 bg-white"
+                  >
+                    <option value="">Gallery only</option>
+                    {itineraryStops.map((s) => (
+                      <option key={s.label} value={s.label}>
+                        {s.label}
+                      </option>
+                    ))}
+                  </select>
                   <textarea
                     defaultValue={p.alt}
                     onBlur={(e) => updateAlt(p.id, e.target.value)}
