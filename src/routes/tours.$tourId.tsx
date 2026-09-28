@@ -457,13 +457,6 @@ function TourHero({
               {getSignatureSeo(tour.id)?.opening ?? tour.blurb}
             </p>
 
-            <DirectAnswer>
-              {tour.title} is a private {tour.duration.toLowerCase()} experience in{" "}
-              {tour.region}, lasting {signatureDurationLabel(tour.id, tour.durationHours)}, from €
-              {tour.priceFrom} per person. It is reserved online with instant confirmation and
-              free cancellation up to 24 hours before the day.
-            </DirectAnswer>
-
             <div className="mt-5 flex flex-wrap items-center gap-x-5 gap-y-2 text-[12px] uppercase tracking-[0.12em] text-[color:var(--charcoal-soft)]">
               <span className="flex items-center gap-2">
                 <MapPin size={12} className="text-[color:var(--gold)]" /> {tour.region}
@@ -590,11 +583,17 @@ function TrustStrip({ meta: _meta }: { meta?: ViatorMeta }) {
 function IntroBlock({ tour }: { tour: SignatureTour }) {
   return (
      <section className="py-10 md:py-16 reveal">
-      <div className="container-x max-w-3xl text-center">
+       <div className="container-x max-w-3xl text-center">
          <Eyebrow flank>Picture the day</Eyebrow>
         <p className="serif mt-5 text-[24px] leading-[1.25] text-[color:var(--charcoal)] md:text-[30px]">
           {tour.intro}
         </p>
+         <DirectAnswer>
+           {tour.title} is a private {tour.duration.toLowerCase()} experience in{" "}
+           {tour.region}, lasting {signatureDurationLabel(tour.id, tour.durationHours)}, from €
+           {tour.priceFrom} per person. It is reserved online with instant confirmation and
+           free cancellation up to 24 hours before the day.
+         </DirectAnswer>
       </div>
     </section>
   );
