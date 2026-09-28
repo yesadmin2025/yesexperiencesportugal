@@ -19,7 +19,6 @@ import {
   type TourStop,
 } from "@/data/signatureTours";
 import { getViatorMeta, type ViatorMeta } from "@/data/signatureToursViator";
-import { toEditorialChapters } from "@/lib/tailor-chapters";
 import {
   bookableIncluded,
   bookableStops,
@@ -698,7 +697,7 @@ function ItineraryTimeline({
     if (!assigned.has(key)) assigned.set(key, { src: p.src, srcSet: p.srcSet, alt: p.alt });
   }
 
-  const curated = new Map<string, { src: string; alt: string }>();
+  const curated = new Map<string, { src: string; srcSet?: string; alt: string }>();
   for (const s of tour.stops ?? []) {
     if (!s.image) continue;
     const src = resolveImg(s.image);
@@ -766,11 +765,10 @@ function ItineraryTimeline({
                     <figure className="mt-4 mb-0 overflow-hidden">
                       <TourImage
                         src={photo.src}
-                        srcSet={"srcSet" in photo ? photo.srcSet : undefined}
+                        srcSet={photo.srcSet}
                         sizes="(min-width: 768px) 42rem, 92vw"
                         alt={photo.alt}
                         ratio="3/2"
-                        loading="lazy"
                       />
                     </figure>
                   )}
