@@ -342,7 +342,6 @@ function TourDetailPage() {
         tour={tour}
         meta={meta}
         adminPhotos={adminPhotos}
-        resolveImg={resolveImg}
       />
 
 
@@ -676,12 +675,10 @@ function ItineraryTimeline({
   tour,
   meta,
   adminPhotos,
-  resolveImg,
 }: {
   tour: SignatureTour;
   meta?: ViatorMeta;
   adminPhotos: ReturnType<typeof useAdminTourPhotos>;
-  resolveImg: ReturnType<typeof useImportedTourImages>["resolveImg"];
 }) {
   const stops = publicItineraryStops(tour, meta);
   const points = routeGlancePoints(stops);
@@ -700,8 +697,7 @@ function ItineraryTimeline({
   const curated = new Map<string, { src: string; srcSet?: string; alt: string }>();
   for (const s of tour.stops ?? []) {
     if (!s.image) continue;
-    const src = resolveImg(s.image);
-    if (!src) continue;
+    const src = s.image;
     const key = normaliseStopKey(s.label);
     if (!curated.has(key)) curated.set(key, { src, alt: `${s.label} — ${tour.title}` });
   }
