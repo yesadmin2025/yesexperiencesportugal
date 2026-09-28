@@ -493,6 +493,9 @@ function TourHero({
                  </li>
                ))}
              </ul>
+              <p className="mt-4 text-[12px] leading-snug text-[color:var(--charcoal-soft)]">
+                {CANCELLATION.signature.en} · Secure payment
+              </p>
           </div>
 
 
@@ -592,7 +595,7 @@ function IntroBlock({ tour }: { tour: SignatureTour }) {
            {tour.title} is a private {tour.duration.toLowerCase()} experience in{" "}
            {tour.region}, lasting {signatureDurationLabel(tour.id, tour.durationHours)}, from €
            {tour.priceFrom} per person. It is reserved online with instant confirmation and
-           free cancellation up to 24 hours before the day.
+            {CANCELLATION.signature.en}
          </DirectAnswer>
       </div>
     </section>

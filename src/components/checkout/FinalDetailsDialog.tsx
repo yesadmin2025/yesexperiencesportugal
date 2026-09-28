@@ -11,7 +11,6 @@ import {
   DialogHeader,
   DialogTitle,
   DialogDescription,
-  DialogFooter,
 } from "@/components/ui/dialog";
 import { ChevronDown } from "lucide-react";
 import { CANCELLATION, LICENSE_LABEL } from "@/config/business-nap";
@@ -523,7 +522,7 @@ export function FinalDetailsDialog({
             </Disclosure>
           </div>
 
-          <DialogFooter className="shrink-0 px-5 sm:px-7 pt-4 pb-[calc(env(safe-area-inset-bottom)+1rem)] sm:py-4 border-t border-[color:var(--border)] bg-[color:var(--sand)]/40 sm:flex-col sm:items-stretch sm:space-x-0 gap-2">
+          <div className="flex flex-col shrink-0 px-5 sm:px-7 pt-4 pb-[calc(env(safe-area-inset-bottom)+1rem)] sm:py-4 border-t border-[color:var(--border)] bg-[color:var(--sand)]/40 gap-2">
             {priceQuote ? <ChargeSummaryLine quote={quote} /> : null}
             {/* Canonical cancellation + payment reassurance, never hand-authored. */}
             <p
@@ -548,7 +547,7 @@ export function FinalDetailsDialog({
                 Continue to payment
               </CtaButton>
             )}
-          </DialogFooter>
+          </div>
 
         </form>
       </DialogContent>
@@ -581,7 +580,7 @@ function ProductRecap({
       data-testid="final-details-product-recap"
       className="border border-[color:var(--border)] bg-[color:var(--sand)]/30 px-4 py-4"
     >
-      <p className="text-[11px] uppercase tracking-[0.22em] text-[color:var(--charcoal-soft)]">
+      <p className="text-[12px] uppercase tracking-[0.22em] text-[color:var(--charcoal-soft)]">
         What your day includes
       </p>
       <h3 className="mt-1.5 font-serif text-[18px] font-medium leading-snug text-[color:var(--charcoal)]">
@@ -601,14 +600,14 @@ function ProductRecap({
         <ol className="mt-4 space-y-3" data-testid="final-details-day-itinerary">
           {itinerary.map((stop, index) => (
             <li key={`${stop.label}-${index}`} className="flex gap-3">
-              <span className="mt-0.5 shrink-0 text-[11px] font-semibold tabular-nums text-[color:var(--gold)]">
+              <span className="mt-0.5 shrink-0 text-[12px] font-semibold tabular-nums text-[color:var(--gold)]">
                 {String(index + 1).padStart(2, "0")}
               </span>
               <div className="min-w-0">
                 <p className="text-[13.5px] font-medium leading-snug text-[color:var(--charcoal)]">
                   {stop.label}
                   {stop.optional ? (
-                    <span className="ml-2 text-[10.5px] uppercase tracking-[0.16em] text-[color:var(--charcoal-soft)]">
+                    <span className="ml-2 text-[12px] uppercase tracking-[0.16em] text-[color:var(--charcoal-soft)]">
                       Optional
                     </span>
                   ) : null}

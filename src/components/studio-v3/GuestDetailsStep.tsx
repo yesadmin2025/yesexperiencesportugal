@@ -327,7 +327,7 @@ export function GuestDetailsStep({
             }}
           >
             <summary
-              className="cursor-pointer min-h-[44px] flex items-center text-[11px] uppercase tracking-[0.22em] font-semibold"
+              className="cursor-pointer min-h-[44px] flex items-center text-[12px] uppercase tracking-[0.22em] font-semibold"
               style={{ color: "var(--teal)" }}
             >
               What your day includes
@@ -336,7 +336,7 @@ export function GuestDetailsStep({
               {daySummary.stops.map((s, i) => (
                 <li key={`${s.label}-${i}`} className="flex gap-3">
                   <span
-                    className="mt-0.5 text-[11px] font-semibold tabular-nums"
+                    className="mt-0.5 text-[12px] font-semibold tabular-nums"
                     style={{ color: "var(--gold)" }}
                   >
                     {String(i + 1).padStart(2, "0")}

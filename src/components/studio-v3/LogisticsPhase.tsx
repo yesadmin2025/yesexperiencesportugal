@@ -176,7 +176,7 @@ export function LogisticsPhase({
     <>
       <BackLink onClick={goBack} />
       <PhaseHeader
-        eyebrow={preflight ? "Just the booking details" : "Booking details"}
+        eyebrow={preflight ? "Before we design your day" : "Booking details"}
         title={HEADINGS[moment].title}
         titleAccent={HEADINGS[moment].accent}
       />
