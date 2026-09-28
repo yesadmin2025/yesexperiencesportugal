@@ -14,7 +14,7 @@ const CARD_PROMISES: Record<string, string> = {
   "p23-artisan-pottery-cork":
     "Work with Alentejo cork and clay artisans, with a three-hour pottery session and lunch included.",
   "arrabida-wine-allinclusive":
-    "Walk Setúbal’s market, taste Arrábida wines and share an included Azeitão lunch between coast and vineyards.",
+    "Browse Setúbal’s 145-year-old Livramento Market, watch artisans hand-paint azulejos, then taste at family wineries over an included Azeitão lunch.",
   "wild-beaches-picnic":
     "Choose picnic ingredients at Livramento Market, then follow Arrábida’s coves to a beach picnic and Sesimbra.",
   "arrabida-boat":
