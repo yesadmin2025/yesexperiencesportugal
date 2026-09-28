@@ -10,6 +10,7 @@ import { SectionTitle } from "@/components/ui/SectionTitle";
 import { CtaButton } from "@/components/ui/CtaButton";
 import { CTA_LABELS } from "@/content/cta-vocabulary";
 import { RealReviewsStrip } from "@/components/home/RealReviewsStrip";
+import { DirectAnswer } from "@/components/DirectAnswer";
 import { ExitIntentEmailCapture } from "@/components/home/EmailCapture";
 import { signatureTours } from "@/data/signatureTours";
 import {
@@ -193,6 +194,11 @@ function DayTripsFromLisbon() {
             by someone from the region you are visiting — wine in Arrábida, palaces in Sintra, empty
             beaches on the Atlantic, cork and marble in the Alentejo.
           </p>
+          <DirectAnswer>
+            The most popular day trips from Lisbon are Sintra and Cascais, the Arrábida coast and
+            its wineries, Évora in the Alentejo, and the beaches of Tróia and Comporta. Each is
+            a private day with pickup at your Lisbon address and instant confirmation online.
+          </DirectAnswer>
           <div className="mt-8 flex flex-col gap-3 sm:flex-row">
             <CtaButton to="/experiences">{CTA_LABELS.signatureDiscovery}</CtaButton>
             <CtaButton to="/studio" variant="ghost">

@@ -730,13 +730,15 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
   },
   {
     slug: "sintra-day-tour-from-lisbon",
-    title: "Private Tours in Sintra from Lisbon — Skip the Queues",
+    title: "Sintra Day Tour from Lisbon — Private, Skip the Queues",
     metaDescription:
-      "Private Sintra tours from Lisbon: Pena, Regaleira, Cabo da Roca and Cascais, timed around the crowds. Hotel pickup, licensed local guide, book online.",
+      "Private Sintra day tour from Lisbon: Pena, Regaleira, Cabo da Roca and Cascais, timed around the crowds. Hotel pickup, licensed local guide, book online.",
     h1: "Private Sintra Day Tour from Lisbon — without the queues",
     eyebrow: "Lisbon · Private Sintra Day",
     standfirst:
       "Quieter palaces and forest paths, Cabo da Roca and Cascais, finishing with a small private wine tasting.",
+    directAnswer:
+      "A private Sintra day tour from Lisbon lasts about 8–10 hours, from €161, with pickup at your Lisbon address. It covers Sintra's palaces and gardens, Cabo da Roca and Cascais, and confirms instantly online.",
     sections: [
       {
         heading: "Sintra is the day everyone has heard of.",
@@ -2391,6 +2393,64 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
       },
     ],
     datePublished: "2026-09-27",
+  },
+  {
+    slug: "portugal-tours-for-seniors",
+    title: "Portugal Tours for Seniors — Private, Unhurried Days",
+    metaDescription:
+      "Private Portugal tours for seniors and older travelers: door-to-door pickup, one private car, your own pace and days of any length. Book online.",
+    h1: "Portugal Tours for Seniors, at an Unhurried Pace",
+    eyebrow: "Portugal · Travel at your pace",
+    standfirst:
+      "Group tours are built around the fastest walker on the bus. A private day is built around you.",
+    directAnswer:
+      "The easiest way for seniors to tour Portugal is a private day: pickup at your hotel or address, one private car for the whole day, and a pace you choose. Days can be any length, confirm instantly online and can be cancelled free of charge up to 24 hours before.",
+    sections: [
+      {
+        heading: "Door to door, in one car.",
+        body: "No meeting points, no coach transfers, no walking to a bus park. We collect you where you are staying, anywhere in Portugal, and the same private car stays with you until we bring you back.",
+      },
+      {
+        heading: "The pace is yours.",
+        body: "Stop longer where you are enjoying yourself, skip what does not interest you, and rest when you want to. Your guide adjusts the day as it unfolds rather than keeping to a group schedule.",
+      },
+      {
+        heading: "Shorter days, if you prefer.",
+        body: "A full day is not compulsory. Tell us how long you would like to be out and we shape the day around that — a relaxed morning in Sintra, a long lunch at a winery, an afternoon by the coast.",
+      },
+      {
+        heading: "Easy days to begin with.",
+        body: "Wine and cheese days in Arrábida and Azeitão, the Sintra and Cascais coast road, and Óbidos with Nazaré are good first choices. If you have a longer stay, the Travel Designer can shape a multi-day journey at the same unhurried pace.",
+      },
+    ],
+    ctaLead:
+      "An easy first choice: a relaxed wine and lunch day in Arrábida, with pickup at your address.",
+    ctaLabel: "See the Arrábida Wine Signature",
+    signatureSlug: "arrabida-wine-allinclusive",
+    relatedSignatures: [
+      { slug: "sintra-cascais", label: "Sintra & Cascais" },
+      { slug: "azeitao-cheese", label: "Azeitão Cheese" },
+      { slug: "fatima-nazare-obidos", label: "Fátima · Nazaré · Óbidos" },
+    ],
+    relatedReads: [
+      { path: "/day-trips-from-lisbon", label: "Best day trips from Lisbon" },
+      { path: "/portugal-travel-designer", label: "Travel Designer — multi-day journeys" },
+    ],
+    faq: [
+      {
+        q: "Are private tours in Portugal good for older travelers?",
+        a: "Yes. A private day removes the hardest parts of group touring — early meeting points, coach transfers and a fixed pace. You are collected at your address and travel in one private car all day.",
+      },
+      {
+        q: "Can the day be shorter than a full day?",
+        a: "Yes. Days can be any length; tell us how long you would like to be out and we shape the day around it.",
+      },
+      {
+        q: "What if our plans change?",
+        a: "Cancellation is free up to 24 hours before the day.",
+      },
+    ],
+    datePublished: "2026-09-28",
   },
 ];
 
