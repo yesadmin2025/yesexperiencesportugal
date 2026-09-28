@@ -42,13 +42,13 @@ const CARD_PROMISES: Record<string, string> = {
 // PT-PT editorial equivalents of the verified English card copy above.
 const CARD_PROMISES_PT: Record<string, string> = {
   "p23-artisan-pottery-cork": "Trabalhe cortiça e barro com artesãos alentejanos, numa oficina de cerâmica de três horas com almoço incluído.",
-  "arrabida-wine-allinclusive": "Passe pelo Mercado do Livramento, veja pintar azulejos à mão e prove vinhos de adegas familiares durante um dia com almoço em Azeitão.",
+  "arrabida-wine-allinclusive": "Passe pelo Mercado do Livramento, veja pintar azulejos à mão e prove vinhos de adegas familiares durante um dia com almoço incluído em Azeitão.",
   "wild-beaches-picnic": "Escolha produtos no Mercado do Livramento, siga as enseadas da Arrábida para um piquenique na praia e termine em Sesimbra.",
   "arrabida-boat": "Comece no Mercado do Livramento, atravesse a serra da Arrábida e descubra as falésias de Sesimbra de barco antes de chegar ao Cabo Espichel.",
   "tiles-workshop": "Pinte um azulejo para levar consigo, prove vinho regional e termine junto ao mar em Sesimbra.",
   "azeitao-cheese": "Faça queijo de Azeitão, prove vinho numa adega da região e suba ao Castelo de Sesimbra para ver a paisagem.",
   "sintra-cascais": "Explore os palácios de Sintra ao seu ritmo — um com prova de vinho ou dois — e siga pela costa até Azenhas do Mar, Cabo da Roca e Cascais.",
-  "troia-comporta": "Atravesse o Sado de ferry até às ruínas romanas de Tróia, passe pelo cais palafítico da Carrasqueira e prove vinho da Comporta perto das praias atlânticas.",
+  "troia-comporta": "Atravesse o Sado de ferry até às ruínas romanas de Tróia, passe pelo cais palafítico da Carrasqueira e prove vinho da região perto das praias atlânticas.",
   "evora-alentejo": "Percorra o centro histórico de Évora, do Templo Romano à Capela dos Ossos, antes de visitar duas adegas alentejanas e um produtor de cortiça.",
   "tomar-coimbra": "Descubra o Convento de Cristo em Tomar e siga até à Universidade de Coimbra e à Biblioteca Joanina.",
   "fatima-nazare-obidos": "Passe pelo Santuário de Fátima, contemple o Atlântico na Nazaré e termine dentro das muralhas medievais de Óbidos.",
@@ -64,7 +64,7 @@ const CARD_HIGHLIGHTS_PT: Record<string, readonly [string, string, string]> = {
   "tiles-workshop": ["Oficina prática de pintura de azulejos", "Prova numa adega regional selecionada", "Mercado do Livramento e Sesimbra"],
   "azeitao-cheese": ["Oficina privada de queijo de Azeitão", "Visita e prova numa adega local", "Mercado do Livramento, Azeitão e Sesimbra"],
   "sintra-cascais": ["Um palácio e prova de vinho, ou bilhetes para dois palácios", "Azenhas do Mar, Cabo da Roca e Cascais", "Escolha flexível de palácios com guia"],
-  "troia-comporta": ["Visita guiada às ruínas romanas de Tróia, com entrada", "Experiência e prova de vinhos da Comporta", "Aldeia da Comporta, cais palafítico da Carrasqueira e praias"],
+  "troia-comporta": ["Visita guiada às ruínas romanas de Tróia, com entrada", "Prova de vinhos da região", "Aldeia da Comporta, cais palafítico da Carrasqueira e praias"],
   "evora-alentejo": ["Centro histórico de Évora, Património Mundial da UNESCO", "Templo Romano e Capela dos Ossos", "Visitas e provas em duas adegas alentejanas selecionadas"],
   "tomar-coimbra": ["Convento de Cristo e herança templária", "Universidade de Coimbra", "Entrada com horário marcado na Biblioteca Joanina"],
   "fatima-nazare-obidos": ["Santuário de Fátima", "Miradouro, praia e vila piscatória da Nazaré", "Vila medieval muralhada e castelo de Óbidos"],
@@ -72,7 +72,6 @@ const CARD_HIGHLIGHTS_PT: Record<string, readonly [string, string, string]> = {
   "southwest-vicentine-coast": ["Porto Covo e Vila Nova de Milfontes", "Parque Natural do Sudoeste Alentejano e Costa Vicentina", "Paisagem da foz de Odeceixe"],
 };
 
-/** Presentation order only: each line must still resolve from canonical data. */
 const CARD_HIGHLIGHT_SELECTORS: Record<string, readonly HighlightSelector[]> = {
   "p23-artisan-pottery-cork": [
     { source: "highlight", value: "Hands-on cork workshop with local makers" },

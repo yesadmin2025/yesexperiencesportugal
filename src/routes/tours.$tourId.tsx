@@ -644,7 +644,7 @@ function HighlightsBlock({ tour }: { tour: SignatureTour }) {
           </SectionTitle>
         </div>
          <ul className="grid sm:grid-cols-2 gap-x-10 gap-y-4 max-w-3xl mx-auto">
-           {items.slice(0, 6).map((h) => (
+           {items.map((h) => (
             <li
               key={h}
               className="flex gap-3 text-[15px] leading-relaxed text-[color:var(--charcoal)]"
