@@ -20,7 +20,10 @@ export interface SignedTourPhoto {
   srcSet?: string;
   alt: string;
   is_cover: boolean;
+  /** Itinerary stop this photo belongs to, when the editor assigned one. */
+  stop_label: string | null;
 }
+
 
 const schema = z.object({
   tourId: z.string().min(1).max(120),
@@ -31,10 +34,11 @@ export const getSignedTourPhotos = createServerFn({ method: "POST" })
   .handler(async ({ data }): Promise<{ photos: SignedTourPhoto[] }> => {
     const { data: rows, error } = await supabaseAdmin
       .from("tour_gallery_photos")
-      .select("id, storage_path, alt, is_cover, sort_order")
+      .select("id, storage_path, alt, is_cover, sort_order, stop_label")
       .eq("tour_id", data.tourId)
       .order("is_cover", { ascending: false })
       .order("sort_order", { ascending: true });
+
 
     if (error || !rows || rows.length === 0) return { photos: [] };
 
@@ -72,9 +76,11 @@ export const getSignedTourPhotos = createServerFn({ method: "POST" })
           srcSet: parts.length >= 2 ? parts.join(", ") : undefined,
           alt: r.alt ?? "",
           is_cover: r.is_cover,
+          stop_label: (r as { stop_label?: string | null }).stop_label ?? null,
         };
       })
       .filter((p) => p.src);
+
 
     return { photos };
   });

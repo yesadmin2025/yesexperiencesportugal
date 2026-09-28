@@ -2962,6 +2962,7 @@ export type Database = {
           id: string
           is_cover: boolean
           sort_order: number
+          stop_label: string | null
           storage_path: string
           tour_id: string
           updated_at: string
@@ -2976,6 +2977,7 @@ export type Database = {
           id?: string
           is_cover?: boolean
           sort_order?: number
+          stop_label?: string | null
           storage_path: string
           tour_id: string
           updated_at?: string
@@ -2990,6 +2992,7 @@ export type Database = {
           id?: string
           is_cover?: boolean
           sort_order?: number
+          stop_label?: string | null
           storage_path?: string
           tour_id?: string
           updated_at?: string
