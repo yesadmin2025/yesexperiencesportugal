@@ -52,7 +52,6 @@ export function LivingAtlasStudioPage() {
     }
     if (shouldTrackStart) {
       trackEvent("studio_started", { placement: "experience_studio" });
-      trackEvent("studio_start", { placement: "experience_studio" } as never);
     }
 
     if (consumeDurableStudioDraftRestore()) {
