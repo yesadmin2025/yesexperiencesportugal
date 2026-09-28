@@ -8,3 +8,4 @@
 
 - Attach per-stop itinerary photos only from an explicit `tour_gallery_photos.stop_label` assignment made in `/admin/photos`; curated `tour.stops[].image` assets stay in the hero/gallery, because they are not guaranteed to be photos of that named place.
 - Derive the tour-page route glance from real OSRM leg minutes (`useRouteLegMinutes`) and never sum them into a total driving claim; stop order in the SOT is narrative, not the driven sequence.
+- Show the Signature day recap before guest details from the same verified public itinerary and inclusions used on the tour page; this keeps booking clarity without duplicating or inventing tour facts.
