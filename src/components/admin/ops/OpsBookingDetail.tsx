@@ -111,15 +111,48 @@ export function OpsBookingDetail({
     }
   };
 
+  const assignedGuide = guides.find((guide) => guide.id === booking?.["assigned_guide_id"]) ?? null;
+
+  const emailGuide = async (guide: Guide) => {
+    if (!guide.email) {
+      toast.message(`${guide.name} has no email saved — use WhatsApp.`);
+      return;
+    }
+    try {
+      const result = await sendBrief({
+        data: { bookingId, guideId: guide.id, guideName: guide.name, email: guide.email },
+      });
+      if (result.ok) toast.success(`Briefing emailed to ${guide.name}.`);
+      else toast.error("Briefing email could not be sent.");
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : "Briefing email could not be sent.");
+    }
+  };
+
+  const assignGuide = async (guideId: string | null) => {
+    await apply({ assignedGuideId: guideId }, guideId ? "Guide assigned." : "Guide removed.");
+    const guide = guides.find((entry) => entry.id === guideId);
+    if (guide) await emailGuide(guide);
+  };
+
+  const whatsappGuideUrl = (guide: Guide | null): string | null => {
+    const digits = guide?.phone?.replace(/\D/g, "") ?? "";
+    if (!digits) return null;
+    return `https://wa.me/${digits}?text=${encodeURIComponent(briefDraft)}`;
+  };
+
   if (loading && !booking) {
     return <p className="p-4 text-sm text-[color:var(--charcoal-soft)]">Loading reservation…</p>;
   }
   if (!booking) return <p className="p-4 text-sm">Reservation not found.</p>;
 
   const snapshot = (booking["booking_details"] ?? {}) as Record<string, unknown>;
-  const inner = (snapshot["snapshot"] ?? {}) as Record<string, unknown>;
-  const itinerary = Array.isArray(inner["itinerary"]) ? (inner["itinerary"] as Array<Record<string, unknown>>) : [];
+  const inner = (snapshot["snapshot"] ?? snapshot) as Record<string, unknown>;
+  const received = buildSnapshotEmailPreview(inner);
+  const includedItems = list(booking["inclusions"]).length ? list(booking["inclusions"]) : received.includedItems;
+  const excludedItems = list(booking["exclusions"]);
   const pax = booking["pax_breakdown"] as Record<string, number> | null;
+  const guideWa = whatsappGuideUrl(assignedGuide);
   const emailUrl = booking["source_email_url"];
 
   const guideSelect = (
@@ -128,7 +161,7 @@ export function OpsBookingDetail({
       className="w-full rounded-md border border-[color:var(--charcoal)]/15 bg-white px-3 py-2 text-sm"
       value={(booking["assigned_guide_id"] as string | null) ?? ""}
       disabled={busy}
-      onChange={(event) => void apply({ assignedGuideId: event.target.value || null }, "Guide updated.")}
+      onChange={(event) => void assignGuide(event.target.value || null)}
     >
       <option value="">Unassigned</option>
       {guides.map((guide) => (
