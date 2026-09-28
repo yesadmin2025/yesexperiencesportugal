@@ -45,8 +45,8 @@ function StudioProposalsPage() {
   }, []);
 
   return (
-    <AdminShell>
-      <AdminSectionTitle>Studio proposals</AdminSectionTitle>
+    <AdminShell title="Studio proposals" eyebrow="Guests & bookings">
+      <AdminSectionTitle count={rows?.length}>Every day revealed in Studio</AdminSectionTitle>
       {error ? <p className="mt-4 text-sm text-destructive">{error}</p> : null}
       {!rows && !error ? <p className="mt-4 text-sm text-muted-foreground">Loading…</p> : null}
       {rows && rows.length === 0 ? (
