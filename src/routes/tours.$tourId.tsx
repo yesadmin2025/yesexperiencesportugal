@@ -32,6 +32,7 @@ import { MobileReserveBar } from "@/components/booking/MobileReserveBar";
 import { dispatchSignatureReserveIntent } from "@/lib/booking/reserve-intent";
 import { useImportedTourImages } from "@/hooks/use-imported-tour-images";
 import { Eyebrow } from "@/components/ui/Eyebrow";
+import { DirectAnswer } from "@/components/DirectAnswer";
 import { SectionTitle } from "@/components/ui/SectionTitle";
 import { CtaButton, CtaMotionArrow } from "@/components/ui/CtaButton";
 import { Scene } from "@/components/motion/Scene";
