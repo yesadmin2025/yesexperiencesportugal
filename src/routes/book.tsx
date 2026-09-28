@@ -58,7 +58,7 @@ export const Route = createFileRoute("/book")({
       {
         name: "description",
         content:
-          `Book a private day trip from Lisbon: real prices from €101 per person, hotel pickup, licensed local team. Pay by card and confirm instantly, or call ${PHONE_DISPLAY}.`,
+          `Book a private day trip from Lisbon: real prices from €101 per person, hotel pickup, licensed local team. Pay by card and confirm instantly, or call ${PHONE_DISPLAY}.`.slice(0, 158),
       },
       { property: "og:title", content: "Book a Private Day Trip in Portugal — Prices & Contact" },
       {
