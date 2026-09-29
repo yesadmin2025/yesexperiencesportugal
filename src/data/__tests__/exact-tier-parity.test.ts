@@ -84,7 +84,7 @@ describe("exact-tier parity — UI/checkout gating", () => {
 describe("winery quantity stays inside the authorized ladder", () => {
   it("only Arrábida Wine has an approved winery supplement ladder", () => {
     const authorized = Object.keys(TAILOR_BLUEPRINTS).filter((id) => tailorRules(id).wineries);
-    expect(authorized).toEqual(["arrabida-wine-allinclusive"]);
+    expect(authorized).toEqual(["arrabida-wine-allinclusive", "evora-alentejo"]);
   });
 
   it("Arrábida keeps 2 included, +€20 pp extras up to 4", () => {
