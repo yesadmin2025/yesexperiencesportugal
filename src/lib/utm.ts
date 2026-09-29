@@ -98,11 +98,23 @@ export type AcquisitionSnapshot = {
   attr_medium: string;
   /** Landing pathname of the first page seen this visit. */
   landing_path: string;
+  /** Referring site hostname only; never a full URL or search query. */
+  original_referrer?: string;
   _ts: number;
 };
 
 const SEARCH_ENGINES = /(^|\.)(google|bing|duckduckgo|yahoo|ecosia|brave|baidu|yandex)\./i;
 const SOCIAL = /(^|\.)(facebook|instagram|twitter|linkedin|pinterest|reddit|tiktok)\.(com|co)$/i;
+const AI_REFERRERS = /(^|\.)(chatgpt\.com|openai\.com|perplexity\.ai|claude\.ai|gemini\.google\.com|copilot\.microsoft\.com|poe\.com)$/i;
+
+function externalReferrerHost(): string {
+  try {
+    const host = new URL(document.referrer).hostname.toLowerCase().replace(/^www\./, "");
+    return host === window.location.hostname.replace(/^www\./, "") ? "" : host.slice(0, 120);
+  } catch {
+    return "";
+  }
+}
 
 function classifyReferrer(referrer: string): { attr_source: string; attr_medium: string } {
   if (!referrer) return { attr_source: "direct", attr_medium: "direct" };
@@ -113,6 +125,7 @@ function classifyReferrer(referrer: string): { attr_source: string; attr_medium:
     return { attr_source: "direct", attr_medium: "direct" };
   }
   if (!host) return { attr_source: "direct", attr_medium: "direct" };
+  if (AI_REFERRERS.test(host)) return { attr_source: host, attr_medium: "ai" };
   if (SEARCH_ENGINES.test(`${host}.`)) {
     return { attr_source: host.split(".")[0] || host, attr_medium: "organic" };
   }
@@ -131,20 +144,15 @@ export function captureAcquisitionFromLocation(): AcquisitionSnapshot | null {
     const existing = getAcquisition();
     if (existing) return existing;
 
-    const referrer = document.referrer || "";
-    let sameOrigin = false;
-    try {
-      sameOrigin = !!referrer && new URL(referrer).hostname === window.location.hostname;
-    } catch {
-      sameOrigin = false;
-    }
-    const { attr_source, attr_medium } = classifyReferrer(sameOrigin ? "" : referrer);
+    const referrerHost = externalReferrerHost();
+    const { attr_source, attr_medium } = classifyReferrer(referrerHost ? `https://${referrerHost}` : "");
 
     const utm = getUtms();
     const snap: AcquisitionSnapshot = {
       attr_source: (utm?.utm_source || attr_source).slice(0, 80),
       attr_medium: (utm?.utm_medium || (utm?.gclid ? "paid" : attr_medium)).slice(0, 40),
       landing_path: window.location.pathname.slice(0, 160),
+      original_referrer: referrerHost || undefined,
       _ts: Date.now(),
     };
     const raw = JSON.stringify(snap);
@@ -192,4 +200,24 @@ export function acquisitionParams(): Record<string, string> {
     attr_medium: a.attr_medium,
     landing_path: a.landing_path,
   };
+}
+
+/** Public enquiry attribution; host/path only and bounded marketing parameters. */
+export function leadAttribution(): Record<string, string> {
+  if (!isBrowser()) return {};
+  const first = getAcquisition();
+  const utm = getUtms();
+  const referrer = externalReferrerHost();
+  const last = classifyReferrer(referrer ? `https://${referrer}` : "");
+  const out: Record<string, string> = {
+    landing_page: (first?.landing_path || window.location.pathname).slice(0, 160),
+    first_touch_source: first?.attr_source || "direct",
+    last_touch_source: utm?.utm_source || (referrer ? last.attr_source : first?.attr_source || "direct"),
+  };
+  if (first?.original_referrer || referrer) out.original_referrer = first?.original_referrer || referrer;
+  for (const key of RECOGNISED) {
+    if (key === "fbclid") continue;
+    if (utm?.[key]) out[key] = utm[key]!;
+  }
+  return out;
 }
