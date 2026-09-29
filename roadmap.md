@@ -37,7 +37,10 @@
 
 # Founder-led About page
 
-- [ ] Rebuild the existing public About page around the approved founder narrative
-- [ ] Retain verified trust, legal, SEO, schema, navigation, and contact details
-- [ ] Reuse founder imagery and approved Studio and Travel Designer actions
-- [ ] Verify About at 393px and desktop with focused tests and link checks
+- [x] Rebuild the existing public About page around the approved founder narrative
+- [x] Retain verified trust, legal, SEO, schema, navigation, and contact details
+- [x] Reuse founder imagery and approved Studio and Travel Designer actions
+- [x] Verify About at 393px and desktop with focused tests and link checks
+- [x] Update the legacy About hero-structure check for the approved founder-led opening
+- [x] Verify the existing Guide App sign-in, tours, availability, and profile flows
+- [ ] Publish the new About page, then request Google to recrawl it (blocked: publication not authorized)

@@ -1,8 +1,7 @@
 import { localeAlternateLinks } from "@/i18n/seo";
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { breadcrumbLd, jsonLdScript } from "@/lib/jsonld";
+import { breadcrumbLd, jsonLdScript, personFounderLd } from "@/lib/jsonld";
 import { SiteLayout } from "@/components/SiteLayout";
-import { Scene } from "@/components/motion/Scene";
 import { MaskReveal } from "@/components/motion/MaskReveal";
 import { Eyebrow } from "@/components/ui/Eyebrow";
 import { SectionTitle } from "@/components/ui/SectionTitle";
@@ -59,6 +58,7 @@ export const Route = createFileRoute("/about")({
           { name: "About", path: "/about" },
         ]),
       ),
+      jsonLdScript(personFounderLd()),
     ],
   }),
   component: AboutPage,
@@ -91,16 +91,16 @@ function AboutPage() {
   useMarketingMotion();
   return (
     <SiteLayout>
-      <section className="page-hero public-page-header text-left">
+      <section className="page-hero public-page-header text-left" data-section="hero">
         <div className="container-x max-w-4xl">
-          <Scene>
+          <div>
             <div className="scene-atmosphere"><Eyebrow>About YES! Experiences Portugal</Eyebrow></div>
             <div className="scene-title">
               <SectionTitle as="h1" size="anchor" spacing="loose">
                 Portugal is the stage. <SectionTitle.Em>You write the story.</SectionTitle.Em>
               </SectionTitle>
             </div>
-            <div className="scene-body mt-8 max-w-[66ch] space-y-4 text-[color:var(--charcoal-soft)] leading-[1.75]">
+            <div className="page-header-support scene-body mt-8 max-w-[66ch] space-y-4 text-[color:var(--charcoal-soft)] leading-[1.75]">
               <p>YES! EXPERIENCES PORTUGAL was born from a very simple belief:</p>
               <p className="font-medium text-[color:var(--charcoal)]">Travel should feel personal.</p>
               <p>Not like following somebody else's itinerary. Not like ticking places off a list. And certainly not like having to adapt yourself to a tour that was designed for everyone.</p>
@@ -108,7 +108,7 @@ function AboutPage() {
               <p>But that idea didn't begin in a meeting room or with a business plan.</p>
               <p>It began much earlier.</p>
             </div>
-          </Scene>
+          </div>
         </div>
       </section>
 
@@ -240,14 +240,14 @@ function AboutPage() {
         <p>And we never forget that.</p>
       </StoryChapter>
 
-      <section className="reveal about-story section-y-major chapter-flow bg-[color:var(--teal)] text-[color:var(--ivory)]">
+      <section className="reveal about-story section-y-major chapter-flow bg-teal text-ivory [&_h2]:!text-ivory [&_p]:!text-ivory">
         <div className="container-x max-w-3xl">
           <h2 className="font-[family-name:var(--font-editorial)] text-[1.8125rem] font-medium leading-[1.18] md:text-[2.25rem] md:leading-[1.1]">The Portugal that feels right for you</h2>
-          <div className="mt-8 max-w-[66ch] space-y-5 leading-[1.75] text-[color:var(--ivory)]/90">
+          <div className="mt-8 max-w-[66ch] space-y-5 leading-[1.75] text-ivory">
             <p>There are countless ways to discover this country.</p>
             <p>Ours begins by asking who you are.</p>
             <p>Sometimes the most memorable moment isn't the famous monument.</p>
-            <div className="space-y-2 text-[color:var(--ivory)]">
+            <div className="space-y-2 text-ivory">
               <p>It is the conversation nobody planned.</p>
               <p>The family-run place you almost drove past.</p>
               <p>The story behind a village.</p>
