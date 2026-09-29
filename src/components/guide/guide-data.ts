@@ -11,6 +11,7 @@ export const db = supabase as any;
 export type GuideItineraryStop = { order: number; label: string; note: string | null; durationMinutes: number | null };
 
 export type GuideTour = {
+  source_tour_id: string | null;
   assignment_id: string;
   booking_id: string;
   tour_title: string | null;
