@@ -125,7 +125,7 @@ export function CompositionField({ value, onChange, maxParty, compact }: Props) 
               color: "var(--charcoal)",
             }}
           >
-            Travelling with children?
+            Traveling with children?
           </div>
           <span
             className="shrink-0 text-right text-[12px] uppercase leading-snug tracking-[0.08em] tabular-nums"
@@ -155,7 +155,7 @@ export function CompositionField({ value, onChange, maxParty, compact }: Props) 
             </dl>
           </div>
         ) : (
-          <ul className="mt-3 space-y-2" aria-label="Minor travellers">
+          <ul className="mt-3 space-y-2" aria-label="Minor travelers">
             {minorAges.map((age, i) => {
               const hasAge = Number.isFinite(age);
               const band = hasAge ? ageBand(age) : null;

@@ -3,7 +3,7 @@ import { SectionTitle } from "@/components/ui/SectionTitle";
 import { getMentionsForPlacement, type AuthorityPlacement } from "@/data/externalAuthorityMentions";
 
 /**
- * Recognised by travel guides — editorial trust strip.
+ * Recognized by travel guides — editorial trust strip.
  *
  * Renders 3–5 real third-party article references with verbatim quotes.
  * Visible content only; never used to build review schema.
@@ -47,7 +47,7 @@ const DEFAULT_INTRO =
 export function RecognisedByGuides({
   placement,
   limit,
-  heading = "Recognised by travel guides",
+  heading = "Recognized by travel guides",
   intro = DEFAULT_INTRO,
   compact = false,
 }: RecognisedByGuidesProps) {

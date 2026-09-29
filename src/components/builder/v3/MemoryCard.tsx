@@ -30,7 +30,7 @@ import type { StudioProposal } from "@/components/builder/types";
  *
  * Map remains hidden inside this scene by design — "View on the map" closes
  * the card to return to the living Studio map (logistics brain stays away
- * until the traveller asks for it).
+ * until the traveler asks for it).
  */
 
 interface Props {

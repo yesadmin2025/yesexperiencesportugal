@@ -7,7 +7,7 @@
  *
  * It is used for two things only:
  *   1. suppressing adaptive questions that would merely reconfirm a theme
- *      the traveller already stated;
+ *      the traveler already stated;
  *   2. a short, safe "understood" acknowledgement.
  *
  * It NEVER mutates state, adds interests, or feeds pricing, curation, stops,

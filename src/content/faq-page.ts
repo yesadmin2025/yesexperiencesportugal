@@ -43,7 +43,7 @@ export const FAQ_PAGE_GROUPS: FaqGroup[] = [
       },
       {
         q: "Do you plan proposals and corporate days?",
-        a: "Yes. Proposals are one of our specialities — cliff-top viewpoints, quiet vineyards, a candle-lit table at sunset, arranged discreetly. Companies and larger private groups plan through our Corporate & private groups service, with invoicing.",
+        a: "Yes. Proposals are one of our specialties — cliff-top viewpoints, quiet vineyards, a candle-lit table at sunset, arranged discreetly. Companies and larger private groups plan through our Corporate & private groups service, with invoicing.",
       },
     ],
   },

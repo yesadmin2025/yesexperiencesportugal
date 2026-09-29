@@ -48,7 +48,7 @@ export const HOMEPAGE_FAQ: { q: string; a: string }[] = [
   },
   {
     q: "Can you plan a proposal in Portugal?",
-    a: "Yes. Proposals are one of our specialities — cliff-top viewpoints, private beaches, quiet vineyards, or a candle-lit table at sunset. Location, timing, photography and every detail arranged discreetly.",
+    a: "Yes. Proposals are one of our specialties — cliff-top viewpoints, private beaches, quiet vineyards, or a candle-lit table at sunset. Location, timing, photography and every detail arranged discreetly.",
   },
   {
     q: "Do you create corporate experiences in Portugal?",

@@ -14,7 +14,7 @@
  *
  * Some sections are rendered by composed child components (e.g.
  * `<TheDifferenceSection />`, `<GuestQuotes />`). Those carry
- * `inComponent: true` — the source-level lock recognises them via
+ * `inComponent: true` — the source-level lock recognizes them via
  * the JSX usage of the component name in `index.tsx` rather than a
  * literal `<section>` tag in that file.
  */

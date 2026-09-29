@@ -58,7 +58,7 @@ export function buildSignatureStorySnapshot(
 
   // Same complete projection + authority chain as the reveal, so the email
   // story can never describe a different day (or lose dateExact / refinement /
-  // reshape seed) than the one the traveller approved.
+  // reshape seed) than the one the traveler approved.
   const routePoints = resolveAuthoritativeRouteStops({
     editedRoutePoints: state.editedRoutePoints,
     committedRoutePoints: state.committedRoutePoints,
@@ -119,7 +119,7 @@ export function buildSignatureStorySnapshot(
  *
  * Pure sync string builder (no crypto). The hash is a djb2-style
  * fingerprint — collision-resistant enough for per-email dedupe within
- * a single traveller's session; the real cryptographic hash happens
+ * a single traveler's session; the real cryptographic hash happens
  * server-side inside sendSignatureStoryEmail using this value as input.
  */
 export function buildJourneyRevision(

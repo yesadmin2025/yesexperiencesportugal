@@ -8,9 +8,9 @@
  *
  *   a partially-matching day must NEVER be committed or revealed as YOUR DAY.
  *
- * When a conflict exists the traveller stays INSIDE Studio and is returned to
+ * When a conflict exists the traveler stays INSIDE Studio and is returned to
  * Interests with a precise message naming the priorities that cannot be
- * combined. Nothing is silently deleted — the traveller chooses. There is no
+ * combined. Nothing is silently deleted — the traveler chooses. There is no
  * curator / lead-sheet exit on this path: Studio is instant-bookable only.
  *
  * Pure and side-effect free so both the live flow and the tests read the

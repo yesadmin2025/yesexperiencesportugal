@@ -5,7 +5,7 @@
  * screens: the P5 "Already understood" row on Interests, the understood line
  * on the refinement question, the same line again before Logistics, and the
  * reason signals on the final reveal. Each surface used to re-derive its copy
- * independently, so the traveller heard their own answers read back four
+ * independently, so the traveler heard their own answers read back four
  * times. This module is the single authority for what has ALREADY been
  * acknowledged on screen, so every later surface can show only what is new.
  *
@@ -180,7 +180,7 @@ export function themesAcknowledgedBefore(
 
 /**
  * The acknowledgement labels a question surface should show. Empty means the
- * traveller has already heard everything this surface could say — render
+ * traveler has already heard everything this surface could say — render
  * nothing rather than a placeholder.
  */
 export function acknowledgementSignalsFor(

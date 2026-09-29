@@ -10,7 +10,7 @@
 export interface TimelineMoment {
   label: string;
   story?: string | null;
-  /** Minutes the traveller spends at this stop (e.g. 90). */
+  /** Minutes the traveler spends at this stop (e.g. 90). */
   durationMin?: number | null;
   /** Short label for the kind ("tasting", "table", "viewpoint"…). */
   kindLabel?: string | null;

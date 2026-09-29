@@ -200,9 +200,9 @@ export type DateMode = "exact" | "flexible" | "undecided";
 
 /**
  * Soft destination intent — captured optionally between Feeling and Companions.
- * Pickup means "where the traveller is staying", which doesn't necessarily
+ * Pickup means "where the traveler is staying", which doesn't necessarily
  * equal "where they want the day to go". destinationIntent is an additive
- * scoring signal so a Lisbon-staying traveller can still steer the route
+ * scoring signal so a Lisbon-staying traveler can still steer the route
  * inland (Alentejo, Central, Spiritual coast) or south (Comporta/Tróia).
  * It never invents stops, never crosses routeCluster after the skeleton is
  * picked, and "no-preference" leaves prior behaviour essentially unchanged.
@@ -221,7 +221,7 @@ export type DestinationIntent =
 
 /* ---------- Phase 4: Adaptive Decision Layer ---------- */
 
-/** Companions, normalised into a high-level traveller type. */
+/** Companions, normalised into a high-level traveler type. */
 export type CompanionsType = "solo" | "couple" | "family" | "friends" | "corporate";
 
 /** Derived intent of the journey — never stored, always recomputed from state. */
@@ -326,7 +326,7 @@ export interface StudioV3State {
    */
   adults: number | null;
   /**
-   * Ordered ages (0–17) for every minor traveller. Empty when adults-only.
+   * Ordered ages (0–17) for every minor traveler. Empty when adults-only.
    * Each age is priced with its band % (18+ adult 100 / 11–17 youth 75 /
    * 3–10 child 50 / 0–2 infant free) — no silent adult fallback.
    */
@@ -386,9 +386,9 @@ export interface StudioV3State {
   /**
    * PASS 4 — FREEZE THE SHOWN DAY. The exact ordered route resolved ONCE on
    * the first canonical `storyboard` entry. It is NOT a manual edit: it is
-   * the day the traveller was actually shown, so logistics, guest details and
+   * the day the traveler was actually shown, so logistics, guest details and
    * checkout can never silently recompose a different itinerary. Cleared only
-   * when the traveller goes BACK into the taste/Director phases to reshape
+   * when the traveler goes BACK into the taste/Director phases to reshape
    * their answers. Null for drafts saved before this contract existed.
    */
   committedRoutePoints: Array<AuthoredRoutePoint> | null;
@@ -409,7 +409,7 @@ export interface StudioV3State {
   pathMode: "guided" | "fast";
 
   /**
-   * How many times the traveller has tapped "Reshape this day" on the map
+   * How many times the traveler has tapped "Reshape this day" on the map
    * reveal. Starts at 0 (deterministic first render — preserves the
    * existing curation contract and test snapshots). Each bump seeds the
    * curator so the same answers can yield a different — still coherent —
@@ -420,11 +420,11 @@ export interface StudioV3State {
   rerollCount: number;
   /**
    * guestDraft — persisted Guest Details form values so back-nav from
-   * checkoutSummary/finalReveal preserves what the traveller already typed.
+   * checkoutSummary/finalReveal preserves what the traveler already typed.
    * Null until the guestDetails phase captures anything.
    */
   /**
-   * Dimensions the traveller explicitly handed to the curator via
+   * Dimensions the traveler explicitly handed to the curator via
    * "Let YES decide". Never means "missing" — the value in state is real
    * and inferred deterministically (see `letYesDecide.ts`). Used to label
    * the choice honestly in the UI and to keep the reveal explainable.
@@ -434,7 +434,7 @@ export interface StudioV3State {
    * P10 — premium delegation mode. Set to "yes-designs" when the traveller
    * hands the remaining TASTE layer (interests + rhythm, and the optional
    * adaptive refinement) to YES after answering Feeling and Who themselves.
-   * Operational facts are never delegated. Null (default) = the traveller is
+   * Operational facts are never delegated. Null (default) = the traveler is
    * answering every taste question personally, exactly as before, so older
    * saved sessions hydrate unchanged.
    */
@@ -684,7 +684,7 @@ export const DESTINATION_INTENTS: ChoiceOption<DestinationIntent>[] = [
 ];
 
 /**
- * NORTH-STAR CLOSURE — one authored moment of the traveller's day.
+ * NORTH-STAR CLOSURE — one authored moment of the traveler's day.
  *
  * `label` / `story` are presentation. `inventoryStopId` / `blueprintStopId`
  * are the STRUCTURAL identity that commercial truth is resolved from, and

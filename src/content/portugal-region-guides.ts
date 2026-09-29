@@ -30,7 +30,7 @@ export const PORTUGAL_REGION_GUIDES: LocalStoryArticle[] = [
     sections: [
       {
         heading: "Porto is small enough to walk and steep enough to feel.",
-        body: "The historic centre falls from the Sé cathedral to the Douro in a few hundred metres of stairs and alleys. Across the Luís I bridge, Vila Nova de Gaia holds the port lodges, which is where most first visits begin and end. The better version keeps the lodges to one visit and spends the rest of the time on the Porto side — Bolhão market, the Ribeira quays in late light, a long lunch instead of a checklist.",
+        body: "The historic center falls from the Sé cathedral to the Douro in a few hundred meters of stairs and alleys. Across the Luís I bridge, Vila Nova de Gaia holds the port lodges, which is where most first visits begin and end. The better version keeps the lodges to one visit and spends the rest of the time on the Porto side — Bolhão market, the Ribeira quays in late light, a long lunch instead of a checklist.",
       },
       {
         heading: "The Douro starts where the motorway ends.",
@@ -46,7 +46,7 @@ export const PORTUGAL_REGION_GUIDES: LocalStoryArticle[] = [
       },
       {
         heading: "When to come.",
-        body: "May and June give green terraces and long evenings. September brings the harvest and the warmest river. Winter is quiet, cold and clear, and the valley looks like a drawing — good for travellers who want the landscape without the crowd. August is hot inland and busiest in the city.",
+        body: "May and June give green terraces and long evenings. September brings the harvest and the warmest river. Winter is quiet, cold and clear, and the valley looks like a drawing — good for travelers who want the landscape without the crowd. August is hot inland and busiest in the city.",
       },
     ],
     faq: [
@@ -91,11 +91,11 @@ export const PORTUGAL_REGION_GUIDES: LocalStoryArticle[] = [
       },
       {
         heading: "Guimarães is where the country starts.",
-        body: "The castle and the Paço dos Duques sit above a medieval centre that is a UNESCO World Heritage site and genuinely lived in, not staged. Portugal's first king was born here, and the town says so on a wall. It pairs naturally with Braga; the two are twenty-five minutes apart.",
+        body: "The castle and the Paço dos Duques sit above a medieval center that is a UNESCO World Heritage site and genuinely lived in, not staged. Portugal's first king was born here, and the town says so on a wall. It pairs naturally with Braga; the two are twenty-five minutes apart.",
       },
       {
         heading: "Vinho verde, quietly.",
-        body: "The Minho is vinho verde country — light, low-alcohol whites from vines historically trained high above the fields. The estates here are small and rural, and a visit feels like being in someone's yard rather than a tasting room. It suits travellers who want wine without ceremony.",
+        body: "The Minho is vinho verde country — light, low-alcohol whites from vines historically trained high above the fields. The estates here are small and rural, and a visit feels like being in someone's yard rather than a tasting room. It suits travelers who want wine without ceremony.",
       },
     ],
     faq: [
@@ -128,15 +128,15 @@ export const PORTUGAL_REGION_GUIDES: LocalStoryArticle[] = [
     sections: [
       {
         heading: "The Ria is the reason Aveiro exists.",
-        body: "The lagoon behind the dunes has been worked for centuries for salt and for moliço, the seaweed harvested as fertiliser. The flat-bottomed moliceiro boats, now painted for visitors, were built for that job. The canals in the centre are short — an hour covers them — and the better half of the day is out on the ria itself, among salt pans and bird colonies.",
+        body: "The lagoon behind the dunes has been worked for centuries for salt and for moliço, the seaweed harvested as fertiliser. The flat-bottomed moliceiro boats, now painted for visitors, were built for that job. The canals in the center are short — an hour covers them — and the better half of the day is out on the ria itself, among salt pans and bird colonies.",
       },
       {
         heading: "Costa Nova and the striped houses.",
-        body: "Ten minutes across the bridge, the fishermen's palheiros at Costa Nova are painted in vertical stripes, originally to be visible from the water. The beach behind them runs for kilometres with an Atlantic that is cold and honest all year. Praia da Barra, next door, has the tallest lighthouse in Portugal.",
+        body: "Ten minutes across the bridge, the fishermen's palheiros at Costa Nova are painted in vertical stripes, originally to be visible from the water. The beach behind them runs for kilometers with an Atlantic that is cold and honest all year. Praia da Barra, next door, has the tallest lighthouse in Portugal.",
       },
       {
         heading: "Art Nouveau, tiles and ovos moles.",
-        body: "Aveiro's brief early-twentieth-century wealth left a run of Art Nouveau facades along the central canal. The city is also the home of ovos moles, an egg-yolk-and-sugar sweet made by convent recipe and sold in wafer shells shaped like shells and barrels — a protected regional speciality, not a tourist invention.",
+        body: "Aveiro's brief early-twentieth-century wealth left a run of Art Nouveau facades along the central canal. The city is also the home of ovos moles, an egg-yolk-and-sugar sweet made by convent recipe and sold in wafer shells shaped like shells and barrels — a protected regional specialty, not a tourist invention.",
       },
       {
         heading: "What sits around it.",
@@ -164,7 +164,7 @@ export const PORTUGAL_REGION_GUIDES: LocalStoryArticle[] = [
     h1: "Serra da Estrela",
     eyebrow: "Centro · Mountains",
     standfirst:
-      "Torre stands at 1,993 metres — the roof of mainland Portugal, and a completely different country from the coast.",
+      "Torre stands at 1,993 meters — the roof of mainland Portugal, and a completely different country from the coast.",
     sections: [
       {
         heading: "A glacial landscape, not just a high road.",
@@ -242,7 +242,7 @@ export const PORTUGAL_REGION_GUIDES: LocalStoryArticle[] = [
     sections: [
       {
         heading: "Marvão is a walled village on a quartzite ridge.",
-        body: "It sits at around 860 metres inside the Serra de São Mamede natural park, with the whole border plain on one side and Spain on the other. The village inside the walls is a few hundred people and a handful of streets. It was never taken by assault, which is easy to believe once you have walked the ramparts.",
+        body: "It sits at around 860 meters inside the Serra de São Mamede natural park, with the whole border plain on one side and Spain on the other. The village inside the walls is a few hundred people and a handful of streets. It was never taken by assault, which is easy to believe once you have walked the ramparts.",
       },
       {
         heading: "Castelo de Vide, twenty minutes down the road.",
@@ -286,7 +286,7 @@ export const PORTUGAL_REGION_GUIDES: LocalStoryArticle[] = [
       },
       {
         heading: "Sagres and Cabo de São Vicente.",
-        body: "The southwest corner of Europe. The fortress at Sagres sits on a flat headland above vertical cliffs; six kilometres on, Cabo de São Vicente takes the sunset and the wind, with one of the most powerful lighthouses in Europe. Prince Henry's navigation school is more legend than documented fact, but the geography explains why the story stuck.",
+        body: "The southwest corner of Europe. The fortress at Sagres sits on a flat headland above vertical cliffs; six kilometers on, Cabo de São Vicente takes the sunset and the wind, with one of the most powerful lighthouses in Europe. Prince Henry's navigation school is more legend than documented fact, but the geography explains why the story stuck.",
       },
       {
         heading: "The west coast is a different ocean.",
@@ -320,11 +320,11 @@ export const PORTUGAL_REGION_GUIDES: LocalStoryArticle[] = [
     slug: "eastern-algarve-ria-formosa-tavira-guide",
     title: "Eastern Algarve — Ria Formosa, Faro & Tavira Guide",
     metaDescription:
-      "The quiet Algarve: the Ria Formosa lagoon, island beaches reached by ferry, Faro's walled centre and Tavira's Roman bridge and salt pans.",
+      "The quiet Algarve: the Ria Formosa lagoon, island beaches reached by ferry, Faro's walled center and Tavira's Roman bridge and salt pans.",
     h1: "The Eastern Algarve — Ria Formosa and Tavira",
     eyebrow: "Algarve · East",
     standfirst:
-      "Sixty kilometres of lagoon, barrier islands and salt — the half of the Algarve most visitors never reach.",
+      "Sixty kilometers of lagoon, barrier islands and salt — the half of the Algarve most visitors never reach.",
     sections: [
       {
         heading: "Ria Formosa is a protected lagoon, not a beach resort.",
@@ -368,19 +368,19 @@ export const PORTUGAL_REGION_GUIDES: LocalStoryArticle[] = [
     sections: [
       {
         heading: "Madeira is vertical.",
-        body: "The island rises to 1,862 metres at Pico Ruivo in under twenty kilometres from the sea, so cloud, sun and rain are usually all present at once in different places. The south coast is warm and dry, the north is green and wet, and the central peaks sit above the cloud line more often than not. Planning here is really about choosing altitude.",
+        body: "The island rises to 1,862 meters at Pico Ruivo in under twenty kilometers from the sea, so cloud, sun and rain are usually all present at once in different places. The south coast is warm and dry, the north is green and wet, and the central peaks sit above the cloud line more often than not. Planning here is really about choosing altitude.",
       },
       {
         heading: "Levadas are the island's road network for water.",
-        body: "Hundreds of kilometres of irrigation channels were cut across the cliffs from the fifteenth century to carry water from the wet north to the terraces of the south. The maintenance paths beside them are now the walking network — mostly level, sometimes vertiginous. Levada do Caldeirão Verde and the Rabaçal paths run through Laurisilva, a UNESCO-listed laurel forest that predates the last ice age.",
+        body: "Hundreds of kilometers of irrigation channels were cut across the cliffs from the fifteenth century to carry water from the wet north to the terraces of the south. The maintenance paths beside them are now the walking network — mostly level, sometimes vertiginous. Levada do Caldeirão Verde and the Rabaçal paths run through Laurisilva, a UNESCO-listed laurel forest that predates the last ice age.",
       },
       {
         heading: "Funchal, and what is actually good in it.",
-        body: "The Mercado dos Lavradores for fruit and scabbardfish, the Zona Velha for painted doors and dinner, and the Monte cable car with the wicker toboggan ride back down, which is a genuine nineteenth-century transport survival rather than a theme-park invention. Madeira wine lodges in the centre pour thirty-, forty- and hundred-year-old bottles by the glass.",
+        body: "The Mercado dos Lavradores for fruit and scabbardfish, the Zona Velha for painted doors and dinner, and the Monte cable car with the wicker toboggan ride back down, which is a genuine nineteenth-century transport survival rather than a theme-park invention. Madeira wine lodges in the center pour thirty-, forty- and hundred-year-old bottles by the glass.",
       },
       {
         heading: "Porto Santo is the opposite island.",
-        body: "Forty minutes by plane or a two-and-a-half-hour ferry, and nine kilometres of flat golden sand with almost nothing behind it. It is dry, low and quiet, and locals go for the sand itself, which has a long-standing therapeutic reputation. One day is enough to see it; three is better if the point is to stop.",
+        body: "Forty minutes by plane or a two-and-a-half-hour ferry, and nine kilometers of flat golden sand with almost nothing behind it. It is dry, low and quiet, and locals go for the sand itself, which has a long-standing therapeutic reputation. One day is enough to see it; three is better if the point is to stop.",
       },
       {
         heading: "When and how.",
@@ -417,7 +417,7 @@ export const PORTUGAL_REGION_GUIDES: LocalStoryArticle[] = [
       },
       {
         heading: "Pico is a mountain with an island around it.",
-        body: "Ponta do Pico is 2,351 metres, the highest point in Portugal. At sea level, the Criação Velha and Santa Luzia vineyards are grown inside currais — small walls of black lava stone that shelter the vines from salt wind. The landscape is a UNESCO World Heritage site, and the wines from it are salty, mineral and unlike anything on the mainland.",
+        body: "Ponta do Pico is 2,351 meters, the highest point in Portugal. At sea level, the Criação Velha and Santa Luzia vineyards are grown inside currais — small walls of black lava stone that shelter the vines from salt wind. The landscape is a UNESCO World Heritage site, and the wines from it are salty, mineral and unlike anything on the mainland.",
       },
       {
         heading: "Faial and the channel.",

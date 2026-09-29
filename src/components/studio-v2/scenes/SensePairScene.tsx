@@ -2,7 +2,7 @@
  * SensePairScene — Scene II grammar.
  *
  * Two tactile metaphors as side-by-side cards. Sensory verb, no question
- * framing. The traveller picks the texture that "feels true". One tap.
+ * framing. The traveler picks the texture that "feels true". One tap.
  */
 
 import { useEffect, useRef, useState } from "react";

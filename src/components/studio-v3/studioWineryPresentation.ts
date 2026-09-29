@@ -166,7 +166,7 @@ export function isWineryStopLabel(label: string): boolean {
   const semantic = semanticStopKey(label);
   if (semantic && WINERY_IDENTITY_KEYS.has(semantic)) return true;
   // 2) Guard against the fuzzy geo lookup below: a settlement, market,
-  //    lunch or interpretive centre near a winery is NOT a winery, even
+  //    lunch or interpretive center near a winery is NOT a winery, even
   //    though the fuzzy name match can land on one. Exact structural
   //    identity (step 1) already ran, so a real supplier never reaches here.
   if (NON_WINERY_LABEL_RE.test(label)) return false;

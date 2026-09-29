@@ -1,13 +1,13 @@
 // Studio V3 — PartialReveal (Destination phase)
 //
-// Cinematic micro-reveal that fires the moment the traveller picks a
+// Cinematic micro-reveal that fires the moment the traveler picks a
 // destinationIntent. Shows:
 //   • a teal eyebrow with the region name
 //   • 2–3 ghost stop names (50% opacity, Newsreader italic) drawn ONLY from
 //     REGION_STOP_POOL (zero invention — every label is source-verified)
 //   • a short italic bridging line
 //
-// Purpose: anchor the traveller emotionally in Portugal BEFORE the
+// Purpose: anchor the traveler emotionally in Portugal BEFORE the
 // Investment tier ask in the next step. The visual hierarchy stays
 // minimal so the page still feels editorial, not cluttered.
 //

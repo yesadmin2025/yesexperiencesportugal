@@ -39,7 +39,7 @@ const INCLUDED = [
   "Private driver-host",
   "All planned stops",
   "Curated tastings & visits",
-  "Personalised story for the day",
+  "Personalized story for the day",
 ];
 
 const FLEXIBLE = [

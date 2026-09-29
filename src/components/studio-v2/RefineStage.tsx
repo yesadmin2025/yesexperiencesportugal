@@ -1,7 +1,7 @@
 /**
  * Studio v2 — Refine stage.
  *
- * Lets the traveller edit the bespoke day after the reveal:
+ * Lets the traveler edit the bespoke day after the reveal:
  *   - Swap a stop for the next best alternate (cycles through real options).
  *   - Remove a stop.
  *   - Reorder via up/down (mobile-first, no fragile drag libraries).

@@ -65,7 +65,7 @@ export interface CheckoutSummaryProps {
     | readonly import("@/lib/checkout/journeyDisplay").CheckoutJourneyLine[]
     | null;
   /**
-   * Stops the traveller was shown on refine. Same priority the reveal uses:
+   * Stops the traveler was shown on refine. Same priority the reveal uses:
    * editedRoutePoints → composedStops → tour.stops. Guarantees the checkout
    * stops match the refine page exactly.
    */
@@ -170,7 +170,7 @@ export function CheckoutSummary({
   // The parent owns the Stripe request. This surface can still tell whether
   // that request finished without producing an embedded session: submitting
   // went true → false, Reserve was explicitly pressed, and no clientSecret
-  // arrived. Keep the traveller here and turn the same CTA into a retry.
+  // arrived. Keep the traveler here and turn the same CTA into a retry.
   React.useEffect(() => {
     if (submitting) {
       wasSubmittingRef.current = true;
@@ -310,7 +310,7 @@ export function CheckoutSummary({
         }}
       >
         {/* Localized edits: each recap area routes back through the step that
-            already owns it, so a wrong date never traps the traveller here.
+            already owns it, so a wrong date never traps the traveler here.
             No new phase or state machinery — existing callbacks only. */}
         <Row
           label="Date"
@@ -392,7 +392,7 @@ export function CheckoutSummary({
 
         <PriceBreakdownRows
           journeyLines={journeyLines}
-          label="Travellers"
+          label="Travelers"
           testId="studio-v3-checkout-summary-price-breakdown"
         />
 

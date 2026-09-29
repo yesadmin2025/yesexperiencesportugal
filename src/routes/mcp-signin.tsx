@@ -2,7 +2,7 @@
  * MCP sign-in — dedicated auth landing for the OAuth consent flow.
  *
  * Kept separate from /auth (which enforces an admin-only role gate) so any
- * traveller can sign in or sign up when an external MCP client redirects
+ * traveler can sign in or sign up when an external MCP client redirects
  * them through consent. Preserves `next` on every path — password sign-in,
  * signup emailRedirectTo, and Google OAuth redirect_uri — so users always
  * land back on /.lovable/oauth/consent with the same authorization_id.

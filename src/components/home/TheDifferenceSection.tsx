@@ -21,8 +21,8 @@ const processSteps = [
 ] as const;
 
 const benefits = [
-  "Completely personalised journey.",
-  "Real-time customisation as you design.",
+  "Completely personalized journey.",
+  "Real-time customization as you design.",
   "Instant confirmation and booking.",
   "Private, local guide support.",
   "Human help available whenever you need it.",
@@ -47,7 +47,7 @@ export function TheDifferenceSection() {
             your day.
           </h2>
           <p className="mt-5 text-[15.5px] md:text-[17px] text-[color:var(--charcoal)] leading-[1.65] max-w-md mx-auto">
-            Personalised travel design, made simple.
+            Personalized travel design, made simple.
           </p>
         </div>
 

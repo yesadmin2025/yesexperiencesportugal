@@ -105,7 +105,7 @@ const STEPS = ["Your day", "Who & when", "Your details"] as const;
 const HOW_IT_WORKS = [
   {
     title: "You tell us the shape of the day",
-    body: "A date, who is travelling and what you love. Nothing more — the detail comes in conversation, not in a long form.",
+    body: "A date, who is traveling and what you love. Nothing more — the detail comes in conversation, not in a long form.",
   },
   {
     title: "A designer replies personally",

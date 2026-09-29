@@ -165,10 +165,10 @@ export const SIGNATURE_SOURCE_OF_TRUTH: Partial<Record<string, SignatureSourceOf
     pickupZone: "Pickup offered; the guide will contact guests the day before to arrange details.",
     groupType: "Private tour",
     maxGroup: null,
-    overview: "A private full-day experience of Alentejo's living craft traditions. Work hands-on with cork and clay alongside local makers; the afternoon includes a three-hour pottery workshop at a ceramics and earth arts centre. Lunch is included.",
+    overview: "A private full-day experience of Alentejo's living craft traditions. Work hands-on with cork and clay alongside local makers; the afternoon includes a three-hour pottery workshop at a ceramics and earth arts center. Lunch is included.",
     highlights: [
       "Hands-on cork workshop with local makers",
-      "Three-hour pottery workshop at a ceramics and earth arts centre",
+      "Three-hour pottery workshop at a ceramics and earth arts center",
       "Private local guide and air-conditioned transport",
       "Lunch included",
     ],
@@ -190,7 +190,7 @@ export const SIGNATURE_SOURCE_OF_TRUTH: Partial<Record<string, SignatureSourceOf
     itinerary: [
       stop(1, "Cork workshop", "Work with cork and learn about the Alentejo's craft traditions alongside local makers.", null, "core", true),
       stop(2, "Lunch", "Lunch is included in the private day.", null, "core", true),
-      stop(3, "Pottery workshop", "A three-hour hands-on pottery workshop at a ceramics and earth arts centre in the afternoon.", 180, "core", true),
+      stop(3, "Pottery workshop", "A three-hour hands-on pottery workshop at a ceramics and earth arts center in the afternoon.", 180, "core", true),
     ],
     cancellation: CANCEL_24H,
     languages: ["English"], // Viator lists two more without naming them.
@@ -314,7 +314,7 @@ export const SIGNATURE_SOURCE_OF_TRUTH: Partial<Record<string, SignatureSourceOf
         true,
       ),
       stop(5, "Albergaria dos Fusos", "Published as a full itinerary stop.", 60, "core", true),
-      stop(6, "Talha Wine Interpretation Center", "Interpretive centre.", 60, "core", true),
+      stop(6, "Talha Wine Interpretation Center", "Interpretive center.", 60, "core", true),
     ],
     cancellation: CANCEL_24H,
     languages: ["English", "Portuguese", "Spanish"],
@@ -607,10 +607,10 @@ export const SIGNATURE_SOURCE_OF_TRUTH: Partial<Record<string, SignatureSourceOf
     groupType: "Private tour",
     maxGroup: null,
     overview:
-      "Travel privately from Lisbon to Tomar's Convento de Cristo and historic centre, then continue to Coimbra, its university and the Joanina Library. Lunch is not included.",
+      "Travel privately from Lisbon to Tomar's Convento de Cristo and historic center, then continue to Coimbra, its university and the Joanina Library. Lunch is not included.",
     highlights: [
       "Convento de Cristo and Templar heritage",
-      "Tomar historic centre",
+      "Tomar historic center",
       "University of Coimbra",
       "Joanina Library timed entry",
       "Private guide, tickets, transport, water and local pastry",
@@ -654,9 +654,9 @@ export const SIGNATURE_SOURCE_OF_TRUTH: Partial<Record<string, SignatureSourceOf
     groupType: "Private tour",
     maxGroup: null,
     overview:
-      "Explore Évora's historic centre, Roman Temple and Chapel of Bones, visit two selected Alentejo wineries for tastings, and see a traditional cork production site. Lunch is not included.",
+      "Explore Évora's historic center, Roman Temple and Chapel of Bones, visit two selected Alentejo wineries for tastings, and see a traditional cork production site. Lunch is not included.",
     highlights: [
-      "Évora UNESCO historic centre",
+      "Évora UNESCO historic center",
       "Roman Temple and Chapel of Bones",
       "Two selected Alentejo winery visits and tastings",
       "Local cheeses and cured meats",
@@ -722,7 +722,7 @@ export const SIGNATURE_SOURCE_OF_TRUTH: Partial<Record<string, SignatureSourceOf
         { poolId: "wineries" },
       ),
       stop(7, "Chapel of Bones", "Évora — entrance included.", 30, "core", true),
-      stop(8, "Évora historic centre", "Walking time.", 60, "core", true, { ownExpense: true }),
+      stop(8, "Évora historic center", "Walking time.", 60, "core", true, { ownExpense: true }),
       stop(9, "Roman Temple of Évora", "Historic monument.", 10, "core", true),
       stop(10, "Corticarte", "Cork production visit.", 30, "core", true),
     ],

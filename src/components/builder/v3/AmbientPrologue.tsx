@@ -11,7 +11,7 @@ import type { StudioDict, StudioLocale } from "@/hooks/useStudioLocale";
  * pulsing CTA. One single static line, in serif italic, breathing on top
  * of real footage. After a long, deliberate pause a near-invisible
  * "enter" affordance surfaces at the bottom — but the entire canvas is
- * tappable. The traveller feels invited, not onboarded.
+ * tappable. The traveler feels invited, not onboarded.
  */
 
 const CONTINUE_DELAY_MS = 4200;
@@ -135,7 +135,7 @@ export function AmbientPrologue({ locale, onLocaleChange, t, onAwaken, onExit }:
           />
         </button>
 
-        {/* Two-pace entry — discreet faster path for travellers who want to see quickly */}
+        {/* Two-pace entry — discreet faster path for travelers who want to see quickly */}
         <button
           type="button"
           onClick={(e) => {

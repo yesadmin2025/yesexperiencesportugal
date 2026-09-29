@@ -9,7 +9,7 @@
  */
 
 interface StudioDelegationCardProps {
-  /** Fired when the traveller trusts the curator. */
+  /** Fired when the traveler trusts the curator. */
   onDelegate: () => void;
   /** Optional secondary line rendered after activation. */
   acknowledgement?: string | null;

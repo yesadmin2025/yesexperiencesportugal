@@ -119,8 +119,8 @@ export interface FinalRevealStoryProps {
   readonly className?: string;
   readonly testId?: string;
   /**
-   * The stops the traveller actually composed (from resolveStudioV3Route
-   * in StudioV3). Used as the storytelling source when the traveller did
+   * The stops the traveler actually composed (from resolveStudioV3Route
+   * in StudioV3). Used as the storytelling source when the traveler did
    * not refine (editedRoutePoints === null). Prevents the reveal from
    * listing every stop in the wider Signature catalog.
    */
@@ -185,10 +185,10 @@ export function FinalRevealStory({
     window.scrollTo({ top: 0, left: 0, behavior: "auto" });
   }, [inline]);
 
-  // Editorial timeline — always reflect the traveller's kept set.
+  // Editorial timeline — always reflect the traveler's kept set.
   // Priority: refined stops (editedRoutePoints) → composed stops (what
   // Studio actually surfaced pre-refine) → tour catalog (deep-link edge
-  // case only). Never widen beyond what the traveller was shown.
+  // case only). Never widen beyond what the traveler was shown.
   const keptStops =
     state.editedRoutePoints && state.editedRoutePoints.length > 0
       ? state.editedRoutePoints
@@ -219,7 +219,7 @@ export function FinalRevealStory({
   const intro = narrative.intro;
 
   // P6 "acknowledge once": the reveal drops reason signals whose theme the
-  // traveller already heard on Interests / refinement / Logistics. Protected
+  // traveler already heard on Interests / refinement / Logistics. Protected
   // by a floor so the payoff is quietened, never emptied. Operational facts
   // (region, date, pickup, party) are never suppressed.
   const revealSignals = filterRevealSignals(narrative.signals, {
@@ -279,7 +279,7 @@ export function FinalRevealStory({
     });
   });
 
-  // Never show an empty date. When the traveller stayed flexible we say so
+  // Never show an empty date. When the traveler stayed flexible we say so
   // explicitly — silence reads as a bug, "Flexible date" reads as a choice.
   const dateLabel =
     formatDate(state.dateExact) ??
@@ -406,7 +406,7 @@ export function FinalRevealStory({
                 {region}
               </p>
             )}
-            {/* P8: inside the unified "Your Day" the traveller has already read
+            {/* P8: inside the unified "Your Day" the traveler has already read
               the ordered moments above, so the chip wall of signals would only
               restate them. One quiet cue is kept below the intro instead. */}
             {revealSignals.length > 0 && !inline ? (
@@ -463,7 +463,7 @@ export function FinalRevealStory({
               </p>
             ) : null}
             {/* Inline mode stays a lightweight chapter — no stop-by-stop
-              re-enumeration of a route the traveller has just seen. */}
+              re-enumeration of a route the traveler has just seen. */}
             {(inline ? [] : paragraphs).map((p) => (
               <p
                 key={p.key}
@@ -662,7 +662,7 @@ export function FinalRevealStory({
           ) : null}
           <PriceBreakdownRows
             journeyLines={journeyLines ?? null}
-            label="Travellers"
+            label="Travelers"
             testId="studio-v3-reveal-price-breakdown"
           />
 

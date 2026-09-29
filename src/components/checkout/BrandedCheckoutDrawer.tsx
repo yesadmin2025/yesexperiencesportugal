@@ -76,7 +76,7 @@ export interface CheckoutSummary {
   addOnsPartyTotalEur?: number;
   /**
    * Canonical age-banded lines from `resolveJourneyPricing`. When present,
-   * the drawer renders one row per traveller and derives the total from
+   * the drawer renders one row per traveler and derives the total from
    * these lines — never from pricePerPaxEur × guests.
    */
   journeyLines?: readonly CheckoutJourneyLine[];
@@ -275,7 +275,7 @@ function ExperienceSummaryCard({
   total: number | null;
 }) {
   // Open by default: guests must see exactly what they are paying for
-  // (travellers, chosen stops, add-ons) without hunting for a toggle.
+  // (travelers, chosen stops, add-ons) without hunting for a toggle.
   const [open, setOpen] = useState(true);
   const isTailored = summary.flowLabel === "Tailored" || summary.flowLabel === "Tailored Signature";
 

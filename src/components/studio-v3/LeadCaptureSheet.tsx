@@ -6,7 +6,7 @@ import { CONSIDERATIONS, LANGUAGES, PICKUPS, type StudioV3State } from "./types"
 
 /**
  * P0-7 — `private-group` is the ONE normal group-size hand-off: 13–14
- * travellers are a premium private group that YES confirms personally. It is
+ * travelers are a premium private group that YES confirms personally. It is
  * NOT an error state and never a silent down-clamp to 12; the composed day and
  * the guest's details travel with it. Ordinary 1–12 stays self-service.
  */
@@ -121,7 +121,7 @@ export function LeadCaptureSheet({ open, intent, state, onClose }: Props) {
       ? "Say YES to this Signature"
       : "Refine with YES first";
   const intro = isPrivateGroup
-    ? "Your day is composed and saved exactly as you approved it. For 13 or 14 travellers YES confirms vehicles, hosts and each partner with you directly — leave your details and we come back with the final confirmation."
+    ? "Your day is composed and saved exactly as you approved it. For 13 or 14 travelers YES confirms vehicles, hosts and each partner with you directly — leave your details and we come back with the final confirmation."
     : isBook
       ? "Leave your details and confirm a few practicalities. Nothing is reserved until YES confirms availability with you."
       : "Tell YES what you'd like to adjust. We'll come back with options.";

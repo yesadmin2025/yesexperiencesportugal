@@ -32,7 +32,7 @@ export function StudioExperiencePage() {
         <h1>Design your private Portugal day.</h1>
         <p>
           A cinematic composer in three quiet steps — choose how the day should feel, who is
-          travelling and the rhythm you want. The map and stops reveal themselves as you go.
+          traveling and the rhythm you want. The map and stops reveal themselves as you go.
         </p>
         <p>
           As you choose, the route, the stops and the price move with you. When the configuration is

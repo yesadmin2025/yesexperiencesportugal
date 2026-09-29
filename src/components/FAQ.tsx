@@ -95,7 +95,7 @@ const FAQS: { q: string; a: ReactNode }[] = [
     q: "Can you plan a proposal in Portugal?",
     a: (
       <>
-        Yes. Proposals are one of our specialities — cliff-top viewpoints, private beaches, quiet
+        Yes. Proposals are one of our specialties — cliff-top viewpoints, private beaches, quiet
         vineyards, or a candle-lit table at sunset. Location, timing, photography and every detail
         arranged discreetly.
       </>

@@ -150,7 +150,7 @@ const FAQS: { q: string; a: string }[] = [
   },
   {
     q: "Are you affiliated with Virtuoso, Signature, Serandipians or similar consortia?",
-    a: "No. YES Experiences Portugal is a licensed independent Portuguese operator and works directly with advisors and agencies. If consortium membership matters for your programme, tell us and we will discuss it.",
+    a: "No. YES Experiences Portugal is a licensed independent Portuguese operator and works directly with advisors and agencies. If consortium membership matters for your program, tell us and we will discuss it.",
   },
   {
     q: "Do you offer FAM trips or site inspections?",
@@ -158,7 +158,7 @@ const FAQS: { q: string; a: string }[] = [
   },
   {
     q: "Where in Portugal can you operate?",
-    a: "We operate across Portugal. We design everything from private days and classic itineraries to immersive multi-day journeys beyond the usual tourist routes. Each programme is shaped around the client and coordinated through one named local contact.",
+    a: "We operate across Portugal. We design everything from private days and classic itineraries to immersive multi-day journeys beyond the usual tourist routes. Each program is shaped around the client and coordinated through one named local contact.",
   },
 ];
 

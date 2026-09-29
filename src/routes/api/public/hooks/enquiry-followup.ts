@@ -81,10 +81,10 @@ export const Route = createFileRoute("/api/public/hooks/enquiry-followup")({
           const occasion = (row.source ?? "").split(":")[1] ?? "";
           const [firstName] = (row.name ?? "").split(" ");
 
-          // Only guests who actually travelled get a review request. An enquiry
+          // Only guests who actually traveled get a review request. An enquiry
           // alone is never enough: there must be a paid booking on this email
           // whose date has already passed.
-          const { data: travelled, error: bookingError } = await supabaseAdmin
+          const { data: traveled, error: bookingError } = await supabaseAdmin
             .from("bookings")
             .select("id")
             .eq("customer_email", row.email)
@@ -98,7 +98,7 @@ export const Route = createFileRoute("/api/public/hooks/enquiry-followup")({
             console.error("[enquiry-followup] booking lookup failed", { id: row.id });
             continue;
           }
-          if (!travelled || travelled.length === 0) {
+          if (!travelled || traveled.length === 0) {
             skipped += 1;
             continue;
           }

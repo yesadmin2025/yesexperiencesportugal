@@ -116,7 +116,7 @@ function Page() {
             </p>
             <p>
               It began on the road, guiding guests through Portugal and seeing the same need appear
-              again and again: travellers wanted more than another fixed tour. They wanted freedom,
+              again and again: travelers wanted more than another fixed tour. They wanted freedom,
               but not confusion. They wanted to shape the day themselves, while still feeling guided
               by someone local.
             </p>

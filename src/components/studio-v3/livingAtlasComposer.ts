@@ -71,7 +71,7 @@ export type LivingAtlasCompositionRequest = {
   /** Explicit exclusions, e.g. no boat or no winery. */
   excludedTypes?: OptionalStopType[];
   /**
-   * Exact verified moments the traveller was offered and did NOT choose. They
+   * Exact verified moments the traveler was offered and did NOT choose. They
    * are never re-added to the day the rejected answer already spoke about. An
    * explicit must-include always wins, so a moment can never be both.
    */
@@ -339,11 +339,11 @@ function candidatePool(request: LivingAtlasCompositionRequest): {
   const mustIncludeIds = new Set(request.mustIncludeStopIds ?? []);
   const candidates = active.filter((stop) => {
     // A taste-derived TYPE exclusion never overrides an EXPLICIT must-include
-    // obligation (traveller principal, verified operational node, or a
+    // obligation (traveler principal, verified operational node, or a
     // product-defining locked core moment of the anchor Signature).
     if ((request.excludedTypes ?? []).includes(stop.type) && !mustIncludeIds.has(stop.id))
       return false;
-    // A moment the traveller explicitly declined in a fork never re-enters the
+    // A moment the traveler explicitly declined in a fork never re-enters the
     // day, unless it is also an explicit obligation elsewhere.
     if ((request.excludedStopIds ?? []).includes(stop.id) && !mustIncludeIds.has(stop.id))
       return false;
@@ -643,7 +643,7 @@ export function composeLivingAtlasDay(
     projectSelection([...selected, candidate], budget, rhythm).totalMinutes;
 
   /**
-   * Ceiling for satisfying an EXPLICIT traveller obligation: the truthful
+   * Ceiling for satisfying an EXPLICIT traveler obligation: the truthful
    * envelope maximum, which preserves the owner's "about 4h / about 6h /
    * 8–9h" language without letting optional filler bloat past the target.
    */

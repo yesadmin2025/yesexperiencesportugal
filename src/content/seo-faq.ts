@@ -99,7 +99,7 @@ export const WINE_TOUR_FAQ_BY_ID: Record<string, FaqItem[]> = {
     },
     {
       q: "Why Azeitão for a private wine tour from Lisbon?",
-      a: "Azeitão sits between the Arrábida hills and the Setúbal estuary, so a single private day covers cellars, market and coast without long drives. The wineries here are family houses rather than visitor centres, which is why we build the day around them.",
+      a: "Azeitão sits between the Arrábida hills and the Setúbal estuary, so a single private day covers cellars, market and coast without long drives. The wineries here are family houses rather than visitor centers, which is why we build the day around them.",
     },
     {
       q: "Is the Arrábida wine day private to my group?",
@@ -234,7 +234,7 @@ export const DESTINATION_FAQ_BY_ID: Record<string, FaqItem[]> = {
   "p23-artisan-pottery-cork": [
     {
       q: "What happens on the Alentejo cork and pottery day?",
-      a: "You work hands-on with cork alongside local makers, have lunch, then spend a three-hour afternoon pottery workshop at a ceramics and earth arts centre.",
+      a: "You work hands-on with cork alongside local makers, have lunch, then spend a three-hour afternoon pottery workshop at a ceramics and earth arts center.",
     },
     {
       q: "What is included in the cork and pottery workshop tour?",
@@ -350,11 +350,11 @@ export const TRAVEL_DESIGNER_FAQ: FaqItem[] = [
   },
   {
     q: "Do I receive a written proposal before booking?",
-    a: "Yes. Travel Designer journeys are delivered as a curated travel file so you can understand the rhythm, route and key details before travelling.",
+    a: "Yes. Travel Designer journeys are delivered as a curated travel file so you can understand the rhythm, route and key details before traveling.",
   },
   {
     q: "Can the journey be adjusted after the first proposal?",
-    a: "Yes. The journey can be refined with you before travelling and supported locally while you are in Portugal.",
+    a: "Yes. The journey can be refined with you before traveling and supported locally while you are in Portugal.",
   },
   {
     q: "How far in advance should I request a Travel Designer journey?",

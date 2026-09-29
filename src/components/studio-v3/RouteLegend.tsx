@@ -1,7 +1,7 @@
 /**
  * RouteLegend — human-readable breakdown of each leg in the reveal route.
  *
- * Renders alongside the map so travellers can see exactly HOW the day
+ * Renders alongside the map so travelers can see exactly HOW the day
  * connects: origin → stop 1 (12 min · driving · 8.4km), stop 1 → stop 2
  * (3 min · walking · 0.2km), and, when the Studio route is closed door-to-door,
  * the final stop → pickup/drop-off return leg.
@@ -114,7 +114,7 @@ export function RouteLegend({
                 {mode === "walking" ? <Footprints size={14} /> : <Car size={14} />}
               </span>
               {/* Wraps instead of truncating: real stop names ("Évora historic
-                  centre → Roman Temple of Évora") exceed the column on a 393px
+                  center → Roman Temple of Évora") exceed the column on a 393px
                   phone, and a clipped label reads as an error. */}
               <span className="min-w-0 break-words">
                 <span className="text-[color:var(--charcoal)]/70">{from}</span>

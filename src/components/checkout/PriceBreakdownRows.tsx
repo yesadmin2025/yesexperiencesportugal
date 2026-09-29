@@ -1,7 +1,7 @@
 /**
  * PriceBreakdownRows — live adults vs children price rows.
  *
- * Renders one row per traveller band (adults grouped, minors listed with
+ * Renders one row per traveler band (adults grouped, minors listed with
  * age + band-adjusted unit price) using the shared aggregation from
  * `journeyDisplay.summarizeJourneyLines`. Values reflect the resolved
  * journey and update automatically when guests, ages or add-ons change,
@@ -31,7 +31,7 @@ function fmt(n: number): string {
 
 export function PriceBreakdownRows({
   journeyLines,
-  label = "Travellers",
+  label = "Travelers",
   testId = "price-breakdown-rows",
 }: PriceBreakdownRowsProps) {
   if (!hasCompleteJourneyPricing(journeyLines)) return null;

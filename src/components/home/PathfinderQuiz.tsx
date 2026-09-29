@@ -16,18 +16,18 @@ import { Link } from "@tanstack/react-router";
 import { CTA_LABELS } from "@/content/cta-vocabulary";
 
 type Intent = "wine" | "coast" | "history" | "unique";
-type Travellers = "couple" | "group" | "journey";
+type Travelers = "couple" | "group" | "journey";
 type Pace = "relaxed" | "active" | "mix";
 
 type ResultKey = "ARRABIDA" | "TROIA" | "SINTRA" | "STUDIO" | "BESPOKE";
 
 interface QuizState {
   intent: Intent | null;
-  travellers: Travellers | null;
+  travelers: Travelers | null;
   pace: Pace | null;
 }
 
-const INITIAL: QuizState = { intent: null, travellers: null, pace: null };
+const INITIAL: QuizState = { intent: null, travelers: null, pace: null };
 
 function resolveResult(s: QuizState): ResultKey | null {
   if (!s.intent) return null;
@@ -321,52 +321,52 @@ export function PathfinderQuiz() {
             <div className="pf-grid-22">
               <QButton
                 selected={state.intent === "wine"}
-                onClick={() => setState({ intent: "wine", travellers: null, pace: null })}
+                onClick={() => setState({ intent: "wine", travelers: null, pace: null })}
               >
                 Wine &amp; food
               </QButton>
               <QButton
                 selected={state.intent === "coast"}
-                onClick={() => setState({ intent: "coast", travellers: null, pace: null })}
+                onClick={() => setState({ intent: "coast", travelers: null, pace: null })}
               >
                 Coast &amp; nature
               </QButton>
               <QButton
                 selected={state.intent === "history"}
-                onClick={() => setState({ intent: "history", travellers: null, pace: null })}
+                onClick={() => setState({ intent: "history", travelers: null, pace: null })}
               >
                 History &amp; culture
               </QButton>
               <QButton
                 selected={state.intent === "unique"}
-                onClick={() => setState({ intent: "unique", travellers: null, pace: null })}
+                onClick={() => setState({ intent: "unique", travelers: null, pace: null })}
               >
                 Something unique
               </QButton>
             </div>
           </div>
 
-          {/* Q2 — Travellers */}
+          {/* Q2 — Travelers */}
           {showQ2 && (
             <div className="mt-8 pf-step">
               <span className="pf-qlabel">02</span>
-              <p className="pf-qtitle">Who's travelling?</p>
+              <p className="pf-qtitle">Who's traveling?</p>
               <div className="pf-stack">
                 <QButton
                   selected={state.travellers === "couple"}
-                  onClick={() => setState((s) => ({ ...s, travellers: "couple", pace: null }))}
+                  onClick={() => setState((s) => ({ ...s, travelers: "couple", pace: null }))}
                 >
                   Just us two
                 </QButton>
                 <QButton
                   selected={state.travellers === "group"}
-                  onClick={() => setState((s) => ({ ...s, travellers: "group", pace: null }))}
+                  onClick={() => setState((s) => ({ ...s, travelers: "group", pace: null }))}
                 >
                   Family or group
                 </QButton>
                 <QButton
                   selected={state.travellers === "journey"}
-                  onClick={() => setState((s) => ({ ...s, travellers: "journey", pace: null }))}
+                  onClick={() => setState((s) => ({ ...s, travelers: "journey", pace: null }))}
                 >
                   I want a full journey
                 </QButton>

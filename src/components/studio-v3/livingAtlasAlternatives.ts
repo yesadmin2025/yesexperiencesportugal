@@ -207,7 +207,7 @@ function resolvedCompositionFrom(input: {
 }
 
 /**
- * Applies traveller substitutions one slot at a time. Every accepted change is
+ * Applies traveler substitutions one slot at a time. Every accepted change is
  * revalidated against the same region, route cluster, coverage, quantity and
  * duration rules that created the original day.
  */

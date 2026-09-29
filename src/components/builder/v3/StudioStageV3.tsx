@@ -325,7 +325,7 @@ export function StudioStageV3({ onExit }: { onExit?: () => void }) {
    * Sparsity is the whole point: at most one beat per derived stage, gated
    * by the 4-call session budget. Each beat is a SHORT sensory line that
    * surfaces briefly via <NarrativeBeat /> and then dissolves — never a
-   * persistent caption, never "AI text on screen". The traveller should
+   * persistent caption, never "AI text on screen". The traveler should
    * feel quietly recognized, not narrated at.
    *
    * Fires:
@@ -598,7 +598,7 @@ export function StudioStageV3({ onExit }: { onExit?: () => void }) {
    *   invitation → awakening → emergence → living → memory
    *
    * Phase is derived from state, not stored, so the world reacts
-   * organically as the traveller shapes it.
+   * organically as the traveler shapes it.
    */
   const hasStops = state.acceptedStops.length > 0;
   const hasIntent = Boolean(state.mood || state.intention || state.who);
@@ -641,7 +641,7 @@ export function StudioStageV3({ onExit }: { onExit?: () => void }) {
       />
 
       {/* Transient narrative beat — appears only at stage transitions, then
-          dissolves. Slow/intimate travellers (high affinity.pacing) get a
+          dissolves. Slow/intimate travelers (high affinity.pacing) get a
           longer hold; reveal stage holds longest of all (intimate close). */}
       <NarrativeBeat
         fragment={state.narrativeFragment}

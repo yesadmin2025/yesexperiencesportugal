@@ -142,7 +142,7 @@ export function RealLeafletMap({ region }: { region: string | null }) {
   useEffect(() => {
     if (!containerRef.current || mapRef.current) return;
     const el = containerRef.current;
-    // Default centre on Portugal so we never call fitBounds on a 0×0 element
+    // Default center on Portugal so we never call fitBounds on a 0×0 element
     const map = L.map(el, {
       zoomControl: true,
       attributionControl: true,

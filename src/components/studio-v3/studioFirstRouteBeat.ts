@@ -3,7 +3,7 @@
  *
  * The first time a route-bearing map beat plays it is cinematic; every later
  * one is a repeat of something the Living Day already shows. A page refresh or
- * a saved-Signature hydration must NOT hand the traveller that first reveal
+ * a saved-Signature hydration must NOT hand the traveler that first reveal
  * again, so we derive "already seen" from facts the restored state already
  * carries. Presentation only: nothing here is persisted, priced, curated or
  * routed, and no new state field is introduced.
@@ -37,7 +37,7 @@ const ROUTE_SHAPING_PHASES: ReadonlySet<StudioV3Phase> = new Set<StudioV3Phase>(
 ]);
 
 /**
- * True when the restored state proves the traveller already reached (or passed)
+ * True when the restored state proves the traveler already reached (or passed)
  * the first route-bearing moment. Conservative by design: a brand-new session,
  * or a partial one without enough taste inputs to resolve a route, returns
  * false so it still earns exactly one cinematic reveal.

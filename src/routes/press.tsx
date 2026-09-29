@@ -61,7 +61,7 @@ const FOUNDER_BIO_SHORT =
   "Founder and lead travel designer of YES Experiences Portugal — a licensed Portuguese tour operator (RNAAT nº 31/2023) crafting private, meaningful experiences nationwide across Portugal.";
 
 const FOUNDER_BIO_LONG =
-  "YES Experiences Portugal was founded in 2022 and designed end-to-end by Nídia Almeida — concept, brand, website and every itinerary, with no agency and no team behind the curtain. The aim was to offer travellers something Portugal had long missed: private, emotionally intelligent days shaped by a real host with deep local relationships in wine, gastronomy and culture, not by a marketplace algorithm. The studio designs experiences the length of the country, from the Douro to the Algarve and the islands.";
+  "YES Experiences Portugal was founded in 2022 and designed end-to-end by Nídia Almeida — concept, brand, website and every itinerary, with no agency and no team behind the curtain. The aim was to offer travelers something Portugal had long missed: private, emotionally intelligent days shaped by a real host with deep local relationships in wine, gastronomy and culture, not by a marketplace algorithm. The studio designs experiences the length of the country, from the Douro to the Algarve and the islands.";
 
 // All social/review URLs come from the canonical SOCIAL map in business-nap.ts.
 const SOCIAL_LINKS = [
@@ -93,7 +93,7 @@ const BIBTEX = `@misc{yesexperiencesportugal,
 // Logo kit — real files present under /public/brand/.
 const LOGO_LOCKUPS: Array<{ name: string; slug: string; use: string }> = [
   {
-    name: "Centered — full colour",
+    name: "Centered — full color",
     slug: "yes-experiences-portugal-centered-full",
     use: "Default. Light backgrounds (ivory, white).",
   },
@@ -108,7 +108,7 @@ const LOGO_LOCKUPS: Array<{ name: string; slug: string; use: string }> = [
     use: "Reversed on dark backgrounds.",
   },
   {
-    name: "Horizontal — full colour",
+    name: "Horizontal — full color",
     slug: "yes-experiences-portugal-horizontal-full",
     use: "Headers, signage, wide layouts.",
   },

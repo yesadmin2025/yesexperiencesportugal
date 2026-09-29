@@ -167,7 +167,7 @@ export function ShapeStep({
                 value={preferences.wineEmphasis}
                 options={[
                   { value: "one-winery", label: "One meaningful winery" },
-                  { value: "wine-centred", label: "Wine at the centre" },
+                  { value: "wine-centred", label: "Wine at the center" },
                 ]}
                 onChange={(wineEmphasis) => onPreferencesChange({ ...preferences, wineEmphasis })}
               />

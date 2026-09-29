@@ -1,6 +1,6 @@
 /**
  * DesignedForYou — up to 3 short curator notes explaining what was tuned
- * for this specific traveller (feeling, companions, considerations,
+ * for this specific traveler (feeling, companions, considerations,
  * occasion). Reads as a signed note, not a marketing block.
  *
  * Step 6 of the post-builder plan. Content-only, presentational.

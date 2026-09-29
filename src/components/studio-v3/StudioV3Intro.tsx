@@ -10,7 +10,7 @@
 //
 // The Studio counts no progress here: this is mood-setting only. The name
 // is stored in state and used lightly later (when present) to address the
-// traveller — it never blocks the flow and never reaches the backend.
+// traveler — it never blocks the flow and never reaches the backend.
 
 import { useEffect, useState, type FormEvent } from "react";
 import atmCoastal from "@/assets/studio/atm-coastal-cinematic.jpg";

@@ -40,7 +40,7 @@
 /* Price handoff on the public Refine surface: one party total at a time.
  *
  * Before additions, the price anchor at the top is enough, so the lower
- * resolved-total block stays out of the visual flow. Once the traveller adds
+ * resolved-total block stays out of the visual flow. Once the traveler adds
  * something, the base /adult anchor remains while the top party total yields
  * to the itemised final total below. Pricing values and DOM truth are untouched;
  * this only removes the repeated visual echo.

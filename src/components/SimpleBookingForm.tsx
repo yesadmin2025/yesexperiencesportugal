@@ -187,7 +187,7 @@ export function SimpleBookingForm({ tour }: { tour: SignatureTour }) {
   const perPax = resolvePerPaxEur(tour, guests, tierOverrides);
   // An exact party size with no approved tier is genuinely unpublished — we
   // never substitute the generic `priceFrom` anchor for it (that anchor is the
-  // 8+ rate) and we never open checkout on a price we cannot honour.
+  // 8+ rate) and we never open checkout on a price we cannot honor.
   const priceUnavailable = guests >= 1 && perPax == null;
   const displayPerPaxEur = perPax?.eurPerPax ?? tour.priceFrom;
   const displayIsReal = perPax?.real === true;
@@ -308,7 +308,7 @@ export function SimpleBookingForm({ tour }: { tour: SignatureTour }) {
     }
     const resolved = resolvePerPaxEur(tour, details.guests, tierOverrides);
     // No approved tier for this exact party size — never quote the generic
-    // anchor, and never open checkout on a price we cannot honour.
+    // anchor, and never open checkout on a price we cannot honor.
     if (resolved == null) {
       toast.error("We price this party size personally — our curator will confirm it for you.");
       return;
@@ -477,7 +477,7 @@ export function SimpleBookingForm({ tour }: { tour: SignatureTour }) {
             value={date}
             onChange={(e) => {
               const v = e.target.value;
-              // Always keep what the traveller typed. Discarding the value here
+              // Always keep what the traveler typed. Discarding the value here
               // wiped in-progress keyboard entry (year segment typed digit by
               // digit looks "before min" until it is complete) and the date
               // could never be completed on desktop. canReserve still gates the
@@ -523,7 +523,7 @@ export function SimpleBookingForm({ tour }: { tour: SignatureTour }) {
             }`}
           />
           {/* Written-out echo of the chosen day. Native date inputs render in the
-              phone's own short format, which leaves travellers unsure which day
+              phone's own short format, which leaves travelers unsure which day
               they picked; this states it in words without changing the value. */}
           {!blockMessage && date.length === 10 ? (
             <p
@@ -544,11 +544,11 @@ export function SimpleBookingForm({ tour }: { tour: SignatureTour }) {
         </Field>
       </div>
 
-      {/* Who's travelling */}
+      {/* Who's traveling */}
       <div className="mt-5">
-        <Field label="Who's travelling">
+        <Field label="Who's traveling">
           {/* One frame per group: the booking card already provides the box,
-              so the traveller control does not add a second border. */}
+              so the traveler control does not add a second border. */}
           <div className="bg-[color:var(--ivory)] pt-1">
             <CompositionField value={composition} onChange={setComposition} compact />
           </div>
@@ -847,7 +847,7 @@ function Field({
   children: React.ReactNode;
 }) {
   // The visible eyebrow is the accessible name for the whole control group,
-  // so screen readers announce "Date", "Who's travelling", etc.
+  // so screen readers announce "Date", "Who's traveling", etc.
   const labelId = useId();
   return (
     <div className="block" role="group" aria-labelledby={labelId}>

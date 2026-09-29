@@ -8,7 +8,7 @@ import { EditorialMap, type EditorialMapStop } from "@/components/maps/Editorial
  * first time a stop is accepted, then stays as the living storytelling layer.
  *
  * Optional `ribbon` slot enables a "lift the curtain" affordance — a discreet
- * gold-soft chevron at the map base that travellers can tap or drag up to
+ * gold-soft chevron at the map base that travelers can tap or drag up to
  * reveal the ItineraryRibbon as a non-modal overlay. State is ephemeral
  * (no nav, no persistence). Respects `prefers-reduced-motion`.
  */

@@ -5,7 +5,7 @@ import type { StudioStop } from "@/hooks/useStudioState";
 /**
  * Floating, fade-in suggestions that emerge above the scene.
  *
- * IMPORTANT — emotional surface, not a catalog: travellers don't know stop
+ * IMPORTANT — emotional surface, not a catalog: travelers don't know stop
  * names. Each chip shows the editorial blurb (or a soft fallback phrase),
  * never the internal label. The label is preserved only for accessibility.
  */
@@ -19,8 +19,8 @@ interface Props {
    *  shows. Kept here for callers that still want a persistent eyebrow; the
    *  Studio now surfaces fragments via the transient NarrativeBeat instead. */
   eyebrowOverride?: string | null;
-  /** 0–1 pacing from affinity profile — slow travellers get longer breathing
-   *  room between chip reveals; energetic travellers get a quicker rhythm. */
+  /** 0–1 pacing from affinity profile — slow travelers get longer breathing
+   *  room between chip reveals; energetic travelers get a quicker rhythm. */
   pacing?: number;
   onAccept: (stop: StudioStop) => void;
 }
@@ -70,8 +70,8 @@ export function EmergingChips({
     setReveal(0);
     if (!suggestions.length) return;
     const timers: number[] = [];
-    // Pacing-driven cadence — slow travellers (pacing ~0.85) breathe up to
-    // ~260ms between reveals; energetic travellers (~0.25) get ~110ms.
+    // Pacing-driven cadence — slow travelers (pacing ~0.85) breathe up to
+    // ~260ms between reveals; energetic travelers (~0.25) get ~110ms.
     const step = Math.round(110 + pacing * 180);
     const lead = Math.round(120 + pacing * 80);
     suggestions.forEach((_, i) => {

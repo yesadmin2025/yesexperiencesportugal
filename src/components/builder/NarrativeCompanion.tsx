@@ -31,7 +31,7 @@ interface NarrativeCompanionProps {
 
 const STEP_HINTS: Record<number, string> = {
   1: "Tell me how this trip should feel.",
-  2: "Who is travelling with you?",
+  2: "Who is traveling with you?",
   3: "What pulls you in — wine, coast, heritage?",
   4: "Slow mornings or full days?",
   5: "Want to refine the rhythm before we shape the route?",
@@ -40,7 +40,7 @@ const STEP_HINTS: Record<number, string> = {
 
 /**
  * Persistent narrative companion — a soft, always-available conversational
- * dock that lives across every builder step. The traveller can narrate
+ * dock that lives across every builder step. The traveler can narrate
  * preferences at any moment and the guide listens, mapping their words to
  * the canonical builder enums (never inventing stops or regions).
  */

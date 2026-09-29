@@ -346,7 +346,7 @@ export function HeroPhraseDebug({
             mixBlendMode: "screen",
           }}
         >
-          {/* Centre crosshair = stage origin (rest anchor 0%,0%). */}
+          {/* Center crosshair = stage origin (rest anchor 0%,0%). */}
           <div
             style={{
               position: "absolute",
@@ -826,7 +826,7 @@ function Mini({
   restYPct: number;
   phase: PhrasePhase;
 }) {
-  // Map px offsets onto a 100×60 visual. Centre = rest anchor (offset by restPct).
+  // Map px offsets onto a 100×60 visual. Center = rest anchor (offset by restPct).
   const cx = 50 + restXPct * 0.5; // restXPct is in % of a notional stage; squashed for the mini
   const cy = 30 + restYPct * 0.3;
   const sx = cx - fromX * 0.45;

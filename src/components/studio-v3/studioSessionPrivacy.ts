@@ -21,7 +21,7 @@ function isSavedSignatureView(): boolean {
 /**
  * Remove personal and checkout-adjacent fields before a Studio composition is
  * written to sessionStorage. All non-personal answers remain untouched so the
- * traveller can still recover the day after a refresh.
+ * traveler can still recover the day after a refresh.
  */
 export function sanitizeStudioSessionValue(value: string): string {
   try {
@@ -45,7 +45,7 @@ export function sanitizeStudioSessionValue(value: string): string {
  * machine is introduced.
  *
  * Explicit `?saved=` links are isolated: viewing somebody else's shared
- * Signature must never replace the traveller's own local draft.
+ * Signature must never replace the traveler's own local draft.
  */
 export function restoreDurableStudioDraftBeforeMount(): boolean {
   if (typeof window === "undefined") return false;
@@ -102,7 +102,7 @@ export function clearStudioDraftPersistence(): void {
  * P12 extends that same boundary with a 30-day local draft. Only the durable
  * allow-list from `draftSnapshot.ts` crosses browser sessions. Shared `?saved=`
  * views are deliberately excluded from this mirroring so opening a link never
- * overwrites the traveller's own in-progress day.
+ * overwrites the traveler's own in-progress day.
  */
 export function installStudioSessionPrivacyGuard(): void {
   if (typeof window === "undefined" || typeof Storage === "undefined") return;
@@ -123,7 +123,7 @@ export function installStudioSessionPrivacyGuard(): void {
       originalSetItem.call(this, key, safeValue);
 
       // A shared Signature is a view of someone else's tokenised snapshot, not
-      // consent to replace the traveller's own local draft.
+      // consent to replace the traveler's own local draft.
       if (!isSavedSignatureView()) {
         try {
           const durableValue = serializeDurableStudioDraft(safeValue);

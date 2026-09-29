@@ -158,7 +158,7 @@ export function useResolvedJourney(
     const tiers = tourPriceTiers ?? null;
 
     // PASS 5 — commercial confirmation gate. Exact Studio pricing exists only
-    // after the traveller confirms an explicit, coherent party. The `2`
+    // after the traveler confirms an explicit, coherent party. The `2`
     // fallback above stays a display/operational value; it never prices.
     const confirmedParty = resolveConfirmedStudioParty({
       adults,
@@ -229,7 +229,7 @@ export function useResolvedJourney(
         : null;
     // Real adult unit price. Never a total/guests blend — averaging adults
     // with discounted minors produces a per-person number that matches
-    // nothing the traveller actually pays.
+    // nothing the traveler actually pays.
     const adultUnitEur = basePerPaxEur != null ? Math.round(basePerPaxEur) : null;
     const perPaxEur = adultUnitEur;
 

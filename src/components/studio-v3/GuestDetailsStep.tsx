@@ -2,7 +2,7 @@
  * GuestDetailsStep — plan §I / K.11 inline Guest Details phase.
  *
  * Replaces the modal `FinalDetailsDialog` on the Studio V3 path so the
- * traveller experiences the details step as a natural continuation of
+ * traveler experiences the details step as a natural continuation of
  * the composer (not a popup). Design goals:
  *
  * - Inline, single-column, mobile-first (393×588 baseline).
@@ -75,7 +75,7 @@ export interface GuestDetailsStepProps {
   /** Date already chosen in the Studio. When present it is shown, not asked again. */
   readonly fixedTourDate?: string;
   /**
-   * PREFLIGHT TRUTH — when the date and the traveller composition were already
+   * PREFLIGHT TRUTH — when the date and the traveler composition were already
    * committed before the day was designed, this step must NOT ask for them
    * again. They are shown read-only, with a link back to the ONE screen that
    * owns them. Submitting can never mutate them.
@@ -167,7 +167,7 @@ export function GuestDetailsStep({
     if (fixedDate) setTourDate(fixedDate);
   }, [fixedDate]);
 
-  // P2 #16 — reset scroll to top on mount so travellers land on the
+  // P2 #16 — reset scroll to top on mount so travelers land on the
   // "Almost there" header, not mid-form.
   useEffect(() => {
     if (typeof window !== "undefined") {
@@ -502,7 +502,7 @@ export function GuestDetailsStep({
             )}
           </GuestField>
           <GuestField
-            label="Who's travelling"
+            label="Who's traveling"
             required={!lockedComposition}
             hint={lockedComposition ? "Already set — change it if you need to." : undefined}
             as="div"

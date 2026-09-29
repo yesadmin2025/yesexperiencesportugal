@@ -66,7 +66,7 @@ export function FooterHint({ children }: { children: React.ReactNode }) {
  * NextTeaser — intentionally renders nothing (P4).
  *
  * Progression is now communicated by movement itself: the reaction beats and
- * auto-advance already tell the traveller the journey moved forward. Stacking
+ * auto-advance already tell the traveler the journey moved forward. Stacking
  * another "Next…" copy layer on top made the chain feel slower and more
  * form-like. The component and its props are kept so existing call-sites
  * compile unchanged; if the teaser is ever reinstated it happens here only.

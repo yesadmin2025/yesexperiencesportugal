@@ -11,7 +11,7 @@ import {
 
 /**
  * CtaButton — site-wide primary / ghost CTA, with the canonical arrow
- * colour ramp locked in.
+ * color ramp locked in.
  *
  *   primary: smoked charcoal, warm-gold keyline, champagne text and arrow
  *   ghost:   transparent warm-gold hairline with charcoal text

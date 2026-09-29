@@ -1,9 +1,9 @@
 /**
  * Let YES decide — first-class "decide for me" signal.
  *
- * A traveller tapping "Let YES decide" is NOT missing data. It is an
+ * A traveler tapping "Let YES decide" is NOT missing data. It is an
  * explicit act of trust in the curator, and the Studio must answer it with
- * a real, coherent choice derived from what the traveller already told us.
+ * a real, coherent choice derived from what the traveler already told us.
  *
  * Hard rules (mirrors the project no-invention rule):
  *   - only ids that already exist in the Studio taxonomy are returned

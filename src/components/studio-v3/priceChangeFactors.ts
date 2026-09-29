@@ -3,7 +3,7 @@
  *
  * Every factor here MUST be derived from the existing pricing truth
  * modules (`@/data/signatureTourPricing`) or from real state the
- * traveller already configured (selected add-ons). No generic
+ * traveler already configured (selected add-ons). No generic
  * "prices may vary" placeholders, no hardcoded discount percentages.
  */
 

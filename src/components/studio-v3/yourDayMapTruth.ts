@@ -9,7 +9,7 @@
  * less stops along a decorative S-curve over a Portugal silhouette, which
  * reads as a map and therefore *claims* geography we do not have. When the
  * truth is missing the surface must change shape (editorial timeline), not
- * fake the shape it cannot honour.
+ * fake the shape it cannot honor.
  *
  * Route geometry is a separate truth: pins in order do not make a route.
  * A line is only drawn when real routing geometry exists — connecting pins

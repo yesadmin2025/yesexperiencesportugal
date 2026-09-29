@@ -89,7 +89,7 @@ const REGIONS: {
   {
     eyebrow: "Alentejo & Évora",
     title: "Roman walls, cork oaks, and long lunches.",
-    body: "Évora's medieval centre, whitewashed villages, and estates that pour reserva wines under old olive trees. The Alentejo rewards a slower rhythm — two nights minimum for the ones who fall in love with it.",
+    body: "Évora's medieval center, whitewashed villages, and estates that pour reserva wines under old olive trees. The Alentejo rewards a slower rhythm — two nights minimum for the ones who fall in love with it.",
     cta: {
       to: "/tours/$tourId",
       label: "See the Évora & Alentejo Signature",

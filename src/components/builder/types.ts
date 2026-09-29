@@ -43,7 +43,7 @@ export type NarrativeStage = "invitation" | "recognition" | "emergence" | "revea
 /**
  * Composed proposal identity — generated once near the reveal, then cached.
  * Title is editorial (2–5 words), subtitle is 8–14 words and may use the
- * traveller's name once.
+ * traveler's name once.
  */
 export interface StudioProposal {
   title: string;

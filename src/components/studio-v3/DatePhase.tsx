@@ -7,7 +7,7 @@ import type { DateMode } from "./types";
  * DatePhaseControls — Phase 2 operational date selection.
  *
  * Uses an inline shadcn Calendar (react-day-picker) so the picker stays
- * visible until the traveller confirms a day — the previous native
+ * visible until the traveler confirms a day — the previous native
  * `<input type="date">` fired and faded away on iOS, leaving people
  * unsure whether anything was picked. The calendar reads as a quiet
  * editorial surface (ivory, gold accent, hairline border) and respects
@@ -40,7 +40,7 @@ export function DatePhaseControls({
   exactDateOnly?: boolean;
 }) {
   // Earliest bookable day (Lisbon time, three calendar days ahead) — the same
-  // rule Guest Details and checkout enforce, applied here so travellers never
+  // rule Guest Details and checkout enforce, applied here so travelers never
   // compose a whole day around a date that gets rejected at payment.
   const earliest = useMemo(() => {
     const [y, m, d] = minimumStudioBookingDateIso().split("-").map(Number);

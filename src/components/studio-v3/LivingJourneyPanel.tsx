@@ -20,7 +20,7 @@
 //   - No route placeholder paragraphs.
 //   - P9: no money and no investment framing anywhere in this pre-value
 //     surface — including the AI story input. Investment may still feed the
-//     internal curation call, but never the narrative shown to the traveller.
+//     internal curation call, but never the narrative shown to the traveler.
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import { createPortal } from "react-dom";
@@ -118,7 +118,7 @@ export function LivingJourneyPanel({ state, hidden = false }: LivingJourneyPanel
   // One deterministic snapshot drives the pill, the drawer and the causal
   // feedback line. `direction` is DNA-only (no stops, no counts), `draft`
   // previews a real route with a PRESENTATION-ONLY balanced rhythm, and
-  // `shaped` resolves from the traveller's actual rhythm.
+  // `shaped` resolves from the traveler's actual rhythm.
   const snapshot = useMemo(
     () => buildLivingDaySnapshot(state, { reactionActive: hidden }),
     [state, hidden],
@@ -214,7 +214,7 @@ export function LivingJourneyPanel({ state, hidden = false }: LivingJourneyPanel
 
   // -------- Scope strip (value only, P9) --------
   // Region · moments · duration. No money, ever: the Journey Draft sits
-  // before the traveller has felt the composed day, and the canonical
+  // before the traveler has felt the composed day, and the canonical
   // SignaturePriceCard inside Your Day is the first numeric price surface.
 
   const scopeRegion = resolvedTour?.region ?? null;
@@ -729,7 +729,7 @@ function JourneyDraftDrawer({
           ) : null}
 
           {/* Scope strip — region · moments · hours. Value only: no money
-              appears before the traveller has felt the composed day. */}
+              appears before the traveler has felt the composed day. */}
           {scopeRegion || scopeDuration || scopeStops > 0 ? (
             <div
               data-testid="studio-v3-journey-scope"
@@ -853,7 +853,7 @@ function JourneyDraftDrawer({
           ) : null}
 
           {/* Tabbed view — Story · Timeline · Map. Keeps the drawer focused
-              while letting the traveller feel the day from three angles.
+              while letting the traveler feel the day from three angles.
               All three views are powered by the same resolved Signature. */}
           {totalPins > 0 ? (
             <div

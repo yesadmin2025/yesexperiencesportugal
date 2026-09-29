@@ -1550,7 +1550,7 @@ function NameBeat({
     <section className="min-h-[60vh] flex flex-col justify-center">
       <Eyebrow>Your story</Eyebrow>
       <Headline>What should we call this story?</Headline>
-      <Helper>Optional. We use it only to personalise your written journey.</Helper>
+      <Helper>Optional. We use it only to personalize your written journey.</Helper>
       <form
         onSubmit={(e) => {
           e.preventDefault();
@@ -2272,7 +2272,7 @@ function RevealStory({
 
       {/* Trust band — micro, factual */}
       <div className="mt-6 flex flex-wrap items-center justify-center gap-x-5 gap-y-2 text-center">
-        {["500+ travellers", "Private only", "Designed by locals", "Instant confirmation"].map(
+        {["500+ travelers", "Private only", "Designed by locals", "Instant confirmation"].map(
           (t) => (
             <span
               key={t}

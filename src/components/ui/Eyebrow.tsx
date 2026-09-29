@@ -13,7 +13,7 @@ import { cn } from "@/lib/utils";
  *   • inline svg icon auto-renders at 13px in --gold-deep
  *
  * Always use this component instead of writing ad-hoc <span className="eyebrow">
- * or className="he-eyebrow-bar" markup. That way icon, spacing and colour stay
+ * or className="he-eyebrow-bar" markup. That way icon, spacing and color stay
  * identical on every page.
  */
 export interface EyebrowProps extends React.HTMLAttributes<HTMLSpanElement> {

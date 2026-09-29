@@ -216,7 +216,7 @@ export const signatureTours: SignatureTour[] = [
     stops: [
       { label: "Cork workshop", story: "Work directly with cork alongside local makers.", imageTheme: "p23-artisan-pottery-cork" },
       { label: "Lunch", story: "Lunch is included.", imageTheme: "p23-artisan-pottery-cork" },
-      { label: "Pottery workshop", story: "A three-hour hands-on afternoon with clay at a ceramics and earth arts centre.", imageTheme: "p23-artisan-pottery-cork" },
+      { label: "Pottery workshop", story: "A three-hour hands-on afternoon with clay at a ceramics and earth arts center.", imageTheme: "p23-artisan-pottery-cork" },
     ],
     highlights: ["Hands-on cork workshop with local makers", "Three-hour pottery workshop", "Private guide, transport and lunch included"],
     included: ["Private transportation", "Air-conditioned vehicle", "Cork Workshop", "Pottery Workshop", "Bottled water", "Admission Fee", "Private Local Guide", "Lunch"],
@@ -1016,7 +1016,7 @@ export const signatureTours: SignatureTour[] = [
     blurb:
       "The Roman Temple and Chapel of Bones in Évora, two selected Alentejo wineries and a traditional cork-production visit.",
     intro:
-      "Alentejo unwinds you. We walk Évora's historic centre slowly — the Roman Temple, the Chapel of Bones — then head into two selected Alentejo wineries and a traditional cork-production visit. Lunch is not included, so the day keeps its own rhythm.",
+      "Alentejo unwinds you. We walk Évora's historic center slowly — the Roman Temple, the Chapel of Bones — then head into two selected Alentejo wineries and a traditional cork-production visit. Lunch is not included, so the day keeps its own rhythm.",
     fitsBest: "History buffs, wine lovers and couples",
     pace: ["Évora old town", "Chapel of Bones", "Alentejo winery"],
     stops: [
@@ -1041,7 +1041,7 @@ export const signatureTours: SignatureTour[] = [
       {
         label: "Joao Portugal Ramos Wines",
         story:
-          "Itinerary option — modern winemaking that honours traditional Alentejo grape varieties.",
+          "Itinerary option — modern winemaking that honors traditional Alentejo grape varieties.",
         imageTheme: "evora-alentejo",
       },
       {

@@ -77,7 +77,7 @@ function resolveSilhouetteRegion(
  * The trilogy resolves into ONE real Signature day (chosen from the
  * existing catalog — never invented). The map fades in, stops appear one
  * by one in cadence with a quiet editorial card that whispers each
- * moment's story. The traveller can pause, step manually, or let the
+ * moment's story. The traveler can pause, step manually, or let the
  * sequence unfold on its own.
  *
  * Strict reuse of BuilderMap so the cartography matches the rest of the
@@ -490,7 +490,7 @@ export function MapAwakens({
 
             {/* Cinematic vignette — soft dark wash at top + bottom for a
                 premium, Homepage-Studio-Preview feel. Pins and route stay
-                fully legible because the centre stays untouched. */}
+                fully legible because the center stays untouched. */}
             <div
               aria-hidden
               className="pointer-events-none absolute inset-0"
@@ -709,11 +709,11 @@ export function MapAwakens({
               type="button"
               onClick={() => onContinue(journey.tour.id)}
               data-phase-cta="hold-journey"
-              aria-label="Personalise a few details — refine your Signature before you see the full story"
+              aria-label="Personalize a few details — refine your Signature before you see the full story"
               className="inline-flex items-center gap-2 px-6 py-3.5 text-[11px] uppercase tracking-[0.24em] font-semibold focus:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)]"
               style={{ background: "var(--charcoal)", color: "var(--ivory)" }}
             >
-              Personalise a few details <ArrowRight size={14} aria-hidden />
+              Personalize a few details <ArrowRight size={14} aria-hidden />
             </button>
 
 

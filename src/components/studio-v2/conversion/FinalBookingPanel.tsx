@@ -66,7 +66,7 @@ function buildDraftMessage({
   perGuest: number;
   durationHours: [number, number];
 }): string {
-  const who = profile.name?.trim() ?? "a traveller";
+  const who = profile.name?.trim() ?? "a traveler";
   const intent = profile.intent
     ? (INTENT_LABEL[profile.intent] ?? profile.intent)
     : "a curated day";
