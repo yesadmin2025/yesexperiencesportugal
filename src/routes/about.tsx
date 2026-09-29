@@ -1,8 +1,7 @@
 import { localeAlternateLinks } from "@/i18n/seo";
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { breadcrumbLd, jsonLdScript } from "@/lib/jsonld";
+import { breadcrumbLd, jsonLdScript, personFounderLd } from "@/lib/jsonld";
 import { SiteLayout } from "@/components/SiteLayout";
-import { Scene } from "@/components/motion/Scene";
 import { MaskReveal } from "@/components/motion/MaskReveal";
 import { Eyebrow } from "@/components/ui/Eyebrow";
 import { SectionTitle } from "@/components/ui/SectionTitle";
@@ -59,6 +58,7 @@ export const Route = createFileRoute("/about")({
           { name: "About", path: "/about" },
         ]),
       ),
+      jsonLdScript(personFounderLd()),
     ],
   }),
   component: AboutPage,
@@ -91,9 +91,9 @@ function AboutPage() {
   useMarketingMotion();
   return (
     <SiteLayout>
-      <section className="page-hero public-page-header text-left">
+      <section className="page-hero public-page-header text-left" data-section="hero">
         <div className="container-x max-w-4xl">
-          <Scene>
+          <div>
             <div className="scene-atmosphere"><Eyebrow>About YES! Experiences Portugal</Eyebrow></div>
             <div className="scene-title">
               <SectionTitle as="h1" size="anchor" spacing="loose">
@@ -108,7 +108,7 @@ function AboutPage() {
               <p>But that idea didn't begin in a meeting room or with a business plan.</p>
               <p>It began much earlier.</p>
             </div>
-          </Scene>
+          </div>
         </div>
       </section>
 
