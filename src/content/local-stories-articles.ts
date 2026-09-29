@@ -316,7 +316,7 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
     slug: "troia-comporta-guide",
     title: "Comporta, Portugal: Tróia, Rice Fields & Coast",
     metaDescription:
-      "A slow day south of Lisbon — Tróia's Roman ruins, Comporta's rice fields and beaches, and sandy-soil wineries. A local's guide to the quiet coast.",
+      "Explore Comporta, Portugal: rice fields, dunes, Tróia's Roman coast and Carrasqueira pier. Compare a private day from Lisbon with a longer journey.",
     h1: "Comporta and Tróia — A Quieter Coast from Lisbon",
     eyebrow: "Tróia · Comporta · Alentejo",
     standfirst:
@@ -357,13 +357,14 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
       { path: "/portugal-travel-designer", label: "Plan a multi-day Portugal journey" },
     ],
     datePublished: "2026-06-06",
+    dateModified: "2026-09-29",
   },
   {
     slug: "southwest-vicentine-coast-guide",
-    title: "Vicentine Coast Guide: Portugal's Wild Southwest",
+    title: "Costa Vicentina, Portugal: A Guide to the Atlantic Coast",
     metaDescription:
       "The Vicentine Coast from Lisbon — Porto Covo, Milfontes, Odeceixe. A local's guide to Portugal's wild Atlantic between Alentejo and the Algarve.",
-    h1: "The Southwest Vicentine Coast — Portugal's Hidden Atlantic",
+    h1: "Costa Vicentina — Portugal's Southwest Atlantic Coast",
     eyebrow: "Vicentine Coast · Alentejo · Costa",
     standfirst:
       "Protected Atlantic cliffs, fishing villages and river beaches between the Alentejo and Algarve — with room to take it slowly.",
@@ -403,6 +404,7 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
       { path: "/local-stories/troia-comporta-guide", label: "Compare the quieter Comporta coast" },
     ],
     datePublished: "2026-06-15",
+    dateModified: "2026-09-29",
     faq: [
       {
         q: "Is the Vicentine coast worth the drive from Lisbon?",
@@ -463,6 +465,7 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
       { path: "/portugal-travel-designer", label: "Plan a longer Alentejo journey" },
     ],
     datePublished: "2026-06-18",
+    dateModified: "2026-09-29",
     faq: [
       {
         q: "What is talha wine?",
@@ -1348,7 +1351,7 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
       { path: "/portugal-travel-designer", label: "Design your own Portugal journey" },
     ],
     datePublished: "2026-07-24",
-    dateModified: "2026-09-25",
+    dateModified: "2026-09-29",
   },
   {
     slug: "portugal-coastal-drives-from-lisbon",
