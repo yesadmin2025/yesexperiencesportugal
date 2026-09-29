@@ -172,6 +172,7 @@ const LEGAL_LINKS: FooterLink[] = [
 ];
 
 export function Footer() {
+  const t = useT();
   return (
     <footer className="relative bg-[color:var(--charcoal)] text-[color:var(--ivory)]">
       {/* Champagne hairline — handoff from the ivory section above. */}
