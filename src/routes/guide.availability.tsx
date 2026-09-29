@@ -4,11 +4,19 @@ import { toast } from "sonner";
 import { db, errMsg, fetchMyTours, fmtDate, todayIso } from "@/components/guide/guide-data";
 
 export const Route = createFileRoute("/guide/availability")({
+  validateSearch: (s: Record<string, unknown>) => ({
+    from: typeof s.from === "string" && /^\d{4}-\d{2}-\d{2}$/.test(s.from) ? s.from : undefined,
+    to: typeof s.to === "string" && /^\d{4}-\d{2}-\d{2}$/.test(s.to) ? s.to : undefined,
+  }),
   head: () => ({ meta: [{ title: "Availability · YES Guide" }] }),
   component: GuideAvailability,
 });
 
-const STATUSES = ["available", "partial", "unavailable", "vacation"] as const;
+const STATUSES = ["available", "unavailable", "vacation", "morning", "afternoon", "custom"] as const;
+const STATUS_LABELS: Record<string, string> = {
+  available: "Available", unavailable: "Unavailable", vacation: "Vacation",
+  morning: "Morning only", afternoon: "Afternoon only", custom: "Custom hours", partial: "Partial",
+};
 const WEEKDAYS = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 type Row = { id: string; start_at: string; end_at: string; status: string; note: string | null };
 type Rec = { id: string; weekday: number; status: string };
