@@ -27,10 +27,3 @@
 - [x] Keep existing booking and Studio flow safeguards unchanged
 - [x] Check priority public pages at mobile and desktop widths
 
-# Preview-only search and editorial upgrade
-
-- [ ] Refresh existing wine, Comporta, Vicentine Coast and talha guides with verified facts, imagery and links
-- [ ] Clarify Studio instant confirmation and the travel-advisor partnership
-- [ ] Improve AI-readable site guide and confirm crawl-visible structured data
-- [ ] Record privacy-safe contact and trade lead attribution in team records and emails
-- [ ] Validate search pages, contact flow, desktop/mobile presentation and relevant tests without publishing
