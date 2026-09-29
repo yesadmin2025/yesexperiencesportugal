@@ -1,0 +1,2 @@
+ALTER TABLE public.guide_availability DROP CONSTRAINT IF EXISTS guide_availability_status_check;
+ALTER TABLE public.guide_availability ADD CONSTRAINT guide_availability_status_check CHECK (status IN ('available','partial','unavailable','vacation','morning','afternoon','custom'));
