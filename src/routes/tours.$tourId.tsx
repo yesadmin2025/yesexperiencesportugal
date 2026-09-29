@@ -109,6 +109,7 @@ export const Route = createFileRoute("/tours/$tourId")({
           intro: override.intro ?? base.intro,
           highlights: override.highlights ?? tour.highlights,
           fitsBest: override.fitsBest ?? base.fitsBest,
+          durationHours: override.durationHours ?? base.durationHours,
         };
       }
     } catch {
