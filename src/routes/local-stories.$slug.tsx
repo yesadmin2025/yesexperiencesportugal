@@ -25,7 +25,7 @@ import {
 } from "@/content/local-stories-articles";
 import { localStoryShareImage } from "@/content/local-story-share-images";
 import { ResponsiveEditorialImage } from "@/components/ui/ResponsiveEditorialImage";
-import troiaRuins from "@/assets/tours/troia-comporta/ruins.jpg";
+import troiaRuins from "@/assets/tours/troia-comporta/beach.jpg";
 import troiaCoast from "@/assets/tours/troia-comporta/extra.jpg";
 import talhaVessels from "@/assets/tours/roman-heritage-alentejo/winery.jpg";
 import talhaDay from "@/assets/tours/roman-heritage-alentejo/hero.jpg";
@@ -115,7 +115,7 @@ const CHAPTER_IMAGES: Record<string, Record<number, { src: string; alt: string; 
   "best-wine-tours-from-lisbon": {
     2: { src: arrabidaWinery, alt: "Winery on the Arrábida wine route near Lisbon", height: 1058 },
     5: { src: evoraWinery, alt: "Winery on the Évora and Alentejo private wine route", height: 1058 },
-    8: { src: arrabidaView, alt: "Arrábida coastal landscape on a private wine day", height: 1066 },
+    8: { src: arrabidaView, alt: "Travelers looking over the Arrábida coast from a viewpoint", height: 1066 },
   },
 };
 
