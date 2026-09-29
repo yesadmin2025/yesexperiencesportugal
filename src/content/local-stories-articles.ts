@@ -620,7 +620,7 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
     faq: [
       {
         q: "What are the best wineries near Lisbon?",
-        a: "For a private day from Lisbon we go to small Arrábida producers like Quinta de Catralvos and José Maria da Fonseca, Setúbal Moscatel houses such as Bacalhôa, and — if you have a full day — talha wineries near Évora in the Alentejo. They're family-run, quiet, and within an easy drive of the city.",
+        a: "For a private day from Lisbon we go to small family producers in Arrábida and Azeitão, historic Setúbal Moscatel houses, and — if you have a full day — talha wineries near Évora in the Alentejo. They're family-run, quiet, and within an easy drive of the city.",
       },
       {
         q: "How far are the wineries from Lisbon?",

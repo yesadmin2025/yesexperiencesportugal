@@ -24,7 +24,7 @@ const PATH = "/lisbon-wine-tour-pickup-and-wineries";
 const PAGE_URL = `${WEBSITE_URL}${PATH}`;
 const TITLE = "Lisbon Wine Tour Pickup & Wineries — Where We Collect You";
 const DESCRIPTION =
-  "Pickup, timings and wineries on a private wine tour from Lisbon, including Azeitão and Setúbal cellars such as José Maria da Fonseca, Piloto and Bacalhôa.";
+  "Pickup, timings and wineries on a private wine tour from Lisbon, and the kinds of Azeitão, Palmela and Setúbal family cellars your day can include.";
 
 const crumbs = [
   { name: "Home", path: "/" },
@@ -49,24 +49,24 @@ const PICKUPS = [
 
 const WINERIES = [
   {
-    name: "José Maria da Fonseca — House & Museum, Azeitão",
-    body: "Seven generations of family winemaking since 1834. A cellar walk through one of Portugal's founding houses, then a tasting that usually begins with Moscatel de Setúbal.",
+    name: "A historic Moscatel house in Azeitão",
+    body: "A long-established family winemaking house. A cellar walk, then a tasting that usually begins with Moscatel de Setúbal.",
   },
   {
-    name: "Quinta do Piloto, Palmela",
+    name: "A Palmela estate on the Arrábida hills",
     body: "An itinerary option where tradition meets newer winemaking, with the vineyards opening straight onto the Arrábida hills.",
   },
   {
-    name: "Quinta de Catralvos",
+    name: "A small family producer",
     body: "A small family producer. You taste at least five wines and hear the whole story — label design to bottling — from the people who did it.",
   },
   {
-    name: "Adega Cooperativa de Palmela",
+    name: "A historic Palmela cellar",
     body: "Optional cellar visit: historic vineyards, time-honoured techniques and a curated tasting of the Palmela reds.",
   },
   {
-    name: "Bacalhôa Vinhos de Portugal, Azeitão",
-    body: "Quinta da Bacalhôa — a modern winery paired with a striking art collection, which makes it the easiest visit for a non-wine person in the group.",
+    name: "A modern Azeitão winery",
+    body: "A contemporary winery paired with a striking art collection, which makes it the easiest visit for a non-wine person in the group.",
   },
 ];
 
