@@ -29,7 +29,7 @@ const PLACE_CONTEXT: Partial<Record<SignatureTour["id"], { story: string; source
   },
   "azeitao-cheese": {
     story: "Queijo de Azeitão is a protected-origin sheep's-milk cheese traditionally set with cardoon flower. Its method ties the dairy to local pastures; the hands-on workshop gives that craft a place in the day, followed by regional wine and Sesimbra.",
-    source: { label: "Portuguese agriculture authority: Queijo de Azeitão PDO", url: "https://tradicional.dgadr.gov.pt/en/categories/cheese-and-other-dairy-products/37-queijo-de-azeitao-pdo" },
+    source: { label: "DGADR — Queijo de Azeitão DOP", url: "https://tradicional.dgadr.gov.pt/pt/cat/queijos-e-produtos-lacteos/33-queijo-de-azeitao" },
     guide: { label: "Explore Setúbal food and wine", url: "/local-stories/setubal-wine-guide" },
   },
   "tiles-workshop": {
@@ -49,14 +49,17 @@ const PLACE_CONTEXT: Partial<Record<SignatureTour["id"], { story: string; source
   },
   "troia-comporta": {
     story: "Crossing the Sado reaches more than a beach peninsula: Tróia's Roman fish-salting remains, Carrasqueira's working stilt pier and Comporta's rice fields show different ways people have lived with this estuary. Its low-key design culture sits within that landscape, not apart from it.",
+    source: { label: "Architectural Digest — Comporta and design", url: "https://www.architecturaldigest.com/story/comporta-portugal-book" },
     guide: { label: "Read the Comporta guide", url: "/local-stories/troia-comporta-guide" },
   },
   "roman-heritage-alentejo": {
     story: "Vinho de Talha keeps a Roman-rooted method alive in the Alentejo: wine made in large clay vessels. São Cucufate gives the day a Roman setting, while the talha visit shows a tradition still practiced around Vila de Frades; this is not a claim that the modern wine comes from the ruins.",
+    source: { label: "Vila de Frades — local heritage brochure (PDF)", url: "https://www.viladefrades.pt/docs/brochuras/brochura01.pdf" },
     guide: { label: "Read the Vinho de Talha story", url: "/local-stories/roman-heritage-alentejo-talha-wines" },
   },
   "southwest-vicentine-coast": {
     story: "The protected southwest coast is a landscape of cliffs, river mouths and fishing villages rather than a string of resorts. Porto Covo, Milfontes and Odeceixe give this long private day its changing coastal rhythm; a multi-day journey leaves more time to linger.",
+    source: { label: "Turismo de Portugal — Southwest Alentejo and Vicentine Coast Natural Park", url: "https://www.visitportugal.com/pt-pt/content/parque-natural-do-sudoeste-alentejano-e-costa-vicentina" },
     guide: { label: "Read the Costa Vicentina guide", url: "/local-stories/southwest-vicentine-coast-guide" },
   },
 };
