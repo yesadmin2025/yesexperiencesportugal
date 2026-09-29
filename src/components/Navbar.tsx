@@ -36,6 +36,7 @@ const mobileSocialLinks = [
 
 export function Navbar() {
   const [open, setOpen] = useState(false);
+  const t = useT();
   const primaryLinks = usePrimaryLinks();
   const secondaryLinks = useSecondaryLinks();
 
