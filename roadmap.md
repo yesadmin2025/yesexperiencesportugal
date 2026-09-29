@@ -51,3 +51,5 @@
 - [x] Precise availability: morning/afternoon/custom hours + calendar shortcut
 - [x] New-assignment device notifications (foreground) + unread badge
 - [x] Verify at 393px, finance-field exclusion, overlap guard, notification flow
+
+- [x] Guide App corrections: snapshot itinerary + source_tour_id fallback, real partial-hour availability, server-side partial-hour assignment check (preview only)
