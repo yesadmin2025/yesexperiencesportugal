@@ -2130,7 +2130,7 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
       },
       {
         q: "Is the Joanina library included?",
-        a: "Yes — entrances and tickets are included, and because library entry runs on timed slots your guide secures the slot on the day.",
+        a: "Yes — entrances and tickets are included. Library entry runs on timed slots, so the exact visit time depends on the slots available on your date.",
       },
       {
         q: "How much walking is involved?",

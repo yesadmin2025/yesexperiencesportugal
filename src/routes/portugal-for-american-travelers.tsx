@@ -57,7 +57,7 @@ const SECTIONS: { heading: string; body: string[] }[] = [
     heading: "Money, tipping and what things actually cost",
     body: [
       "Portugal uses the euro. Cards are accepted almost everywhere, contactless is universal, and you rarely need more than twenty or thirty euros in cash. Your bank converts at the rate on the day, so any dollar figure published in advance would be wrong by the time you read it.",
-      "Tipping is not built into wages here the way it is in the US. Rounding up a restaurant bill or leaving five to ten percent after a good day is generous, not expected, and nobody is offended when you do not.",
+      "Tipping is not compulsory in Portugal, but it has become increasingly common in private tourism, especially among international guests. If your guide made the day special, a gratuity is genuinely appreciated. There is no fixed amount — it is entirely at your discretion.",
       "Portugal is noticeably cheaper than France, Italy or Spain for food and wine, and about the same for good hotels. The thing that costs money here is time — private transport, early access, a host who knows which cellar to call.",
     ],
   },

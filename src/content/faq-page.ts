@@ -104,19 +104,19 @@ export const FAQ_PAGE_GROUPS: FaqGroup[] = [
       },
       {
         q: "Can I book a private tour in Portugal online with instant confirmation?",
-        a: "Yes. Signature days and days you design in Studio are reserved online with secure payment and confirmed instantly, with free cancellation up to 24 hours before the experience.",
+        a: "Yes. Signature days and days you design in Studio are reserved online with secure payment and confirmed instantly. The cancellation terms that apply are shown before you pay.",
       },
       {
         q: "How far in advance should I book?",
-        a: "Signature and Studio days are usually available within a few days' notice. For Travel Designer journeys, two to four weeks gives us room to design properly; peak season fills earlier.",
+        a: "Studio days need at least 3 days' notice, and the Signature booking calendar shows the earliest available date for each experience. For multi-day Travel Designer journeys, two to four weeks gives us room to design properly; peak season fills earlier.",
       },
       {
         q: "What happens after I send a request?",
-        a: "A local replies personally, usually within the hour and always within 24 hours. We confirm the details, share a clear proposal, and only then ask for confirmation — no pressure, no automated funnels.",
+        a: "Instant reservations are confirmed right away. For requests, a local replies personally within 24 hours, shares a clear proposal, and only then asks for confirmation — no pressure.",
       },
       {
         q: "Do I speak directly with a local designer?",
-        a: "Always. A local from our team takes your request personally — never a call centre, never a chatbot.",
+        a: "Yes. A local from our team follows up personally on every reservation and request.",
       },
     ],
   },
