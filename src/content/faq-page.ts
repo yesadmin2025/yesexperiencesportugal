@@ -27,11 +27,11 @@ export const FAQ_PAGE_GROUPS: FaqGroup[] = [
       },
       {
         q: "Where do you pick us up?",
-        a: "For Lisbon-area Signature days, pickup is typically from your hotel or address in Lisbon, Cascais, Sintra, Sesimbra or Setúbal. For journeys elsewhere in Portugal, tell us where you will be and we will arrange the starting point with you. We confirm the pickup point and time before your experience.",
+        a: "It depends on the experience. Each Signature page lists its included pickup areas, and that page is the reference for your day. If you are staying elsewhere in Portugal, tell us where you will be and we confirm what is possible. The pickup point and time are confirmed before your experience.",
       },
       {
-        q: "Can I customise a Signature day?",
-        a: "Yes. Every Signature day can be adjusted — pace, stops, lunch, timing — within the same route. For deeper changes across regions, a Travel Designer is the right path.",
+        q: "Can I customize a Signature day?",
+        a: "Yes. Many Signature days can be tailored — pace, timing and selected additions — within the same route. For a multi-day journey across regions, a Travel Designer is the right path.",
       },
       {
         q: "Can a Travel Designer plan a multi-day Portugal itinerary?",
@@ -43,7 +43,7 @@ export const FAQ_PAGE_GROUPS: FaqGroup[] = [
       },
       {
         q: "Do you plan proposals and corporate days?",
-        a: "Yes. Proposals are one of our specialities — cliff-top viewpoints, quiet vineyards, a candle-lit table at sunset, arranged discreetly. For companies we handle corporate days, client hospitality and incentives end to end, with invoice and DMC support.",
+        a: "Yes. Proposals are one of our specialities — cliff-top viewpoints, quiet vineyards, a candle-lit table at sunset, arranged discreetly. Companies and larger private groups plan through our Corporate & private groups service, with invoicing.",
       },
     ],
   },
@@ -54,15 +54,15 @@ export const FAQ_PAGE_GROUPS: FaqGroup[] = [
     items: [
       {
         q: "How is the price calculated?",
-        a: "Signature days are priced per person, with the guide price shown on each experience page before you pay. Studio days price in real time as you shape the day, so you always see the total before confirming.",
+        a: "Signature days are priced per person by group size; the total for your party is shown before you pay. Studio days price in real time as you shape the day, so you always see the total before confirming.",
       },
       {
         q: "What is included in the price?",
-        a: "Each experience page lists exactly what its price covers — typically the private vehicle, your local host and the arranged stops. Anything optional is shown separately, never added silently.",
+        a: "Each experience page lists exactly what is included and what is not. Some Signatures are all-inclusive; others intentionally leave lunch and personal extras outside the price. Anything optional is shown separately, never added silently.",
       },
       {
         q: "Do children pay the same as adults?",
-        a: "Tell us the ages when you request the day and we confirm the exact price for your party. Children are welcome on most days; some routes suit them better than others and we will say so honestly.",
+        a: "On Signature days you enter the ages when booking and the price for your party is shown before you pay. Children are welcome on most days; some routes suit them better than others and we will say so honestly.",
       },
       {
         q: "How do we pay?",
@@ -85,7 +85,7 @@ export const FAQ_PAGE_GROUPS: FaqGroup[] = [
       },
       {
         q: "What happens if the weather turns?",
-        a: "We adapt the day rather than cancel it. Your host knows the alternatives — an indoor cellar, a different viewpoint, a later start — and the rhythm of the day is kept intact.",
+        a: "When reasonably possible, your host adapts the day — a different viewpoint, an indoor stop or a later start. Safety, sea and weather conditions or supplier closures can still affect some stops, and the cancellation terms of your booking apply.",
       },
       {
         q: "Can we change the date after booking?",
