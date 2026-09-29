@@ -89,7 +89,7 @@ export function Navbar() {
               <LanguageSwitcher variant="header" />
             </span>
             <CtaButton to="/studio" variant="primary" size="sm" className="ml-1">
-              Design your day
+              {t("nav.design_your_day")}
             </CtaButton>
           </nav>
 
@@ -183,7 +183,7 @@ export function Navbar() {
               size="sm"
               className="w-full"
             >
-              Design your day
+              {t("nav.design_your_day")}
             </CtaButton>
           </div>
         </div>
