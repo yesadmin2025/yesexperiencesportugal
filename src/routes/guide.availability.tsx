@@ -97,11 +97,17 @@ function GuideAvailability() {
         </div>
         <div className="grid grid-cols-2 gap-2">
           {STATUSES.map((s) => (
-            <button key={s} onClick={() => setStatus(s)} className={`min-h-11 border capitalize text-sm ${status === s ? "border-[color:var(--teal)] bg-[color:var(--teal)]/10" : "border-border"}`}>{s}</button>
+            <button key={s} onClick={() => setStatus(s)} className={`min-h-11 border text-sm ${status === s ? "border-[color:var(--teal)] bg-[color:var(--teal)]/10" : "border-border"}`}>{STATUS_LABELS[s]}</button>
           ))}
         </div>
+        {status === "custom" && (
+          <div className="grid grid-cols-2 gap-2">
+            <label className="text-[12px]">From<input type="time" value={customFrom} onChange={(e) => setCustomFrom(e.target.value)} className="mt-1 w-full min-h-11 border border-border px-2 bg-background" /></label>
+            <label className="text-[12px]">To<input type="time" value={customTo} onChange={(e) => setCustomTo(e.target.value)} className="mt-1 w-full min-h-11 border border-border px-2 bg-background" /></label>
+          </div>
+        )}
         <button disabled={busy} onClick={save} className="w-full min-h-12 bg-[color:var(--teal)] text-primary-foreground text-[12px] uppercase tracking-[0.18em] disabled:opacity-50">Save</button>
-        <p className="text-[12px] text-muted-foreground">Days with a tour assigned to you can't be marked unavailable here — use "Report an issue" on the tour.</p>
+        <p className="text-[12px] text-muted-foreground">Days with a tour assigned to you can't be changed here — use "Report an issue" on the tour.</p>
       </section>
 
       <section className="space-y-2">
@@ -112,7 +118,7 @@ function GuideAvailability() {
           const locked = tourDays.has(d);
           return (
             <div key={r.id} className="border border-border p-3 flex justify-between items-center text-sm">
-              <span><span className="capitalize font-medium">{r.status}</span> · {fmtDate(d)}{r.end_at.slice(0, 10) > new Date(new Date(`${d}T00:00:00Z`).getTime() + 86400000).toISOString().slice(0, 10) ? ` → ${fmtDate(new Date(new Date(r.end_at).getTime() - 1).toISOString().slice(0, 10))}` : ""}</span>
+              <span><span className="font-medium">{STATUS_LABELS[r.status] ?? r.status}</span> · {fmtDate(d)}{r.end_at.slice(0, 10) > new Date(new Date(`${d}T00:00:00Z`).getTime() + 86400000).toISOString().slice(0, 10) ? ` → ${fmtDate(new Date(new Date(r.end_at).getTime() - 1).toISOString().slice(0, 10))}` : ""}{r.note ? ` · ${r.note}` : ""}</span>
               {!locked && (
                 <button disabled={busy} onClick={() => act(() => db.from("guide_availability").delete().eq("id", r.id), "Removed")} className="text-[11px] uppercase tracking-[0.18em] text-destructive min-h-11 px-2">Remove</button>
               )}
