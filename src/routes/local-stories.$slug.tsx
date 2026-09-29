@@ -35,6 +35,7 @@ import evoraWinery from "@/assets/tours/evora-alentejo/winery.jpg";
 import vicentineCover from "@/assets/tours/southwest-vicentine-coast-cover.jpg.asset.json";
 import { GuideNextSteps, useGuideLinkTracker } from "@/components/journal/GuideNextSteps";
 import { GuideBookingCta } from "@/components/journal/GuideBookingCta";
+import { EditorialSources } from "@/components/journal/EditorialSources";
 import { DirectAnswer } from "@/components/DirectAnswer";
 import { guideRefDataAttrs } from "@/lib/guide-attribution-inline";
 import {
@@ -356,6 +357,7 @@ function StaticArticleView({ article }: { article: LocalStoryArticle }) {
                   <p className="text-[16px] md:text-[17px] text-[color:var(--charcoal)] leading-[1.85]">
                     {renderBodyWithTourLinks(section.body)}
                   </p>
+                  <EditorialSources sources={section.sources} />
                   {CHAPTER_IMAGES[article.slug]?.[index] && (
                     <figure className="mt-8 overflow-hidden rounded-sm">
                       <ResponsiveEditorialImage

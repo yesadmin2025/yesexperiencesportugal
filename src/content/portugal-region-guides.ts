@@ -35,6 +35,7 @@ export const PORTUGAL_REGION_GUIDES: LocalStoryArticle[] = [
       {
         heading: "The Douro starts where the motorway ends.",
         body: "The valley proper begins around Peso da Régua and tightens as you go east through Pinhão toward the Spanish border. UNESCO recognizes the Alto Douro as a wine landscape shaped over centuries: terraces cut into schist make steep slopes workable, and the river once carried the wine downstream. The N222 above Pinhão lets you read that relationship between land, labor and wine; it repays a slow car far more than a fast one.",
+        sources: [{ label: "UNESCO — Alto Douro Wine Region", url: "https://whc.unesco.org/en/list/1046/" }],
       },
       {
         heading: "Quintas, and how many is too many.",
