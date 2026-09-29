@@ -1,5 +1,6 @@
 import { localeAlternateLinks } from "@/i18n/seo";
 import { trackEvent } from "@/lib/analytics-events";
+import { leadAttribution } from "@/lib/utm";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { breadcrumbLd, jsonLdScript } from "@/lib/jsonld";
 import { SiteLayout } from "@/components/SiteLayout";
@@ -213,6 +214,7 @@ function Page() {
                         message: parsed.data.message,
                         place: presetPlace ?? null,
                         source: "contact-page",
+                        attribution: leadAttribution(),
                         locale: typeof navigator !== "undefined" ? navigator.language : null,
                         userAgent:
                           typeof navigator !== "undefined"

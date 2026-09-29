@@ -16,6 +16,7 @@ import { TravelFilePreview } from "@/components/travel-designer/TravelFilePrevie
 import { useMarketingMotion } from "@/hooks/use-marketing-motion";
 import { breadcrumbLd, jsonLdScript, SITE_URL } from "@/lib/jsonld";
 import { trackEvent } from "@/lib/analytics-events";
+import { leadAttribution } from "@/lib/utm";
 import { EMAIL, EMAIL_HREF, LICENSE_LABEL } from "@/config/business-nap";
 import { ArrowRight, CheckCircle2 } from "lucide-react";
 import heroImg from "@/assets/why-image.jpg";
@@ -219,6 +220,7 @@ function TradePage() {
           email: parsed.data.email,
           message: composed,
           source: "trade",
+          attribution: leadAttribution(),
           locale: typeof navigator !== "undefined" ? navigator.language : null,
           userAgent: typeof navigator !== "undefined" ? navigator.userAgent.slice(0, 500) : null,
         }),
