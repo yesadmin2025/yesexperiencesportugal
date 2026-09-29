@@ -17,6 +17,15 @@ export const Route = createFileRoute("/guide/calendar")({
 });
 
 type Avail = { start_at: string; end_at: string; status: string };
+const PARTIAL = new Set(["morning", "afternoon", "custom", "partial"]);
+/** Local-day overlap (guides operate in Portugal; browser local time). Handles same-day partial rows. */
+function findAvail(list: Avail[], iso: string): Avail | undefined {
+  const [y, m, d] = iso.split("-").map(Number);
+  const dayStart = new Date(y, m - 1, d).getTime();
+  const dayEnd = new Date(y, m - 1, d + 1).getTime();
+  const hits = list.filter((a) => new Date(a.start_at).getTime() < dayEnd && new Date(a.end_at).getTime() > dayStart);
+  return hits.find((a) => PARTIAL.has(a.status)) ?? hits[0];
+}
 
 function GuideCalendar() {
   const [month, setMonth] = useState(() => todayIso().slice(0, 7));
@@ -37,11 +46,12 @@ function GuideCalendar() {
       ...Array.from({ length: count }, (_, i) => {
         const iso = `${month}-${String(i + 1).padStart(2, "0")}`;
         const dayTours = tours.filter((tour) => tour.tour_date === iso && !tour.booking_cancelled);
-        const availability = avail.find((item) => item.start_at.slice(0, 10) <= iso && item.end_at.slice(0, 10) > iso);
+        const availability = findAvail(avail, iso);
         let tone: CalendarDayTone = "default";
         if (dayTours.length) tone = "tour";
         else if (availability?.status === "available") tone = "available";
-        else if (availability?.status && availability.status !== "available") tone = "unavailable";
+        else if (availability && PARTIAL.has(availability.status)) tone = "partial";
+        else if (availability?.status) tone = "unavailable";
         return { iso, day: i + 1, tone, count: dayTours.length || undefined, label: `${iso}: ${dayTours.length ? `${dayTours.length} tour${dayTours.length > 1 ? "s" : ""}` : availability?.status ?? "no status"}` };
       }),
     ];
@@ -56,7 +66,7 @@ function GuideCalendar() {
   };
   const today = todayIso();
   const selectedTours = tours.filter((tour) => tour.tour_date === selected && !tour.booking_cancelled);
-  const selectedAvailability = avail.find((item) => item.start_at.slice(0, 10) <= selected && item.end_at.slice(0, 10) > selected);
+  const selectedAvailability = findAvail(avail, selected);
   const selectToday = () => {
     setMonth(today.slice(0, 7));
     setSelected(today);
@@ -78,6 +88,7 @@ function GuideCalendar() {
         <span><i className="mr-1.5 inline-block h-2.5 w-2.5 bg-primary" />Tour</span>
         <span><i className="mr-1.5 inline-block h-2.5 w-2.5 border border-primary/25 bg-primary/10" />Available</span>
         <span><i className="mr-1.5 inline-block h-2.5 w-2.5 bg-destructive/10" />Unavailable</span>
+        <span><i className="mr-1.5 inline-block h-2.5 w-2.5 bg-[color:var(--gold)]/15 border border-[color:var(--gold)]/50" />Partial hours</span>
       </div>
 
       <section className="border-t border-border pt-5" aria-live="polite">
