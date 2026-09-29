@@ -162,7 +162,7 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
       },
       {
         heading: "What Sintra feels like",
-        body: "Sintra feels theatrical, historic and slightly mysterious. Forested hills surround palaces, gardens and old estates, while mist and changing light give the landscape a character unlike anywhere else near Lisbon.\n\nThe main attractions are internationally famous, particularly Pena Palace and Quinta da Regaleira. A well-designed private day can also continue through the Sintra-Cascais Natural Park, Cabo da Roca and the coast towards Cascais.\n\nSintra suits travelers drawn to architecture, royal history, gardens and dramatic scenery. It is more monument-focused than Arrábida and generally requires greater planning because entrance times, traffic and visitor numbers influence the rhythm of the day.",
+        body: "Sintra feels theatrical, historic and slightly mysterious. Forested hills surround palaces, gardens and old estates. UNESCO recognizes the whole setting as a cultural landscape: 19th-century Romantic architecture brought buildings and planted gardens into conversation with the hills.\n\nPena Palace and Quinta da Regaleira make more sense seen as parts of that landscape than as two boxes to check. The private day offers one palace with a Colares wine visit, or two palaces; it can then continue through Cabo da Roca toward Cascais. [See the Sintra & Cascais day](/tours/sintra-cascais) for the package choice.\n\nSintra suits travelers drawn to architecture, royal history and gardens. Timed entrance, traffic and visitor numbers influence its rhythm more than they do on an Arrábida day.",
       },
       {
         heading: "Crowds, driving time, pace",
@@ -204,7 +204,7 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
       },
       {
         heading: "What to pair it with",
-        body: "Setúbal wine makes most sense when experienced with the food and landscape that surround it. Azeitão cheese is the classic local pairing, particularly with Moscatel, but the region also offers excellent bread, olive oil, seafood and grilled fish.\n\nSetúbal itself is known for its fishing tradition, while Sesimbra and Portinho da Arrábida offer coastal lunches where the setting becomes part of the experience. A dry white can work beautifully with fresh fish, while local reds pair naturally with meat, richer dishes and aged cheese.\n\nThe point is not to rush from tasting to tasting. A good Setúbal wine day leaves room for lunch, conversation and the pleasure of understanding why the wines taste as they do here. If you are choosing where to start, our guide to the [best wine tours from Lisbon](/local-stories/best-wine-tours-from-lisbon) compares Azeitão, Setúbal and Arrábida side by side.",
+        body: "Setúbal wine makes most sense with the food and landscape around it. Queijo de Azeitão PDO is a sheep's-milk cheese traditionally coagulated with cardoon flower; that protected method makes the [hands-on Azeitão cheese day](/tours/azeitao-cheese) more than a tasting stop. It is a classic local pairing with Moscatel, alongside regional bread, olive oil and grilled fish.\n\nSetúbal's fishing tradition and the coastal tables around Sesimbra give the wine its everyday setting. A dry white can suit fresh fish, while local reds sit beside richer dishes and aged cheese.\n\nThe point is not to rush from tasting to tasting. A Setúbal wine day leaves room for lunch and for understanding why these foods and wines belong together. Our guide to the [best wine tours from Lisbon](/local-stories/best-wine-tours-from-lisbon) compares the routes side by side.",
       },
     ],
     ctaLead:
@@ -337,7 +337,7 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
       },
       {
         heading: "Rice fields, dunes and a quieter kind of design",
-        body: "Comporta's appeal is in the space between things: rice fields, low buildings, pine and dunes before the Atlantic. Its understated architecture and creative culture feel different from Cascais's resort town and the Algarve's busier coastal centers. The [Tróia and Comporta Signature](/tours/troia-comporta) includes a tasting at Herdade da Comporta; check the tour page for the exact day's inclusions.",
+        body: "Comporta's appeal is in the space between things: working rice fields, low buildings, pine and dunes before the Atlantic. Its understated architecture and creative culture value privacy and the landscape rather than spectacle; this feels different from Cascais's resort town and the Algarve's busier coastal centers. The [Tróia and Comporta Signature](/tours/troia-comporta) includes a tasting at Herdade da Comporta; check the tour page for the exact day's inclusions.",
       },
       {
         heading: "One day, or part of a longer Portugal journey",
@@ -372,7 +372,7 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
     sections: [
       {
         heading: "A coast shaped by the natural park",
-        body: "The Parque Natural do Sudoeste Alentejano e Costa Vicentina protects stretches of Atlantic coast between the Alentejo and Algarve. Here the landscapes are cliffs, dunes, river mouths and fishing villages rather than a line of large resorts. It suits travelers who want to see a less-obvious Portugal without treating every beach as a checklist stop.",
+        body: "The Parque Natural do Sudoeste Alentejano e Costa Vicentina protects stretches of Atlantic coast between the Alentejo and Algarve. Cliffs, dunes, river mouths and fishing villages are connected parts of a lived-in coastline, not a sequence of resort stops. That is why a route through Porto Covo, Milfontes and Odeceixe rewards a slower look: the relationship between settlement, river and sea changes along the way.",
       },
       {
         heading: "Porto Covo and Ilha do Pessegueiro",
@@ -433,7 +433,7 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
     sections: [
       {
         heading: "What Vinho de Talha means",
-        body: "A talha is a large clay vessel used to ferment wine. In parts of the Alentejo, this Roman-rooted method is still practiced rather than merely displayed in a museum. Near Vila de Frades and Vidigueira, visitors can encounter both the vessel and the people who keep the tradition in use. It is a different way to understand Alentejo wine from a conventional cellar tasting.",
+        body: "A talha is a large clay vessel used to ferment wine. In parts of the Alentejo, this method with roots more than two millennia old is still practiced rather than merely displayed in a museum. Near Vila de Frades and Vidigueira, visitors encounter both the vessel and the people who keep the tradition in use. The cultural value is continuity: a way of making wine passed along locally, not a Roman recipe reconstructed for visitors.",
       },
       {
         heading: "São Cucufate — the Roman landscape",
@@ -760,7 +760,7 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
     sections: [
       {
         heading: "Sintra is the day everyone has heard of.",
-        body: "We prefer it early, before the main estates fill with buses. The Pena Palace sits above the treeline; Quinta da Regaleira is a garden of grottoes and symbols. From the hill the road runs west to Cabo da Roca, the westernmost point of mainland Europe, and drops to Cascais for late afternoon.",
+        body: "We prefer it early, before the main estates fill with buses. UNESCO recognizes Sintra as a cultural landscape: Romantic-era palaces and planted gardens shaped the wooded hills together. Pena rises above the treeline; Quinta da Regaleira is a garden of grottoes and symbols. [Choose one palace with Colares wine or two palaces](/tours/sintra-cascais), then follow the road toward Cabo da Roca and Cascais.",
       },
       {
         heading: "A working winery, not just the postcard list.",
@@ -1000,7 +1000,7 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
     sections: [
       {
         heading: "Évora and Alentejo, in one day from Lisbon.",
-        body: "Évora is the UNESCO-listed capital of Alentejo — Roman Temple, Chapel of Bones, narrow lanes. Around it stretches cork-oak country and some of Portugal's most honest family wineries. Done privately, the two fit comfortably into a single full day.",
+        body: "Évora's UNESCO-listed center carries Roman foundations through later medieval streets, chapels and whitewashed houses. Beyond it, cork-oak country and Alentejo wineries show how the region's material culture and wine still belong to the working landscape. [See the Évora Signature](/tours/evora-alentejo) for its published visits and lunch arrangement.",
       },
       {
         heading: "Cork, wine, heritage, lunch.",
@@ -1898,7 +1898,7 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
       },
       {
         heading: "Óbidos closes the day inside medieval walls.",
-        body: "Óbidos is small, whitewashed and entirely walkable. The castle sits on Roman foundations with a Moorish layout, a royal palace from 1148 and towers added in 1375. The local ritual is ginjinha, a cherry liqueur served in a small chocolate cup, which is included on our day.",
+        body: "Óbidos is small, whitewashed and walkable inside its medieval walls. It is also a UNESCO Creative City of Literature: books and reading are a living part of the town's cultural life, not another medieval monument. The [published private day](/tours/fatima-nazare-obidos) includes time in the lanes and a ginjinha tasting; its itinerary does not promise a literary venue visit.",
       },
       {
         heading: "Why three stops work, and when they do not.",
@@ -2103,7 +2103,7 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
     sections: [
       {
         heading: "Why these two cities travel well together.",
-        body: "Tomar and Coimbra sit on the same road north of Lisbon, which is what makes the pairing work. Tomar holds the Templar Convento de Cristo, the fortress-monastery behind Portugal's age of discovery. Coimbra holds the country's oldest university, founded in 1290. Neither needs a full day on its own, and together they fill one properly.",
+        body: "Tomar and Coimbra sit on the same road north of Lisbon, which makes the pairing work. UNESCO's Convent of Christ in Tomar traces a change from the Templars to the Order of Christ; its architecture carries that history into Portugal's later age of exploration. Coimbra's university, founded in 1290, gives the day a different kind of continuity: learning still embedded in the city. [See the Tomar and Coimbra Signature](/tours/tomar-coimbra) for current visits and timed-entry details.",
       },
       {
         heading: "Inside the Convento de Cristo.",

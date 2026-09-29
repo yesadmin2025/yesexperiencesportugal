@@ -34,7 +34,7 @@ export const PORTUGAL_REGION_GUIDES: LocalStoryArticle[] = [
       },
       {
         heading: "The Douro starts where the motorway ends.",
-        body: "The valley proper begins around Peso da Régua and tightens as you go east through Pinhão towards the Spanish border. The terraces were cut into schist by hand over three centuries and are a UNESCO World Heritage landscape. The drive along the N222 above Pinhão is the reason people come back; the river road repays a slow car far more than a fast one.",
+        body: "The valley proper begins around Peso da Régua and tightens as you go east through Pinhão toward the Spanish border. UNESCO recognizes the Alto Douro as a wine landscape shaped over centuries: terraces cut into schist make steep slopes workable, and the river once carried the wine downstream. The N222 above Pinhão lets you read that relationship between land, labor and wine; it repays a slow car far more than a fast one.",
       },
       {
         heading: "Quintas, and how many is too many.",
@@ -91,7 +91,7 @@ export const PORTUGAL_REGION_GUIDES: LocalStoryArticle[] = [
       },
       {
         heading: "Guimarães is where the country starts.",
-        body: "The castle and the Paço dos Duques sit above a medieval center that is a UNESCO World Heritage site and genuinely lived in, not staged. Portugal's first king was born here, and the town says so on a wall. It pairs naturally with Braga; the two are twenty-five minutes apart.",
+        body: "The castle and Paço dos Duques sit above a medieval center that UNESCO recognizes for its connection to the emergence of Portuguese identity in the 12th century. It is also a lived-in town, not a preserved set. The streets explain more of that history than a single monument can; it pairs naturally with Braga on a longer northern route.",
       },
       {
         heading: "Vinho verde, quietly.",
