@@ -486,7 +486,7 @@ export const signatureTours: SignatureTour[] = [
     title: "Arrábida & Sesimbra Private Tour with Coastal Boat Ride",
     seoTitle: "Arrábida & Sesimbra Private Boat Tour from Lisbon | YES",
     seoDescription:
-      "Private Arrábida day trip from Lisbon with a coastal boat ride into hidden coves, seafood lunch and golden-hour Sesimbra. All-inclusive.",
+      "Private Arrábida day trip from Lisbon with a coastal boat ride along the Arrábida cliffs, Livramento Market and time in Sesimbra. Lunch at your own expense.",
     region: "Setúbal · Arrábida",
     duration: "Full Day",
     durationHours: "6–8h",
@@ -784,10 +784,10 @@ export const signatureTours: SignatureTour[] = [
   },
   {
     id: "sintra-cascais",
-    title: "Sintra & Cascais Private Tour — Hidden Gems & Wine Tasting",
+    title: "Sintra & Cascais Private Tour — Palaces, Wine & Atlantic Coast",
     seoTitle: "Sintra & Cascais Private Tour from Lisbon | Hidden Gems",
     seoDescription:
-      "Private Sintra and Cascais day from Lisbon — quieter palaces, Cabo da Roca, Atlantic cliffs and a local wine tasting. All-inclusive.",
+      "Private Sintra and Cascais day from Lisbon — one palace plus a Colares wine tasting, or two palaces, then Cabo da Roca and Cascais.",
     region: "Lisbon Coast",
     duration: "Full Day",
     durationHours: "8–10h",
@@ -1203,10 +1203,10 @@ export const signatureTours: SignatureTour[] = [
   },
   {
     id: "fatima-nazare-obidos",
-    title: "Fátima, Nazaré & Óbidos Private Tour from Lisbon — Spirit & Charm",
+    title: "Fátima, Nazaré & Óbidos Private Tour from Lisbon",
     seoTitle: "Fátima, Nazaré & Óbidos Private Tour from Lisbon | YES",
     seoDescription:
-      "Private day from Lisbon to Fátima sanctuary, Nazaré's big-wave cliffs and Óbidos medieval walls, ending with a Ginjinha tasting.",
+      "Private day from Lisbon to Fátima sanctuary, Nazaré's cliffs and beach and Óbidos medieval walls, ending with a Ginjinha tasting.",
     region: "Centro · Coast",
     duration: "Full Day",
     durationHours: "8–9h",
@@ -1215,7 +1215,7 @@ export const signatureTours: SignatureTour[] = [
     blurb:
       "The Sanctuary of Fátima, Nazaré's cliff viewpoint and Atlantic coast, the medieval lanes of Óbidos and a Ginjinha tasting.",
     intro:
-      "Three landmarks, one perfectly composed day. Faith in Fátima, the awe of Nazaré's giant Atlantic waves, and the medieval streets of Óbidos finished off with a small ceramic cup of cherry liqueur.",
+      "Three landmarks, one perfectly composed day. Faith in Fátima, Nazaré's Atlantic cliffs — where the giant waves arrive in winter — and the medieval streets of Óbidos finished off with a small ceramic cup of cherry liqueur.",
     fitsBest: "Pilgrims, couples and families",
     pace: ["Fátima sanctuary", "Nazaré cliffs", "Óbidos & Ginjinha"],
     stops: [
@@ -1307,7 +1307,7 @@ export const signatureTours: SignatureTour[] = [
     blurb:
       "Roman ruins, amphora wines and a hidden Alentejo most travelers never reach — a quiet inland day with deep roots.",
     intro:
-      "Two thousand years ago the Romans were already making wine in this corner of the Alentejo. We follow their road south — to the ruins of São Cucufate, a tiny family cellar still pressing wine into clay amphorae the old way, and a river beach almost no one knows. The slowest day in our catalogue. The most surprising.",
+      "Two thousand years ago the Romans were already making wine in this corner of the Alentejo. We follow their road south — to the ruins of São Cucufate, a tiny family cellar still pressing wine into clay amphorae the old way, and a quiet river beach to close the day, with a traditional lunch at the winery.",
     fitsBest: "Couples, wine lovers and curious travelers",
     pace: ["Roman ruins", "Talha winery", "River beach"],
     stops: [
@@ -1394,7 +1394,7 @@ export const signatureTours: SignatureTour[] = [
   },
   {
     id: "southwest-vicentine-coast",
-    title: "Southwest Vicentine Coast — Secret Paradise from Lisbon",
+    title: "Southwest Vicentine Coast Private Tour from Lisbon",
     seoTitle: "Southwest Vicentine Coast Tour from Lisbon | Secret Beaches",
     seoDescription:
       "Private day from Lisbon to the Vicentine Coast — Porto Covo, Milfontes, Odeceixe and protected cliffs along one of Portugal's wildest shores.",

@@ -336,7 +336,7 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
       },
       {
         heading: "Comporta and the sandy-soil wines",
-        body: "Comporta itself is the reason people fly here. Sand-floor tascas, whitewashed rice-workers' villages, dune systems that stretch uninterrupted for kilometres. What almost no one talks about is the wine: Herdade da Comporta grows vines directly on the Atlantic sand, with the ocean two hundred metres away — a terroir that exists in maybe a dozen places on Earth. The tastings there are quiet, technical, and free of the theatre you get in more famous regions.",
+        body: "Comporta itself is the reason people fly here. Sand-floor tascas, whitewashed rice-workers' villages, dune systems that stretch uninterrupted for kilometres. What fewer visitors know is the wine: Herdade da Comporta grows vines directly on the Atlantic sand, with the ocean two hundred metres away — a terroir that exists in maybe a dozen places on Earth. The tastings there are quiet, technical, and free of the theatre you get in more famous regions.",
       },
       {
         heading: "Wild beaches, and the drive back",
@@ -512,7 +512,7 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
     sections: [
       {
         heading: "Setúbal — the closest, the most underrated",
-        body: "Twenty-five minutes south of Lisbon and almost no one outside Portugal knows the name. Setúbal is Moscatel country — fortified, aromatic, the kind of wine you keep thinking about a week later. The estates here are family-run, the tastings are quiet, and the drive in is along the Sado estuary. If you have half a day, this is the answer.",
+        body: "Setúbal sits a short drive south of Lisbon, and few visitors know it well. Setúbal is Moscatel country — fortified, aromatic, the kind of wine you keep thinking about a week later. The estates here are family-run, the tastings are quiet, and the drive in is along the Sado estuary. If you have half a day, this is the answer.",
       },
       {
         heading: "Palmela — reds with character",
@@ -805,7 +805,7 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
       },
       {
         heading: "One private car, one guide, one great cellar day.",
-        body: "All-inclusive: transfers from your Lisbon hotel, tastings, lunch, and the guide who knows which cellar is pouring well this month.",
+        body: "On the Arrábida Wine Signature, transfers, tastings and lunch are included, with a guide who knows which cellar is pouring well this month.",
       },
     ],
     ctaLead:
@@ -1804,7 +1804,7 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
       { heading: "Politeness arrives before efficiency", body: "A greeting matters. Bom dia or boa tarde before a question changes the tone of an exchange, even when the rest of the conversation happens in English. Portuguese service can feel reserved rather than performative; warmth often appears gradually, through attention rather than display." },
       { heading: "Meals are not gaps between attractions", body: "Lunch is allowed to take time, dinner starts later than many American visitors expect, and a table is not usually hurried toward a second sitting. Bread, olives or cheese placed on the table may be charged if eaten; declining them is ordinary. The best approach is to leave room in the schedule rather than force a Portuguese meal into a narrow slot." },
       { heading: "Coffee is short, frequent and social", body: "Ordering a café usually means a small espresso. People drink it standing at a counter, after lunch, or as a reason to pause with someone for ten minutes. It is less a large takeaway drink than punctuation in the day." },
-      { heading: "Tipping is appreciated, not compulsory", body: "Service is included in the price. Rounding up or leaving five to ten percent after a particularly good meal or private day is generous, but it is not the automatic obligation familiar in the United States. Quiet appreciation is enough." },
+      { heading: "Tipping is appreciated, not compulsory", body: "Tipping is not compulsory in Portugal, but it has become increasingly common in private tourism, especially among international guests. If your guide made the day special, a gratuity is genuinely appreciated. There is no fixed amount — it is entirely at your discretion." },
       { heading: "The slower pace is not empty time", body: "Portugal makes more sense when a viewpoint, cellar or conversation is allowed to run longer than planned. Private travel works well here for that reason: the day can respond to weather, appetite and interest without treating every unscheduled minute as a problem." },
     ],
     ctaLead: "Travel with a local host and the small cultural details become part of the day, not a list to memorize.",
@@ -2108,7 +2108,7 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
       },
     ],
     ctaLead:
-      "This is the day exactly as we run it — private to your party, Lisbon pickup, entrances, guide and lunch included.",
+      "This is the day exactly as we run it — private to your party, with pickup, entrances and timed Joanina Library entry included; lunch is at your own expense.",
     ctaLabel: "See dates & reserve",
     signatureSlug: "tomar-coimbra",
     relatedSignatures: [
@@ -2138,7 +2138,7 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
       },
       {
         q: "Is lunch included?",
-        a: "Yes, along with bottled water and a local pastry, in a quiet inland town rather than a tourist strip.",
+        a: "No. Lunch is at your own expense, and your guide suggests a good table on the way. Bottled water is included.",
       },
       {
         q: "Is it better than Sintra for a first visit?",
@@ -2214,7 +2214,7 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
       },
       {
         q: "Is lunch included?",
-        a: "Lunch is included when you choose the Arrábida Discovery Boat Tour with lunch; on the other boat options it can be added when you tailor the day.",
+        a: "No. On the Arrábida & Sesimbra boat day, lunch is at your own expense, with time in Sesimbra to choose a table.",
       },
       {
         q: "Is it suitable for young children?",
@@ -2572,7 +2572,7 @@ export const GUIDE_INLINE_BOOKING: Readonly<
   },
   "fatima-day-trip-from-lisbon": {
     tourSlug: "fatima-nazare-obidos",
-    lead: "The loop described above, run as one private day: Fátima sanctuary, Nazaré's cliffs and Óbidos, with Lisbon pickup and lunch included.",
+    lead: "The loop described above, run as one private day: Fátima sanctuary, Nazaré's cliffs and Óbidos, with pickup included; lunch is at your own expense.",
   },
   "azulejo-tile-painting-workshop-lisbon": {
     tourSlug: "tiles-workshop",
@@ -2580,7 +2580,7 @@ export const GUIDE_INLINE_BOOKING: Readonly<
   },
   "tomar-coimbra-day-trip-from-lisbon": {
     tourSlug: "tomar-coimbra",
-    lead: "The day above, run privately from your Lisbon door: the Templar convent, Coimbra University, entrances and lunch included.",
+    lead: "The day above, run privately from your Lisbon door: the Templar convent, Coimbra University and entrances included; lunch is at your own expense.",
   },
   "arrabida-boat-tour-from-lisbon": {
     tourSlug: "arrabida-boat",
