@@ -82,6 +82,7 @@ function TourCalendarPage() {
   const shift = (n: number) =>
     setMonth(({ y, m }) => {
       const d = new Date(y, m + n, 1);
+      setSelected(`${d.getFullYear()}-${pad(d.getMonth() + 1)}-01`);
       return { y: d.getFullYear(), m: d.getMonth() };
     });
   const dayList = selected ? byDay.get(selected) ?? [] : [];

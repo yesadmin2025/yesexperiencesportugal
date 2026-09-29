@@ -33,4 +33,4 @@
 - [x] Add selected-day summaries and clearer status keys
 - [x] Simplify both mobile navigation bars
 - [x] Add Guide App home-screen installation action
-- [ ] Validate both calendars at mobile and desktop widths
+- [x] Validate both calendars at mobile and desktop widths

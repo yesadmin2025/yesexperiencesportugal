@@ -50,7 +50,9 @@ function GuideCalendar() {
   const shift = (n: number) => {
     const d = new Date(`${month}-01T12:00:00Z`);
     d.setUTCMonth(d.getUTCMonth() + n);
-    setMonth(d.toISOString().slice(0, 7));
+    const nextMonth = d.toISOString().slice(0, 7);
+    setMonth(nextMonth);
+    setSelected(`${nextMonth}-01`);
   };
   const today = todayIso();
   const selectedTours = tours.filter((tour) => tour.tour_date === selected && !tour.booking_cancelled);

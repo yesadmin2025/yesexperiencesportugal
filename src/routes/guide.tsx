@@ -63,6 +63,14 @@ function GuideLayout() {
     return () => sub.subscription.unsubscribe();
   }, []);
 
+  useEffect(() => {
+    const manifest = document.querySelector<HTMLLinkElement>('link[rel="manifest"]');
+    if (!manifest) return;
+    const previous = manifest.href;
+    manifest.href = "/guide.webmanifest";
+    return () => { manifest.href = previous; };
+  }, []);
+
   // Live updates: RLS limits events to this guide's own rows.
   const [version, setVersion] = useState(0);
   useEffect(() => {
