@@ -125,7 +125,7 @@ export function CompositionField({ value, onChange, maxParty, compact }: Props) 
               color: "var(--charcoal)",
             }}
           >
-            Traveling with children?
+            Travelling with children?
           </div>
           <span
             className="shrink-0 text-right text-[12px] uppercase leading-snug tracking-[0.08em] tabular-nums"

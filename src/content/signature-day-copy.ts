@@ -39,7 +39,7 @@ export const CTA_SEE_MORE_ADDONS = "See more options" as const;
 export const CTA_SEE_INCLUSIONS = "See what's included" as const;
 
 // Composer → Refine handoff (MapAwakens primary CTA).
-export const CTA_PERSONALISE = "Personalize a few details" as const;
+export const CTA_PERSONALISE = "Personalise a few details" as const;
 
 // Refine screen (SignaturePriceCard) — secondary "quiet help" CTA.
 export const CTA_ASK_CURATOR = "Ask a curator for help" as const;

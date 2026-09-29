@@ -431,7 +431,7 @@ type Chapter = DriftChapter | TextChapter | ChoiceChapter | ConvergenceChapter;
 const greet = (p: DriftProfile, fallback: string) =>
   p.name ? `${fallback.replace(/^./, (c) => c.toLowerCase())}, ${p.name}` : fallback;
 
-/** Two-pace entry: travelers who chose "60 segundos" reveal faster. */
+/** Two-pace entry: travellers who chose "60 segundos" reveal faster. */
 const isFastPace = (): boolean => {
   if (typeof window === "undefined") return false;
   try {

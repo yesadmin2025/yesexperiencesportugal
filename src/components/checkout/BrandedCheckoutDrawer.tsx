@@ -275,7 +275,7 @@ function ExperienceSummaryCard({
   total: number | null;
 }) {
   // Open by default: guests must see exactly what they are paying for
-  // (travelers, chosen stops, add-ons) without hunting for a toggle.
+  // (travellers, chosen stops, add-ons) without hunting for a toggle.
   const [open, setOpen] = useState(true);
   const isTailored = summary.flowLabel === "Tailored" || summary.flowLabel === "Tailored Signature";
 

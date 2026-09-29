@@ -210,7 +210,7 @@ export function LiveReviews({
             onClick={() => trackEvent("review_cta_click", { placement: id ?? "live-reviews" })}
             className="inline-flex min-h-[44px] items-center justify-center gap-2 font-sans text-[11px] uppercase tracking-[0.22em] text-[color:var(--charcoal-soft)] underline decoration-[color:var(--gold)] decoration-1 underline-offset-[6px] transition-colors hover:text-[color:var(--charcoal)]"
           >
-            Traveled with us? Share your experience
+            Travelled with us? Share your experience
             <span aria-hidden className="text-[color:var(--gold)]">
               →
             </span>

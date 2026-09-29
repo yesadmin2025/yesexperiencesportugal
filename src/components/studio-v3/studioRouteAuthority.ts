@@ -224,7 +224,7 @@ export function isProvablyUntouchedCanonicalAnchor(args: {
   if ((args.editedRoutePoints?.length ?? 0) > 0) return false;
 
   // 2. PASS 4.1 — a NONEMPTY committed snapshot is the frozen itinerary the
-  // traveler was shown, so it is the current authority. A resolver run AFTER
+  // traveller was shown, so it is the current authority. A resolver run AFTER
   // the freeze can no longer overrule it; its "composed" signal is only
   // sovereign while no snapshot exists.
   const hasCommitted = (args.committedRoutePoints?.length ?? 0) > 0;

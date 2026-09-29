@@ -422,7 +422,7 @@ function TailorPage() {
         return;
       }
       // Consequence preview — surface the estimated time cost so the
-      // traveler sees WHY the day just changed. Winery estates are
+      // traveller sees WHY the day just changed. Winery estates are
       // operational data: the guest only ever hears "Winery visit".
       const option = blueprint?.choice?.options.find((o) => o.id === id);
       if (option) {
@@ -766,7 +766,7 @@ function TailorPage() {
 
   /**
    * Public winery vocabulary. Estate names are operational data — the
-   * traveler chooses how MANY winery visits the day holds, never which
+   * traveller chooses how MANY winery visits the day holds, never which
    * partner. Assignment happens after booking.
    */
   const wineryLabel = (index: number) => `Winery visit ${index}`;

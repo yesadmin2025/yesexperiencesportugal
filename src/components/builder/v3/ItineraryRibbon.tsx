@@ -4,7 +4,7 @@ import type { StudioStop } from "@/hooks/useStudioState";
 import { fmtMinutes } from "@/components/builder/types";
 
 /**
- * The emerging itinerary — emotional, not technical. Travelers see the
+ * The emerging itinerary — emotional, not technical. Travellers see the
  * blurb (a sensory phrase), never the internal stop name. Numbered in
  * Newsreader italic; the world rearranges silently on removal.
  */

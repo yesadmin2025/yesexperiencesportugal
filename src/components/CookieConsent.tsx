@@ -247,7 +247,7 @@ export function CookieConsent() {
               />
               <ConsentRow
                 label="Marketing"
-                hint="Personalized ads across partners."
+                hint="Personalised ads across partners."
                 checked={ads}
                 onChange={setAds}
               />
@@ -357,7 +357,7 @@ function ConsentRow({
   );
 }
 
-/** Trigger the banner in "customize" mode from anywhere (e.g. footer link). */
+/** Trigger the banner in "customise" mode from anywhere (e.g. footer link). */
 export function openCookieConsent() {
   if (typeof window === "undefined") return;
   window.dispatchEvent(new CustomEvent("yes:open-cookie-consent"));

@@ -270,7 +270,7 @@ export function SignaturePriceCard({
   /**
    * No approved tier for this EXACT party size. `priceFrom` is a generic
    * pre-composition anchor only — showing it here would quote a solo
-   * traveler the 8-guest rate and then fail at checkout. We refuse to
+   * traveller the 8-guest rate and then fail at checkout. We refuse to
    * price, and the card falls back to the curator contact path.
    */
   const tierUnavailable = tour != null && effectiveGuests != null && realPerPax == null;
@@ -278,7 +278,7 @@ export function SignaturePriceCard({
 
 
   // Budget-aware add-on pool: every eligible option stays visible so the
-  // traveler can read it, but ones that wouldn't fit the regional rhythm
+  // traveller can read it, but ones that wouldn't fit the regional rhythm
   // are flagged via `fitsBudget` and locked at the UI layer below.
   const addOnPool = useMemo(
     () =>
@@ -645,7 +645,7 @@ export function SignaturePriceCard({
   }, [tour, priceEur, effectiveOverrides]);
 
   // Batch C — price anchor. Surface the real cheapest tier so a solo/duo
-  // traveler can see "drops to €X/pp with N guests" before tapping the
+  // traveller can see "drops to €X/pp with N guests" before tapping the
   // group picker. Sourced from real tier data only; silent when absent.
   const cheapestRealTier = useMemo(() => {
     const reals = tierRows.filter((r) => r.real);

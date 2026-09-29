@@ -4,7 +4,7 @@
  * One non-blocking interpretation beat, rendered immediately before Logistics.
  * It turns the Studio's silent inference (feeling, company, taste, rhythm,
  * inherited intent) into two or three short editorial sentences, so the
- * traveler feels read rather than processed.
+ * traveller feels read rather than processed.
  *
  * Hard rules (non-negotiable):
  *   - Pure and deterministic. Same state in, same words out. No AI, no LLM

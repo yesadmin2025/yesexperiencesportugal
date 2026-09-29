@@ -544,7 +544,7 @@ export function SimpleBookingForm({ tour }: { tour: SignatureTour }) {
         </Field>
       </div>
 
-      {/* Who's traveling */}
+      {/* Who's travelling */}
       <div className="mt-5">
         <Field label="Who's traveling">
           {/* One frame per group: the booking card already provides the box,

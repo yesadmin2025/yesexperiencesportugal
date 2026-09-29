@@ -2272,7 +2272,7 @@ function RevealStory({
 
       {/* Trust band — micro, factual */}
       <div className="mt-6 flex flex-wrap items-center justify-center gap-x-5 gap-y-2 text-center">
-        {["500+ travelers", "Private only", "Designed by locals", "Instant confirmation"].map(
+        {["500+ travellers", "Private only", "Designed by locals", "Instant confirmation"].map(
           (t) => (
             <span
               key={t}

@@ -97,7 +97,7 @@ export interface HybridCompositionInput {
   /** Connectors with no verified duration — recorded, never guessed. */
   unverifiedConnectorLabels?: ReadonlyArray<string>;
   /**
-   * Traveler mobility/accessibility concern. No structured accessibility
+   * Traveller mobility/accessibility concern. No structured accessibility
    * field exists in current inventory, so this can NEVER remove or replace a
    * moment; it only raises an internal review issue.
    */

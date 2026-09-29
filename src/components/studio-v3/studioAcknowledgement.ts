@@ -180,7 +180,7 @@ export function themesAcknowledgedBefore(
 
 /**
  * The acknowledgement labels a question surface should show. Empty means the
- * traveler has already heard everything this surface could say — render
+ * traveller has already heard everything this surface could say — render
  * nothing rather than a placeholder.
  */
 export function acknowledgementSignalsFor(

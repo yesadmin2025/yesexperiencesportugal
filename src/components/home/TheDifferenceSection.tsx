@@ -47,7 +47,7 @@ export function TheDifferenceSection() {
             your day.
           </h2>
           <p className="mt-5 text-[15.5px] md:text-[17px] text-[color:var(--charcoal)] leading-[1.65] max-w-md mx-auto">
-            Personalized travel design, made simple.
+            Personalised travel design, made simple.
           </p>
         </div>
 

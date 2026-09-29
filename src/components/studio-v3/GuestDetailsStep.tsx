@@ -2,7 +2,7 @@
  * GuestDetailsStep — plan §I / K.11 inline Guest Details phase.
  *
  * Replaces the modal `FinalDetailsDialog` on the Studio V3 path so the
- * traveler experiences the details step as a natural continuation of
+ * traveller experiences the details step as a natural continuation of
  * the composer (not a popup). Design goals:
  *
  * - Inline, single-column, mobile-first (393×588 baseline).

@@ -7,7 +7,7 @@ import { INTENT_OPTIONS } from "@/lib/studio-v2/content";
  * Persistent WhatsApp affordance for the Studio v2 journey.
  *
  * Discreet round bubble visible on every beat (including mobile) so the
- * traveler can reach a local at any moment without losing context.
+ * traveller can reach a local at any moment without losing context.
  * Per brand: WhatsApp = optional support, never a primary CTA — so this
  * stays as a small round affordance, not a labelled pill that would
  * compete with the in-beat primary actions.

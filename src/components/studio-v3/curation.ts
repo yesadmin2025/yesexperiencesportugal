@@ -1403,11 +1403,11 @@ export function pickPrimaryTourWithFit(
   destinationIntent: DestinationIntent | null,
   seed: number = 0,
   rhythm: Rhythm | null = null,
-  /** Living Atlas preference — honored only when eligible and competitive. */
+  /** Living Atlas preference — honoured only when eligible and competitive. */
   preferTourId: string | null = null,
   /**
    * PREFLIGHT TRUTH — the product ids that are actually sellable for the
-   * traveler's exact date / pickup / party. `null` means "not resolved yet"
+   * traveller's exact date / pickup / party. `null` means "not resolved yet"
    * and leaves selection exactly as before. Never widens the pool.
    */
   eligibleTourIds: ReadonlyArray<string> | null = null,
@@ -1415,7 +1415,7 @@ export function pickPrimaryTourWithFit(
    * How much authority the preference carries.
    *  - "explicit": the traveler answered a deliberate, discriminative
    *    Director / discovery question (e.g. "Sacred heritage" →
-   *    `templars-and-university` → `tomar-coimbra`). Honored absolutely,
+   *    `templars-and-university` → `tomar-coimbra`). Honoured absolutely,
    *    but ONLY after the eligibility ceiling and the high-signal gate.
    *  - "inferred": the intelligence layer merely guessed a leading
    *    dimension. It is a bounded tie-break (Δ ≤ 12 from the leader) and
@@ -1611,7 +1611,7 @@ export function pickPrimaryTourWithFit(
   // high-signal gate, generic scoring must not outvote it.
   //
   // An INFERRED preference is only the intelligence layer's guess. It acts
-  // as a bounded tie-break: honored while it stays within the top band
+  // as a bounded tie-break: honoured while it stays within the top band
   // (Δ ≤ 12) of the leader, never strong enough to jump over a materially
   // better semantic fit. Neither strength invents a tour or widens the pool.
   if (preferTourId) {
@@ -2338,7 +2338,7 @@ export function resolveStudioV3Route(input: {
   // Select the anchor before choosing an authority. This exactly mirrors the
   // legacy selector arguments, but does not execute legacy membership logic.
   const seed = hashSeed(input.seed ?? 0);
-  // EXPLICIT (traveler answered it) outranks INFERRED (we guessed it).
+  // EXPLICIT (traveller answered it) outranks INFERRED (we guessed it).
   // Only the explicit one may be absolute after the hard gates.
   const directorObligations = exactDirectorObligations(input.questionHistory ?? []);
   const explicitPreferTourId =
@@ -2780,7 +2780,7 @@ function resolveLivingAtlasLiveDay(input: {
   // P0-A COMPOSITION TRUTH — the RAW catalogue list is never a sellable day.
   // An anchor with an alternative pool lists every candidate; the fallback
   // projects it down to the canonical cardinality before it can ever reach a
-  // traveler, a validator or a checkout.
+  // traveller, a validator or a checkout.
   const authoredPoints = projectAuthoredAnchorStops(input.anchorTourId, authored).points.map(
     (p, i) => ({ ...p, index: i }),
   );
@@ -3015,7 +3015,7 @@ export function pickupRegionKey(
 
 /**
  * composeJourneyReasons — 2–3 short, factual reasons grounded in the
- * traveler's actual choices. No invented superlatives.
+ * traveller's actual choices. No invented superlatives.
  */
 export function composeJourneyReasons(input: {
   feeling: Feeling | null;
@@ -4158,7 +4158,7 @@ const EXTRA_MOMENT_STORY_FALLBACK: Record<OptionalStop["type"], string> = {
   winery: "A grounded wine moment shaped around regional flavour.",
   workshop: "A hands-on craft moment with a local maker.",
   monument: "A heritage pause grounded in local history.",
-  market: "A vivid local market — color, flavour and everyday life.",
+  market: "A vivid local market — colour, flavour and everyday life.",
   table: "A relaxed regional table woven into the day's rhythm.",
   beach: "A coastal pause with sand, sea and slower air.",
   viewpoint: "A quiet viewpoint with space to take it in.",

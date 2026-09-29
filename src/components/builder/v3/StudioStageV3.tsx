@@ -641,7 +641,7 @@ export function StudioStageV3({ onExit }: { onExit?: () => void }) {
       />
 
       {/* Transient narrative beat — appears only at stage transitions, then
-          dissolves. Slow/intimate travelers (high affinity.pacing) get a
+          dissolves. Slow/intimate travellers (high affinity.pacing) get a
           longer hold; reveal stage holds longest of all (intimate close). */}
       <NarrativeBeat
         fragment={state.narrativeFragment}

@@ -339,7 +339,7 @@ function candidatePool(request: LivingAtlasCompositionRequest): {
   const mustIncludeIds = new Set(request.mustIncludeStopIds ?? []);
   const candidates = active.filter((stop) => {
     // A taste-derived TYPE exclusion never overrides an EXPLICIT must-include
-    // obligation (traveler principal, verified operational node, or a
+    // obligation (traveller principal, verified operational node, or a
     // product-defining locked core moment of the anchor Signature).
     if ((request.excludedTypes ?? []).includes(stop.type) && !mustIncludeIds.has(stop.id))
       return false;

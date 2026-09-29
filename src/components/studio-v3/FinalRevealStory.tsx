@@ -219,7 +219,7 @@ export function FinalRevealStory({
   const intro = narrative.intro;
 
   // P6 "acknowledge once": the reveal drops reason signals whose theme the
-  // traveler already heard on Interests / refinement / Logistics. Protected
+  // traveller already heard on Interests / refinement / Logistics. Protected
   // by a floor so the payoff is quietened, never emptied. Operational facts
   // (region, date, pickup, party) are never suppressed.
   const revealSignals = filterRevealSignals(narrative.signals, {
@@ -662,7 +662,7 @@ export function FinalRevealStory({
           ) : null}
           <PriceBreakdownRows
             journeyLines={journeyLines ?? null}
-            label="Travelers"
+            label="Travellers"
             testId="studio-v3-reveal-price-breakdown"
           />
 

@@ -1,5 +1,5 @@
 /**
- * Composition — Phase 3 traveler composition (adults + minor ages).
+ * Composition — Phase 3 traveller composition (adults + minor ages).
  *
  * Wraps the existing GuestStepper (adults only) with an optional minors
  * editor. Each minor row captures an exact integer age (0–17) which the
@@ -65,7 +65,7 @@ export function Composition({
               color: "color-mix(in oklab, var(--charcoal) 62%, transparent)",
             }}
           >
-            Traveling with children?
+            Travelling with children?
           </label>
           <span
             className="text-[11px] uppercase tracking-[0.2em] tabular-nums"

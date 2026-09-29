@@ -5,7 +5,7 @@
  * itinerary reveal. A soft full-bleed image of the inferred region fades in
  * at very low opacity, then real stop names from the engine surface one-by-one
  * with small gold dot markers. No map widget — the suggestion of a map, not
- * its UI. Honors prefers-reduced-motion (drops animation, shortens dwell).
+ * its UI. Honours prefers-reduced-motion (drops animation, shortens dwell).
  */
 
 import { useEffect, useMemo, useRef, useState } from "react";

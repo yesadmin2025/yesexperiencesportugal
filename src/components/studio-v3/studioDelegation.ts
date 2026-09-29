@@ -12,7 +12,7 @@
  *     design a day before the traveler has told us how it should feel and
  *     who it is for.
  *   - explicit guest choices ALWAYS beat delegated defaults. Interests the
- *     traveler picked themselves are preserved verbatim.
+ *     traveller picked themselves are preserved verbatim.
  *   - only the deterministic taxonomy primitives in `letYesDecide.ts` decide
  *     anything. No LLM, no randomness, no invented ids. Wine stays governed
  *     by the existing wine-intent rule inside `decideInterests`.

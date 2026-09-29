@@ -392,7 +392,7 @@ export function CheckoutSummary({
 
         <PriceBreakdownRows
           journeyLines={journeyLines}
-          label="Travelers"
+          label="Travellers"
           testId="studio-v3-checkout-summary-price-breakdown"
         />
 

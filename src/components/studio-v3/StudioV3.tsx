@@ -52,7 +52,7 @@ import { StudioV3ProgressStepper } from "./StudioV3ProgressStepper";
 // P9 — Price after value: no pre-reveal money surface in the main funnel.
 // RunningInvestmentRibbon is intentionally NOT mounted here; the canonical
 // SignaturePriceCard inside Your Day is the first numeric price the
-// traveler sees. The component itself is kept for legacy/component tests.
+// traveller sees. The component itself is kept for legacy/component tests.
 import { CurtainRise } from "./CurtainRise";
 import { SignaturePriceCard, type SelectedAddOnSummary } from "./SignaturePriceCard";
 import { useResolvedJourney } from "./useResolvedJourney";
@@ -950,7 +950,7 @@ function prefersReducedMotion(): boolean {
 
 /**
  * Session persistence — a refresh mid-composition must not throw the
- * traveler back to the intro. Stored in sessionStorage (tab-scoped, cleared
+ * traveller back to the intro. Stored in sessionStorage (tab-scoped, cleared
  * when the tab closes), never localStorage, and never used for anything but
  * restoring the answers already given. Payment and guest-detail data is NOT
  * part of StudioV3State and is never written here.
@@ -1416,7 +1416,7 @@ export function StudioV3() {
       );
       // FAIL CLOSED — a partial or unresolved composition is never bookable.
       // Fewer than two real moments means there is no day to reserve; hand the
-      // traveler to a curator instead of starting a checkout.
+      // traveller to a curator instead of starting a checkout.
       if (checkoutStops.length < 2) {
         setCheckoutPending(false);
         setCheckoutBlock("Your day needs at least two moments. Edit the stops, then try secure checkout again.");
@@ -1561,7 +1561,7 @@ export function StudioV3() {
       // before the payment is off by (guests - 1) × price.
       // Only add-ons the ledger did NOT already attribute to the authored
       // route may be charged as basket lines — one add-on, one charge. The
-      // traveler's selection itself is never silently altered.
+      // traveller's selection itself is never silently altered.
       const chargeableAddOnItems = selectedAddOnItems.filter((i) => chargeableAddOnIds.has(i.id));
       const nonPerPerson = chargeableAddOnItems.filter((i) => i.unit !== "per_person");
       if (nonPerPerson.length > 0 && typeof console !== "undefined") {
@@ -1655,7 +1655,7 @@ export function StudioV3() {
         // Composition must come from the SAME source the summary displayed
         // (state.adults/minorAges → details fallback). Using different inputs
         // for the invoke would let Stripe re-price against a composition the
-        // traveler never saw, producing the "summary €X ≠ Stripe €Y" bug.
+        // traveller never saw, producing the "summary €X ≠ Stripe €Y" bug.
         const compositionSupplied = typeof composedAdults === "number" && composedAdults >= 1;
         const { data, error } = await invokeSignatureCheckout({
             tourId: tour.id,
@@ -1808,8 +1808,8 @@ export function StudioV3() {
       event: "enter",
     });
     // Conversion-funnel milestones (additive, never replace `enter`):
-    //   purchase_intent — traveler has reached the tier ask
-    //   reveal_seen    — traveler has reached the final Signature reveal
+    //   purchase_intent — traveller has reached the tier ask
+    //   reveal_seen    — traveller has reached the final Signature reveal
     if (state.phase === "investment") {
       trackStep({
         stepNumber: stepOf(state.phase),
@@ -2806,7 +2806,7 @@ export function StudioV3() {
   const liveComposition = useMemo(() => {
     if (!state.feeling || !state.companions || !state.rhythm) return null;
     // FINAL CLOSURE §8 — a composition is only legitimately available once the
-    // traveler has actually reached the composed part of the journey. Before
+    // traveller has actually reached the composed part of the journey. Before
     // that the Canvas stays on mood/threads/direction, never a full route.
     if (!COMPOSITION_READY_PHASES.has(state.phase)) return null;
     const resolvedLive = resolveStudioV3Route({
@@ -3719,7 +3719,7 @@ export function StudioV3() {
           anticipation={anticipation}
         >
           <BackLink onClick={() => back("destination")} />
-          <PhaseHeader eyebrow="The company" title="Who is" titleAccent="traveling?" />
+          <PhaseHeader eyebrow="The company" title="Who is" titleAccent="travelling?" />
           <ChoiceGrid
             options={filterCompanions(COMPANIONS, state.feeling)}
             value={state.companions}
@@ -4416,7 +4416,7 @@ function resolveRevealRouteStops(
 
   const stopsDetailed = editedStops.map((s) => {
     // PASS 4.1 — the CURRENT stop's own real coordinates are the truth. They
-    // traveled through the authority chain (PASS 3A.2) and must survive both
+    // travelled through the authority chain (PASS 3A.2) and must survive both
     // logistics and Add/Swap; a fresh resolver never overrides them.
     if (Number.isFinite(s.lat) && Number.isFinite(s.lng)) {
       return { label: s.label, lat: s.lat as number, lng: s.lng as number };
@@ -4438,7 +4438,7 @@ function resolveRevealRouteStops(
     }
     // No approved coordinate for this moment. We leave it empty on purpose:
     // borrowing the previous stop's position would put a pin somewhere the
-    // traveler is not going. The unified surface reads this gap and shows
+    // traveller is not going. The unified surface reads this gap and shows
     // the truthful timeline instead of a map.
     return { label: s.label } as { label: string; lat?: number; lng?: number };
   });

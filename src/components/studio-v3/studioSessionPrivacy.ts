@@ -21,7 +21,7 @@ function isSavedSignatureView(): boolean {
 /**
  * Remove personal and checkout-adjacent fields before a Studio composition is
  * written to sessionStorage. All non-personal answers remain untouched so the
- * traveler can still recover the day after a refresh.
+ * traveller can still recover the day after a refresh.
  */
 export function sanitizeStudioSessionValue(value: string): string {
   try {

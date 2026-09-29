@@ -7,7 +7,7 @@
 //
 // Used as autoplaying, looping, muted backgrounds inside the reaction
 // beats (`AtmosphereBeat`) so the canvas under each question swaps as the
-// traveler chooses — Portugal arrives before the next question does.
+// traveller chooses — Portugal arrives before the next question does.
 //
 // The `imagePoster` field keeps the still JPG behind the video so SSR,
 // slow networks and `prefers-reduced-motion` users still see something

@@ -133,7 +133,7 @@ const tripLd = tripItineraryLd({
   path: PAGE_PATH,
   name: "10-Day Private Portugal Tour — sample itinerary",
   description: DESCRIPTION,
-  touristType: "Luxury private travelers · couples · small families",
+  touristType: "Luxury private travellers · couples · small families",
   days: [
     {
       name: "Lisbon — arrival, quiet neighbourhoods, hidden Fado",

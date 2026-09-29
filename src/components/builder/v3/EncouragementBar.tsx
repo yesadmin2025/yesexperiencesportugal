@@ -10,7 +10,7 @@ interface Props {
   index: number;
   total: number;
   locale: DriftLocale;
-  /** Traveler's first name — when present, encouragements address them by name. */
+  /** Traveller's first name — when present, encouragements address them by name. */
   name?: string | null;
 }
 

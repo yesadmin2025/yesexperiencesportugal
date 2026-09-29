@@ -31,7 +31,7 @@ function fmt(n: number): string {
 
 export function PriceBreakdownRows({
   journeyLines,
-  label = "Travelers",
+  label = "Travellers",
   testId = "price-breakdown-rows",
 }: PriceBreakdownRowsProps) {
   if (!hasCompleteJourneyPricing(journeyLines)) return null;

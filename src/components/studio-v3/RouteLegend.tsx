@@ -114,7 +114,7 @@ export function RouteLegend({
                 {mode === "walking" ? <Footprints size={14} /> : <Car size={14} />}
               </span>
               {/* Wraps instead of truncating: real stop names ("Évora historic
-                  center → Roman Temple of Évora") exceed the column on a 393px
+                  centre → Roman Temple of Évora") exceed the column on a 393px
                   phone, and a clipped label reads as an error. */}
               <span className="min-w-0 break-words">
                 <span className="text-[color:var(--charcoal)]/70">{from}</span>

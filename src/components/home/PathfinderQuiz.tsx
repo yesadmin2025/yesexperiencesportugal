@@ -16,14 +16,14 @@ import { Link } from "@tanstack/react-router";
 import { CTA_LABELS } from "@/content/cta-vocabulary";
 
 type Intent = "wine" | "coast" | "history" | "unique";
-type Travelers = "couple" | "group" | "journey";
+type Travellers = "couple" | "group" | "journey";
 type Pace = "relaxed" | "active" | "mix";
 
 type ResultKey = "ARRABIDA" | "TROIA" | "SINTRA" | "STUDIO" | "BESPOKE";
 
 interface QuizState {
   intent: Intent | null;
-  travelers: Travelers | null;
+  travellers: Travellers | null;
   pace: Pace | null;
 }
 
@@ -346,7 +346,7 @@ export function PathfinderQuiz() {
             </div>
           </div>
 
-          {/* Q2 — Travelers */}
+          {/* Q2 — Travellers */}
           {showQ2 && (
             <div className="mt-8 pf-step">
               <span className="pf-qlabel">02</span>
