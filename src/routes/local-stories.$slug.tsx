@@ -25,10 +25,10 @@ import {
 } from "@/content/local-stories-articles";
 import { localStoryShareImage } from "@/content/local-story-share-images";
 import { ResponsiveEditorialImage } from "@/components/ui/ResponsiveEditorialImage";
-import comportaPier from "@/assets/tours/troia-comporta/extra.jpg";
-import comportaCoast from "@/assets/tours/troia-comporta/beach.jpg";
+import troiaRuins from "@/assets/tours/troia-comporta/ruins.jpg";
+import troiaCoast from "@/assets/tours/troia-comporta/extra.jpg";
 import talhaVessels from "@/assets/tours/roman-heritage-alentejo/winery.jpg";
-import talhaRuins from "@/assets/tours/roman-heritage-alentejo/ruins.jpg";
+import talhaDay from "@/assets/tours/roman-heritage-alentejo/hero.jpg";
 import arrabidaWinery from "@/assets/tours/arrabida-wine-allinclusive/winery.jpg";
 import arrabidaView from "@/assets/tours/arrabida-wine-allinclusive/viewpoint.jpg";
 import evoraWinery from "@/assets/tours/evora-alentejo/winery.jpg";
@@ -102,14 +102,14 @@ const BASE = "https://yesexperiencesportugal.com";
 // that the exact stop or supplier is guaranteed on every date.
 const CHAPTER_IMAGES: Record<string, Record<number, { src: string; alt: string; height: number }>> = {
   "troia-comporta-guide": {
-    1: { src: comportaPier, alt: "Wooden stilt pier on the Sado estuary near Carrasqueira", height: 1065 },
-    3: { src: comportaCoast, alt: "Atlantic beach and dunes on the Comporta coast", height: 1066 },
+    1: { src: troiaRuins, alt: "Remains at the Roman ruins of Tróia", height: 1058 },
+    3: { src: troiaCoast, alt: "Aerial view of the sand and water around Tróia", height: 1065 },
   },
   "southwest-vicentine-coast-guide": {
     1: { src: vicentineCover.url, alt: "Atlantic coast on the southwest Vicentine route in Portugal", height: 1065 },
   },
   "roman-heritage-alentejo-talha-wines": {
-    1: { src: talhaRuins, alt: "Roman ruins on the Alentejo heritage route", height: 1058 },
+    1: { src: talhaDay, alt: "Guests beside a large clay talha in the Alentejo", height: 1058 },
     3: { src: talhaVessels, alt: "Traditional wine cellar on the Alentejo talha-wine route", height: 1058 },
   },
   "best-wine-tours-from-lisbon": {

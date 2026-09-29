@@ -314,10 +314,10 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
   },
   {
     slug: "troia-comporta-guide",
-    title: "Tróia & Comporta from Lisbon: Beaches, Ruins & Wine",
+    title: "Comporta, Portugal: Tróia, Rice Fields & Coast",
     metaDescription:
       "A slow day south of Lisbon — Tróia's Roman ruins, Comporta's rice fields and beaches, and sandy-soil wineries. A local's guide to the quiet coast.",
-    h1: "Tróia & Comporta — Beaches, Ruins and Slow Alentejo Days",
+    h1: "Comporta and Tróia — A Quieter Coast from Lisbon",
     eyebrow: "Tróia · Comporta · Alentejo",
     standfirst:
       "Across the Sado, Tróia's Roman coast gives way to Carrasqueira's working pier, Comporta's rice fields and the Atlantic. A different pace from Lisbon.",
@@ -420,10 +420,10 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
   },
   {
     slug: "roman-heritage-alentejo-talha-wines",
-    title: "Talha Wines of Alentejo: A Local Roman Wine Guide",
+    title: "Vinho de Talha: Portugal's Living Clay-Wine Tradition",
     metaDescription:
       "Alentejo's hidden wine country — São Cucufate's Roman ruins and family cellars still making talha wine in clay amphorae. A day trip from Lisbon.",
-    h1: "The Roman Wines of Alentejo — Talha Country, a Local's Guide",
+    h1: "Vinho de Talha — Alentejo Wine Made in Clay",
     eyebrow: "Alentejo · Wine · Heritage",
     standfirst:
       "Clay vessels, Roman roots and a living Alentejo wine tradition near Vila de Frades and Vidigueira.",
@@ -1217,13 +1217,13 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
   },
   {
     slug: "best-wine-tours-from-lisbon",
-    title: "Best Wine Tours from Lisbon: Setúbal vs Alentejo (2026)",
+    title: "Best Wine Tours from Lisbon: Arrábida or Alentejo?",
     metaDescription:
       "Best wine tours from Lisbon, compared by a local operator: Setúbal & Arrábida 40 min away vs the Alentejo — drive times, wineries, lunch and private prices.",
     h1: "The Best Wine Tours from Lisbon",
     eyebrow: "Lisbon · Wine",
     standfirst:
-      "Two wine regions sit within 90 minutes of Lisbon — the Setúbal Peninsula and the Alentejo — plus one small coastal appellation worth knowing. Here are the private days we actually run — what each one feels like, what it costs you in time, and how to choose between them.",
+      "Arrábida's wineries and coast, or a longer Alentejo day? Compare the private wine days we run, what each includes and where to spend your time.",
     directAnswer: "For a private wine tour from Lisbon, Arrábida and Azeitão offer wineries, Setúbal Moscatel and the coast within one day. The Alentejo is a longer inland day for Évora or traditional Vinho de Talha. Compare the tour pages for current dates, inclusions and per-person prices before choosing.",
     sections: [
       {
@@ -1248,7 +1248,7 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
       },
       {
         heading: "Roman Heritage Wine Tour — the day for wine travelers who have seen the rest.",
-        body: "A quieter [Alentejo wine tour from Lisbon](/tours/roman-heritage-alentejo) built around vinho de talha — wine still fermented in clay amphorae, the way the Romans made it here two thousand years ago. Small cellars, a hands-on tasting, and history you can drink. Private, slow, and off the standard route.",
+        body: "A quieter [Alentejo wine tour from Lisbon](/tours/roman-heritage-alentejo) built around Vinho de Talha — a living tradition of fermenting wine in large clay vessels with roots in Roman times. The day connects São Cucufate and the talha-wine landscape near Vila de Frades. Read our [Vinho de Talha guide](/local-stories/roman-heritage-alentejo-talha-wines) for the deeper story.",
       },
       {
         heading: "How we compare the best wine tours from Lisbon.",
