@@ -109,7 +109,7 @@ export const WINE_TOUR_FAQ_BY_ID: Record<string, FaqItem[]> = {
   "azeitao-cheese": [
     {
       q: "Is this a good wine tasting near Lisbon?",
-      a: "Yes. This full private day combines Livramento Market in Setúbal, a hands-on Azeitão cheese workshop with regional tastings, time in Azeitão village, a local winery visit and tasting, and Sesimbra by the sea. Lunch is at your own expense, so you choose the table. It suits guests who want food, wine and local craft in one unhurried day.",
+      a: "Yes. This is an 8–9 hour private day: the Setúbal market (Livramento), a hands-on Azeitão cheese-making workshop with regional tastings, village time and lunch in Azeitão at your own expense, a local winery visit and tasting, and Sesimbra Castle above the sea. It suits guests who want food, wine and local craft in one unhurried day.",
     },
     {
       q: "How does this compare to the Arrábida private wine tour from Lisbon?",

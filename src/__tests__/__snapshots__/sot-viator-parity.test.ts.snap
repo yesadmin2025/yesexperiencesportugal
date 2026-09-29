@@ -314,7 +314,7 @@ exports[`SoT locked snapshot > azeitao-cheese: rendered content snapshot 1`] = `
 exports[`SoT locked snapshot > evora-alentejo: rendered content snapshot 1`] = `
 {
   "highlights": [
-    "Évora UNESCO historic centre",
+    "Évora UNESCO historic center",
     "Roman Temple and Chapel of Bones",
     "Two selected Alentejo winery visits and tastings",
     "Local cheeses and cured meats",
@@ -390,7 +390,7 @@ exports[`SoT locked snapshot > evora-alentejo: rendered content snapshot 1`] = `
     {
       "description": "Walking time.",
       "durationMinutes": 60,
-      "label": "Évora historic centre",
+      "label": "Évora historic center",
       "optional": false,
       "order": 8,
       "travelToNextMinutes": null,
@@ -415,7 +415,7 @@ exports[`SoT locked snapshot > evora-alentejo: rendered content snapshot 1`] = `
   "notIncluded": [
     "Lunch — own expense",
   ],
-  "overview": "Explore Évora's historic centre, Roman Temple and Chapel of Bones, visit two selected Alentejo wineries for tastings, and see a traditional cork production site. Lunch is not included.",
+  "overview": "Explore Évora's historic center, Roman Temple and Chapel of Bones, visit two selected Alentejo wineries for tastings, and see a traditional cork production site. Lunch is not included.",
   "source": "sot",
   "tourId": "evora-alentejo",
 }
@@ -502,7 +502,7 @@ exports[`SoT locked snapshot > p23-artisan-pottery-cork: rendered content snapsh
 {
   "highlights": [
     "Hands-on cork workshop with local makers",
-    "Three-hour pottery workshop at a ceramics and earth arts centre",
+    "Three-hour pottery workshop at a ceramics and earth arts center",
     "Private local guide and air-conditioned transport",
     "Lunch included",
   ],
@@ -534,7 +534,7 @@ exports[`SoT locked snapshot > p23-artisan-pottery-cork: rendered content snapsh
       "travelToNextMinutes": null,
     },
     {
-      "description": "A three-hour hands-on pottery workshop at a ceramics and earth arts centre in the afternoon.",
+      "description": "A three-hour hands-on pottery workshop at a ceramics and earth arts center in the afternoon.",
       "durationMinutes": 180,
       "label": "Pottery workshop",
       "optional": false,
@@ -543,7 +543,7 @@ exports[`SoT locked snapshot > p23-artisan-pottery-cork: rendered content snapsh
     },
   ],
   "notIncluded": [],
-  "overview": "A private full-day experience of Alentejo's living craft traditions. Work hands-on with cork and clay alongside local makers; the afternoon includes a three-hour pottery workshop at a ceramics and earth arts centre. Lunch is included.",
+  "overview": "A private full-day experience of Alentejo's living craft traditions. Work hands-on with cork and clay alongside local makers; the afternoon includes a three-hour pottery workshop at a ceramics and earth arts center. Lunch is included.",
   "source": "sot",
   "tourId": "p23-artisan-pottery-cork",
 }
@@ -611,7 +611,7 @@ exports[`SoT locked snapshot > roman-heritage-alentejo: rendered content snapsho
       "travelToNextMinutes": null,
     },
     {
-      "description": "Interpretive centre.",
+      "description": "Interpretive center.",
       "durationMinutes": 60,
       "label": "Talha Wine Interpretation Center",
       "optional": false,
@@ -655,7 +655,7 @@ exports[`SoT locked snapshot > sintra-cascais: rendered content snapshot 1`] = `
       "travelToNextMinutes": null,
     },
     {
-      "description": "Palace candidate — included when selected.",
+      "description": "Palace option — your package covers one palace plus the Colares wine visit, or two palaces; not every palace.",
       "durationMinutes": 90,
       "label": "Sintra National Palace",
       "optional": true,
@@ -663,7 +663,7 @@ exports[`SoT locked snapshot > sintra-cascais: rendered content snapshot 1`] = `
       "travelToNextMinutes": null,
     },
     {
-      "description": "Palace candidate — included when selected.",
+      "description": "Palace option — your package covers one palace plus the Colares wine visit, or two palaces; not every palace.",
       "durationMinutes": 90,
       "label": "Pena Palace",
       "optional": true,
@@ -679,7 +679,7 @@ exports[`SoT locked snapshot > sintra-cascais: rendered content snapshot 1`] = `
       "travelToNextMinutes": null,
     },
     {
-      "description": "Palace/monument candidate — included when selected.",
+      "description": "Palace option — your package covers one palace plus the Colares wine visit, or two palaces; not every palace.",
       "durationMinutes": 90,
       "label": "Quinta da Regaleira",
       "optional": true,
@@ -687,7 +687,7 @@ exports[`SoT locked snapshot > sintra-cascais: rendered content snapshot 1`] = `
       "travelToNextMinutes": null,
     },
     {
-      "description": "Included with the one-palace-plus-wine package.",
+      "description": "Included only with the one-palace-plus-wine package, not with the two-palace package.",
       "durationMinutes": 90,
       "label": "Adega Regional de Colares",
       "optional": false,
@@ -911,7 +911,7 @@ exports[`SoT locked snapshot > tomar-coimbra: rendered content snapshot 1`] = `
 {
   "highlights": [
     "Convento de Cristo and Templar heritage",
-    "Tomar historic centre",
+    "Tomar historic center",
     "University of Coimbra",
     "Joanina Library timed entry",
     "Private guide, tickets, transport, water and local pastry",
@@ -978,7 +978,7 @@ exports[`SoT locked snapshot > tomar-coimbra: rendered content snapshot 1`] = `
   "notIncluded": [
     "Lunch — own expense",
   ],
-  "overview": "Travel privately from Lisbon to Tomar's Convento de Cristo and historic centre, then continue to Coimbra, its university and the Joanina Library. Lunch is not included.",
+  "overview": "Travel privately from Lisbon to Tomar's Convento de Cristo and historic center, then continue to Coimbra, its university and the Joanina Library. Lunch is not included.",
   "source": "sot",
   "tourId": "tomar-coimbra",
 }
