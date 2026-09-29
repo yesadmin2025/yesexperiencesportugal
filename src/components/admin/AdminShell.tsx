@@ -10,7 +10,7 @@
  */
 import { Link, useNavigate } from "@tanstack/react-router";
 import { createContext, useContext, useEffect, useState, type ReactNode } from "react";
-import { CalendarDays, Compass, Home, Settings, Users } from "lucide-react";
+import { CalendarDays, Compass, Home, Settings, Smartphone, Users } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 
 const NAV = [
@@ -18,6 +18,7 @@ const NAV = [
   { to: "/admin/bookings", label: "Bookings", icon: CalendarDays, exact: false },
   { to: "/admin/operations", label: "Operations", icon: Compass, exact: false },
   { to: "/admin/guides", label: "Guides", icon: Users, exact: false },
+  { to: "/guide", label: "Guide App", icon: Smartphone, exact: false },
   { to: "/admin/settings", label: "Settings", icon: Settings, exact: false },
 ] as const;
 

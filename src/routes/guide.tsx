@@ -58,6 +58,28 @@ function GuideLayout() {
     return () => sub.subscription.unsubscribe();
   }, []);
 
+  // Live updates: RLS limits events to this guide's own rows.
+  const [version, setVersion] = useState(0);
+  useEffect(() => {
+    if (gate !== "ok") return;
+    let t: ReturnType<typeof setTimeout> | undefined;
+    const bump = () => {
+      clearTimeout(t);
+      t = setTimeout(() => {
+        setVersion((v) => v + 1);
+        void db.from("ops_notifications").select("id", { count: "exact", head: true }).is("read_at", null)
+          .then(({ count }: { count: number | null }) => setUnread(count ?? 0));
+      }, 400);
+    };
+    const channel = supabase
+      .channel("guide-live")
+      .on("postgres_changes", { event: "*", schema: "public", table: "tour_assignments" }, bump)
+      .on("postgres_changes", { event: "*", schema: "public", table: "operational_notes" }, bump)
+      .on("postgres_changes", { event: "*", schema: "public", table: "ops_notifications" }, bump)
+      .subscribe();
+    return () => { clearTimeout(t); void supabase.removeChannel(channel); };
+  }, [gate]);
+
   if (gate === "checking") return <div className="min-h-screen grid place-items-center text-sm text-muted-foreground">Loading…</div>;
   if (gate === "signed-out") return <GuideSignIn />;
   if (gate === "not-guide")
@@ -77,7 +99,7 @@ function GuideLayout() {
         <span className="font-[family-name:var(--font-editorial)] text-[19px] text-[color:var(--teal)]">YES Guide</span>
       </header>
       <main className="px-4 py-5 max-w-xl mx-auto">
-        <Outlet />
+        <div key={version}><Outlet /></div>
       </main>
       <nav aria-label="Guide" className="fixed bottom-0 inset-x-0 z-10 bg-background border-t border-border grid grid-cols-6 pb-[env(safe-area-inset-bottom)]">
         {TABS.map(({ to, label, icon: Icon, exact }) => (
