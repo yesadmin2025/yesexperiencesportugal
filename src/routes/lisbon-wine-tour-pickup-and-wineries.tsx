@@ -62,7 +62,7 @@ const WINERIES = [
   },
   {
     name: "A historic Palmela cellar",
-    body: "Optional cellar visit: historic vineyards, time-honoured techniques and a curated tasting of the Palmela reds.",
+    body: "Optional cellar visit: historic vineyards, time-honored techniques and a curated tasting of the Palmela reds.",
   },
   {
     name: "A modern Azeitão winery",

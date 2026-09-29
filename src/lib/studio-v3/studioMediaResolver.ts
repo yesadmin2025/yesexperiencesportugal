@@ -47,8 +47,8 @@ export type StudioMedia = {
   role: StudioMediaRole;
   source: StudioMediaSource;
   /**
-   * CSS `object-position` from the EXISTING catalogue focal format
-   * (e.g. `"50% 40%"`). Absent = natural CSS centre. Never invented.
+   * CSS `object-position` from the EXISTING catalog focal format
+   * (e.g. `"50% 40%"`). Absent = natural CSS center. Never invented.
    */
   focal?: string;
 };
@@ -227,7 +227,7 @@ export function resolveStudioMedia(input: ResolveStudioMediaInput): StudioMedia 
   if (input.stopImage) {
     const { focal, ...rest } = input.stopImage;
     const media: StudioMedia = { ...rest, role: input.role, source: "stop" };
-    // Only a REAL catalogue focal travels; absent stays absent (CSS centre).
+    // Only a REAL catalog focal travels; absent stays absent (CSS centre).
     if (typeof focal === "string" && focal.trim()) media.focal = focal.trim();
     return media;
   }

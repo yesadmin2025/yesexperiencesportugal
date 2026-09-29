@@ -10,7 +10,7 @@
  *   - complex / luxury / edge cases → human refinement (premium, not "support")
  *   - mid-confidence → present both as equal options, no primary/secondary
  *
- * Inputs come from the traveller profile and the final real itinerary
+ * Inputs come from the traveler profile and the final real itinerary
  * (post-edit). No invented signals — every input already exists in the
  * v2 engine output.
  */

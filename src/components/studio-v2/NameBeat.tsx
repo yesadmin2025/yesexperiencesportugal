@@ -2,7 +2,7 @@
  * NameBeat — optional name capture before the thinking beat.
  *
  * Not a form. A single italic invitation with one input. Skippable. If the
- * traveller offers a name, the reveal personalises ("Sofia's Portugal").
+ * traveller offers a name, the reveal personalizes ("Sofia's Portugal").
  * If skipped, the reveal stays neutral ("Your Portugal"). Bible: guided, not
  * asked; interface progressively disappears.
  */

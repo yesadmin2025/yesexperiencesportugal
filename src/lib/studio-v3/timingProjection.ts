@@ -71,7 +71,7 @@ export type TimingMomentInput = {
 
   /** 1. Canonical source-of-truth chapter dwell, when published. */
   sotDurationMinutes?: number | null;
-  /** 2. Add-on catalogue dwell fact. */
+  /** 2. Add-on catalog dwell fact. */
   addOnDurationMinutes?: number | null;
   /** 3. Inventory (`OptionalStop.durationMin`) dwell fact. */
   inventoryDurationMinutes?: number | null;
@@ -329,7 +329,7 @@ export function validateTiming(
  * ------------------------------------------------------------------ */
 
 export type DimensionCoverageInput = {
-  /** Every dimension the traveller requested. None may be dropped. */
+  /** Every dimension the traveler requested. None may be dropped. */
   requestedDimensions: readonly ExperienceDimensionId[];
   /** Dimensions each composed stop actually carries. */
   coverageByStopId: Readonly<Record<string, readonly ExperienceDimensionId[]>>;

@@ -133,7 +133,7 @@ export function toEditorialChapters(tourId: string): EditorialChapter[] | null {
           : "stops";
     const count = n === 1 ? "One" : n === 2 ? "Two" : n === 3 ? "Three" : String(n);
     // Winery pools never expose supplier identity or post-booking
-    // confirmation language on public surfaces — the traveller books a
+    // confirmation language on public surfaces — the traveler books a
     // winery slot, not a named estate.
     const story =
       cat === "winery"

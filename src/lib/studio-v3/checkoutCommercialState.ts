@@ -1,13 +1,13 @@
 /**
  * LIVE COMMERCIAL STATE FOR CHECKOUT — one reconciliation point between
  *
- *   the authored route (what the traveller approved)
+ *   the authored route (what the traveler approved)
  *   + the structural commercial ledger (what that route triggers)
- *   + the selected catalogue add-ons (the basket)
+ *   + the selected catalog add-ons (the basket)
  *
  * Responsibilities, and nothing else:
  *
- *  1. A catalogue add-on that is BOTH a route moment (a `signature-addon`
+ *  1. A catalog add-on that is BOTH a route moment (a `signature-addon`
  *     ledger action) and ticked in the basket is charged exactly ONCE.
  *  2. The state is keyed to the exact authored composition, so a stale
  *     ledger can never survive a route edit — the key changes with the route.
@@ -42,7 +42,7 @@ export interface CheckoutCommercialInput {
   liveResolution?: "composed" | "authored-fallback" | null;
   /** Catalogue add-ons ticked in the basket right now. */
   selectedAddOnIds?: ReadonlyArray<string>;
-  /** Labels of the authored route the traveller approved, in order. */
+  /** Labels of the authored route the traveler approved, in order. */
   authoredLabels?: ReadonlyArray<string>;
   /**
    * Structural identity of each authored moment, in order (`bp:` / `inv:` /

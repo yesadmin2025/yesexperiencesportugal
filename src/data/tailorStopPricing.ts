@@ -81,7 +81,7 @@ export const TAILOR_CORE_STOP_PRICING: Readonly<
     "lunch-azeitao": P("Included lunch, no dedicated removal credit on this Signature."),
   },
   "sintra-cascais": {
-    "sintra-vila": R("Historic centre walk; free access but core to the product. Owner to confirm."),
+    "sintra-vila": R("Historic center walk; free access but core to the product. Owner to confirm."),
     "lunch-azenhas": P("Included lunch — paid component."),
     "cabo-da-roca": D("Cliff viewpoint — free access, no supplier cost."),
     cascais: R("Coastal town stop; free access. Owner to confirm principal status."),
@@ -93,7 +93,7 @@ export const TAILOR_CORE_STOP_PRICING: Readonly<
     "comporta-beach": R("Free beach time; owner to confirm whether it carries supplier cost."),
   },
   "evora-alentejo": {
-    "evora-old-town": R("UNESCO centre walk; free access but core. Owner to confirm."),
+    "evora-old-town": R("UNESCO center walk; free access but core. Owner to confirm."),
     "templo-romano": P("Guided monument stop within the ticketed Évora circuit."),
     "chapel-of-bones": P("Ticketed admission — paid component."),
     "evora-lunch": P("Included lunch — paid component."),
@@ -124,7 +124,7 @@ export const TAILOR_CORE_STOP_PRICING: Readonly<
  * Declared minimum viable composition per Signature (number of core stops the
  * day must retain). Intentionally EMPTY: no operator-declared minimum exists
  * in the source of truth yet, and inventing one would change business truth.
- * The guard below honours any entry the owner adds later.
+ * The guard below honors any entry the owner adds later.
  */
 export const TAILOR_MIN_VIABLE_CORE_STOPS: Readonly<Record<string, number>> = {};
 

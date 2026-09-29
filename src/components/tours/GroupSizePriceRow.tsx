@@ -32,7 +32,7 @@ export function GroupSizePriceRow({ tour }: { tour: SignatureTour }) {
         {bands.map((b) => (
           <li key={b.from} className="tabular-nums">
             <span className="text-[color:var(--charcoal-soft)]">
-              {b.from === b.to ? b.from : `${b.from}–${b.to}`} travellers ·{" "}
+              {b.from === b.to ? b.from : `${b.from}–${b.to}`} travelers ·{" "}
             </span>
             <PriceEur amountEur={b.eur} role="tier" />
           </li>

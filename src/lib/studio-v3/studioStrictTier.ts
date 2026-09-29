@@ -72,7 +72,7 @@ export interface ConfirmedStudioParty {
 }
 
 /**
- * A Studio party is commercially confirmed only when the traveller has
+ * A Studio party is commercially confirmed only when the traveler has
  * explicitly stated it AND the composition is internally coherent.
  * Inferred guest counts never authorise an exact price.
  */

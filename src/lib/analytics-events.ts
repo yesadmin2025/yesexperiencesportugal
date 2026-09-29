@@ -1,5 +1,5 @@
 /**
- * Canonical analytics event catalogue for YES Experiences Portugal.
+ * Canonical analytics event catalog for YES Experiences Portugal.
  *
  * Single entry point (`trackEvent`) for every custom GA4/GTM event.
  * Wraps the lower-level `track()` in `analytics.ts` and adds:
@@ -16,7 +16,7 @@ import { track, type AnalyticsParams } from "@/lib/analytics";
 import { utmParams } from "@/lib/utm";
 import { isTrackingDisabled } from "@/lib/analytics-exclusions";
 
-/* ─────────────────── Event catalogue (exact names) ─────────────────── */
+/* ─────────────────── Event catalog (exact names) ─────────────────── */
 
 export type YesAnalyticsEvent =
   // Lifecycle

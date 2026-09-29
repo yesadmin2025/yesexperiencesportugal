@@ -53,7 +53,7 @@ const SECTIONS: Section[] = [
     title: "3 — Typography & wording",
     items: [
       "No truncation of headlines on 360px width",
-      "No invisible text (light grey on ivory)",
+      "No invisible text (light gray on ivory)",
       "No text overlapping floating UI (FAB, sticky CTA)",
       "Letter-spaced labels wrap cleanly",
       "Hero animation completes ≤1.7s, no permanently invisible text",

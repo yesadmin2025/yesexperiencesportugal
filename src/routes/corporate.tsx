@@ -306,7 +306,7 @@ function CorporatePage() {
             <p className="mt-5 text-[15px] md:text-[16px] leading-[1.8] text-[color:var(--charcoal-soft)]">
               Wine estates, coastal settings, historic towns, boats, workshops, gastronomy, outdoor
               challenges and private venues are selected according to the group, not taken from a
-              fixed corporate catalogue. Many draw on the same ground as our{" "}
+              fixed corporate catalog. Many draw on the same ground as our{" "}
               <Link
                 to="/experiences"
                 className="underline decoration-[color:var(--gold)] underline-offset-4 text-[color:var(--charcoal)] hover:text-[color:var(--teal)]"

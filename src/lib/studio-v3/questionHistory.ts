@@ -27,7 +27,7 @@ export type QuestionAnswerEvent = {
   targetKeys: readonly string[];
   /** Option ids exactly as offered, in the order offered. */
   offeredOptionIds: readonly string[];
-  /** Option id(s) the traveller selected. Empty = skipped. */
+  /** Option id(s) the traveler selected. Empty = skipped. */
   selectedOptionIds: readonly string[];
   /** Semantic effect of the answer, supplied by the caller. */
   semanticEffects: readonly SemanticSourceEvent[];
@@ -106,11 +106,11 @@ export function questionAnswerFingerprint(event: QuestionAnswerEvent): string {
  *
  * A selected option id is authoritative ONLY when it was actually present in
  * the offered set of that exact question event. Being a valid id somewhere in
- * the catalogue is NOT enough: an option that was never offered in this
- * question can never have been chosen by the traveller, so it fails closed.
+ * the catalog is NOT enough: an option that was never offered in this
+ * question can never have been chosen by the traveler, so it fails closed.
  * There is NO exception: an old draft whose historical question is unknown
  * carries its meaning in `legacyCompatibilityRefinementId` instead, never in
- * a fabricated offered set. Catalogue validity is enforced one layer up, by
+ * a fabricated offered set. Catalog validity is enforced one layer up, by
  * `directorAnswerProjection` (this module stays catalogue-free).
  */
 export function authoritativeSelectedOptionIds(event: QuestionAnswerEvent): string[] {
@@ -128,7 +128,7 @@ export function legacyCompatibilityRefinementOf(
 }
 
 /**
- * Real semantic progress: the traveller either selected something that was
+ * Real semantic progress: the traveler either selected something that was
  * genuinely offered, carried a semantic effect (e.g. free text with no option
  * id), or the event is an honest legacy compatibility record of a real past
  * answer. A pure skip — and an unoffered selection — is NOT progress, so the

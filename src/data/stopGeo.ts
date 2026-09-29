@@ -4,7 +4,7 @@
  * Portuguese places at runtime. Anything missing falls back to live
  * Nominatim geocoding (cached in localStorage).
  *
- * Coordinates are approximate centres of each town/landmark.
+ * Coordinates are approximate centers of each town/landmark.
  */
 
 export type StopLatLng = { lat: number; lng: number; label: string; region: string };
@@ -243,7 +243,7 @@ export const STOP_LATLNG: Record<string, StopLatLng> = {
   // ── Source-of-Truth Signature stops (real Viator itinerary labels) ──
   // Added so every SoT chapter resolves to a real coordinate and each
   // Signature map renders without runtime geocoding. Coordinates are the
-  // public centre of each real place — no invented stops.
+  // public center of each real place — no invented stops.
   "25 de abril bridge": {
     lat: 38.6906,
     lng: -9.1772,

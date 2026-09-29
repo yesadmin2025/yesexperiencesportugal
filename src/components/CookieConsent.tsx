@@ -247,7 +247,7 @@ export function CookieConsent() {
               />
               <ConsentRow
                 label="Marketing"
-                hint="Personalised ads across partners."
+                hint="Personalized ads across partners."
                 checked={ads}
                 onChange={setAds}
               />

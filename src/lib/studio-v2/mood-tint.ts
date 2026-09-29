@@ -1,7 +1,7 @@
 // Studio v2 — atmospheric tint per dominant intent.
 //
 // Maps the currently inferred IntentAtmosphere to a soft full-bleed image
-// + tint colour used as a background layer in Phase 3 INTENTION scenes.
+// + tint color used as a background layer in Phase 3 INTENTION scenes.
 // Pure presentation; never invents places.
 
 import type { IntentAtmosphere } from "./profile";
@@ -10,11 +10,11 @@ import { INTENT_IMAGE } from "./images";
 export interface MoodTint {
   image: string;
   alt: string;
-  /** Tint colour overlaid above the image, blended with ivory. */
+  /** Tint color overlaid above the image, blended with ivory. */
   tintHex: string;
   /** Background opacity for the image layer (0–1). Keep subtle. */
   imageOpacity: number;
-  /** Tint opacity for the colour wash (0–1). */
+  /** Tint opacity for the color wash (0–1). */
   tintOpacity: number;
 }
 

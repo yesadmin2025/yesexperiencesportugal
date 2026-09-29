@@ -51,7 +51,7 @@ export type MaterialUncertainty = {
   dependencySemanticKeys: readonly SemanticKey[];
   /** Discovery signals the fork depends on, canonically sorted. */
   dependencySignals: readonly LivingAtlasDiscoverySignal[];
-  /** Machine reason. Never traveller copy. */
+  /** Machine reason. Never traveler copy. */
   reason: string;
 };
 
@@ -250,7 +250,7 @@ export function detectMaterialUncertainties(
   return out;
 }
 
-/** Guard used by the director: no option may ever escape the catalogue. */
+/** Guard used by the director: no option may ever escape the catalog. */
 export function uncertaintyOptionsAreCatalogued(uncertainty: MaterialUncertainty): boolean {
   return (
     uncertainty.choices.length > 0 &&

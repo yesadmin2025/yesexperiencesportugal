@@ -171,7 +171,7 @@ export const SERVICE_AREA_PAGES: readonly ServiceAreaPage[] = [
     standfirst:
       "Sesimbra is our home base — a working fishing town under the Arrábida ridge, 40 minutes from Lisbon, where the boats still land the catch every morning.",
     paragraphs: [
-      "The town sits in a south-facing bay below the castle, with the Serra da Arrábida rising behind it and the park's coves — Galapinhos, Galápos, Portinho — a few minutes along the ridge road. Because the mountain shelters the coast, the water here is calm and green rather than Atlantic grey.",
+      "The town sits in a south-facing bay below the castle, with the Serra da Arrábida rising behind it and the park's coves — Galapinhos, Galápos, Portinho — a few minutes along the ridge road. Because the mountain shelters the coast, the water here is calm and green rather than Atlantic gray.",
       "Days that start in Sesimbra reach everything quickly: the Azeitão cellars and cheese makers are fifteen minutes inland, Setúbal and the Sado are twenty, and the park road is immediate. That closeness is the whole point — the day is spent at the tables and the viewpoints instead of on the motorway.",
       "Being based here also means the practical things are ours rather than a subcontractor's: the vehicle, the host, the timing, and the local knowledge of which cove is calm on the day you come.",
     ],

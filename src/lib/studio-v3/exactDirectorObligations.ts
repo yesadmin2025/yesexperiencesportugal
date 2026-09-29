@@ -22,7 +22,7 @@ const EXACT_STOP_BY_SIGNAL: Partial<Record<LivingAtlasDiscoverySignal, string>> 
   // CHOICE FIDELITY: "the coast seen from the water" is a concrete verified
   // moment (the real private Arrábida bay boat), not a mood. Without this
   // obligation the answer only nudged a score and could be silently outranked
-  // by a later, broader direction answer — the traveller then received a day
+  // by a later, broader direction answer — the traveler then received a day
   // with no time on the water at all.
   "arrabida-from-water": "arrabida-bay-boat",
 };
@@ -31,7 +31,7 @@ export type ExactDirectorObligations = {
   preferredSignatureId: LivingAtlasSignatureId | null;
   principalStopIds: readonly string[];
   /**
-   * Exact moments the traveller was OFFERED in a fork and did NOT choose.
+   * Exact moments the traveler was OFFERED in a fork and did NOT choose.
    * They stay real inventory — they are simply never added back into the day
    * that the rejected answer already spoke about (no tile workshop on a day
    * where cheese was chosen over tile).
@@ -46,7 +46,7 @@ function isLivingAtlasSignature(id: string | null | undefined): id is LivingAtla
 /**
  * The Signature that STRUCTURALLY owns an exact obligation stop, read from the
  * canonical stop pool (never invented, never hardcoded per answer). An exact
- * "make cheese" / "paint a tile" answer can only be honoured inside a
+ * "make cheese" / "paint a tile" answer can only be honored inside a
  * Signature whose own pool contains that moment — anchoring anywhere else
  * makes the composition structurally impossible and silently drops the choice.
  */
@@ -79,7 +79,7 @@ export function exactDirectorObligations(
 
   const lastDirection = projection.selectedDirectionIds.at(-1) ?? null;
 
-  // Offered-but-not-chosen exact moments. Only options the traveller really
+  // Offered-but-not-chosen exact moments. Only options the traveler really
   // saw in that exact question count, and a moment chosen anywhere else always
   // wins over a rejection.
   const rejected = new Set<string>();

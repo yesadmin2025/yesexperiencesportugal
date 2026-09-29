@@ -4,7 +4,7 @@
  * The Studio is an instant-bookable product builder: it must never spend a
  * traveller's time designing a day it cannot actually sell. Before any taste
  * question is asked, three practical facts are collected — exact date,
- * supported pickup area and traveller composition — and this module answers
+ * supported pickup area and traveler composition — and this module answers
  * ONE question from them:
  *
  *   which Signature product ids are currently sellable self-service?
@@ -108,7 +108,7 @@ export function eligibilityRevision(facts: PreflightFacts): string {
 }
 
 /**
- * Has the traveller changed a practical fact since the eligible set was
+ * Has the traveler changed a practical fact since the eligible set was
  * resolved? A stale set must send them back to the preflight, never forward
  * into a checkout the server would refuse.
  */

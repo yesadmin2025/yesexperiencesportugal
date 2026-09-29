@@ -93,11 +93,11 @@ function tagOverlap(a: readonly string[] | null, b: readonly string[]): number {
   return n;
 }
 
-/** Score a stop against a traveller profile (higher = better fit). */
+/** Score a stop against a traveler profile (higher = better fit). */
 export function scoreStop(stop: DbStop, profile: TravelerProfile): number {
   let s = stop.weight ?? 50;
 
-  // Intent — high weight (this is the atmosphere the traveller chose).
+  // Intent — high weight (this is the atmosphere the traveler chose).
   if (profile.intent) {
     const wanted = INTENT_TAGS[profile.intent] ?? [];
     s += tagOverlap(stop.intention_tags, wanted) * 22;

@@ -303,7 +303,7 @@ export const signatureTours: SignatureTour[] = [
       {
         label: "Adega Coop. de Palmela, C.R.L.",
         story:
-          "Optional cellar visit — historic vineyards, time-honoured techniques and a curated tasting.",
+          "Optional cellar visit — historic vineyards, time-honored techniques and a curated tasting.",
         imageTheme: "arrabida-wine-allinclusive",
       },
       {
@@ -349,7 +349,7 @@ export const signatureTours: SignatureTour[] = [
     idealFor: [
       "Wine-curious travelers (no expertise needed)",
       "Couples celebrating a small occasion",
-      "Friends wanting one well-organised day out of the city",
+      "Friends wanting one well-organized day out of the city",
     ],
     notes: [
       "Setúbal is famous for its Moscatel. Your guide adjusts the tasting order to your palate.",
@@ -1534,7 +1534,7 @@ export function stopFocal(stop: TourStop): string {
 }
 
 /**
- * Signatures that may appear in public catalogues, sitemaps and reserve
+ * Signatures that may appear in public catalogs, sitemaps and reserve
  * flows. Pending-venue Signatures stay in `signatureTours` (data intact) but
  * are hidden publicly until their venues are verified.
  */

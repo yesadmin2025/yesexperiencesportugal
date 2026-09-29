@@ -27,7 +27,7 @@ export const SITE_URL = WEBSITE_URL;
  *
  * Combines TravelAgency + LocalBusiness so Google can surface it both
  * as the brand entity (knowledge panel, sitelinks) AND as a local
- * place (Maps, "near me", local pack). RNAAT licence is declared via
+ * place (Maps, "near me", local pack). RNAAT license is declared via
  * `identifier` so structured-data tests don't flag a free-text claim.
  */
 export function organizationLd() {
@@ -76,7 +76,7 @@ export function organizationLd() {
     knowsAbout: [
       "Private personalized tours in Portugal",
       "Local Portugal tours with hidden gems",
-      "Portugal around you — journeys built around the traveller",
+      "Portugal around you — journeys built around the traveler",
       "Real-time private tour design in Portugal",
       "Interactive private day-tour builder (YES Experience Studio) — first of its kind in Portugal",
       "Travel Designer service for full Portugal journeys",
@@ -99,7 +99,7 @@ export function organizationLd() {
     ],
     award: [
       "First Portuguese tour operator to offer real-time private tour design and instant reservation through an in-house Experience Studio",
-      "Recognised on Tripadvisor, Viator and GetYourGuide for the Arrábida private wine tour from Lisbon",
+      "Recognized on Tripadvisor, Viator and GetYourGuide for the Arrábida private wine tour from Lisbon",
     ],
     hasOfferCatalog: {
       "@type": "OfferCatalog",
@@ -146,7 +146,7 @@ export function organizationLd() {
           category: "Private day tour",
           name: "Vinho de Talha — Ancient Clay-Amphora Wine Tour in the Alentejo",
           description:
-            "Private, personalized day inside one of Portugal's rarest local wine traditions — vinho de talha, fermented in Roman-style clay amphorae in the Alentejo. Family cellars, long lunches and living heritage — a hidden gem for wine and culture travellers.",
+            "Private, personalized day inside one of Portugal's rarest local wine traditions — vinho de talha, fermented in Roman-style clay amphorae in the Alentejo. Family cellars, long lunches and living heritage — a hidden gem for wine and culture travelers.",
           itemOffered: {
             "@type": "TouristTrip",
             "@id": `${SITE_URL}/tours/roman-heritage-alentejo#trip`,
@@ -799,7 +799,7 @@ export function studioServiceLd(args: { path: string; name: string; description:
     audience: {
       "@type": "Audience",
       audienceType:
-        "Luxury and experiential travellers seeking private, personalized, local Portugal days with hidden gems",
+        "Luxury and experiential travelers seeking private, personalized, local Portugal days with hidden gems",
     },
     potentialAction: {
       "@type": "ReserveAction",
@@ -1032,7 +1032,7 @@ export function hreflangUsCaLinks(path: string) {
  * Corporate Service — /corporate.
  *
  * Corporate work isn't a single bookable Product: it's a designed and
- * coordinated programme. Emitted as a Service provided by the sitewide
+ * coordinated program. Emitted as a Service provided by the sitewide
  * Organization, served across the whole country (never region-scoped),
  * covering team building, incentives, retreats, off-sites and private
  * corporate groups from leadership teams to 100+ guests.
@@ -1052,7 +1052,7 @@ export function corporateServiceLd(args: { path: string }) {
       "Incentive travel",
       "Corporate retreats",
       "Executive off-sites",
-      "Client hosting and VIP programmes",
+      "Client hosting and VIP programs",
       "Private group experiences",
     ],
     category: "Corporate event design and coordination",
@@ -1130,7 +1130,7 @@ export function momentsServiceLd(args: { path: string }) {
  * Service entity graph — emitted once on the homepage.
  *
  * Communicates the brand → service hierarchy so search engines do not reduce
- * YES Experiences Portugal to a single day-tour catalogue. Each item points at
+ * YES Experiences Portugal to a single day-tour catalog. Each item points at
  * the page that owns the entity.
  */
 export function serviceEntityListLd() {

@@ -1,6 +1,6 @@
 /**
  * YES Experiences MCP server — exposes a small, read-only set of tools that
- * let a signed-in traveller access THEIR OWN Studio V3 Signature journeys
+ * let a signed-in traveler access THEIR OWN Studio V3 Signature journeys
  * from an external AI client (ChatGPT, Claude, Cursor…).
  *
  * Auth: managed Supabase OAuth 2.1. Every tool that touches user data reads
@@ -26,7 +26,7 @@ export default defineMcp({
   title: "YES Experiences Portugal",
   version: "0.1.0",
   instructions:
-    "Read-only tools for a signed-in YES Experiences Portugal traveller. Use `list_my_signature_journeys` to see the Signature journeys the user has saved in Studio V3, then `get_signature_journey` with a share token to load the full saved state. Use `echo` to verify connectivity.",
+    "Read-only tools for a signed-in YES Experiences Portugal traveler. Use `list_my_signature_journeys` to see the Signature journeys the user has saved in Studio V3, then `get_signature_journey` with a share token to load the full saved state. Use `echo` to verify connectivity.",
   auth: auth.oauth.issuer({
     issuer: `https://${projectRef}.supabase.co/auth/v1`,
     acceptedAudiences: "authenticated",

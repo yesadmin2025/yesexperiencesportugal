@@ -9,7 +9,7 @@
  *   • `choice`      — "pick N from the pool" → removable only while the kept
  *                     picks stay at or above `pickMin`;
  *   • `optional[]`  — genuine extensions → removable;
- *   • a moment the traveller added from the approved pool (absent from the
+ *   • a moment the traveler added from the approved pool (absent from the
  *     blueprint) → removable, otherwise undo could never restore the day;
  *   • any moment carrying a `lock` → never removable, whatever bucket.
  *
@@ -99,7 +99,7 @@ export function resolveMomentOptionality(input: {
 }
 
 /**
- * May the traveller be offered ONE more moment right now?
+ * May the traveler be offered ONE more moment right now?
  *
  * No count ceiling and no new arithmetic: the answer comes from the existing
  * timing truth (remaining minutes in the day, already computed by

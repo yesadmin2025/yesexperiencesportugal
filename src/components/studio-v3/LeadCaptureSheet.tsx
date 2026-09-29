@@ -121,7 +121,7 @@ export function LeadCaptureSheet({ open, intent, state, onClose }: Props) {
       ? "Say YES to this Signature"
       : "Refine with YES first";
   const intro = isPrivateGroup
-    ? "Your day is composed and saved exactly as you approved it. For 13 or 14 travellers YES confirms vehicles, hosts and each partner with you directly — leave your details and we come back with the final confirmation."
+    ? "Your day is composed and saved exactly as you approved it. For 13 or 14 travelers YES confirms vehicles, hosts and each partner with you directly — leave your details and we come back with the final confirmation."
     : isBook
       ? "Leave your details and confirm a few practicalities. Nothing is reserved until YES confirms availability with you."
       : "Tell YES what you'd like to adjust. We'll come back with options.";

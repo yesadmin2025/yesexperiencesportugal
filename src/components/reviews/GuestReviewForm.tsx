@@ -15,7 +15,7 @@ type TourOption = { tour_id: string; title: string };
 
 const COPY = {
   en: {
-    eyebrow: "Travelled with us?",
+    eyebrow: "Traveled with us?",
     title: "Leave your review",
     intro:
       "One honest sentence is enough. Reviews are read by our team before they appear on this page.",

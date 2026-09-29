@@ -8,7 +8,7 @@ type HighlightSelector =
 /**
  * Buyer-facing card promises derived only from each Signature's canonical
  * overview, itinerary, highlights and inclusions. Operational detail remains
- * owned by the tour data; this map only keeps catalogue copy concise.
+ * owned by the tour data; this map only keeps catalog copy concise.
  */
 const CARD_PROMISES: Record<string, string> = {
   "p23-artisan-pottery-cork":

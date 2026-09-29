@@ -1,5 +1,5 @@
 /**
- * composerAdapter — bridges Studio V3 traveller state to composeStudioJourney.
+ * composerAdapter — bridges Studio V3 traveler state to composeStudioJourney.
  *
  * Phase B scope: this adapter lets a NEW reveal surface read from the
  * Phase A composition engine while the existing Signature-based flow

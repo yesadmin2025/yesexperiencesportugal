@@ -72,7 +72,7 @@ export interface OpsConstraints {
   accessibility?: string[];
   /** ISO date string (YYYY-MM-DD) — captured in the logistics card. */
   preferredDate?: string;
-  /** Free-form tastes/likes chips selected by the traveller. */
+  /** Free-form tastes/likes chips selected by the traveler. */
   tastes?: string[];
 }
 
@@ -87,7 +87,7 @@ export type EnhancementKey =
   | "spa_ritual";
 
 export interface TravelerProfile {
-  /** Optional traveller name — personalises the written story. */
+  /** Optional traveler name — personalises the written story. */
   name?: string;
   intent?: IntentAtmosphere;
   pace?: PaceV2;

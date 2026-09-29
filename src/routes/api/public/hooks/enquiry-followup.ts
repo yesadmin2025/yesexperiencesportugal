@@ -84,7 +84,7 @@ export const Route = createFileRoute("/api/public/hooks/enquiry-followup")({
           // Only guests who actually traveled get a review request. An enquiry
           // alone is never enough: there must be a paid booking on this email
           // whose date has already passed.
-          const { data: travelled, error: bookingError } = await supabaseAdmin
+          const { data: traveled, error: bookingError } = await supabaseAdmin
             .from("bookings")
             .select("id")
             .eq("customer_email", row.email)

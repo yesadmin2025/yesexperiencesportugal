@@ -55,7 +55,7 @@ const COMPANY_SHORT =
   "YES Experiences Portugal is a licensed Portuguese tour operator (RNAAT nº 31/2023) designing private, emotionally intelligent day tours and multi-day journeys nationwide across Portugal. Founded in 2022 by Nídia Almeida, the studio works with a curated network of family wineries, chefs and local hosts to deliver experiences you cannot book off a shelf.";
 
 const COMPANY_LONG =
-  "YES Experiences Portugal is an independent Portuguese travel studio and licensed tour operator (RNAAT nº 31/2023), founded in 2022 in Sesimbra by Nídia Almeida. The company designs private day tours, bespoke multi-day journeys and private occasions — proposals, anniversaries, corporate retreats — nationwide across Portugal, from Lisbon, Sintra, Arrábida, Sesimbra, the Setúbal Peninsula, Comporta, the Alentejo and the Costa Vicentina to Évora, the Douro Valley, Porto, the Azores and Madeira. Every itinerary is built around the guests rather than a fixed catalogue, drawing on long-standing relationships with family wineries, chefs, artisans and cultural hosts. YES is rated 4.9/5 across 1,000 guest reviews on Google, Tripadvisor and Viator, and operates in English, Portuguese and Spanish.";
+  "YES Experiences Portugal is an independent Portuguese travel studio and licensed tour operator (RNAAT nº 31/2023), founded in 2022 in Sesimbra by Nídia Almeida. The company designs private day tours, bespoke multi-day journeys and private occasions — proposals, anniversaries, corporate retreats — nationwide across Portugal, from Lisbon, Sintra, Arrábida, Sesimbra, the Setúbal Peninsula, Comporta, the Alentejo and the Costa Vicentina to Évora, the Douro Valley, Porto, the Azores and Madeira. Every itinerary is built around the guests rather than a fixed catalog, drawing on long-standing relationships with family wineries, chefs, artisans and cultural hosts. YES is rated 4.9/5 across 1,000 guest reviews on Google, Tripadvisor and Viator, and operates in English, Portuguese and Spanish.";
 
 const FOUNDER_BIO_SHORT =
   "Founder and lead travel designer of YES Experiences Portugal — a licensed Portuguese tour operator (RNAAT nº 31/2023) crafting private, meaningful experiences nationwide across Portugal.";
@@ -100,7 +100,7 @@ const LOGO_LOCKUPS: Array<{ name: string; slug: string; use: string }> = [
   {
     name: "Centered — mono charcoal",
     slug: "yes-experiences-portugal-centered-mono-dark",
-    use: "Single-colour print on light backgrounds.",
+    use: "Single-color print on light backgrounds.",
   },
   {
     name: "Centered — mono ivory",
@@ -115,7 +115,7 @@ const LOGO_LOCKUPS: Array<{ name: string; slug: string; use: string }> = [
   {
     name: "Horizontal — mono charcoal",
     slug: "yes-experiences-portugal-horizontal-mono-dark",
-    use: "Single-colour print on light backgrounds.",
+    use: "Single-color print on light backgrounds.",
   },
   {
     name: "Horizontal — mono ivory",

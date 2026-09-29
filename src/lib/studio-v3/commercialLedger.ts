@@ -592,7 +592,7 @@ export function buildCommercialLedger(input: {
  * ------------------------------------------------------------------ */
 
 export type LedgerCheckoutParity = {
-  /** Deduped actions: one `addon:<id>` action per catalogue identity. */
+  /** Deduped actions: one `addon:<id>` action per catalog identity. */
   actions: CommercialLedgerAction[];
   /** Add-on ids present BOTH as a route moment and in the checkout basket. */
   duplicateAddOnIds: string[];
@@ -604,7 +604,7 @@ export type LedgerCheckoutParity = {
 const ADDON_ACTION_PREFIX = "addon:";
 
 /**
- * Reconcile the structural ledger with the add-ons the traveller actually
+ * Reconcile the structural ledger with the add-ons the traveler actually
  * selected at checkout.
  *
  * An add-on that is already IN the composed route (a `signature-addon`

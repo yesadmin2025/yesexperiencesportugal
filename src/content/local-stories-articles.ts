@@ -248,7 +248,7 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
       },
       {
         heading: "How to get to Sesimbra from Lisbon (about 40 minutes by car)",
-        body: "Sesimbra sits roughly 40 kilometres south of Lisbon. By car it is usually around 40 minutes, crossing the 25 de Abril bridge and then turning off towards the Arrábida hills — the last stretch drops down to the sea and is the best part of the drive.\n\nPublic transport is possible via bus from Lisbon, but connections are limited and the wild beaches inside the natural park are difficult to reach without a car. Most travelers who want the coast as well as the town end up driving or booking a private day.\n\nIf you would rather not drive, Sesimbra is part of our [Wild Beaches & Picnic Signature](/tours/wild-beaches-picnic), and it can also close an [Arrábida private wine day](/tours/arrabida-wine-allinclusive) with Atlantic light over the harbour.",
+        body: "Sesimbra sits roughly 40 kilometers south of Lisbon. By car it is usually around 40 minutes, crossing the 25 de Abril bridge and then turning off towards the Arrábida hills — the last stretch drops down to the sea and is the best part of the drive.\n\nPublic transport is possible via bus from Lisbon, but connections are limited and the wild beaches inside the natural park are difficult to reach without a car. Most travelers who want the coast as well as the town end up driving or booking a private day.\n\nIf you would rather not drive, Sesimbra is part of our [Wild Beaches & Picnic Signature](/tours/wild-beaches-picnic), and it can also close an [Arrábida private wine day](/tours/arrabida-wine-allinclusive) with Atlantic light over the harbour.",
       },
       {
         heading: "A half-day in Sesimbra, if you have less time",
@@ -365,7 +365,7 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
     sections: [
       {
         heading: "Why this coast still feels secret",
-        body: "The Parque Natural do Sudoeste Alentejano e Costa Vicentina protects roughly 120 kilometres of Atlantic coastline south of Sines. Development is capped by law: no high-rises, no beachfront resorts, no marinas. The result is a landscape that looks the way the Algarve looked in the 1970s — whitewashed villages, cliffs, coves reached on foot, and a light most travelers associate with Greece rather than Portugal.",
+        body: "The Parque Natural do Sudoeste Alentejano e Costa Vicentina protects roughly 120 kilometers of Atlantic coastline south of Sines. Development is capped by law: no high-rises, no beachfront resorts, no marinas. The result is a landscape that looks the way the Algarve looked in the 1970s — whitewashed villages, cliffs, coves reached on foot, and a light most travelers associate with Greece rather than Portugal.",
       },
       {
         heading: "Porto Covo and Ilha do Pessegueiro",
@@ -1354,7 +1354,7 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
       },
       {
         heading: "Tróia to Comporta — pine, rice fields and empty sand.",
-        body: "Cross the Sado estuary by ferry from Setúbal and the landscape changes completely: a low sand peninsula, umbrella pines, rice paddies and 60 kilometres of beach with almost nothing built on it. Dolphins live in the estuary year-round. It is the calmest of the four drives and the one guests describe as the biggest surprise. See the [Tróia and Comporta day](/tours/troia-comporta).",
+        body: "Cross the Sado estuary by ferry from Setúbal and the landscape changes completely: a low sand peninsula, umbrella pines, rice paddies and 60 kilometers of beach with almost nothing built on it. Dolphins live in the estuary year-round. It is the calmest of the four drives and the one guests describe as the biggest surprise. See the [Tróia and Comporta day](/tours/troia-comporta).",
       },
       {
         heading: "The Vicentine Coast — the wild one.",
@@ -1959,7 +1959,7 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
       },
       {
         heading: "Who this day suits.",
-        body: "Couples and creative travelers, and families with teenagers who want to do something rather than look at something. It is also a strong rainy-day or shoulder-season choice, because the central hour is indoors and the coast still looks dramatic under grey skies.",
+        body: "Couples and creative travelers, and families with teenagers who want to do something rather than look at something. It is also a strong rainy-day or shoulder-season choice, because the central hour is indoors and the coast still looks dramatic under gray skies.",
       },
     ],
     ctaLead:

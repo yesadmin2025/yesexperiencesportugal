@@ -9,13 +9,13 @@
  *
  * FIX 5 — EQUAL-RANK BOUNDARY HONESTY:
  * `represented` is a DETERMINISTIC WORKING SET for compatibility and
- * debugging only. It is NOT a statement of traveller priority. When the
+ * debugging only. It is NOT a statement of traveler priority. When the
  * capacity boundary splits dimensions that share the same *semantic* rank
  * ({ authority, confidence, domainPrecedence } — explicitly EXCLUDING the
  * final stable-key/id tiebreak), `priorityBoundary.status` is
  * `unresolved-equal-rank` and every dimension in that rank group is listed in
  * `tiedDimensions`, on both sides of the cutoff. Stable id order must never be
- * read as the traveller having ranked one above the other.
+ * read as the traveler having ranked one above the other.
  *
  * The interest/feeling maps below are a PASS-1 COMPATIBILITY MIRROR of the
  * current mappings in `livingAtlasBridge.ts`, kept local so parity can be
@@ -138,7 +138,7 @@ export type SemanticProfileProjection = {
    */
   fullDecisionProfile: ExperienceProfile | null;
   /**
-   * DETERMINISTIC WORKING SET, not a traveller priority decision. Read
+   * DETERMINISTIC WORKING SET, not a traveler priority decision. Read
    * `priorityBoundary` before treating this order as meaningful.
    */
   represented: ExperienceDimensionId[];

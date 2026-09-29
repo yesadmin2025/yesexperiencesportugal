@@ -6,9 +6,9 @@
  *   `TAILOR_BLUEPRINTS[].id`  (structural + commercial anchor truth)
  *
  * This file invents NOTHING. Every pair below is the SAME physical, already
- * published moment of the SAME Signature, present in both catalogues under a
+ * published moment of the SAME Signature, present in both catalogs under a
  * different slug. It exists because the previous bridge was a normalized
- * label comparison, which silently failed whenever the two catalogues spell
+ * label comparison, which silently failed whenever the two catalogs spell
  * the same place differently ("House & Museum José Maria da Fonseca" vs
  * "José Maria da Fonseca") and therefore demoted verified blueprint moments
  * to unidentified siblings.

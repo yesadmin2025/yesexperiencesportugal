@@ -15,7 +15,7 @@
  *      the static `public/robots.txt` (which is production's allow-all).
  *   2. Every other response on non-prod hosts gets an
  *      `X-Robots-Tag: noindex, nofollow` HTTP header — the strongest
- *      per-response signal, honoured even when a page has no `<meta robots>`.
+ *      per-response signal, honored even when a page has no `<meta robots>`.
  *
  * The legacy domain (yesexperiences.pt) is handled separately with a
  * 410 Gone response and is NOT treated by this module.

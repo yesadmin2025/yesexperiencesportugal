@@ -59,7 +59,7 @@ export function LandingTourCredibility({
           >
             Viator
           </a>
-          {meta.recommendedPct ? ` · recommended by ${meta.recommendedPct}% of travellers` : ""}.
+          {meta.recommendedPct ? ` · recommended by ${meta.recommendedPct}% of travelers` : ""}.
         </p>
       </div>
 

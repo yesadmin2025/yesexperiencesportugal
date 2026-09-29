@@ -24,14 +24,14 @@ import type { Rhythm } from "@/components/studio-v3/types";
  * ------------------------------------------------------------------ */
 
 /**
- * Classes a traveller may ever choose. Deliberately narrow — the internal
- * catalogue-only `extended` class must never leak into a traveller choice.
+ * Classes a traveler may ever choose. Deliberately narrow — the internal
+ * catalogue-only `extended` class must never leak into a traveler choice.
  */
 export type TravellerDurationClass = "half-day" | "medium" | "full-day";
 
 /**
  * Classes the resolver may produce. `extended` is INTERNAL ONLY. It exists
- * because the verified catalogue contains real 570 and 600 minute Signatures
+ * because the verified catalog contains real 570 and 600 minute Signatures
  * (`signatureToursSourceOfTruth.durationMinutes`) that must not be truncated
  * into the public "full-day" label.
  */
@@ -55,7 +55,7 @@ export type DurationEnvelope = {
 /**
  * Owner-approved envelopes. Approximate by design:
  *   half day  ≈ 4h · medium ≈ 6h · full day ≈ 8–9h
- * `extended` is derived from real catalogue truth (570 / 600 minutes).
+ * `extended` is derived from real catalog truth (570 / 600 minutes).
  *
  * These are TARGET ENVELOPES, not hard exact values. The authority for any
  * single composition is always `ResolvedTimeBudget.availableExperienceMinutes`.
@@ -139,7 +139,7 @@ export const FIXED_OPERATIONAL_SLACK_MIN = 15 as const;
 
 /**
  * HARD MAX for a Studio customer day, measured DOOR TO DOOR (pickup ->
- * drop-off): 9 hours. Legacy Signature catalogue durations of 570/600 minutes
+ * drop-off): 9 hours. Legacy Signature catalog durations of 570/600 minutes
  * are historical product metadata and never permission for a Studio day to
  * exceed this ceiling. Public Signature pages are unaffected.
  */
@@ -147,7 +147,7 @@ export const STUDIO_DOOR_TO_DOOR_HARD_MAX_MIN = 540 as const;
 
 /**
  * Lower edge of the target full-day envelope (8h). A day below this is still
- * VALID when the traveller's real content makes it shorter — it must never be
+ * VALID when the traveler's real content makes it shorter — it must never be
  * padded with irrelevant moments to reach 480.
  */
 export const STUDIO_DOOR_TO_DOOR_TARGET_MIN_MIN = 480 as const;

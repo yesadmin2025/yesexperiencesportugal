@@ -116,7 +116,7 @@ function Page() {
             </p>
             <p>
               It began on the road, guiding guests through Portugal and seeing the same need appear
-              again and again: travellers wanted more than another fixed tour. They wanted freedom,
+              again and again: travelers wanted more than another fixed tour. They wanted freedom,
               but not confusion. They wanted to shape the day themselves, while still feeling guided
               by someone local.
             </p>
@@ -177,7 +177,7 @@ function Page() {
                 and operational constraints.
               </p>
               <p>
-                That is why YES is not just a catalogue of tours. It is a founder-built private
+                That is why YES is not just a catalog of tours. It is a founder-built private
                 travel platform, created from the road and still refined through every booking.
               </p>
             </div>

@@ -64,7 +64,7 @@ export type DirectionCapability = {
     deadDimensions: ExperienceDimensionId[];
   };
 
-  /** How a traveller can arrive here. */
+  /** How a traveler can arrive here. */
   paths: {
     /** Dimension combinations that lead here naturally (affinity >= 2). */
     naturalDimensionPaths: ExperienceDimensionId[];

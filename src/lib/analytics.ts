@@ -10,7 +10,7 @@
  *     not exist yet, we create it — GTM will consume it retroactively
  *     once the container script boots.
  *   - Never throws. Never blocks. Never runs during SSR or tests.
- *   - Typed event catalogue so call sites cannot drift.
+ *   - Typed event catalog so call sites cannot drift.
  *   - Global click delegator (`installAnalyticsAttrs`) auto-fires
  *     events for any element with `data-analytics="event_name"`.
  *     Extra `data-analytics-<param>` attributes become event params.

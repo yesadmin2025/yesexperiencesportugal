@@ -54,7 +54,7 @@ export type OptionalStopSource = "signature-core" | "research-link" | "operator-
  * capability may only be added when structural product truth (Tailor
  * Blueprint / canonical Signature source of truth) explicitly proves it.
  *
- * - `participatory` — the traveller actively makes/does something
+ * - `participatory` — the traveler actively makes/does something
  *   (tile painting, cheese making). A `type: "workshop"` stop can be purely
  *   observational or interpretive, so the type alone proves nothing.
  * - `from-water` — the experience happens on the water.
@@ -994,13 +994,13 @@ export const REGION_STOP_POOL: OptionalStop[] = [
     capabilities: ["participatory"],
     active: true,
     notes:
-      "Source-verified from P4 Tailor structural truth: the traveller paints and takes the tile home, so participation is proven. One-of with the generic tile factory visit.",
+      "Source-verified from P4 Tailor structural truth: the traveler paints and takes the tile home, so participation is proven. One-of with the generic tile factory visit.",
   },
   {
     id: "quinta-velha-cheese-workshop",
     region: "arrabida-setubal",
     subregion: "Azeitão",
-    // CHOICE FIDELITY: the traveller chose "making Azeitão cheese by hand", so
+    // CHOICE FIDELITY: the traveler chose "making Azeitão cheese by hand", so
     // the moment must read as that. Wording comes from this stop's own
     // source-verified truth (`Quinta Velha`, private cheese-making workshop).
     name: "Quinta Velha cheese workshop",
@@ -1016,7 +1016,7 @@ export const REGION_STOP_POOL: OptionalStop[] = [
     capabilities: ["participatory"],
     active: true,
     notes:
-      "Source-verified from P9 Tailor structural truth (`quinta-velha`, private cheese-making workshop, dwell 75, product-defining). Participation is proven. NOT mutually exclusive with the tile experiences — structural truth never says a traveller must choose between cheese-making and tile painting.",
+      "Source-verified from P9 Tailor structural truth (`quinta-velha`, private cheese-making workshop, dwell 75, product-defining). Participation is proven. NOT mutually exclusive with the tile experiences — structural truth never says a traveler must choose between cheese-making and tile painting.",
   },
 
   {

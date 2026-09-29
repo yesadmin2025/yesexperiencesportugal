@@ -170,7 +170,7 @@ export const externalAuthorityMentions: ExternalAuthorityMention[] = [
     relatedTourSlug: "arrabida-wine-allinclusive",
     relatedRegion: "arrabida-setubal",
     quote:
-      "Ideal for travellers seeking a seamless, all-inclusive day that combines wine, food, and culture in a stunning setting.",
+      "Ideal for travelers seeking a seamless, all-inclusive day that combines wine, food, and culture in a stunning setting.",
     quality: "medium",
     placement: ["wine-landing"],
     lastCheckedAt: "2026-06-29",

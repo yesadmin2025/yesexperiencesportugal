@@ -121,7 +121,7 @@ function verifiedArrabidaBoatStop(): OptionalStop | null {
     routeCluster: "arrabida-azeitao-sesimbra",
     active: true,
     notes:
-      "Verified sibling-Signature experience from the existing add-on catalogue. Sesimbra coordinates are used for planning orientation only; departure point, sea and supplier conditions still require confirmation.",
+      "Verified sibling-Signature experience from the existing add-on catalog. Sesimbra coordinates are used for planning orientation only; departure point, sea and supplier conditions still require confirmation.",
   };
 }
 

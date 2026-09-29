@@ -8,7 +8,7 @@
  * concepts, and this module resolves length only.
  *
  * Hierarchy (first match wins):
- *   A. explicit traveller duration class (or explicit minutes)
+ *   A. explicit traveler duration class (or explicit minutes)
  *   B. resolved skeleton's exact canonical `sotDurationMinutes(tourId)`
  *   C. neutral legacy one-day default (510) when neither exists
  */
@@ -23,9 +23,9 @@ import {
 } from "@/lib/studio-v3/timeDomain";
 
 export type ResolveTimeBudgetInput = {
-  /** Explicit traveller choice. Highest authority when present. */
+  /** Explicit traveler choice. Highest authority when present. */
   experienceDurationClass?: TravellerDurationClass | null;
-  /** Explicit minutes, e.g. a future precise traveller control. */
+  /** Explicit minutes, e.g. a future precise traveler control. */
   explicitMinutes?: number | null;
   /** Resolved Signature skeleton, when one already exists. */
   skeletonTourId?: string | null;
@@ -71,7 +71,7 @@ export function classifyMinutes(minutes: number): ResolvedDurationClass {
 }
 
 /**
- * Widen a class envelope so it truthfully CONTAINS an exact catalogue value.
+ * Widen a class envelope so it truthfully CONTAINS an exact catalog value.
  * A verified 570 or 600 minute Signature stays 570 / 600 — never truncated.
  */
 function envelopeContaining(cls: ResolvedDurationClass, minutes: number) {
@@ -83,10 +83,10 @@ function envelopeContaining(cls: ResolvedDurationClass, minutes: number) {
 }
 
 export function resolveTimeBudget(input: ResolveTimeBudgetInput = {}): ResolvedTimeBudget {
-  // ---- A. Explicit traveller choice -------------------------------------
+  // ---- A. Explicit traveler choice -------------------------------------
   // An explicit Half Day stays Half Day even when a long skeleton exists.
   // Later composition must raise a conflict rather than silently expanding
-  // the traveller's own request.
+  // the traveler's own request.
   if (typeof input.explicitMinutes === "number" && input.explicitMinutes > 0) {
     const minutes = Math.round(input.explicitMinutes);
     const durationClass = classifyMinutes(minutes);
@@ -95,7 +95,7 @@ export function resolveTimeBudget(input: ResolveTimeBudgetInput = {}): ResolvedT
       availableExperienceMinutes: minutes,
       ...envelopeContaining(durationClass, minutes),
       source: "explicit-traveller-choice",
-      notes: "Explicit traveller minutes.",
+      notes: "Explicit traveler minutes.",
     };
   }
 
@@ -108,7 +108,7 @@ export function resolveTimeBudget(input: ResolveTimeBudgetInput = {}): ResolvedT
       minMinutes: envelope.minMinutes,
       maxMinutes: envelope.maxMinutes,
       source: "explicit-traveller-choice",
-      notes: "Explicit traveller duration class.",
+      notes: "Explicit traveler duration class.",
     };
   }
 
@@ -125,7 +125,7 @@ export function resolveTimeBudget(input: ResolveTimeBudgetInput = {}): ResolvedT
     // OWNER RULE: a legacy 570/600-minute Signature duration is historical
     // product metadata, never permission for a Studio day to exceed the 9h
     // door-to-door ceiling. Public Signature pages are untouched; only the
-    // live Studio budget is clamped (opt out explicitly for catalogue reads).
+    // live Studio budget is clamped (opt out explicitly for catalog reads).
     const resolvedMinutes = skeletonMinutes;
     const durationClass = classifyMinutes(resolvedMinutes);
     return {

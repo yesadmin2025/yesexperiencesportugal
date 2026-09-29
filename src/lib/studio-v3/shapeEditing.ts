@@ -6,7 +6,7 @@
  *
  *   - remove: only a genuinely optional moment;
  *   - swap: only for a candidate the current composition already approves;
- *   - undo: reverses the last structural edit the traveller made;
+ *   - undo: reverses the last structural edit the traveler made;
  *   - routed validation may update travel/validation results but can NEVER
  *     change membership or order;
  *   - a truthful `TimingConflict` surfaces as an explicit or deferred
@@ -37,13 +37,13 @@ export type ShapeState = {
   approvedSwaps: Readonly<Record<string, readonly ShapeMoment[]>>;
   /** Stack of applied structural edits, newest last. */
   history: Array<{ edit: ShapeEdit; before: ShapeMoment[] }>;
-  /** Deferred tradeoffs the traveller has not resolved yet. */
+  /** Deferred tradeoffs the traveler has not resolved yet. */
   pendingTradeoffs: Array<{ id: string; summary: string; resolved: boolean }>;
 };
 
 export type ShapeResult = {
   state: ShapeState;
-  /** Machine reason when nothing changed. Never traveller copy. */
+  /** Machine reason when nothing changed. Never traveler copy. */
   rejected?: "not-found" | "not-optional" | "candidate-not-approved" | "nothing-to-undo";
 };
 
@@ -100,7 +100,7 @@ export function swapMoment(
   };
 }
 
-/** Undo the last structural edit the traveller made. */
+/** Undo the last structural edit the traveler made. */
 export function undoLastEdit(state: ShapeState): ShapeResult {
   const last = state.history[state.history.length - 1];
   if (!last) return { state, rejected: "nothing-to-undo" };
@@ -145,7 +145,7 @@ export function applyRoutedValidation(
   };
 }
 
-/** A traveller decision on a surfaced tradeoff. Never silent. */
+/** A traveler decision on a surfaced tradeoff. Never silent. */
 export function resolveTradeoff(state: ShapeState, tradeoffId: string): ShapeState {
   return {
     ...state,

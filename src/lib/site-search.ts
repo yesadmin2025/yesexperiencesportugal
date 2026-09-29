@@ -103,7 +103,7 @@ const SERVICE_PAGES: SearchDoc[] = [
     title: "About YES experiences",
     summary: "Who we are, how we work and why we only run private days.",
     path: "/about",
-    keywords: "about founder story team company licence rnaat",
+    keywords: "about founder story team company license rnaat",
   },
   {
     id: "page-contact",

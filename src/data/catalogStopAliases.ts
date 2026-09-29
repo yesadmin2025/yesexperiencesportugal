@@ -40,7 +40,7 @@ export function catalogAliasKey(label: string): string {
     .toLowerCase();
 }
 
-/** Declared inventory stop id for a published catalogue label, or null. */
+/** Declared inventory stop id for a published catalog label, or null. */
 export function aliasedInventoryStopId(anchorTourId: string, label: string): string | null {
   return CATALOG_STOP_ALIASES[anchorTourId]?.[catalogAliasKey(label)] ?? null;
 }

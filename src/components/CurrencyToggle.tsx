@@ -1,6 +1,6 @@
 /**
  * Currency chip (EUR · USD). Mirrors the LanguageSwitcher visual so the
- * two live together as a single "traveller preferences" cluster.
+ * two live together as a single "traveler preferences" cluster.
  *
  * A11y:
  *   • Uses a labelled `role="group"` with roving `aria-pressed` buttons.

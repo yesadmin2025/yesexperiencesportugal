@@ -1,7 +1,7 @@
 /**
  * TURBO 1 — Scope A. DETERMINISTIC free-text interpreter.
  *
- * One optional sentence from the traveller ("Anything this day should know?")
+ * One optional sentence from the traveler ("Anything this day should know?")
  * becomes STRUCTURED semantics inside the existing closed vocabularies:
  * interests, feelings and explicit exclusions of catalogued Director options.
  *
@@ -229,7 +229,7 @@ export interface FreeTextInterpretation {
   normalizedText: string;
   /** Closed-vocabulary semantic effects, deterministic order. */
   effects: SemanticSourceEvent[];
-  /** Catalogued Director options the traveller explicitly ruled out. */
+  /** Catalogued Director options the traveler explicitly ruled out. */
   excludedOptionIds: DirectorOptionId[];
   /** Lexicon phrases that matched, for tests/diagnostics. Never shown raw. */
   matchedPhrases: string[];
@@ -326,7 +326,7 @@ export function interpretFreeText(raw: string | null | undefined): FreeTextInter
   };
 }
 
-/** Semantic keys the traveller explicitly excluded through free text. */
+/** Semantic keys the traveler explicitly excluded through free text. */
 export function freeTextExclusionKeys(interpretation: FreeTextInterpretation): string[] {
   return interpretation.effects
     .filter((event) => event.polarity === "negative")
@@ -340,7 +340,7 @@ export function freeTextExclusionKeys(interpretation: FreeTextInterpretation): s
  * Candidate events are filtered to known domain/value pairs, forced to
  * `ai-interpretation` provenance and positive polarity, and dropped entirely
  * when the deterministic pass already excluded that key. An overlay can
- * therefore never remove, weaken or invert an explicit traveller exclusion.
+ * therefore never remove, weaken or invert an explicit traveler exclusion.
  *
  * This function exists so an AI hook is safe by construction. No provider is
  * configured or called here.
