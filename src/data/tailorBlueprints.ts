@@ -696,11 +696,11 @@ const evoraAlentejo: TailorBlueprint = {
     },
   ],
   choice: {
-    // No owner-approved extra-winery supplement exists for this Signature,
-    // so the pool is an ALTERNATIVES list, not a way to add free visits.
-    pickMin: 1,
-    pickMax: 1,
-    label: "Choose the Alentejo winery to visit",
+    // Owner-approved 2026-09-29: two wineries is the normal day; a third
+    // is +25 EUR pp and must fit the 8-hour day (another moment is removed).
+    pickMin: 2,
+    pickMax: 3,
+    label: "Choose the Alentejo wineries to visit",
     note: "Your guide confirms the winery the day before based on availability.",
     options: [
       {
@@ -746,7 +746,7 @@ const evoraAlentejo: TailorBlueprint = {
   ],
   copy: {
     coreHeading: "Always included at the anchor price",
-    choiceHeading: "Choose your Alentejo winery",
+    choiceHeading: "Choose your Alentejo wineries",
     optionalHeading: "Optional extension — subject to time",
   },
 };

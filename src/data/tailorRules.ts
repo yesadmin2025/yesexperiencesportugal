@@ -19,6 +19,7 @@ import {
 } from "./tailorStopPricing";
 import {
   TAILOR_EXTRA_WINERY_SUPPLEMENT_EUR,
+  TAILOR_EVORA_EXTRA_WINERY_SUPPLEMENT_EUR,
   TAILOR_LUNCH_SUPPLEMENT_EUR,
   lunchRemovalDiscountEur,
 } from "@/config/pricing";
@@ -80,7 +81,18 @@ export const TAILOR_RULES: Record<string, TailorRules> = {
   "sintra-cascais": REMOVE_OR_LUNCH,
   "azeitao-cheese": REMOVE_OR_LUNCH,
   "tomar-coimbra": REMOVE_OR_LUNCH,
-  "evora-alentejo": REMOVE_OR_LUNCH,
+  "evora-alentejo": {
+    ...REMOVE_OR_LUNCH,
+    // Owner-approved 2026-09-29: 2 included, a 3rd at +25 EUR pp. The day
+    // stays within 8 hours, so the 3rd requires removing another moment.
+    wineries: {
+      included: 2,
+      min: 1,
+      max: 3,
+      supplementEur: TAILOR_EVORA_EXTRA_WINERY_SUPPLEMENT_EUR,
+      requiresRemovalFrom: 3,
+    },
+  },
   "fatima-nazare-obidos": REMOVE_OR_LUNCH,
   "tiles-workshop": REMOVE_OR_LUNCH,
 
@@ -168,7 +180,13 @@ export function canSelectWineries(
       message: `Maximum ${w.max} wineries in a single day.`,
     };
   }
-  void stopsRemoved;
+  if (w.requiresRemovalFrom && wineriesSelected >= w.requiresRemovalFrom && stopsRemoved < 1) {
+    return {
+      allowed: false,
+      code: "needs-removal",
+      message: "To keep the day within 8 hours, remove another moment before adding a third winery.",
+    };
+  }
   return { allowed: true };
 }
 

@@ -58,6 +58,8 @@ export function tailorAdjustedPerPax(directEur: number, principalsRemoved: numbe
 export const TAILOR_LUNCH_SUPPLEMENT_EUR = 35;
 /** "Add a 3rd / 4th winery" — Setúbal & Arrábida Wine only. */
 export const TAILOR_EXTRA_WINERY_SUPPLEMENT_EUR = 20;
+/** "Add a 3rd winery" - Evora & Alentejo (owner-approved 2026-09-29). */
+export const TAILOR_EVORA_EXTRA_WINERY_SUPPLEMENT_EUR = 25;
 
 /**
  * "Remove the included lunch" — Setúbal & Arrábida Wine ONLY.
