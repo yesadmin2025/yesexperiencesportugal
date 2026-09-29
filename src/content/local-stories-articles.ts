@@ -1220,7 +1220,7 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
   },
   {
     slug: "best-wine-tours-from-lisbon",
-    title: "Best Wine Tours from Lisbon: Arrábida or Alentejo?",
+    title: "Best Wine Tours from Lisbon: Setúbal vs Alentejo (2026)",
     metaDescription:
       "Best wine tours from Lisbon, compared by a local operator: Setúbal & Arrábida 40 min away vs the Alentejo — drive times, wineries, lunch and private prices.",
     h1: "The Best Wine Tours from Lisbon",
@@ -1351,7 +1351,7 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
       { path: "/portugal-travel-designer", label: "Design your own Portugal journey" },
     ],
     datePublished: "2026-07-24",
-    dateModified: "2026-09-29",
+    dateModified: "2026-09-25",
   },
   {
     slug: "portugal-coastal-drives-from-lisbon",
