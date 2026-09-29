@@ -13,6 +13,7 @@ import { SiteLayout } from "@/components/SiteLayout";
 import { SiteBreadcrumbs } from "@/components/SiteBreadcrumbs";
 import { Clock, MapPin, ArrowLeft, Check, Sparkles, Info, Heart, Shield, Star } from "lucide-react";
 import {
+  publicSignatureTours,
   signatureTours,
   findTour,
   isValidTourId,
@@ -78,6 +79,11 @@ export const Route = createFileRoute("/tours/$tourId")({
         statusCode: 301,
         replace: true,
       });
+    }
+    // Pending-venue Signatures are not publicly released yet: no page, no
+    // reserve flow. Data stays intact for release (see pendingSignatures.ts).
+    if (isPendingVenueSignature(params.tourId)) {
+      throw redirect({ to: "/experiences", statusCode: 302, replace: true });
     }
   },
   loader: async ({ params }) => {
