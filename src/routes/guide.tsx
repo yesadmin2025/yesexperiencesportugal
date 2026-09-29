@@ -85,13 +85,13 @@ function GuideLayout() {
             key={to}
             to={to}
             activeOptions={{ exact }}
-            className="relative flex flex-col items-center justify-center gap-0.5 min-h-14 text-[10.5px] text-muted-foreground"
+            className="relative flex flex-col items-center justify-center gap-0.5 min-h-14 text-[11px] text-muted-foreground"
             activeProps={{ className: "text-[color:var(--teal)]" }}
           >
             <Icon className="h-5 w-5" aria-hidden />
             {label}
             {to === "/guide/notifications" && unread > 0 && (
-              <span className="absolute top-1.5 right-[22%] min-w-4 h-4 rounded-full bg-destructive text-destructive-foreground text-[10px] leading-4 px-1">{unread}</span>
+              <span className="absolute top-1.5 right-[22%] min-w-4 h-4 rounded-full bg-destructive text-destructive-foreground text-[11px] leading-4 px-1">{unread}</span>
             )}
           </Link>
         ))}

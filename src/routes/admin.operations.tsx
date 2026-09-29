@@ -163,9 +163,9 @@ function OperationsPage() {
               ))}
             </Section>
           )}
-          <Section title="Needs attention · next 48h">
+          <Section title="Needs attention · next 2 days">
             {derived.alerts.length === 0 ? (
-              <p className="text-sm text-muted-foreground">Everything in the next 48 hours is confirmed.</p>
+              <p className="text-sm text-muted-foreground">Everything in the next two days is confirmed.</p>
             ) : (
               derived.alerts.map((r: any) => <BookingRow key={r.b.id} r={r} onOpen={() => setOpenId(r.b.id)} />)
             )}
