@@ -286,7 +286,7 @@ export function BuilderMap({
       }
     }
 
-    // Candidate pins (gold for eligible, dimmed grey for not)
+    // Candidate pins (gold for eligible, dimmed gray for not)
     if (candidates && candidates.length) {
       const candidateIcon = (eligible: boolean) =>
         L.divIcon({

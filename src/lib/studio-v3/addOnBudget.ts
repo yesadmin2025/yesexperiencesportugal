@@ -2,7 +2,7 @@
  * FINAL CERTIFICATION — cumulative add-on time budget.
  *
  * The catalogue's own `fitsBudget` answers "does this add-on fit an otherwise
- * empty day?". It knows nothing about the add-ons the traveller has ALREADY
+ * empty day?". It knows nothing about the add-ons the traveler has ALREADY
  * selected, so three 45-minute extensions could each look affordable while
  * together overflowing the day.
  *

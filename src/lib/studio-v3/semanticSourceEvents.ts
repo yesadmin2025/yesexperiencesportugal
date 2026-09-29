@@ -56,7 +56,7 @@ export type SemanticProvenance = (typeof SEMANTIC_PROVENANCES)[number];
  *
  * Polarity NEVER promotes authority. An AI or deterministic *inferred*
  * negative keeps its own weak authority (6 / 5) and therefore can never
- * suppress an explicit traveller positive.
+ * suppress an explicit traveler positive.
  */
 export const PROVENANCE_AUTHORITY: Readonly<Record<SemanticProvenance, number>> = {
   rejection: 1,
@@ -67,13 +67,13 @@ export const PROVENANCE_AUTHORITY: Readonly<Record<SemanticProvenance, number>> 
   "ai-interpretation": 6,
 };
 
-/** Declared traveller priority sits between rejection and explicit selection. */
+/** Declared traveler priority sits between rejection and explicit selection. */
 export const DECLARED_PRIORITY_AUTHORITY = 2 as const;
 
 /**
  * Provenances whose negative signals count as an EXPLICIT exclusion. A weak
  * AI / deterministic negative is retained as a signal but is never labelled
- * an explicit traveller exclusion.
+ * an explicit traveler exclusion.
  */
 export const EXPLICIT_EXCLUSION_PROVENANCES: readonly SemanticProvenance[] = [
   "rejection",
@@ -201,7 +201,7 @@ export type SemanticPolarity = "positive" | "negative";
 type SemanticEventBase = {
   provenance: SemanticProvenance;
   polarity: SemanticPolarity;
-  /** 0..1. Explicit traveller input should be 1. Never quantized for identity. */
+  /** 0..1. Explicit traveler input should be 1. Never quantized for identity. */
   confidence: number;
   /** Traveller explicitly declared this as a priority / lead. */
   declaredPriority?: boolean;

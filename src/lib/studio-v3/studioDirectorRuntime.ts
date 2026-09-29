@@ -85,7 +85,7 @@ export function deriveStudioDirectorRuntime(
     timingConflict: input.timingConflict ?? null,
   });
   // Explicit free-text exclusions are removed from the offered set before a
-  // question exists. An option the traveller ruled out is never offered back.
+  // question exists. An option the traveler ruled out is never offered back.
   const decision = decideStudioQuestion({
     context,
     profile,

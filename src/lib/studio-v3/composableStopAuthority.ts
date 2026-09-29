@@ -6,7 +6,7 @@
  * The Signature is only a skeleton: it fixes region, corridor and logistics.
  * A client-designed day may legitimately hold a boat from one Signature, a
  * workshop from another and a market from a third. Until now the only pricing
- * authority for a borrowed moment was the add-on catalogue, which prices a
+ * authority for a borrowed moment was the add-on catalog, which prices a
  * bolt-on as a percentage of the anchor tour — wrong for a stop that is a
  * core part of a bespoke day, and unavailable mid-day.
  *
@@ -15,7 +15,7 @@
  *
  * INVARIANTS
  *  - NOTHING is invented. A stop with no active, priced row is NOT composable.
- *  - The registry is a read-only catalogue projection. It never computes a
+ *  - The registry is a read-only catalog projection. It never computes a
  *    checkout total: the server re-derives every euro at Reserve time.
  *  - Empty registry = fail closed (composer behaves exactly as before).
  */
@@ -50,7 +50,7 @@ export const COMPOSABLE_VEHICLE_CAPACITY = 8;
 let registry: ReadonlyMap<string, ComposableStopRow> = new Map();
 
 /**
- * Publish the catalogue for this runtime. Only active, priced rows are kept —
+ * Publish the catalog for this runtime. Only active, priced rows are kept —
  * an unpriced or inactive row can never become bookable by accident.
  */
 export function setComposableStopAuthority(rows: readonly ComposableStopRow[]): void {

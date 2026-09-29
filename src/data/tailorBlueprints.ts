@@ -81,7 +81,7 @@ export type StopLockReasonCode =
 
 export interface StopLock {
   reasonCode: StopLockReasonCode;
-  /** Shown verbatim to the traveller. Keep ≤120 chars, plain language. */
+  /** Shown verbatim to the traveler. Keep ≤120 chars, plain language. */
   customerFacingReason: string;
   /** Truth source, e.g. "Viator PDP · signature inclusion" or "Bókun product 12345". */
   source: string;
@@ -94,7 +94,7 @@ export interface TailorBlueprint {
   /**
    *  "Pick N from the pool" — Viator's "2 or 3 wineries" rule, extended
    *  to allow duration-driven ranges (e.g. 2–4 wineries for wine-forward
-   *  tours). The UI defaults to `pickMin` selected; the traveller can
+   *  tours). The UI defaults to `pickMin` selected; the traveler can
    *  scale up to `pickMax` as long as the day stays feasible.
    */
   choice?: {
@@ -526,7 +526,7 @@ const sintraCascais: TailorBlueprint = {
     {
       id: "sintra-vila",
       label: "Sintra historic town",
-      blurb: "UNESCO World Heritage centre — walk the cobbled streets before the palace visit.",
+      blurb: "UNESCO World Heritage center — walk the cobbled streets before the palace visit.",
       category: "village",
       dwellMinutesOverride: 45,
     },
@@ -546,7 +546,7 @@ const sintraCascais: TailorBlueprint = {
     {
       id: "cascais",
       label: "Cascais",
-      blurb: "Royal seaside town — short walk through the old centre and marina.",
+      blurb: "Royal seaside town — short walk through the old center and marina.",
       category: "village",
       dwellMinutesOverride: 45,
     },
@@ -572,7 +572,7 @@ const sintraCascais: TailorBlueprint = {
       {
         id: "sintra-palace",
         label: "Sintra National Palace",
-        blurb: "Moorish-Gothic palace at the heart of the historic centre.",
+        blurb: "Moorish-Gothic palace at the heart of the historic center.",
         category: "monument",
       },
     ],
@@ -668,8 +668,8 @@ const evoraAlentejo: TailorBlueprint = {
   core: [
     {
       id: "evora-old-town",
-      label: "Évora historic centre",
-      blurb: "UNESCO city — walled centre with Roman, Moorish and medieval layers.",
+      label: "Évora historic center",
+      blurb: "UNESCO city — walled center with Roman, Moorish and medieval layers.",
       category: "village",
       dwellMinutesOverride: 60,
     },
@@ -769,7 +769,7 @@ const tomarCoimbra: TailorBlueprint = {
     {
       id: "tomar-town",
       label: "Tomar old town",
-      blurb: "Short walk through the medieval centre below the convent.",
+      blurb: "Short walk through the medieval center below the convent.",
       category: "village",
       dwellMinutesOverride: 30,
     },
@@ -866,7 +866,7 @@ const romanHeritageAlentejo: TailorBlueprint = {
     {
       id: "vinho-talha",
       label: "Centro Interpretativo do Vinho de Talha",
-      blurb: "Centre dedicated to Portugal's 2,000-year-old clay-pot winemaking method.",
+      blurb: "Center dedicated to Portugal's 2,000-year-old clay-pot winemaking method.",
       category: "workshop",
       dwellMinutesOverride: 45,
     },

@@ -300,7 +300,7 @@ export const REGION_STOPS: RegionStop[] = [
   s({
     id: "evora-old-town",
     region: "alentejo",
-    name: "Évora historic centre",
+    name: "Évora historic center",
     kind: "heritage",
     coords: { lat: 38.5713, lng: -7.9135 },
     dwellMin: 90,
@@ -411,7 +411,7 @@ export const REGION_STOPS: RegionStop[] = [
     priority: 7,
     affinity: { style: ["heritage", "table"], energy: ["slow"], social: ["intimate"] },
     timeOfDay: ["midday"],
-    blurb: "Whitewashed lanes few travellers pause for.",
+    blurb: "Whitewashed lanes few travelers pause for.",
     anchorTourId: "roman-heritage-alentejo",
   }),
   s({

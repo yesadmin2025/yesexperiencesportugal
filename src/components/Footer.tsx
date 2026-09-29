@@ -1,4 +1,5 @@
 import { Link } from "@tanstack/react-router";
+import { useT } from "@/i18n/locale-context";
 import { useState } from "react";
 import { ChevronDown } from "lucide-react";
 import { Logo } from "@/components/Logo";
@@ -171,6 +172,7 @@ const LEGAL_LINKS: FooterLink[] = [
 ];
 
 export function Footer() {
+  const t = useT();
   return (
     <footer className="relative bg-[color:var(--charcoal)] text-[color:var(--ivory)]">
       {/* Champagne hairline — handoff from the ivory section above. */}
@@ -202,8 +204,7 @@ export function Footer() {
               className="mt-5 font-[family-name:var(--font-sans)] text-[14px] text-[color:var(--ivory)]/85 leading-[1.65]"
               style={{ fontWeight: 400, letterSpacing: "0.005em" }}
             >
-              Private Portugal, shown the way a local shows a friend. Intimate, real, and genuinely
-              different — designed with you and confirmed in minutes.
+              {t("footer.tagline_full")}
             </p>
             {/* Canonical NAP — one quiet line, single source of truth. */}
             <address className="mt-4 not-italic font-[family-name:var(--font-sans)] text-[13px] leading-[1.7] text-[color:var(--ivory)]/70">

@@ -57,7 +57,7 @@ function guestLabel(meta: Record<string, string>): string | null {
     ? meta.minor_ages.split(",").filter((s) => s.trim().length > 0).length
     : Math.max(0, guests - adults);
   const parts = [`${guests} ${guests === 1 ? "guest" : "guests"}`];
-  if (adults && minors > 0) parts.push(`${adults} adults · ${minors} younger travellers`);
+  if (adults && minors > 0) parts.push(`${adults} adults · ${minors} younger travelers`);
   return parts.join(" · ");
 }
 

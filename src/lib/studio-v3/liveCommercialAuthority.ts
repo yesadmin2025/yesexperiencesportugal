@@ -1,9 +1,9 @@
 /**
  * liveCommercialAuthority — ONE rebuild of commercial truth from the EXACT
- * route the traveller is looking at right now.
+ * route the traveler is looking at right now.
  *
  * The bug this closes: the checkout path used to read a `CommercialLedger`
- * that had been resolved BEFORE the traveller's Add / Swap / Remove /
+ * that had been resolved BEFORE the traveler's Add / Swap / Remove /
  * Reorder / Undo edits. A stale ledger can carry actions for moments that no
  * longer exist and can miss actions the current day does trigger.
  *
@@ -31,7 +31,7 @@ import {
 import { buildCommercialLedger, isKnownPriceAction, type CommercialLedger } from "./commercialLedger";
 import { getTailorBlueprint } from "@/data/tailorBlueprints";
 
-/** A moment of the CURRENT authored route, as the traveller sees it. */
+/** A moment of the CURRENT authored route, as the traveler sees it. */
 export interface AuthoredCommercialMoment {
   readonly label: string;
   readonly inventoryStopId?: string | null;
@@ -117,7 +117,7 @@ function omittedAnchorRecords(
 export function rebuildLiveCommercialAuthority(input: {
   anchorTourId: string | null;
   moments: ReadonlyArray<AuthoredCommercialMoment>;
-  /** True when the traveller changed the day away from the anchor composition. */
+  /** True when the traveler changed the day away from the anchor composition. */
   edited: boolean;
 }): LiveCommercialAuthorityResult {
   const anchorTourId = input.anchorTourId ?? null;

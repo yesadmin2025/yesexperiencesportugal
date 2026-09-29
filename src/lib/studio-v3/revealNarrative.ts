@@ -3,7 +3,7 @@
  *
  * The reveal used to branch on a single `feeling`, which read the same for
  * travellers who had answered very differently. This module composes the
- * closing narrative from the answers the traveller actually gave, reasoned
+ * closing narrative from the answers the traveler actually gave, reasoned
  * through the single existing intelligence layer (`deriveStudioIntelligence`
  * → Living Atlas). It is pure, synchronous and testable.
  *
@@ -45,14 +45,14 @@ export interface RevealNarrativeInput {
   readonly refinement: AdaptiveRefinementId | null;
   /** Human region label already resolved by the caller (never invented here). */
   readonly region: string;
-  /** Labels of the add-ons the traveller actually selected. */
+  /** Labels of the add-ons the traveler actually selected. */
   readonly addOnLabels?: ReadonlyArray<string>;
 }
 
 export interface RevealNarrative {
   /** Opening paragraph of the reveal, including the confirmation tail. */
   readonly intro: string;
-  /** Up to three short signals explaining why this day fits this traveller. */
+  /** Up to three short signals explaining why this day fits this traveler. */
   readonly signals: ReadonlyArray<string>;
 }
 

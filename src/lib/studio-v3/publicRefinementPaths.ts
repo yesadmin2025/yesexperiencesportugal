@@ -2,7 +2,7 @@
  * Public refinement paths — BUILD 0 diagnostics only. PURE AND READ-ONLY.
  *
  * Single authority for the question "can the CURRENT public Studio question
- * logic actually present this refinement option to a traveller?".
+ * logic actually present this refinement option to a traveler?".
  *
  * It never consults `REFINEMENT_TO_SIGNAL` to answer that question: a mapping
  * proves only that an answer WOULD mean something, not that anyone can ever
@@ -62,7 +62,7 @@ export const SIMULATION_FEELINGS: readonly (Feeling | null)[] = [
   "hands-on",
 ];
 
-/** Interest sets kept small and plausible — a traveller picks one to three. */
+/** Interest sets kept small and plausible — a traveler picks one to three. */
 export const SIMULATION_INTEREST_SETS: readonly (readonly Interest[])[] = [
   [],
   ["wine"],
@@ -103,7 +103,7 @@ export const SIMULATION_DESTINATIONS: readonly DestinationIntent[] = [
   "central-portugal",
 ];
 
-/** The answers a traveller has given before the adaptive question is asked. */
+/** The answers a traveler has given before the adaptive question is asked. */
 export type PublicBaseState = {
   feeling: Feeling | null;
   interests: readonly Interest[];

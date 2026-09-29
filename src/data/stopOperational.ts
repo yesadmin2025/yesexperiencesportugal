@@ -2,7 +2,7 @@
 //
 // Single source of truth for "when is this stop NOT bookable?".
 // Used by `curateJourney` (src/components/studio-v3/curation.ts) to drop
-// stops from the pool whenever the traveller has chosen a concrete date.
+// stops from the pool whenever the traveler has chosen a concrete date.
 //
 // Rules MUST be factual and cite a source. Never invent closures.
 // Weekdays follow JS convention: 0 = Sunday, 1 = Monday … 6 = Saturday.

@@ -50,7 +50,7 @@ export type StudioAnalyticsEvent =
   | "studio_signature_candidate"
   | "studio_final_skeleton"
   | "studio_checkout_started"
-  // PASS 4 — the committed day cannot honour the exact date chosen. Structural
+  // PASS 4 — the committed day cannot honor the exact date chosen. Structural
   // only: never the stop, never the date.
   | "logistics_date_conflict";
 
@@ -72,7 +72,7 @@ const VIA_FUNNEL: Partial<Record<StudioAnalyticsEvent, StudioFunnelEvent>> = {
   guest_details_started: "secure_open",
 };
 
-/** Direct GA4 names for Studio events that have a dedicated catalogue name. */
+/** Direct GA4 names for Studio events that have a dedicated catalog name. */
 const DIRECT_GA: Partial<Record<StudioAnalyticsEvent, YesAnalyticsEvent>> = {
   studio_enter: "studio_started",
   price_expanded: "studio_price_expanded",

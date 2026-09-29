@@ -12,7 +12,7 @@
  *   • and the day is a real multi-moment day.
  *
  * A selected taste is never discretionary at the final booking seam. If the
- * verified inventory cannot express it, Studio must keep the traveller in the
+ * verified inventory cannot express it, Studio must keep the traveler in the
  * adjustment flow instead of selling a day that contradicts their choices.
  *
  * `tradeoff`, `impossible`, `invalid` and empty compositions never qualify.

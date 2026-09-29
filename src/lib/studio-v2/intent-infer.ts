@@ -1,7 +1,7 @@
 // Studio v2 — invisible intent inference.
 //
 // Pure, client-safe. Reads behavioural signals from 3 atmospheric scenes
-// and derives a TravelerProfile WITHOUT ever asking the traveller to pick
+// and derives a TravelerProfile WITHOUT ever asking the traveler to pick
 // a region, pace, intent or priority. Aligns with the Studio Bible:
 // "guided, not asked — interface disappears, AI orchestrates".
 //
@@ -260,7 +260,7 @@ export const MOOD_SCENES: MoodScene[] = [
 
 export interface SceneSignal {
   sceneId: string;
-  /** Fragment the traveller tapped (strongest signal). */
+  /** Fragment the traveler tapped (strongest signal). */
   tappedFragmentId: string;
   /** How long they lingered before advancing, ms. */
   lingerMs: number;
@@ -357,7 +357,7 @@ export function inferProfile(
 // ─── conviction line ──────────────────────────────────────────────────────
 //
 // Template, slot-based — never AI-generated marketing copy. Reads what the
-// engine inferred and shows the traveller that the Studio "read" them.
+// engine inferred and shows the traveler that the Studio "read" them.
 
 const INTENT_NOUN: Record<IntentAtmosphere, string> = {
   relaxed_scenic: "open horizons and slow light",
@@ -392,7 +392,7 @@ export function convictionLine(
 
 // ─── conviction script — layered, references actual choices ───────────────
 //
-// Goes beyond a single line: shows the traveller exactly which fragments
+// Goes beyond a single line: shows the traveler exactly which fragments
 // they chose vs rejected, then synthesises and announces the design move.
 // All copy is template-based, never AI-generated.
 

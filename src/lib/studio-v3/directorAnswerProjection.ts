@@ -4,7 +4,7 @@
  * `QuestionAnswerEvent[]` stays the ONE canonical answer store. This module
  * derives — never persists — the discovery / direction / timing state implied
  * by the answers already given, so the NEXT director call can actually see
- * what the traveller chose. Without it, history could only ever suppress
+ * what the traveler chose. Without it, history could only ever suppress
  * questions, which is suppression, not causality.
  *
  * It deliberately does NOT invent semantic interests: a director discovery
@@ -79,7 +79,7 @@ function isTimingChoiceKey(value: string): boolean {
 /**
  * Derive the answer state implied by canonical history.
  *
- * Fail-closed: a selected key that the catalogue does not recognise as a
+ * Fail-closed: a selected key that the catalog does not recognize as a
  * discovery option produces NO discovery signal and NO direction. Only events
  * with real semantic progress are read.
  */
@@ -106,7 +106,7 @@ export function deriveDirectorAnswerProjection(
 
   for (const event of history) {
     if (!hasQuestionSemanticProgress(event)) continue;
-    // PASS 4 offered-option gate: catalogue validity ALONE is insufficient —
+    // PASS 4 offered-option gate: catalog validity ALONE is insufficient —
     // the option must also have been offered by that exact question.
     for (const selected of authoritativeSelectedOptionIds(event)) {
       if (consumeDiscovery(selected)) continue;
@@ -115,7 +115,7 @@ export function deriveDirectorAnswerProjection(
       }
     }
     // HONEST LEGACY COMPATIBILITY: an old draft's proven answer, validated
-    // against the canonical catalogue. It never weakens the live gate above.
+    // against the canonical catalog. It never weakens the live gate above.
     const legacy = legacyCompatibilityRefinementOf(event);
     if (legacy) consumeDiscovery(legacy);
   }

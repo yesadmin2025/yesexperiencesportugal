@@ -10,7 +10,7 @@ import { isPendingVenueSignature } from "./pendingSignatures";
 //      includes. Pickup, private transport, lunch, the guide etc. are
 //      already part of every Signature's `included` array — we do not
 //      sell them again as add-ons.
-//   3. The traveller never sees more than 3 add-ons, and only those
+//   3. The traveler never sees more than 3 add-ons, and only those
 //      whose itinerary thresholds (stops / hours / remaining time) are
 //      met.
 //   4. Pricing is derived at runtime as a % of the base "from" anchor
@@ -612,7 +612,7 @@ export function selectSignatureAddOns(opts: {
 /**
  * Same selection as `selectSignatureAddOns`, but each item is tagged with
  * `fitsBudget` against the caller's `remainingMinutes`. The UI keeps the
- * add-on visible (so the traveller still sees the option) but dims it and
+ * add-on visible (so the traveler still sees the option) but dims it and
  * blocks the toggle when it would push the day past the regional rhythm.
  *
  * When `remainingMinutes` is undefined, every add-on is considered to fit

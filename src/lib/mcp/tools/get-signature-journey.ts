@@ -3,7 +3,7 @@
  * the signed-in user's own Signature journeys, looked up by share token.
  *
  * Filters on both the token AND the caller's verified account email so users
- * cannot fetch another traveller's journey even if they guess a share token.
+ * cannot fetch another traveler's journey even if they guess a share token.
  */
 
 import { createClient } from "@supabase/supabase-js";

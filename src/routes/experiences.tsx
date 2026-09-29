@@ -96,7 +96,7 @@ function ExperiencesPage() {
   const [contentOverrides, setContentOverrides] = useState<ExperienceContentOverride[]>([]);
   useMarketingMotion();
 
-  // The catalogue is source-controlled and must never wait on a network call.
+  // The catalog is source-controlled and must never wait on a network call.
   // Published editorial overrides enhance the already-visible cards after hydration.
   useEffect(() => {
     void import("@/lib/analytics-events").then((a) => a.trackEvent("view_item_list", { list_id: "experiences", item_count: publicSignatureTours.length }));

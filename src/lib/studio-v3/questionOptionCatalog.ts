@@ -40,7 +40,7 @@ export type DirectorOption = {
   id: DirectorOptionId;
   kind: DirectorOptionKind;
   /**
-   * Factual machine label. NOT traveller copy — AI phrasing arrives in Pass 6.
+   * Factual machine label. NOT traveler copy — AI phrasing arrives in Pass 6.
    */
   machineLabel: string;
   /** Discovery signal emitted by choosing this option, when any. */

@@ -83,7 +83,7 @@ export const PORTUGAL_REGION_GUIDES: LocalStoryArticle[] = [
       },
       {
         heading: "Water sets the rhythm.",
-        body: "The park is built around reservoirs and river pools. In summer the lagoons are swimmable and busy at the roadside spots and empty twenty minutes' walk further up. In spring the waterfalls run hard and the tracks are muddy. The park is not a drive-through: one valley, done slowly, beats three seen from a windscreen.",
+        body: "The park is built around reservoirs and river pools. In summer the lagoons are swimmable and busy at the roadside spots and empty twenty minutes' walk further up. In spring the waterfalls run hard and the tracks are muddy. The park is not a drive-through: one valley, done slowly, beats three seen from a windshield.",
       },
       {
         heading: "Braga, and the stairway.",
@@ -164,7 +164,7 @@ export const PORTUGAL_REGION_GUIDES: LocalStoryArticle[] = [
     h1: "Serra da Estrela",
     eyebrow: "Centro · Mountains",
     standfirst:
-      "Torre stands at 1,993 metres — the roof of mainland Portugal, and a completely different country from the coast.",
+      "Torre stands at 1,993 meters — the roof of mainland Portugal, and a completely different country from the coast.",
     sections: [
       {
         heading: "A glacial landscape, not just a high road.",
@@ -242,7 +242,7 @@ export const PORTUGAL_REGION_GUIDES: LocalStoryArticle[] = [
     sections: [
       {
         heading: "Marvão is a walled village on a quartzite ridge.",
-        body: "It sits at around 860 metres inside the Serra de São Mamede natural park, with the whole border plain on one side and Spain on the other. The village inside the walls is a few hundred people and a handful of streets. It was never taken by assault, which is easy to believe once you have walked the ramparts.",
+        body: "It sits at around 860 meters inside the Serra de São Mamede natural park, with the whole border plain on one side and Spain on the other. The village inside the walls is a few hundred people and a handful of streets. It was never taken by assault, which is easy to believe once you have walked the ramparts.",
       },
       {
         heading: "Castelo de Vide, twenty minutes down the road.",
@@ -368,7 +368,7 @@ export const PORTUGAL_REGION_GUIDES: LocalStoryArticle[] = [
     sections: [
       {
         heading: "Madeira is vertical.",
-        body: "The island rises to 1,862 metres at Pico Ruivo in under twenty kilometers from the sea, so cloud, sun and rain are usually all present at once in different places. The south coast is warm and dry, the north is green and wet, and the central peaks sit above the cloud line more often than not. Planning here is really about choosing altitude.",
+        body: "The island rises to 1,862 meters at Pico Ruivo in under twenty kilometers from the sea, so cloud, sun and rain are usually all present at once in different places. The south coast is warm and dry, the north is green and wet, and the central peaks sit above the cloud line more often than not. Planning here is really about choosing altitude.",
       },
       {
         heading: "Levadas are the island's road network for water.",
@@ -417,7 +417,7 @@ export const PORTUGAL_REGION_GUIDES: LocalStoryArticle[] = [
       },
       {
         heading: "Pico is a mountain with an island around it.",
-        body: "Ponta do Pico is 2,351 metres, the highest point in Portugal. At sea level, the Criação Velha and Santa Luzia vineyards are grown inside currais — small walls of black lava stone that shelter the vines from salt wind. The landscape is a UNESCO World Heritage site, and the wines from it are salty, mineral and unlike anything on the mainland.",
+        body: "Ponta do Pico is 2,351 meters, the highest point in Portugal. At sea level, the Criação Velha and Santa Luzia vineyards are grown inside currais — small walls of black lava stone that shelter the vines from salt wind. The landscape is a UNESCO World Heritage site, and the wines from it are salty, mineral and unlike anything on the mainland.",
       },
       {
         heading: "Faial and the channel.",

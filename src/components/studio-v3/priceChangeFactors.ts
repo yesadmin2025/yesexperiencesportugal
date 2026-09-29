@@ -97,7 +97,7 @@ export function resolvePriceChangeFactors({
   if (anchor && rules.length > 0) {
     factors.push({
       id: "traveller_ages",
-      text: `Traveller ages — ${rules.map(bandPhrase).join(", ")}.`,
+      text: `Traveler ages — ${rules.map(bandPhrase).join(", ")}.`,
     });
   }
 

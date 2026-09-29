@@ -1415,7 +1415,7 @@ export function pickPrimaryTourWithFit(
    * How much authority the preference carries.
    *  - "explicit": the traveler answered a deliberate, discriminative
    *    Director / discovery question (e.g. "Sacred heritage" →
-   *    `templars-and-university` → `tomar-coimbra`). Honoured absolutely,
+   *    `templars-and-university` → `tomar-coimbra`). Honored absolutely,
    *    but ONLY after the eligibility ceiling and the high-signal gate.
    *  - "inferred": the intelligence layer merely guessed a leading
    *    dimension. It is a bounded tie-break (Δ ≤ 12 from the leader) and
@@ -1611,7 +1611,7 @@ export function pickPrimaryTourWithFit(
   // high-signal gate, generic scoring must not outvote it.
   //
   // An INFERRED preference is only the intelligence layer's guess. It acts
-  // as a bounded tie-break: honoured while it stays within the top band
+  // as a bounded tie-break: honored while it stays within the top band
   // (Δ ≤ 12) of the leader, never strong enough to jump over a materially
   // better semantic fit. Neither strength invents a tour or widens the pool.
   if (preferTourId) {
@@ -2010,7 +2010,7 @@ export interface ResolvedRoutePoint {
   inventoryStopId?: string | null;
   /** VERIFIED per-point media the source already holds. Never invented. */
   image?: string | null;
-  /** Existing catalogue focal format (CSS object-position, e.g. "50% 40%"). */
+  /** Existing catalog focal format (CSS object-position, e.g. "50% 40%"). */
   focal?: string | null;
   /**
    * VERIFIED structural dwell of the underlying inventory moment, carried
@@ -2222,7 +2222,7 @@ export function resolveStudioV3CurationAuthority<T>(
 
 /** Customer-safe shape of a Living Atlas alternative direction. */
 export interface StudioAlternativeDirection {
-  /** Real Signature tour id in the catalogue. */
+  /** Real Signature tour id in the catalog. */
   tourId: string;
   /** Customer-facing title of that Signature. */
   title: string;
@@ -2245,7 +2245,7 @@ export interface StudioAlternativeDirection {
  *  - Falls back to a "Tailor-made by YES" object when nothing fits safely.
  */
 /**
- * Map Living Atlas alternative directions onto real catalogue tours.
+ * Map Living Atlas alternative directions onto real catalog tours.
  * Anything that does not resolve to a real Signature — or that duplicates
  * the chosen day — is dropped rather than described.
  */
@@ -2777,7 +2777,7 @@ function resolveLivingAtlasLiveDay(input: {
   });
 
   const composition = hybrid.composition;
-  // P0-A COMPOSITION TRUTH — the RAW catalogue list is never a sellable day.
+  // P0-A COMPOSITION TRUTH — the RAW catalog list is never a sellable day.
   // An anchor with an alternative pool lists every candidate; the fallback
   // projects it down to the canonical cardinality before it can ever reach a
   // traveller, a validator or a checkout.

@@ -1,13 +1,13 @@
 /**
  * Studio composition engine (Phase A).
  *
- * Given the traveller's answers (region, rhythm, interests, who, minor ages,
+ * Given the traveler's answers (region, rhythm, interests, who, minor ages,
  * budget tier, weekday, month) this composes a full day from the approved
  * regional stop inventory in `src/data/regionStops.ts`.
  *
  * This is deliberately NOT a Signature-clone: it does not read from
  * `signatureTours`, does not pull a template, and never falls back to a
- * canonical tour ordering. Two travellers with materially different
+ * canonical tour ordering. Two travelers with materially different
  * answers must get materially different journeys — see the accompanying
  * test suite for the guarantees.
  *

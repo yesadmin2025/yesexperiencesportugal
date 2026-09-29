@@ -1,7 +1,7 @@
 /**
  * TURBO 1 — LIVING CANVAS read model.
  *
- * A PURE DERIVED projection of what the traveller has already told us:
+ * A PURE DERIVED projection of what the traveler has already told us:
  * current Studio answers + canonical `questionHistory` + (when it exists) the
  * resolved composition. It is NEVER persisted and is never a second truth
  * store — deleting it would lose nothing.
@@ -108,7 +108,7 @@ export type LivingCanvasInput = {
     regionLabel: string;
     points: ReadonlyArray<LivingCanvasPoint>;
   } | null;
-  /** True once the traveller has shaped the day (order / membership settled). */
+  /** True once the traveler has shaped the day (order / membership settled). */
   shaped?: boolean;
   /**
    * MIGRATION ONLY — legacy label-keyed media for old hydrated state that
@@ -231,7 +231,7 @@ export function deriveLivingCanvas(input: LivingCanvasInput): LivingCanvasModel 
             ? point.stopId.trim()
             : null;
 
-          // 1 · VERIFIED per-point media travelling with the moment itself.
+          // 1 · VERIFIED per-point media traveling with the moment itself.
           const inline =
             typeof point.image === "string" && point.image.trim()
               ? {

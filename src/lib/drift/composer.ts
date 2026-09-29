@@ -90,7 +90,7 @@ function dimWeight(
   // Explicit profile values remain strong, but confidence now matters:
   // a fresh explicit pick scores at 1.0, while a soft inferred value can shape
   // the itinerary without pretending certainty. The previous Math.max(..., 1)
-  // flattened every traveller into the same route weight.
+  // flattened every traveler into the same route weight.
   return typeof c === "number" ? Math.max(0.35, Math.min(1, c)) : 1;
 }
 

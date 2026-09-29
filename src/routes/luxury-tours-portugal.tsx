@@ -77,7 +77,7 @@ const PILLARS: {
   {
     eyebrow: "Private multi-day",
     title: "A ten-day private route across Portugal.",
-    body: "Lisbon, Sintra, the Arrábida coast, and two nights in the Alentejo. Everything private — vehicle, guide, and each estate chosen for the day, not booked from a catalogue.",
+    body: "Lisbon, Sintra, the Arrábida coast, and two nights in the Alentejo. Everything private — vehicle, guide, and each estate chosen for the day, not booked from a catalog.",
     cta: {
       to: "/itineraries/10-day-private-portugal-tour",
       label: "See the 10-day private Portugal tour",

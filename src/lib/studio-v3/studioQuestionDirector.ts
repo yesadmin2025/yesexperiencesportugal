@@ -42,7 +42,7 @@ export type DecideStudioQuestionInput = {
   profile: StudioSemanticProfile;
   history?: readonly QuestionAnswerEvent[];
   /**
-   * TURBO 1 — options the traveller EXPLICITLY ruled out (today: deterministic
+   * TURBO 1 — options the traveler EXPLICITLY ruled out (today: deterministic
    * free text). They are removed from the offered set before the question is
    * emitted, so an explicit "I hate boats" can never be offered back. A
    * question left with fewer than two real choices is not asked at all.
@@ -63,10 +63,10 @@ export function uncertaintyDependencyFingerprint(
   profile: StudioSemanticProfile,
   uncertainty: MaterialUncertainty,
   /**
-   * The ordered option set the traveller would ACTUALLY be offered, after
+   * The ordered option set the traveler would ACTUALLY be offered, after
    * explicit exclusions. Changing an exclusion materially changes the fork,
    * so a previously resolved answer over a different option set can never
-   * keep suppressing it. Defaults to the unfiltered catalogue set.
+   * keep suppressing it. Defaults to the unfiltered catalog set.
    */
   allowedChoiceKeys?: readonly string[],
 ): string {
@@ -154,7 +154,7 @@ export function decideStudioQuestion(
     // Fail closed: an uncatalogued option can never be offered.
     if (!uncertaintyOptionsAreCatalogued(uncertainty)) continue;
 
-    // Explicit traveller exclusions are removed BEFORE identity is computed,
+    // Explicit traveler exclusions are removed BEFORE identity is computed,
     // so the offered set and its fingerprints stay honest.
     const allowed: DirectorChoice[] = uncertainty.choices.filter(
       (choice) => !excluded.has(choice.choiceKey),

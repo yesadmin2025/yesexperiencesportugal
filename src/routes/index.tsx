@@ -109,7 +109,7 @@ const homepageJournalLinks: {
   },
 ];
 
-/** Every Signature cover shot in the catalogue. Journal cards exclude all of
+/** Every Signature cover shot in the catalog. Journal cards exclude all of
  *  them so the row under the map never repeats a photo used as a tour cover
  *  anywhere on the site. */
 const SIGNATURE_COVER_IMAGES: Set<string> = new Set(

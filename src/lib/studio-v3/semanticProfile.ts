@@ -2,7 +2,7 @@
  * BUILD 2 — Pass 1. PURE DERIVED semantic profile.
  *
  * `StudioSemanticProfile` is derived, never persisted. It is the no-loss
- * semantic model BUILD 2 will reason over: every explicit traveller interest
+ * semantic model BUILD 2 will reason over: every explicit traveler interest
  * survives here, even when a downstream compatibility projection can only
  * carry three dimensions.
  *
@@ -46,7 +46,7 @@ export type SemanticProfileInput = {
   companions?: Companions | null;
   occasion?: Occasion | null;
   experienceDurationClass?: TravellerDurationClass | null;
-  /** Interests the traveller explicitly declared as leads / priorities. */
+  /** Interests the traveler explicitly declared as leads / priorities. */
   priorityInterests?: readonly Interest[];
   /** Inert semantic source events (free text, inference, AI, rejections). */
   events?: readonly SemanticSourceEvent[];
@@ -72,11 +72,11 @@ export type StudioSemanticProfile = {
   /** Every explicit, non-excluded interest signal, ranked by authority. */
   contentInterests: SemanticSignal[];
   /**
-   * Interests the traveller EXPLICITLY declared as priorities. Nothing is
+   * Interests the traveler EXPLICITLY declared as priorities. Nothing is
    * inferred here — a feeling never silently becomes a lead interest.
    */
   leadInterests: SemanticSignal[];
-  /** Everything else that must still be honoured. */
+  /** Everything else that must still be honored. */
   supportingInterests: SemanticSignal[];
   /** Rhythm / duration style preferences. */
   stylePreferences: SemanticSignal[];
@@ -200,7 +200,7 @@ export function deriveSemanticProfile(input: SemanticProfileInput): StudioSemant
   const merged = mergeByKey(all);
 
   const negatives = merged.filter((signal) => signal.polarity === "negative");
-  // Only explicit/rejection-class negatives are traveller exclusions.
+  // Only explicit/rejection-class negatives are traveler exclusions.
   const exclusions = negatives.filter((signal) =>
     isExplicitExclusionProvenance(signal.provenance),
   );

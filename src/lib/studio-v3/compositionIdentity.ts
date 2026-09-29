@@ -177,7 +177,7 @@ export function resolveCompositionIdentity(input: {
 
   // 1b · DECLARED structural bridge between the inventory and blueprint id
   // spaces for this exact anchor. Not a label guess: an explicit, reviewed
-  // statement that the two catalogues describe the same real moment.
+  // statement that the two catalogs describe the same real moment.
   if (!blueprintStopId && inventoryStopId) {
     const bridged = bridgedBlueprintStopId(input.anchorTourId, inventoryStopId);
     if (bridged && blueprintScope.some((stop) => stop.id === bridged)) {
@@ -242,7 +242,7 @@ export function resolveCompositionIdentity(input: {
     // COMMERCIAL-ACTION IDENTITY IS A DISTINCT SPACE. A structural blueprint id
     // is NOT a commercial action: it only proves what the anchor already
     // contains. A commercial id exists only when an EXISTING commercial action
-    // authority (the add-on catalogue) structurally attaches to this exact stop
+    // authority (the add-on catalog) structurally attaches to this exact stop
     // for this exact anchor. No label matching, no aliasing, no invention.
     commercialId:
       confidence === "ambiguous"
@@ -257,7 +257,7 @@ export function resolveCompositionIdentity(input: {
 
 /**
  * Resolve an EXACT existing commercial action id for a structurally identified
- * moment. Uses the current add-on catalogue authority only:
+ * moment. Uses the current add-on catalog authority only:
  *  - the add-on must declare an explicit `anchorStopKey` equal to one of the
  *    resolved structural ids (never a label, never a type/duration similarity);
  *  - the add-on must be structurally eligible for this anchor Signature;

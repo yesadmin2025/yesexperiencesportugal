@@ -127,7 +127,7 @@ import { invokeSignatureCheckout } from "@/lib/checkout/session-request";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 
-/** Real minimum priceFrom across every Signature in the catalogue. Used as
+/** Real minimum priceFrom across every Signature in the catalog. Used as
  *  the anchor for indicative per-tier price hints — never invented. */
 const SIGNATURE_MIN_PRICE_EUR: number = (() => {
   let min = Infinity;
@@ -1032,7 +1032,7 @@ export function StudioV3() {
   const [state, setState] = useState<StudioV3State>(INITIAL_STATE);
   const isMobile = useIsMobile();
   const { data: tourPriceTiers } = useTourPriceTiers();
-  // Owner-priced composable moments. Loading this publishes the catalogue to
+  // Owner-priced composable moments. Loading this publishes the catalog to
   // the composer registry, which is what allows a bespoke day to hold verified
   // regional moments from outside the anchor Signature. Empty = fail closed.
   const { data: composableRows = [] } = useComposableStops();
@@ -1406,7 +1406,7 @@ export function StudioV3() {
         committedRoutePoints: currentState.committedRoutePoints ?? null,
         resolved: checkoutResolved,
         catalogStops: tour.stops ?? null,
-        // P0-A — a raw catalogue fallback is projected to canonical cardinality.
+        // P0-A — a raw catalog fallback is projected to canonical cardinality.
         anchorTourId: currentState.tourId ?? tour.id ?? null,
       });
       // Supplier privacy guard — persisted/customer-facing labels stay generic.
@@ -1585,7 +1585,7 @@ export function StudioV3() {
       );
 
       // COMPOSABLE MOMENTS — moments composed into this bespoke day from the
-      // owner-priced catalogue, wherever they sit in the day. The ledger names
+      // owner-priced catalog, wherever they sit in the day. The ledger names
       // them structurally; we display the owner price here and send only the
       // stop ids. The server re-queries the price list and re-derives every
       // euro at Reserve time — no client amount is ever trusted.
@@ -5024,7 +5024,7 @@ export function StoryboardHandoff({
           story: customerStopBlurb(c),
           source: "region-pool",
           durationMinutes: operational.durationMinutes,
-          // Owner-published catalogue duration is the live inventory truth.
+          // Owner-published catalog duration is the live inventory truth.
           durationSource:
             (operational.durationMinutes ?? 0) > 0 ? ("inventory" as DwellSource) : null,
           lat: c.coords?.lat ?? null,

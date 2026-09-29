@@ -2,7 +2,7 @@
  * Shared journey-line display helpers.
  *
  * Both `SignaturePriceCard` (reveal + refine) and `BrandedCheckoutDrawer`
- * render the traveller breakdown using the exact same aggregation, so the
+ * render the traveler breakdown using the exact same aggregation, so the
  * per-adult and per-minor rows shown on the card always match what's
  * itemised on the checkout drawer.
  */

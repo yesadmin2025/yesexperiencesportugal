@@ -2,12 +2,12 @@
  * Deterministic reachability simulator — BUILD 0 diagnostics only.
  *
  * PURE AND READ-ONLY. It sweeps a bounded, fully enumerated matrix of
- * plausible traveller states through the EXISTING Living Atlas decision
+ * plausible traveler states through the EXISTING Living Atlas decision
  * engine and records where each of the twelve commercial directions lands.
  *
  * There is no randomness, no sampling and no learning here. This is not a new
  * recommender and it is never used in a customer-facing path — it exists so
- * that "can a traveller actually reach this product?" becomes a provable
+ * that "can a traveler actually reach this product?" becomes a provable
  * question instead of an opinion.
  */
 
@@ -101,7 +101,7 @@ export const DOMINATION_SHARE_THRESHOLD = 0.33;
  * Director proves that option emittable along a SEQUENTIAL path for that
  * state. Cartesian pairing is deliberately refused. The
  * no-refinement state is always included separately. This deliberately
- * refuses to certify a direction through an answer no traveller could give.
+ * refuses to certify a direction through an answer no traveler could give.
  */
 export function enumerateStates(): ReachabilityState[] {
   const states: ReachabilityState[] = [];
@@ -127,7 +127,7 @@ export function sequentialPathForState(state: ReachabilityState): SequentialPubl
   );
 }
 
-/** Public-path guard: is this exact traveller state actually reachable? */
+/** Public-path guard: is this exact traveler state actually reachable? */
 export function isPubliclyReachableState(state: ReachabilityState): boolean {
   if (!state.refinement) return true;
   const base: PublicBaseState = {
@@ -234,7 +234,7 @@ export function runReachabilityReport(
 }
 
 /**
- * Certification helper: does a specific traveller state reach the direction,
+ * Certification helper: does a specific traveler state reach the direction,
  * either as an outright top-1 or as a fork candidate that a resolving signal
  * can then settle?
  */

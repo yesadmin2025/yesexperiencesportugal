@@ -6,7 +6,7 @@
 //   2. VIATOR_META[id].priceTiersEUR (optional) carries the REAL per-pax
 //      EUR rate for each smaller group size, scraped from the live Viator
 //      product page. When present, we display the exact per-pax rate for
-//      the traveller's chosen guest count.
+//      the traveler's chosen guest count.
 //   3. When tier data is absent, we NEVER invent it — we fall back to the
 //      "from" anchor and the UI labels it as such.
 
@@ -35,7 +35,7 @@ export type PerPaxResolution = {
  *  - `guests` 1..7 with an approved tier → that exact tier (real=true).
  *  - `guests` 1..7 WITHOUT an approved tier → **null** (unavailable).
  *    We never fabricate a tier, never reuse a neighbouring tier and never
- *    fall back to the 8-pax anchor: that would show a solo traveller the
+ *    fall back to the 8-pax anchor: that would show a solo traveler the
  *    group rate and fail later at checkout (the server already returns
  *    409 `owner_data_missing` for the same case).
  */

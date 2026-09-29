@@ -1,6 +1,6 @@
 /**
  * Studio proposal facts — pure selector. Every field comes from verified
- * tour data or the traveller's own choices; missing data → field omitted,
+ * tour data or the traveler's own choices; missing data → field omitted,
  * never guessed. AI copy never feeds this.
  */
 export interface StudioProposalTourInput {

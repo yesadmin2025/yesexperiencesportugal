@@ -117,7 +117,7 @@ export function gaStudioOpeningViewed(): void {
 
 /**
  * Custom: studio_recommendation_revealed — Living Atlas settled on a
- * direction and the traveller saw it. Only non-personal signal counts.
+ * direction and the traveler saw it. Only non-personal signal counts.
  */
 export function gaStudioRecommendationRevealed(args: {
   tourId: string | null;

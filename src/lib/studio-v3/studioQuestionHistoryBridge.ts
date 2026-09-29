@@ -62,7 +62,7 @@ export function refinementDependencyFingerprint(
 }
 
 /**
- * Canonical LIVE event for an answer the traveller just gave in the Studio.
+ * Canonical LIVE event for an answer the traveler just gave in the Studio.
  * `offeredOptionIds` MUST be the options the question actually rendered.
  */
 export function liveRefinementAnswerEvent(
@@ -149,7 +149,7 @@ export function hydrateLegacyRefinementHistory(
  *
  * Every field comes from the Director decision that was actually rendered:
  * the offered set is the decision's exact ordered choice keys, and the
- * selection is the one key the traveller pressed. Re-answering the same
+ * selection is the one key the traveler pressed. Re-answering the same
  * question replaces its previous answer instead of stacking a duplicate.
  */
 export function appendLiveDirectorAnswer(

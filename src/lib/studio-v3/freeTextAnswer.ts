@@ -1,7 +1,7 @@
 /**
  * TURBO 1 — CANONICAL FREE-TEXT ANSWER.
  *
- * One optional traveller note ("Anything this day should know?") becomes
+ * One optional traveler note ("Anything this day should know?") becomes
  * EXACTLY ONE `QuestionAnswerEvent` with `source: "free-text"` inside the
  * canonical `questionHistory`. There is no second semantic store, and the
  * raw sentence never leaves the Studio component's local draft state: only
@@ -51,7 +51,7 @@ export function freeTextAnswerEvent(
   /**
    * OPTIONAL AI overlay. Additive, positive-only and closed-vocabulary — the
    * merge drops anything the deterministic pass already excluded, so an AI
-   * reading can never override an explicit traveller negation.
+   * reading can never override an explicit traveler negation.
    */
   aiOverlay?: readonly SemanticSourceEvent[],
 ): QuestionAnswerEvent | null {
@@ -96,7 +96,7 @@ export function freeTextEventOf(
 }
 
 /**
- * Director options the traveller explicitly ruled out through free text.
+ * Director options the traveler explicitly ruled out through free text.
  * Recomputed from the note itself, so this stays a pure read of one truth.
  */
 export function freeTextExcludedOptionIds(

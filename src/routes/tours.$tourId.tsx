@@ -733,8 +733,9 @@ function ItineraryTimeline({
                     data-mixed-emphasis="exempt"
                   >
                     {s.label}
+                    {s.optional && " "}
                     {s.optional && (
-                      <span className="ml-2 align-middle text-[11px] uppercase tracking-[0.16em] text-[color:var(--charcoal-soft)]">
+                      <span className="ml-1 align-middle text-[11px] uppercase tracking-[0.16em] text-[color:var(--charcoal-soft)]">
                         Optional
                       </span>
                     )}

@@ -606,8 +606,9 @@ function ProductRecap({
               <div className="min-w-0">
                 <p className="text-[13.5px] font-medium leading-snug text-[color:var(--charcoal)]">
                   {stop.label}
+                  {stop.optional ? " " : null}
                   {stop.optional ? (
-                    <span className="ml-2 text-[12px] uppercase tracking-[0.16em] text-[color:var(--charcoal-soft)]">
+                    <span className="ml-1 text-[12px] uppercase tracking-[0.16em] text-[color:var(--charcoal-soft)]">
                       Optional
                     </span>
                   ) : null}

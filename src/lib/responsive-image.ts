@@ -46,7 +46,7 @@ function proxied(url: string, width: number): string {
 
 /**
  * Build a responsive triple for any image URL. Safe passthrough for
- * origins we don't recognise — callers can layer their own `srcSet`
+ * origins we don't recognize — callers can layer their own `srcSet`
  * afterwards if they already build one (see `useAdminTourPhotos`).
  */
 export function buildResponsiveSrc(

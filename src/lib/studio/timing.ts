@@ -52,7 +52,7 @@ export function inferKind(label: string): StopKind | null {
   return null;
 }
 
-/** Minutes a traveller spends at a stop. */
+/** Minutes a traveler spends at a stop. */
 export function stopDurationMinutes(stop: TimingStop): number {
   if (typeof stop.durationMinutes === "number" && stop.durationMinutes > 0) {
     return stop.durationMinutes;

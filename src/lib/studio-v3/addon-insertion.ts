@@ -63,7 +63,7 @@ export interface InsertionResult {
 
 export interface AddonInsertionInput {
   region: RegionKey;
-  /** Base itinerary the traveller is looking at, in order. */
+  /** Base itinerary the traveler is looking at, in order. */
   baseStops: ReadonlyArray<ValidationStop>;
   /** Real per-leg minutes for the base itinerary (length = stops-1). */
   baseLegMinutes: ReadonlyArray<number>;

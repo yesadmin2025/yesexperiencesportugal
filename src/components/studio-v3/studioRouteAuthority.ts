@@ -128,7 +128,7 @@ export function resolveAuthoritativeRouteStops(args: {
   } | null;
   catalogStops?: ReadonlyArray<RoutePointLike> | null;
   /**
-   * P0-A — when the anchor is known, the RAW catalogue fallback is projected
+   * P0-A — when the anchor is known, the RAW catalog fallback is projected
    * down to the anchor's canonical pool cardinality before it can become an
    * itinerary. Omit it and the fallback stays byte-identical to today.
    */
@@ -165,7 +165,7 @@ export function resolveAuthoritativeRouteStops(args: {
 
   const catalog = args.catalogStops ?? null;
   if (catalog && catalog.length > 0) {
-    // The raw catalogue fallback carries no dwell truth of its own, which
+    // The raw catalog fallback carries no dwell truth of its own, which
     // made every day built from it `not-evaluable` at the booking gate.
     // Recover ONLY the verified inventory dwell those exact stops already
     // publish; unresolved moments stay untouched and keep failing closed.
@@ -232,7 +232,7 @@ export function isProvablyUntouchedCanonicalAnchor(args: {
 
 
   // 3. Prove equality with the real catalog Signature stops.
-  //    P0-A: the canonical anchor is the PROJECTED catalogue (surplus pool
+  //    P0-A: the canonical anchor is the PROJECTED catalog (surplus pool
   //    candidates removed) — the same day the fallback actually emits — not
   //    the raw candidate list, which is never sellable.
   const rawCatalog = args.catalogStops ?? null;

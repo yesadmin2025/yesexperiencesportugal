@@ -1,5 +1,5 @@
 /**
- * Composition — Phase 3 traveller composition (adults + minor ages).
+ * Composition — Phase 3 traveler composition (adults + minor ages).
  *
  * Wraps the existing GuestStepper (adults only) with an optional minors
  * editor. Each minor row captures an exact integer age (0–17) which the

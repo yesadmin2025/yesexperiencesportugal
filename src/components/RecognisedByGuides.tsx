@@ -47,7 +47,7 @@ const DEFAULT_INTRO =
 export function RecognisedByGuides({
   placement,
   limit,
-  heading = "Recognised by travel guides",
+  heading = "Recognized by travel guides",
   intro = DEFAULT_INTRO,
   compact = false,
 }: RecognisedByGuidesProps) {

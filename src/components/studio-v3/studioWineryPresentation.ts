@@ -263,7 +263,7 @@ export function publicSafeText(text: string | null | undefined, fallback = "A lo
  * to state about the extra-winery commercial action: the server clamps it to
  * the approved entitlement and derives the euro supplement from its own table
  * (`serverTailorSupplementsEur`). The baseline is the commercial entitlement,
- * not the catalogue — the catalogue lists selectable options, several of
+ * not the catalog — the catalog lists selectable options, several of
  * which are alternatives to one another.
  */
 export function studioExtraWineryCount(
@@ -314,7 +314,7 @@ export interface StudioStructuralMoment {
   readonly blueprintStopId?: string | null;
 }
 
-/** Structural blueprint ids that ARE a winery visit (typed catalogue truth). */
+/** Structural blueprint ids that ARE a winery visit (typed catalog truth). */
 const WINERY_BLUEPRINT_IDS: ReadonlySet<string> = (() => {
   const ids = new Set<string>();
   for (const bp of Object.values(TAILOR_BLUEPRINTS)) {

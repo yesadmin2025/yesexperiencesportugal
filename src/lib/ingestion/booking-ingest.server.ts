@@ -3,7 +3,7 @@
  * the Bókun webhook/API alongside it).
  *
  * Guarantees:
- *  - a message is parsed once; replays are recognised by Gmail message id
+ *  - a message is parsed once; replays are recognized by Gmail message id
  *  - a reservation is matched by the strongest available key before insert
  *  - cancellations update the existing reservation, never create one
  *  - anything uncertain lands in the Needs Review queue, never in the diary

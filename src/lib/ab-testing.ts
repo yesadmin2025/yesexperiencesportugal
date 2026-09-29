@@ -63,7 +63,7 @@ function hashUnit(input: string): number {
 /**
  * Read a `?heroVariant=<id>` override from the URL. Used by QA / the
  * marketing team to preview a specific variant without flipping a
- * coin. Also honoured by `?hero=last` (forces control) so visual
+ * coin. Also honored by `?hero=last` (forces control) so visual
  * regression and copy-lock suites stay deterministic.
  */
 export function readVariantOverride(experiment: HeroExperiment): string | null {

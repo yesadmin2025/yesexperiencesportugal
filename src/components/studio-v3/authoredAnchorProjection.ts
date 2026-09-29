@@ -1,7 +1,7 @@
 /**
  * authoredAnchorProjection — P0-A CANONICAL OPERATIONAL FALLBACK.
  *
- * The RAW catalogue stop list of a Signature is NOT a sellable itinerary.
+ * The RAW catalog stop list of a Signature is NOT a sellable itinerary.
  * It is an inventory: every alternative-pool candidate, every optional
  * route stop, every pass-by. Emitting it wholesale invents a day nobody
  * sells (five wineries in one afternoon) AND breaks the sovereign
@@ -260,7 +260,7 @@ export function anchorMaxStops(anchorTourId: string | null | undefined): number 
 export interface AuthoredAnchorProjection<T> {
   /** The canonical operational day. */
   readonly points: T[];
-  /** Labels removed from the raw catalogue. Diagnostics only. */
+  /** Labels removed from the raw catalog. Diagnostics only. */
   readonly droppedLabels: string[];
   /** True when the raw list had to be projected. */
   readonly projected: boolean;

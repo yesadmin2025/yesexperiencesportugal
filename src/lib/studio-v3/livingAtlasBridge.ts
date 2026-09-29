@@ -16,7 +16,7 @@
  *
  * Guarantees:
  *   - Pure, deterministic, no I/O, no invention. Every reason is derived
- *     from the traveller's own answers and the Signature's own affinity data.
+ *     from the traveler's own answers and the Signature's own affinity data.
  *   - Returns null-ish results rather than guessing when the profile is thin.
  *   - Never touches pricing, checkout, Stripe or Supabase.
  */
@@ -106,7 +106,7 @@ export type StudioDirection = {
   signatureId: LivingAtlasSignatureId;
   /** Dimensions this direction covers strongly (affinity 3). */
   strengths: ExperienceDimensionId[];
-  /** Dimensions the traveller asked for that this direction does not carry. */
+  /** Dimensions the traveler asked for that this direction does not carry. */
   gaps: ExperienceDimensionId[];
   /**
    * Dimensions this direction carries strongly that the chosen direction
@@ -119,11 +119,11 @@ export type StudioDirection = {
 };
 
 export type StudioIntelligence = {
-  /** Null when the traveller has not given enough to reason safely. */
+  /** Null when the traveler has not given enough to reason safely. */
   profile: ExperienceProfile | null;
   decision: LivingAtlasDecision | null;
   /**
-   * Preferred Signature id. Curation may honour it only when the tour is
+   * Preferred Signature id. Curation may honor it only when the tour is
    * already eligible and competitive — it is a preference, not an override.
    */
   preferredTourId: LivingAtlasSignatureId | null;
@@ -193,7 +193,7 @@ function labelList(dimensions: ExperienceDimensionId[]): string {
 
 /**
  * Compose grounded reasons for the chosen direction. Every line is derived
- * from the traveller's own dimensions and the Signature's affinity data —
+ * from the traveler's own dimensions and the Signature's affinity data —
  * nothing about suppliers, prices or availability is asserted here.
  */
 function composeReasons(
@@ -314,7 +314,7 @@ export function deriveStudioIntelligence(input: StudioIntelligenceInput): Studio
  *   2. at least one available answer changes the direction the engine would
  *      otherwise recommend.
  *
- * Anything already safely inferable from the traveller's earlier answers is
+ * Anything already safely inferable from the traveler's earlier answers is
  * not asked. Pure and deterministic; no I/O, no state mutation.
  */
 export function adaptiveQuestionAddsValue(state: StudioV3State): boolean {
