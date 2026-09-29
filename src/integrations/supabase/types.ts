@@ -1608,6 +1608,7 @@ export type Database = {
         Row: {
           blurb: string | null
           created_at: string
+          duration_hours: string | null
           fits_best: string | null
           highlights: string[] | null
           intro: string | null
@@ -1619,6 +1620,7 @@ export type Database = {
         Insert: {
           blurb?: string | null
           created_at?: string
+          duration_hours?: string | null
           fits_best?: string | null
           highlights?: string[] | null
           intro?: string | null
@@ -1630,6 +1632,7 @@ export type Database = {
         Update: {
           blurb?: string | null
           created_at?: string
+          duration_hours?: string | null
           fits_best?: string | null
           highlights?: string[] | null
           intro?: string | null
@@ -1644,6 +1647,7 @@ export type Database = {
         Row: {
           blurb: string | null
           created_at: string
+          duration_hours: string | null
           fits_best: string | null
           highlights: string[] | null
           id: string
@@ -1655,6 +1659,7 @@ export type Database = {
         Insert: {
           blurb?: string | null
           created_at?: string
+          duration_hours?: string | null
           fits_best?: string | null
           highlights?: string[] | null
           id?: string
@@ -1666,6 +1671,7 @@ export type Database = {
         Update: {
           blurb?: string | null
           created_at?: string
+          duration_hours?: string | null
           fits_best?: string | null
           highlights?: string[] | null
           id?: string

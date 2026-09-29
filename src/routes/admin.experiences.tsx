@@ -171,7 +171,7 @@ function AdminExperiencesHub() {
   );
 }
 
-type Draft = { blurb: string; intro: string; fitsBest: string; highlights: string; isPublished: boolean };
+type Draft = { blurb: string; intro: string; fitsBest: string; highlights: string; durationHours: string; isPublished: boolean };
 
 function ExperienceCopyEditor() {
   const load = useServerFn(listExperienceContent);
@@ -186,6 +186,7 @@ function ExperienceCopyEditor() {
     intro: "",
     fitsBest: "",
     highlights: "",
+    durationHours: "",
     isPublished: true,
   });
   const [status, setStatus] = useState<string | null>(null);
@@ -216,6 +217,7 @@ function ExperienceCopyEditor() {
       intro: o?.intro ?? tour.intro,
       fitsBest: o?.fitsBest ?? tour.fitsBest,
       highlights: (o?.highlights ?? tour.highlights).join("\n"),
+      durationHours: o?.durationHours ?? tour.durationHours,
       isPublished: o?.isPublished ?? true,
     });
     setStatus(null);
@@ -247,6 +249,7 @@ function ExperienceCopyEditor() {
             .split("\n")
             .map((value) => value.trim())
             .filter(Boolean),
+          durationHours: draft.durationHours,
           isPublished: draft.isPublished,
         },
       });
@@ -265,6 +268,7 @@ function ExperienceCopyEditor() {
       intro: rev.intro ?? "",
       fitsBest: rev.fitsBest ?? "",
       highlights: rev.highlights?.join("\n") ?? "",
+      durationHours: rev.durationHours ?? "",
       isPublished: rev.isPublished,
     });
     setStatus("Earlier version loaded. Save to publish it again.");
@@ -274,7 +278,7 @@ function ExperienceCopyEditor() {
 
   return (
     <div className="mt-8 border border-[color:var(--border)] bg-white p-5">
-      <h2 className="text-lg font-semibold">Experience description</h2>
+      <h2 className="text-lg font-semibold">Tour details</h2>
       <p className="mt-1 text-xs leading-relaxed text-[color:var(--charcoal-soft)]">
         Four fields a guest actually reads. Leave one empty to fall back to the current site text.
       </p>
@@ -315,6 +319,13 @@ function ExperienceCopyEditor() {
         value={draft.intro}
         rows={6}
         onChange={(v) => setDraft((d) => ({ ...d, intro: v }))}
+      />
+      <Field
+        label="Duration"
+        hint="Shown on the experience page, for example: ~9h."
+        value={draft.durationHours}
+        rows={1}
+        onChange={(v) => setDraft((d) => ({ ...d, durationHours: v }))}
       />
       <Field
         label="Who it fits"

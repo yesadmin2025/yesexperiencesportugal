@@ -21,6 +21,7 @@ export interface ExperienceContentOverride {
   intro: string | null;
   fitsBest: string | null;
   highlights: string[] | null;
+  durationHours: string | null;
   isPublished: boolean;
   updatedAt: string | null;
   updatedBy: string | null;
@@ -53,7 +54,7 @@ function publicClient() {
   });
 }
 
-const SELECT = "tour_id, blurb, intro, fits_best, highlights, is_published, updated_at, updated_by";
+const SELECT = "tour_id, blurb, intro, fits_best, highlights, duration_hours, is_published, updated_at, updated_by";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function toOverride(row: any): ExperienceContentOverride {
@@ -63,6 +64,7 @@ function toOverride(row: any): ExperienceContentOverride {
     intro: (row.intro as string | null) ?? null,
     fitsBest: (row.fits_best as string | null) ?? null,
     highlights: (row.highlights as string[] | null) ?? null,
+    durationHours: (row.duration_hours as string | null) ?? null,
     isPublished: row.is_published !== false,
     updatedAt: (row.updated_at as string | null) ?? null,
     updatedBy: (row.updated_by as string | null) ?? null,
@@ -119,6 +121,7 @@ const saveInput = z.object({
   intro: z.string().max(2000).nullable(),
   fitsBest: z.string().max(240).nullable(),
   highlights: z.array(z.string().min(1).max(180)).max(8).nullable(),
+  durationHours: z.string().max(40).nullable().optional(),
   isPublished: z.boolean().default(true),
 });
 
@@ -139,6 +142,7 @@ export const saveExperienceContent = createServerFn({ method: "POST" })
       intro: clean(data.intro),
       fits_best: clean(data.fitsBest),
       highlights: data.highlights?.map((value) => value.trim()).filter(Boolean) ?? null,
+      duration_hours: clean(data.durationHours ?? null),
       is_published: data.isPublished,
       updated_by: context.userId,
       updated_at: new Date().toISOString(),
@@ -158,6 +162,7 @@ export const saveExperienceContent = createServerFn({ method: "POST" })
       intro: payload.intro,
       fits_best: payload.fits_best,
       highlights: payload.highlights,
+      duration_hours: payload.duration_hours,
       is_published: payload.is_published,
       updated_by: context.userId,
     });
