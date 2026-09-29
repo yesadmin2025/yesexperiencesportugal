@@ -26,3 +26,11 @@
 - [x] Clarify About and structured organization identity without review schema
 - [x] Keep existing booking and Studio flow safeguards unchanged
 - [x] Check priority public pages at mobile and desktop widths
+
+# Guide and admin calendar simplification
+
+- [x] Unify guide and admin month controls and date selection
+- [x] Add selected-day summaries and clearer status keys
+- [x] Simplify both mobile navigation bars
+- [x] Add Guide App home-screen installation action
+- [ ] Validate both calendars at mobile and desktop widths
