@@ -41,7 +41,7 @@ function GuideCalendar() {
         let tone: CalendarDayTone = "default";
         if (dayTours.length) tone = "tour";
         else if (availability?.status === "available") tone = "available";
-        else if (availability?.status === "unavailable" || availability?.status === "vacation") tone = "unavailable";
+        else if (availability?.status && availability.status !== "available") tone = "unavailable";
         return { iso, day: i + 1, tone, count: dayTours.length || undefined, label: `${iso}: ${dayTours.length ? `${dayTours.length} tour${dayTours.length > 1 ? "s" : ""}` : availability?.status ?? "no status"}` };
       }),
     ];
