@@ -6,7 +6,7 @@ import { SiteLayout } from "@/components/SiteLayout";
 import { Clock, MapPin } from "lucide-react";
 import { signatureTours, publicSignatureTours } from "@/data/signatureTours";
 import { VIATOR_META } from "@/data/signatureToursViator";
-import { getTourContent, signatureDurationLabel } from "@/lib/tourContent";
+import { signatureDurationLabel } from "@/lib/tourContent";
 import { getSignatureCardHighlights, getSignatureCardPromise } from "@/lib/signatureCardHighlights";
 import { useImportedTourImages } from "@/hooks/use-imported-tour-images";
 import { TourImage } from "@/components/tours/TourImage";

@@ -68,7 +68,7 @@ describe("brand-critical SERP snippets", () => {
       '"YES Experiences Portugal | Private Tours & Tailor-Made Journeys"',
     );
     expect(home).toContain(
-      "Design a private day in real time, reserve a Signature experience, or shape a multi-day Portugal journey with a local expert. Wine, coast, food and culture, your way.",
+      "Design a private day in real time, reserve a Signature experience, or shape a multi-day Portugal journey with a local expert. Wine, coast, food, culture.",
     );
   });
 
@@ -103,9 +103,9 @@ describe("brand-critical SERP snippets", () => {
       }>
     ).find((a) => a.slug === "best-wine-tours-from-lisbon");
     expect(article).toBeTruthy();
-    expect(article!.title).toBe("The Best Private Wine Tours from Lisbon (2026 Expert Guide)");
+    expect(article!.title).toBe("Best Wine Tours from Lisbon: Setúbal vs Alentejo (2026)");
     expect(article!.metaDescription).toBe(
-      "Which wine day from Lisbon is worth it? A licensed local operator compares Arrábida, Azeitão, Setúbal and Alentejo — drive times, wineries, lunches, prices.",
+      "Best wine tours from Lisbon, compared by a local operator: Setúbal & Arrábida 40 min away vs the Alentejo — drive times, wineries, lunch and private prices.",
     );
     for (const text of [article!.title, article!.metaDescription, article!.standfirst]) {
       expect(text.toLowerCase()).not.toMatch(/small[- ]group/);
@@ -118,7 +118,8 @@ describe("review structured data is first-party only", () => {
     expect(existsSync("src/lib/aggregate-review-schema.ts")).toBe(false);
     const route = read("src/routes/tours.$tourId.tsx");
     expect(route).not.toContain("withAggregateAndReviews");
-    expect(route).toContain("withFirstPartyReviews");
+    expect(route).toContain("getFirstPartyReviewBundle");
+    expect(route).not.toContain("aggregateRating");
   });
 
   it("tourProductLd emits no aggregateRating of its own", () => {

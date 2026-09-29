@@ -108,11 +108,11 @@ describe("reaction beats never read operational option labels back as prose", ()
   });
 });
 
-describe("unified Your Day does not repeat each stop's story", () => {
-  it("gates the editable stop prose while the inline reveal is mounted", () => {
+describe("Your Day shows each stop's verified story (approved per-stop description pass)", () => {
+  it("renders the authored stop prose on the refine card", () => {
     // Pass 2B: the same gate now lives on the shared RefineStopCard prop.
     expect(src("StudioV3.tsx")).toContain(
-      "story={s.story && !storySlot ? authorText(s.story) : undefined}",
+      "story={s.story ? authorText(s.story) : undefined}",
     );
   });
 });

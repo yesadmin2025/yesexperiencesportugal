@@ -11,7 +11,7 @@ describe("final audit corrections", () => {
 
     expect(primaryLinksBody).not.toContain("/studio");
     expect(src).toContain('<CtaButton to="/studio"');
-    expect(src).toContain("Design your day");
+    expect(src).toContain('t("nav.design_your_day")');
   });
 
   it("keeps /book instant mode free of the generic price catalogue", () => {

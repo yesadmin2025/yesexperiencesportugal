@@ -10,7 +10,7 @@ describe("surgical final-pass truth locks", () => {
     const guide = LOCAL_STORIES_ARTICLES.find(
       (article) => article.slug === "best-wine-tours-from-lisbon",
     );
-    expect(guide?.title).toBe("The Best Private Wine Tours from Lisbon (2026 Expert Guide)");
+    expect(guide?.title).toBe("Best Wine Tours from Lisbon: Setúbal vs Alentejo (2026)");
     expect(guide?.h1).toBe("The Best Wine Tours from Lisbon");
     const body = guide?.sections.map((section) => section.body).join("\n") ?? "";
     expect(body).toContain("hands-on local craft and food day");
@@ -32,7 +32,7 @@ describe("surgical final-pass truth locks", () => {
     const reviews = read("src/components/TourReviews.tsx");
     expect(route).toContain("reviews across platforms");
     expect(reviews).toContain("Collected directly by YES");
-    expect(route).toContain("withFirstPartyReviews");
+    expect(route).toContain("getFirstPartyReviewBundle");
     expect(route).not.toMatch(/aggregateRating.*meta\.rating/s);
   });
 
