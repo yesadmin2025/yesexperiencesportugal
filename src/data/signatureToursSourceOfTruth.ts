@@ -471,7 +471,7 @@ export const SIGNATURE_SOURCE_OF_TRUTH: Partial<Record<string, SignatureSourceOf
     ],
     notIncluded: ["Lunch — own expense"],
     variesByOption: [
-      "Your ticket package is either one palace plus the Colares wine visit and tasting, or two palace tickets per person — not all palaces and wine together. Share your preference in the booking notes and your guide confirms it with you before the day.",
+      "Your ticket package is either one palace plus the Colares wine visit and tasting, or two palace tickets per person — not all palaces and wine together. Note your preference under “Anything we should know?” when you book, and your guide confirms it with you before the day.",
     ],
     itinerary: [
       stop(1, "Sintra", "Historic town.", 60, "core", true),
