@@ -1308,7 +1308,7 @@ export const signatureTours: SignatureTour[] = [
     blurb:
       "Roman ruins, amphora wines and a hidden Alentejo most travelers never reach — a quiet inland day with deep roots.",
     intro:
-      "Two thousand years ago the Romans were already making wine in this corner of the Alentejo. We follow their road south — to the ruins of São Cucufate, a tiny family cellar still pressing wine into clay amphorae the old way, and a quiet river beach to close the day, with a traditional lunch at the winery.",
+      "Two thousand years ago the Romans were already making wine in this corner of the Alentejo. We follow their road south — to the ruins of São Cucufate, a tiny family cellar still pressing wine into clay amphorae the old way, and a quiet river beach to close the day.",
     fitsBest: "Couples, wine lovers and curious travelers",
     pace: ["Roman ruins", "Talha winery", "River beach"],
     stops: [
