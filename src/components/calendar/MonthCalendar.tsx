@@ -2,7 +2,7 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
-export type CalendarDayTone = "default" | "tour" | "available" | "unavailable" | "full";
+export type CalendarDayTone = "default" | "tour" | "available" | "unavailable" | "full" | "partial";
 
 export interface MonthCalendarDay {
   readonly iso: string;
@@ -29,6 +29,7 @@ const toneClasses: Record<CalendarDayTone, string> = {
   available: "border-primary/25 bg-primary/10 text-foreground",
   unavailable: "border-destructive/20 bg-destructive/10 text-foreground",
   full: "border-foreground bg-foreground text-background",
+  partial: "border-[color:var(--gold)]/50 bg-[color:var(--gold)]/15 text-foreground",
 };
 
 export function MonthCalendar({

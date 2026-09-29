@@ -3,6 +3,7 @@ import { useCallback, useEffect, useState } from "react";
 import { toast } from "sonner";
 import { db, errMsg, fetchMyTours, fmtDate, fmtPax, type GuideTour } from "@/components/guide/guide-data";
 import { tourBadge } from "@/components/guide/TourCard";
+import { findTour } from "@/data/signatureTours";
 
 export const Route = createFileRoute("/guide/tours/$assignmentId")({
   head: () => ({ meta: [{ title: "Tour details · YES Guide" }] }),
@@ -59,8 +60,14 @@ function TourDetails() {
   };
 
   const pax = fmtPax(tour.pax_breakdown);
-  const itinerary = Array.isArray(tour.itinerary) ? tour.itinerary : [];
-  const included = Array.isArray(tour.included_items) ? tour.included_items.filter((x) => typeof x === "string" && x.trim()) : [];
+  const bookingItinerary = Array.isArray(tour.itinerary) ? tour.itinerary : [];
+  const bookingIncluded = Array.isArray(tour.included_items) ? tour.included_items.filter((x) => typeof x === "string" && x.trim()) : [];
+  // Last-resort fallback: the public Signature catalogue (labels, stories, inclusions only — never prices).
+  const catalogue = tour.source_tour_id ? findTour(tour.source_tour_id) : undefined;
+  const itinerary = bookingItinerary.length
+    ? bookingItinerary
+    : (catalogue?.stops ?? []).map((s, i) => ({ order: i + 1, label: s.label, note: s.story || null, durationMinutes: null }));
+  const included = bookingIncluded.length ? bookingIncluded : [...(catalogue?.included ?? [])];
 
   return (
     <div className="space-y-6">

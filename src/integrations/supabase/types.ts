@@ -3913,6 +3913,7 @@ export type Database = {
           language: string
           pax_breakdown: Json
           pickup_location: string
+          source_tour_id: string
           start_at: string
           start_time: string
           status: string
