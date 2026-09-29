@@ -99,6 +99,14 @@ function GuideCalendar() {
         ) : (
           <p className="mt-2 text-sm text-muted-foreground capitalize">{selectedAvailability?.status ?? "No tour assigned"}.</p>
         )}
+        {selectedTours.length === 0 && (
+          <Button asChild variant="outline" className="mt-3 h-auto min-h-12 w-full justify-between whitespace-normal px-3 py-3 text-left">
+            <Link to="/guide/availability" search={{ from: selected, to: selected }}>
+              <span>Set availability for this day</span>
+              <span aria-hidden>→</span>
+            </Link>
+          </Button>
+        )}
       </section>
     </div>
   );
