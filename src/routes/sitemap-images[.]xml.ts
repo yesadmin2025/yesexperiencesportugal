@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import type {} from "@tanstack/react-start";
 
-import { signatureTours } from "@/data/signatureTours";
+import { publicSignatureTours } from "@/data/signatureTours";
 import { abs } from "@/lib/seo";
 
 const BASE_URL = "https://yesexperiencesportugal.com";
