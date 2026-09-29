@@ -135,6 +135,9 @@ describe("winery choice pools without an approved supplement ladder", () => {
       if (tourId === "arrabida-wine-allinclusive") {
         expect(bp.choice.pickMin).toBe(2);
         expect(bp.choice.pickMax).toBe(4);
+      } else if (tourId === "evora-alentejo") {
+        expect(bp.choice.pickMin).toBe(2);
+        expect(bp.choice.pickMax).toBe(3);
       } else {
         expect(bp.choice.pickMax, `${tourId} must be swap-only`).toBe(bp.choice.pickMin);
       }

@@ -33,7 +33,12 @@ describe("tailor rules", () => {
     expect(winerySupplementEur("arrabida-wine-allinclusive", 4)).toBe(40);
     expect(winerySupplementEur("arrabida-wine-allinclusive", 9)).toBe(40);
     // No winery ladder on other Signatures.
-    expect(winerySupplementEur("evora-alentejo", 4)).toBe(0);
+    // Évora: 2 included, 3rd at €25 pp, capped at 3.
+    expect(winerySupplementEur("evora-alentejo", 2)).toBe(0);
+    expect(winerySupplementEur("evora-alentejo", 3)).toBe(25);
+    expect(winerySupplementEur("evora-alentejo", 4)).toBe(25);
+    expect(canSelectWineries("evora-alentejo", 3, 0).allowed).toBe(false);
+    expect(canSelectWineries("evora-alentejo", 3, 1).allowed).toBe(true);
   });
 
   it("allows one to four wineries without forcing removal of included moments", () => {

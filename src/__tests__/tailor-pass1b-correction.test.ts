@@ -91,9 +91,9 @@ describe("Tailor Enhance offers nothing unpriced", () => {
 
   it("Tiles and Évora have no extra winery ladder", () => {
     expect(tailorRules("tiles-workshop").wineries).toBeUndefined();
-    expect(tailorRules("evora-alentejo").wineries).toBeUndefined();
+    expect(tailorRules("evora-alentejo").wineries?.max).toBe(3);
     expect(winerySupplementEur("tiles-workshop", 4)).toBe(0);
-    expect(winerySupplementEur("evora-alentejo", 4)).toBe(0);
+    expect(winerySupplementEur("evora-alentejo", 4)).toBe(25);
   });
 });
 
