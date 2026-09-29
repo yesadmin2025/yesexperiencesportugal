@@ -20,10 +20,12 @@ describe("public page header grammar (editorial calm pass)", () => {
     }
   });
 
-  it("gives About a single header support paragraph", () => {
+  it("gives About one calm founder-led support block", () => {
     const about = read("src/routes/about.tsx");
     expect(about).not.toContain("page-header-secondary");
     expect(about.match(/page-header-support/g)?.length ?? 0).toBe(1);
+    expect(about).toContain("Travel should feel personal.");
+    expect(about).toContain("We believe the experience should adapt to you.");
   });
 
   it("keeps the Travel Designer hero free of tertiary all-caps copy", () => {
