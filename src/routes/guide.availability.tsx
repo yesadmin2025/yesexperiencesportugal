@@ -67,10 +67,12 @@ function GuideAvailability() {
   const save = () => {
     if (!gid) return;
     if (to < from) return toast.error("End date is before start date.");
+    if (status === "custom" && customTo <= customFrom) return toast.error("Custom end time must be after the start time.");
     const end = new Date(`${to}T00:00:00Z`);
     end.setUTCDate(end.getUTCDate() + 1);
+    const note = status === "custom" ? `Custom hours: ${customFrom}–${customTo}` : null;
     void act(
-      () => db.from("guide_availability").insert({ guide_id: gid, start_at: `${from}T00:00:00+00:00`, end_at: end.toISOString(), status }),
+      () => db.from("guide_availability").insert({ guide_id: gid, start_at: `${from}T00:00:00+00:00`, end_at: end.toISOString(), status, note }),
       "Availability saved",
     );
   };
