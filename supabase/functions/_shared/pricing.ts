@@ -111,6 +111,13 @@ export const TAILOR_LUNCH_ELIGIBLE: ReadonlySet<string> = new Set([
 /** Extra wineries beyond the included baseline, per Signature. */
 export const TAILOR_MAX_EXTRA_WINERIES: Record<string, number> = {
   "arrabida-wine-allinclusive": 2, // 2 included, up to 4
+  "evora-alentejo": 1, // 2 included, up to 3
+};
+
+/** Per-Signature extra-winery supplement (EUR pp). */
+export const TAILOR_EXTRA_WINERY_SUPPLEMENT_BY_TOUR: Readonly<Record<string, number>> = {
+  "arrabida-wine-allinclusive": 20,
+  "evora-alentejo": 25,
 };
 
 /**
@@ -123,6 +130,7 @@ export const TAILOR_WINERY_ENTITLEMENT: Readonly<
   Record<string, { included: number; max: number; requiresRemovalFrom?: number }>
 > = {
   "arrabida-wine-allinclusive": { included: 2, max: 4 },
+  "evora-alentejo": { included: 2, max: 3 },
 };
 
 /**
@@ -183,7 +191,7 @@ export function serverTailorSupplementsEur(
   const lunch = lunchAdded && TAILOR_LUNCH_ELIGIBLE.has(tourId) ? TAILOR_LUNCH_SUPPLEMENT_EUR : 0;
   const maxExtra = TAILOR_MAX_EXTRA_WINERIES[tourId] ?? 0;
   const extra = Math.min(maxExtra, Math.max(0, Number(extraWineries) | 0));
-  return lunch + extra * TAILOR_EXTRA_WINERY_SUPPLEMENT_EUR;
+  return lunch + extra * (TAILOR_EXTRA_WINERY_SUPPLEMENT_BY_TOUR[tourId] ?? 0);
 }
 
 /* ---------------------------------------------------------------- *
