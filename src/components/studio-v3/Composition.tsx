@@ -65,7 +65,7 @@ export function Composition({
               color: "color-mix(in oklab, var(--charcoal) 62%, transparent)",
             }}
           >
-            Travelling with children?
+            Traveling with children?
           </label>
           <span
             className="text-[11px] uppercase tracking-[0.2em] tabular-nums"

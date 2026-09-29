@@ -263,7 +263,7 @@ export function TourReviews({
 
         <p className="mt-4 text-[12px] text-[color:var(--charcoal)]/70">
           <a href="#leave-a-review" className="underline-offset-2 hover:underline">
-            Travelled with us? Write a review →
+            Traveled with us? Write a review →
           </a>
         </p>
       </div>
