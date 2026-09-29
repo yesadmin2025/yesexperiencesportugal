@@ -31,7 +31,7 @@ const PLACE_CONTEXT: Partial<Record<SignatureTour["id"], { story: string; source
     guide: { label: "Explore Setúbal food and wine", url: "/local-stories/setubal-wine-guide" },
   },
   "tiles-workshop": {
-    story: "Azulejos are part of Portugal's built environment, not only souvenirs. Painting one in Azeitão makes the brushwork behind the familiar blue-and-white surfaces tangible before the day continues to Setúbal wine country and Sesimbra.",
+    story: "Azulejos are part of Portugal's built environment, not only souvenirs. The tile-painting workshop in Sesimbra makes the brushwork behind the familiar blue-and-white surfaces tangible; the day also explores Setúbal wine country and the coast.",
     guide: { label: "Explore Setúbal's local culture", url: "/local-stories/setubal-wine-guide" },
   },
   "arrabida-wine-allinclusive": {
