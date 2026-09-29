@@ -27,7 +27,7 @@ export const Route = createFileRoute("/sitemap-images.xml")({
   server: {
     handlers: {
       GET: async () => {
-        const blocks = signatureTours
+        const blocks = publicSignatureTours
           .map((tour) => {
             const images = [tour.img, ...(tour.gallery ?? [])]
               .filter((src): src is string => Boolean(src))

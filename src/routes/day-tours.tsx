@@ -61,7 +61,7 @@ export const Route = createFileRoute("/day-tours")({
         itemListLd({
           name: "Private day tours from Lisbon",
           path: "/day-tours",
-          items: signatureTours
+          items: publicSignatureTours
             .filter((t) => !/days?/i.test(t.duration) || /half|full|long/i.test(t.duration))
             .map((t) => ({ id: t.id, name: t.title, description: t.blurb, image: t.img })),
         }),
