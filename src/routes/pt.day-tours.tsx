@@ -1,3 +1,4 @@
+import { getSignatureCardPromise } from "@/lib/signatureCardHighlights";
 import { ptTheme } from "@/lib/ptTheme";
 import { socialImageMeta } from "@/lib/seo";
 import { localeAlternateLinks } from "@/i18n/seo";
