@@ -8,6 +8,8 @@ import { useServerFn } from "@tanstack/react-start";
 import { AdminShell } from "@/components/admin/AdminShell";
 import { getOperationsBoard } from "@/lib/operations.functions";
 import { supabase } from "@/integrations/supabase/client";
+import { MonthCalendar, type CalendarDayTone } from "@/components/calendar/MonthCalendar";
+import { Button } from "@/components/ui/button";
 
 export const Route = createFileRoute("/admin/tour-calendar")({
   component: TourCalendarPage,
@@ -83,71 +85,50 @@ function TourCalendarPage() {
       return { y: d.getFullYear(), m: d.getMonth() };
     });
   const dayList = selected ? byDay.get(selected) ?? [] : [];
+  const today = new Date().toISOString().slice(0, 10);
+  const calendarDays = cells.map((iso) => {
+    if (!iso) return null;
+    const count = byDay.get(iso)?.length ?? 0;
+    const tone: CalendarDayTone = full.has(iso) ? "full" : count ? "tour" : "default";
+    return { iso, day: Number(iso.slice(8)), count: count || undefined, tone, label: `${iso}: ${full.has(iso) ? "full" : count ? `${count} booked` : "free"}` };
+  });
+  const selectToday = () => {
+    const d = new Date();
+    setMonth({ y: d.getFullYear(), m: d.getMonth() });
+    setSelected(today);
+  };
 
   return (
     <AdminShell eyebrow="Operations" title="Tour calendar">
-      <div className="flex items-center justify-between">
-        <button onClick={() => shift(-1)} className="min-h-11 px-3 text-sm" aria-label="Previous month">←</button>
-        <p className="text-base font-semibold">{label}</p>
-        <button onClick={() => shift(1)} className="min-h-11 px-3 text-sm" aria-label="Next month">→</button>
-      </div>
       {error && <p className="mt-2 text-sm text-destructive">{error}</p>}
-      <div className="mt-3 grid grid-cols-7 gap-1 text-center text-[11px] uppercase tracking-[0.12em] text-[color:var(--charcoal-soft)]">
-        {["M", "T", "W", "T", "F", "S", "S"].map((d, i) => <span key={i}>{d}</span>)}
-      </div>
-      <div className="mt-1 grid grid-cols-7 gap-1">
-        {cells.map((d, i) => {
-          if (!d) return <span key={i} />;
-          const list = byDay.get(d) ?? [];
-          const isFull = full.has(d);
-          const tone = isFull
-            ? "bg-[color:var(--charcoal)] text-[color:var(--ivory)]"
-            : list.length
-              ? "bg-[color:var(--teal)] text-[color:var(--ivory)]"
-              : "bg-[color:var(--ivory)] text-[color:var(--charcoal)]";
-          return (
-            <button
-              key={d}
-              onClick={() => setSelected(d)}
-              className={`flex min-h-12 flex-col items-center justify-center border border-[color:var(--border)] text-sm ${tone} ${selected === d ? "ring-2 ring-[color:var(--gold)]" : ""}`}
-            >
-              {Number(d.slice(8))}
-              {list.length > 0 && <span className="text-[11px]">{list.length}</span>}
-            </button>
-          );
-        })}
-      </div>
-      <div className="mt-3 flex flex-wrap gap-4 text-xs text-[color:var(--charcoal-soft)]">
-        <span>□ Free</span>
-        <span className="text-[color:var(--teal)]">■ Booked</span>
-        <span className="text-[color:var(--charcoal)]">■ Full (no guide left)</span>
+      <MonthCalendar monthLabel={label} days={calendarDays} selected={selected ?? ""} today={today} onSelect={setSelected} onPrevious={() => shift(-1)} onNext={() => shift(1)} onToday={selectToday} />
+      <div className="mt-3 flex flex-wrap gap-x-4 gap-y-2 text-xs text-muted-foreground" aria-label="Calendar key">
+        <span><i className="mr-1.5 inline-block h-2.5 w-2.5 border border-border bg-background" />Free</span>
+        <span><i className="mr-1.5 inline-block h-2.5 w-2.5 bg-primary" />Booked</span>
+        <span><i className="mr-1.5 inline-block h-2.5 w-2.5 bg-foreground" />Full</span>
       </div>
 
       {selected && (
-        <div className="mt-6 border border-[color:var(--border)] bg-white p-4">
-          <p className="text-sm font-semibold">
+        <section className="mt-6 border-t border-border pt-5" aria-live="polite">
+          <p className="text-[11px] uppercase text-muted-foreground">Selected day</p>
+          <h2 className="mt-1 font-[family-name:var(--font-editorial)] text-[24px]">
             {new Date(`${selected}T12:00:00Z`).toLocaleDateString("en-GB", { weekday: "long", day: "numeric", month: "long" })}
             {full.has(selected) ? " · Full" : ""}
-          </p>
+          </h2>
           {dayList.length === 0 ? (
             <p className="mt-2 text-sm text-[color:var(--charcoal-soft)]">No tours booked. This date is free.</p>
           ) : (
-            <ul className="mt-2 divide-y divide-[color:var(--border)]">
+            <ul className="mt-3 space-y-2">
               {dayList.map((b) => (
-                <li key={b.id} className="py-2 text-sm">
-                  <p className="font-medium">{b.tour_title ?? "Tour"}</p>
-                  <p className="text-[color:var(--charcoal-soft)]">
-                    {b.start_time ? String(b.start_time).slice(0, 5) : "Time not set"} · {b.guests ?? "?"} guests ·{" "}
-                    {assigned.has(b.id) ? "Guide assigned" : "No guide yet"}
-                  </p>
+                <li key={b.id} className="flex min-h-16 items-center justify-between gap-3 border border-border px-3 py-2 text-sm">
+                  <div className="min-w-0"><p className="truncate font-medium">{b.tour_title ?? "Tour"}</p><p className="text-xs text-muted-foreground">{b.start_time ? String(b.start_time).slice(0, 5) : "Time not set"} · {b.guests ?? "?"} guests</p></div>
+                  <span className={assigned.has(b.id) ? "text-xs text-primary" : "text-xs font-medium text-destructive"}>{assigned.has(b.id) ? "Assigned" : "Needs guide"}</span>
                 </li>
               ))}
             </ul>
           )}
-          <Link to="/admin/operations" className="mt-3 inline-block text-xs uppercase tracking-[0.18em] text-[color:var(--teal)]">
-            Assign guides in Operations →
-          </Link>
-        </div>
+          {dayList.length > 0 ? <Button asChild className="mt-4 w-full sm:w-auto"><Link to="/admin/operations">Open Operations</Link></Button> : null}
+        </section>
       )}
     </AdminShell>
   );
