@@ -2,10 +2,11 @@
  * /admin/guides — the guides directory used when sending a day's brief.
  * Contacts only: no pricing, no booking mutation.
  */
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { useServerFn } from "@tanstack/react-start";
-import { deleteGuide, listGuides, saveGuide } from "@/lib/guides.functions";
+import { toast } from "sonner";
+import { deleteGuide, listGuides, saveGuide, sendGuideAppInvite } from "@/lib/guides.functions";
 import { Button } from "@/components/ui/button";
 import { AdminShell } from "@/components/admin/AdminShell";
 
@@ -25,6 +26,7 @@ type Guide = {
   phone: string | null;
   notes: string | null;
   active: boolean;
+  app_linked: boolean;
 };
 
 const EMPTY = { id: "", name: "", email: "", phone: "", notes: "", active: true };
@@ -33,10 +35,12 @@ function AdminGuidesPage() {
   const load = useServerFn(listGuides);
   const save = useServerFn(saveGuide);
   const remove = useServerFn(deleteGuide);
+  const invite = useServerFn(sendGuideAppInvite);
 
   const [guides, setGuides] = useState<Guide[]>([]);
   const [draft, setDraft] = useState({ ...EMPTY });
   const [busy, setBusy] = useState(false);
+  const [inviting, setInviting] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
 
   const refresh = () =>
@@ -152,6 +156,9 @@ function AdminGuidesPage() {
           <li key={g.id} className="py-3">
             <div className="text-sm text-[color:var(--charcoal)]">
               {g.name} {g.active ? "" : "· inactive"}
+              {g.app_linked ? (
+                <span className="ml-2 text-xs text-[color:var(--teal)]">· App connected</span>
+              ) : null}
             </div>
             <div className="text-sm text-[color:var(--charcoal-soft)]">
               {[g.email, g.phone].filter(Boolean).join(" · ") || "No contact saved"}
@@ -159,7 +166,31 @@ function AdminGuidesPage() {
             {g.notes ? (
               <div className="text-xs text-[color:var(--charcoal-soft)]">{g.notes}</div>
             ) : null}
-            <div className="mt-2 flex gap-2">
+            <div className="mt-2 flex flex-wrap gap-2">
+              {g.email ? (
+                <Button
+                  size="sm"
+                  className="min-h-11"
+                  disabled={inviting === g.id}
+                  onClick={async () => {
+                    setInviting(g.id);
+                    try {
+                      const res = await invite({ data: { guideId: g.id } });
+                      toast.success(`App invite sent to ${res.email}`);
+                    } catch (cause) {
+                      toast.error(cause instanceof Error ? cause.message : "Could not send the invite.");
+                    } finally {
+                      setInviting(null);
+                    }
+                  }}
+                >
+                  {inviting === g.id ? "Sending…" : g.app_linked ? "Resend app invite" : "Send app invite"}
+                </Button>
+              ) : (
+                <span className="self-center text-xs text-[color:var(--charcoal-soft)]">
+                  Add an email to send an app invite
+                </span>
+              )}
               <Button
                 variant="outline"
                 size="sm"
