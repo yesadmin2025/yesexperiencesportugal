@@ -1951,7 +1951,7 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
       },
       {
         heading: "Then the day turns to wine.",
-        body: "The same region makes Moscatel de Setúbal. Depending on the day and availability we visit one estate — a vineyard walk and a guided tasting at Quinta de Catralvos, the founding Moscatel house of José Maria da Fonseca, or Bacalhôa, where a modern cellar sits beside a striking art collection. One winery, properly, rather than three in a rush.",
+        body: "The same region makes Moscatel de Setúbal. Depending on the day and availability we visit one estate — a small family producer, a historic Moscatel house or a modern cellar beside an art collection, with a vineyard walk or guided tasting. One winery, properly, rather than three in a rush.",
       },
       {
         heading: "Sesimbra closes it by the sea.",
