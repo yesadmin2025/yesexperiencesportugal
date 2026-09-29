@@ -8,6 +8,8 @@ import { supabase } from "@/integrations/supabase/client";
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const db = supabase as any;
 
+export type GuideItineraryStop = { order: number; label: string; note: string | null; durationMinutes: number | null };
+
 export type GuideTour = {
   assignment_id: string;
   booking_id: string;
@@ -22,6 +24,11 @@ export type GuideTour = {
   pickup_location: string | null;
   dropoff_location: string | null;
   guest_first_name: string | null;
+  guest_full_name: string | null;
+  guest_phone: string | null;
+  guest_email: string | null;
+  itinerary: GuideItineraryStop[] | null;
+  included_items: string[] | null;
   client_notes: string | null;
   status: string;
   guide_viewed_at: string | null;
@@ -29,6 +36,15 @@ export type GuideTour = {
   changed_at: string | null;
   booking_cancelled: boolean;
 };
+
+/** Renders a pax breakdown like {adults: 2, children: 1} as "2 adults · 1 child". */
+export function fmtPax(pax: unknown): string | null {
+  if (!pax || typeof pax !== "object" || Array.isArray(pax)) return null;
+  const parts = Object.entries(pax as Record<string, unknown>)
+    .filter(([, v]) => Number(v) > 0)
+    .map(([k, v]) => `${Number(v)} ${Number(v) === 1 ? k.replace(/s$/, "") : k}`);
+  return parts.length ? parts.join(" · ") : null;
+}
 
 export async function fetchMyTours(): Promise<GuideTour[]> {
   const { data, error } = await db.rpc("guide_my_tours", {});
