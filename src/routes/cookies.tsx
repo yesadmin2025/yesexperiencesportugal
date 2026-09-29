@@ -87,7 +87,7 @@ function CookiesPage() {
             </h2>
             <p>
               Aggregated, privacy-respecting measurement so we can understand which pages help
-              travellers most. Data is not sold and is not used to identify you personally.
+              travelers most. Data is not sold and is not used to identify you personally.
             </p>
 
             <h2 className="serif text-[1.4rem] text-[color:var(--charcoal)] font-medium">
