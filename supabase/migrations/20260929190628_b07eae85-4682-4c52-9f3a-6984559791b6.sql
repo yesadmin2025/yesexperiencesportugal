@@ -1,0 +1,1 @@
+REVOKE ALL ON FUNCTION public.guard_guide_availability(), public.sync_booking_assigned_guide() FROM PUBLIC, anon, authenticated;
