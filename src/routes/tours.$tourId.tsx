@@ -606,7 +606,7 @@ function IntroBlock({ tour }: { tour: SignatureTour }) {
          <DirectAnswer>
            {tour.title} is a private {tour.duration.toLowerCase()} experience in{" "}
            {tour.region}, lasting {signatureDurationLabel(tour.id, tour.durationHours)}, from €
-           {tour.priceFrom} per person. It is reserved online with instant confirmation and
+            {tour.priceFrom} per person. It is reserved online with instant confirmation.{" "}
             {CANCELLATION.signature.en}
          </DirectAnswer>
       </div>
