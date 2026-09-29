@@ -121,7 +121,7 @@ export function StudioV3Intro({ onComplete }: Props) {
                 fontFamily: "var(--font-body)",
               }}
             >
-              A few quiet choices, and we shape a private day around you.
+              Design your own private day and confirm it instantly.
             </p>
 
             <CtaButton

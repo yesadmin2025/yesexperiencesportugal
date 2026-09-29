@@ -24,6 +24,15 @@ import {
   type LocalStoryArticle,
 } from "@/content/local-stories-articles";
 import { localStoryShareImage } from "@/content/local-story-share-images";
+import { ResponsiveEditorialImage } from "@/components/ui/ResponsiveEditorialImage";
+import troiaRuins from "@/assets/tours/troia-comporta/beach.jpg";
+import troiaCoast from "@/assets/tours/troia-comporta/extra.jpg";
+import talhaVessels from "@/assets/tours/roman-heritage-alentejo/winery.jpg";
+import talhaDay from "@/assets/tours/roman-heritage-alentejo/hero.jpg";
+import arrabidaWinery from "@/assets/tours/arrabida-wine-allinclusive/winery.jpg";
+import arrabidaView from "@/assets/tours/arrabida-wine-allinclusive/viewpoint.jpg";
+import evoraWinery from "@/assets/tours/evora-alentejo/winery.jpg";
+import vicentineCover from "@/assets/tours/southwest-vicentine-coast-cover.jpg.asset.json";
 import { GuideNextSteps, useGuideLinkTracker } from "@/components/journal/GuideNextSteps";
 import { GuideBookingCta } from "@/components/journal/GuideBookingCta";
 import { DirectAnswer } from "@/components/DirectAnswer";
@@ -88,6 +97,27 @@ export function renderBodyWithTourLinks(text: string): React.ReactNode[] {
 }
 
 const BASE = "https://yesexperiencesportugal.com";
+
+// Owned tour imagery only. A chapter image is editorial context, never a claim
+// that the exact stop or supplier is guaranteed on every date.
+const CHAPTER_IMAGES: Record<string, Record<number, { src: string; alt: string; height: number }>> = {
+  "troia-comporta-guide": {
+    1: { src: troiaRuins, alt: "Remains at the Roman ruins of Tróia", height: 1058 },
+    3: { src: troiaCoast, alt: "Aerial view of the sand and water around Tróia", height: 1065 },
+  },
+  "southwest-vicentine-coast-guide": {
+    1: { src: vicentineCover.url, alt: "Atlantic coast on the southwest Vicentine route in Portugal", height: 1065 },
+  },
+  "roman-heritage-alentejo-talha-wines": {
+    1: { src: talhaDay, alt: "Guests beside a large clay talha in the Alentejo", height: 1058 },
+    3: { src: talhaVessels, alt: "Traditional wine cellar on the Alentejo talha-wine route", height: 1058 },
+  },
+  "best-wine-tours-from-lisbon": {
+    2: { src: arrabidaWinery, alt: "Winery on the Arrábida wine route near Lisbon", height: 1058 },
+    5: { src: evoraWinery, alt: "Winery on the Évora and Alentejo private wine route", height: 1058 },
+    8: { src: arrabidaView, alt: "Travelers looking over the Arrábida coast from a viewpoint", height: 1066 },
+  },
+};
 
 function articleImageUrl(article: LocalStoryArticle): string {
   const src = article.heroImage ?? localStoryShareImage(article.signatureSlug);
@@ -326,6 +356,16 @@ function StaticArticleView({ article }: { article: LocalStoryArticle }) {
                   <p className="text-[16px] md:text-[17px] text-[color:var(--charcoal)] leading-[1.85]">
                     {renderBodyWithTourLinks(section.body)}
                   </p>
+                  {CHAPTER_IMAGES[article.slug]?.[index] && (
+                    <figure className="mt-8 overflow-hidden rounded-sm">
+                      <ResponsiveEditorialImage
+                        image={{ ...CHAPTER_IMAGES[article.slug]![index], width: 1600 }}
+                        sizes="(min-width: 1024px) 780px, 100vw"
+                        pictureClassName="block w-full"
+                        className="block w-full h-auto object-cover"
+                      />
+                    </figure>
+                  )}
                   {index === 0 && GUIDE_INLINE_BOOKING[article.slug] && (
                     <GuideBookingCta
                       guideSlug={article.slug}

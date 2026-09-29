@@ -20,7 +20,7 @@ describe("Studio V3 emotional arc headlines", () => {
       .replace(/\s+/g, " ");
     expect(headline).toContain("Portugal");
     expect(headline).toContain("is the stage. You write the story.");
-    expect(src).toContain("A few quiet choices, and we shape a private day around you.");
+    expect(src).toContain("Design your own private day and confirm it instantly.");
   });
 
   it("closes with `Your Portugal is ready.`", () => {

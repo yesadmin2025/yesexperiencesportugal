@@ -47,7 +47,7 @@ const PATHS: ReadonlyArray<Path> = [
     title: "Your day, designed by you.",
     titleLead: "Your day,",
     titleEmphasis: "designed by you.",
-    body: "Shape the mood, rhythm and route. See the price as your day takes shape, then reserve instantly.",
+    body: "Design your own private day and confirm it instantly. See the route and price take shape as you choose.",
     cta: "Design your day",
     href: "/studio",
     analyticsEvent: "home_path_studio_click",

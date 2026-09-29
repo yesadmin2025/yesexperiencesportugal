@@ -379,8 +379,8 @@ function CtaStrip() {
               <SectionTitle.Em>quite right?</SectionTitle.Em>
             </SectionTitle>
             <p className="mt-3 text-[15px] md:text-[16px] leading-[1.65] text-[color:var(--charcoal-soft)] max-w-lg">
-              Build one private day around your mood, group and rhythm, then see the route and live
-              price in the Studio.
+              Design your own private day and confirm it instantly. See the route and live price
+              take shape in the Studio.
             </p>
             <p className="mt-3 text-[13px] leading-relaxed text-[color:var(--charcoal-soft)]">
               Traveling for several days?{" "}

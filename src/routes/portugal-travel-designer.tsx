@@ -144,7 +144,7 @@ function PortugalTravelDesignerPage() {
           >
             Studio
           </Link>{" "}
-          to build something more personal.{" "}
+          to design a private day and confirm it instantly.{" "}
           <Link
             to="/itineraries/10-day-private-portugal-tour"
             className="text-[color:var(--teal)] underline underline-offset-4 decoration-[color:var(--gold)]/60 hover:decoration-[color:var(--gold)]"
@@ -171,9 +171,9 @@ function PortugalTravelDesignerPage() {
           the entire journey from the beginning.
         </p>
         <p>
-          Studio begins with the traveler rather than with a fixed itinerary. Interests, regions,
-          food, wine, coast, heritage and hands-on experiences can be brought together into a day
-          designed around individual preferences.
+          Studio lets you design your own private day and confirm it instantly, with the route and
+          price visible as you choose. For a multi-day journey, a local Travel Designer shapes the
+          route with you instead.
         </p>
       </Section>
 

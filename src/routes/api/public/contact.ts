@@ -14,6 +14,14 @@ import { createFileRoute } from "@tanstack/react-router";
 import { z } from "zod";
 import { TEAM_NOTIFICATION_RECIPIENTS } from "@/lib/email/team-recipients";
 
+const attributionKeys = [
+  "original_referrer", "landing_page", "utm_source", "utm_medium", "utm_campaign",
+  "utm_content", "utm_term", "gclid", "first_touch_source", "last_touch_source",
+] as const;
+const attributionSchema = z.object(Object.fromEntries(
+  attributionKeys.map((key) => [key, z.string().trim().max(200).optional()]),
+) as Record<(typeof attributionKeys)[number], z.ZodOptional<z.ZodString>>).partial().optional();
+
 const contactSchema = z.object({
   first: z.string().trim().min(1).max(80),
   // Single-name forms send an empty last name; keep the column compatible.
@@ -40,6 +48,7 @@ const contactSchema = z.object({
     .optional(),
   /** Region/place the guest wants a day designed around (from a guide or map pin). */
   place: z.string().trim().max(80).nullable().optional(),
+  attribution: attributionSchema,
 });
 
 
@@ -66,6 +75,16 @@ export const Route = createFileRoute("/api/public/contact")({
           );
         }
         const data = parsed.data;
+        // Existing contact_messages has no metadata column. Keep the guest's
+        // original text intact and add bounded, non-sensitive provenance only
+        // to the internal record/notification, never the guest receipt.
+        const attributionLines = attributionKeys.flatMap((key) => {
+          const value = data.attribution?.[key]?.replace(/[\r\n\x00-\x1f]/g, " ").trim();
+          return value ? [`${key}: ${value}`] : [];
+        });
+        const internalMessage = attributionLines.length
+          ? `${data.message}\n\n[Lead attribution]\n${attributionLines.join("\n")}`
+          : data.message;
 
         // Load server-only Supabase admin client (route file is client-reachable).
         const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
@@ -79,7 +98,7 @@ export const Route = createFileRoute("/api/public/contact")({
             first_name: data.first,
             last_name: data.last,
             email: data.email,
-            message: data.message,
+            message: internalMessage,
             source: data.source ?? "contact-page",
             locale: data.locale ?? null,
             user_agent: data.userAgent ?? null,
@@ -130,7 +149,7 @@ export const Route = createFileRoute("/api/public/contact")({
                 templateName: "internal-lead",
                 recipientEmail: recipient,
                 idempotencyKey: `internal-lead-${leadId}-${recipient}`,
-                templateData,
+                templateData: { ...templateData, message: internalMessage },
               }),
             ),
           );

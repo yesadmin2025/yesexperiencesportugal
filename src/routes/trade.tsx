@@ -16,6 +16,7 @@ import { TravelFilePreview } from "@/components/travel-designer/TravelFilePrevie
 import { useMarketingMotion } from "@/hooks/use-marketing-motion";
 import { breadcrumbLd, jsonLdScript, SITE_URL } from "@/lib/jsonld";
 import { trackEvent } from "@/lib/analytics-events";
+import { leadAttribution } from "@/lib/utm";
 import { EMAIL, EMAIL_HREF, LICENSE_LABEL } from "@/config/business-nap";
 import { ArrowRight, CheckCircle2 } from "lucide-react";
 import heroImg from "@/assets/why-image.jpg";
@@ -107,7 +108,7 @@ const BENEFITS = [
   },
   {
     title: "One local contact, from idea to travel",
-    body: "Work directly with a Portugal-based designer who understands the client brief, knows the itinerary and coordinates every confirmed detail from the first conversation through to delivery.",
+    body: "For private FIT travel in Portugal, work with a local ground partner who understands the client brief and coordinates confirmed details from the first conversation through delivery. You remain the client's advisor; we support the journey on the ground.",
   },
 ];
 
@@ -119,7 +120,7 @@ const WHAT_WE_DESIGN = [
   },
   {
     label: "Experience Studio",
-    body: "A private day shaped interactively by you or your client, from classic highlights to more local experiences, with the route, timings and price updating in real time — and reserved when it feels right.",
+    body: "Design your own private day and confirm it instantly. You or your client can see the route and live price as the day takes shape.",
     to: "/studio",
   },
   {
@@ -219,6 +220,7 @@ function TradePage() {
           email: parsed.data.email,
           message: composed,
           source: "trade",
+          attribution: leadAttribution(),
           locale: typeof navigator !== "undefined" ? navigator.language : null,
           userAgent: typeof navigator !== "undefined" ? navigator.userAgent.slice(0, 500) : null,
         }),
@@ -264,7 +266,7 @@ function TradePage() {
             aria-hidden="true"
           />
           <p className="scene-body mt-5 md:mt-6 mx-auto max-w-[42ch] md:max-w-[62ch] text-[15.5px] md:text-[16.5px] leading-[1.75] md:leading-[1.7] text-[color:var(--charcoal-soft)]">
-            A trusted on-the-ground partner across Portugal, combining the places clients come to
+            A Portugal ground partner for travel advisors, combining the places clients come to
             see with the people, traditions and landscapes they would rarely find on their own.
             Private experiences, tailor-made journeys, celebrations and groups, all handled through
             one named local contact.
