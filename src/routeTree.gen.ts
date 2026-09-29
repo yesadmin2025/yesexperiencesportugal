@@ -132,6 +132,7 @@ import { Route as ApiHealthRouteImport } from './routes/api/health'
 import { Route as AdminWebhookEventsRouteImport } from './routes/admin.webhook-events'
 import { Route as AdminViatorValidationRouteImport } from './routes/admin.viator-validation'
 import { Route as AdminTourLinkAuditRouteImport } from './routes/admin.tour-link-audit'
+import { Route as AdminTourCalendarRouteImport } from './routes/admin.tour-calendar'
 import { Route as AdminStudioV3FunnelRouteImport } from './routes/admin.studio-v3-funnel'
 import { Route as AdminStudioV3AuditRouteImport } from './routes/admin.studio-v3-audit'
 import { Route as AdminStudioProposalsRouteImport } from './routes/admin.studio-proposals'
@@ -846,6 +847,11 @@ const AdminTourLinkAuditRoute = AdminTourLinkAuditRouteImport.update({
   path: '/tour-link-audit',
   getParentRoute: () => AdminRoute,
 } as any)
+const AdminTourCalendarRoute = AdminTourCalendarRouteImport.update({
+  id: '/tour-calendar',
+  path: '/tour-calendar',
+  getParentRoute: () => AdminRoute,
+} as any)
 const AdminStudioV3FunnelRoute = AdminStudioV3FunnelRouteImport.update({
   id: '/studio-v3-funnel',
   path: '/studio-v3-funnel',
@@ -1418,6 +1424,7 @@ export interface FileRoutesByFullPath {
   '/admin/studio-proposals': typeof AdminStudioProposalsRoute
   '/admin/studio-v3-audit': typeof AdminStudioV3AuditRoute
   '/admin/studio-v3-funnel': typeof AdminStudioV3FunnelRoute
+  '/admin/tour-calendar': typeof AdminTourCalendarRoute
   '/admin/tour-link-audit': typeof AdminTourLinkAuditRoute
   '/admin/viator-validation': typeof AdminViatorValidationRoute
   '/admin/webhook-events': typeof AdminWebhookEventsRoute
@@ -1622,6 +1629,7 @@ export interface FileRoutesByTo {
   '/admin/studio-proposals': typeof AdminStudioProposalsRoute
   '/admin/studio-v3-audit': typeof AdminStudioV3AuditRoute
   '/admin/studio-v3-funnel': typeof AdminStudioV3FunnelRoute
+  '/admin/tour-calendar': typeof AdminTourCalendarRoute
   '/admin/tour-link-audit': typeof AdminTourLinkAuditRoute
   '/admin/viator-validation': typeof AdminViatorValidationRoute
   '/admin/webhook-events': typeof AdminWebhookEventsRoute
@@ -1831,6 +1839,7 @@ export interface FileRoutesById {
   '/admin/studio-proposals': typeof AdminStudioProposalsRoute
   '/admin/studio-v3-audit': typeof AdminStudioV3AuditRoute
   '/admin/studio-v3-funnel': typeof AdminStudioV3FunnelRoute
+  '/admin/tour-calendar': typeof AdminTourCalendarRoute
   '/admin/tour-link-audit': typeof AdminTourLinkAuditRoute
   '/admin/viator-validation': typeof AdminViatorValidationRoute
   '/admin/webhook-events': typeof AdminWebhookEventsRoute
@@ -2041,6 +2050,7 @@ export interface FileRouteTypes {
     | '/admin/studio-proposals'
     | '/admin/studio-v3-audit'
     | '/admin/studio-v3-funnel'
+    | '/admin/tour-calendar'
     | '/admin/tour-link-audit'
     | '/admin/viator-validation'
     | '/admin/webhook-events'
@@ -2245,6 +2255,7 @@ export interface FileRouteTypes {
     | '/admin/studio-proposals'
     | '/admin/studio-v3-audit'
     | '/admin/studio-v3-funnel'
+    | '/admin/tour-calendar'
     | '/admin/tour-link-audit'
     | '/admin/viator-validation'
     | '/admin/webhook-events'
@@ -2453,6 +2464,7 @@ export interface FileRouteTypes {
     | '/admin/studio-proposals'
     | '/admin/studio-v3-audit'
     | '/admin/studio-v3-funnel'
+    | '/admin/tour-calendar'
     | '/admin/tour-link-audit'
     | '/admin/viator-validation'
     | '/admin/webhook-events'
@@ -3526,6 +3538,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminTourLinkAuditRouteImport
       parentRoute: typeof AdminRoute
     }
+    '/admin/tour-calendar': {
+      id: '/admin/tour-calendar'
+      path: '/tour-calendar'
+      fullPath: '/admin/tour-calendar'
+      preLoaderRoute: typeof AdminTourCalendarRouteImport
+      parentRoute: typeof AdminRoute
+    }
     '/admin/studio-v3-funnel': {
       id: '/admin/studio-v3-funnel'
       path: '/studio-v3-funnel'
@@ -4156,6 +4175,7 @@ interface AdminRouteChildren {
   AdminStudioProposalsRoute: typeof AdminStudioProposalsRoute
   AdminStudioV3AuditRoute: typeof AdminStudioV3AuditRoute
   AdminStudioV3FunnelRoute: typeof AdminStudioV3FunnelRoute
+  AdminTourCalendarRoute: typeof AdminTourCalendarRoute
   AdminTourLinkAuditRoute: typeof AdminTourLinkAuditRoute
   AdminViatorValidationRoute: typeof AdminViatorValidationRoute
   AdminWebhookEventsRoute: typeof AdminWebhookEventsRoute
@@ -4210,6 +4230,7 @@ const AdminRouteChildren: AdminRouteChildren = {
   AdminStudioProposalsRoute: AdminStudioProposalsRoute,
   AdminStudioV3AuditRoute: AdminStudioV3AuditRoute,
   AdminStudioV3FunnelRoute: AdminStudioV3FunnelRoute,
+  AdminTourCalendarRoute: AdminTourCalendarRoute,
   AdminTourLinkAuditRoute: AdminTourLinkAuditRoute,
   AdminViatorValidationRoute: AdminViatorValidationRoute,
   AdminWebhookEventsRoute: AdminWebhookEventsRoute,
