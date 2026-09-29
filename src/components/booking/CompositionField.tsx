@@ -125,7 +125,7 @@ export function CompositionField({ value, onChange, maxParty, compact }: Props) 
               color: "var(--charcoal)",
             }}
           >
-            Travelling with children?
+            Traveling with children?
           </div>
           <span
             className="shrink-0 text-right text-[12px] uppercase leading-snug tracking-[0.08em] tabular-nums"
@@ -141,7 +141,7 @@ export function CompositionField({ value, onChange, maxParty, compact }: Props) 
         {minorAges.length === 0 ? (
           <div className="mt-3 bg-[color:var(--sand)] px-4 py-3.5">
             <p className="text-[12px] font-semibold uppercase tracking-[0.1em] text-[color:var(--charcoal)]">
-              Price per traveller
+              Price per traveler
             </p>
             <dl className="mt-2.5 grid grid-cols-[1fr_auto] gap-x-4 gap-y-2 text-[14px] text-[color:var(--charcoal)]">
               <dt>Adult · 18+</dt>
