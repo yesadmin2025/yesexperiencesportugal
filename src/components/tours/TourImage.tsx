@@ -49,9 +49,17 @@ export function TourImage({
 }: Props) {
   const [loaded, setLoaded] = useState(false);
   const [errored, setErrored] = useState(false);
+  // If a responsive derivative 404s, browsers do not fall back to `src` on
+  // their own — drop the srcset and retry the verified original photo.
+  const [srcSetFailed, setSrcSetFailed] = useState(false);
   const imageRef = useRef<HTMLImageElement | null>(null);
   const previousSrc = useRef(src);
+  const activeSrcSet = srcSetFailed ? undefined : srcSet;
   const showImage = loaded || (priority && !errored);
+  const handleError = () => {
+    if (activeSrcSet) setSrcSetFailed(true);
+    else setErrored(true);
+  };
 
   useEffect(() => {
     let cancelled = false;
@@ -60,6 +68,7 @@ export function TourImage({
       previousSrc.current = src;
       setLoaded(false);
       setErrored(false);
+      setSrcSetFailed(false);
     }
     const image = imageRef.current;
     // Cached eager images can finish before React attaches onLoad during
@@ -69,11 +78,15 @@ export function TourImage({
     else if (image) {
       image.decode().then(
         () => { if (!cancelled) setLoaded(true); },
-        () => { if (!cancelled) setErrored(true); },
+        () => {
+          if (cancelled) return;
+          if (image.srcset) setSrcSetFailed(true);
+          else setErrored(true);
+        },
       );
     }
     return () => { cancelled = true; };
-  }, [src]);
+  }, [src, srcSetFailed]);
 
   return (
     <div
@@ -95,14 +108,14 @@ export function TourImage({
       <img
         ref={imageRef}
         src={src}
-        srcSet={srcSet}
-        sizes={sizes}
+        srcSet={activeSrcSet}
+        sizes={activeSrcSet ? sizes : undefined}
         alt={alt}
         loading={priority ? "eager" : "lazy"}
         decoding="async"
         fetchPriority={priority ? "high" : "auto"}
         onLoad={() => setLoaded(true)}
-        onError={() => setErrored(true)}
+        onError={handleError}
         style={focal ? { objectPosition: focal } : undefined}
         className={[
           "absolute inset-0 h-full w-full object-cover object-center",

@@ -414,7 +414,13 @@ function TourHero({
   const adminCover = adminPhotos[0];
   const heroSrc =
     adminCover?.src ?? meta?.localGallery?.[0]?.src ?? meta?.gallery?.[0] ?? heroResolved.src;
-  const heroSrcSet = adminCover?.srcSet ?? heroResolved.srcSet;
+  // A srcset must describe the same photo as `src`; never pair gallery/admin
+  // sources with the bundled image's derivatives.
+  const heroSrcSet = adminCover
+    ? adminCover.srcSet
+    : heroSrc === heroResolved.src
+      ? heroResolved.srcSet
+      : undefined;
   const heroAlt = adminCover?.alt || getHeroAlt(tour, meta);
   return (
     <>
