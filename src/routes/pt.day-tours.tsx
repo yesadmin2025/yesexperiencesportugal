@@ -4,7 +4,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { breadcrumbLd, itemListLd, jsonLdScript } from "@/lib/jsonld";
 import { SiteLayout } from "@/components/SiteLayout";
 import { Clock, MapPin } from "lucide-react";
-import { signatureTours } from "@/data/signatureTours";
+import { signatureTours, publicSignatureTours } from "@/data/signatureTours";
 import { useImportedTourImages } from "@/hooks/use-imported-tour-images";
 import { ImageQualityToggle } from "@/components/ImageQualityToggle";
 import { Eyebrow } from "@/components/ui/Eyebrow";
@@ -58,7 +58,7 @@ export const Route = createFileRoute("/pt/day-tours")({
   component: DayToursPage,
 });
 
-const dayTours = signatureTours.filter(
+const dayTours = publicSignatureTours.filter(
   (t) => !/days?/i.test(t.duration) || /half|full|long/i.test(t.duration),
 );
 

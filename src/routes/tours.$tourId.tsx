@@ -1046,7 +1046,7 @@ function RelatedTours({ currentId }: { currentId: string }) {
   // every href is built from the canonical `/tours/$tourId` route.
   const current = signatureTours.find((t) => t.id === currentId);
   const currentRegion = (current?.region ?? "").trim().toLowerCase();
-  const pool = signatureTours.filter((t) => t.id !== currentId && isValidTourId(t.id));
+  const pool = publicSignatureTours.filter((t) => t.id !== currentId && isValidTourId(t.id));
   const sameRegion = pool.filter((t) => t.region.trim().toLowerCase() === currentRegion);
   const others = [...sameRegion, ...pool.filter((t) => !sameRegion.includes(t))].slice(0, 3);
   const { resolveImg } = useImportedTourImages();

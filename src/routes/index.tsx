@@ -31,7 +31,7 @@ import {
   studioServiceLd,
   serviceEntityListLd,
 } from "@/lib/jsonld";
-import { signatureTours, isValidTourId, findTour } from "@/data/signatureTours";
+import { signatureTours, publicSignatureTours, isValidTourId, findTour } from "@/data/signatureTours";
 import { getViatorMeta } from "@/data/signatureToursViator";
 import { signatureDurationLabel } from "@/lib/tourContent";
 import { LOCAL_STORIES_ARTICLES } from "@/content/local-stories-articles";
@@ -113,7 +113,7 @@ const homepageJournalLinks: {
  *  them so the row under the map never repeats a photo used as a tour cover
  *  anywhere on the site. */
 const SIGNATURE_COVER_IMAGES: Set<string> = new Set(
-  signatureTours.map((t) => t.img).filter((src): src is string => Boolean(src)),
+  publicSignatureTours.map((t) => t.img).filter((src): src is string => Boolean(src)),
 );
 
 
@@ -333,7 +333,7 @@ export const Route = createFileRoute("/")({
         itemListLd({
           name: "Signature Experiences — YES Experiences Portugal",
           path: "/",
-          items: signatureTours.map((t) => ({
+          items: publicSignatureTours.map((t) => ({
             id: t.id,
             name: t.title,
             description: t.blurb,

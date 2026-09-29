@@ -3,7 +3,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { breadcrumbLd, itemListLd, jsonLdScript } from "@/lib/jsonld";
 import { SiteLayout } from "@/components/SiteLayout";
 import { Clock, MapPin } from "lucide-react";
-import { signatureTours } from "@/data/signatureTours";
+import { signatureTours, publicSignatureTours } from "@/data/signatureTours";
 import { VIATOR_META } from "@/data/signatureToursViator";
 import { getTourContent, signatureDurationLabel } from "@/lib/tourContent";
 import { getSignatureCardHighlights, getSignatureCardPromise } from "@/lib/signatureCardHighlights";
@@ -61,7 +61,7 @@ export const Route = createFileRoute("/pt/experiences")({
         itemListLd({
           name: "Signature Experiences",
           path: "/pt/experiences",
-          items: signatureTours.map((tour) => ({
+          items: publicSignatureTours.map((tour) => ({
             id: tour.id,
             name: tour.title,
             description: tour.blurb,
@@ -106,7 +106,7 @@ function ExperiencesPage() {
             <PriceCurrencyChip />
           </div>
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-8">
-            {signatureTours.map((tour) => {
+            {publicSignatureTours.map((tour) => {
               const meta = VIATOR_META[tour.id];
                const topHighlights = getSignatureCardHighlights(tour.id, "pt");
 
