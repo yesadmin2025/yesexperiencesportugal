@@ -120,7 +120,7 @@ function PricesAndInclusions() {
           </h1>
           <p className="page-header-support mt-6 text-[16px] md:text-[17px] leading-[1.8] text-[color:var(--charcoal-soft)]">
             A private wine tour from Lisbon should not need a phone call to price. Below is what each
-            wine day costs per person, what sits inside that number, and the one day where lunch is
+            wine day costs per person, what sits inside that number, and the days where lunch is
             deliberately left out.
           </p>
           <div className="mt-8 flex flex-col gap-3 sm:flex-row">
