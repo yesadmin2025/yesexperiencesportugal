@@ -702,7 +702,7 @@ export const signatureTours: SignatureTour[] = [
       "Hands-on cheese making in Azeitão, a selected winery tasting nearby, then sea air and the castle above Sesimbra.",
 
     intro:
-      "You won't watch — you'll work. In a small Azeitão dairy, hands deep in fresh curd, you shape the cheese that built this village's reputation. The afternoon answers with wine from the next farm and a quiet table by the sea in Sesimbra.",
+      "You won't watch — you'll work. In a small Azeitão dairy, hands deep in fresh curd, you shape the cheese that built this village's reputation. The afternoon answers with a tasting at a local winery, then sea air and the castle above Sesimbra. Lunch is yours to choose, at your own expense.",
     fitsBest: "Foodies, couples and curious first-timers",
     pace: ["Cheese workshop", "Winery tasting", "Sesimbra"],
     stops: [
@@ -1007,7 +1007,7 @@ export const signatureTours: SignatureTour[] = [
     title: "Évora & Alentejo Wine Private Tour from Lisbon — Local Traditions",
     seoTitle: "Alentejo Wine Tour from Lisbon — Private Évora UNESCO Day",
     seoDescription:
-      "Alentejo wine tour from Lisbon — private day to Évora's Roman temple and Chapel of Bones, two family wineries and a slow lunch in vineyard country.",
+      "Alentejo wine tour from Lisbon — private day to Évora's Roman temple and Chapel of Bones, two selected family wineries and a cork production site. Lunch at your own expense.",
     region: "Alentejo",
     duration: "Long Day",
     durationHours: "9–11h",
@@ -1078,7 +1078,7 @@ export const signatureTours: SignatureTour[] = [
     highlights: [
       "Walking tour of UNESCO Évora",
       "The famous Chapel of Bones",
-      "Tasting and lunch at an Alentejo winery",
+      "Tastings at two selected Alentejo wineries (lunch own expense)",
       "Drive through cork-oak country",
     ],
     included: [
