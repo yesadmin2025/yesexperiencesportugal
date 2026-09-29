@@ -55,7 +55,7 @@ const FAQS = [
   },
   {
     q: "Is lunch included?",
-    a: "On the Arrábida all-inclusive day, yes — a long traditional lunch in Azeitão. On the Évora and Alentejo day lunch is not included, deliberately, so the pace and the table stay your choice; entrance fees there are included instead.",
+    a: "On the Arrábida all-inclusive day, yes — a long traditional lunch in Azeitão. On the Azeitão cheese-and-wine day and the Évora and Alentejo day lunch is not included, deliberately, so the pace and the table stay your choice; entrance fees there are included instead.",
   },
   {
     q: "Is the price per person or per group?",
