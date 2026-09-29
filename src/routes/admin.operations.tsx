@@ -228,7 +228,16 @@ function OperationsPage() {
           board={board}
           busy={busy}
           onClose={() => setOpenId(null)}
-          onAssign={(guideId) => run(() => assign({ data: { bookingId: openId, guideId } }), "Guide assigned and notified")}
+          onAssign={(guideId) =>
+            run(async () => {
+              const r = await assign({ data: { bookingId: openId, guideId } });
+              const wa = r.whatsappUrl;
+              toast(r.emailed ? "Briefing emailed to the guide" : "No guide email on file — briefing not emailed", {
+                action: wa ? { label: "Send WhatsApp", onClick: () => window.open(wa, "_blank", "noopener") } : undefined,
+                duration: 12000,
+              });
+            }, "Guide assigned")
+          }
           onRemove={() => run(() => unassign({ data: { bookingId: openId } }), "Assignment removed")}
           onResend={() => run(() => resend({ data: { bookingId: openId } }), "Reminder sent")}
           onNote={(note, priority, notify) => run(() => addNote({ data: { bookingId: openId, note, priority, notify } }), "Note saved")}
