@@ -25,6 +25,7 @@ const EXEMPT_PATTERNS = [
   /^__root\.tsx$/,
   /^api[./]/, // server routes / raw HTTP handlers
   /^admin[./]/, // authenticated internal tooling
+  /^guide[./]/, // signed-in Guide App (noindex)
   /^_authenticated[./]/,
   /\[\.\]/, // sitemap[.]xml and friends
   /^\$\.tsx$/, // splat / not-found
