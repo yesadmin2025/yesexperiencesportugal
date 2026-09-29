@@ -145,6 +145,7 @@ import { Route as AdminPriceMapRouteImport } from './routes/admin.price-map'
 import { Route as AdminPhotosRouteImport } from './routes/admin.photos'
 import { Route as AdminPaymentsEnvRouteImport } from './routes/admin.payments-env'
 import { Route as AdminPathPhotosRouteImport } from './routes/admin.path-photos'
+import { Route as AdminOperationsRouteImport } from './routes/admin.operations'
 import { Route as AdminLegacyScanRouteImport } from './routes/admin.legacy-scan'
 import { Route as AdminLegacyDomainsMonitorRouteImport } from './routes/admin.legacy-domains-monitor'
 import { Route as AdminLegacyDomainUnlinkRouteImport } from './routes/admin.legacy-domain-unlink'
@@ -902,6 +903,11 @@ const AdminPathPhotosRoute = AdminPathPhotosRouteImport.update({
   path: '/path-photos',
   getParentRoute: () => AdminRoute,
 } as any)
+const AdminOperationsRoute = AdminOperationsRouteImport.update({
+  id: '/operations',
+  path: '/operations',
+  getParentRoute: () => AdminRoute,
+} as any)
 const AdminLegacyScanRoute = AdminLegacyScanRouteImport.update({
   id: '/legacy-scan',
   path: '/legacy-scan',
@@ -1343,6 +1349,7 @@ export interface FileRoutesByFullPath {
   '/admin/legacy-domain-unlink': typeof AdminLegacyDomainUnlinkRoute
   '/admin/legacy-domains-monitor': typeof AdminLegacyDomainsMonitorRoute
   '/admin/legacy-scan': typeof AdminLegacyScanRoute
+  '/admin/operations': typeof AdminOperationsRoute
   '/admin/path-photos': typeof AdminPathPhotosRoute
   '/admin/payments-env': typeof AdminPaymentsEnvRoute
   '/admin/photos': typeof AdminPhotosRoute
@@ -1539,6 +1546,7 @@ export interface FileRoutesByTo {
   '/admin/legacy-domain-unlink': typeof AdminLegacyDomainUnlinkRoute
   '/admin/legacy-domains-monitor': typeof AdminLegacyDomainsMonitorRoute
   '/admin/legacy-scan': typeof AdminLegacyScanRoute
+  '/admin/operations': typeof AdminOperationsRoute
   '/admin/path-photos': typeof AdminPathPhotosRoute
   '/admin/payments-env': typeof AdminPaymentsEnvRoute
   '/admin/photos': typeof AdminPhotosRoute
@@ -1739,6 +1747,7 @@ export interface FileRoutesById {
   '/admin/legacy-domain-unlink': typeof AdminLegacyDomainUnlinkRoute
   '/admin/legacy-domains-monitor': typeof AdminLegacyDomainsMonitorRoute
   '/admin/legacy-scan': typeof AdminLegacyScanRoute
+  '/admin/operations': typeof AdminOperationsRoute
   '/admin/path-photos': typeof AdminPathPhotosRoute
   '/admin/payments-env': typeof AdminPaymentsEnvRoute
   '/admin/photos': typeof AdminPhotosRoute
@@ -1940,6 +1949,7 @@ export interface FileRouteTypes {
     | '/admin/legacy-domain-unlink'
     | '/admin/legacy-domains-monitor'
     | '/admin/legacy-scan'
+    | '/admin/operations'
     | '/admin/path-photos'
     | '/admin/payments-env'
     | '/admin/photos'
@@ -2136,6 +2146,7 @@ export interface FileRouteTypes {
     | '/admin/legacy-domain-unlink'
     | '/admin/legacy-domains-monitor'
     | '/admin/legacy-scan'
+    | '/admin/operations'
     | '/admin/path-photos'
     | '/admin/payments-env'
     | '/admin/photos'
@@ -2335,6 +2346,7 @@ export interface FileRouteTypes {
     | '/admin/legacy-domain-unlink'
     | '/admin/legacy-domains-monitor'
     | '/admin/legacy-scan'
+    | '/admin/operations'
     | '/admin/path-photos'
     | '/admin/payments-env'
     | '/admin/photos'
@@ -3510,6 +3522,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminPathPhotosRouteImport
       parentRoute: typeof AdminRoute
     }
+    '/admin/operations': {
+      id: '/admin/operations'
+      path: '/operations'
+      fullPath: '/admin/operations'
+      preLoaderRoute: typeof AdminOperationsRouteImport
+      parentRoute: typeof AdminRoute
+    }
     '/admin/legacy-scan': {
       id: '/admin/legacy-scan'
       path: '/legacy-scan'
@@ -3966,6 +3985,7 @@ interface AdminRouteChildren {
   AdminLegacyDomainUnlinkRoute: typeof AdminLegacyDomainUnlinkRoute
   AdminLegacyDomainsMonitorRoute: typeof AdminLegacyDomainsMonitorRoute
   AdminLegacyScanRoute: typeof AdminLegacyScanRoute
+  AdminOperationsRoute: typeof AdminOperationsRoute
   AdminPathPhotosRoute: typeof AdminPathPhotosRoute
   AdminPaymentsEnvRoute: typeof AdminPaymentsEnvRoute
   AdminPhotosRoute: typeof AdminPhotosRoute
@@ -4019,6 +4039,7 @@ const AdminRouteChildren: AdminRouteChildren = {
   AdminLegacyDomainUnlinkRoute: AdminLegacyDomainUnlinkRoute,
   AdminLegacyDomainsMonitorRoute: AdminLegacyDomainsMonitorRoute,
   AdminLegacyScanRoute: AdminLegacyScanRoute,
+  AdminOperationsRoute: AdminOperationsRoute,
   AdminPathPhotosRoute: AdminPathPhotosRoute,
   AdminPaymentsEnvRoute: AdminPaymentsEnvRoute,
   AdminPhotosRoute: AdminPhotosRoute,

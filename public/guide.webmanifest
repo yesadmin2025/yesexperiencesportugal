@@ -1,0 +1,11 @@
+{
+  "name": "YES Guide",
+  "short_name": "YES Guide",
+  "id": "/guide",
+  "start_url": "/guide",
+  "scope": "/guide",
+  "display": "standalone",
+  "background_color": "#FAF8F3",
+  "theme_color": "#295B61",
+  "icons": []
+}
