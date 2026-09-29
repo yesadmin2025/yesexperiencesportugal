@@ -3961,6 +3961,10 @@ export type Database = {
         Args: { _booking_id: string }
         Returns: undefined
       }
+      public_fully_booked_dates: {
+        Args: { _from: string; _to: string }
+        Returns: string[]
+      }
       read_email_batch: {
         Args: { batch_size: number; queue_name: string; vt: number }
         Returns: {
