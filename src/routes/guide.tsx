@@ -137,7 +137,14 @@ function GuideLayout() {
     <div className="min-h-screen bg-background pb-24">
       <header className="sticky top-0 z-10 bg-background/95 border-b border-border px-4 h-14 flex items-center justify-between gap-2">
         <span className="font-[family-name:var(--font-editorial)] text-[19px] text-[color:var(--teal)]">YES Guide</span>
-        <GuideInstallButton className="h-9 px-3 text-xs" />
+        <div className="flex items-center gap-2">
+          {notifPerm === "default" && (
+            <Button variant="ghost" className="h-9 px-2 text-xs" onClick={enableNotifications} aria-label="Enable notifications">
+              <Bell className="h-4 w-4" aria-hidden />
+            </Button>
+          )}
+          <GuideInstallButton className="h-9 px-3 text-xs" />
+        </div>
       </header>
       <main className="px-4 py-5 max-w-xl mx-auto">
         <div key={version}><Outlet /></div>
