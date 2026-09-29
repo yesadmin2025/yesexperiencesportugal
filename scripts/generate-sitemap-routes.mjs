@@ -26,6 +26,7 @@ const EXCLUDED_PREFIXES = [
   "/.",
   "/api",
   "/admin",
+  "/guide/",
   "/lovable",
   "/e2e",
   "/qa",
