@@ -26,4 +26,3 @@
 - [x] Clarify About and structured organization identity without review schema
 - [x] Keep existing booking and Studio flow safeguards unchanged
 - [x] Check priority public pages at mobile and desktop widths
-
