@@ -4,6 +4,7 @@
 // internal link to the matching Signature tour, and Article/BlogPosting JSON-LD.
 
 import { PORTUGAL_REGION_GUIDES } from "./portugal-region-guides";
+import type { EditorialSource } from "@/components/journal/EditorialSources";
 
 export type LocalStoryArticle = {
   slug: string;
@@ -21,7 +22,7 @@ export type LocalStoryArticle = {
    *  so AI assistants and AI Overviews can quote it verbatim. Facts only. */
   directAnswer?: string;
   /** Section headings + placeholder paragraphs the founder will replace. */
-  sections: { heading: string; body: string }[];
+  sections: { heading: string; body: string; sources?: readonly EditorialSource[] }[];
   /** Soft CTA copy at the end of the article. */
   ctaLead: string;
   ctaLabel: string;
@@ -205,6 +206,7 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
       {
         heading: "What to pair it with",
         body: "Setúbal wine makes most sense with the food and landscape around it. Queijo de Azeitão PDO is a sheep's-milk cheese traditionally coagulated with cardoon flower; that protected method makes the [hands-on Azeitão cheese day](/tours/azeitao-cheese) more than a tasting stop. It is a classic local pairing with Moscatel, alongside regional bread, olive oil and grilled fish.\n\nSetúbal's fishing tradition and the coastal tables around Sesimbra give the wine its everyday setting. A dry white can suit fresh fish, while local reds sit beside richer dishes and aged cheese.\n\nThe point is not to rush from tasting to tasting. A Setúbal wine day leaves room for lunch and for understanding why these foods and wines belong together. Our guide to the [best wine tours from Lisbon](/local-stories/best-wine-tours-from-lisbon) compares the routes side by side.",
+        sources: [{ label: "DGADR — Queijo de Azeitão PDO", url: "https://tradicional.dgadr.gov.pt/en/categories/cheese-and-other-dairy-products/37-queijo-de-azeitao-pdo" }],
       },
     ],
     ctaLead:
@@ -761,6 +763,7 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
       {
         heading: "Sintra is the day everyone has heard of.",
         body: "We prefer it early, before the main estates fill with buses. UNESCO recognizes Sintra as a cultural landscape: Romantic-era palaces and planted gardens shaped the wooded hills together. Pena rises above the treeline; Quinta da Regaleira is a garden of grottoes and symbols. [Choose one palace with Colares wine or two palaces](/tours/sintra-cascais), then follow the road toward Cabo da Roca and Cascais.",
+        sources: [{ label: "UNESCO — Cultural Landscape of Sintra", url: "https://whc.unesco.org/en/list/723/" }],
       },
       {
         heading: "A working winery, not just the postcard list.",
@@ -1034,6 +1037,7 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
       {
         heading: "Ninety minutes south, two thousand years deep.",
         body: "Évora is a small UNESCO World Heritage city in the heart of Alentejo — Roman Temple, cathedral, narrow lanes and the famous Chapel of Bones, all walkable in an afternoon. From Lisbon it is an easy private drive across cork-oak country.",
+        sources: [{ label: "UNESCO — Historic Centre of Évora", url: "https://whc.unesco.org/en/list/361/" }],
       },
       {
         heading: "Roman temple, two wineries, a cork stop, long lunch.",
@@ -1899,6 +1903,7 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
       {
         heading: "Óbidos closes the day inside medieval walls.",
         body: "Óbidos is small, whitewashed and walkable inside its medieval walls. It is also a UNESCO Creative City of Literature: books and reading are a living part of the town's cultural life, not another medieval monument. The [published private day](/tours/fatima-nazare-obidos) includes time in the lanes and a ginjinha tasting; its itinerary does not promise a literary venue visit.",
+        sources: [{ label: "UNESCO — Óbidos Creative City of Literature", url: "https://www.unesco.org/en/creative-cities/obidos" }],
       },
       {
         heading: "Why three stops work, and when they do not.",
@@ -2032,6 +2037,7 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
       {
         heading: "The workshop itself is hands-on and private to your party.",
         body: "At Quinta Velha you make Azeitão cheese the traditional way, with raw sheep's milk curdled using cardoon thistle. It is a slower, warmer process than industrial cheesemaking and it explains the texture that makes this cheese famous — soft enough to spoon out through a cut in the crust. The session is private, so questions are answered properly and nobody is rushed off the table.",
+        sources: [{ label: "DGADR — Queijo de Azeitão PDO", url: "https://tradicional.dgadr.gov.pt/en/categories/cheese-and-other-dairy-products/37-queijo-de-azeitao-pdo" }],
       },
       {
         heading: "What you taste, and what you do not.",
@@ -2104,6 +2110,7 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
       {
         heading: "Why these two cities travel well together.",
         body: "Tomar and Coimbra sit on the same road north of Lisbon, which makes the pairing work. UNESCO's Convent of Christ in Tomar traces a change from the Templars to the Order of Christ; its architecture carries that history into Portugal's later age of exploration. Coimbra's university, founded in 1290, gives the day a different kind of continuity: learning still embedded in the city. [See the Tomar and Coimbra Signature](/tours/tomar-coimbra) for current visits and timed-entry details.",
+        sources: [{ label: "UNESCO — Convent of Christ in Tomar", url: "https://whc.unesco.org/en/list/265/" }],
       },
       {
         heading: "Inside the Convento de Cristo.",
