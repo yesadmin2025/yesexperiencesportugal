@@ -36,6 +36,7 @@ import { resolvePerPaxEur, resolveJourneyPricing } from "@/data/signatureTourPri
 import { resolveClientIncludedItems } from "@/lib/checkout/inclusions";
 import { getTourContent } from "@/lib/tourContent";
 import { projectPublicSotItinerary } from "@/lib/publicItineraryProjection";
+import { getSot } from "@/data/signatureToursSourceOfTruth";
 import { toEditorialChapters } from "@/lib/tailor-chapters";
 import {
   gaAddPaymentInfo,
@@ -246,11 +247,19 @@ export function SimpleBookingForm({ tour }: { tour: SignatureTour }) {
   // alternatives stay generic and optional chapters are not sold as guarantees.
   const itinerary = (() => {
     const verified = projectPublicSotItinerary(tour.id)?.filter((chapter) => chapter.stopType !== "pass-by");
-    if (verified?.length) return verified.map((chapter) => ({
-      label: chapter.label,
-      story: chapter.description,
-      optional: chapter.optional,
-    }));
+    // Package choices (e.g. Sintra: one palace + wine OR two palaces) are
+    // stated first so the recap never reads as "everything is included".
+    const packageNote = getSot(tour.id)?.variesByOption ?? [];
+    if (verified?.length) return [
+      ...(packageNote.length
+        ? [{ label: "How your package works", story: packageNote.join(" "), optional: false }]
+        : []),
+      ...verified.map((chapter) => ({
+        label: chapter.label,
+        story: chapter.description,
+        optional: chapter.optional,
+      })),
+    ];
     const chapters = toEditorialChapters(tour.id);
     if (chapters?.length) return chapters.map((chapter) => ({
       label: chapter.label,
