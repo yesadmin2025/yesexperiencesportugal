@@ -247,6 +247,17 @@ Deno.serve(async (req) => {
     if (operatingGate.status === "unavailable") {
       return jsonError("availability_check_unavailable", 503);
     }
+    // Guide capacity: close dates when every active guide is already busy/off.
+    if (body.dateExact && /^\d{4}-\d{2}-\d{2}$/.test(body.dateExact)) {
+      const { data: full, error: fullErr } = await admin.rpc("public_fully_booked_dates", {
+        _from: body.dateExact,
+        _to: body.dateExact,
+      });
+      if (!fullErr && Array.isArray(full) && full.length > 0) {
+        return jsonError("date_unavailable:blackout", 409);
+      }
+    }
+
 
 
     const { data: tierRow } = await admin
