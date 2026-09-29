@@ -1,3 +1,4 @@
+import { isPendingVenueSignature } from "@/data/pendingSignatures";
 import { SITE_RATING_LABEL } from "@/config/trust-certificate";
 import { ShareDayButton } from "@/components/ShareDayButton";
 import {

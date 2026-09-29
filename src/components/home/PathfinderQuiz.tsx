@@ -27,7 +27,7 @@ interface QuizState {
   pace: Pace | null;
 }
 
-const INITIAL: QuizState = { intent: null, travelers: null, pace: null };
+const INITIAL: QuizState = { intent: null, travellers: null, pace: null };
 
 function resolveResult(s: QuizState): ResultKey | null {
   if (!s.intent) return null;
@@ -321,25 +321,25 @@ export function PathfinderQuiz() {
             <div className="pf-grid-22">
               <QButton
                 selected={state.intent === "wine"}
-                onClick={() => setState({ intent: "wine", travelers: null, pace: null })}
+                onClick={() => setState({ intent: "wine", travellers: null, pace: null })}
               >
                 Wine &amp; food
               </QButton>
               <QButton
                 selected={state.intent === "coast"}
-                onClick={() => setState({ intent: "coast", travelers: null, pace: null })}
+                onClick={() => setState({ intent: "coast", travellers: null, pace: null })}
               >
                 Coast &amp; nature
               </QButton>
               <QButton
                 selected={state.intent === "history"}
-                onClick={() => setState({ intent: "history", travelers: null, pace: null })}
+                onClick={() => setState({ intent: "history", travellers: null, pace: null })}
               >
                 History &amp; culture
               </QButton>
               <QButton
                 selected={state.intent === "unique"}
-                onClick={() => setState({ intent: "unique", travelers: null, pace: null })}
+                onClick={() => setState({ intent: "unique", travellers: null, pace: null })}
               >
                 Something unique
               </QButton>
@@ -354,19 +354,19 @@ export function PathfinderQuiz() {
               <div className="pf-stack">
                 <QButton
                   selected={state.travellers === "couple"}
-                  onClick={() => setState((s) => ({ ...s, travelers: "couple", pace: null }))}
+                  onClick={() => setState((s) => ({ ...s, travellers: "couple", pace: null }))}
                 >
                   Just us two
                 </QButton>
                 <QButton
                   selected={state.travellers === "group"}
-                  onClick={() => setState((s) => ({ ...s, travelers: "group", pace: null }))}
+                  onClick={() => setState((s) => ({ ...s, travellers: "group", pace: null }))}
                 >
                   Family or group
                 </QButton>
                 <QButton
                   selected={state.travellers === "journey"}
-                  onClick={() => setState((s) => ({ ...s, travelers: "journey", pace: null }))}
+                  onClick={() => setState((s) => ({ ...s, travellers: "journey", pace: null }))}
                 >
                   I want a full journey
                 </QButton>
