@@ -38,10 +38,52 @@ export const listGuides = createServerFn({ method: "POST" })
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const { data, error } = await supabaseAdmin
       .from("guides")
-      .select("id, name, email, phone, notes, active")
+      .select("id, name, email, phone, notes, active, user_id")
       .order("name", { ascending: true });
     if (error) throw new Error(error.message);
-    return { guides: data ?? [] };
+    // Expose only whether an app account is linked — never the auth user id.
+    return {
+      guides: (data ?? []).map(({ user_id, ...g }) => ({ ...g, app_linked: Boolean(user_id) })),
+    };
+  });
+
+/** Build a resend-safe idempotency key: one per guide per admin click. */
+export function guideInviteIdempotencyKey(guideId: string, nonce: string) {
+  return `guide-app-invite-${guideId}-${nonce}`;
+}
+
+/** Emails a guide the Guide App invitation. Only runs when an admin presses the button. */
+export const sendGuideAppInvite = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((input: unknown) => z.object({ guideId: z.string().uuid() }).parse(input))
+  .handler(async ({ data, context }) => {
+    await assertAdmin(context);
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const { data: guide, error } = await supabaseAdmin
+      .from("guides")
+      .select("id, name, email")
+      .eq("id", data.guideId)
+      .maybeSingle();
+    if (error) throw new Error(error.message);
+    if (!guide) throw new Error("Guide not found.");
+    const email = guide.email?.trim();
+    if (!email) throw new Error("This guide has no email saved.");
+
+    const { sendTransactionalInternal } = await import("@/lib/email/send-internal.server");
+    const result = await sendTransactionalInternal({
+      templateName: "guide-app-invite",
+      recipientEmail: email,
+      idempotencyKey: guideInviteIdempotencyKey(guide.id, crypto.randomUUID()),
+      templateData: { guideName: guide.name, guideEmail: email },
+    });
+    if (!result.ok) {
+      throw new Error(
+        result.reason === "email_suppressed"
+          ? "This address has unsubscribed or bounced before, so the invite was not sent."
+          : "The invite could not be sent. Please try again.",
+      );
+    }
+    return { ok: true, email };
   });
 
 const guideInput = z.object({
