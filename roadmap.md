@@ -34,3 +34,10 @@
 - [x] Simplify both mobile navigation bars
 - [x] Add Guide App home-screen installation action
 - [x] Validate both calendars at mobile and desktop widths
+
+# Founder-led About page
+
+- [ ] Rebuild the existing public About page around the approved founder narrative
+- [ ] Retain verified trust, legal, SEO, schema, navigation, and contact details
+- [ ] Reuse founder imagery and approved Studio and Travel Designer actions
+- [ ] Verify About at 393px and desktop with focused tests and link checks
