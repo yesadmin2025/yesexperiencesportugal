@@ -68,6 +68,7 @@ import { Route as LisbonPrivateToursRouteImport } from './routes/lisbon-private-
 import { Route as ItineraryRouteImport } from './routes/itinerary'
 import { Route as HowManyDaysInPortugalRouteImport } from './routes/how-many-days-in-portugal'
 import { Route as HeroVerifyRouteImport } from './routes/hero-verify'
+import { Route as GuideRouteImport } from './routes/guide'
 import { Route as FaqRouteImport } from './routes/faq'
 import { Route as ExperiencesRouteImport } from './routes/experiences'
 import { Route as ExperienceStudioRouteImport } from './routes/experience-studio'
@@ -94,6 +95,7 @@ import { Route as AboutRouteImport } from './routes/about'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as PtIndexRouteImport } from './routes/pt.index'
 import { Route as LocalStoriesIndexRouteImport } from './routes/local-stories.index'
+import { Route as GuideIndexRouteImport } from './routes/guide.index'
 import { Route as AdminIndexRouteImport } from './routes/admin.index'
 import { Route as ToursTourIdRouteImport } from './routes/tours.$tourId'
 import { Route as STokenRouteImport } from './routes/s.$token'
@@ -117,6 +119,10 @@ import { Route as PartnersSplatRouteImport } from './routes/partners.$'
 import { Route as LocalStoriesSlugRouteImport } from './routes/local-stories.$slug'
 import { Route as Itineraries10DayPrivatePortugalTourRouteImport } from './routes/itineraries.10-day-private-portugal-tour'
 import { Route as ITokenRouteImport } from './routes/i.$token'
+import { Route as GuideProfileRouteImport } from './routes/guide.profile'
+import { Route as GuideNotificationsRouteImport } from './routes/guide.notifications'
+import { Route as GuideCalendarRouteImport } from './routes/guide.calendar'
+import { Route as GuideAvailabilityRouteImport } from './routes/guide.availability'
 import { Route as EmailUnsubscribeRouteImport } from './routes/email/unsubscribe'
 import { Route as E2ePostmessageProbeRouteImport } from './routes/e2e.postmessage-probe'
 import { Route as CheckoutTokenRouteImport } from './routes/checkout.$token'
@@ -173,10 +179,12 @@ import { Route as AdminAiAuditRouteImport } from './routes/admin.ai-audit'
 import { Route as AdminActivityRouteImport } from './routes/admin.activity'
 import { Route as Char91DotwellKnownChar93OauthProtectedResourceRouteImport } from './routes/[.well-known]/oauth-protected-resource'
 import { Route as Char91DotmcpChar93ListToolsRouteImport } from './routes/[.mcp]/list-tools'
+import { Route as GuideToursIndexRouteImport } from './routes/guide.tours.index'
 import { Route as AdminBookingsIndexRouteImport } from './routes/admin.bookings.index'
 import { Route as ToursTourIdTailorRouteImport } from './routes/tours_.$tourId.tailor'
 import { Route as StudioV2ITokenRouteImport } from './routes/studio-v2.i.$token'
 import { Route as LovableEmailSuppressionRouteImport } from './routes/lovable/email/suppression'
+import { Route as GuideToursAssignmentIdRouteImport } from './routes/guide.tours.$assignmentId'
 import { Route as FunctionsV1StripeWebhookRouteImport } from './routes/functions.v1.stripe-webhook'
 import { Route as ApiPublicProposalRequestRouteImport } from './routes/api/public/proposal-request'
 import { Route as ApiPublicPricingSsotRouteImport } from './routes/api/public/pricing-ssot'
@@ -513,6 +521,11 @@ const HeroVerifyRoute = HeroVerifyRouteImport.update({
   path: '/hero-verify',
   getParentRoute: () => rootRouteImport,
 } as any)
+const GuideRoute = GuideRouteImport.update({
+  id: '/guide',
+  path: '/guide',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const FaqRoute = FaqRouteImport.update({
   id: '/faq',
   path: '/faq',
@@ -647,6 +660,11 @@ const LocalStoriesIndexRoute = LocalStoriesIndexRouteImport.update({
   path: '/',
   getParentRoute: () => LocalStoriesRoute,
 } as any)
+const GuideIndexRoute = GuideIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => GuideRoute,
+} as any)
 const AdminIndexRoute = AdminIndexRouteImport.update({
   id: '/',
   path: '/',
@@ -762,6 +780,26 @@ const ITokenRoute = ITokenRouteImport.update({
   id: '/i/$token',
   path: '/i/$token',
   getParentRoute: () => rootRouteImport,
+} as any)
+const GuideProfileRoute = GuideProfileRouteImport.update({
+  id: '/profile',
+  path: '/profile',
+  getParentRoute: () => GuideRoute,
+} as any)
+const GuideNotificationsRoute = GuideNotificationsRouteImport.update({
+  id: '/notifications',
+  path: '/notifications',
+  getParentRoute: () => GuideRoute,
+} as any)
+const GuideCalendarRoute = GuideCalendarRouteImport.update({
+  id: '/calendar',
+  path: '/calendar',
+  getParentRoute: () => GuideRoute,
+} as any)
+const GuideAvailabilityRoute = GuideAvailabilityRouteImport.update({
+  id: '/availability',
+  path: '/availability',
+  getParentRoute: () => GuideRoute,
 } as any)
 const EmailUnsubscribeRoute = EmailUnsubscribeRouteImport.update({
   id: '/email/unsubscribe',
@@ -1046,6 +1084,11 @@ const Char91DotmcpChar93ListToolsRoute =
     path: '/.mcp/list-tools',
     getParentRoute: () => rootRouteImport,
   } as any)
+const GuideToursIndexRoute = GuideToursIndexRouteImport.update({
+  id: '/tours/',
+  path: '/tours/',
+  getParentRoute: () => GuideRoute,
+} as any)
 const AdminBookingsIndexRoute = AdminBookingsIndexRouteImport.update({
   id: '/bookings/',
   path: '/bookings/',
@@ -1065,6 +1108,11 @@ const LovableEmailSuppressionRoute = LovableEmailSuppressionRouteImport.update({
   id: '/lovable/email/suppression',
   path: '/lovable/email/suppression',
   getParentRoute: () => rootRouteImport,
+} as any)
+const GuideToursAssignmentIdRoute = GuideToursAssignmentIdRouteImport.update({
+  id: '/tours/$assignmentId',
+  path: '/tours/$assignmentId',
+  getParentRoute: () => GuideRoute,
 } as any)
 const FunctionsV1StripeWebhookRoute =
   FunctionsV1StripeWebhookRouteImport.update({
@@ -1263,6 +1311,7 @@ export interface FileRoutesByFullPath {
   '/experience-studio': typeof ExperienceStudioRoute
   '/experiences': typeof ExperiencesRoute
   '/faq': typeof FaqRoute
+  '/guide': typeof GuideRouteWithChildren
   '/hero-verify': typeof HeroVerifyRoute
   '/how-many-days-in-portugal': typeof HowManyDaysInPortugalRoute
   '/itinerary': typeof ItineraryRoute
@@ -1378,6 +1427,10 @@ export interface FileRoutesByFullPath {
   '/checkout/$token': typeof CheckoutTokenRoute
   '/e2e/postmessage-probe': typeof E2ePostmessageProbeRoute
   '/email/unsubscribe': typeof EmailUnsubscribeRoute
+  '/guide/availability': typeof GuideAvailabilityRoute
+  '/guide/calendar': typeof GuideCalendarRoute
+  '/guide/notifications': typeof GuideNotificationsRoute
+  '/guide/profile': typeof GuideProfileRoute
   '/i/$token': typeof ITokenRoute
   '/itineraries/10-day-private-portugal-tour': typeof Itineraries10DayPrivatePortugalTourRoute
   '/local-stories/$slug': typeof LocalStoriesSlugRoute
@@ -1401,6 +1454,7 @@ export interface FileRoutesByFullPath {
   '/s/$token': typeof STokenRoute
   '/tours/$tourId': typeof ToursTourIdRoute
   '/admin/': typeof AdminIndexRoute
+  '/guide/': typeof GuideIndexRoute
   '/local-stories/': typeof LocalStoriesIndexRoute
   '/pt/': typeof PtIndexRoute
   '/.lovable/oauth/consent': typeof DotlovableOauthConsentRoute
@@ -1415,10 +1469,12 @@ export interface FileRoutesByFullPath {
   '/api/public/pricing-ssot': typeof ApiPublicPricingSsotRoute
   '/api/public/proposal-request': typeof ApiPublicProposalRequestRoute
   '/functions/v1/stripe-webhook': typeof FunctionsV1StripeWebhookRoute
+  '/guide/tours/$assignmentId': typeof GuideToursAssignmentIdRoute
   '/lovable/email/suppression': typeof LovableEmailSuppressionRoute
   '/studio-v2/i/$token': typeof StudioV2ITokenRoute
   '/tours/$tourId/tailor': typeof ToursTourIdTailorRoute
   '/admin/bookings/': typeof AdminBookingsIndexRoute
+  '/guide/tours/': typeof GuideToursIndexRoute
   '/api/public/feeds/things-to-do.json': typeof ApiPublicFeedsThingsToDoDotjsonRoute
   '/api/public/feeds/things-to-do.xml': typeof ApiPublicFeedsThingsToDoDotxmlRoute
   '/api/public/hooks/bokun-booking': typeof ApiPublicHooksBokunBookingRoute
@@ -1575,6 +1631,10 @@ export interface FileRoutesByTo {
   '/checkout/$token': typeof CheckoutTokenRoute
   '/e2e/postmessage-probe': typeof E2ePostmessageProbeRoute
   '/email/unsubscribe': typeof EmailUnsubscribeRoute
+  '/guide/availability': typeof GuideAvailabilityRoute
+  '/guide/calendar': typeof GuideCalendarRoute
+  '/guide/notifications': typeof GuideNotificationsRoute
+  '/guide/profile': typeof GuideProfileRoute
   '/i/$token': typeof ITokenRoute
   '/itineraries/10-day-private-portugal-tour': typeof Itineraries10DayPrivatePortugalTourRoute
   '/local-stories/$slug': typeof LocalStoriesSlugRoute
@@ -1598,6 +1658,7 @@ export interface FileRoutesByTo {
   '/s/$token': typeof STokenRoute
   '/tours/$tourId': typeof ToursTourIdRoute
   '/admin': typeof AdminIndexRoute
+  '/guide': typeof GuideIndexRoute
   '/local-stories': typeof LocalStoriesIndexRoute
   '/pt': typeof PtIndexRoute
   '/.lovable/oauth/consent': typeof DotlovableOauthConsentRoute
@@ -1612,10 +1673,12 @@ export interface FileRoutesByTo {
   '/api/public/pricing-ssot': typeof ApiPublicPricingSsotRoute
   '/api/public/proposal-request': typeof ApiPublicProposalRequestRoute
   '/functions/v1/stripe-webhook': typeof FunctionsV1StripeWebhookRoute
+  '/guide/tours/$assignmentId': typeof GuideToursAssignmentIdRoute
   '/lovable/email/suppression': typeof LovableEmailSuppressionRoute
   '/studio-v2/i/$token': typeof StudioV2ITokenRoute
   '/tours/$tourId/tailor': typeof ToursTourIdTailorRoute
   '/admin/bookings': typeof AdminBookingsIndexRoute
+  '/guide/tours': typeof GuideToursIndexRoute
   '/api/public/feeds/things-to-do.json': typeof ApiPublicFeedsThingsToDoDotjsonRoute
   '/api/public/feeds/things-to-do.xml': typeof ApiPublicFeedsThingsToDoDotxmlRoute
   '/api/public/hooks/bokun-booking': typeof ApiPublicHooksBokunBookingRoute
@@ -1661,6 +1724,7 @@ export interface FileRoutesById {
   '/experience-studio': typeof ExperienceStudioRoute
   '/experiences': typeof ExperiencesRoute
   '/faq': typeof FaqRoute
+  '/guide': typeof GuideRouteWithChildren
   '/hero-verify': typeof HeroVerifyRoute
   '/how-many-days-in-portugal': typeof HowManyDaysInPortugalRoute
   '/itinerary': typeof ItineraryRoute
@@ -1776,6 +1840,10 @@ export interface FileRoutesById {
   '/checkout/$token': typeof CheckoutTokenRoute
   '/e2e/postmessage-probe': typeof E2ePostmessageProbeRoute
   '/email/unsubscribe': typeof EmailUnsubscribeRoute
+  '/guide/availability': typeof GuideAvailabilityRoute
+  '/guide/calendar': typeof GuideCalendarRoute
+  '/guide/notifications': typeof GuideNotificationsRoute
+  '/guide/profile': typeof GuideProfileRoute
   '/i/$token': typeof ITokenRoute
   '/itineraries/10-day-private-portugal-tour': typeof Itineraries10DayPrivatePortugalTourRoute
   '/local-stories/$slug': typeof LocalStoriesSlugRoute
@@ -1799,6 +1867,7 @@ export interface FileRoutesById {
   '/s/$token': typeof STokenRoute
   '/tours/$tourId': typeof ToursTourIdRoute
   '/admin/': typeof AdminIndexRoute
+  '/guide/': typeof GuideIndexRoute
   '/local-stories/': typeof LocalStoriesIndexRoute
   '/pt/': typeof PtIndexRoute
   '/.lovable/oauth/consent': typeof DotlovableOauthConsentRoute
@@ -1813,10 +1882,12 @@ export interface FileRoutesById {
   '/api/public/pricing-ssot': typeof ApiPublicPricingSsotRoute
   '/api/public/proposal-request': typeof ApiPublicProposalRequestRoute
   '/functions/v1/stripe-webhook': typeof FunctionsV1StripeWebhookRoute
+  '/guide/tours/$assignmentId': typeof GuideToursAssignmentIdRoute
   '/lovable/email/suppression': typeof LovableEmailSuppressionRoute
   '/studio-v2/i/$token': typeof StudioV2ITokenRoute
   '/tours_/$tourId/tailor': typeof ToursTourIdTailorRoute
   '/admin/bookings/': typeof AdminBookingsIndexRoute
+  '/guide/tours/': typeof GuideToursIndexRoute
   '/api/public/feeds/things-to-do.json': typeof ApiPublicFeedsThingsToDoDotjsonRoute
   '/api/public/feeds/things-to-do.xml': typeof ApiPublicFeedsThingsToDoDotxmlRoute
   '/api/public/hooks/bokun-booking': typeof ApiPublicHooksBokunBookingRoute
@@ -1863,6 +1934,7 @@ export interface FileRouteTypes {
     | '/experience-studio'
     | '/experiences'
     | '/faq'
+    | '/guide'
     | '/hero-verify'
     | '/how-many-days-in-portugal'
     | '/itinerary'
@@ -1978,6 +2050,10 @@ export interface FileRouteTypes {
     | '/checkout/$token'
     | '/e2e/postmessage-probe'
     | '/email/unsubscribe'
+    | '/guide/availability'
+    | '/guide/calendar'
+    | '/guide/notifications'
+    | '/guide/profile'
     | '/i/$token'
     | '/itineraries/10-day-private-portugal-tour'
     | '/local-stories/$slug'
@@ -2001,6 +2077,7 @@ export interface FileRouteTypes {
     | '/s/$token'
     | '/tours/$tourId'
     | '/admin/'
+    | '/guide/'
     | '/local-stories/'
     | '/pt/'
     | '/.lovable/oauth/consent'
@@ -2015,10 +2092,12 @@ export interface FileRouteTypes {
     | '/api/public/pricing-ssot'
     | '/api/public/proposal-request'
     | '/functions/v1/stripe-webhook'
+    | '/guide/tours/$assignmentId'
     | '/lovable/email/suppression'
     | '/studio-v2/i/$token'
     | '/tours/$tourId/tailor'
     | '/admin/bookings/'
+    | '/guide/tours/'
     | '/api/public/feeds/things-to-do.json'
     | '/api/public/feeds/things-to-do.xml'
     | '/api/public/hooks/bokun-booking'
@@ -2175,6 +2254,10 @@ export interface FileRouteTypes {
     | '/checkout/$token'
     | '/e2e/postmessage-probe'
     | '/email/unsubscribe'
+    | '/guide/availability'
+    | '/guide/calendar'
+    | '/guide/notifications'
+    | '/guide/profile'
     | '/i/$token'
     | '/itineraries/10-day-private-portugal-tour'
     | '/local-stories/$slug'
@@ -2198,6 +2281,7 @@ export interface FileRouteTypes {
     | '/s/$token'
     | '/tours/$tourId'
     | '/admin'
+    | '/guide'
     | '/local-stories'
     | '/pt'
     | '/.lovable/oauth/consent'
@@ -2212,10 +2296,12 @@ export interface FileRouteTypes {
     | '/api/public/pricing-ssot'
     | '/api/public/proposal-request'
     | '/functions/v1/stripe-webhook'
+    | '/guide/tours/$assignmentId'
     | '/lovable/email/suppression'
     | '/studio-v2/i/$token'
     | '/tours/$tourId/tailor'
     | '/admin/bookings'
+    | '/guide/tours'
     | '/api/public/feeds/things-to-do.json'
     | '/api/public/feeds/things-to-do.xml'
     | '/api/public/hooks/bokun-booking'
@@ -2260,6 +2346,7 @@ export interface FileRouteTypes {
     | '/experience-studio'
     | '/experiences'
     | '/faq'
+    | '/guide'
     | '/hero-verify'
     | '/how-many-days-in-portugal'
     | '/itinerary'
@@ -2375,6 +2462,10 @@ export interface FileRouteTypes {
     | '/checkout/$token'
     | '/e2e/postmessage-probe'
     | '/email/unsubscribe'
+    | '/guide/availability'
+    | '/guide/calendar'
+    | '/guide/notifications'
+    | '/guide/profile'
     | '/i/$token'
     | '/itineraries/10-day-private-portugal-tour'
     | '/local-stories/$slug'
@@ -2398,6 +2489,7 @@ export interface FileRouteTypes {
     | '/s/$token'
     | '/tours/$tourId'
     | '/admin/'
+    | '/guide/'
     | '/local-stories/'
     | '/pt/'
     | '/.lovable/oauth/consent'
@@ -2412,10 +2504,12 @@ export interface FileRouteTypes {
     | '/api/public/pricing-ssot'
     | '/api/public/proposal-request'
     | '/functions/v1/stripe-webhook'
+    | '/guide/tours/$assignmentId'
     | '/lovable/email/suppression'
     | '/studio-v2/i/$token'
     | '/tours_/$tourId/tailor'
     | '/admin/bookings/'
+    | '/guide/tours/'
     | '/api/public/feeds/things-to-do.json'
     | '/api/public/feeds/things-to-do.xml'
     | '/api/public/hooks/bokun-booking'
@@ -2461,6 +2555,7 @@ export interface RootRouteChildren {
   ExperienceStudioRoute: typeof ExperienceStudioRoute
   ExperiencesRoute: typeof ExperiencesRoute
   FaqRoute: typeof FaqRoute
+  GuideRoute: typeof GuideRouteWithChildren
   HeroVerifyRoute: typeof HeroVerifyRoute
   HowManyDaysInPortugalRoute: typeof HowManyDaysInPortugalRoute
   ItineraryRoute: typeof ItineraryRoute
@@ -2983,6 +3078,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof HeroVerifyRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/guide': {
+      id: '/guide'
+      path: '/guide'
+      fullPath: '/guide'
+      preLoaderRoute: typeof GuideRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/faq': {
       id: '/faq'
       path: '/faq'
@@ -3165,6 +3267,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LocalStoriesIndexRouteImport
       parentRoute: typeof LocalStoriesRoute
     }
+    '/guide/': {
+      id: '/guide/'
+      path: '/'
+      fullPath: '/guide/'
+      preLoaderRoute: typeof GuideIndexRouteImport
+      parentRoute: typeof GuideRoute
+    }
     '/admin/': {
       id: '/admin/'
       path: '/'
@@ -3325,6 +3434,34 @@ declare module '@tanstack/react-router' {
       fullPath: '/i/$token'
       preLoaderRoute: typeof ITokenRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/guide/profile': {
+      id: '/guide/profile'
+      path: '/profile'
+      fullPath: '/guide/profile'
+      preLoaderRoute: typeof GuideProfileRouteImport
+      parentRoute: typeof GuideRoute
+    }
+    '/guide/notifications': {
+      id: '/guide/notifications'
+      path: '/notifications'
+      fullPath: '/guide/notifications'
+      preLoaderRoute: typeof GuideNotificationsRouteImport
+      parentRoute: typeof GuideRoute
+    }
+    '/guide/calendar': {
+      id: '/guide/calendar'
+      path: '/calendar'
+      fullPath: '/guide/calendar'
+      preLoaderRoute: typeof GuideCalendarRouteImport
+      parentRoute: typeof GuideRoute
+    }
+    '/guide/availability': {
+      id: '/guide/availability'
+      path: '/availability'
+      fullPath: '/guide/availability'
+      preLoaderRoute: typeof GuideAvailabilityRouteImport
+      parentRoute: typeof GuideRoute
     }
     '/email/unsubscribe': {
       id: '/email/unsubscribe'
@@ -3718,6 +3855,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof Char91DotmcpChar93ListToolsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/guide/tours/': {
+      id: '/guide/tours/'
+      path: '/tours'
+      fullPath: '/guide/tours/'
+      preLoaderRoute: typeof GuideToursIndexRouteImport
+      parentRoute: typeof GuideRoute
+    }
     '/admin/bookings/': {
       id: '/admin/bookings/'
       path: '/bookings'
@@ -3745,6 +3889,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/lovable/email/suppression'
       preLoaderRoute: typeof LovableEmailSuppressionRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/guide/tours/$assignmentId': {
+      id: '/guide/tours/$assignmentId'
+      path: '/tours/$assignmentId'
+      fullPath: '/guide/tours/$assignmentId'
+      preLoaderRoute: typeof GuideToursAssignmentIdRouteImport
+      parentRoute: typeof GuideRoute
     }
     '/functions/v1/stripe-webhook': {
       id: '/functions/v1/stripe-webhook'
@@ -4069,6 +4220,28 @@ const AdminRouteChildren: AdminRouteChildren = {
 
 const AdminRouteWithChildren = AdminRoute._addFileChildren(AdminRouteChildren)
 
+interface GuideRouteChildren {
+  GuideAvailabilityRoute: typeof GuideAvailabilityRoute
+  GuideCalendarRoute: typeof GuideCalendarRoute
+  GuideNotificationsRoute: typeof GuideNotificationsRoute
+  GuideProfileRoute: typeof GuideProfileRoute
+  GuideIndexRoute: typeof GuideIndexRoute
+  GuideToursAssignmentIdRoute: typeof GuideToursAssignmentIdRoute
+  GuideToursIndexRoute: typeof GuideToursIndexRoute
+}
+
+const GuideRouteChildren: GuideRouteChildren = {
+  GuideAvailabilityRoute: GuideAvailabilityRoute,
+  GuideCalendarRoute: GuideCalendarRoute,
+  GuideNotificationsRoute: GuideNotificationsRoute,
+  GuideProfileRoute: GuideProfileRoute,
+  GuideIndexRoute: GuideIndexRoute,
+  GuideToursAssignmentIdRoute: GuideToursAssignmentIdRoute,
+  GuideToursIndexRoute: GuideToursIndexRoute,
+}
+
+const GuideRouteWithChildren = GuideRoute._addFileChildren(GuideRouteChildren)
+
 interface LocalStoriesRouteChildren {
   LocalStoriesSlugRoute: typeof LocalStoriesSlugRoute
   LocalStoriesIndexRoute: typeof LocalStoriesIndexRoute
@@ -4168,6 +4341,7 @@ const rootRouteChildren: RootRouteChildren = {
   ExperienceStudioRoute: ExperienceStudioRoute,
   ExperiencesRoute: ExperiencesRoute,
   FaqRoute: FaqRoute,
+  GuideRoute: GuideRouteWithChildren,
   HeroVerifyRoute: HeroVerifyRoute,
   HowManyDaysInPortugalRoute: HowManyDaysInPortugalRoute,
   ItineraryRoute: ItineraryRoute,
