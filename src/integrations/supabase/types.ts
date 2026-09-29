@@ -1826,6 +1826,95 @@ export type Database = {
         }
         Relationships: []
       }
+      guide_availability: {
+        Row: {
+          created_at: string
+          created_by: string | null
+          end_at: string
+          guide_id: string
+          id: string
+          note: string | null
+          start_at: string
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string | null
+          end_at: string
+          guide_id: string
+          id?: string
+          note?: string | null
+          start_at: string
+          status: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          created_by?: string | null
+          end_at?: string
+          guide_id?: string
+          id?: string
+          note?: string | null
+          start_at?: string
+          status?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "guide_availability_guide_id_fkey"
+            columns: ["guide_id"]
+            isOneToOne: false
+            referencedRelation: "guides"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      guide_issue_reports: {
+        Row: {
+          booking_id: string | null
+          created_at: string
+          guide_id: string
+          id: string
+          message: string
+          resolved_at: string | null
+          status: string
+        }
+        Insert: {
+          booking_id?: string | null
+          created_at?: string
+          guide_id: string
+          id?: string
+          message: string
+          resolved_at?: string | null
+          status?: string
+        }
+        Update: {
+          booking_id?: string | null
+          created_at?: string
+          guide_id?: string
+          id?: string
+          message?: string
+          resolved_at?: string | null
+          status?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "guide_issue_reports_booking_id_fkey"
+            columns: ["booking_id"]
+            isOneToOne: false
+            referencedRelation: "bookings"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "guide_issue_reports_guide_id_fkey"
+            columns: ["guide_id"]
+            isOneToOne: false
+            referencedRelation: "guides"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       guide_link_clicks: {
         Row: {
           created_at: string
@@ -1856,36 +1945,92 @@ export type Database = {
         }
         Relationships: []
       }
+      guide_recurring_availability: {
+        Row: {
+          created_at: string
+          end_time: string
+          guide_id: string
+          id: string
+          start_time: string
+          status: string
+          updated_at: string
+          weekday: number
+        }
+        Insert: {
+          created_at?: string
+          end_time?: string
+          guide_id: string
+          id?: string
+          start_time?: string
+          status: string
+          updated_at?: string
+          weekday: number
+        }
+        Update: {
+          created_at?: string
+          end_time?: string
+          guide_id?: string
+          id?: string
+          start_time?: string
+          status?: string
+          updated_at?: string
+          weekday?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "guide_recurring_availability_guide_id_fkey"
+            columns: ["guide_id"]
+            isOneToOne: false
+            referencedRelation: "guides"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       guides: {
         Row: {
           active: boolean
           created_at: string
           email: string | null
           id: string
+          languages: string[]
           name: string
           notes: string | null
           phone: string | null
           updated_at: string
+          user_id: string | null
+          vehicle_available: boolean
+          vehicle_capacity: number | null
+          whatsapp: string | null
         }
         Insert: {
           active?: boolean
           created_at?: string
           email?: string | null
           id?: string
+          languages?: string[]
           name: string
           notes?: string | null
           phone?: string | null
           updated_at?: string
+          user_id?: string | null
+          vehicle_available?: boolean
+          vehicle_capacity?: number | null
+          whatsapp?: string | null
         }
         Update: {
           active?: boolean
           created_at?: string
           email?: string | null
           id?: string
+          languages?: string[]
           name?: string
           notes?: string | null
           phone?: string | null
           updated_at?: string
+          user_id?: string | null
+          vehicle_available?: boolean
+          vehicle_capacity?: number | null
+          whatsapp?: string | null
         }
         Relationships: []
       }
@@ -2314,6 +2459,175 @@ export type Database = {
           user_id?: string
         }
         Relationships: []
+      }
+      operational_activity_log: {
+        Row: {
+          action: string
+          booking_id: string | null
+          created_at: string
+          guide_id: string | null
+          id: string
+          metadata: Json | null
+          new_value: Json | null
+          previous_value: Json | null
+          user_id: string | null
+        }
+        Insert: {
+          action: string
+          booking_id?: string | null
+          created_at?: string
+          guide_id?: string | null
+          id?: string
+          metadata?: Json | null
+          new_value?: Json | null
+          previous_value?: Json | null
+          user_id?: string | null
+        }
+        Update: {
+          action?: string
+          booking_id?: string | null
+          created_at?: string
+          guide_id?: string | null
+          id?: string
+          metadata?: Json | null
+          new_value?: Json | null
+          previous_value?: Json | null
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "operational_activity_log_booking_id_fkey"
+            columns: ["booking_id"]
+            isOneToOne: false
+            referencedRelation: "bookings"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "operational_activity_log_guide_id_fkey"
+            columns: ["guide_id"]
+            isOneToOne: false
+            referencedRelation: "guides"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      operational_notes: {
+        Row: {
+          assignment_id: string | null
+          booking_id: string
+          created_at: string
+          created_by: string | null
+          id: string
+          note: string
+          notify_guide: boolean
+          priority: string
+          updated_at: string
+        }
+        Insert: {
+          assignment_id?: string | null
+          booking_id: string
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          note: string
+          notify_guide?: boolean
+          priority?: string
+          updated_at?: string
+        }
+        Update: {
+          assignment_id?: string | null
+          booking_id?: string
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          note?: string
+          notify_guide?: boolean
+          priority?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "operational_notes_assignment_id_fkey"
+            columns: ["assignment_id"]
+            isOneToOne: false
+            referencedRelation: "tour_assignments"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "operational_notes_booking_id_fkey"
+            columns: ["booking_id"]
+            isOneToOne: false
+            referencedRelation: "bookings"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      ops_notifications: {
+        Row: {
+          assignment_id: string | null
+          booking_id: string | null
+          channel: string
+          created_at: string
+          delivered_at: string | null
+          guide_id: string
+          id: string
+          message: string | null
+          notification_type: string
+          read_at: string | null
+          sent_at: string
+          title: string
+        }
+        Insert: {
+          assignment_id?: string | null
+          booking_id?: string | null
+          channel?: string
+          created_at?: string
+          delivered_at?: string | null
+          guide_id: string
+          id?: string
+          message?: string | null
+          notification_type: string
+          read_at?: string | null
+          sent_at?: string
+          title: string
+        }
+        Update: {
+          assignment_id?: string | null
+          booking_id?: string | null
+          channel?: string
+          created_at?: string
+          delivered_at?: string | null
+          guide_id?: string
+          id?: string
+          message?: string | null
+          notification_type?: string
+          read_at?: string | null
+          sent_at?: string
+          title?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ops_notifications_assignment_id_fkey"
+            columns: ["assignment_id"]
+            isOneToOne: false
+            referencedRelation: "tour_assignments"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "ops_notifications_booking_id_fkey"
+            columns: ["booking_id"]
+            isOneToOne: false
+            referencedRelation: "bookings"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "ops_notifications_guide_id_fkey"
+            columns: ["guide_id"]
+            isOneToOne: false
+            referencedRelation: "guides"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       review_submission_tokens: {
         Row: {
@@ -2878,6 +3192,72 @@ export type Database = {
           reason?: string
         }
         Relationships: []
+      }
+      tour_assignments: {
+        Row: {
+          assigned_at: string
+          assigned_by: string | null
+          booking_id: string
+          changed_at: string | null
+          created_at: string
+          end_at: string
+          guide_confirmed_at: string | null
+          guide_id: string
+          guide_viewed_at: string | null
+          id: string
+          removed_at: string | null
+          start_at: string
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          assigned_at?: string
+          assigned_by?: string | null
+          booking_id: string
+          changed_at?: string | null
+          created_at?: string
+          end_at: string
+          guide_confirmed_at?: string | null
+          guide_id: string
+          guide_viewed_at?: string | null
+          id?: string
+          removed_at?: string | null
+          start_at: string
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          assigned_at?: string
+          assigned_by?: string | null
+          booking_id?: string
+          changed_at?: string | null
+          created_at?: string
+          end_at?: string
+          guide_confirmed_at?: string | null
+          guide_id?: string
+          guide_viewed_at?: string | null
+          id?: string
+          removed_at?: string | null
+          start_at?: string
+          status?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "tour_assignments_booking_id_fkey"
+            columns: ["booking_id"]
+            isOneToOne: false
+            referencedRelation: "bookings"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "tour_assignments_guide_id_fkey"
+            columns: ["guide_id"]
+            isOneToOne: false
+            referencedRelation: "guides"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       tour_available_add_ons: {
         Row: {
@@ -3482,6 +3862,7 @@ export type Database = {
     }
     Functions: {
       cleanup_expired_builder_references: { Args: never; Returns: number }
+      current_guide_id: { Args: never; Returns: string }
       delete_email: {
         Args: { message_id: number; queue_name: string }
         Returns: boolean
@@ -3491,6 +3872,57 @@ export type Database = {
         Args: { payload: Json; queue_name: string }
         Returns: number
       }
+      guide_claim_account: { Args: never; Returns: string }
+      guide_confirm_assignment: {
+        Args: { _assignment_id: string }
+        Returns: undefined
+      }
+      guide_mark_notification_read: {
+        Args: { _id: string }
+        Returns: undefined
+      }
+      guide_mark_viewed: {
+        Args: { _assignment_id: string }
+        Returns: undefined
+      }
+      guide_my_tours: {
+        Args: { _from?: string; _to?: string }
+        Returns: {
+          assignment_id: string
+          booking_cancelled: boolean
+          booking_id: string
+          changed_at: string
+          client_notes: string
+          dropoff_location: string
+          end_at: string
+          guest_first_name: string
+          guests: number
+          guide_confirmed_at: string
+          guide_viewed_at: string
+          language: string
+          pax_breakdown: Json
+          pickup_location: string
+          start_at: string
+          start_time: string
+          status: string
+          tour_date: string
+          tour_title: string
+        }[]
+      }
+      guide_report_issue: {
+        Args: { _booking_id: string; _message: string }
+        Returns: string
+      }
+      guide_update_profile: {
+        Args: {
+          _languages: string[]
+          _phone: string
+          _vehicle_available: boolean
+          _vehicle_capacity: number
+          _whatsapp: string
+        }
+        Returns: undefined
+      }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
@@ -3498,6 +3930,7 @@ export type Database = {
         }
         Returns: boolean
       }
+      is_ops_admin: { Args: never; Returns: boolean }
       move_to_dlq: {
         Args: {
           dlq_name: string
@@ -3506,6 +3939,27 @@ export type Database = {
           source_queue: string
         }
         Returns: number
+      }
+      ops_add_note: {
+        Args: {
+          _booking_id: string
+          _note: string
+          _notify: boolean
+          _priority: string
+        }
+        Returns: string
+      }
+      ops_assign_guide: {
+        Args: { _booking_id: string; _guide_id: string }
+        Returns: string
+      }
+      ops_booking_window: {
+        Args: { _booking_id: string }
+        Returns: Record<string, unknown>
+      }
+      ops_remove_assignment: {
+        Args: { _booking_id: string }
+        Returns: undefined
       }
       read_email_batch: {
         Args: { batch_size: number; queue_name: string; vt: number }
