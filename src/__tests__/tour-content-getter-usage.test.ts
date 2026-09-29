@@ -29,7 +29,6 @@ const REQUIRED_CONSUMERS = [
   // Signature listings (EN + PT). Homepage cards consume the validated
   // presentation helper, which owns the canonical getTourContent read.
   "src/routes/experiences.tsx",
-  "src/routes/pt.experiences.tsx",
 ];
 
 const IMPORT_RE =

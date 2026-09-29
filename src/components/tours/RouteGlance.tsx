@@ -73,11 +73,11 @@ export function RouteGlance({
       className="mb-10 border border-[color:var(--border)] bg-[color:var(--ivory)] px-4 py-5 md:px-6 md:py-6"
     >
       <div className="flex items-start justify-between gap-4">
-        <span className="text-[10.5px] uppercase tracking-[0.22em] text-[color:var(--charcoal-soft)]">
+        <span className="text-[11px] uppercase tracking-[0.22em] text-[color:var(--charcoal-soft)]">
           Where the day happens
         </span>
         {region && (
-          <span className="text-[10.5px] uppercase tracking-[0.22em] text-[color:var(--charcoal-soft)]">
+          <span className="text-[11px] uppercase tracking-[0.22em] text-[color:var(--charcoal-soft)]">
             {region}
           </span>
         )}

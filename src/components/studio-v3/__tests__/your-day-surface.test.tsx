@@ -114,7 +114,7 @@ describe("MapAwakens — map vs timeline", () => {
 
   it("keeps the continue CTA reachable before any autoplay completes", () => {
     renderMapAwakens();
-    const cta = screen.getByRole("button", { name: /Personalise a few details/i });
+    const cta = screen.getByRole("button", { name: /Personalize a few details/i });
     expect(cta).toBeEnabled();
   });
 });
