@@ -276,7 +276,7 @@ export const SIGNATURE_FAQ: FaqItem[] = [
   },
   {
     q: "Is hotel pickup included?",
-    a: "Pickup is included within the areas listed on this page. If you are staying elsewhere, ask before booking and we confirm what is possible. Pickups outside this area can be arranged on request.",
+    a: "Each experience page lists its included pickup areas. If you are staying outside them, tell us before booking and we confirm what is possible.",
   },
   {
     q: "How long does the day last?",
