@@ -25,6 +25,20 @@ const DEFAULT_RULE = (tourId: string): OperatingRule => ({
 
 const cache = new Map<string, Promise<OperatingRule>>();
 
+/** Dates where every active guide is already busy or off (dates only, no details). */
+async function fetchFullyBookedDates(): Promise<string[]> {
+  try {
+    const from = new Date().toISOString().slice(0, 10);
+    const to = new Date(Date.now() + 400 * 86_400_000).toISOString().slice(0, 10);
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const { data, error } = await (supabase as any).rpc("public_fully_booked_dates", { _from: from, _to: to });
+    if (error || !Array.isArray(data)) return [];
+    return (data as unknown[]).map((d) => String(d).slice(0, 10));
+  } catch {
+    return [];
+  }
+}
+
 export function getOperatingRule(tourId: string): Promise<OperatingRule> {
   const existing = cache.get(tourId);
   if (existing) return existing;
@@ -35,11 +49,15 @@ export function getOperatingRule(tourId: string): Promise<OperatingRule> {
         .select("tour_id,weekdays,blackout_dates,min_lead_hours,cutoff_local_time")
         .eq("tour_id", tourId)
         .maybeSingle();
-      if (error || !data) return DEFAULT_RULE(tourId);
+      const full = await fetchFullyBookedDates();
+      if (error || !data) {
+        const base = DEFAULT_RULE(tourId);
+        return { ...base, blackoutDates: full };
+      }
       return {
         tourId,
         weekdays: (data.weekdays as number[]) ?? DEFAULT_RULE(tourId).weekdays,
-        blackoutDates: (data.blackout_dates as string[]) ?? [],
+        blackoutDates: [...((data.blackout_dates as string[]) ?? []), ...full],
         minLeadHours: (data.min_lead_hours as number) ?? 24,
         cutoffLocalTime: (data.cutoff_local_time as string | null) ?? null,
       };
