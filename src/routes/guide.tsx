@@ -73,6 +73,9 @@ function GuideLayout() {
 
   // Live updates: RLS limits events to this guide's own rows.
   const [version, setVersion] = useState(0);
+  const [notifPerm, setNotifPerm] = useState<string>(() =>
+    typeof window !== "undefined" && "Notification" in window ? Notification.permission : "unsupported",
+  );
   useEffect(() => {
     if (gate !== "ok") return;
     let t: ReturnType<typeof setTimeout> | undefined;
@@ -84,14 +87,38 @@ function GuideLayout() {
           .then(({ count }: { count: number | null }) => setUnread(count ?? 0));
       }, 400);
     };
+    // Device notification for a brand-new alert while the app is open (foreground only).
+    const onNewNotification = (payload: { new?: { title?: string; message?: string | null; assignment_id?: string | null } }) => {
+      bump();
+      const n = payload.new;
+      if (!n?.title || typeof window === "undefined" || !("Notification" in window) || Notification.permission !== "granted") return;
+      try {
+        const note = new Notification(n.title, { body: n.message ?? undefined, tag: "yes-guide" });
+        note.onclick = () => {
+          window.focus();
+          if (n.assignment_id) window.location.href = `/guide/tours/${n.assignment_id}`;
+        };
+      } catch {
+        // Some mobile browsers require a service worker for notifications; in-app alert + email remain the guaranteed channels.
+      }
+    };
     const channel = supabase
       .channel("guide-live")
       .on("postgres_changes", { event: "*", schema: "public", table: "tour_assignments" }, bump)
       .on("postgres_changes", { event: "*", schema: "public", table: "operational_notes" }, bump)
-      .on("postgres_changes", { event: "*", schema: "public", table: "ops_notifications" }, bump)
+      .on("postgres_changes", { event: "INSERT", schema: "public", table: "ops_notifications" }, onNewNotification)
+      .on("postgres_changes", { event: "UPDATE", schema: "public", table: "ops_notifications" }, bump)
       .subscribe();
     return () => { clearTimeout(t); void supabase.removeChannel(channel); };
   }, [gate]);
+
+  const enableNotifications = async () => {
+    if (!("Notification" in window)) return;
+    const result = await Notification.requestPermission();
+    setNotifPerm(result);
+    if (result === "granted") toast.success("Notifications on. You'll also keep getting alerts inside the app and by email.");
+    else if (result === "denied") toast.error("Notifications are blocked in this browser. You'll still see alerts inside the app and by email.");
+  };
 
   if (gate === "checking") return <div className="min-h-screen grid place-items-center text-sm text-muted-foreground">Loading…</div>;
   if (gate === "signed-out") return <GuideSignIn />;
@@ -110,7 +137,14 @@ function GuideLayout() {
     <div className="min-h-screen bg-background pb-24">
       <header className="sticky top-0 z-10 bg-background/95 border-b border-border px-4 h-14 flex items-center justify-between gap-2">
         <span className="font-[family-name:var(--font-editorial)] text-[19px] text-[color:var(--teal)]">YES Guide</span>
-        <GuideInstallButton className="h-9 px-3 text-xs" />
+        <div className="flex items-center gap-2">
+          {notifPerm === "default" && (
+            <Button variant="ghost" className="h-9 px-2 text-xs" onClick={enableNotifications} aria-label="Enable notifications">
+              <Bell className="h-4 w-4" aria-hidden />
+            </Button>
+          )}
+          <GuideInstallButton className="h-9 px-3 text-xs" />
+        </div>
       </header>
       <main className="px-4 py-5 max-w-xl mx-auto">
         <div key={version}><Outlet /></div>

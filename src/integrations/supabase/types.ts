@@ -3901,10 +3901,15 @@ export type Database = {
           client_notes: string
           dropoff_location: string
           end_at: string
+          guest_email: string
           guest_first_name: string
+          guest_full_name: string
+          guest_phone: string
           guests: number
           guide_confirmed_at: string
           guide_viewed_at: string
+          included_items: Json
+          itinerary: Json
           language: string
           pax_breakdown: Json
           pickup_location: string

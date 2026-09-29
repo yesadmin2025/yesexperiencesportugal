@@ -4,23 +4,34 @@ import { toast } from "sonner";
 import { db, errMsg, fetchMyTours, fmtDate, todayIso } from "@/components/guide/guide-data";
 
 export const Route = createFileRoute("/guide/availability")({
+  validateSearch: (s: Record<string, unknown>) => ({
+    from: typeof s.from === "string" && /^\d{4}-\d{2}-\d{2}$/.test(s.from) ? s.from : undefined,
+    to: typeof s.to === "string" && /^\d{4}-\d{2}-\d{2}$/.test(s.to) ? s.to : undefined,
+  }),
   head: () => ({ meta: [{ title: "Availability · YES Guide" }] }),
   component: GuideAvailability,
 });
 
-const STATUSES = ["available", "partial", "unavailable", "vacation"] as const;
+const STATUSES = ["available", "unavailable", "vacation", "morning", "afternoon", "custom"] as const;
+const STATUS_LABELS: Record<string, string> = {
+  available: "Available", unavailable: "Unavailable", vacation: "Vacation",
+  morning: "Morning only", afternoon: "Afternoon only", custom: "Custom hours", partial: "Partial",
+};
 const WEEKDAYS = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 type Row = { id: string; start_at: string; end_at: string; status: string; note: string | null };
 type Rec = { id: string; weekday: number; status: string };
 
 function GuideAvailability() {
+  const search = Route.useSearch();
   const [gid, setGid] = useState<string | null>(null);
   const [rows, setRows] = useState<Row[]>([]);
   const [rec, setRec] = useState<Rec[]>([]);
   const [tourDays, setTourDays] = useState<Set<string>>(new Set());
-  const [from, setFrom] = useState(todayIso());
-  const [to, setTo] = useState(todayIso());
+  const [from, setFrom] = useState(search.from ?? todayIso());
+  const [to, setTo] = useState(search.to ?? search.from ?? todayIso());
   const [status, setStatus] = useState<(typeof STATUSES)[number]>("unavailable");
+  const [customFrom, setCustomFrom] = useState("09:00");
+  const [customTo, setCustomTo] = useState("17:00");
   const [busy, setBusy] = useState(false);
 
   const load = useCallback(async () => {
@@ -56,10 +67,12 @@ function GuideAvailability() {
   const save = () => {
     if (!gid) return;
     if (to < from) return toast.error("End date is before start date.");
+    if (status === "custom" && customTo <= customFrom) return toast.error("Custom end time must be after the start time.");
     const end = new Date(`${to}T00:00:00Z`);
     end.setUTCDate(end.getUTCDate() + 1);
+    const note = status === "custom" ? `Custom hours: ${customFrom}–${customTo}` : null;
     void act(
-      () => db.from("guide_availability").insert({ guide_id: gid, start_at: `${from}T00:00:00+00:00`, end_at: end.toISOString(), status }),
+      () => db.from("guide_availability").insert({ guide_id: gid, start_at: `${from}T00:00:00+00:00`, end_at: end.toISOString(), status, note }),
       "Availability saved",
     );
   };
@@ -84,11 +97,17 @@ function GuideAvailability() {
         </div>
         <div className="grid grid-cols-2 gap-2">
           {STATUSES.map((s) => (
-            <button key={s} onClick={() => setStatus(s)} className={`min-h-11 border capitalize text-sm ${status === s ? "border-[color:var(--teal)] bg-[color:var(--teal)]/10" : "border-border"}`}>{s}</button>
+            <button key={s} onClick={() => setStatus(s)} className={`min-h-11 border text-sm ${status === s ? "border-[color:var(--teal)] bg-[color:var(--teal)]/10" : "border-border"}`}>{STATUS_LABELS[s]}</button>
           ))}
         </div>
+        {status === "custom" && (
+          <div className="grid grid-cols-2 gap-2">
+            <label className="text-[12px]">From<input type="time" value={customFrom} onChange={(e) => setCustomFrom(e.target.value)} className="mt-1 w-full min-h-11 border border-border px-2 bg-background" /></label>
+            <label className="text-[12px]">To<input type="time" value={customTo} onChange={(e) => setCustomTo(e.target.value)} className="mt-1 w-full min-h-11 border border-border px-2 bg-background" /></label>
+          </div>
+        )}
         <button disabled={busy} onClick={save} className="w-full min-h-12 bg-[color:var(--teal)] text-primary-foreground text-[12px] uppercase tracking-[0.18em] disabled:opacity-50">Save</button>
-        <p className="text-[12px] text-muted-foreground">Days with a tour assigned to you can't be marked unavailable here — use "Report an issue" on the tour.</p>
+        <p className="text-[12px] text-muted-foreground">Days with a tour assigned to you can't be changed here — use "Report an issue" on the tour.</p>
       </section>
 
       <section className="space-y-2">
@@ -99,7 +118,7 @@ function GuideAvailability() {
           const locked = tourDays.has(d);
           return (
             <div key={r.id} className="border border-border p-3 flex justify-between items-center text-sm">
-              <span><span className="capitalize font-medium">{r.status}</span> · {fmtDate(d)}{r.end_at.slice(0, 10) > new Date(new Date(`${d}T00:00:00Z`).getTime() + 86400000).toISOString().slice(0, 10) ? ` → ${fmtDate(new Date(new Date(r.end_at).getTime() - 1).toISOString().slice(0, 10))}` : ""}</span>
+              <span><span className="font-medium">{STATUS_LABELS[r.status] ?? r.status}</span> · {fmtDate(d)}{r.end_at.slice(0, 10) > new Date(new Date(`${d}T00:00:00Z`).getTime() + 86400000).toISOString().slice(0, 10) ? ` → ${fmtDate(new Date(new Date(r.end_at).getTime() - 1).toISOString().slice(0, 10))}` : ""}{r.note ? ` · ${r.note}` : ""}</span>
               {!locked && (
                 <button disabled={busy} onClick={() => act(() => db.from("guide_availability").delete().eq("id", r.id), "Removed")} className="text-[11px] uppercase tracking-[0.18em] text-destructive min-h-11 px-2">Remove</button>
               )}

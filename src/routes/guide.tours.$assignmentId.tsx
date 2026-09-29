@@ -1,7 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useCallback, useEffect, useState } from "react";
 import { toast } from "sonner";
-import { db, errMsg, fetchMyTours, fmtDate, type GuideTour } from "@/components/guide/guide-data";
+import { db, errMsg, fetchMyTours, fmtDate, fmtPax, type GuideTour } from "@/components/guide/guide-data";
 import { tourBadge } from "@/components/guide/TourCard";
 
 export const Route = createFileRoute("/guide/tours/$assignmentId")({
@@ -58,6 +58,10 @@ function TourDetails() {
     }
   };
 
+  const pax = fmtPax(tour.pax_breakdown);
+  const itinerary = Array.isArray(tour.itinerary) ? tour.itinerary : [];
+  const included = Array.isArray(tour.included_items) ? tour.included_items.filter((x) => typeof x === "string" && x.trim()) : [];
+
   return (
     <div className="space-y-6">
       <div>
@@ -66,13 +70,52 @@ function TourDetails() {
         <p className="text-sm text-muted-foreground mt-1">{fmtDate(tour.tour_date)}</p>
       </div>
       <dl className="grid grid-cols-2 gap-3 text-sm">
-        <Fact k="Time" v={tour.start_time ?? "To be confirmed"} />
-        <Fact k="Guests" v={String(tour.guests ?? "?")} />
-        <Fact k="Lead guest" v={tour.guest_first_name || "—"} />
+        <Fact k="Pickup time" v={tour.start_time ?? "To be confirmed"} />
+        <Fact k="Guests" v={tour.guests != null ? String(tour.guests) + (pax ? ` (${pax})` : "") : "?"} />
+        <Fact k="Lead guest" v={tour.guest_full_name || tour.guest_first_name || "—"} />
         <Fact k="Language" v={tour.language ?? "EN"} />
         <Fact k="Pickup" v={tour.pickup_location ?? "To be confirmed"} wide />
         {tour.dropoff_location && <Fact k="Drop-off" v={tour.dropoff_location} wide />}
       </dl>
+
+      {(tour.guest_phone || tour.guest_email) && (
+        <section className="grid grid-cols-1 gap-2">
+          <h2 className="text-[11px] uppercase tracking-[0.22em] text-muted-foreground">Contact the guest</h2>
+          {tour.guest_phone && (
+            <a href={`tel:${tour.guest_phone.replace(/[^+\d]/g, "")}`} className="flex min-h-12 items-center justify-between border border-[color:var(--teal)] px-3 text-sm text-[color:var(--teal)]">
+              Call {tour.guest_phone}<span aria-hidden>→</span>
+            </a>
+          )}
+          {tour.guest_email && (
+            <a href={`mailto:${tour.guest_email}`} className="flex min-h-12 items-center justify-between border border-border px-3 text-sm">
+              Email {tour.guest_email}<span aria-hidden>→</span>
+            </a>
+          )}
+        </section>
+      )}
+
+      {itinerary.length > 0 && (
+        <section>
+          <h2 className="text-[11px] uppercase tracking-[0.22em] text-muted-foreground mb-2">The day</h2>
+          <ol className="space-y-2">
+            {itinerary.map((s, i) => (
+              <li key={i} className="border-l-2 border-[color:var(--teal)] pl-3 text-sm">
+                <span className="font-medium">{s.order}. {s.label}</span>
+                {s.note && <span className="block text-muted-foreground">{s.note}</span>}
+              </li>
+            ))}
+          </ol>
+        </section>
+      )}
+
+      {included.length > 0 && (
+        <section>
+          <h2 className="text-[11px] uppercase tracking-[0.22em] text-muted-foreground mb-2">Included</h2>
+          <ul className="space-y-1 text-sm">
+            {included.map((item, i) => <li key={i} className="border-l-2 border-border pl-3">{item}</li>)}
+          </ul>
+        </section>
+      )}
 
       {tour.client_notes && (
         <section>

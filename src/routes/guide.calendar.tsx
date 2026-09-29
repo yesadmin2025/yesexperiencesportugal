@@ -41,7 +41,7 @@ function GuideCalendar() {
         let tone: CalendarDayTone = "default";
         if (dayTours.length) tone = "tour";
         else if (availability?.status === "available") tone = "available";
-        else if (availability?.status === "unavailable" || availability?.status === "vacation") tone = "unavailable";
+        else if (availability?.status && availability.status !== "available") tone = "unavailable";
         return { iso, day: i + 1, tone, count: dayTours.length || undefined, label: `${iso}: ${dayTours.length ? `${dayTours.length} tour${dayTours.length > 1 ? "s" : ""}` : availability?.status ?? "no status"}` };
       }),
     ];
@@ -98,6 +98,14 @@ function GuideCalendar() {
           </div>
         ) : (
           <p className="mt-2 text-sm text-muted-foreground capitalize">{selectedAvailability?.status ?? "No tour assigned"}.</p>
+        )}
+        {selectedTours.length === 0 && (
+          <Button asChild variant="outline" className="mt-3 h-auto min-h-12 w-full justify-between whitespace-normal px-3 py-3 text-left">
+            <Link to="/guide/availability" search={{ from: selected, to: selected }}>
+              <span>Set availability for this day</span>
+              <span aria-hidden>→</span>
+            </Link>
+          </Button>
         )}
       </section>
     </div>
