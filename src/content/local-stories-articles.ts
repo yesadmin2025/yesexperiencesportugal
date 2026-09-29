@@ -1224,6 +1224,7 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
     eyebrow: "Lisbon · Wine",
     standfirst:
       "Two wine regions sit within 90 minutes of Lisbon — the Setúbal Peninsula and the Alentejo — plus one small coastal appellation worth knowing. Here are the private days we actually run — what each one feels like, what it costs you in time, and how to choose between them.",
+    directAnswer: "For a private wine tour from Lisbon, Arrábida and Azeitão offer wineries, Setúbal Moscatel and the coast within one day. The Alentejo is a longer inland day for Évora or traditional Vinho de Talha. Compare the tour pages for current dates, inclusions and per-person prices before choosing.",
     sections: [
       {
         heading: "The short answer: which wine tour from Lisbon is best?",
@@ -1243,7 +1244,7 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
       },
       {
         heading: "Évora & Alentejo Wine Tour — the Alentejo day, done properly.",
-        body: "A private [Alentejo wine tour from Lisbon](/tours/evora-alentejo) to Évora — UNESCO Roman temple, medieval walls, the Chapel of Bones — with an Alentejo winery visit and a long regional lunch. It is a longer drive than Arrábida, but the landscape and the wines are entirely different: cork oaks, open plains, structured reds.",
+        body: "A private [Alentejo wine tour from Lisbon](/tours/evora-alentejo) to Évora — Roman temple, medieval walls and the Chapel of Bones — with two selected winery tastings. It is a longer drive than Arrábida; lunch is at your own expense. Check the tour page for the current route and inclusions.",
       },
       {
         heading: "Roman Heritage Wine Tour — the day for wine travelers who have seen the rest.",
@@ -1327,8 +1328,8 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
       },
     ],
     ctaLead:
-      "Every day above exists as a private Signature Experience you can reserve for your date. Prefer to shape your own? Our Studio lets you design a wine day from scratch.",
-    ctaLabel: "See all Signature Experiences",
+      "Compare the current dates and inclusions on the Arrábida Wine Signature. Or design your own private day in Studio and confirm it instantly.",
+    ctaLabel: "Explore Signature Experiences",
     signatureSlug: "arrabida-wine-allinclusive",
     relatedSignatures: [
       { slug: "azeitao-cheese", label: "Azeitão Cheese & Wine Day" },

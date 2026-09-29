@@ -29,7 +29,7 @@ export const Route = createFileRoute("/studio")({
       { property: "og:title", content: "Design your Portugal day." },
       {
         property: "og:description",
-        content: "A cinematic, guided composer — not a form. Portugal responds as you choose.",
+        content: "Design your own private day and confirm it instantly. See your route and live price as you choose.",
       },
       { property: "og:url", content: CANONICAL_URL },
       { property: "og:image", content: `https://yesexperiencesportugal.com${ogImg}` },
