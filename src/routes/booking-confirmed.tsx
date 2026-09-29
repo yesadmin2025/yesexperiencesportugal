@@ -217,7 +217,7 @@ function BookingConfirmedPage() {
                     ? "Confirmed"
                     : "Payment pending"}
           </Eyebrow>
-          <SectionTitle>
+          <SectionTitle as="h1">
             {paid ? (
               <>
                 Your day in Portugal is <SectionTitle.Em>reserved</SectionTitle.Em>
