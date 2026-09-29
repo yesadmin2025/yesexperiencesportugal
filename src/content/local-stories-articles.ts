@@ -206,7 +206,7 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
       {
         heading: "What to pair it with",
         body: "Setúbal wine makes most sense with the food and landscape around it. Queijo de Azeitão PDO is a sheep's-milk cheese traditionally coagulated with cardoon flower; that protected method makes the [hands-on Azeitão cheese day](/tours/azeitao-cheese) more than a tasting stop. It is a classic local pairing with Moscatel, alongside regional bread, olive oil and grilled fish.\n\nSetúbal's fishing tradition and the coastal tables around Sesimbra give the wine its everyday setting. A dry white can suit fresh fish, while local reds sit beside richer dishes and aged cheese.\n\nThe point is not to rush from tasting to tasting. A Setúbal wine day leaves room for lunch and for understanding why these foods and wines belong together. Our guide to the [best wine tours from Lisbon](/local-stories/best-wine-tours-from-lisbon) compares the routes side by side.",
-        sources: [{ label: "DGADR — Queijo de Azeitão PDO", url: "https://tradicional.dgadr.gov.pt/en/categories/cheese-and-other-dairy-products/37-queijo-de-azeitao-pdo" }],
+        sources: [{ label: "DGADR — Queijo de Azeitão DOP", url: "https://tradicional.dgadr.gov.pt/pt/cat/queijos-e-produtos-lacteos/33-queijo-de-azeitao" }],
       },
     ],
     ctaLead:
@@ -340,6 +340,10 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
       {
         heading: "Rice fields, dunes and a quieter kind of design",
         body: "Comporta's appeal is in the space between things: working rice fields, low buildings, pine and dunes before the Atlantic. Its understated architecture and creative culture value privacy and the landscape rather than spectacle; this feels different from Cascais's resort town and the Algarve's busier coastal centers. The [Tróia and Comporta Signature](/tours/troia-comporta) includes a tasting at Herdade da Comporta; check the tour page for the exact day's inclusions.",
+        sources: [
+          { label: "Architectural Digest — Comporta and design", url: "https://www.architecturaldigest.com/story/comporta-portugal-book" },
+          { label: "Vogue — Comporta Portugal guide", url: "https://www.vogue.com/article/comporta-portugal-guide" },
+        ],
       },
       {
         heading: "One day, or part of a longer Portugal journey",
@@ -375,6 +379,7 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
       {
         heading: "A coast shaped by the natural park",
         body: "The Parque Natural do Sudoeste Alentejano e Costa Vicentina protects stretches of Atlantic coast between the Alentejo and Algarve. Cliffs, dunes, river mouths and fishing villages are connected parts of a lived-in coastline, not a sequence of resort stops. That is why a route through Porto Covo, Milfontes and Odeceixe rewards a slower look: the relationship between settlement, river and sea changes along the way.",
+        sources: [{ label: "Turismo de Portugal — Southwest Alentejo and Vicentine Coast Natural Park", url: "https://www.visitportugal.com/pt-pt/content/parque-natural-do-sudoeste-alentejano-e-costa-vicentina" }],
       },
       {
         heading: "Porto Covo and Ilha do Pessegueiro",
@@ -436,6 +441,7 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
       {
         heading: "What Vinho de Talha means",
         body: "A talha is a large clay vessel used to ferment wine. In parts of the Alentejo, this method with roots more than two millennia old is still practiced rather than merely displayed in a museum. Near Vila de Frades and Vidigueira, visitors encounter both the vessel and the people who keep the tradition in use. The cultural value is continuity: a way of making wine passed along locally, not a Roman recipe reconstructed for visitors.",
+        sources: [{ label: "Vila de Frades — local heritage brochure (PDF)", url: "https://www.viladefrades.pt/docs/brochuras/brochura01.pdf" }],
       },
       {
         heading: "São Cucufate — the Roman landscape",
@@ -1042,6 +1048,7 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
       {
         heading: "Roman temple, two wineries, a cork stop, long lunch.",
         body: "We walk the old town with a local guide, visit two family wineries — one of them with a restaurant — and add a cork tradition stop so you see where Portuguese cork actually comes from. Lunch is Alentejo-slow, plates shared, wine local.",
+        sources: [{ label: "Turismo de Portugal — The cork", url: "https://www.visitportugal.com/en/content/the-cork" }],
       },
       {
         heading: "No coach, no rush, no fixed script.",
@@ -2037,7 +2044,7 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
       {
         heading: "The workshop itself is hands-on and private to your party.",
         body: "At Quinta Velha you make Azeitão cheese the traditional way, with raw sheep's milk curdled using cardoon thistle. It is a slower, warmer process than industrial cheesemaking and it explains the texture that makes this cheese famous — soft enough to spoon out through a cut in the crust. The session is private, so questions are answered properly and nobody is rushed off the table.",
-        sources: [{ label: "DGADR — Queijo de Azeitão PDO", url: "https://tradicional.dgadr.gov.pt/en/categories/cheese-and-other-dairy-products/37-queijo-de-azeitao-pdo" }],
+        sources: [{ label: "DGADR — Queijo de Azeitão DOP", url: "https://tradicional.dgadr.gov.pt/pt/cat/queijos-e-produtos-lacteos/33-queijo-de-azeitao" }],
       },
       {
         heading: "What you taste, and what you do not.",
