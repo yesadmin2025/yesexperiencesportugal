@@ -1,3 +1,4 @@
+import { ptTheme } from "@/lib/ptTheme";
 import { socialImageMeta } from "@/lib/seo";
 import { localeAlternateLinks } from "@/i18n/seo";
 import { createFileRoute, Link } from "@tanstack/react-router";
@@ -131,7 +132,7 @@ function DayToursPage() {
                     <Clock size={12} /> {signatureDurationLabel(t.id, t.durationHours)}
                   </span>
                   <span className="flex items-center gap-1.5">
-                    <MapPin size={12} /> {t.theme}
+                    <MapPin size={12} /> {ptTheme(t.theme)}
                   </span>
                   <span className="text-[color:var(--teal)]">
                     Desde <PriceEur amountEur={t.priceFrom} role="from" />
@@ -139,7 +140,7 @@ function DayToursPage() {
                 </div>
 
                 <p className="mt-3 text-sm text-[color:var(--charcoal-soft)] leading-relaxed">
-                  {t.blurb}
+                  {getSignatureCardPromise(t.id, "pt")}
                 </p>
 
                 <CtaButton
@@ -151,6 +152,9 @@ function DayToursPage() {
                 >
                   Ver experiência &amp; reservar
                 </CtaButton>
+                <p className="mt-2 text-[12px] text-[color:var(--charcoal-soft)]">
+                  <span lang="en" className="font-medium text-[color:var(--charcoal)]">EN</span> · Detalhes e reserva em inglês.
+                </p>
               </article>
             ))}
           </div>
