@@ -1,7 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useCallback, useEffect, useState } from "react";
 import { toast } from "sonner";
-import { db, errMsg, fetchMyTours, fmtDate, type GuideTour } from "@/components/guide/guide-data";
+import { db, errMsg, fetchMyTours, fmtDate, fmtPax, type GuideTour } from "@/components/guide/guide-data";
 import { tourBadge } from "@/components/guide/TourCard";
 
 export const Route = createFileRoute("/guide/tours/$assignmentId")({
