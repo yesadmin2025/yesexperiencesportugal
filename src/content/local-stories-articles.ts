@@ -1252,7 +1252,7 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
       },
       {
         heading: "What a private wine day from Lisbon includes.",
-        body: "Every day on this page is private to your party and runs door to door: pickup and drop-off at your Lisbon hotel or apartment, a licensed driver-guide, a comfortable private vehicle, and winery visits and tastings arranged in advance. Lunch is included only where the individual route says so; the Azeitão Cheese Signature lasts about eight and a half hours and does not include lunch. You choose how long to linger at each table and whether the day ends on a viewpoint or back in the city for dinner.\n\nEach Signature page shows the exact duration, the from-price and what is included, and can be reserved for a chosen date — or tailored around your pace, interests and group size before you book.",
+        body: "Every day on this page is private to your party and runs door to door: pickup and drop-off within the areas listed on each tour page, a licensed driver-guide, a comfortable private vehicle, and winery visits and tastings arranged in advance. Lunch is included only where the individual route says so; the Azeitão Cheese Signature lasts about eight and a half hours and does not include lunch. You choose how long to linger at each table and whether the day ends on a viewpoint or back in the city for dinner.\n\nEach Signature page shows the exact duration, the from-price and what is included, and can be reserved for a chosen date — or tailored around your pace, interests and group size before you book.",
       },
     ],
     comparison: {

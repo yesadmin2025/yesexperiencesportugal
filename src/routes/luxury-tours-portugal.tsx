@@ -67,7 +67,7 @@ const PILLARS: {
   {
     eyebrow: "Private wine days",
     title: "Arrábida — the coastal wine region an hour from Lisbon.",
-    body: "Cork oaks, cliff-top vineyards, and Moscatel de Setúbal at cellars that don't take walk-ins. All-inclusive: transfers, tastings, lunch on the water, and time to actually sit down.",
+    body: "Cork oaks, cliff-top vineyards, and Moscatel de Setúbal at cellars that don't take walk-ins. On the Arrábida Wine Signature, transfers, tastings and lunch are included, with time to actually sit down.",
     cta: {
       to: "/tours/$tourId",
       tourId: "arrabida-wine-allinclusive",
@@ -103,7 +103,7 @@ function Page() {
               Luxury Portugal tours, <SectionTitle.Em>quietly done.</SectionTitle.Em>
             </SectionTitle>
             <p className="page-header-support mt-6 max-w-2xl mx-auto font-serif italic text-[1.1rem] md:text-[1.25rem] leading-[1.55] text-[color:var(--charcoal-soft)]">
-              Private, all-inclusive, and paced around you — designed by the operator on the ground.
+              Private, clearly priced and paced around you — designed by the operator on the ground.
             </p>
             <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-4">
               <CtaButton to="/experiences" variant="primary">
@@ -123,7 +123,7 @@ function Page() {
                 We're a small, licensed Portuguese tour operator (RNAAT nº 31/2023) designing{" "}
                 <strong className="font-medium">luxury private tours in Portugal</strong> for
                 travelers who want the country shown properly — not a bus route with a badge on it.
-                Every day is private, all-inclusive, and priced with real numbers.
+                Every day is private and priced with real numbers; each experience shows exactly what is included, and some intentionally leave lunch and personal extras outside the price.
               </p>
 
               {PILLARS.map((p, i) => (
