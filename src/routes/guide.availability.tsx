@@ -19,6 +19,9 @@ const STATUS_LABELS: Record<string, string> = {
 };
 const WEEKDAYS = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 type Row = { id: string; start_at: string; end_at: string; status: string; note: string | null };
+const pad = (n: number) => String(n).padStart(2, "0");
+const localIso = (ts: string) => { const x = new Date(ts); return `${x.getFullYear()}-${pad(x.getMonth() + 1)}-${pad(x.getDate())}`; };
+const hhmm = (ts: string) => { const x = new Date(ts); return `${pad(x.getHours())}:${pad(x.getMinutes())}`; };
 type Rec = { id: string; weekday: number; status: string };
 
 function GuideAvailability() {
@@ -67,12 +70,23 @@ function GuideAvailability() {
   const save = () => {
     if (!gid) return;
     if (to < from) return toast.error("End date is before start date.");
+    const partial = status === "morning" || status === "afternoon" || status === "custom";
+    if (partial && from !== to) return toast.error("Morning, Afternoon and Custom hours are single-day options — pick the same From and To date.");
     if (status === "custom" && customTo <= customFrom) return toast.error("Custom end time must be after the start time.");
-    const end = new Date(`${to}T00:00:00Z`);
-    end.setUTCDate(end.getUTCDate() + 1);
-    const note = status === "custom" ? `Custom hours: ${customFrom}–${customTo}` : null;
+    // Browser local time (guides operate in Portugal) → real timestamptz boundaries.
+    const local = (date: string, time: string) => new Date(`${date}T${time}:00`).toISOString();
+    let startAt: string;
+    let endAt: string;
+    if (status === "morning") { startAt = local(from, "00:00"); endAt = local(from, "13:00"); }
+    else if (status === "afternoon") { startAt = local(from, "13:00"); endAt = local(from, "23:59"); }
+    else if (status === "custom") { startAt = local(from, customFrom); endAt = local(from, customTo); }
+    else {
+      startAt = local(from, "00:00");
+      const [y, m, d] = to.split("-").map(Number);
+      endAt = new Date(y, m - 1, d + 1).toISOString();
+    }
     void act(
-      () => db.from("guide_availability").insert({ guide_id: gid, start_at: `${from}T00:00:00+00:00`, end_at: end.toISOString(), status, note }),
+      () => db.from("guide_availability").insert({ guide_id: gid, start_at: startAt, end_at: endAt, status, note: null }),
       "Availability saved",
     );
   };
@@ -100,6 +114,9 @@ function GuideAvailability() {
             <button key={s} onClick={() => setStatus(s)} className={`min-h-11 border text-sm ${status === s ? "border-[color:var(--teal)] bg-[color:var(--teal)]/10" : "border-border"}`}>{STATUS_LABELS[s]}</button>
           ))}
         </div>
+        {(status === "morning" || status === "afternoon" || status === "custom") && (
+          <p className="text-[12px] text-muted-foreground">Single day only — you're available {status === "morning" ? "until 13:00" : status === "afternoon" ? "from 13:00" : "during the hours below"} (Portugal time).</p>
+        )}
         {status === "custom" && (
           <div className="grid grid-cols-2 gap-2">
             <label className="text-[12px]">From<input type="time" value={customFrom} onChange={(e) => setCustomFrom(e.target.value)} className="mt-1 w-full min-h-11 border border-border px-2 bg-background" /></label>
@@ -114,11 +131,13 @@ function GuideAvailability() {
         <h2 className="text-[11px] uppercase tracking-[0.22em] text-muted-foreground">Upcoming</h2>
         {rows.length === 0 && <p className="text-sm text-muted-foreground">Nothing set.</p>}
         {rows.map((r) => {
-          const d = r.start_at.slice(0, 10);
+          const d = localIso(r.start_at);
+          const lastDay = localIso(new Date(new Date(r.end_at).getTime() - 1).toISOString());
+          const partial = r.status === "morning" || r.status === "afternoon" || r.status === "custom" || r.status === "partial";
           const locked = tourDays.has(d);
           return (
             <div key={r.id} className="border border-border p-3 flex justify-between items-center text-sm">
-              <span><span className="font-medium">{STATUS_LABELS[r.status] ?? r.status}</span> · {fmtDate(d)}{r.end_at.slice(0, 10) > new Date(new Date(`${d}T00:00:00Z`).getTime() + 86400000).toISOString().slice(0, 10) ? ` → ${fmtDate(new Date(new Date(r.end_at).getTime() - 1).toISOString().slice(0, 10))}` : ""}{r.note ? ` · ${r.note}` : ""}</span>
+              <span><span className="font-medium">{STATUS_LABELS[r.status] ?? r.status}</span> · {fmtDate(d)}{partial ? ` · ${hhmm(r.start_at)}–${hhmm(r.end_at)}` : lastDay > d ? ` → ${fmtDate(lastDay)}` : ""}{r.note ? ` · ${r.note}` : ""}</span>
               {!locked && (
                 <button disabled={busy} onClick={() => act(() => db.from("guide_availability").delete().eq("id", r.id), "Removed")} className="text-[11px] uppercase tracking-[0.18em] text-destructive min-h-11 px-2">Remove</button>
               )}
