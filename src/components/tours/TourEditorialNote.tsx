@@ -1,10 +1,12 @@
 import { Eyebrow } from "@/components/ui/Eyebrow";
 import { SectionTitle } from "@/components/ui/SectionTitle";
+import { EditorialSources } from "@/components/journal/EditorialSources";
+import type { EditorialSource } from "@/components/journal/EditorialSources";
 import type { SignatureTour } from "@/data/signatureTours";
 
 // Cultural context belongs beside the verified itinerary, never inside the
 // bookable stop list. Recognition describes the place, not an included visit.
-const PLACE_CONTEXT: Partial<Record<SignatureTour["id"], { story: string; source?: { label: string; url: string }; guide?: { label: string; url: string } }>> = {
+const PLACE_CONTEXT: Partial<Record<SignatureTour["id"], { story: string; source?: EditorialSource; guide?: { label: string; url: string } }>> = {
   "sintra-cascais": {
     story: "Sintra is protected as a cultural landscape, not just a collection of palaces. Its 19th-century Romantic architecture brought gardens, woodland and buildings into one setting; the palace choice on this day lets you experience a part of that whole.",
     source: { label: "UNESCO: Cultural Landscape of Sintra", url: "https://whc.unesco.org/en/list/723/" },
@@ -99,10 +101,10 @@ export function TourEditorialNote({ tour }: { tour: SignatureTour }) {
           <div className="prose-longform mt-8 border-t border-[color:var(--border)] pt-6 text-[15px] leading-[1.8] text-[color:var(--charcoal-soft)]">
             <h3 className="serif text-[20px] text-[color:var(--charcoal)]">Why this place matters</h3>
             <p className="mt-3">{context.story}</p>
-            {(context.guide || context.source) && <div className="mt-3 flex flex-wrap gap-x-5 gap-y-2">
+            {context.guide && <div className="mt-3">
               {context.guide && <a href={context.guide.url} className="text-[13px] underline decoration-[color:var(--gold)] underline-offset-4 hover:text-[color:var(--teal)]">{context.guide.label} →</a>}
-              {context.source && <a href={context.source.url} target="_blank" rel="noopener noreferrer" className="text-[13px] underline decoration-[color:var(--gold)] underline-offset-4 hover:text-[color:var(--teal)]">{context.source.label} ↗</a>}
             </div>}
+            <EditorialSources sources={context.source ? [context.source] : undefined} />
           </div>
         )}
 
