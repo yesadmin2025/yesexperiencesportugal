@@ -1,3 +1,4 @@
+import { isPendingVenueSignature } from "./pendingSignatures";
 // rev 3 — multi-photo Viator galleries + per-stop images
 //
 // SOURCE-OF-TRUTH RULE (do not violate):
@@ -1532,10 +1533,9 @@ export function stopFocal(stop: TourStop): string {
   return stop.focal ?? "50% 50%";
 }
 
-import { isPendingVenueSignature as __isPendingVenue } from "./pendingSignatures";
 /**
  * Signatures that may appear in public catalogues, sitemaps and reserve
  * flows. Pending-venue Signatures stay in `signatureTours` (data intact) but
  * are hidden publicly until their venues are verified.
  */
-export const publicSignatureTours = signatureTours.filter((t) => !__isPendingVenue(t.id));
+export const publicSignatureTours = signatureTours.filter((t) => !isPendingVenueSignature(t.id));
