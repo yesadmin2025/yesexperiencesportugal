@@ -471,14 +471,14 @@ export const SIGNATURE_SOURCE_OF_TRUTH: Partial<Record<string, SignatureSourceOf
     ],
     notIncluded: ["Lunch — own expense"],
     variesByOption: [
-      "Ticket package: either one palace ticket plus the wine tour and tasting, or two palace tickets per person",
+      "Your ticket package is either one palace plus the Colares wine visit and tasting, or two palace tickets per person — not all palaces and wine together. Share your preference in the booking notes and your guide confirms it with you before the day.",
     ],
     itinerary: [
       stop(1, "Sintra", "Historic town.", 60, "core", true),
       stop(
         2,
         "Sintra National Palace",
-        "Palace candidate — included when selected.",
+        "Palace option — your package covers one palace plus the Colares wine visit, or two palaces; not every palace.",
         90,
         "alternative-pool",
         false,
@@ -487,7 +487,7 @@ export const SIGNATURE_SOURCE_OF_TRUTH: Partial<Record<string, SignatureSourceOf
       stop(
         3,
         "Pena Palace",
-        "Palace candidate — included when selected.",
+        "Palace option — your package covers one palace plus the Colares wine visit, or two palaces; not every palace.",
         90,
         "alternative-pool",
         false,
@@ -505,7 +505,7 @@ export const SIGNATURE_SOURCE_OF_TRUTH: Partial<Record<string, SignatureSourceOf
       stop(
         5,
         "Quinta da Regaleira",
-        "Palace/monument candidate — included when selected.",
+        "Palace option — your package covers one palace plus the Colares wine visit, or two palaces; not every palace.",
         90,
         "alternative-pool",
         false,
@@ -514,7 +514,7 @@ export const SIGNATURE_SOURCE_OF_TRUTH: Partial<Record<string, SignatureSourceOf
       stop(
         6,
         "Adega Regional de Colares",
-        "Included with the one-palace-plus-wine package.",
+        "Included only with the one-palace-plus-wine package, not with the two-palace package.",
         90,
         "conditional",
         true,
