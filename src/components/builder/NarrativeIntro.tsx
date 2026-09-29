@@ -20,7 +20,7 @@ interface NarrativeIntroProps {
 
 /**
  * Optional conversational entry above the Mood grid.
- * The traveller describes the trip in one sentence; AI maps it to the
+ * The traveler describes the trip in one sentence; AI maps it to the
  * canonical builder enums (mood/who/intention/pace) and pre-selects them.
  * Never invents stops, regions, or prices.
  */

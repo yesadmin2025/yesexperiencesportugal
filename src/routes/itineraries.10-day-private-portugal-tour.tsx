@@ -268,7 +268,7 @@ function Page() {
           <p className="mt-4 text-[color:var(--charcoal-soft)] leading-relaxed">
             Every day here is drawn from a private experience we already run. Nothing is a stock
             package. Your designer swaps, stretches or removes days so the itinerary matches your
-            pace, appetites and travelling company — and only what is written into your travel file
+            pace, appetites and traveling company — and only what is written into your travel file
             is included.
           </p>
 
@@ -299,7 +299,7 @@ function Page() {
       {/* FAQ */}
       <section className="reveal py-16 bg-[color:var(--ivory)]">
         <div className="container-x max-w-3xl">
-          <Eyebrow>Questions travellers ask</Eyebrow>
+          <Eyebrow>Questions travelers ask</Eyebrow>
           <SectionTitle as="h2" size="compact" spacing="loose">
             Before you <SectionTitle.Em>write to us</SectionTitle.Em>.
           </SectionTitle>

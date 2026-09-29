@@ -1,7 +1,7 @@
 /**
  * Adaptive (conditional) refinement question for Studio V3.
  *
- * At most one extra question is asked, and only when the traveller's answers
+ * At most one extra question is asked, and only when the traveler's answers
  * can safely distinguish between real Signature directions in the selected
  * region. When nothing materially useful can be learned, the phase is skipped.
  *
@@ -91,7 +91,7 @@ const ALENTEJO_WINE_DESTINATIONS = new Set(["no-preference", "anywhere-special"]
 
 /**
  * The remote southwest coast is a real alternative to the Arrábida beaches.
- * Only offered where the destination is still open — a traveller who already
+ * Only offered where the destination is still open — a traveler who already
  * chose the Vicentine coast has nothing left to separate.
  */
 const REMOTE_COAST_DESTINATIONS = new Set(["no-preference", "anywhere-special"]);
@@ -142,7 +142,7 @@ const REFINEMENT_SUMMARY: Readonly<Record<AdaptiveRefinementId, string>> = {
   "local-artisans": "Artisans at work",
   "faith-sanctuary-time": "Sanctuary time",
   "faith-templar-heritage": "Sacred heritage and its history",
-  "faith-quiet-reflection": "Quiet reflection, without a set programme",
+  "faith-quiet-reflection": "Quiet reflection, without a set program",
   "photo-golden-hour": "The day paced around the best light",
   "photo-landmarks": "The landmarks, properly framed",
   "photo-no-preference": "No photography preference",
@@ -179,7 +179,7 @@ export function refinementIdsForSignal(
 /**
  * Semantic gate. A question is only eligible when it asks for a genuinely NEW
  * dimension of an already-known theme (which direction, how, which thread) —
- * never to reconfirm a theme the traveller has already stated, and never for a
+ * never to reconfirm a theme the traveler has already stated, and never for a
  * theme they never stated at all.
  */
 const KIND_THEME: Readonly<Record<AdaptiveQuestionKind, StudioSemanticTheme>> = {
@@ -424,7 +424,7 @@ export function resolveAdaptiveQuestion(
         {
           id: "faith-quiet-reflection",
           label: "Keep it simply quiet",
-          whisper: "No religious stop or programme — just space to reflect.",
+          whisper: "No religious stop or program — just space to reflect.",
         },
       ],
     };

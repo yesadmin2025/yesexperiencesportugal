@@ -350,7 +350,7 @@ export function PathfinderQuiz() {
           {showQ2 && (
             <div className="mt-8 pf-step">
               <span className="pf-qlabel">02</span>
-              <p className="pf-qtitle">Who's travelling?</p>
+              <p className="pf-qtitle">Who's traveling?</p>
               <div className="pf-stack">
                 <QButton
                   selected={state.travellers === "couple"}

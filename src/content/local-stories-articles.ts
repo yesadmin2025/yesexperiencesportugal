@@ -232,11 +232,11 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
     sections: [
       {
         heading: "The short answer, before the detail.",
-        body: "If you only read one paragraph: climb to Sesimbra Castle for the bay view, walk the old centre down to the harbour, eat grilled fish from the morning's catch beside the water, and finish on a cove inside the Arrábida natural park.\n\nHalf a day covers the town. A full day is what you need if you also want the coast, a swim and an unhurried lunch. The drive from Lisbon is about 40 minutes; late spring and early autumn are the best windows.\n\nEverything below is how we plan it ourselves — we live here, and we run these days privately for guests.",
+        body: "If you only read one paragraph: climb to Sesimbra Castle for the bay view, walk the old center down to the harbour, eat grilled fish from the morning's catch beside the water, and finish on a cove inside the Arrábida natural park.\n\nHalf a day covers the town. A full day is what you need if you also want the coast, a swim and an unhurried lunch. The drive from Lisbon is about 40 minutes; late spring and early autumn are the best windows.\n\nEverything below is how we plan it ourselves — we live here, and we run these days privately for guests.",
       },
       {
         heading: "The harbour, and the castle above it.",
-        body: "Sesimbra still feels like a fishing town because the fishing never stopped. Boats come back through the morning, the restaurants take whatever they brought, and by one o'clock the waterfront belongs to families rather than visitors.\n\nAbove the roofs, the castle looks out over the bay and the hills behind it. The climb is short and the reward is immediate: you see exactly how the town was tucked between the sea and the Arrábida ridge. Back down at the water, the old centre is small enough to wander without a map.\n\nThere is no checklist here. The pleasure is the harbour, the narrow streets, and the way the coast quietly replaces the rhythm of Lisbon.",
+        body: "Sesimbra still feels like a fishing town because the fishing never stopped. Boats come back through the morning, the restaurants take whatever they brought, and by one o'clock the waterfront belongs to families rather than visitors.\n\nAbove the roofs, the castle looks out over the bay and the hills behind it. The climb is short and the reward is immediate: you see exactly how the town was tucked between the sea and the Arrábida ridge. Back down at the water, the old center is small enough to wander without a map.\n\nThere is no checklist here. The pleasure is the harbour, the narrow streets, and the way the coast quietly replaces the rhythm of Lisbon.",
       },
       {
         heading: "Where to eat in Sesimbra — the harbour fish lunch",
@@ -244,7 +244,7 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
       },
       {
         heading: "Best beaches near Sesimbra, inside the Arrábida park",
-        body: "Beyond Sesimbra, the Arrábida coast becomes quieter and more dramatic. Limestone hills descend towards clear Atlantic water, creating coves and beaches protected by the natural park.\n\nSome beaches are easily reached, while others require a short walk, seasonal transport or local knowledge. Conditions also change throughout the year, so the right stop depends on weather, access and how much time guests want to spend by the sea. A few of the finest coves are simply easier from the water, which is why we also run the coast [by boat from Sesimbra harbour](/tours/arrabida-boat).\n\nThe water can be cold even in summer, but the landscape is exceptional. A beach stop here is less about organised entertainment and more about swimming, walking, watching the cliffs and enjoying a part of the Portuguese coast that still feels remarkably untouched.",
+        body: "Beyond Sesimbra, the Arrábida coast becomes quieter and more dramatic. Limestone hills descend towards clear Atlantic water, creating coves and beaches protected by the natural park.\n\nSome beaches are easily reached, while others require a short walk, seasonal transport or local knowledge. Conditions also change throughout the year, so the right stop depends on weather, access and how much time guests want to spend by the sea. A few of the finest coves are simply easier from the water, which is why we also run the coast [by boat from Sesimbra harbour](/tours/arrabida-boat).\n\nThe water can be cold even in summer, but the landscape is exceptional. A beach stop here is less about organized entertainment and more about swimming, walking, watching the cliffs and enjoying a part of the Portuguese coast that still feels remarkably untouched.",
       },
       {
         heading: "How to get to Sesimbra from Lisbon (about 40 minutes by car)",
@@ -252,11 +252,11 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
       },
       {
         heading: "A half-day in Sesimbra, if you have less time",
-        body: "Sesimbra also works well when a full sightseeing day feels unnecessary. A relaxed half-day can include a coastal drive through Arrábida, time beside the harbour, a walk through the old centre and a long seafood lunch.\n\nIt is particularly suitable for travelers staying in Lisbon who want to see another side of the region without beginning early or returning late. The town offers enough to feel like a genuine escape, but not so much that the visit becomes another demanding itinerary.\n\nFor a slower version, combine Sesimbra with a viewpoint or quiet beach. For a fuller day, add wineries in Azeitão or Setúbal — our guide to the [wine day from Lisbon](/local-stories/best-wine-tours-from-lisbon) compares them, and you can shape either version yourself in the [Experience Studio](/studio).",
+        body: "Sesimbra also works well when a full sightseeing day feels unnecessary. A relaxed half-day can include a coastal drive through Arrábida, time beside the harbour, a walk through the old center and a long seafood lunch.\n\nIt is particularly suitable for travelers staying in Lisbon who want to see another side of the region without beginning early or returning late. The town offers enough to feel like a genuine escape, but not so much that the visit becomes another demanding itinerary.\n\nFor a slower version, combine Sesimbra with a viewpoint or quiet beach. For a fuller day, add wineries in Azeitão or Setúbal — our guide to the [wine day from Lisbon](/local-stories/best-wine-tours-from-lisbon) compares them, and you can shape either version yourself in the [Experience Studio](/studio).",
       },
       {
         heading: "Best time to visit Sesimbra, and how long you need",
-        body: "Half a day is enough for the town itself: the harbour, the old centre, the castle viewpoint and lunch. A full day is what you need if you also want the Arrábida coast, a swim and an unhurried table by the sea.\n\nLate spring and early autumn are our favourite windows — the light is soft, the sea is calm enough for the coves and the restaurants are busy with locals rather than queues. July and August bring the warmest water and the busiest access roads inside the natural park, so early starts matter. In winter Sesimbra stays open and working; you trade swimming for empty streets and dramatic Atlantic weather.\n\nBring shoes you can walk a slope in for the castle, and remember that some beaches inside the park have seasonal access rules. If a beach is closed or crowded on the day, the coast has enough alternatives — knowing which one is open is the part that is hard from a guidebook.",
+        body: "Half a day is enough for the town itself: the harbour, the old center, the castle viewpoint and lunch. A full day is what you need if you also want the Arrábida coast, a swim and an unhurried table by the sea.\n\nLate spring and early autumn are our favorite windows — the light is soft, the sea is calm enough for the coves and the restaurants are busy with locals rather than queues. July and August bring the warmest water and the busiest access roads inside the natural park, so early starts matter. In winter Sesimbra stays open and working; you trade swimming for empty streets and dramatic Atlantic weather.\n\nBring shoes you can walk a slope in for the castle, and remember that some beaches inside the park have seasonal access rules. If a beach is closed or crowded on the day, the coast has enough alternatives — knowing which one is open is the part that is hard from a guidebook.",
       },
       {
         heading: "Sesimbra day trips from Lisbon — see it on a private day",
@@ -336,7 +336,7 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
       },
       {
         heading: "Comporta and the sandy-soil wines",
-        body: "Comporta itself is the reason people fly here. Sand-floor tascas, whitewashed rice-workers' villages, dune systems that stretch uninterrupted for kilometres. What almost no one talks about is the wine: Herdade da Comporta grows vines directly on the Atlantic sand, with the ocean two hundred metres away — a terroir that exists in maybe a dozen places on Earth. The tastings there are quiet, technical, and free of the theatre you get in more famous regions.",
+        body: "Comporta itself is the reason people fly here. Sand-floor tascas, whitewashed rice-workers' villages, dune systems that stretch uninterrupted for kilometers. What fewer visitors know is the wine: Herdade da Comporta grows vines directly on the Atlantic sand, with the ocean two hundred meters away — a terroir that exists in maybe a dozen places on Earth. The tastings there are quiet, technical, and free of the theatre you get in more famous regions.",
       },
       {
         heading: "Wild beaches, and the drive back",
@@ -427,12 +427,12 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
         body: "The Villa Romana de São Cucufate, near Vila de Frades, is one of the best-preserved Roman rural estates in the Iberian Peninsula — 1st to 4th century, later converted into a medieval monastery. The site tells the whole story of why wine ended up here at all: Roman legionaries settled this land specifically for grain, olives and wine. We visit with a licensed local host who works with the archaeological team and can walk you through the layers without a script.",
       },
       {
-        heading: "The Talha Wine Interpretation Centre",
-        body: "In Vila de Frades, a small interpretation centre explains the technique end-to-end: how the amphorae are made, how the pez (natural resin lining) is applied, how the wine ferments, and why San Martinho — 11 November — is the traditional first tasting day. It's a 30-minute stop, but it's the moment the winery visit that follows makes proper sense.",
+        heading: "The Talha Wine Interpretation Center",
+        body: "In Vila de Frades, a small interpretation center explains the technique end-to-end: how the amphorae are made, how the pez (natural resin lining) is applied, how the wine ferments, and why San Martinho — 11 November — is the traditional first tasting day. It's a 30-minute stop, but it's the moment the winery visit that follows makes proper sense.",
       },
       {
         heading: "Adega Mestre Daniel — lunch in a family talha cellar",
-        body: "This is the heart of the day. Mestre Daniel is one of the last families still fermenting exclusively in traditional talhas, and the visit is not a tourist tasting — it's lunch, in the cellar, with the family, at the family's pace. Traditional Alentejo dishes: migas, black pork, homemade bread, olive oil pressed within kilometres of the table. Wines drawn straight from the amphorae. Nobody rushes anyone. When we say slow, we mean the meal takes three hours, and that's the point.",
+        body: "This is the heart of the day. Mestre Daniel is one of the last families still fermenting exclusively in traditional talhas, and the visit is not a tourist tasting — it's lunch, in the cellar, with the family, at the family's pace. Traditional Alentejo dishes: migas, black pork, homemade bread, olive oil pressed within kilometers of the table. Wines drawn straight from the amphorae. Nobody rushes anyone. When we say slow, we mean the meal takes three hours, and that's the point.",
       },
       {
         heading: "A quiet river beach to finish",
@@ -455,11 +455,11 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
       },
       {
         q: "Is this day different from a standard Évora wine tour?",
-        a: "Yes — completely. Évora tours visit large modern wineries and the city. This day goes deeper south into the villages, focuses on Roman heritage and a single family talha producer, and centres on a long cellar lunch rather than multiple quick tastings.",
+        a: "Yes — completely. Évora tours visit large modern wineries and the city. This day goes deeper south into the villages, focuses on Roman heritage and a single family talha producer, and centers on a long cellar lunch rather than multiple quick tastings.",
       },
       {
         q: "How long is the day and what's the pace?",
-        a: "About 10 hours door to door from Lisbon. Slow by design — one Roman site, one interpretation centre, one deep winery visit with a 2.5–3 hour lunch, and a river-beach or village stop to finish.",
+        a: "About 10 hours door to door from Lisbon. Slow by design — one Roman site, one interpretation center, one deep winery visit with a 2.5–3 hour lunch, and a river-beach or village stop to finish.",
       },
     ],
   },
@@ -487,7 +487,7 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
       },
       {
         heading: "How to choose the right day",
-        body: "Three honest questions: do you want wine, or wine and a view? Do you want one deep visit or a sampler? And do you want lunch to be the centre of the day, or a stop along the way? Arrábida answers the coast-and-view version. Alentejo answers the deep, slow, table-led version. If you are unsure, the Studio lets you build the day around your own answers — pace, stops, lunch, and how much driving you actually want.",
+        body: "Three honest questions: do you want wine, or wine and a view? Do you want one deep visit or a sampler? And do you want lunch to be the center of the day, or a stop along the way? Arrábida answers the coast-and-view version. Alentejo answers the deep, slow, table-led version. If you are unsure, the Studio lets you build the day around your own answers — pace, stops, lunch, and how much driving you actually want.",
       },
     ],
     ctaLead:
@@ -512,7 +512,7 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
     sections: [
       {
         heading: "Setúbal — the closest, the most underrated",
-        body: "Twenty-five minutes south of Lisbon and almost no one outside Portugal knows the name. Setúbal is Moscatel country — fortified, aromatic, the kind of wine you keep thinking about a week later. The estates here are family-run, the tastings are quiet, and the drive in is along the Sado estuary. If you have half a day, this is the answer.",
+        body: "Setúbal sits a short drive south of Lisbon, and few visitors know it well. Setúbal is Moscatel country — fortified, aromatic, the kind of wine you keep thinking about a week later. The estates here are family-run, the tastings are quiet, and the drive in is along the Sado estuary. If you have half a day, this is the answer.",
       },
       {
         heading: "Palmela — reds with character",
@@ -620,7 +620,7 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
     faq: [
       {
         q: "What are the best wineries near Lisbon?",
-        a: "For a private day from Lisbon we go to small Arrábida producers like Quinta de Catralvos and José Maria da Fonseca, Setúbal Moscatel houses such as Bacalhôa, and — if you have a full day — talha wineries near Évora in the Alentejo. They're family-run, quiet, and within an easy drive of the city.",
+        a: "For a private day from Lisbon we go to small family producers in Arrábida and Azeitão, historic Setúbal Moscatel houses, and — if you have a full day — talha wineries near Évora in the Alentejo. They're family-run, quiet, and within an easy drive of the city.",
       },
       {
         q: "How far are the wineries from Lisbon?",
@@ -652,7 +652,7 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
     sections: [
       {
         heading: "South of the bridge, a different country.",
-        body: "Cross the 25 de Abril Bridge and the road turns inland through cork and pine before the Arrábida Natural Park opens up: limestone mountains falling straight into turquoise water, small unguarded beaches, and the wine village of Azeitão sitting quietly at the centre of it.\n\nIt is the closest serious wine country to Lisbon, and still the least crowded. Most visitors drive north to Sintra. The ones who turn south get the coast almost to themselves.",
+        body: "Cross the 25 de Abril Bridge and the road turns inland through cork and pine before the Arrábida Natural Park opens up: limestone mountains falling straight into turquoise water, small unguarded beaches, and the wine village of Azeitão sitting quietly at the center of it.\n\nIt is the closest serious wine country to Lisbon, and still the least crowded. Most visitors drive north to Sintra. The ones who turn south get the coast almost to themselves.",
       },
       {
         heading: "Market, cellars, a long lunch, then the light.",
@@ -805,7 +805,7 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
       },
       {
         heading: "One private car, one guide, one great cellar day.",
-        body: "All-inclusive: transfers from your Lisbon hotel, tastings, lunch, and the guide who knows which cellar is pouring well this month.",
+        body: "On the Arrábida Wine Signature, transfers, tastings and lunch are included, with a guide who knows which cellar is pouring well this month.",
       },
     ],
     ctaLead:
@@ -842,7 +842,7 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
     sections: [
       {
         heading: "Wine tours from Lisbon at their best",
-        body: "Lisbon is one of the most convenient starting points in Europe for a serious wine day. Within a short drive, travelers can reach several distinct regions, each with its own grape varieties, wineries and gastronomic traditions.\n\nArrábida, Setúbal, Palmela and Azeitão are especially close. All can easily be visited on a single day trip, offering a strong balance between tasting quality, landscape and a comfortable pace. A little further, the Alentejo and its historic talha wines allow for a more immersive full-day experience.\n\nA private wine tour from Lisbon is ideal for travelers who want to understand these regions in depth without long, exhausting itineraries. It also allows the day to be shaped precisely to individual preferences, whether the focus is on family cellars, historic estates, coastal scenery, traditional lunch or all of these together. If tasting is the main reason you are travelling, start with our local guide to [wine tasting south of Lisbon](/local-stories/best-wine-tours-from-lisbon).",
+        body: "Lisbon is one of the most convenient starting points in Europe for a serious wine day. Within a short drive, travelers can reach several distinct regions, each with its own grape varieties, wineries and gastronomic traditions.\n\nArrábida, Setúbal, Palmela and Azeitão are especially close. All can easily be visited on a single day trip, offering a strong balance between tasting quality, landscape and a comfortable pace. A little further, the Alentejo and its historic talha wines allow for a more immersive full-day experience.\n\nA private wine tour from Lisbon is ideal for travelers who want to understand these regions in depth without long, exhausting itineraries. It also allows the day to be shaped precisely to individual preferences, whether the focus is on family cellars, historic estates, coastal scenery, traditional lunch or all of these together. If tasting is the main reason you are traveling, start with our local guide to [wine tasting south of Lisbon](/local-stories/best-wine-tours-from-lisbon).",
       },
       {
         heading: "Real Signature wine days.",
@@ -879,7 +879,7 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
     sections: [
       {
         heading: "The closest serious wine country to Lisbon.",
-        body: "Cross the 25 de Abril Bridge and within forty minutes the road climbs into the Arrábida hills. Cork oaks, low whitewashed wineries, and the Atlantic glinting below. Azeitão is the village at the centre — home to Moscatel de Setúbal and small family producers who have been pouring for seven generations.",
+        body: "Cross the 25 de Abril Bridge and within forty minutes the road climbs into the Arrábida hills. Cork oaks, low whitewashed wineries, and the Atlantic glinting below. Azeitão is the village at the center — home to Moscatel de Setúbal and small family producers who have been pouring for seven generations.",
       },
       {
         heading: "Two wineries, one long lunch, no rush.",
@@ -925,7 +925,7 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
       },
       {
         heading: "Cork, two wineries, Évora old town, long lunch.",
-        body: "We open with a cork tradition stop, taste at two family wineries — one with restaurant, one with cellars — and walk Évora's cobbled centre past the Roman Temple and the Chapel of Bones. Lunch is unhurried, somewhere local, somewhere honest.",
+        body: "We open with a cork tradition stop, taste at two family wineries — one with restaurant, one with cellars — and walk Évora's cobbled center past the Roman Temple and the Chapel of Bones. Lunch is unhurried, somewhere local, somewhere honest.",
       },
       {
         heading: "Your driver-guide, your pace.",
@@ -933,7 +933,7 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
       },
       {
         heading: "The wines are bigger here — and so is the landscape.",
-        body: "Alentejo reds are Portugal's most recognised: full, warm, built for the table. Around Évora, family estates pour them under cork oaks and old olive trees, and some cellars still ferment in clay talhas the way the Romans did. The drive east is part of the day — the plains open up, the light changes, and the pace of Lisbon falls away.",
+        body: "Alentejo reds are Portugal's most recognized: full, warm, built for the table. Around Évora, family estates pour them under cork oaks and old olive trees, and some cellars still ferment in clay talhas the way the Romans did. The drive east is part of the day — the plains open up, the light changes, and the pace of Lisbon falls away.",
       },
       {
         heading: "Who this day suits — and who should choose Arrábida instead.",
@@ -1011,7 +1011,7 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
     h1: "Private Évora Tour from Lisbon — heritage, wine & cork",
     eyebrow: "Lisbon · Évora private day",
     standfirst:
-      "Évora's UNESCO centre, two family wineries and a cork tradition stop — a private day across Alentejo at the pace of a long lunch.",
+      "Évora's UNESCO center, two family wineries and a cork tradition stop — a private day across Alentejo at the pace of a long lunch.",
     sections: [
       {
         heading: "Ninety minutes south, two thousand years deep.",
@@ -1216,7 +1216,7 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
       },
       {
         heading: "Lisbon is closer to serious wine country than travelers expect.",
-        body: "South of the 25 de Abril Bridge, the Setúbal Peninsula makes Moscatel de Setúbal and structured reds around Azeitão. Ninety minutes inland, the Alentejo plains produce Portugal's most recognised big reds. And on the coast west of the city, Colares is a coastal appellation worth knowing: a tiny area that still grows vines in sand. It is a wine to look for on a Lisbon wine list rather than a day we run. You do not need to travel to the Douro to taste real Portuguese wine — the best wine tours from Lisbon are day trips, private, and back in the city for dinner.",
+        body: "South of the 25 de Abril Bridge, the Setúbal Peninsula makes Moscatel de Setúbal and structured reds around Azeitão. Ninety minutes inland, the Alentejo plains produce Portugal's most recognized big reds. And on the coast west of the city, Colares is a coastal appellation worth knowing: a tiny area that still grows vines in sand. It is a wine to look for on a Lisbon wine list rather than a day we run. You do not need to travel to the Douro to taste real Portuguese wine — the best wine tours from Lisbon are day trips, private, and back in the city for dinner.",
       },
       {
         heading: "Arrábida All-Inclusive Day — the complete wine-and-coast day.",
@@ -1252,7 +1252,7 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
       },
       {
         heading: "What a private wine day from Lisbon includes.",
-        body: "Every day on this page is private to your party and runs door to door: pickup and drop-off at your Lisbon hotel or apartment, a licensed driver-guide, a comfortable private vehicle, and winery visits and tastings arranged in advance. Lunch is included only where the individual route says so; the Azeitão Cheese Signature lasts about eight and a half hours and does not include lunch. You choose how long to linger at each table and whether the day ends on a viewpoint or back in the city for dinner.\n\nEach Signature page shows the exact duration, the from-price and what is included, and can be reserved for a chosen date — or tailored around your pace, interests and group size before you book.",
+        body: "Every day on this page is private to your party and runs door to door: pickup and drop-off within the areas listed on each tour page, a licensed driver-guide, a comfortable private vehicle, and winery visits and tastings arranged in advance. Lunch is included only where the individual route says so; the Azeitão Cheese Signature lasts about eight and a half hours and does not include lunch. You choose how long to linger at each table and whether the day ends on a viewpoint or back in the city for dinner.\n\nEach Signature page shows the exact duration, the from-price and what is included, and can be reserved for a chosen date — or tailored around your pace, interests and group size before you book.",
       },
     ],
     comparison: {
@@ -1396,7 +1396,7 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
       },
       {
         heading: "Sintra — royal Portugal in the mist.",
-        body: "Sintra's estates were built by kings and eccentrics on a forested hill that makes its own weather. Pena Palace sits above the treeline in colour; Quinta da Regaleira hides initiation wells and grottoes below ground; the Moorish Castle ruins trace the ridge. Go early, book timed entry, and treat it as a half-day rather than a checklist. See the [Sintra and Cascais day](/tours/sintra-cascais).",
+        body: "Sintra's estates were built by kings and eccentrics on a forested hill that makes its own weather. Pena Palace sits above the treeline in color; Quinta da Regaleira hides initiation wells and grottoes below ground; the Moorish Castle ruins trace the ridge. Go early, book timed entry, and treat it as a half-day rather than a checklist. See the [Sintra and Cascais day](/tours/sintra-cascais).",
       },
       {
         heading: "Talha wine — heritage you can taste.",
@@ -1445,7 +1445,7 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
       },
       {
         heading: "The cellars are family-run, and that changes the visit",
-        body: "The wineries we work with here are small, working operations rather than visitor centres with a timetable. That means the person pouring is often the person who made the wine, tastings happen where the barrels are, and the conversation goes wherever your interest goes. It also means numbers matter: these rooms hold a handful of people comfortably, not a coach.",
+        body: "The wineries we work with here are small, working operations rather than visitor centers with a timetable. That means the person pouring is often the person who made the wine, tastings happen where the barrels are, and the conversation goes wherever your interest goes. It also means numbers matter: these rooms hold a handful of people comfortably, not a coach.",
       },
       {
         heading: "Azeitão cheese belongs in the same day",
@@ -1600,7 +1600,7 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
       },
       {
         heading: "Late morning — the first cellar",
-        body: "The first tasting happens before the day gets warm, when palates are fresh. Expect a small working winery rather than a visitor centre: barrels, concrete, someone from the family pouring. Usually four to six wines, moving from white through red to a Moscatel, with time to walk the vines if you want to.",
+        body: "The first tasting happens before the day gets warm, when palates are fresh. Expect a small working winery rather than a visitor center: barrels, concrete, someone from the family pouring. Usually four to six wines, moving from white through red to a Moscatel, with time to walk the vines if you want to.",
       },
       {
         heading: "Midday — cheese and bread",
@@ -1660,7 +1660,7 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
     sections: [
       {
         heading: "Spring — the one we would choose",
-        body: "March to June is our favourite window. The Alentejo is green and full of wildflowers before the summer burns it gold, the palace gardens in Sintra are at their best, and the coast is empty on a weekday. The sea is still cold for swimming until late May, which is the only trade-off.",
+        body: "March to June is our favorite window. The Alentejo is green and full of wildflowers before the summer burns it gold, the palace gardens in Sintra are at their best, and the coast is empty on a weekday. The sea is still cold for swimming until late May, which is the only trade-off.",
       },
       {
         heading: "Summer — bright, busy, and better early",
@@ -1668,7 +1668,7 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
       },
       {
         heading: "Autumn — harvest, and the light",
-        body: "September and October are the quiet favourite. Harvest is happening in the cellars, the sea holds its summer warmth into October, and the crowds thin noticeably after the first week of September. If you care about wine, this is the month to come.",
+        body: "September and October are the quiet favorite. Harvest is happening in the cellars, the sea holds its summer warmth into October, and the crowds thin noticeably after the first week of September. If you care about wine, this is the month to come.",
       },
       {
         heading: "Winter — empty, clear, and underrated",
@@ -1716,7 +1716,7 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
     slug: "lisbon-day-trips-with-kids-and-accessibility",
     title: "Lisbon Day Trips with Kids or Limited Mobility",
     metaDescription:
-      "Which day trips from Lisbon work with young children, older travellers or limited mobility — cobbles, walking distances, car seats and where to skip.",
+      "Which day trips from Lisbon work with young children, older travelers or limited mobility — cobbles, walking distances, car seats and where to skip.",
     h1: "Day Trips from Lisbon with Kids or Limited Mobility",
     eyebrow: "Lisbon · Practical",
     standfirst: "The honest version: what is easy, what is hard, and what we would change.",
@@ -1739,11 +1739,11 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
       },
       {
         heading: "Car seats, timing and rest",
-        body: "Car seats are arranged in advance at no charge — tell us the ages and we fit the right ones. Days with children or older travellers are best built around one long, comfortable stop in the middle rather than five short ones, and we plan an unhurried return so nobody is travelling exhausted.",
+        body: "Car seats are arranged in advance at no charge — tell us the ages and we fit the right ones. Days with children or older travelers are best built around one long, comfortable stop in the middle rather than five short ones, and we plan an unhurried return so nobody is traveling exhausted.",
       },
     ],
     ctaLead:
-      "Tell us who is travelling and what would make the day easier. We would rather adjust the route than have you manage it on the day.",
+      "Tell us who is traveling and what would make the day easier. We would rather adjust the route than have you manage it on the day.",
     ctaLabel: "Design a day that fits",
     signatureSlug: "wild-beaches-picnic",
     relatedReads: [
@@ -1780,7 +1780,7 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
     sections: [
       { heading: "Baixa and Chiado put the city at your feet", body: "Baixa is Lisbon at its most legible: broad streets, tiled squares, the river at one end and the hills rising on either side. Chiado sits just above it, mixing theatres, bookshops and polished old storefronts. Stay here when this is your first visit and you want to walk out of the hotel already inside the city rather than commute into it." },
       { heading: "Alfama is beautiful because it refuses a grid", body: "The oldest hillside is lanes, stairways, church bells and sudden river views. It rewards wandering but asks something from your legs, your luggage and your taxi driver. Visit early in the morning for quiet streets; choose it as a base only if the climb is part of the pleasure." },
-      { heading: "Príncipe Real and Estrela slow the evenings down", body: "These western hills trade the busiest visitor streets for gardens, neighborhood restaurants and handsome residential blocks. Príncipe Real feels social and design-minded; Estrela feels calmer and more lived in. Both suit travelers who want Lisbon at the door without sleeping in its loudest centre." },
+      { heading: "Príncipe Real and Estrela slow the evenings down", body: "These western hills trade the busiest visitor streets for gardens, neighborhood restaurants and handsome residential blocks. Príncipe Real feels social and design-minded; Estrela feels calmer and more lived in. Both suit travelers who want Lisbon at the door without sleeping in its loudest center." },
       { heading: "Belém belongs to the river", body: "Belém holds monuments, museums, gardens and the open scale of the Tagus. It is an essential visit but a quieter base, removed from the nightly rhythm of central Lisbon. Pair the riverfront with one carefully chosen interior rather than trying to treat every monument as an obligation." },
       { heading: "Choose for the hour you value most", body: "If you want effortless first-time access, choose Baixa or Chiado. If mornings in old streets matter most, consider Alfama. If dinner and sleep matter more than a central checklist, look west. Wherever you stay, our private days collect you at your own address, so the region outside Lisbon does not depend on your neighborhood." },
     ],
@@ -1804,7 +1804,7 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
       { heading: "Politeness arrives before efficiency", body: "A greeting matters. Bom dia or boa tarde before a question changes the tone of an exchange, even when the rest of the conversation happens in English. Portuguese service can feel reserved rather than performative; warmth often appears gradually, through attention rather than display." },
       { heading: "Meals are not gaps between attractions", body: "Lunch is allowed to take time, dinner starts later than many American visitors expect, and a table is not usually hurried toward a second sitting. Bread, olives or cheese placed on the table may be charged if eaten; declining them is ordinary. The best approach is to leave room in the schedule rather than force a Portuguese meal into a narrow slot." },
       { heading: "Coffee is short, frequent and social", body: "Ordering a café usually means a small espresso. People drink it standing at a counter, after lunch, or as a reason to pause with someone for ten minutes. It is less a large takeaway drink than punctuation in the day." },
-      { heading: "Tipping is appreciated, not compulsory", body: "Service is included in the price. Rounding up or leaving five to ten percent after a particularly good meal or private day is generous, but it is not the automatic obligation familiar in the United States. Quiet appreciation is enough." },
+      { heading: "Tipping is appreciated, not compulsory", body: "Tipping is not compulsory in Portugal, but it has become increasingly common in private tourism, especially among international guests. If your guide made the day special, a gratuity is genuinely appreciated. There is no fixed amount — it is entirely at your discretion." },
       { heading: "The slower pace is not empty time", body: "Portugal makes more sense when a viewpoint, cellar or conversation is allowed to run longer than planned. Private travel works well here for that reason: the day can respond to weather, appetite and interest without treating every unscheduled minute as a problem." },
     ],
     ctaLead: "Travel with a local host and the small cultural details become part of the day, not a list to memorize.",
@@ -1826,7 +1826,7 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
     sections: [
       { heading: "For palaces and forest: Sintra", body: "Sintra is the essential architectural day: royal estates, deep gardens and a forested ridge that makes its own weather. It is also the place most affected by crowds, so timing matters as much as the list of monuments. Continue west to Cabo da Roca and Cascais when you want the day to open toward the Atlantic." },
       { heading: "For wine and sea: Arrábida and Azeitão", body: "South of Lisbon, Azeitão's cellars sit behind the limestone Arrábida ridge. The road then rises above Atlantic coves before descending toward Sesimbra or Setúbal. It is the strongest choice when wine, local food and landscape matter more than monuments — and it begins about forty minutes from central Lisbon." },
-      { heading: "For a working coastal town: Sesimbra", body: "Sesimbra is still shaped by fishing: boats in the harbour, fish at the market and a castle looking back over the bay. It works well with Arrábida because the town gives the landscape a human centre rather than another sightseeing stop." },
+      { heading: "For a working coastal town: Sesimbra", body: "Sesimbra is still shaped by fishing: boats in the harbour, fish at the market and a castle looking back over the bay. It works well with Arrábida because the town gives the landscape a human center rather than another sightseeing stop." },
       { heading: "For history and inland wine: Évora", body: "Évora brings Roman, medieval and everyday Portugal into one walkable walled city. Beyond it, the Alentejo opens into cork country and villages where talha wine is still made in clay. The ninety-minute drive earns a full day rather than a rushed add-on." },
       { heading: "For space and Atlantic quiet: Comporta and Tróia", body: "Across the Sado ferry, Tróia and Comporta are low, open and horizontal: sand, pine, rice fields and a long horizon. Choose them when the point is not to collect landmarks but to feel the city fall away." },
     ],
@@ -1867,7 +1867,7 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
     sections: [
       {
         heading: "Fátima is about ninety minutes north of Lisbon.",
-        body: "The drive runs inland through pine and eucalyptus country, so most visitors treat Fátima as a full day rather than a morning errand. On a private day we leave from your Lisbon accommodation, which removes the two parts travellers find hardest: parking near the sanctuary and coordinating onward travel to the coast.",
+        body: "The drive runs inland through pine and eucalyptus country, so most visitors treat Fátima as a full day rather than a morning errand. On a private day we leave from your Lisbon accommodation, which removes the two parts travelers find hardest: parking near the sanctuary and coordinating onward travel to the coast.",
       },
       {
         heading: "At the sanctuary, the visit is quieter than photographs suggest.",
@@ -1924,7 +1924,7 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
         a: "Yes. The three sit on a natural loop north of Lisbon, and that is how our private day is built — sanctuary in the morning, Nazaré for lunch and the viewpoint, Óbidos late afternoon.",
       },
       {
-        q: "Is the day suitable for older travellers?",
+        q: "Is the day suitable for older travelers?",
         a: "Mostly. The sanctuary esplanade is flat, but Óbidos has cobbled lanes and the Nazaré viewpoint involves some steps. Tell us in advance and we adjust the walking.",
       },
     ],
@@ -1947,11 +1947,11 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
       },
       {
         heading: "What the workshop actually involves.",
-        body: "You meet the tile-maker, mix the cobalt blue, and paint a single azulejo by hand. There is no artistic requirement — the master guides the line work. Tiles are fired after you leave, so we ship yours to your home address on request, which is the practical answer for travellers flying back to the United States with a full suitcase.",
+        body: "You meet the tile-maker, mix the cobalt blue, and paint a single azulejo by hand. There is no artistic requirement — the master guides the line work. Tiles are fired after you leave, so we ship yours to your home address on request, which is the practical answer for travelers flying back to the United States with a full suitcase.",
       },
       {
         heading: "Then the day turns to wine.",
-        body: "The same region makes Moscatel de Setúbal. Depending on the day and availability we visit one estate — a vineyard walk and a guided tasting at Quinta de Catralvos, the founding Moscatel house of José Maria da Fonseca, or Bacalhôa, where a modern cellar sits beside a striking art collection. One winery, properly, rather than three in a rush.",
+        body: "The same region makes Moscatel de Setúbal. Depending on the day and availability we visit one estate — a small family producer, a historic Moscatel house or a modern cellar beside an art collection, with a vineyard walk or guided tasting. One winery, properly, rather than three in a rush.",
       },
       {
         heading: "Sesimbra closes it by the sea.",
@@ -1959,7 +1959,7 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
       },
       {
         heading: "Who this day suits.",
-        body: "Couples and creative travellers, and families with teenagers who want to do something rather than look at something. It is also a strong rainy-day or shoulder-season choice, because the central hour is indoors and the coast still looks dramatic under grey skies.",
+        body: "Couples and creative travelers, and families with teenagers who want to do something rather than look at something. It is also a strong rainy-day or shoulder-season choice, because the central hour is indoors and the coast still looks dramatic under grey skies.",
       },
     ],
     ctaLead:
@@ -2020,7 +2020,7 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
       },
       {
         heading: "One winery, then the coast.",
-        body: "After Azeitão we visit a local winery — Farm Catralvos — where the entrance and tasting are included. This is a single, unhurried cellar rather than a tour of three, because the cheese is the centre of this day. From there the road climbs to Sesimbra and its castle above the bay, with Cristo Rei and the 25 de Abril Bridge on the panoramic route back into Lisbon.",
+        body: "After Azeitão we visit a local winery — Farm Catralvos — where the entrance and tasting are included. This is a single, unhurried cellar rather than a tour of three, because the cheese is the center of this day. From there the road climbs to Sesimbra and its castle above the bay, with Cristo Rei and the 25 de Abril Bridge on the panoramic route back into Lisbon.",
       },
       {
         heading: "How long it takes, and who it suits.",
@@ -2080,7 +2080,7 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
     h1: "Tomar and Coimbra in One Day from Lisbon",
     eyebrow: "Centro · Heritage",
     standfirst:
-      "Two inland cities, eight centuries of history and almost no crowds — the day most American travellers add once they have already seen Sintra and Évora.",
+      "Two inland cities, eight centuries of history and almost no crowds — the day most American travelers add once they have already seen Sintra and Évora.",
     sections: [
       {
         heading: "Why these two cities travel well together.",
@@ -2088,7 +2088,7 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
       },
       {
         heading: "Inside the Convento de Cristo.",
-        body: "The round Templar church sits at the centre, ringed by cloisters added by later orders, and the Manueline window on the west face is the single most photographed piece of stonework in central Portugal. You walk from a fighting order's chapel into Renaissance calm in a few minutes — the layers are the reason to come.",
+        body: "The round Templar church sits at the center, ringed by cloisters added by later orders, and the Manueline window on the west face is the single most photographed piece of stonework in central Portugal. You walk from a fighting order's chapel into Renaissance calm in a few minutes — the layers are the reason to come.",
       },
       {
         heading: "Coimbra is a university you can walk into.",
@@ -2104,11 +2104,11 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
       },
       {
         heading: "Who this day suits.",
-        body: "History and heritage travellers, couples on a longer Portugal trip, and anyone who has already done the Sintra and Évora circuits and wants somewhere with far fewer coaches. It is also a strong choice in summer, because both main sites are largely indoors and inland shade is easy to find.",
+        body: "History and heritage travelers, couples on a longer Portugal trip, and anyone who has already done the Sintra and Évora circuits and wants somewhere with far fewer coaches. It is also a strong choice in summer, because both main sites are largely indoors and inland shade is easy to find.",
       },
     ],
     ctaLead:
-      "This is the day exactly as we run it — private to your party, Lisbon pickup, entrances, guide and lunch included.",
+      "This is the day exactly as we run it — private to your party, with pickup, entrances and timed Joanina Library entry included; lunch is at your own expense.",
     ctaLabel: "See dates & reserve",
     signatureSlug: "tomar-coimbra",
     relatedSignatures: [
@@ -2130,7 +2130,7 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
       },
       {
         q: "Is the Joanina library included?",
-        a: "Yes — entrances and tickets are included, and because library entry runs on timed slots your guide secures the slot on the day.",
+        a: "Yes — entrances and tickets are included. Library entry runs on timed slots, so the exact visit time depends on the slots available on your date.",
       },
       {
         q: "How much walking is involved?",
@@ -2138,7 +2138,7 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
       },
       {
         q: "Is lunch included?",
-        a: "Yes, along with bottled water and a local pastry, in a quiet inland town rather than a tourist strip.",
+        a: "No. Lunch is at your own expense, and your guide suggests a good table on the way. Bottled water is included.",
       },
       {
         q: "Is it better than Sintra for a first visit?",
@@ -2180,7 +2180,7 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
       },
       {
         heading: "Who this day suits.",
-        body: "Couples wanting a slow, sea-led day, active families with older children, and travellers who would rather look at landscape than at monuments. If you want cellars and a long lunch instead, the Arrábida wine day covers the same region by road.",
+        body: "Couples wanting a slow, sea-led day, active families with older children, and travelers who would rather look at landscape than at monuments. If you want cellars and a long lunch instead, the Arrábida wine day covers the same region by road.",
       },
     ],
     ctaLead:
@@ -2214,7 +2214,7 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
       },
       {
         q: "Is lunch included?",
-        a: "Lunch is included when you choose the Arrábida Discovery Boat Tour with lunch; on the other boat options it can be added when you tailor the day.",
+        a: "No. On the Arrábida & Sesimbra boat day, lunch is at your own expense, with time in Sesimbra to choose a table.",
       },
       {
         q: "Is it suitable for young children?",
@@ -2572,7 +2572,7 @@ export const GUIDE_INLINE_BOOKING: Readonly<
   },
   "fatima-day-trip-from-lisbon": {
     tourSlug: "fatima-nazare-obidos",
-    lead: "The loop described above, run as one private day: Fátima sanctuary, Nazaré's cliffs and Óbidos, with Lisbon pickup and lunch included.",
+    lead: "The loop described above, run as one private day: Fátima sanctuary, Nazaré's cliffs and Óbidos, with pickup included; lunch is at your own expense.",
   },
   "azulejo-tile-painting-workshop-lisbon": {
     tourSlug: "tiles-workshop",
@@ -2580,7 +2580,7 @@ export const GUIDE_INLINE_BOOKING: Readonly<
   },
   "tomar-coimbra-day-trip-from-lisbon": {
     tourSlug: "tomar-coimbra",
-    lead: "The day above, run privately from your Lisbon door: the Templar convent, Coimbra University, entrances and lunch included.",
+    lead: "The day above, run privately from your Lisbon door: the Templar convent, Coimbra University and entrances included; lunch is at your own expense.",
   },
   "arrabida-boat-tour-from-lisbon": {
     tourSlug: "arrabida-boat",

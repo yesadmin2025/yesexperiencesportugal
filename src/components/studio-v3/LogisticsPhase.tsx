@@ -102,7 +102,7 @@ interface Props {
   /** PASS 4 — commit the practical facts and continue. Never recomposes the
    *  day: the itinerary was already frozen at the Your Day seam. */
   onCompose: () => void;
-  /** PASS 4 — honest, concise message when the exact date cannot honour the
+  /** PASS 4 — honest, concise message when the exact date cannot honor the
    *  committed day. Presentation only; the day is never silently mutated. */
   conflict?: string | null;
   /**
@@ -149,7 +149,7 @@ export function LogisticsPhase({
   const guestsLabel = useMemo(
     () =>
       // The stepper always shows a real party (2 by default), so the recap
-      // must never read as an em dash before the traveller changes it.
+      // must never read as an em dash before the traveler changes it.
       formatGuestComposition(
         state.adults ?? state.guests ?? 2,
         state.minorAges ?? [],

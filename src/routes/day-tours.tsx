@@ -4,7 +4,7 @@ import { breadcrumbLd, itemListLd, jsonLdScript } from "@/lib/jsonld";
 import { SiteLayout } from "@/components/SiteLayout";
 import { SiteBreadcrumbs } from "@/components/SiteBreadcrumbs";
 import { Clock, MapPin, Star } from "lucide-react";
-import { signatureTours } from "@/data/signatureTours";
+import { signatureTours, publicSignatureTours } from "@/data/signatureTours";
 import { getViatorMeta } from "@/data/signatureToursViator";
 import { useImportedTourImages } from "@/hooks/use-imported-tour-images";
 import { ImageQualityToggle } from "@/components/ImageQualityToggle";
@@ -61,7 +61,7 @@ export const Route = createFileRoute("/day-tours")({
         itemListLd({
           name: "Private day tours from Lisbon",
           path: "/day-tours",
-          items: signatureTours
+          items: publicSignatureTours
             .filter((t) => !/days?/i.test(t.duration) || /half|full|long/i.test(t.duration))
             .map((t) => ({ id: t.id, name: t.title, description: t.blurb, image: t.img })),
         }),
@@ -72,7 +72,7 @@ export const Route = createFileRoute("/day-tours")({
   component: DayToursPage,
 });
 
-const dayTours = signatureTours.filter(
+const dayTours = publicSignatureTours.filter(
   (t) => !/days?/i.test(t.duration) || /half|full|long/i.test(t.duration),
 );
 
@@ -98,8 +98,9 @@ function DayToursPage() {
             </SectionTitle>
             <p className="page-header-support mt-5 max-w-xl mx-auto text-[color:var(--charcoal-soft)]">
               Choose your day by how much time you have. Each card shows the duration, the region
-              and the price from, so you can compare a half day with a full one at a glance, then
-              reserve it online with hotel pickup.
+              and the price from, so you can compare a half day with a full one at a glance. These are
+              the same ready-made Signature days as our Experiences collection, sorted by length; pickup
+              is shown on each tour page.
             </p>
           </div>
         </div>

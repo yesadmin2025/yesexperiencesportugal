@@ -227,7 +227,7 @@ function CrossfadeImage({ media, className }: { media: StudioMedia; className?: 
         data-media-id={shown.id}
         data-media-source={shown.source}
         data-media-focal={shown.focal ?? undefined}
-        // Absent focal = natural CSS centre. Never an invented crop.
+        // Absent focal = natural CSS center. Never an invented crop.
         style={shown.focal ? { objectPosition: shown.focal } : undefined}
         className="relative h-full w-full object-cover motion-safe:animate-[studioCanvasFade_560ms_ease-out_both]"
       />

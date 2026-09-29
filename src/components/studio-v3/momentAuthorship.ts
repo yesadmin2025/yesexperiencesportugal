@@ -34,7 +34,7 @@ interface ReasonRule {
 }
 
 /**
- * Every rule requires a REAL catalog kind AND a signal the traveller really
+ * Every rule requires a REAL catalog kind AND a signal the traveler really
  * selected. No rule fires on inference or on the absence of a signal.
  */
 const REASON_RULES: ReadonlyArray<ReasonRule> = [

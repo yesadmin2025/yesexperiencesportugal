@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
  * NarrativeBeat — transient atmospheric line that surfaces at emotional
  * transitions only. Editorial serif italic, centered, breathes in for ~600ms,
  * holds, then dissolves after ~5.5s. Never persistent UI — it appears, it
- * lands, it disappears. The traveller never sees "AI text on screen"; they
+ * lands, it disappears. The traveler never sees "AI text on screen"; they
  * feel a moment of recognition.
  *
  * Reduced-motion: no transform, only opacity; still respects the dissolve.

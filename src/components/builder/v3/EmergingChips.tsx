@@ -19,8 +19,8 @@ interface Props {
    *  shows. Kept here for callers that still want a persistent eyebrow; the
    *  Studio now surfaces fragments via the transient NarrativeBeat instead. */
   eyebrowOverride?: string | null;
-  /** 0–1 pacing from affinity profile — slow travellers get longer breathing
-   *  room between chip reveals; energetic travellers get a quicker rhythm. */
+  /** 0–1 pacing from affinity profile — slow travelers get longer breathing
+   *  room between chip reveals; energetic travelers get a quicker rhythm. */
   pacing?: number;
   onAccept: (stop: StudioStop) => void;
 }

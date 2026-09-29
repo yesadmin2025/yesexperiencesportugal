@@ -44,11 +44,11 @@ interface Props {
   alternates: RefineAlternate[];
   caps?: RefineCaps;
   onChange: (next: RefineStop[]) => void;
-  /** Default backdrop when a tag isn't recognised. Comes from the profile intent. */
+  /** Default backdrop when a tag isn't recognized. Comes from the profile intent. */
   intent?: IntentAtmosphere;
   /** Region key for the ambient + reveal map. */
   regionKey?: string;
-  /** Region centre for the ambient + reveal map. */
+  /** Region center for the ambient + reveal map. */
   regionCenter?: { lat: number; lng: number } | null;
 }
 

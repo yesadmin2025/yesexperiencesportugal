@@ -3,7 +3,7 @@
  *
  * Not a review / popularity signal (those live in <GuestQuotes />, the
  * <StudioTrustStrip /> and the footer review certificate). This strip carries only
- * the operator-legitimacy cues a hesitant traveller looks for at the
+ * the operator-legitimacy cues a hesitant traveler looks for at the
  * point of doubt: licence, insurance, secure checkout, human support.
  *
  * Design rules (see .lovable/plan.md → "Trust strip"):

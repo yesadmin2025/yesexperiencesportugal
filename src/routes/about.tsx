@@ -391,7 +391,7 @@ function Page() {
               </li>
               <li>
                 <strong className="text-[color:var(--charcoal)]">Local replies, fast.</strong>{" "}
-                WhatsApp and email replies usually within the hour when the team is available.
+                WhatsApp and email requests receive a personal reply within 24 hours.
               </li>
             </ul>
           </div>

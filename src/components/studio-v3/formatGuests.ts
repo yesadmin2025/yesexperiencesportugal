@@ -2,7 +2,7 @@
  * Studio V3 — shared guest-composition formatter.
  *
  * Every surface that shows a guests count must render the same string
- * so travellers see the adult/child split from selection all the way to
+ * so travelers see the adult/child split from selection all the way to
  * checkout. When `adults` is unknown (early phases), fall back to a
  * simple "{N} guests" — never guess a split.
  */

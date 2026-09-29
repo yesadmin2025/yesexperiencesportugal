@@ -126,7 +126,7 @@ function PortugalTravelDesignerPage() {
         </p>
         <p>
           As a Portugal travel designer, YES Experiences Portugal creates private days and longer
-          journeys around the people travelling: what they are curious about, how quickly they like
+          journeys around the people traveling: what they are curious about, how quickly they like
           to move and what they want to remember when the trip is over.
         </p>
         <p>
@@ -166,12 +166,12 @@ function PortugalTravelDesignerPage() {
           vehicle are dedicated exclusively to your party.
         </p>
         <p>
-          Tailor is for travellers who like the structure of a Signature but want to adjust part of
+          Tailor is for travelers who like the structure of a Signature but want to adjust part of
           the day. A stop may be changed, an activity added or the pace adapted without rebuilding
           the entire journey from the beginning.
         </p>
         <p>
-          Studio begins with the traveller rather than with a fixed itinerary. Interests, regions,
+          Studio begins with the traveler rather than with a fixed itinerary. Interests, regions,
           food, wine, coast, heritage and hands-on experiences can be brought together into a day
           designed around individual preferences.
         </p>
@@ -193,7 +193,7 @@ function PortugalTravelDesignerPage() {
           sense.
         </p>
         <p>
-          Driving time, meal times, local opening hours and the energy of the travellers all
+          Driving time, meal times, local opening hours and the energy of the travelers all
           influence the final design. A good itinerary leaves room for discovery rather than
           treating Portugal as a collection of boxes to be completed.
         </p>
@@ -247,7 +247,7 @@ function PortugalTravelDesignerPage() {
         title={<>Privacy and flexibility, <SectionTitle.Em>without the coordination.</SectionTitle.Em></>}
       >
         <p>
-          Travel design is especially valuable for travellers who want privacy and flexibility but
+          Travel design is especially valuable for travelers who want privacy and flexibility but
           do not want to spend weeks coordinating every reservation themselves.
         </p>
         <p>

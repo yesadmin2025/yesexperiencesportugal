@@ -16,7 +16,7 @@ import { toast } from "sonner";
  * stepper, Travel File, guest details, pricing and Stripe checkout. The
  * Living Atlas reasoning layer is integrated *inside* it (see
  * `src/lib/studio-v3/livingAtlasBridge.ts`), not mounted as a separate
- * surface — the traveller only ever sees one Experience Studio.
+ * surface — the traveler only ever sees one Experience Studio.
  *
  * Route metadata (canonical, JSON-LD, robots) lives in the route file.
  */
@@ -81,7 +81,7 @@ export function LivingAtlasStudioPage() {
         <header className="sr-only" data-testid="studio-v3-ssr-intent">
           <p className="font-medium">Design your private Portugal day.</p>
           <p>
-            A cinematic composer that reads how you want the day to feel, who is travelling and the
+            A cinematic composer that reads how you want the day to feel, who is traveling and the
             rhythm you want, then proposes a private Portugal day built from real Signature routes.
           </p>
           <p>

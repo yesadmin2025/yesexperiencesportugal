@@ -101,10 +101,10 @@ export interface SignaturePriceCardProps {
   onSecure: () => void;
   onRefine: () => void;
   journeyTitle?: string | null;
-  /** Number of travellers — when ≥2, party total is shown alongside per-pp. */
+  /** Number of travelers — when ≥2, party total is shown alongside per-pp. */
   guests?: number | null;
   /**
-   * P0-E — TRUE when the traveller has explicitly confirmed the party size.
+   * P0-E — TRUE when the traveler has explicitly confirmed the party size.
    * Until then any total on screen is indicative and must be labelled as such;
    * the exact tier total is only shown once the party is known. Defaults to
    * true so legacy/test callers keep their current behaviour.
@@ -122,13 +122,13 @@ export interface SignaturePriceCardProps {
    * Controlled add-on selection. When provided, the parent owns the ids and
    * receives `onAddOnsChange` callbacks with the fresh summary (labels, euro
    * total, minutes) so the checkout drawer and Stripe session stay in sync
-   * with what the traveller actually picked. When omitted the card falls
+   * with what the traveler actually picked. When omitted the card falls
    * back to its own local state (legacy/test callers).
    */
   selectedAddOnIds?: ReadonlyArray<string>;
   onAddOnsChange?: (summary: SelectedAddOnSummary) => void;
   /**
-   * Called when the traveller selects a tier in the hidden picker. Lets the
+   * Called when the traveler selects a tier in the hidden picker. Lets the
    * parent persist the chosen guest size into Studio V3 state so the saved
    * session + Stripe checkout always reflect the same per-person price and
    * party total the user just confirmed. Optional — when omitted the picker
@@ -144,7 +144,7 @@ export interface SignaturePriceCardProps {
   /**
    * Remaining minutes in the day budget after stops + drive legs. When
    * provided, add-ons that wouldn't fit are kept visible but dimmed and
-   * locked, so the traveller can see *why* an upgrade isn't offered without
+   * locked, so the traveler can see *why* an upgrade isn't offered without
    * feeling the day shrinks invisibly.
    */
   remainingMinutes?: number | null;
@@ -167,7 +167,7 @@ export interface SignaturePriceCardProps {
   variant?: "full" | "refine";
   /**
    * Canonical totals from `useResolvedJourney` (the single source of truth).
-   * When provided AND the traveller isn't previewing a different group size
+   * When provided AND the traveler isn't previewing a different group size
    * via the hidden picker, these are rendered verbatim — the card never
    * derives its own party total in that case. Keeps refine/reveal/checkout
    * from silently drifting apart.
@@ -255,7 +255,7 @@ export function SignaturePriceCard({
     return { ...(tierOverrides ?? {}), [tour.id]: previewTiers };
   }, [tierOverrides, previewTiers, tour]);
 
-  // Hidden picker — lets the traveller preview the per-pax rate for any
+  // Hidden picker — lets the traveler preview the per-pax rate for any
   // group size 1..8+ before checkout. Defaults to the funnel's `guests`.
   // `previewGuests === null` means "use the funnel guests value as-is".
   const [pickerOpen, setPickerOpen] = useState(false);
@@ -519,7 +519,7 @@ export function SignaturePriceCard({
   const totalEur = hasPrice && priceEur ? priceEur + addOnsTotalEur : null;
 
   // Age-band journey pricing — matches BrandedCheckoutDrawer exactly. Only
-  // applied when the traveller isn't previewing a different group size via
+  // applied when the traveler isn't previewing a different group size via
   // the hidden picker (previewGuests !== null), because that preview is an
   // adults-only "what-if" and would silently reprice minors otherwise.
   const composedAdults = typeof adults === "number" && adults >= 1 ? adults : null;
@@ -567,7 +567,7 @@ export function SignaturePriceCard({
       : null;
   const localPartyTotalEur = partyBaseEur != null ? partyBaseEur + addOnsDisplayPartyEur : null;
 
-  // Prefer the resolved (canonical) totals when the traveller isn't previewing
+  // Prefer the resolved (canonical) totals when the traveler isn't previewing
   // a different group size via the hidden picker. Otherwise fall back to the
   // locally computed preview so the picker keeps showing "at N guests" hints.
   const usingResolved = previewGuests === null && resolvedTotalEur != null;
@@ -575,7 +575,7 @@ export function SignaturePriceCard({
   // Canonical branch: the ONLY per-person figure we may show is the canonical
   // adult unit price. Never divide the canonical party total by guests — that
   // total can include discounted minors and party-level additions, so the
-  // quotient matches nothing the traveller actually pays. Absent unit → omit.
+  // quotient matches nothing the traveler actually pays. Absent unit → omit.
   const perPersonDerived = usingResolved
     ? (resolvedPerPaxEur ?? null)
     : partyTotalEur != null && effectiveGuests != null && effectiveGuests > 0
@@ -585,7 +585,7 @@ export function SignaturePriceCard({
 
   // ---- P3B live investment presentation values (no new pricing math) ----
   // Delta is derived from the SAME number the card displays, so it can only
-  // ever describe a real change the traveller just caused.
+  // ever describe a real change the traveler just caused.
   const displayedTotalEur = partyTotalEur ?? totalEur ?? null;
   const investmentDelta = useInvestmentDelta(displayedTotalEur);
   // Ledger inputs: canonical values when we're showing canonical totals,
@@ -930,7 +930,7 @@ export function SignaturePriceCard({
               style={{ color: "color-mix(in oklab, var(--charcoal) 70%, transparent)" }}
             >
               {effectiveGuests === 1
-                ? "This Signature isn't published for a single traveller. A YES curator confirms the exact investment before anything is reserved."
+                ? "This Signature isn't published for a single traveler. A YES curator confirms the exact investment before anything is reserved."
                 : `This Signature isn't published for a party of ${effectiveGuests}. A YES curator confirms the exact investment before anything is reserved.`}
             </p>
           </div>
@@ -1259,7 +1259,7 @@ export function SignaturePriceCard({
         {/* Always keep the resolved investment visible on Refine, even when
             this Signature has no compatible add-ons. This block deliberately
             sits outside the add-on fieldset so an empty pool cannot hide the
-            price the traveller is about to confirm. */}
+            price the traveler is about to confirm. */}
         {(() => {
           const totalForDisplay = partyTotalEur ?? totalEur ?? null;
           if (totalForDisplay == null) return null;
@@ -1325,7 +1325,7 @@ export function SignaturePriceCard({
         })()}
 
         {/* Itinerary spine and blueprint optionals removed — the storytelling
-            reveal on the next step lists the traveller's kept stops in order,
+            reveal on the next step lists the traveler's kept stops in order,
             so repeating them here duplicated the same content in two adjacent
             surfaces. */}
 
@@ -1558,7 +1558,7 @@ export function SignaturePriceCard({
       ) : null}
 
       {/* Batch C — exit-intent rescue. Offers to save the composition via
-          WhatsApp when the traveller is about to leave the reveal. Real save:
+          WhatsApp when the traveler is about to leave the reveal. Real save:
           the composed journey title goes into the message body, the YES team
           replies with the confirmed investment. No fabricated urgency. */}
       {!isRefine && hasPrice ? <ExitIntentSave journeyTitle={journeyTitle ?? null} /> : null}

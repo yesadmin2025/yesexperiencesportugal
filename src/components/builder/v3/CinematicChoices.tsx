@@ -5,7 +5,7 @@ import type { Intention, JourneyType, Mood, Pace, Who } from "@/components/build
 /**
  * CinematicChoices — emotional scene selection (no quiz, no filters).
  *
- * Every phase is a cinematic composition the traveller steps INTO, not a
+ * Every phase is a cinematic composition the traveler steps INTO, not a
  * category they pick. Composition deliberately varies per phase to avoid
  * the onboarding-form rhythm:
  *

@@ -235,7 +235,7 @@ export function StudioV3SignatureMap({
   // Origin-only geographic projection — used during the Pickup beat or any
   // time we have an origin coordinate but no revealed stops yet. Without this
   // the origin pulse defaults to SCHEMATIC_ORIGIN in the top-left corner and
-  // the map reads as "empty" to the traveller. Center the origin instead so
+  // the map reads as "empty" to the traveler. Center the origin instead so
   // the city is the visible anchor of the frame.
   const originOnly = useMemo(() => {
     if (geo || !originCoord || shown.length > 0) return null;
@@ -503,7 +503,7 @@ export function StudioV3SignatureMap({
         ))}
 
         {/* Journey legend — total drive time + km. Honest, quiet, always
-          visible once a route exists so travellers know the distance
+          visible once a route exists so travelers know the distance
           before the reveal. Hidden during Pickup-only beat.
 
           The `data-leg-legend-value` attribute is the SINGLE source of

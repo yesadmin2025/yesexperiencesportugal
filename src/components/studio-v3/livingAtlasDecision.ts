@@ -95,7 +95,7 @@ export type LivingAtlasDecisionInput = {
   /** Answer to a contextual question or Precision Fork. */
   discoverySignal?: LivingAtlasDiscoverySignal | null;
   /**
-   * BUILD 2 / Pass 4 — EVERY discovery answer the traveller really gave, from
+   * BUILD 2 / Pass 4 — EVERY discovery answer the traveler really gave, from
    * canonical question history. Deduped deterministically; `discoverySignal`
    * stays supported as a single-answer compatibility input.
    */

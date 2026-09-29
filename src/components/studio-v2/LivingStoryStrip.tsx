@@ -14,7 +14,7 @@ import {
 /**
  * Living Story Strip — fixed bottom sheet that grows with every choice.
  * Replaces the "form" feeling with a tangible, cinematic record of what
- * the traveller is composing. Collapsed by default; swipe / tap to expand.
+ * the traveler is composing. Collapsed by default; swipe / tap to expand.
  *
  * No invented prices, no invented stops — only what the profile + preview
  * deterministically derive.

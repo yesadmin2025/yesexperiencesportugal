@@ -85,7 +85,7 @@ const FAQS = [
   },
   {
     q: "Are tastings and lunch included?",
-    a: "On our all-inclusive wine days, yes — the tastings and the meal are in the price you see. Each tour page lists exactly what is included before you pay.",
+    a: "Tastings are included on every wine day. Lunch is included on the Arrábida Wine Signature; on other wine days, such as Évora & Alentejo, lunch is at your own expense. Each tour page lists exactly what is included before you pay.",
   },
   {
     q: "How long is a wine day from Lisbon?",

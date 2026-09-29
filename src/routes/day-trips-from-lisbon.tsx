@@ -278,7 +278,7 @@ function DayTripsFromLisbon() {
             Drive time, distance and <SectionTitle.Em>our honest verdict</SectionTitle.Em>.
           </SectionTitle>
           <p className="mt-5 max-w-2xl text-[15.5px] leading-[1.8] text-[color:var(--charcoal-soft)]">
-            Distances are one way from central Lisbon, in miles and kilometres. Duration and price
+            Distances are one way from central Lisbon, in miles and kilometers. Duration and price
             come straight from each Signature page, so what you read here is what you pay there.
           </p>
 

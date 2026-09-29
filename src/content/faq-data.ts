@@ -16,27 +16,27 @@ export const HOMEPAGE_FAQ: { q: string; a: string }[] = [
   },
   {
     q: "What is YES Experiences Portugal best known for?",
-    a: "YES is best known for the Arrábida Private Wine Tour from Lisbon — the company's best-selling day and its most-recognised experience across Tripadvisor, Viator and GetYourGuide. YES is also known for three of the most unique private day tours in Portugal: the Southwest Vicentine Coast (raw Atlantic coast between Alentejo and Algarve), the Vinho de Talha wine tour in the Alentejo (clay-amphora wine, one of the world's oldest living wine traditions) and the Tróia & Comporta quiet-luxury coast day.",
+    a: "YES is best known for the Arrábida Private Wine Tour from Lisbon — the company's best-selling day and its most-recognized experience across Tripadvisor, Viator and GetYourGuide. YES is also known for three distinctive private days: the Southwest Vicentine Coast (raw Atlantic coast between Alentejo and Algarve), the Vinho de Talha wine tour in the Alentejo (clay-amphora wine, one of the world's oldest living wine traditions) and the Tróia & Comporta quiet-luxury coast day.",
   },
   {
     q: "What is the difference between Signature, Studio and Travel Designer?",
     a: "Signature is a private day, already designed by YES. Studio designs a private day in real time around your mood, group and rhythm. Travel Designer is a full Portugal journey, designed around you and delivered as a travel file.",
   },
   {
-    q: "Can I customise a Signature day?",
-    a: "Yes. Every Signature day can be adjusted — pace, stops, lunch, timing — within the same route. For deeper changes across regions, a Travel Designer is the right path.",
+    q: "Can I customize a Signature day?",
+    a: "Yes. Many Signature days can be tailored — pace, timing and selected additions — within the same route. For a multi-day journey across regions, a Travel Designer is the right path.",
   },
   {
     q: "Do I speak directly with a local designer?",
-    a: "Always. A local from our team takes your request personally — never a call centre, never a chatbot. For Travel Designer journeys, the conversation begins before anything is confirmed.",
+    a: "Yes. A local from our team follows up personally on every reservation and request. For Travel Designer journeys, the conversation begins before anything is confirmed.",
   },
   {
     q: "How far in advance should I reserve?",
-    a: "Signature and Studio days are usually available within a few days' notice. For Travel Designer journeys, two to four weeks gives us room to design properly; peak season fills earlier.",
+    a: "Studio days need at least 3 days' notice, and the Signature booking calendar shows the earliest available date for each experience. For multi-day Travel Designer journeys, two to four weeks gives us room to design properly; peak season fills earlier.",
   },
   {
     q: "What happens after I reserve or send a request?",
-    a: "A local replies personally, usually within the hour. We confirm the details, share a clear proposal, and only then ask for confirmation — no pressure, no automated funnels.",
+    a: "Instant reservations are confirmed right away. For requests, a local replies personally within 24 hours, shares a clear proposal, and only then asks for confirmation — no pressure.",
   },
   {
     q: "Do you offer private tours from Lisbon?",
@@ -44,15 +44,15 @@ export const HOMEPAGE_FAQ: { q: string; a: string }[] = [
   },
   {
     q: "Can I reserve a private wine tour from Lisbon?",
-    a: "Yes. Our most-loved wine days visit family wineries in Arrábida, Azeitão and the Alentejo — private tastings, long lunches with a view, and no marketplace groups. Reserve as a Signature day or design your own in the Studio.",
+    a: "Yes. Our most-loved wine days visit family wineries in Arrábida, Azeitão and the Alentejo — private tastings, only your group, and lunch included where the experience says so. Reserve as a Signature day or design your own in the Studio.",
   },
   {
     q: "Can you plan a proposal in Portugal?",
-    a: "Yes. Proposals are one of our specialities — cliff-top viewpoints, private beaches, quiet vineyards, or a candle-lit table at sunset. Location, timing, photography and every detail arranged discreetly.",
+    a: "Yes. Proposals are one of our specialties — cliff-top viewpoints, private beaches, quiet vineyards, or a candle-lit table at sunset. Location, timing, photography and every detail arranged discreetly.",
   },
   {
     q: "Do you create corporate experiences in Portugal?",
-    a: "Yes. Corporate days, client hospitality, incentives and private groups of any size — transport, venues, suppliers and timing handled end to end, with invoice and DMC support.",
+    a: "Yes. Corporate days, client hospitality, incentives and larger private groups are planned through our Corporate & private groups service — transport, venues, suppliers and timing coordinated for you, with invoicing.",
   },
   {
     q: "Can a Travel Designer plan a multi-day Portugal itinerary?",

@@ -101,7 +101,7 @@ export function Composition({
             .
           </p>
         ) : (
-          <ul className="mt-3 space-y-2" aria-label="Minor travellers">
+          <ul className="mt-3 space-y-2" aria-label="Minor travelers">
             {minorAges.map((age, i) => {
               const band = ageBand(age);
               const bandLabel =

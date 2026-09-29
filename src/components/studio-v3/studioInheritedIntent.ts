@@ -1,7 +1,7 @@
 /**
  * Studio V3 — P5 inherited intent (deterministic, state-only).
  *
- * When the traveller already stated a semantic theme in the Feeling phase,
+ * When the traveler already stated a semantic theme in the Feeling phase,
  * the Interests phase must not offer that exact same theme again as a new
  * selectable interest. This is perceived intelligence only: it prunes the
  * grid and shows a one-line acknowledgement.
@@ -63,7 +63,7 @@ const EMPTY: InheritedIntent = { interestIds: [], labels: [] };
 
 /**
  * Inherited intent for the Interests phase. Explicit feeling only — an
- * interest the traveller picked themselves is never "inherited".
+ * interest the traveler picked themselves is never "inherited".
  */
 export function deriveInheritedIntent(state: {
   readonly feeling?: Feeling | null;

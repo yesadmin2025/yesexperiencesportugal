@@ -376,7 +376,7 @@ import { resolveYourDayVisuals, yourDayMediaFor } from "@/lib/studio-v3/yourDayC
 
 /**
  * FINAL CLOSURE §8 — the phases where a resolved composition is legitimately
- * part of the traveller's journey. A fallback resolver being *able* to
+ * part of the traveler's journey. A fallback resolver being *able* to
  * produce a route earlier is never a reason to show one.
  */
 const COMPOSITION_READY_PHASES: ReadonlySet<string> = new Set([
@@ -487,7 +487,7 @@ function pickTeaser(phase: StudioV3Phase, seed: string): string {
 
 /**
  * contextualTeaser — replaces the generic per-phase teaser with one that
- * reacts to what the traveller has already said. Falls back to the
+ * reacts to what the traveler has already said. Falls back to the
  * existing rotating teaser whenever no context-aware line applies.
  */
 function contextualTeaser(phase: StudioV3Phase, state: StudioV3State): string {
@@ -591,7 +591,7 @@ function feelingReactionMessage(id: Feeling): string {
 
 /**
  * Paraphrased beat copy — deterministic, local, and deliberately NOT the
- * option label the traveller just tapped. Repeating the button back reads as
+ * option label the traveler just tapped. Repeating the button back reads as
  * a form confirming a click; naming what we now hold reads as authorship.
  */
 function feelingCaptionLine(id: Feeling): string {
@@ -665,7 +665,7 @@ function investmentReactionLine(id: InvestmentTier): string {
 /** Inferred-guests note shown subtly on the final reveal. */
 function inferredGuestsNote(state: StudioV3State): string | null {
   if (!state.guestsInferred || state.guests == null) return null;
-  if (state.guests === 1) return "Assumed for this draft: solo traveller";
+  if (state.guests === 1) return "Assumed for this draft: solo traveler";
   if (state.guests === 2) return "Assumed for this draft: 2 guests";
   return `Assumed for this draft: ${state.guests} guests`;
 }
@@ -1142,7 +1142,7 @@ export function StudioV3() {
    * INSTANT-BOOKABLE TRUTH — the Studio never ends at a curator hand-off.
    * When a practical fact makes the day unsellable (stale availability, a
    * party the checkout cannot complete, an unsupported pickup, a day that no
-   * longer fits door-to-door) the traveller is returned to the ONE screen
+   * longer fits door-to-door) the traveler is returned to the ONE screen
    * where they can change that fact, with an honest reason. The site-wide
    * support channel stays available independently.
    */
@@ -1165,14 +1165,14 @@ export function StudioV3() {
   const [checkoutPending, setCheckoutPending] = useState(false);
   // Final checkout revalidation can fail because a live operational fact
   // changed after the reveal. Keep the reviewed Summary and guest details in
-  // place with the exact reason instead of ejecting the traveller to Refine.
+  // place with the exact reason instead of ejecting the traveler to Refine.
   const [checkoutBlock, setCheckoutBlock] = useState<string | null>(null);
-  // PASS 4 — a concise, honest message when an exact date cannot honour the
+  // PASS 4 — a concise, honest message when an exact date cannot honor the
   // committed day. Never a silent mutation of the itinerary.
   const [logisticsConflict, setLogisticsConflict] = useState<string | null>(null);
 
   // Lifted add-on selection so the checkout drawer summary AND the Stripe
-  // session both see exactly what the traveller picked on the reveal.
+  // session both see exactly what the traveler picked on the reveal.
   // `SignaturePriceCard` calls `onAddOnsChange` on every toggle; we mirror
   // the summary here and forward it to `handleStripeCheckout`.
   const [selectedAddOnIds, setSelectedAddOnIds] = useState<string[]>([]);
@@ -1242,9 +1242,9 @@ export function StudioV3() {
    * EXPLICIT-PRIORITY GUARD (live flow).
    *
    * When no eligible Signature can truthfully satisfy every explicit
-   * high-signal priority the traveller chose, a partially-matching day must
+   * high-signal priority the traveler chose, a partially-matching day must
    * never be committed or revealed as YOUR DAY. We stay inside Studio and
-   * return the traveller to Interests with a precise trade-off message —
+   * return the traveler to Interests with a precise trade-off message —
    * nothing is silently dropped, and there is no curator / lead-sheet exit.
    */
   const highSignalConflict = useMemo(() => resolveHighSignalConflict(state), [state]);
@@ -1259,7 +1259,7 @@ export function StudioV3() {
    * Living Atlas intelligence for the current answers. Pure and memoized —
    * used for customer-facing explanation only. The same reasoning already
    * biases Signature selection inside `resolveStudioV3Route`, so the reveal
-   * explains the day the traveller is actually getting.
+   * explains the day the traveler is actually getting.
    */
   const livingAtlasReasons = useMemo(
     () =>
@@ -1378,7 +1378,7 @@ export function StudioV3() {
 
       // Exact-tier truth gate: no APPROVED RUNTIME tier for this exact party
       // size means we have no price to charge. Never fall back to the generic
-      // "from" anchor or the static Viator tiers — hand the traveller to a
+      // "from" anchor or the static Viator tiers — hand the traveler to a
       // curator instead of opening a checkout the server would refuse.
       const resolvedPerPax = resolveStudioStrictPerPaxEur(tour.id, details.guests, tourPriceTiers);
       if (!resolvedPerPax) {
@@ -1392,12 +1392,12 @@ export function StudioV3() {
       // Open the drawer immediately with a branded skeleton.
       // ITINERARY AUTHORITY (checkout continuity): the labels frozen into
       // Stripe metadata and `booking_snapshot.payload.itinerary` must be the
-      // SAME authored/composed route the traveller saw in Your Day —
+      // SAME authored/composed route the traveler saw in Your Day —
       // editedRoutePoints > full composed route > compact route > catalog.
       // Never the base catalog Signature stops while a composed route exists,
       // and never capped to the legacy 4-slot card projection.
       // The route is re-derived from `currentState` at checkout time, never
-      // from a closure captured before the traveller edited their day.
+      // from a closure captured before the traveler edited their day.
       const checkoutResolved = resolveStudioRouteFromState(currentState);
       const checkoutStops = resolveAuthoritativeRouteStops({
         editedRoutePoints: currentState.editedRoutePoints ?? null,
@@ -1478,7 +1478,7 @@ export function StudioV3() {
       // derived here. An add-on already carried by the route is charged once,
       // and an unattributable commercial action fails closed before payment.
       // The ledger is REBUILT from the exact route being reserved, not read
-      // from a resolution computed before the traveller edited the day. A
+      // from a resolution computed before the traveler edited the day. A
       // stale ledger would charge for moments that no longer exist and miss
       // the ones the current day does trigger.
       const liveAuthority = rebuildLiveCommercialAuthority({
@@ -1785,7 +1785,7 @@ export function StudioV3() {
   }, [load]);
 
   // Optional place preset from homepage links (`/studio?destination=<id>`).
-  // Only pre-selects the traveller's destination answer; composition,
+  // Only pre-selects the traveler's destination answer; composition,
   // pricing and question flow are unchanged. Saved-day links take priority.
   useEffect(() => {
     if (typeof window === "undefined") return;
@@ -1854,7 +1854,7 @@ export function StudioV3() {
   }, [state.phase]);
 
   // Batch C — clip preloading. Warm the HTTP cache for the most-likely scene
-  // clips once the traveller leaves the intro so AtmosphereBeats fade in fully
+  // clips once the traveler leaves the intro so AtmosphereBeats fade in fully
   // buffered. Idempotent + reduced-motion safe (handled inside the helper).
   useEffect(() => {
     if (state.phase === "intro") return;
@@ -1869,13 +1869,13 @@ export function StudioV3() {
   }, [state.phase]);
 
   // Review-and-confirm gate: do NOT auto-invoke Stripe when reaching the
-  // summary. The traveller reviews the itemised price + composition first,
+  // summary. The traveler reviews the itemised price + composition first,
   // then taps "Reserve & pay" — that click is the only trigger that opens
   // Stripe Embedded Checkout inline below the summary.
   //
   // Rationale (owner-approved, Turn 3): auto-loading Stripe alongside the
   // review made "Confirm & pay" ambiguous — the payment fields appeared
-  // before the traveller had confirmed the total. Gating on an explicit
+  // before the traveler had confirmed the total. Gating on an explicit
   // click keeps summary and payment as two distinct beats.
   useEffect(() => {
     if (state.phase !== "checkoutSummary" && clientSecret) {
@@ -1892,12 +1892,12 @@ export function StudioV3() {
    * On the FIRST canonical `storyboard` entry the current authoritative route
    * is resolved ONCE (no new resolver — the same authority chain every other
    * surface reads) and snapshotted, together with the anchor `tourId` and the
-   * journey title. From that instant the traveller's day is frozen: logistics
+   * journey title. From that instant the traveler's day is frozen: logistics
    * facts, guest details and checkout all read this exact ordered set of
    * moments, with their structural ids, media and geography intact.
    *
    * The snapshot is NOT a manual edit — `editedRoutePoints` stays reserved for
-   * genuine traveller edits.
+   * genuine traveler edits.
    */
   useEffect(() => {
     if (state.phase !== "storyboard") return;
@@ -2021,7 +2021,7 @@ export function StudioV3() {
         value: { to: target },
       });
       // PASS 4 — going BACK from the reward surface into the taste / Director
-      // phases means the traveller is reshaping their answers, so the frozen
+      // phases means the traveler is reshaping their answers, so the frozen
       // day (and its stale anchor) is released and the next Your Day is
       // resolved fresh. Logistics → Your Day and checkout "Edit stops" →
       // Your Day are NOT this path and keep the committed day intact.
@@ -2051,7 +2051,7 @@ export function StudioV3() {
    * PREFLIGHT — commit the practical facts, resolve what is genuinely
    * sellable for them, and only then let the Studio start designing. No
    * curator hand-off exists here: an unsellable combination is stated
-   * honestly on this same screen so the traveller can change it.
+   * honestly on this same screen so the traveler can change it.
    */
   const [preflightChecking, setPreflightChecking] = useState(false);
   const runPreflight = useCallback(async () => {
@@ -2124,7 +2124,7 @@ export function StudioV3() {
    * step; this helper lands directly on an explicit earlier phase. It changes
    * nothing but `phase`: every answer, the delegation flag, guests, date and
    * pickup are preserved, so the existing take-back logic still owns release
-   * when the traveller makes an explicit choice.
+   * when the traveler makes an explicit choice.
    */
   const jumpBackToPhase = useCallback(
     (target: StudioV3Phase, source: "delegation-adjust" | "checkout-edit-stops" | "checkout-edit-operational") => {
@@ -2287,7 +2287,7 @@ export function StudioV3() {
       eyebrow: "The feeling",
       message: feelingReactionMessage(id),
       // Paraphrase, never the tapped label: the caption names the tone we
-      // now hold, not the button the traveller pressed.
+      // now hold, not the button the traveler pressed.
       postcardCaption: feelingCaptionLine(id),
       contextLine: contextualTeaser("feeling", forward),
       holdMs: 4400,
@@ -2468,7 +2468,7 @@ export function StudioV3() {
     const name = state.firstName?.trim() || null;
     if (STUDIO_V3_MAP_BEATS_ENABLED && originLabel) {
       // The origin stays on the map (operational fact); the prose does not
-      // repeat the tapped pickup label back at the traveller.
+      // repeat the tapped pickup label back at the traveler.
       const line = name
         ? `${name}, your starting point is placed. The route can open from here.`
         : "Your starting point is placed. The route can open from here.";
@@ -2555,7 +2555,7 @@ export function StudioV3() {
   };
 
   /**
-   * P10 — premium delegation mode. The traveller has personally answered
+   * P10 — premium delegation mode. The traveler has personally answered
    * Feeling and Who; from Interests (or once more on Rhythm) they may hand
    * the remaining TASTE layer to YES in one gesture. Deterministic, taxonomy
    * bound, explicit choices preserved, operational facts untouched, and the
@@ -2748,7 +2748,7 @@ export function StudioV3() {
    * recorded above; when the model finds an extra signal INSIDE the closed
    * vocabulary, the single canonical event is replaced with the merged one.
    * An explicit negation is never overridden: the merge drops any candidate
-   * whose key the traveller ruled out, and AI signals are positive-only.
+   * whose key the traveler ruled out, and AI signals are positive-only.
    */
   const interpretNoteWithAi = useServerFn(interpretFreeTextWithAi);
   const aiNoteRef = useRef<string>("");
@@ -2801,7 +2801,7 @@ export function StudioV3() {
   /**
    * TURBO 2 — the composition the canvas is allowed to show. It is the SAME
    * route authority the reveal and pricing read (`resolveStudioV3Route`), so
-   * the canvas can never show a day the traveller will not be offered.
+   * the canvas can never show a day the traveler will not be offered.
    */
   const liveComposition = useMemo(() => {
     if (!state.feeling || !state.companions || !state.rhythm) return null;
@@ -2834,7 +2834,7 @@ export function StudioV3() {
     });
     if (points.length === 0) return null;
     // PASS 4.1 — when a frozen snapshot exists, the Canvas metadata must stay
-    // on the anchor the traveller was actually shown. A later fresh resolver
+    // on the anchor the traveler was actually shown. A later fresh resolver
     // identity is presentation drift, never a new truth.
     const frozen = (state.committedRoutePoints?.length ?? 0) > 0;
     const frozenAnchorKey = frozen ? (state.tourId ?? resolvedLive.skeletonTourKey ?? null) : null;
@@ -3139,7 +3139,7 @@ export function StudioV3() {
   // BUILD 2 / Pass 4 — there is NO interest cap. Every taste the traveller
   // states is kept as real semantic demand; what a single day can physically
   // hold is decided downstream by feasibility and the dwell budget, never by
-  // silently refusing to hear the traveller.
+  // silently refusing to hear the traveler.
   const toggleInterest = (id: Interest) => {
     setState((s) => {
       const has = s.interests.includes(id);
@@ -3151,7 +3151,7 @@ export function StudioV3() {
       }
 
       // If Interests were delegated, the visible set now becomes explicit as
-      // edited by the traveller. Keep delegation only for any remaining YES-
+      // edited by the traveler. Keep delegation only for any remaining YES-
       // owned dimension, and recompute delegated Rhythm from this explicit set.
       return (s.decidedForMe ?? []).includes("interests")
         ? takeBackDelegatedInterests(s, explicitInterests)
@@ -3178,7 +3178,7 @@ export function StudioV3() {
   // Continue handlers for the two multi-select screens — reaction fires
   // on Continue only, never on each toggle.
   const continueFromInterests = () => {
-    // Do not walk into a day that cannot honour every explicit priority.
+    // Do not walk into a day that cannot honor every explicit priority.
     if (highSignalConflict) {
       setPriorityConflictNotice(highSignalConflict.message);
       return;
@@ -3372,7 +3372,7 @@ export function StudioV3() {
     state: { feeling: state.feeling, interests: state.interests, rhythm: state.rhythm },
     refinementShown: Boolean(directorQuestion),
     // The read voices its themes in prose, so Logistics/reveal stay quiet
-    // about them. Only counts once the traveller has actually seen it.
+    // about them. Only counts once the traveler has actually seen it.
     directorsRead: {
       shown: directorsReadSeen === directorsRead.signature,
       themes: directorsRead.themes,
@@ -3448,7 +3448,7 @@ export function StudioV3() {
   //   - intro (pre-Studio canvas)
   //   - the dedicated map/storyboard phases (own surface)
   //   - while a reaction overlay is on screen
-  // Chrome only earns its place once the traveller has placed a starting
+  // Chrome only earns its place once the traveler has placed a starting
   // point on the map — i.e. there is genuinely a route forming. Before
   // that, the journey pill, atmospheric stage, investment ribbon and
   // beat stepper all stay out of the way so the questions can breathe.
@@ -3458,7 +3458,7 @@ export function StudioV3() {
   // who → occasion → date → pickup) are pure questions. No stage panel,
   // no stepper, no investment ribbon, no journey pill — the interface
   // disappears so the question can breathe. Chrome only earns its place
-  // from `guests` onward, once the traveller has placed a starting point.
+  // from `guests` onward, once the traveler has placed a starting point.
   const EARLY_PHASES: StudioV3Phase[] = [
     "intro",
     "feeling",
@@ -3589,7 +3589,7 @@ export function StudioV3() {
         onComplete={(name, pathMode) => {
           setState((s) => ({ ...s, firstName: name, pathMode }));
           // PREFLIGHT FIRST — the practical facts decide what is sellable
-          // before the Studio spends the traveller's time designing.
+          // before the Studio spends the traveler's time designing.
           advance("logistics");
         }}
       />
@@ -3598,7 +3598,7 @@ export function StudioV3() {
 
   // Ambient anticipation — Portugal silhouette behind every phase.
   // The coastline draws in with progress; a gold pulse settles on the
-  // inferred region the moment the traveller hints at one. Strict
+  // inferred region the moment the traveler hints at one. Strict
   // atmosphere — never interactive, never labelled.
   const anticipation = (() => {
     const pct = studioV3Progress(state, state.phase)?.percent ?? 0;
@@ -4319,7 +4319,7 @@ export function StudioV3() {
               setPendingGuestDetails(d);
               setState((s) => ({
                 ...s,
-                // Persist the composition the traveller confirmed on this
+                // Persist the composition the traveler confirmed on this
                 // step so downstream surfaces (reveal, checkout, edge fn)
                 // read the same {adults, minorAges} single source of truth.
                 adults: d.adults,
@@ -4327,7 +4327,7 @@ export function StudioV3() {
                 guests: d.guests,
                 // Keep the confirmed date in state too, otherwise returning
                 // here via "Edit" on the checkout summary rehydrates an empty
-                // date field and the traveller has to pick it again.
+                // date field and the traveler has to pick it again.
                 dateExact: d.tourDate || s.dateExact,
                 guestDraft: {
                   fullName: d.fullName,
@@ -4550,7 +4550,7 @@ function RevealRouteMap({
 
 /**
  * interpretationLine — one short sentence built ONLY from real answers.
- * Never introduces a place, stop or theme the traveller did not choose.
+ * Never introduces a place, stop or theme the traveler did not choose.
  */
 export function interpretationLine(state: StudioV3State): string | null {
   const parts: string[] = [];
@@ -4578,7 +4578,7 @@ export function interpretationLine(state: StudioV3State): string | null {
 }
 
 /**
- * Meaningful progress = the traveller actually answered something, not merely
+ * Meaningful progress = the traveler actually answered something, not merely
  * moved past the first screen. Phase alone is not progress.
  */
 export function hasMeaningfulStudioProgress(state: StudioV3State): boolean {
@@ -4788,7 +4788,7 @@ export function StoryboardHandoff({
   );
 
 
-  // The traveller's day is the FULL composed route — never the compact
+  // The traveler's day is the FULL composed route — never the compact
   // 4-slot Journey-Card projection, and never the base Signature stops while
   // a composed route exists. `tourId` stays a pricing/geography anchor only.
   const baseStops = useMemo(
@@ -4796,7 +4796,7 @@ export function StoryboardHandoff({
       resolveAuthoritativeRouteStops({
         editedRoutePoints: null,
         // PASS 4 — the committed snapshot IS the shown day; a fresh resolution
-        // can never silently replace it behind the traveller.
+        // can never silently replace it behind the traveler.
         committedRoutePoints: state.committedRoutePoints ?? null,
         resolved,
         catalogStops: null,
@@ -4812,7 +4812,7 @@ export function StoryboardHandoff({
   const skeletonTour = anchorTourKey ? findTour(anchorTourKey) : null;
 
   // Output sanitation: canonical labels stay in `editedStops` for geo lookup,
-  // route authority, dedupe and editing identity. Everything a traveller can
+  // route authority, dedupe and editing identity. Everything a traveler can
   // READ (timeline, map pins, legend, accessibility, price card spine) goes
   // through this centralized winery presentation map first.
   const revealDisplayLabels = useMemo(
@@ -4872,7 +4872,7 @@ export function StoryboardHandoff({
   // ONE judgement, callable on ANY candidate route. The reveal gate reads it
   // for the CURRENT day; the deterministic repair loop reads it for candidate
   // days, so a route the operator would reject is repaired instead of being
-  // handed to the traveller as an un-reservable dead end.
+  // handed to the traveler as an un-reservable dead end.
   const judgeOperational = useCallback(
     (points: readonly { label: string }[]) => {
       if (revealLegsLoading) return { status: "review" as ValidationStatus, proven: false };
@@ -4910,7 +4910,7 @@ export function StoryboardHandoff({
   );
   const approvalStatus: ValidationStatus = operationalGate.status;
   // Publish the gate to the payment seam. Read-only projection of facts that
-  // already exist above; it never changes what the traveller sees.
+  // already exist above; it never changes what the traveler sees.
 
 
 
@@ -4990,7 +4990,7 @@ export function StoryboardHandoff({
     }
 
     // 2) Approved REGION_STOP_POOL candidates — same region + routeCluster,
-    //    tour-isolation respected, considerations honoured, deduped vs
+    //    tour-isolation respected, considerations honored, deduped vs
     //    editedStops. We also defend oneOfGroup against existing edited
     //    labels (an edited stop may already represent a oneOfGroup member).
     if (anchorTourKey && state.companions && state.rhythm) {
@@ -5216,9 +5216,9 @@ export function StoryboardHandoff({
   const [swapOpenIdx, setSwapOpenIdx] = useState<number | null>(null);
   const [addOpen, setAddOpen] = useState<boolean>(false);
   // Pass 2B — the refinement accordion is discoverable and open by default
-  // inside Your Day; the traveller can collapse it.
+  // inside Your Day; the traveler can collapse it.
   // P0-6 — the first reveal is a REWARD, not an editor. Editing is secondary
-  // and collapsed until the traveller asks for it ("Edit your day"), which
+  // and collapsed until the traveler asks for it ("Edit your day"), which
   // matters most at 393px where an open editor buried the day and the CTA.
   const [refineOpen, setRefineOpen] = useState<boolean>(false);
 
@@ -5322,7 +5322,7 @@ export function StoryboardHandoff({
       }),
       drivesMin: revealLegMinutes ?? undefined,
       region: skeletonTour?.region ?? null,
-      // The add-ons the traveller already chose are real minutes of the day.
+      // The add-ons the traveler already chose are real minutes of the day.
       addOnsMin: selectedAddOnMinutes,
     }).remainingMin;
   }, [
@@ -5520,7 +5520,7 @@ export function StoryboardHandoff({
         // The operator's own hard rules (single-hop cap, day distance, driving
         // share, backtracking). A day this validator rejects can never be
         // reserved, so the repair must aim at it too — otherwise Studio shows
-        // a day it cannot sell and blocks the traveller with no way forward.
+        // a day it cannot sell and blocks the traveler with no way forward.
         judgeOperational(points).status !== "reject" &&
         judgeFinalDayTime({
           points,
@@ -5530,7 +5530,7 @@ export function StoryboardHandoff({
         }).bookable &&
         // The repair must satisfy the SAME gate that blocks the day: a route
         // can pass the on-route clock and still run past the canonical
-        // 540-minute door-to-door limit from the traveller's pickup zone.
+        // 540-minute door-to-door limit from the traveler's pickup zone.
         frozenDayAllowsCheckout(
           certifyFrozenDayFromPickup({
             points,
@@ -5733,7 +5733,7 @@ export function StoryboardHandoff({
         : ", held in a rhythm that moves without rushing";
   const heartMiddle =
     middleStop && middleStop !== firstStop && middleStop !== lastStop
-      ? ` ${middleStop} sits at the centre, anchoring the day.`
+      ? ` ${middleStop} sits at the center, anchoring the day.`
       : "";
   const heart = `${heartSubject} ${heartVerb} at the heart of the day${heartTail}.${heartMiddle}`;
 
@@ -6407,7 +6407,7 @@ export function StoryboardHandoff({
             content belongs to the final reveal, not the decision page. */}
 
         {/* Living Atlas intelligence — the grounded reasoning that biased the
-            Signature choice, shown after the traveller has seen and shaped the
+            Signature choice, shown after the traveler has seen and shaped the
             day, immediately before the first price surface (P9). */}
         <WhyRouteWorks
           reasons={resolved.livingAtlasReasons ?? []}

@@ -94,7 +94,7 @@ const FAQS = [
   },
   {
     q: "Is 5 days enough for Portugal?",
-    a: "It is enough for Lisbon and its coast — Sintra, Arrábida, the beaches and the wine country are all within forty minutes. It is not enough to add Porto or the Algarve without spending most of the trip travelling.",
+    a: "It is enough for Lisbon and its coast — Sintra, Arrábida, the beaches and the wine country are all within forty minutes. It is not enough to add Porto or the Algarve without spending most of the trip traveling.",
   },
   {
     q: "How many days do you need in Lisbon itself?",

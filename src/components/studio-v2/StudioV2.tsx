@@ -1550,7 +1550,7 @@ function NameBeat({
     <section className="min-h-[60vh] flex flex-col justify-center">
       <Eyebrow>Your story</Eyebrow>
       <Headline>What should we call this story?</Headline>
-      <Helper>Optional. We use it only to personalise your written journey.</Helper>
+      <Helper>Optional. We use it only to personalize your written journey.</Helper>
       <form
         onSubmit={(e) => {
           e.preventDefault();

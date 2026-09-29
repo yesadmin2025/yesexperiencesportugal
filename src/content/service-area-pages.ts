@@ -48,7 +48,7 @@ export const SERVICE_AREA_PAGES: readonly ServiceAreaPage[] = [
     standfirst:
       "Lisbon is where almost every day we run starts and ends. This page covers the practical side of that: where we collect you in the city, how long each direction takes, and which private day suits the time you have.",
     paragraphs: [
-      "The city sits between the Tejo and the hills, which is why the same morning can end up in three completely different landscapes. South across the bridge is the Setúbal peninsula — Arrábida's limestone coast, the Azeitão wine estates and Sesimbra's fishing harbour. West is Sintra's wooded hill and the Atlantic cliffs at Cabo da Roca. Inland to the southeast, the Alentejo plain and Évora's Roman centre. All of it is a day trip, and all of it returns to your Lisbon address the same evening.",
+      "The city sits between the Tejo and the hills, which is why the same morning can end up in three completely different landscapes. South across the bridge is the Setúbal peninsula — Arrábida's limestone coast, the Azeitão wine estates and Sesimbra's fishing harbour. West is Sintra's wooded hill and the Atlantic cliffs at Cabo da Roca. Inland to the southeast, the Alentejo plain and Évora's Roman center. All of it is a day trip, and all of it returns to your Lisbon address the same evening.",
       "Pickup is door to door: hotels in Baixa, Chiado, Avenida, Príncipe Real, Alfama and Belém, short-let apartments and villas anywhere in the municipality, and the Santa Apolónia cruise terminal for days that have to fit a ship's schedule. Central Lisbon traffic decides the departure time more than the distance does, so your host confirms a time that gets you out of the city before it thickens.",
       "One group per car, one licensed local host, and no shared seats — the difference in Lisbon is less about the sights than about not spending the day waiting for other people. If you would rather see the featured days, prices and the full Lisbon overview together, the private Lisbon hub lists them side by side.",
     ],
@@ -256,8 +256,8 @@ export const SERVICE_AREA_PAGES: readonly ServiceAreaPage[] = [
     standfirst:
       "Azeitão is the shortest possible route from a Lisbon hotel to a working cellar: forty minutes over the bridge, and the day belongs to the tastings rather than the motorway.",
     paragraphs: [
-      "Two villages — Vila Nogueira and Vila Fresca — sit between the Arrábida ridge and the vines. This is Moscatel de Setúbal country, and the estates here still pour in their own cellars rather than in a visitor centre built for coaches.",
-      "The same few kilometres also make the sheep's cheese the region is known for, pressed and turned by hand, and paint the tiles that end up on Lisbon façades. A day here can be all three: a cellar in the morning, the cheese and the tiles after, and lunch at a long table.",
+      "Two villages — Vila Nogueira and Vila Fresca — sit between the Arrábida ridge and the vines. This is Moscatel de Setúbal country, and the estates here still pour in their own cellars rather than in a visitor center built for coaches.",
+      "The same few kilometers also make the sheep's cheese the region is known for, pressed and turned by hand, and paint the tiles that end up on Lisbon façades. A day here can be all three: a cellar in the morning, the cheese and the tiles after, and lunch at a long table.",
       "Because it is close, Azeitão pairs naturally with the Arrábida coves or Sesimbra in the afternoon. We collect you at your own address in Lisbon, Setúbal or Sesimbra and bring you back there.",
     ],
     tourIds: ["azeitao-cheese", "arrabida-wine-allinclusive", "tiles-workshop"],
@@ -274,7 +274,7 @@ export const SERVICE_AREA_PAGES: readonly ServiceAreaPage[] = [
     faq: [
       {
         q: "Is Azeitão the closest wine region to Lisbon?",
-        a: "It is the closest one we run days to — about 40 minutes from the city centre over the 25 de Abril bridge, which is why the tastings get the time instead of the drive.",
+        a: "It is the closest one we run days to — about 40 minutes from the city center over the 25 de Abril bridge, which is why the tastings get the time instead of the drive.",
       },
       {
         q: "What wine is Azeitão known for?",
@@ -335,7 +335,7 @@ export const SERVICE_AREA_PAGES: readonly ServiceAreaPage[] = [
     standfirst:
       "Comporta is rice fields, umbrella pine, sand tracks and low white houses behind miles of open Atlantic beach — about an hour from Lisbon and still unhurried in high summer.",
     paragraphs: [
-      "The landscape is flat and horizontal: paddies with storks in them, pine woods, then a dune line and a beach that runs for kilometres with almost nothing built on it. The villages are small, whitewashed and blue-trimmed, and the rhythm is deliberately slow.",
+      "The landscape is flat and horizontal: paddies with storks in them, pine woods, then a dune line and a beach that runs for kilometers with almost nothing built on it. The villages are small, whitewashed and blue-trimmed, and the rhythm is deliberately slow.",
       "A day here works in two halves — the dunes and the beach while the light is long, then the estuary, Alcácer do Sal or the Alentejo coast further south. Because the vehicle is yours, the sand tracks and the lunch that runs long are part of the plan rather than a delay.",
       "We collect you in Comporta, Carvalhal or Muda, or in Lisbon about an hour away, including the Sado ferry when it is the better route.",
     ],
@@ -357,7 +357,7 @@ export const SERVICE_AREA_PAGES: readonly ServiceAreaPage[] = [
       },
       {
         q: "Is Comporta busy in summer?",
-        a: "Far less than the Algarve. The beach runs for kilometres with very little built on it, so even in August there is room — your host knows which access points stay quiet.",
+        a: "Far less than the Algarve. The beach runs for kilometers with very little built on it, so even in August there is room — your host knows which access points stay quiet.",
       },
     ],
   },

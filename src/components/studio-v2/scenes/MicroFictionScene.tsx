@@ -1,7 +1,7 @@
 /**
  * MicroFictionScene — Scene III grammar.
  *
- * A single italic sentence with two possible endings. The traveller finishes
+ * A single italic sentence with two possible endings. The traveler finishes
  * the scene. Captures register/intimacy through narrative completion, not
  * through a filter.
  */
@@ -95,7 +95,7 @@ export function MicroFictionScene({ scene, index, onSignal, topIntent }: Props) 
           className="absolute inset-0 transition-[background] duration-[1100ms] ease-out"
           style={{ background: tint.tintHex, opacity: tint.tintOpacity }}
         />
-        {/* Ivory veil keeps body legible; vignette pushes focus to centre. */}
+        {/* Ivory veil keeps body legible; vignette pushes focus to center. */}
         <div
           className="absolute inset-0"
           style={{

@@ -1,6 +1,6 @@
 /**
  * OtherDirections — up to two alternative Signature directions that were
- * genuinely considered for this traveller.
+ * genuinely considered for this traveler.
  *
  * An alternative is only ever passed in when it carries, strongly, something
  * the chosen day does not (see `deriveStudioIntelligence`). Near-duplicates

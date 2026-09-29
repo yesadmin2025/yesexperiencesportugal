@@ -10,7 +10,7 @@ import { composeStudioMoment } from "@/lib/studioNarrative.functions";
 
 /**
  * MultiDayConcierge — the deeper Portugal. NOT a fallback, NOT a contact
- * form. The cinematic world continues; the traveller crosses into a
+ * form. The cinematic world continues; the traveler crosses into a
  * quieter, more private room of the Studio.
  *
  * Design intent:
@@ -159,7 +159,7 @@ export function MultiDayConcierge({ t, mood, who, intention, travellerName, onBa
   const handoff = travellerName ? nameHandoff(travellerName, locale) : null;
 
   /* Handwritten-note moment — the input never appears as a form. It opens
-     after the traveller chooses to begin, then submits invisibly through
+     after the traveler chooses to begin, then submits invisibly through
      WhatsApp (existing channel). No labels, no field chrome, no CRM. */
   const [noteOpen, setNoteOpen] = useState(false);
   const [note, setNote] = useState("");

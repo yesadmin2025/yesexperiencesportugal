@@ -67,7 +67,7 @@ export const CTA_BACK_TO_REFINE = "Back to refine" as const;
 // Checkout Summary — last screen before payment.
 export const CHECKOUT_HEADER = "Ready to reserve" as const;
 export const CTA_RESERVE_AND_PAY = "Reserve and pay" as const;
-/** Final booking seam CTA — the day the traveller shaped, not a generic cart. */
+/** Final booking seam CTA — the day the traveler shaped, not a generic cart. */
 export const CTA_RESERVE_YOUR_DAY = "Reserve your day" as const;
 /**
  * Your Day → Logistics CTA. The reveal commits the day; the practical facts

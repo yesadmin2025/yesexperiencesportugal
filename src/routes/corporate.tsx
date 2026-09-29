@@ -94,26 +94,26 @@ const FORMATS = [
   },
   {
     id: "incentives",
-    title: "Incentive programmes",
+    title: "Incentive programs",
     body: "Single-day and multi-day incentive experiences across Portugal, combining strong local content with carefully managed transport, venues, activities and timing.",
     icon: Sparkles,
   },
   {
     id: "retreats",
     title: "Corporate retreats",
-    body: "Multi-day programmes balancing meetings, shared experiences, regional discovery and time to reset, with each part coordinated around the group's objectives.",
+    body: "Multi-day programs balancing meetings, shared experiences, regional discovery and time to reset, with each part coordinated around the group's objectives.",
     icon: Compass,
   },
   {
     id: "off-sites",
     title: "Executive off-sites",
-    body: "Focused programmes for leadership and management teams, with private settings, careful pacing, discreet hosting and practical space for conversation.",
+    body: "Focused programs for leadership and management teams, with private settings, careful pacing, discreet hosting and practical space for conversation.",
     icon: Landmark,
   },
   {
     id: "client-hosting",
     title: "Client hosting & VIP",
-    body: "Discreet private programmes for visiting clients, leadership teams, partners and invited guests, shaped around who is attending and how the day needs to feel.",
+    body: "Discreet private programs for visiting clients, leadership teams, partners and invited guests, shaped around who is attending and how the day needs to feel.",
     detail: "Private settings · careful pacing · discreet coordination · NDAs welcome",
     icon: ClipboardCheck,
   },
@@ -267,7 +267,7 @@ function CorporatePage() {
             </p>
             <p className="mt-5 text-[15px] md:text-[16px] leading-[1.8] text-[color:var(--charcoal-soft)]">
               We design each corporate experience around the people, objective and pace of the
-              group — team-building days, incentive programmes, corporate retreats, executive
+              group — team-building days, incentive programs, corporate retreats, executive
               off-sites, client hosting and company celebrations, from leadership teams to groups of
               100+. Every route is grounded in real timings, suitable venues, local knowledge and
               practical delivery.
@@ -300,7 +300,7 @@ function CorporatePage() {
             <p className="mt-5 text-[15px] md:text-[16px] leading-[1.8] text-[color:var(--charcoal-soft)]">
               We operate across Portugal, combining the places a group may already know with the
               producers, landscapes, traditions and settings that give each region its character. A
-              programme can include Portugal's recognised highlights, quieter local encounters or a
+              programme can include Portugal's recognized highlights, quieter local encounters or a
               considered balance of both.
             </p>
             <p className="mt-5 text-[15px] md:text-[16px] leading-[1.8] text-[color:var(--charcoal-soft)]">
@@ -349,7 +349,7 @@ function CorporatePage() {
             </span>
           </p>
           <p className="mt-5 mx-auto max-w-[54ch] text-center text-[15px] md:text-[16px] leading-[1.8] text-[color:var(--charcoal-soft)] reveal">
-            Multi-day programmes are built with the same team behind our{" "}
+            Multi-day programs are built with the same team behind our{" "}
             <Link
               to="/portugal-travel-designer"
               className="underline decoration-[color:var(--gold)] underline-offset-4 text-[color:var(--charcoal)] hover:text-[color:var(--teal)]"
@@ -492,11 +492,11 @@ function CorporatePage() {
             to: "/trade",
             label: "Portugal ground partner for agencies and travel advisors",
             description:
-              "Agencies, incentive houses and travel advisors planning corporate programmes in Portugal work with us as their local supplier and destination support.",
+              "Agencies, incentive houses and travel advisors planning corporate programs in Portugal work with us as their local supplier and destination support.",
           },
           {
             to: "/portugal-travel-designer",
-            label: "Portugal travel designer for multi-day programmes",
+            label: "Portugal travel designer for multi-day programs",
             description:
               "When an off-site extends into a full journey across regions, the same team plans the complete private itinerary.",
           },

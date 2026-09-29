@@ -21,8 +21,8 @@ const processSteps = [
 ] as const;
 
 const benefits = [
-  "Completely personalised journey.",
-  "Real-time customisation as you design.",
+  "Completely personalized journey.",
+  "Real-time customization as you design.",
   "Instant confirmation and booking.",
   "Private, local guide support.",
   "Human help available whenever you need it.",

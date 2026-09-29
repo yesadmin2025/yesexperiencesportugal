@@ -130,7 +130,7 @@ export type DecisionProfileValidation =
  * BUILD 2 / Pass 4 — validator for the FULL decision profile.
  *
  * Identical to the legacy contract except that there is deliberately NO
- * max-selected limit: a traveller who asked for six things is never silently
+ * max-selected limit: a traveler who asked for six things is never silently
  * reduced to three before scoring.
  */
 export function validateDecisionProfile(profile: ExperienceProfile): DecisionProfileValidation {

@@ -81,7 +81,7 @@ export const Route = createFileRoute("/api/public/hooks/enquiry-followup")({
           const occasion = (row.source ?? "").split(":")[1] ?? "";
           const [firstName] = (row.name ?? "").split(" ");
 
-          // Only guests who actually travelled get a review request. An enquiry
+          // Only guests who actually traveled get a review request. An enquiry
           // alone is never enough: there must be a paid booking on this email
           // whose date has already passed.
           const { data: travelled, error: bookingError } = await supabaseAdmin

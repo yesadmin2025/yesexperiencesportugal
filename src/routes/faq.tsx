@@ -107,7 +107,7 @@ function FaqPage() {
           <div className="rounded-[6px] border border-[color:var(--gold)]/45 bg-[color:var(--sand)] p-7 md:p-10 text-center">
             <Eyebrow flank>Still deciding?</Eyebrow>
             <SectionTitle as="h2" size="compact" spacing="tight">
-              Ask a local, <SectionTitle.Em>not a call centre</SectionTitle.Em>.
+              Ask a local, <SectionTitle.Em>not a call center</SectionTitle.Em>.
             </SectionTitle>
             <p className="mt-4 text-[15px] leading-[1.75] text-[color:var(--charcoal-soft)]">
               Email{" "}

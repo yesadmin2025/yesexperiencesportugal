@@ -8,7 +8,7 @@ import type { RefineStop } from "./RefineStage";
  * The same cinematic SVG map style used on the homepage (StudioLivePreview),
  * but bound to the **real** edited stops the user has just designed. Renders
  * inline at the top of the Reveal so the builder visibly produces a tangible
- * draft the client can recognise and edit — not just a poetic vignette.
+ * draft the client can recognize and edit — not just a poetic vignette.
  *
  * Pure presentation. No invention. Coords are projected from real lat/lng.
  */

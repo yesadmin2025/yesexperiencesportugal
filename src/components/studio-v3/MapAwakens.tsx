@@ -77,7 +77,7 @@ function resolveSilhouetteRegion(
  * The trilogy resolves into ONE real Signature day (chosen from the
  * existing catalog — never invented). The map fades in, stops appear one
  * by one in cadence with a quiet editorial card that whispers each
- * moment's story. The traveller can pause, step manually, or let the
+ * moment's story. The traveler can pause, step manually, or let the
  * sequence unfold on its own.
  *
  * Strict reuse of BuilderMap so the cartography matches the rest of the
@@ -490,7 +490,7 @@ export function MapAwakens({
 
             {/* Cinematic vignette — soft dark wash at top + bottom for a
                 premium, Homepage-Studio-Preview feel. Pins and route stay
-                fully legible because the centre stays untouched. */}
+                fully legible because the center stays untouched. */}
             <div
               aria-hidden
               className="pointer-events-none absolute inset-0"

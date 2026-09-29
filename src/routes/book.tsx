@@ -10,7 +10,7 @@ import { SiteBreadcrumbs } from "@/components/SiteBreadcrumbs";
 import { Eyebrow } from "@/components/ui/Eyebrow";
 import { SectionTitle } from "@/components/ui/SectionTitle";
 import { CtaButton } from "@/components/ui/CtaButton";
-import { signatureTours, findTour } from "@/data/signatureTours";
+import { signatureTours, publicSignatureTours, findTour } from "@/data/signatureTours";
 import { guideAttributionMetadata } from "@/lib/guide-attribution";
 import { breadcrumbLd, jsonLdScript, localBusinessLd, itemListLd } from "@/lib/jsonld";
 import {
@@ -87,7 +87,7 @@ export const Route = createFileRoute("/book")({
         itemListLd({
           name: "Private day trips available to book",
           path: "/book",
-          items: signatureTours.map((t) => ({
+          items: publicSignatureTours.map((t) => ({
             id: t.id,
             name: t.title,
             description: t.blurb,
@@ -105,7 +105,7 @@ const STEPS = ["Your day", "Who & when", "Your details"] as const;
 const HOW_IT_WORKS = [
   {
     title: "You tell us the shape of the day",
-    body: "A date, who is travelling and what you love. Nothing more — the detail comes in conversation, not in a long form.",
+    body: "A date, who is traveling and what you love. Nothing more — the detail comes in conversation, not in a long form.",
   },
   {
     title: "A designer replies personally",
@@ -370,7 +370,7 @@ function BookPage() {
                         className={fieldClass}
                       >
                         <option value="">Not sure yet — help me choose</option>
-                        {signatureTours.map((t) => (
+                        {publicSignatureTours.map((t) => (
                           <option key={t.id} value={t.id}>
                             {t.title}
                           </option>
@@ -619,7 +619,7 @@ function BookPage() {
               pickup. The exact total for your dates and party size is shown before you pay.
             </p>
             <ul className="mt-8 grid gap-3" data-testid="booking-price-list">
-              {signatureTours.map((t) => (
+              {publicSignatureTours.map((t) => (
                 <li
                   key={t.id}
                   className="flex flex-col gap-3 rounded-[6px] border border-[color:var(--border)] bg-[color:var(--card)] p-5 sm:flex-row sm:items-center sm:justify-between"

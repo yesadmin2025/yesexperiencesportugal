@@ -732,7 +732,7 @@ function pickupAffinity(tour: SignatureTour, pickup: Pickup | null): number {
 
 /* ---------- Destination intent (soft additive boost) ---------- */
 //
-// Pickup ≠ destination. A traveller staying in Lisbon may still want
+// Pickup ≠ destination. A traveler staying in Lisbon may still want
 // inland Alentejo, Central Portugal, the Spiritual coast or Comporta.
 // destinationIntent is an OPTIONAL signal layered on top of pickup so
 // the resolver can land on the right Signature skeleton without
@@ -792,7 +792,7 @@ function allowsProfileDiscovery(destinationIntent: DestinationIntent | null | un
 }
 
 /**
- * When the traveller does not pick a fixed region, the Studio should still be
+ * When the traveler does not pick a fixed region, the Studio should still be
  * able to reach the strongest YES-only routes. This is not invention: it only
  * adds existing Signature tours to the candidate pool when the answers clearly
  * point there.
@@ -977,13 +977,13 @@ function mulberry32(seed: number): () => number {
 }
 
 /** Strong coherence regex: stops/tours that read as exclusively-family
- *  (children/playground language) must not surface when the traveller is
+ *  (children/playground language) must not surface when the traveler is
  *  solo/couple/proposal/corporate. AI predictive guardrail — never offer
  *  family-coded language to a couple. */
 const FAMILY_ONLY_RE =
   /\b(child(ren)?|kids|kid-friendly|playground|stroller|toddler|baby|babies)\b/i;
 /** Stops/tours that read as exclusively-couple/romantic-only must not
- *  surface when the traveller is corporate / family / friends. */
+ *  surface when the traveler is corporate / family / friends. */
 const ROMANTIC_ONLY_RE =
   /\b(honeymoon|just the two of you|for two|romantic dinner|proposal|engagement)\b/i;
 
@@ -1252,7 +1252,7 @@ export function scoreTourFit(
   }
   // STRUCTURAL WINE OBLIGATION. Some Signatures are commercially DEFINED by
   // their winery pool ("choose 2 to 4 wineries"): the visits are part of the
-  // product, not an option. Anchoring a traveller with no wine intent to such
+  // product, not an option. Anchoring a traveler with no wine intent to such
   // a product either forces wine on them or leaves the day unpriceable, so the
   // scaffold is strongly deprioritised in favour of the region's non-wine
   // Signatures. Read from the existing blueprint — never inferred from copy.
@@ -1352,7 +1352,7 @@ export function scoreTourFit(
  *  reshape) get the improved matching without a signature change. */
 /**
  * How much authority a preferred Signature id carries.
- * "explicit" = the traveller's own discriminative answer (absolute after
+ * "explicit" = the traveler's own discriminative answer (absolute after
  * the hard gates). "inferred" = the intelligence layer's guess (bounded
  * tie-break only).
  */
@@ -1413,7 +1413,7 @@ export function pickPrimaryTourWithFit(
   eligibleTourIds: ReadonlyArray<string> | null = null,
   /**
    * How much authority the preference carries.
-   *  - "explicit": the traveller answered a deliberate, discriminative
+   *  - "explicit": the traveler answered a deliberate, discriminative
    *    Director / discovery question (e.g. "Sacred heritage" →
    *    `templars-and-university` → `tomar-coimbra`). Honoured absolutely,
    *    but ONLY after the eligibility ceiling and the high-signal gate.
@@ -1464,7 +1464,7 @@ export function pickPrimaryTourWithFit(
         ? Array.from(allowed)
         : mergedIds;
   // EXPLICIT CHOICE ADMISSION. A deliberate, discriminative answer (e.g.
-  // "make cheese" → `azeitao-cheese`) names a product the traveller chose.
+  // "make cheese" → `azeitao-cheese`) names a product the traveler chose.
   // Taste-derived candidate merging can simply not contain it, which silently
   // turned the chosen moment into a different day. The named product is
   // therefore admitted into the pool — never widening past the preflight
@@ -1537,7 +1537,7 @@ export function pickPrimaryTourWithFit(
   });
   if (eligible.length === 0) eligible = reported;
 
-  // SEMANTIC GATE — a HIGH-SIGNAL interest is one the traveller could only
+  // SEMANTIC GATE — a HIGH-SIGNAL interest is one the traveler could only
   // have chosen deliberately (faith, hands-on workshops, wine). Satisfying
   // ONE of them is not a match: every explicitly selected high-signal
   // interest must be covered by VERIFIED stop-intent evidence (keyword-only
@@ -1617,7 +1617,7 @@ export function pickPrimaryTourWithFit(
   if (preferTourId) {
     // An explicit choice is looked up in the FULL scored set, not only in the
     // post-gate survivors: the semantic gates exist to rank what we guessed,
-    // never to overrule what the traveller actually chose.
+    // never to overrule what the traveler actually chose.
     const preferred =
       sorted.find((s) => s.tour.id === preferTourId) ??
       (preferStrength === "explicit"
@@ -1726,7 +1726,7 @@ export function curateJourney(
   // without touching curation logic. Always cite a source there.
   const rejections: CurationAuditRejection[] = [];
   // AI-predictive coherence: drop stops whose copy reads as exclusively
-  // family-coded (children/playground) when the traveller is not family,
+  // family-coded (children/playground) when the traveler is not family,
   // and the mirror case for romantic-only language offered to corporate.
   const cType = companionsType(companions);
   const blockFamilyCoded = cType === "couple" || cType === "solo" || cType === "corporate";
@@ -1902,9 +1902,9 @@ export function curateJourney(
 
 
 
-  // Wine is only forced into a day when the traveller actually asked for it.
+  // Wine is only forced into a day when the traveler actually asked for it.
   // A region choice is NOT a wine choice: "Arrábida, Setúbal & Azeitão" also
-  // resolves to boat, wild-beach, cheese and tile routes, and a traveller who
+  // resolves to boat, wild-beach, cheese and tile routes, and a traveler who
   // picked coast/culture with no wine interest must never have a named winery
   // pushed into (or swapped into) their day. The two Alentejo intents stay
   // because the traveller-visible label itself names the wine tradition.
@@ -2035,7 +2035,7 @@ export interface ResolvedStudioV3Route {
   routePoints: ResolvedRoutePoint[];
   /**
    * The FULL ordered composed route — never presentation-capped. This is the
-   * itinerary authority: every consumer that shows the traveller's day (reveal,
+   * itinerary authority: every consumer that shows the traveler's day (reveal,
    * story snapshot, resolved journey, checkout-facing state) must prefer this
    * over `routePoints`, which exists only for the compact 4-slot card.
    */
@@ -2060,7 +2060,7 @@ export interface ResolvedStudioV3Route {
   unsatisfiedHighSignal?: Interest[];
   /**
    * Living Atlas intelligence — grounded "why this direction fits you"
-   * lines derived from the traveller's leading dimensions. Empty when the
+   * lines derived from the traveler's leading dimensions. Empty when the
    * profile is too thin to reason safely. Never used for pricing.
    */
   livingAtlasReasons: string[];
@@ -2131,7 +2131,7 @@ export type LivingAtlasLiveBlock = {
   passthroughReason: HybridPassthroughReason | null;
   /** Structural resolution gate — certification only ever runs on `complete`. */
   compositionResolution: LivingAtlasCompositionResolution;
-  /** What the traveller actually sees as the bookable route. */
+  /** What the traveler actually sees as the bookable route. */
   liveResolution: LivingAtlasLiveResolution;
   /** Why the authored anchor was projected instead of the composition. */
   fallbackReason:
@@ -2288,7 +2288,7 @@ export function resolveStudioV3Route(input: {
   /** Reshape/reroll seed (usually `state.rerollCount`). 0 = original curation. */
   seed?: number | string;
   /**
-   * PREFLIGHT TRUTH — products that are actually sellable for this traveller's
+   * PREFLIGHT TRUTH — products that are actually sellable for this traveler's
    * exact date / pickup / party. Narrows candidate selection only; `null` or
    * empty leaves the historical behaviour untouched.
    */
@@ -2638,7 +2638,7 @@ export function resolveStudioV3Route(input: {
       considerations: input.considerations ?? [],
       existingRoutePointLabels: routePoints.map((p) => p.label),
     });
-    // Allow up to 4 total refinements so the traveller sees the personalized
+    // Allow up to 4 total refinements so the traveler sees the personalized
     // additions on top of the 1–2 base reasons.
     finalRefinements = [...baseRefinements, ...optional].slice(0, 4);
   }
@@ -2771,7 +2771,7 @@ function resolveLivingAtlasLiveDay(input: {
     rejectedStopIds: input.rejectedStopIds ?? [],
 
     // LIVE self-service branch: only moments an existing commercial authority
-    // can already price may enter a day the traveller can book unattended.
+    // can already price may enter a day the traveler can book unattended.
     commercialContainment: true,
     buildStory: customerStopBlurb,
   });
@@ -2966,7 +2966,7 @@ export const PICKUP_CITY_LABELS = ["Lisbon", "Cascais", "Sintra", "Setúbal", "C
 
 /**
  * Real lat/lng of the city the chosen pickup actually starts from, so the
- * "origin" map beat plants a pin where the traveller stands — not the
+ * "origin" map beat plants a pin where the traveler stands — not the
  * region centroid. Returns null when pickup hasn't been chosen yet.
  */
 export function pickupOriginCoord(
@@ -3067,7 +3067,7 @@ export function composeJourneyReasons(input: {
   if (city && city !== "your chosen starting point") {
     reasons.push(`Starts and ends near ${city}, no long transfers.`);
   } else if (input.companions === "family") {
-    reasons.push("Shaped to feel easy for everyone travelling with you.");
+    reasons.push("Shaped to feel easy for everyone traveling with you.");
   } else if (
     input.companions === "couple" ||
     input.occasion === "honeymoon" ||
@@ -3412,7 +3412,7 @@ export function isPhaseRelevant(phase: StudioV3Phase, state: StudioV3State): boo
   // framing before desire framing was the single largest conversion leak in
   // the funnel. The tier stays a soft scoring signal (see
   // `investmentPremiumScore`) and remains editable inside price disclosure;
-  // it is simply never a question the traveller has to answer to progress.
+  // it is simply never a question the traveler has to answer to progress.
   if (phase === "investment") return false;
 
   // Studio reform (2026-08): destination is INFERRED from feeling, interests
@@ -3429,7 +3429,7 @@ export function isPhaseRelevant(phase: StudioV3Phase, state: StudioV3State): boo
   // another material question exists. There is NO numeric cap: the phase
   // hosts 0..N sequential questions and ends when nothing material is left.
   if (phase === "refinement") {
-    // P10 — delegation mode: the traveller handed the taste layer to YES, so
+    // P10 — delegation mode: the traveler handed the taste layer to YES, so
     // the optional nuance question is simply irrelevant. It is SKIPPED, never
     // answered on their behalf.
     if (state.delegationMode === "yes-designs") return false;
@@ -3440,7 +3440,7 @@ export function isPhaseRelevant(phase: StudioV3Phase, state: StudioV3State): boo
       destinationIntent: state.destinationIntent,
       questionHistory: state.questionHistory,
     }).decision;
-    // Fail closed: an unpresentable question is never shown to a traveller.
+    // Fail closed: an unpresentable question is never shown to a traveler.
     return presentDirectorQuestion(decision) !== null;
   }
 
@@ -3481,7 +3481,7 @@ export const STUDIO_V3_PHASE_ORDER: StudioV3Phase[] = [
   "intro",
   // INSTANT-BOOKABLE TRUTH — the practical facts that decide what can be
   // SOLD (exact date, supported pickup area, party) are collected BEFORE the
-  // Studio spends the traveller's time designing. One compact screen.
+  // Studio spends the traveler's time designing. One compact screen.
   "logistics",
   "feeling",
   "who",
@@ -3961,7 +3961,7 @@ export function selectReplacementCandidates(input: {
   existingRoutePointLabels: ReadonlyArray<string>;
   /**
    * Explicit wine intent (see studioWineIntent.ts). When false, winery
-   * candidates are excluded outright: a non-wine traveller must never be
+   * candidates are excluded outright: a non-wine traveler must never be
    * offered — nor silently given — a cellar they did not ask for.
    * Defaults conservatively to the `wine` interest alone.
    */
@@ -3970,7 +3970,7 @@ export function selectReplacementCandidates(input: {
    * ISO yyyy-mm-dd of the day being composed. P8 hardening: candidates whose
    * operational registry says they are closed on that date are removed here,
    * so no post-curation replacement or extra moment can re-introduce a stop
-   * the traveller could not actually visit.
+   * the traveler could not actually visit.
    */
   dateExact?: string | null;
 }): OptionalStop[] {
@@ -4136,7 +4136,7 @@ export function applyReplacementCandidates(
 }
 
 /* ---------------------------------------------------------------------------
- * Phase 5G — One personalised extra moment (flag-gated, additive).
+ * Phase 5G — One personalized extra moment (flag-gated, additive).
  *
  * Adds AT MOST one extra routePoint from REGION_STOP_POOL when the
  * composed route has fewer than 4 points and rhythm is not "slow".
@@ -4176,7 +4176,7 @@ const EXTRA_MOMENT_STORY_FALLBACK: Record<OptionalStop["type"], string> = {
  * The `notes` field on REGION_STOP_POOL entries is INTERNAL ONLY — it
  * contains source-verification language ("Source-verified itinerary stop
  * from P3", "one-of-N winery option", "Supplier availability required",
- * etc.) that must never reach the traveller. This helper derives a short,
+ * etc.) that must never reach the traveler. This helper derives a short,
  * experiential line from the stop's type so the editor / swap pool / Story
  * of the Day always read like polished Signature notes.
  */
@@ -4414,7 +4414,7 @@ export function applyExtraMoment(
  * The base composition pipeline already filters mobility-unsafe candidates
  * out of REPLACEMENT pools (see `isReplacementDeniedByConsiderations`), but
  * an original Signature skeleton stop may still surface a cliff, cove,
- * cave, trail or steep viewpoint when the traveller flagged reduced
+ * cave, trail or steep viewpoint when the traveler flagged reduced
  * mobility / avoid-long-walks. This pass walks the composed routePoints
  * and, for any stop whose label/story implies difficult access, tries to
  * replace it with a safe same-family candidate from REGION_STOP_POOL. If

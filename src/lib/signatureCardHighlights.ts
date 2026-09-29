@@ -75,7 +75,7 @@ const CARD_HIGHLIGHTS_PT: Record<string, readonly [string, string, string]> = {
 const CARD_HIGHLIGHT_SELECTORS: Record<string, readonly HighlightSelector[]> = {
   "p23-artisan-pottery-cork": [
     { source: "highlight", value: "Hands-on cork workshop with local makers" },
-    { source: "highlight", value: "Three-hour pottery workshop at a ceramics and earth arts centre" },
+    { source: "highlight", value: "Three-hour pottery workshop at a ceramics and earth arts center" },
     { source: "includedLunch", label: "Lunch included" },
   ],
   "troia-comporta": [
@@ -114,7 +114,7 @@ const CARD_HIGHLIGHT_SELECTORS: Record<string, readonly HighlightSelector[]> = {
     { source: "highlight", value: "Joanina Library timed entry" },
   ],
   "evora-alentejo": [
-    { source: "highlight", value: "Évora UNESCO historic centre" },
+    { source: "highlight", value: "Évora UNESCO historic center" },
     { source: "highlight", value: "Roman Temple and Chapel of Bones" },
     { source: "highlight", value: "Two selected Alentejo winery visits and tastings" },
   ],

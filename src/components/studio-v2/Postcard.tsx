@@ -3,7 +3,7 @@
  *
  * Triggered ONCE, after MapReveal collapses, before the user lands on the
  * editable itinerary. The role is desire + keepsake + viral surface — a
- * single cinematic frame that the traveller can keep, share or carry
+ * single cinematic frame that the traveler can keep, share or carry
  * forward. Not a configurator screen.
  *
  * Composition (Studio philosophy: restraint > features):

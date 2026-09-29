@@ -1,3 +1,4 @@
+import { isPendingVenueSignature } from "./pendingSignatures";
 // rev 3 — multi-photo Viator galleries + per-stop images
 //
 // SOURCE-OF-TRUTH RULE (do not violate):
@@ -216,7 +217,7 @@ export const signatureTours: SignatureTour[] = [
     stops: [
       { label: "Cork workshop", story: "Work directly with cork alongside local makers.", imageTheme: "p23-artisan-pottery-cork" },
       { label: "Lunch", story: "Lunch is included.", imageTheme: "p23-artisan-pottery-cork" },
-      { label: "Pottery workshop", story: "A three-hour hands-on afternoon with clay at a ceramics and earth arts centre.", imageTheme: "p23-artisan-pottery-cork" },
+      { label: "Pottery workshop", story: "A three-hour hands-on afternoon with clay at a ceramics and earth arts center.", imageTheme: "p23-artisan-pottery-cork" },
     ],
     highlights: ["Hands-on cork workshop with local makers", "Three-hour pottery workshop", "Private guide, transport and lunch included"],
     included: ["Private transportation", "Air-conditioned vehicle", "Cork Workshop", "Pottery Workshop", "Bottled water", "Admission Fee", "Private Local Guide", "Lunch"],
@@ -486,7 +487,7 @@ export const signatureTours: SignatureTour[] = [
     title: "Arrábida & Sesimbra Private Tour with Coastal Boat Ride",
     seoTitle: "Arrábida & Sesimbra Private Boat Tour from Lisbon | YES",
     seoDescription:
-      "Private Arrábida day trip from Lisbon with a coastal boat ride into hidden coves, seafood lunch and golden-hour Sesimbra. All-inclusive.",
+      "Private Arrábida day trip from Lisbon with a coastal boat ride along the Arrábida cliffs, Livramento Market and time in Sesimbra. Lunch at your own expense.",
     region: "Setúbal · Arrábida",
     duration: "Full Day",
     durationHours: "6–8h",
@@ -702,7 +703,7 @@ export const signatureTours: SignatureTour[] = [
       "Hands-on cheese making in Azeitão, a selected winery tasting nearby, then sea air and the castle above Sesimbra.",
 
     intro:
-      "You won't watch — you'll work. In a small Azeitão dairy, hands deep in fresh curd, you shape the cheese that built this village's reputation. The afternoon answers with wine from the next farm and a quiet table by the sea in Sesimbra.",
+      "You won't watch — you'll work. In a small Azeitão dairy, hands deep in fresh curd, you shape the cheese that built this village's reputation. The afternoon answers with a tasting at a local winery, then sea air and the castle above Sesimbra. Lunch is yours to choose, at your own expense.",
     fitsBest: "Foodies, couples and curious first-timers",
     pace: ["Cheese workshop", "Winery tasting", "Sesimbra"],
     stops: [
@@ -784,10 +785,10 @@ export const signatureTours: SignatureTour[] = [
   },
   {
     id: "sintra-cascais",
-    title: "Sintra & Cascais Private Tour — Hidden Gems & Wine Tasting",
+    title: "Sintra & Cascais Private Tour — Palaces, Wine & Atlantic Coast",
     seoTitle: "Sintra & Cascais Private Tour from Lisbon | Hidden Gems",
     seoDescription:
-      "Private Sintra and Cascais day from Lisbon — quieter palaces, Cabo da Roca, Atlantic cliffs and a local wine tasting. All-inclusive.",
+      "Private Sintra and Cascais day from Lisbon — one palace plus a Colares wine tasting, or two palaces, then Cabo da Roca and Cascais.",
     region: "Lisbon Coast",
     duration: "Full Day",
     durationHours: "8–10h",
@@ -1007,7 +1008,7 @@ export const signatureTours: SignatureTour[] = [
     title: "Évora & Alentejo Wine Private Tour from Lisbon — Local Traditions",
     seoTitle: "Alentejo Wine Tour from Lisbon — Private Évora UNESCO Day",
     seoDescription:
-      "Alentejo wine tour from Lisbon — private day to Évora's Roman temple and Chapel of Bones, two family wineries and a slow lunch in vineyard country.",
+      "Alentejo wine tour from Lisbon — private day to Évora's Roman temple and Chapel of Bones, two selected family wineries and a cork production site. Lunch at your own expense.",
     region: "Alentejo",
     duration: "Long Day",
     durationHours: "9–11h",
@@ -1016,7 +1017,7 @@ export const signatureTours: SignatureTour[] = [
     blurb:
       "The Roman Temple and Chapel of Bones in Évora, two selected Alentejo wineries and a traditional cork-production visit.",
     intro:
-      "Alentejo unwinds you. We walk Évora's historic centre slowly — the Roman Temple, the Chapel of Bones — then head into two selected Alentejo wineries and a traditional cork-production visit. Lunch is not included, so the day keeps its own rhythm.",
+      "Alentejo unwinds you. We walk Évora's historic center slowly — the Roman Temple, the Chapel of Bones — then head into two selected Alentejo wineries and a traditional cork-production visit. Lunch is not included, so the day keeps its own rhythm.",
     fitsBest: "History buffs, wine lovers and couples",
     pace: ["Évora old town", "Chapel of Bones", "Alentejo winery"],
     stops: [
@@ -1041,7 +1042,7 @@ export const signatureTours: SignatureTour[] = [
       {
         label: "Joao Portugal Ramos Wines",
         story:
-          "Itinerary option — modern winemaking that honours traditional Alentejo grape varieties.",
+          "Itinerary option — modern winemaking that honors traditional Alentejo grape varieties.",
         imageTheme: "evora-alentejo",
       },
       {
@@ -1078,7 +1079,7 @@ export const signatureTours: SignatureTour[] = [
     highlights: [
       "Walking tour of UNESCO Évora",
       "The famous Chapel of Bones",
-      "Tasting and lunch at an Alentejo winery",
+      "Tastings at two selected Alentejo wineries (lunch own expense)",
       "Drive through cork-oak country",
     ],
     included: [
@@ -1203,10 +1204,10 @@ export const signatureTours: SignatureTour[] = [
   },
   {
     id: "fatima-nazare-obidos",
-    title: "Fátima, Nazaré & Óbidos Private Tour from Lisbon — Spirit & Charm",
+    title: "Fátima, Nazaré & Óbidos Private Tour from Lisbon",
     seoTitle: "Fátima, Nazaré & Óbidos Private Tour from Lisbon | YES",
     seoDescription:
-      "Private day from Lisbon to Fátima sanctuary, Nazaré's big-wave cliffs and Óbidos medieval walls, ending with a Ginjinha tasting.",
+      "Private day from Lisbon to Fátima sanctuary, Nazaré's cliffs and beach and Óbidos medieval walls, ending with a Ginjinha tasting.",
     region: "Centro · Coast",
     duration: "Full Day",
     durationHours: "8–9h",
@@ -1215,7 +1216,7 @@ export const signatureTours: SignatureTour[] = [
     blurb:
       "The Sanctuary of Fátima, Nazaré's cliff viewpoint and Atlantic coast, the medieval lanes of Óbidos and a Ginjinha tasting.",
     intro:
-      "Three landmarks, one perfectly composed day. Faith in Fátima, the awe of Nazaré's giant Atlantic waves, and the medieval streets of Óbidos finished off with a small ceramic cup of cherry liqueur.",
+      "Three landmarks, one perfectly composed day. Faith in Fátima, Nazaré's Atlantic cliffs — where the giant waves arrive in winter — and the medieval streets of Óbidos finished off with a small ceramic cup of cherry liqueur.",
     fitsBest: "Pilgrims, couples and families",
     pace: ["Fátima sanctuary", "Nazaré cliffs", "Óbidos & Ginjinha"],
     stops: [
@@ -1230,7 +1231,7 @@ export const signatureTours: SignatureTour[] = [
       {
         label: "Nazare",
         story:
-          "Atlantic fishing town and big-wave capital — traditional lunch, the Sítio viewpoint, the lighthouse over the canyon.",
+          "Atlantic fishing town, famous for giant winter waves — traditional lunch, the Sítio viewpoint, the lighthouse over the canyon.",
         imageTheme: "fatima-nazare-obidos",
         image: imgFatimaNazare,
         focal: "50% 50%",
@@ -1258,7 +1259,7 @@ export const signatureTours: SignatureTour[] = [
     ],
     highlights: [
       "Time for reflection at the Fátima sanctuary",
-      "The famous Nazaré big-wave viewpoint",
+      "Nazaré viewpoint over the big-wave canyon (giant waves are seasonal, mainly in winter)",
       "Walk inside Óbidos's medieval walls",
       "Ginjinha tasting in a chocolate cup",
     ],
@@ -1307,7 +1308,7 @@ export const signatureTours: SignatureTour[] = [
     blurb:
       "Roman ruins, amphora wines and a hidden Alentejo most travelers never reach — a quiet inland day with deep roots.",
     intro:
-      "Two thousand years ago the Romans were already making wine in this corner of the Alentejo. We follow their road south — to the ruins of São Cucufate, a tiny family cellar still pressing wine into clay amphorae the old way, and a river beach almost no one knows. The slowest day in our catalogue. The most surprising.",
+      "Two thousand years ago the Romans were already making wine in this corner of the Alentejo. We follow their road south — to the ruins of São Cucufate, a tiny family cellar still pressing wine into clay amphorae the old way, and a quiet river beach to close the day, with a traditional lunch at the winery.",
     fitsBest: "Couples, wine lovers and curious travelers",
     pace: ["Roman ruins", "Talha winery", "River beach"],
     stops: [
@@ -1394,7 +1395,7 @@ export const signatureTours: SignatureTour[] = [
   },
   {
     id: "southwest-vicentine-coast",
-    title: "Southwest Vicentine Coast — Secret Paradise from Lisbon",
+    title: "Southwest Vicentine Coast Private Tour from Lisbon",
     seoTitle: "Southwest Vicentine Coast Tour from Lisbon | Secret Beaches",
     seoDescription:
       "Private day from Lisbon to the Vicentine Coast — Porto Covo, Milfontes, Odeceixe and protected cliffs along one of Portugal's wildest shores.",
@@ -1531,3 +1532,10 @@ export function stopImage(stop: TourStop): string {
 export function stopFocal(stop: TourStop): string {
   return stop.focal ?? "50% 50%";
 }
+
+/**
+ * Signatures that may appear in public catalogues, sitemaps and reserve
+ * flows. Pending-venue Signatures stay in `signatureTours` (data intact) but
+ * are hidden publicly until their venues are verified.
+ */
+export const publicSignatureTours = signatureTours.filter((t) => !isPendingVenueSignature(t.id));

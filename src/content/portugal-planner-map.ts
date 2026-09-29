@@ -177,7 +177,7 @@ const PLACE_SEEDS: readonly PlaceSeed[] = [
   {
     id: "evora",
     label: "Évora",
-    note: "The Roman temple, the bone chapel and the walled centre.",
+    note: "The Roman temple, the bone chapel and the walled center.",
     geoKey: "evora",
     tourIds: ["evora-alentejo"],
   },
@@ -338,7 +338,7 @@ const PLACE_SEEDS: readonly PlaceSeed[] = [
   {
     id: "porto-santo",
     label: "Porto Santo",
-    note: "Nine kilometres of golden sand, an hour by air from Madeira.",
+    note: "Nine kilometers of golden sand, an hour by air from Madeira.",
     lat: 33.06,
     lon: -16.34,
     area: "islands",

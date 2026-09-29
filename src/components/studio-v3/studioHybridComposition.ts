@@ -4,7 +4,7 @@
  *
  * BUILD 1 / Pass 3. This module is NOT a second composer. It holds no
  * scoring, no admission rule, no time model and no count rule. It:
- *   1. classifies the authored skeleton points and the traveller's explicit
+ *   1. classifies the authored skeleton points and the traveler's explicit
  *      obligations,
  *   2. calls `composeLivingAtlasDay()` once,
  *   3. projects the resulting real moments back onto route points.
@@ -13,7 +13,7 @@
  *  - SIGNATURE = operational skeleton, NEVER the final result. A generic
  *    Signature core/supporting moment is a candidate/default, not sacred: it
  *    may be omitted, replaced or reorganised.
- *  - Only EXPLICIT traveller obligations (principal / must-include) and
+ *  - Only EXPLICIT traveler obligations (principal / must-include) and
  *    verified mandatory operational nodes are protected.
  *  - TIME is the authority. `maxPoints` is deprecated and behaviour-free.
  *  - Region / route cluster containment, one-of groups, type caps, active
@@ -310,7 +310,7 @@ export function composeHybridDay(
     input.mandatoryOperationalLabels ?? [],
   );
 
-  // ONLY explicit traveller obligations and VERIFIED mandatory operational
+  // ONLY explicit traveler obligations and VERIFIED mandatory operational
   // nodes are protected. Generic Signature core moments are deliberately NOT
   // promoted to mustInclude.
   const principalStopIds = [...new Set(input.principalStopIds ?? [])].filter((stopId) =>
@@ -402,7 +402,7 @@ export function composeHybridDay(
 
   const roleFor = (stop: OptionalStop): HybridMomentRole => {
     // `required-operational` is reserved for verified mandatory operational
-    // nodes only. A required TYPE is a traveller EXPERIENCE obligation.
+    // nodes only. A required TYPE is a traveler EXPERIENCE obligation.
     if (operationalIds.has(stop.id)) return "required-operational";
     if (principalIds.has(stop.id)) return "principal";
     if (requiredTypes.has(stop.type)) return "principal";
@@ -423,7 +423,7 @@ export function composeHybridDay(
     if (!entry.stop) {
       // SELF-SERVICE CONTAINMENT: a skeleton default with no inventory identity
       // carries no structural minute truth, so it can never be part of a day
-      // the traveller books unattended. Verified mandatory operational nodes
+      // the traveler books unattended. Verified mandatory operational nodes
       // still pass through — their minutes arrive as internal transit.
       if (input.commercialContainment && !entry.mandatory) {
         omittedSlots.push(entry.point.label);

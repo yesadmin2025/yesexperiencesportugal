@@ -4,7 +4,7 @@ import { memo } from "react";
  * PortugalSilhouette — ambient geographic anchor.
  *
  * Faint, stylised silhouette of mainland Portugal that lives behind the
- * Studio V3 phases. As the traveller progresses through the conversation,
+ * Studio V3 phases. As the traveler progresses through the conversation,
  * the coastline draws itself in (teal) and — when a region intent is
  * inferred — a soft gold pulse settles where the journey is taking
  * shape. The point is anticipation: the map exists *before* it awakens.

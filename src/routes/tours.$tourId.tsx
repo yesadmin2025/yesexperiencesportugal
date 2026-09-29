@@ -1,3 +1,4 @@
+import { isPendingVenueSignature } from "@/data/pendingSignatures";
 import { SITE_RATING_LABEL } from "@/config/trust-certificate";
 import { ShareDayButton } from "@/components/ShareDayButton";
 import {
@@ -13,6 +14,7 @@ import { SiteLayout } from "@/components/SiteLayout";
 import { SiteBreadcrumbs } from "@/components/SiteBreadcrumbs";
 import { Clock, MapPin, ArrowLeft, Check, Sparkles, Info, Heart, Shield, Star } from "lucide-react";
 import {
+  publicSignatureTours,
   signatureTours,
   findTour,
   isValidTourId,
@@ -78,6 +80,11 @@ export const Route = createFileRoute("/tours/$tourId")({
         statusCode: 301,
         replace: true,
       });
+    }
+    // Pending-venue Signatures are not publicly released yet: no page, no
+    // reserve flow. Data stays intact for release (see pendingSignatures.ts).
+    if (isPendingVenueSignature(params.tourId)) {
+      throw redirect({ to: "/experiences", statusCode: 302, replace: true });
     }
   },
   loader: async ({ params }) => {
@@ -414,7 +421,13 @@ function TourHero({
   const adminCover = adminPhotos[0];
   const heroSrc =
     adminCover?.src ?? meta?.localGallery?.[0]?.src ?? meta?.gallery?.[0] ?? heroResolved.src;
-  const heroSrcSet = adminCover?.srcSet ?? heroResolved.srcSet;
+  // A srcset must describe the same photo as `src`; never pair gallery/admin
+  // sources with the bundled image's derivatives.
+  const heroSrcSet = adminCover
+    ? adminCover.srcSet
+    : heroSrc === heroResolved.src
+      ? heroResolved.srcSet
+      : undefined;
   const heroAlt = adminCover?.alt || getHeroAlt(tour, meta);
   return (
     <>
@@ -593,7 +606,7 @@ function IntroBlock({ tour }: { tour: SignatureTour }) {
          <DirectAnswer>
            {tour.title} is a private {tour.duration.toLowerCase()} experience in{" "}
            {tour.region}, lasting {signatureDurationLabel(tour.id, tour.durationHours)}, from €
-           {tour.priceFrom} per person. It is reserved online with instant confirmation and
+            {tour.priceFrom} per person. It is reserved online with instant confirmation.{" "}
             {CANCELLATION.signature.en}
          </DirectAnswer>
       </div>
@@ -1040,7 +1053,7 @@ function RelatedTours({ currentId }: { currentId: string }) {
   // every href is built from the canonical `/tours/$tourId` route.
   const current = signatureTours.find((t) => t.id === currentId);
   const currentRegion = (current?.region ?? "").trim().toLowerCase();
-  const pool = signatureTours.filter((t) => t.id !== currentId && isValidTourId(t.id));
+  const pool = publicSignatureTours.filter((t) => t.id !== currentId && isValidTourId(t.id));
   const sameRegion = pool.filter((t) => t.region.trim().toLowerCase() === currentRegion);
   const others = [...sameRegion, ...pool.filter((t) => !sameRegion.includes(t))].slice(0, 3);
   const { resolveImg } = useImportedTourImages();

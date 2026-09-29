@@ -1,14 +1,14 @@
 import type { DwellSource } from "@/lib/studio-v3/timeDomain";
 /**
  * studioRouteAuthority — ONE projection of route-shaping state, and ONE
- * authority chain for the traveller's itinerary.
+ * authority chain for the traveler's itinerary.
  *
  * P8 hardening. Two problems this module removes:
  *
  *  1. Every downstream surface used to hand-build its own object for
  *     `resolveStudioV3Route`, and each one forgot a different field
  *     (`dateExact` here, `refinement` there, the reshape seed everywhere).
- *     The day the traveller saw could therefore differ from the day the
+ *     The day the traveler saw could therefore differ from the day the
  *     snapshot, CurtainRise or the resolved journey computed.
  *  2. The composed route is the product; the Signature (`tourId`) is only the
  *     technical pricing / geographic / operational anchor. A resolved or
@@ -115,9 +115,9 @@ export function resolveStudioRouteFromState(state: StudioV3State): ResolvedStudi
  * pricing, region and source truth, and can never replace custom moments.
  *
  * PASS 4: `committedRoutePoints` is the snapshot taken once, on the first
- * reveal of Your Day. It sits BELOW traveller edits and ABOVE any fresh
+ * reveal of Your Day. It sits BELOW traveler edits and ABOVE any fresh
  * resolver output, so logistics facts (date/pickup/party) can never cause a
- * second composition to replace the itinerary the traveller was shown.
+ * second composition to replace the itinerary the traveler was shown.
  */
 export function resolveAuthoritativeRouteStops(args: {
   editedRoutePoints?: ReadonlyArray<RoutePointLike> | null;
@@ -136,7 +136,7 @@ export function resolveAuthoritativeRouteStops(args: {
 }): StudioRouteStop[] {
 
   // Identity passes through UNTOUCHED — a moment that knew its structural or
-  // media identity must never lose it by travelling through the chain.
+  // media identity must never lose it by traveling through the chain.
   const normalize = (points: ReadonlyArray<RoutePointLike>): StudioRouteStop[] =>
     points.map((p) => ({
       label: p.label,
@@ -189,7 +189,7 @@ export function resolveAuthoritativeRouteStops(args: {
  * unchanged canonical Signature route.
  *
  * FALSE whenever:
- *  - the traveller manually edited the route (`editedRoutePoints`), OR
+ *  - the traveler manually edited the route (`editedRoutePoints`), OR
  *  - Living Atlas explicitly reports `liveResolution === "composed"`, OR
  *  - the authoritative route differs in membership or order from the catalog
  *    Signature stops (this covers automatic legacy composition, replacement,

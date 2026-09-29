@@ -2,7 +2,7 @@ import type { TravelerProfile } from "@/lib/studio-v2/profile";
 import { INTENT_OPTIONS, PACE_OPTIONS, DURATION_OPTIONS, tierLabel } from "@/lib/studio-v2/content";
 
 /**
- * MemoryDeck — tangible record of every choice the traveller has made.
+ * MemoryDeck — tangible record of every choice the traveler has made.
  * A small horizontal stack of "memory cards" that grows as the journey
  * unfolds. Replaces the abstract progress bar with something the
  * user can SEE accumulating. Tap a card to jump back to that beat.

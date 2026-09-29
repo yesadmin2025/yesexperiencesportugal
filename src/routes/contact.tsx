@@ -273,7 +273,7 @@ function Page() {
                   defaultValue={presetRequestType}
                 />
                 <Field
-                  label="When are you travelling? (optional)"
+                  label="When are you traveling? (optional)"
                   name="travelDate"
                   type="date"
                   required={false}

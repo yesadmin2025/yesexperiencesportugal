@@ -389,7 +389,7 @@ function TailorPage() {
        // checked by the shared feasibility engine; nothing is auto-removed.
       const option0 = blueprint?.choice?.options.find((o) => o.id === id);
       // Only Signatures with an owner-approved winery supplement ladder may
-      // INCREASE the winery count. Everywhere else the traveller swaps at
+      // INCREASE the winery count. Everywhere else the traveler swaps at
       // the blueprint baseline — we never hand out an unpriced extra stop.
       if (
         option0?.category === "winery" &&
@@ -459,7 +459,7 @@ function TailorPage() {
   // Optional stops surfaced by Viator (passBy=true). Filtered for
   // geographic sanity: Viator's passBy list includes hub cities used
   // as orientation (e.g. "Lisbon" on a Southwest Coast tour). Drop
-  // anything > ~120 km from this tour's own centre so we never offer
+  // anything > ~120 km from this tour's own center so we never offer
   // a nonsensical add-on. There is no arbitrary global edit counter.
   const optionalStops = useMemo(() => {
     const raw = (meta?.stops ?? []).filter((s) => s.passBy).map((s) => s.name);
@@ -517,7 +517,7 @@ function TailorPage() {
   const summaryTotal = useMemo(() => {
     if (!blueprint) return (tour.stops ?? []).length;
     const coreKept = blueprint.core.filter((s) => !skippedCore.has(s.id)).length;
-    // Use the traveller's current selection count so the summary reflects
+    // Use the traveler's current selection count so the summary reflects
     // reality once they scale a wine-forward tour up to pickMax.
     const choiceTarget = blueprint.choice ? choiceSelected.size : 0;
     return coreKept + choiceTarget + optionalSelected.size;
@@ -724,7 +724,7 @@ function TailorPage() {
   ]);
 
   // ─── Wine-extension state ───────────────────────────────────
-  // A "wine extension" = the traveller picked MORE wineries than the
+  // A "wine extension" = the traveler picked MORE wineries than the
   // Signature's baseline `pickMin`. Without an approved supplement ladder
   // there is no price for it, so it can't be sold instantly.
   const wineExtension = useMemo(() => {
@@ -751,7 +751,7 @@ function TailorPage() {
   const showMinorsWineAdvisory = hasWinerySurface && hasMinors;
 
   // Removable-stop suggestions when the day is at capacity — surfaced
-  // as advice only. Never auto-removed; the traveller decides.
+  // as advice only. Never auto-removed; the traveler decides.
   const removableCoreLabels = useMemo(() => {
     if (!blueprint) return [] as string[];
     return blueprint.core.filter((s) => !s.lock && !skippedCore.has(s.id)).map((s) => s.label);
@@ -1934,7 +1934,7 @@ function Stepper({
         type="button"
         onClick={() => onChange(Math.max(min, value - 1))}
         className="px-4 py-2.5 text-lg leading-none text-[color:var(--charcoal-soft)] hover:text-[color:var(--charcoal)]"
-        aria-label="Decrease traveller count"
+        aria-label="Decrease traveler count"
       >
         −
       </button>
@@ -1943,7 +1943,7 @@ function Stepper({
         type="button"
         onClick={() => onChange(Math.min(max, value + 1))}
         className="px-4 py-2.5 text-lg leading-none text-[color:var(--charcoal-soft)] hover:text-[color:var(--charcoal)]"
-        aria-label="Increase traveller count"
+        aria-label="Increase traveler count"
       >
         +
       </button>

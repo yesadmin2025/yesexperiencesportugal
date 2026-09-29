@@ -1,7 +1,7 @@
 // Studio V3 — Track 5: Regional voice.
 //
 // Maps a Signature tour's `region` string to a small "voice" packet
-// (eyebrow + atmosphere word) used to colour transitions and the
+// (eyebrow + atmosphere word) used to color transitions and the
 // investment ribbon. Never invents partners, stops or prices — only the
 // felt tone of the place. Keep it short, sentence-fragment style, in
 // brand voice.

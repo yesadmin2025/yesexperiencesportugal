@@ -3,7 +3,7 @@ import { REVIEW_CERTIFICATE, REVIEW_COUNT_DISPLAY, SITE_RATING_LABEL } from "@/c
  * StudioTrustStrip — micro 18px-tall trust line that sits just below the
  * conversion HUD inside the cinematic Studio.
  *
- * Studio v4 / Fase 6: gives the traveller a permanent, low-noise reminder
+ * Studio v4 / Fase 6: gives the traveler a permanent, low-noise reminder
  * that YES carries a verified 4.9 rating across 1,000 guest reviews,
  * without breaking the cinematic atmosphere.
  *

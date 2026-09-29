@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 import { breadcrumbLd, itemListLd, jsonLdScript } from "@/lib/jsonld";
 import { SiteLayout } from "@/components/SiteLayout";
 import { SiteBreadcrumbs } from "@/components/SiteBreadcrumbs";
-import { signatureTours, type SignatureTour } from "@/data/signatureTours";
+import { signatureTours, publicSignatureTours, type SignatureTour } from "@/data/signatureTours";
 import { getTourContent, signatureDurationLabel } from "@/lib/tourContent";
 import { useImportedTourImages } from "@/hooks/use-imported-tour-images";
 import { TourImage } from "@/components/tours/TourImage";
@@ -79,7 +79,7 @@ export const Route = createFileRoute("/experiences")({
         itemListLd({
           name: "Signature Experiences",
           path: "/experiences",
-          items: signatureTours.map((tour) => ({
+          items: publicSignatureTours.map((tour) => ({
             id: tour.id,
             name: tour.title,
             description: tour.blurb,
@@ -99,7 +99,7 @@ function ExperiencesPage() {
   // The catalogue is source-controlled and must never wait on a network call.
   // Published editorial overrides enhance the already-visible cards after hydration.
   useEffect(() => {
-    void import("@/lib/analytics-events").then((a) => a.trackEvent("view_item_list", { list_id: "experiences", item_count: signatureTours.length }));
+    void import("@/lib/analytics-events").then((a) => a.trackEvent("view_item_list", { list_id: "experiences", item_count: publicSignatureTours.length }));
   }, []);
 
   useEffect(() => {
@@ -116,7 +116,7 @@ function ExperiencesPage() {
   const { resolveImg } = useImportedTourImages();
   const [selectedTours, setSelectedTours] = useState<string[]>([]);
   const [activeFilter, setActiveFilter] = useState<ExperienceFilter>("all");
-  const tours = signatureTours.map((tour) => {
+  const tours = publicSignatureTours.map((tour) => {
     const canonicalContent = getTourContent(tour.id);
     const override = contentOverrides.find((row) => row.tourId === tour.id);
     return override

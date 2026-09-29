@@ -9,7 +9,7 @@ import { SectionTitle } from "@/components/ui/SectionTitle";
 import { TourImage } from "@/components/tours/TourImage";
 import { PriceCurrencyChip } from "@/components/PriceCurrencyChip";
 import { PriceEur } from "@/components/ui/PriceEur";
-import { signatureTours } from "@/data/signatureTours";
+import { signatureTours, publicSignatureTours } from "@/data/signatureTours";
 import { useImportedTourImages } from "@/hooks/use-imported-tour-images";
 import { itemListLd, jsonLdScript, studioServiceLd } from "@/lib/jsonld";
 
@@ -50,7 +50,7 @@ export const Route = createFileRoute("/pt/")({
         itemListLd({
           name: "Experiências Signature — YES Experiences Portugal",
           path: "/pt",
-          items: signatureTours.map((t) => ({
+          items: publicSignatureTours.map((t) => ({
             id: t.id,
             name: t.title,
             description: t.blurb,
@@ -123,7 +123,7 @@ function PtHomePage() {
               title: "Desenhe o seu dia",
               body: "Um estúdio interativo onde compõe a sua experiência em tempo real — ritmo, paragens, mesa, guia — com ajuda editorial ao seu lado.",
               href: "/",
-              cta: "Abrir o Studio (EN)",
+              cta: "Abrir o Studio · em inglês",
               external: true,
             },
             {

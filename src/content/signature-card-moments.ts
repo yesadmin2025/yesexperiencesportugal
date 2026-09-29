@@ -59,7 +59,7 @@ export const SIGNATURE_CARD_MOMENTS: Record<string, [string, string, string]> = 
     "Carrasqueira stilt pier and Atlantic beaches",
   ],
   "evora-alentejo": [
-    "Évora UNESCO historic centre",
+    "Évora UNESCO historic center",
     "Roman Temple and Chapel of Bones",
     "Two selected Alentejo wineries and a cork-production visit",
   ],

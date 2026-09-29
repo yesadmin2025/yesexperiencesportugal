@@ -105,7 +105,7 @@ type Social = "intimate" | "shared";
 
 export interface DriftProfile {
   name?: string;
-  /** Number of travellers — REAL data used for pricing. */
+  /** Number of travelers — REAL data used for pricing. */
   guests?: number;
   companions?: Companions;
   pickup?: PickupRegion;
@@ -381,7 +381,7 @@ type ChapterKind = "drift" | "text" | "choice" | "convergence";
 interface DriftChapter {
   kind: "drift";
   id: string;
-  /** Function so we can weave the traveller name in once we know it. */
+  /** Function so we can weave the traveler name in once we know it. */
   whisper: (p: DriftProfile, locale: DriftLocale) => string;
   scenes: Scene[];
   holdMs: number;
@@ -844,7 +844,7 @@ export function StudioDrift({ onExit }: Props) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [inferredProfile, liveRegion, chapterIdx, prediction.tonalRegister],
   );
-  // Sticky build-preview must only surface AFTER the traveller has chosen
+  // Sticky build-preview must only surface AFTER the traveler has chosen
   // a pickup region — otherwise we display a fabricated stop ("Livramento
   // market, Setúbal") for someone who hasn't said where they want to start.
   // That breaks the no-invention rule and confuses the rhythm.
@@ -1235,7 +1235,7 @@ export function StudioDrift({ onExit }: Props) {
           />
           {/* Trust strip — CONTEXTUAL only. Bible says no static OTA-chrome.
               Show during the mid-flow doubt window (chapters 6-9: duration→style)
-              where travellers most often stall before committing to a tier. */}
+              where travelers most often stall before committing to a tier. */}
           {chapterIdx >= 6 && chapterIdx <= 9 && (
             <StudioTrustStrip reviewsLabel={tt("trust.reviews", locale) || "reviews"} />
           )}
@@ -1599,7 +1599,7 @@ function ChoicePhase({
     return sorted;
   }, [chapter.options, sceneWeighting, prediction, confidence]);
 
-  // Predictive cue retired: the AI personalised line (AiWhisper, rendered
+  // Predictive cue retired: the AI personalized line (AiWhisper, rendered
   // by the parent) now owns this slot, with a delayed entry so it never
   // overlaps the chapter headline.
   void predictiveCue;
@@ -2685,7 +2685,7 @@ function ChapterFade({ chapterId }: { chapterId: string }) {
 /**
  * AiWhisper — surfaces the personalized AI fragment produced by
  * composeStudioMoment. This is the visible proof of the predictive
- * engine: each traveller sees a different sensory line at a different
+ * engine: each traveler sees a different sensory line at a different
  * moment, threaded with their behavior, profile and stage. Auto-fades
  * after ~5.5s so it never blocks interaction. Reduced-motion safe.
  */
@@ -2693,7 +2693,7 @@ function AiWhisper({ text, locale }: { text: string; locale?: DriftLocale }) {
   const [opacity, setOpacity] = useState(0);
   useEffect(() => {
     // Delay entry so the chapter headline lands first — prevents
-    // the personalised line from overlapping the question.
+    // the personalized line from overlapping the question.
     const t1 = window.setTimeout(() => setOpacity(0.96), 2400);
     const t2 = window.setTimeout(() => setOpacity(0), 8200);
     return () => {

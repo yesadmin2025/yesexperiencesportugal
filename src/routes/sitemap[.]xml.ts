@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import type {} from "@tanstack/react-start";
-import { signatureTours } from "@/data/signatureTours";
+import { signatureTours, publicSignatureTours } from "@/data/signatureTours";
 import {
   LOCAL_STORIES_ARTICLES,
   PUBLISHED_LOCAL_STORIES_ARTICLES,
@@ -43,7 +43,7 @@ export const Route = createFileRoute("/sitemap.xml")({
           "troia-comporta",
           "roman-heritage-alentejo",
         ]);
-        const tourEntries: SitemapEntry[] = signatureTours.map((t) => ({
+        const tourEntries: SitemapEntry[] = publicSignatureTours.map((t) => ({
           path: `/tours/${t.id}`,
           changefreq: "monthly",
           priority: SEO_FOCUS_TOUR_IDS.has(t.id) ? "0.95" : "0.7",

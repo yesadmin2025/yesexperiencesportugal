@@ -62,7 +62,7 @@ const ROUTES = [
   {
     days: "7 days",
     name: "Lisbon, the Alentejo and the coast",
-    body: "The five-day shape plus two slower days inland — Évora, marble villages, talha wine — or south to the Vicentine coast. This is the version for travellers who want quiet more than sights.",
+    body: "The five-day shape plus two slower days inland — Évora, marble villages, talha wine — or south to the Vicentine coast. This is the version for travelers who want quiet more than sights.",
     day: "Base: Lisbon, one night inland optional",
   },
   {
@@ -96,7 +96,7 @@ const FAQS = [
   },
   {
     q: "How do we plan this with you?",
-    a: "Tell us your dates, who is travelling and how you like to move. A Travel Designer comes back with a route, the days that fit it, and a price — no fixed package, no obligation.",
+    a: "Tell us your dates, who is traveling and how you like to move. A Travel Designer comes back with a route, the days that fit it, and a price — no fixed package, no obligation.",
   },
 ];
 

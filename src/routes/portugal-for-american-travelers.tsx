@@ -57,14 +57,14 @@ const SECTIONS: { heading: string; body: string[] }[] = [
     heading: "Money, tipping and what things actually cost",
     body: [
       "Portugal uses the euro. Cards are accepted almost everywhere, contactless is universal, and you rarely need more than twenty or thirty euros in cash. Your bank converts at the rate on the day, so any dollar figure published in advance would be wrong by the time you read it.",
-      "Tipping is not built into wages here the way it is in the US. Rounding up a restaurant bill or leaving five to ten percent after a good day is generous, not expected, and nobody is offended when you do not.",
+      "Tipping is not compulsory in Portugal, but it has become increasingly common in private tourism, especially among international guests. If your guide made the day special, a gratuity is genuinely appreciated. There is no fixed amount — it is entirely at your discretion.",
       "Portugal is noticeably cheaper than France, Italy or Spain for food and wine, and about the same for good hotels. The thing that costs money here is time — private transport, early access, a host who knows which cellar to call.",
     ],
   },
   {
     heading: "You almost certainly do not need a rental car",
     body: [
-      "Portugal drives on the right, so that part is familiar. What is not familiar is the parking: historic town centres were built for carts, garages are small, and most rental cars here are manual unless you pay extra and book early.",
+      "Portugal drives on the right, so that part is familiar. What is not familiar is the parking: historic town centers were built for carts, garages are small, and most rental cars here are manual unless you pay extra and book early.",
       "Distances are also small. Sintra, Arrábida, the Setúbal wine country and the Atlantic beaches are all inside forty minutes of Lisbon; Évora and the Alentejo are ninety. For guests spending the week in Lisbon, private day trips cost less stress than a rental, and considerably less than a rental plus tolls plus parking plus the day you write off looking for it.",
     ],
   },
@@ -86,7 +86,7 @@ const SECTIONS: { heading: string; body: string[] }[] = [
     heading: "How we fit in",
     body: [
       "We are a licensed Portuguese operator based in Sesimbra, forty minutes south of Lisbon. Every day we run is private to your party: your own host, your own vehicle, pickup at your hotel door and a route that gets reshaped when the weather or your mood changes.",
-      "Some guests book one Signature day. Others hand us the whole week and we design around their hotel, their flights and what they actually enjoy. Either way you are talking to the people who will be with you on the day, not a call centre.",
+      "Some guests book one Signature day. Others hand us the whole week and we design around their hotel, their flights and what they actually enjoy. Either way you are talking to the people who will be with you on the day, not a call center.",
     ],
   },
 ];

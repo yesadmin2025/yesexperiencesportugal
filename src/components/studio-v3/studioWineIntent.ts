@@ -1,10 +1,10 @@
 /**
- * Studio V3 — single source of truth for "does this traveller actually want wine?".
+ * Studio V3 — single source of truth for "does this traveler actually want wine?".
  *
  * OWNER RULE (non-negotiable):
  *   Wine intent is EXPLICIT only. Geography, gastronomy, romance and
  *   slow-luxury are NOT wine signals. A region that happens to grow wine
- *   does not mean the traveller asked for a cellar.
+ *   does not mean the traveler asked for a cellar.
  *
  * Explicit wine intent is:
  *   - `wine` selected as an interest, OR

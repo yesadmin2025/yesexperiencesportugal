@@ -1,10 +1,12 @@
+import { getSignatureCardPromise } from "@/lib/signatureCardHighlights";
+import { ptTheme } from "@/lib/ptTheme";
 import { socialImageMeta } from "@/lib/seo";
 import { localeAlternateLinks } from "@/i18n/seo";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { breadcrumbLd, itemListLd, jsonLdScript } from "@/lib/jsonld";
 import { SiteLayout } from "@/components/SiteLayout";
 import { Clock, MapPin } from "lucide-react";
-import { signatureTours } from "@/data/signatureTours";
+import { signatureTours, publicSignatureTours } from "@/data/signatureTours";
 import { useImportedTourImages } from "@/hooks/use-imported-tour-images";
 import { ImageQualityToggle } from "@/components/ImageQualityToggle";
 import { Eyebrow } from "@/components/ui/Eyebrow";
@@ -48,7 +50,7 @@ export const Route = createFileRoute("/pt/day-tours")({
         itemListLd({
           name: "Tours privados de um dia a partir de Lisboa",
           path: "/pt/day-tours",
-          items: signatureTours
+          items: publicSignatureTours
             .filter((t) => !/days?/i.test(t.duration) || /half|full|long/i.test(t.duration))
             .map((t) => ({ id: t.id, name: t.title, description: t.blurb, image: t.img })),
         }),
@@ -58,7 +60,7 @@ export const Route = createFileRoute("/pt/day-tours")({
   component: DayToursPage,
 });
 
-const dayTours = signatureTours.filter(
+const dayTours = publicSignatureTours.filter(
   (t) => !/days?/i.test(t.duration) || /half|full|long/i.test(t.duration),
 );
 
@@ -131,7 +133,7 @@ function DayToursPage() {
                     <Clock size={12} /> {signatureDurationLabel(t.id, t.durationHours)}
                   </span>
                   <span className="flex items-center gap-1.5">
-                    <MapPin size={12} /> {t.theme}
+                    <MapPin size={12} /> {ptTheme(t.theme)}
                   </span>
                   <span className="text-[color:var(--teal)]">
                     Desde <PriceEur amountEur={t.priceFrom} role="from" />
@@ -139,7 +141,7 @@ function DayToursPage() {
                 </div>
 
                 <p className="mt-3 text-sm text-[color:var(--charcoal-soft)] leading-relaxed">
-                  {t.blurb}
+                  {getSignatureCardPromise(t.id, "pt")}
                 </p>
 
                 <CtaButton
@@ -151,6 +153,9 @@ function DayToursPage() {
                 >
                   Ver experiência &amp; reservar
                 </CtaButton>
+                <p className="mt-2 text-[12px] text-[color:var(--charcoal-soft)]">
+                  <span lang="en" className="font-medium text-[color:var(--charcoal)]">EN</span> · Detalhes e reserva em inglês.
+                </p>
               </article>
             ))}
           </div>

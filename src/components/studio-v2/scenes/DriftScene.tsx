@@ -1,7 +1,7 @@
 /**
  * DriftScene — Scene I grammar.
  *
- * Single full-bleed atmosphere. The traveller drifts to one side of the
+ * Single full-bleed atmosphere. The traveler drifts to one side of the
  * frame. Two soft "pull zones" capture the signal; linger time tracks dwell.
  * Tactile, no question framing, no buttons-as-cards. Bible: rhythm > features,
  * guided not asked.

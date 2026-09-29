@@ -1,9 +1,10 @@
+import { ptTheme } from "@/lib/ptTheme";
 import { localeAlternateLinks } from "@/i18n/seo";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { breadcrumbLd, itemListLd, jsonLdScript } from "@/lib/jsonld";
 import { SiteLayout } from "@/components/SiteLayout";
 import { Clock, MapPin } from "lucide-react";
-import { signatureTours } from "@/data/signatureTours";
+import { signatureTours, publicSignatureTours } from "@/data/signatureTours";
 import { VIATOR_META } from "@/data/signatureToursViator";
 import { getTourContent, signatureDurationLabel } from "@/lib/tourContent";
 import { getSignatureCardHighlights, getSignatureCardPromise } from "@/lib/signatureCardHighlights";
@@ -61,7 +62,7 @@ export const Route = createFileRoute("/pt/experiences")({
         itemListLd({
           name: "Signature Experiences",
           path: "/pt/experiences",
-          items: signatureTours.map((tour) => ({
+          items: publicSignatureTours.map((tour) => ({
             id: tour.id,
             name: tour.title,
             description: tour.blurb,
@@ -87,7 +88,7 @@ function ExperiencesPage() {
         <div className="container-x">
           <Eyebrow flank>Coleção Signature</Eyebrow>
           <SectionTitle as="h1" size="anchor" spacing="loose">
-            Signature <SectionTitle.Em>Tours</SectionTitle.Em>
+            Experiências <SectionTitle.Em>Signature</SectionTitle.Em>
           </SectionTitle>
           <p className="page-header-support mt-5 max-w-xl mx-auto text-[color:var(--charcoal-soft)]">
             Dias privados por todo o Portugal. Veja o que está incluído, escolha a experiência
@@ -106,7 +107,7 @@ function ExperiencesPage() {
             <PriceCurrencyChip />
           </div>
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-8">
-            {signatureTours.map((tour) => {
+            {publicSignatureTours.map((tour) => {
               const meta = VIATOR_META[tour.id];
                const topHighlights = getSignatureCardHighlights(tour.id, "pt");
 
@@ -120,13 +121,13 @@ function ExperiencesPage() {
                   >
                     <TourImage
                       {...resolveImg(tour, "lg")}
-                      alt={`${tour.title} — experiência privada de ${tour.theme.toLowerCase()} em ${tour.region}, Portugal`}
+                      alt={`${tour.title} — experiência privada de ${ptTheme(tour.theme).toLowerCase()} em ${tour.region}, Portugal`}
                       ratio="3/2"
                       focal={tour.focal ?? "50% 50%"}
                       imgClassName="transition-transform duration-500 group-hover:scale-[1.025]"
                     >
                       <span className="absolute top-4 left-4 text-[12px] uppercase tracking-[0.16em] bg-[color:var(--ivory)]/90 text-[color:var(--teal)] px-3 py-1.5">
-                        {tour.theme}
+                        {ptTheme(tour.theme)}
                       </span>
                     </TourImage>
                   </Link>
@@ -194,6 +195,10 @@ function ExperiencesPage() {
                         Adaptar este dia
                       </CtaButton>
                     )}
+                    <p className="text-[12px] text-[color:var(--charcoal-soft)]">
+                      <span lang="en" className="font-medium text-[color:var(--charcoal)]">EN</span>{" "}
+                      · Detalhes e reserva desta experiência em inglês.
+                    </p>
                   </div>
                 </article>
               );

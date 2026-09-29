@@ -1,7 +1,7 @@
 import { useMemo } from "react";
 import { Link } from "@tanstack/react-router";
 import { Plus } from "lucide-react";
-import { signatureTours, type SignatureTour } from "@/data/signatureTours";
+import { publicSignatureTours, type SignatureTour } from "@/data/signatureTours";
 import { recordDriftEvent } from "@/lib/drift/telemetry";
 import { t as tt, type DriftLocale } from "@/lib/drift/i18n";
 import type { DriftProfile } from "./StudioDrift";
@@ -59,7 +59,7 @@ export function StudioDrawerReco({ profile, locale, confidence, excludeId }: Pro
   const pick = useMemo(() => {
     if (confidence < 0.35) return null;
     if (!profile.style && !profile.pickup) return null;
-    const ranked = signatureTours
+    const ranked = publicSignatureTours
       .filter((t) => t.id !== excludeId)
       .map((t) => ({ t, s: score(t, profile) }))
       .filter((r) => r.s > 1)

@@ -35,11 +35,11 @@ const FAQS: { q: string; a: ReactNode }[] = [
     ),
   },
   {
-    q: "Can I customise a Signature day?",
+    q: "Can I customize a Signature day?",
     a: (
       <>
-        Yes. Every Signature day can be adjusted — pace, stops, lunch, timing — within the same
-        route. For deeper changes across regions, a Travel Designer is the right path.
+        Yes. Many Signature days can be tailored — pace, timing and selected additions — within the
+        same route. For a multi-day journey across regions, a Travel Designer is the right path.
       </>
     ),
   },
@@ -47,8 +47,8 @@ const FAQS: { q: string; a: ReactNode }[] = [
     q: "Do I speak directly with a local designer?",
     a: (
       <>
-        Always. A local from our team takes your request personally — never a call centre, never a
-        chatbot. For Travel Designer journeys, the conversation begins before anything is confirmed.
+        Yes. A local from our team follows up personally on every reservation and request. For
+        Travel Designer journeys, the conversation begins before anything is confirmed.
       </>
     ),
   },
@@ -56,9 +56,9 @@ const FAQS: { q: string; a: ReactNode }[] = [
     q: "How far in advance should I book?",
     a: (
       <>
-        Signature and Studio days are usually available within a few days’ notice. For Travel
-        Designer journeys, two to four weeks gives us room to design properly; peak season fills
-        earlier.
+        Studio days need at least 3 days’ notice, and the Signature booking calendar shows the
+        earliest available date for each experience. For multi-day Travel Designer journeys, two to
+        four weeks gives us room to design properly; peak season fills earlier.
       </>
     ),
   },
@@ -66,8 +66,8 @@ const FAQS: { q: string; a: ReactNode }[] = [
     q: "What happens after I submit a request?",
     a: (
       <>
-        A local replies personally, usually within the hour. We confirm the details, share a clear
-        proposal, and only then ask for confirmation — no pressure, no automated funnels.
+        Instant reservations are confirmed right away. For requests, a local replies personally
+        within 24 hours, shares a clear proposal, and only then asks for confirmation — no pressure.
       </>
     ),
   },
@@ -86,8 +86,8 @@ const FAQS: { q: string; a: ReactNode }[] = [
     a: (
       <>
         Yes. Our most-loved wine days visit family wineries in Arrábida, Azeitão and the Alentejo —
-        private tastings, long lunches with a view, and no marketplace groups. Reserve as a
-        Signature day or design your own in the Studio.
+        private tastings, only your group, and lunch included where the experience says so. Reserve
+        as a Signature day or design your own in the Studio.
       </>
     ),
   },
@@ -95,7 +95,7 @@ const FAQS: { q: string; a: ReactNode }[] = [
     q: "Can you plan a proposal in Portugal?",
     a: (
       <>
-        Yes. Proposals are one of our specialities — cliff-top viewpoints, private beaches, quiet
+        Yes. Proposals are one of our specialties — cliff-top viewpoints, private beaches, quiet
         vineyards, or a candle-lit table at sunset. Location, timing, photography and every detail
         arranged discreetly.
       </>
@@ -105,8 +105,9 @@ const FAQS: { q: string; a: ReactNode }[] = [
     q: "Do you create corporate experiences in Portugal?",
     a: (
       <>
-        Yes. Corporate days, client hospitality, incentives and private groups of any size —
-        transport, venues, suppliers and timing handled end to end, with invoice and DMC support.
+        Yes. Corporate days, client hospitality, incentives and larger private groups are planned
+        through our Corporate &amp; private groups service — transport, venues, suppliers and timing
+        coordinated for you, with invoicing.
       </>
     ),
   },

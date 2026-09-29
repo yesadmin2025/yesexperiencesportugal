@@ -55,7 +55,7 @@ export const DIRECTORS_READ_EYEBROW = "The director's read";
 
 /**
  * Where Back from the read should land. The beat sits in the Logistics slot,
- * so it must walk back to whatever the traveller actually saw last: the
+ * so it must walk back to whatever the traveler actually saw last: the
  * adaptive refinement question when one was shown, otherwise rhythm.
  */
 export function directorsReadBackTarget(hasAdaptiveQuestion: boolean): "refinement" | "rhythm" {
@@ -79,7 +79,7 @@ const HEADLINE_BY_FEELING: Readonly<Record<Feeling, string>> = {
  * When Interests has already acknowledged the feeling's inherited theme, the
  * read still needs an editorial opening — but not another synonym for coast,
  * wine, faith or hands-on. These lines preserve personality without replaying
- * the signal the traveller has already heard.
+ * the signal the traveler has already heard.
  */
 const HEADLINE_AFTER_INHERITED_ACK: Readonly<Partial<Record<Feeling, string>>> = {
   coastal: "The direction is clear. I can work with this.",
@@ -95,7 +95,7 @@ const FEELING_PHRASE: Readonly<Record<Feeling, string>> = {
   coastal: "a day that keeps returning to the Atlantic",
   "wine-food": "a day built around the table",
   hidden: "a day away from the obvious roads",
-  romance: "a day with the two of you at the centre of it",
+  romance: "a day with the two of you at the center of it",
   culture: "a day that leans on old stone and older stories",
   adventure: "a day with open air and some effort in it",
   "slow-luxury": "a day with very little in it, done properly",

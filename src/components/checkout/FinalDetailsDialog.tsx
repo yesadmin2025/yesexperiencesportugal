@@ -352,7 +352,7 @@ export function FinalDetailsDialog({
                       className={guestInputClass}
                     />
                   </GuestField>
-                  <GuestField label="Who's travelling" required as="div">
+                  <GuestField label="Who's traveling" required as="div">
                     <div className="border border-[color:var(--border)] bg-[color:var(--ivory)] p-3">
                       <CompositionField value={composition} onChange={setComposition} compact />
                     </div>

@@ -6,7 +6,7 @@
  * decision. It never chooses, filters, reorders or invents an option.
  *
  * Fail-closed: a question or option with no safe presentation mapping is not
- * rendered at all — a machine key is never shown to a traveller. Tradeoff
+ * rendered at all — a machine key is never shown to a traveler. Tradeoff
  * copy is deliberately generic: no supplier, price, stop or clock time.
  *
  * Not AI. Pass 6 may replace the wording; it may never replace the decision.
@@ -151,7 +151,7 @@ const OPTION_COPY: Readonly<Record<string, { label: string; whisper: string }>> 
   },
   "faith-quiet-reflection": {
     label: "Keep it simply quiet",
-    whisper: "No religious stop or programme — just space to reflect.",
+    whisper: "No religious stop or program — just space to reflect.",
   },
   "photo-golden-hour": {
     label: "The best light",

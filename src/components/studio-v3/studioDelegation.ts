@@ -4,12 +4,12 @@
  * The Studio used to offer a per-question "Let YES decide" shortcut on
  * Feeling, Interests and Rhythm. Being asked three times to delegate reads as
  * a survey escape hatch, not as concierge trust. P10 replaces that with ONE
- * coherent delegation moment: once the traveller has personally answered
+ * coherent delegation moment: once the traveler has personally answered
  * FEELING and WHO, they may hand the remaining *taste* layer to YES.
  *
  * Hard rules:
  *   - eligibility requires BOTH feeling and companions — we never offer to
- *     design a day before the traveller has told us how it should feel and
+ *     design a day before the traveler has told us how it should feel and
  *     who it is for.
  *   - explicit guest choices ALWAYS beat delegated defaults. Interests the
  *     traveller picked themselves are preserved verbatim.
@@ -38,14 +38,14 @@ export type DelegationMode = typeof DELEGATION_MODE;
 /** Taste dimensions that may be delegated. Nothing operational is listed. */
 export type DelegatableDimension = Extract<DecidedForMeKey, "interests" | "rhythm">;
 
-/** The traveller must personally answer Feeling and Who first. */
+/** The traveler must personally answer Feeling and Who first. */
 export function isDelegationEligible(
   state: Pick<StudioV3State, "feeling" | "companions">,
 ): boolean {
   return Boolean(state.feeling) && Boolean(state.companions);
 }
 
-/** True once the traveller has handed the taste layer to YES. */
+/** True once the traveler has handed the taste layer to YES. */
 export function isDelegationActive(
   state: Pick<StudioV3State, "delegationMode">,
 ): boolean {
@@ -54,7 +54,7 @@ export function isDelegationActive(
 
 /**
  * Where the one concierge affordance may appear. Interests is the primary
- * moment; Rhythm shows it once more for travellers who picked their own
+ * moment; Rhythm shows it once more for travelers who picked their own
  * tastes first. It is never offered on Feeling, Who, Refinement, Logistics
  * or Your Day, and never twice once delegation is active.
  */
@@ -68,7 +68,7 @@ export function isDelegationOffered(
   if (!isDelegationEligible(state)) return false;
   if (isDelegationActive(state)) return false;
   if (phase === "rhythm") {
-    // The Rhythm offer exists ONLY for travellers who chose their own tastes
+    // The Rhythm offer exists ONLY for travelers who chose their own tastes
     // and want the pace handed over. With no interests (a direct or legacy
     // landing on Rhythm) we would be fabricating the taste layer, and with
     // delegated interests the offer would repeat what YES already owns.
@@ -91,7 +91,7 @@ export interface DelegationResult {
 /**
  * Complete the remaining taste layer deterministically.
  *
- * Interests are inferred only when the traveller has none; Rhythm only when
+ * Interests are inferred only when the traveler has none; Rhythm only when
  * unset — and always from the forward state that already contains the
  * (explicit or inferred) interests, so pacing matches the real tastes.
  */
@@ -144,7 +144,7 @@ export function releaseDelegatedTaste(state: StudioV3State): StudioV3State {
 
 /** One short, human acknowledgement. Never a second Director's Read. */
 /**
- * The traveller takes one delegated dimension back by answering it
+ * The traveler takes one delegated dimension back by answering it
  * themselves. Their explicit value is preserved; only the delegated MARK is
  * removed. Delegation mode survives ONLY while another taste dimension is
  * still owned by YES — once nothing is delegated, the Studio is fully
@@ -206,7 +206,7 @@ export function recomputeActiveDelegationAfterExplicitChange(
 
 /**
  * Manual Interests edit transfers ownership of the VISIBLE interest set to
- * the traveller. The supplied set is already the current UI set with the
+ * the traveler. The supplied set is already the current UI set with the
  * user's toggle applied, so we never erase the rest or immediately re-infer
  * the item they just removed. If Rhythm is still delegated, recompute only
  * Rhythm from these newly explicit interests.

@@ -300,7 +300,7 @@ function ShapeYourDayPanel(props: {
             className="syd-select"
             value={props.group}
             onChange={(e) => props.onGroup(e.target.value as GroupValue)}
-            aria-label="Who's travelling"
+            aria-label="Who's traveling"
           >
             {GROUP_OPTIONS.map((o) => (
               <option key={o.value} value={o.value}>

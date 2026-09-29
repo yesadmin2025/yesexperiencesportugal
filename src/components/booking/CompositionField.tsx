@@ -155,7 +155,7 @@ export function CompositionField({ value, onChange, maxParty, compact }: Props) 
             </dl>
           </div>
         ) : (
-          <ul className="mt-3 space-y-2" aria-label="Minor travellers">
+          <ul className="mt-3 space-y-2" aria-label="Minor travelers">
             {minorAges.map((age, i) => {
               const hasAge = Number.isFinite(age);
               const band = hasAge ? ageBand(age) : null;
