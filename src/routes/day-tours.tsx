@@ -98,8 +98,9 @@ function DayToursPage() {
             </SectionTitle>
             <p className="page-header-support mt-5 max-w-xl mx-auto text-[color:var(--charcoal-soft)]">
               Choose your day by how much time you have. Each card shows the duration, the region
-              and the price from, so you can compare a half day with a full one at a glance, then
-              reserve it online with hotel pickup.
+              and the price from, so you can compare a half day with a full one at a glance. These are
+              the same ready-made Signature days as our Experiences collection, sorted by length; pickup
+              is shown on each tour page.
             </p>
           </div>
         </div>

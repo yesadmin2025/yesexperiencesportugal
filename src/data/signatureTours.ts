@@ -1231,7 +1231,7 @@ export const signatureTours: SignatureTour[] = [
       {
         label: "Nazare",
         story:
-          "Atlantic fishing town and big-wave capital — traditional lunch, the Sítio viewpoint, the lighthouse over the canyon.",
+          "Atlantic fishing town, famous for giant winter waves — traditional lunch, the Sítio viewpoint, the lighthouse over the canyon.",
         imageTheme: "fatima-nazare-obidos",
         image: imgFatimaNazare,
         focal: "50% 50%",
@@ -1259,7 +1259,7 @@ export const signatureTours: SignatureTour[] = [
     ],
     highlights: [
       "Time for reflection at the Fátima sanctuary",
-      "The famous Nazaré big-wave viewpoint",
+      "Nazaré viewpoint over the big-wave canyon (giant waves are seasonal, mainly in winter)",
       "Walk inside Óbidos's medieval walls",
       "Ginjinha tasting in a chocolate cup",
     ],
