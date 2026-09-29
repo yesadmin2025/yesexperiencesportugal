@@ -83,7 +83,7 @@ export const PORTUGAL_REGION_GUIDES: LocalStoryArticle[] = [
       },
       {
         heading: "Water sets the rhythm.",
-        body: "The park is built around reservoirs and river pools. In summer the lagoons are swimmable and busy at the roadside spots and empty twenty minutes' walk further up. In spring the waterfalls run hard and the tracks are muddy. The park is not a drive-through: one valley, done slowly, beats three seen from a windscreen.",
+        body: "The park is built around reservoirs and river pools. In summer the lagoons are swimmable and busy at the roadside spots and empty twenty minutes' walk further up. In spring the waterfalls run hard and the tracks are muddy. The park is not a drive-through: one valley, done slowly, beats three seen from a windshield.",
       },
       {
         heading: "Braga, and the stairway.",

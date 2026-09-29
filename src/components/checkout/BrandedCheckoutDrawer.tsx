@@ -434,7 +434,7 @@ function ExperienceSummaryCard({
                      {summary.itinerary?.map((stop, index) => (
                        <li key={`${index}-${stop.label}`} className="flex gap-3 text-[12px] leading-snug text-[color:var(--charcoal)]">
                          <span className="shrink-0 tabular-nums text-[color:var(--charcoal-soft)]">{String(index + 1).padStart(2, "0")}</span>
-                          <span>{stop.label}{stop.optional ? <span className="ml-1 text-[color:var(--charcoal-soft)]">· Optional, not included unless selected</span> : null}</span>
+                          <span>{stop.label}{stop.optional ? <span className="ml-0.5">{" "}</span> : null}{stop.optional ? <span className=" text-[color:var(--charcoal-soft)]">· Optional, not included unless selected</span> : null}</span>
                        </li>
                      ))}
                    </ol>
