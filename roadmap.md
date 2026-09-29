@@ -44,3 +44,10 @@
 - [x] Update the legacy About hero-structure check for the approved founder-led opening
 - [x] Verify the existing Guide App sign-in, tours, availability, and profile flows
 - [ ] Publish the new About page, then request Google to recrawl it (blocked: publication not authorized)
+
+# Guide App v2 (preview only)
+
+- [ ] Safe tour brief: guest contact, itinerary, inclusions via guide_my_tours (no finance fields)
+- [ ] Precise availability: morning/afternoon/custom hours + calendar shortcut
+- [ ] New-assignment device notifications (foreground) + unread badge
+- [ ] Verify at 393px, finance-field exclusion, overlap guard, notification flow

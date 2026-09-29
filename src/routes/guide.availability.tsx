@@ -22,13 +22,16 @@ type Row = { id: string; start_at: string; end_at: string; status: string; note:
 type Rec = { id: string; weekday: number; status: string };
 
 function GuideAvailability() {
+  const search = Route.useSearch();
   const [gid, setGid] = useState<string | null>(null);
   const [rows, setRows] = useState<Row[]>([]);
   const [rec, setRec] = useState<Rec[]>([]);
   const [tourDays, setTourDays] = useState<Set<string>>(new Set());
-  const [from, setFrom] = useState(todayIso());
-  const [to, setTo] = useState(todayIso());
+  const [from, setFrom] = useState(search.from ?? todayIso());
+  const [to, setTo] = useState(search.to ?? search.from ?? todayIso());
   const [status, setStatus] = useState<(typeof STATUSES)[number]>("unavailable");
+  const [customFrom, setCustomFrom] = useState("09:00");
+  const [customTo, setCustomTo] = useState("17:00");
   const [busy, setBusy] = useState(false);
 
   const load = useCallback(async () => {
