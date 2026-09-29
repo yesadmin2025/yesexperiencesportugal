@@ -10,7 +10,8 @@
  */
 import { Link, useNavigate } from "@tanstack/react-router";
 import { createContext, useContext, useEffect, useState, type ReactNode } from "react";
-import { CalendarDays, CalendarRange, Compass, FileText, Home, Settings, Smartphone, Users } from "lucide-react";
+import { CalendarDays, CalendarRange, Compass, FileText, Home, Menu, Settings, Smartphone, Users, X } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 
 const NAV = [
@@ -60,6 +61,9 @@ function useAdminGate(): Gate {
 /** Mounted once by src/routes/admin.tsx around every admin page. */
 export function AdminFrame({ children }: { children: ReactNode }) {
   const gate = useAdminGate();
+  const [moreOpen, setMoreOpen] = useState(false);
+  const mobilePrimary = NAV.filter(({ to }) => ["/admin", "/admin/bookings", "/admin/tour-calendar"].includes(to));
+  const mobileMore = NAV.filter(({ to }) => !["/admin", "/admin/bookings", "/admin/tour-calendar"].includes(to));
   return (
     <FrameContext.Provider value={true}>
       <div className="min-h-[100dvh] bg-[color:var(--ivory)] text-[color:var(--charcoal)]">
@@ -95,11 +99,26 @@ export function AdminFrame({ children }: { children: ReactNode }) {
           )}
         </div>
 
+        {moreOpen ? (
+          <div className="fixed inset-x-3 bottom-20 z-50 border border-border bg-background p-2 shadow-lg md:hidden">
+            <div className="flex items-center justify-between px-2 pb-2">
+              <p className="text-[11px] uppercase text-muted-foreground">More</p>
+              <Button variant="ghost" size="icon" className="h-11 w-11" onClick={() => setMoreOpen(false)} aria-label="Close menu"><X aria-hidden /></Button>
+            </div>
+            <nav aria-label="More admin pages" className="grid grid-cols-2 gap-1">
+              {mobileMore.map(({ to, label, icon: Icon, exact }) => (
+                <Link key={to} to={to} activeOptions={{ exact }} onClick={() => setMoreOpen(false)} className="flex min-h-14 items-center gap-3 px-3 text-sm text-muted-foreground data-[status=active]:bg-muted data-[status=active]:text-primary">
+                  <Icon size={18} strokeWidth={1.6} aria-hidden />{label}
+                </Link>
+              ))}
+            </nav>
+          </div>
+        ) : null}
         <nav
           aria-label="Admin"
           className="fixed inset-x-0 bottom-0 z-40 grid grid-cols-4 border-t border-[color:var(--charcoal)]/[0.08] bg-[color:var(--ivory)]/95 pb-[env(safe-area-inset-bottom)] backdrop-blur md:hidden"
         >
-          {NAV.map(({ to, label, icon: Icon, exact }) => (
+          {mobilePrimary.map(({ to, label, icon: Icon, exact }) => (
             <Link
               key={to}
               to={to}
@@ -110,6 +129,9 @@ export function AdminFrame({ children }: { children: ReactNode }) {
               {label}
             </Link>
           ))}
+          <Button variant="ghost" className="h-auto min-h-14 rounded-none flex-col gap-1 px-1 text-[11px] uppercase text-muted-foreground" onClick={() => setMoreOpen((open) => !open)} aria-expanded={moreOpen} aria-label="More admin pages">
+            <Menu size={18} strokeWidth={1.6} aria-hidden />More
+          </Button>
         </nav>
       </div>
     </FrameContext.Provider>
