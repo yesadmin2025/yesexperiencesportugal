@@ -41,3 +41,6 @@
 - [ ] Retain verified trust, legal, SEO, schema, navigation, and contact details
 - [ ] Reuse founder imagery and approved Studio and Travel Designer actions
 - [ ] Verify About at 393px and desktop with focused tests and link checks
+- [ ] Update the legacy About hero-structure check for the approved founder-led opening
+- [ ] Verify the existing Guide App sign-in, tours, availability, and profile flows
+- [ ] Check Google visibility for the About page and submit its sitemap only if needed and authorized
