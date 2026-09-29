@@ -102,7 +102,7 @@ export function TourEditorialNote({ tour }: { tour: SignatureTour }) {
             <h3 className="serif text-[20px] text-[color:var(--charcoal)]">Why this place matters</h3>
             <p className="mt-3">{context.story}</p>
             {context.guide && <div className="mt-3">
-              {context.guide && <a href={context.guide.url} className="text-[13px] underline decoration-[color:var(--gold)] underline-offset-4 hover:text-[color:var(--teal)]">{context.guide.label} →</a>}
+              <a href={context.guide.url} className="text-[13px] underline decoration-[color:var(--gold)] underline-offset-4 hover:text-[color:var(--teal)]">{context.guide.label} →</a>
             </div>}
             <EditorialSources sources={context.source ? [context.source] : undefined} />
           </div>
