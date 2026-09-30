@@ -35,9 +35,15 @@ const GuideAppInvite = ({ guideName, guideEmail, appUrl }: GuideAppInviteProps) 
         {" "}and choose your password. Your guide profile is not yet a sign-in account.
       </Text>
       <Text style={step}>3. Once inside, tap “Install Guide App”.</Text>
-      <Text style={{ ...step, margin: "0 0 24px" }}>
+      <Text style={step}>
         4. On iPhone: while on the Guide App page in Safari, tap Share, then Add to Home Screen. Add it from the Guide App page, not the main website.
       </Text>
+      <Text style={{ ...step, margin: "0 0 24px" }}>
+        5. Already have a shortcut? If it opens the public website instead of the Guide App, delete
+        that old shortcut and add it again from the link below. If it already opens the Guide App,
+        nothing else is needed.
+      </Text>
+
     </AuthShell>
   );
 };
