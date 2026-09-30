@@ -19,6 +19,7 @@ export const Route = createFileRoute("/guide")({
       { title: "YES Guide" },
       { name: "robots", content: "noindex, nofollow" },
       { name: "theme-color", content: "var(--teal)" },
+      { name: "application-name", content: "YES Guide" },
       { name: "apple-mobile-web-app-capable", content: "yes" },
       { name: "apple-mobile-web-app-title", content: "YES Guide" },
     ],
@@ -61,14 +62,6 @@ function GuideLayout() {
       if (event === "SIGNED_IN" || event === "SIGNED_OUT") void check();
     });
     return () => sub.subscription.unsubscribe();
-  }, []);
-
-  useEffect(() => {
-    const manifest = document.querySelector<HTMLLinkElement>('link[rel="manifest"]');
-    if (!manifest) return;
-    const previous = manifest.href;
-    manifest.href = "/guide.webmanifest";
-    return () => { manifest.href = previous; };
   }, []);
 
   // Live updates: RLS limits events to this guide's own rows.

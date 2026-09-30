@@ -321,6 +321,7 @@ function RootComponent() {
     captureGuideRefFromLocation();
   }, []);
   const pathname = useRouterState({ select: (s) => s.location.pathname });
+  const isGuideApp = pathname === "/guide" || pathname.startsWith("/guide/");
   usePublicEditorialMotion(pathname);
   const { locale } = parseLocaleFromPath(pathname);
   useEffect(() => {
@@ -359,7 +360,7 @@ function RootComponent() {
             <Outlet />
           </RouteFade>
           <WhatsAppSupportButton />
-          <InstallAppPrompt />
+          {!isGuideApp ? <InstallAppPrompt /> : null}
           <Toaster position="top-center" richColors closeButton />
         </TooltipProvider>
       </LocaleProvider>

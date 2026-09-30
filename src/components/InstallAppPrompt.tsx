@@ -3,6 +3,7 @@ import { useRouterState } from "@tanstack/react-router";
 
 /** Never cover a booking CTA: the prompt stays off conversion surfaces. */
 const CONVERSION_PATH = /^\/(?:pt\/)?(?:studio|tours\/|checkout|book|contact|booking-confirmed|portugal-travel-designer)/;
+const GUIDE_PATH = /^\/guide(?:\/|$)/;
 
 /**
  * InstallAppPrompt — quiet, dismissible invitation to install YES as a real app.
@@ -34,6 +35,14 @@ export function InstallAppPrompt() {
   const pathname = useRouterState({ select: (st) => st.location.pathname });
 
   useEffect(() => {
+    // Guide routes have their own manifest and installer. Never retain a
+    // public-site install prompt after client-side navigation into /guide.
+    if (GUIDE_PATH.test(pathname)) {
+      setDeferred(null);
+      setIosHint(false);
+      setVisible(false);
+      return;
+    }
     if (isStandalone()) return;
     if (localStorage.getItem(DISMISS_KEY) === "1") return;
 
@@ -59,7 +68,7 @@ export function InstallAppPrompt() {
     }
 
     return () => window.removeEventListener("beforeinstallprompt", onPrompt);
-  }, []);
+  }, [pathname]);
 
   const dismiss = () => {
     localStorage.setItem(DISMISS_KEY, "1");
@@ -74,7 +83,7 @@ export function InstallAppPrompt() {
     setVisible(false);
   };
 
-  if (!visible || CONVERSION_PATH.test(pathname)) return null;
+  if (!visible || GUIDE_PATH.test(pathname) || CONVERSION_PATH.test(pathname)) return null;
 
   return (
     <div

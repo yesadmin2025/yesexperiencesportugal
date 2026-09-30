@@ -10,4 +10,4 @@
 - Derive the tour-page route glance from real OSRM leg minutes (`useRouteLegMinutes`) and never sum them into a total driving claim; stop order in the SOT is narrative, not the driven sequence.
 - Show the Signature day recap before guest details from the same verified public itinerary and inclusions used on the tour page; this keeps booking clarity without duplicating or inventing tour facts.
 - Use optional claim-adjacent EditorialSources for external proof; keep YES links primary.
-- Guide scheduling uses `tour_assignments`, database overlap protection, bookings as source of truth, RLS-safe guide RPCs, and one shared `MonthCalendar` selection-to-day-summary flow.
+- Guide scheduling uses `tour_assignments`, DB conflict guards, bookings as truth, RLS-safe RPCs, shared `MonthCalendar`; `/guide` emits only its scoped manifest/installer.
