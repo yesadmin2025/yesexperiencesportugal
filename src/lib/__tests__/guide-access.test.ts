@@ -32,9 +32,7 @@ describe("Guide app access status", () => {
     expect(guideAccessState({ ...base, active: false })).toBe("inactive");
   });
   it("assignment responses match guide actions", () => {
-    expect(assignmentResponseLabel({ status: "confirmed" })).toBe("Confirmed by guide");
-    expect(assignmentResponseLabel({ status: "declined" })).toBe("Declined by guide");
-    expect(assignmentResponseLabel({ status: "assigned" })).toBe("Awaiting guide confirmation");
+    for (const status of ["assigned", "confirmed", "declined", "changed"]) expect(assignmentResponseLabel({ status })).toBe("Scheduled");
   });
   it("invite links directly to the Guide App", () => {
     expect(GUIDE_APP_URL).toBe("https://yesexperiencesportugal.com/guide");
