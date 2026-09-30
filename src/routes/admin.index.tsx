@@ -20,6 +20,7 @@ function OperationsPage() {
   const loadBoard = useServerFn(getOperationsBoard);
   const loadPayments = useServerFn(listPaymentRecords);
   const [list, setList] = useState<List | null>(null);
+  const [undated, setUndated] = useState<List["bookings"]>([]);
   const [board, setBoard] = useState<Board | null>(null);
   const [paymentIssues, setPaymentIssues] = useState<Set<string>>(new Set());
   const [openPayments, setOpenPayments] = useState(0);
@@ -28,8 +29,8 @@ function OperationsPage() {
   const today = day();
   useEffect(() => {
     let live = true;
-    Promise.all([load({ data: { status: "all", dateFrom: today, dateTo: day(14), limit: 500 } }), loadBoard({ data: { from: today, to: day(14) } }), loadPayments()])
-      .then(([l, b, p]) => { if (!live) return; setList(l); setBoard(b); const unresolved = (p.payments as Array<{ match_status: string; booking_id: string | null }>).filter((x) => x.match_status === "unmatched" || x.match_status === "needs_review"); setPaymentIssues(new Set(unresolved.map((x) => x.booking_id).filter((id): id is string => Boolean(id)))); setOpenPayments(unresolved.length); setError(null); })
+    Promise.all([load({ data: { status: "all", dateFrom: today, dateTo: day(14), limit: 500 } }), load({ data: { status: "paid", limit: 500 } }), loadBoard({ data: { from: today, to: day(14) } }), loadPayments()])
+      .then(([l, missing, b, p]) => { if (!live) return; setList(l); setUndated(missing.bookings.filter((x) => !x.preferred_date)); setBoard(b); const unresolved = (p.payments as Array<{ match_status: string; booking_id: string | null }>).filter((x) => x.match_status === "unmatched" || x.match_status === "needs_review"); setPaymentIssues(new Set(unresolved.map((x) => x.booking_id).filter((id): id is string => Boolean(id)))); setOpenPayments(unresolved.length); setError(null); })
       .catch((e) => { if (live) setError(e instanceof Error ? e.message : "Could not load operations."); });
     return () => { live = false; };
   }, [load, loadBoard, loadPayments, today]);
@@ -37,7 +38,7 @@ function OperationsPage() {
   const scheduled = all.filter((b) => b.status !== "cancelled" && b.status !== "refunded" && b.status !== "failed" && b.completeness.state !== "package_payment");
   const todayRows = scheduled.filter((b) => b.preferred_date === today);
   const upcoming = scheduled.filter((b) => b.preferred_date && b.preferred_date > today && b.preferred_date <= day(14));
-  const issues = scheduled.filter((b) => !b.preferred_date || b.preferred_date >= today).map((b) => {
+  const issues = [...scheduled, ...undated.filter((b) => b.completeness.state !== "package_payment" && b.status !== "failed" && b.status !== "cancelled" && b.status !== "refunded")].map((b) => {
     const reasons = [!b.guide_id && "No guide", b.assignment_status === "declined" && "Guide declined", b.guide_id && b.assignment_status !== "confirmed" && b.assignment_status !== "declined" && "Guide not confirmed", b.completeness.state === "incomplete" && b.completeness_label, paymentIssues.has(b.id) && "Payment needs review", b.review_required && (b.review_reason || "Operational change to review")].filter(Boolean) as string[];
     return { row: b, reason: reasons.join(" · ") };
   }).filter((x) => x.reason);
