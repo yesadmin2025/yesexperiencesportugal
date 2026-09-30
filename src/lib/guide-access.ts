@@ -37,10 +37,19 @@ export function inviteButtonLabel(state: GuideAccessState) {
   return state === "not_invited" ? "Send app invite" : "Resend app invite";
 }
 
-/** Admin label for a guide's response to one assignment (from tour_assignments). */
-export function assignmentResponseLabel(a: { status: string; guide_confirmed_at?: string | null }) {
-  if (a.status === "declined") return "Declined by guide";
-  if (a.status === "changed") return "Changed — awaiting reconfirmation";
-  if (a.status === "confirmed" || a.guide_confirmed_at) return "Confirmed by guide";
-  return "Awaiting guide confirmation";
+/** Assignments are final once the office assigns them: always "Scheduled". */
+export function assignmentResponseLabel(_a?: { status?: string }) {
+  return "Scheduled";
+}
+
+/** Needs-attention reasons for guide assignment (no guide confirmation step). */
+export function guideAssignmentAttention(
+  b: { guide_id: string | null; legacy_guide_id?: string | null },
+  guide?: { active?: boolean | null; email?: string | null } | null,
+): string[] {
+  if (!b.guide_id) return [b.legacy_guide_id ? "Assignment conflict — reassign" : "No guide"];
+  const out: string[] = [];
+  if (guide && guide.active === false) out.push("Guide inactive");
+  if (guide && !guide.email?.trim()) out.push("Guide has no email — cannot be notified");
+  return out;
 }

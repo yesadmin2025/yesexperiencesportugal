@@ -5,10 +5,8 @@ import { Button } from "@/components/ui/button";
 
 export function tourBadge(t: GuideTour) {
   if (t.booking_cancelled) return { label: "Cancelled", cls: "bg-muted text-muted-foreground" };
-  if (t.status === "declined") return { label: "Declined", cls: "bg-muted text-muted-foreground" };
   if (t.status === "changed") return { label: "Updated", cls: "bg-[color:var(--gold)]/25 text-[color:var(--charcoal)]" };
-  if (t.guide_confirmed_at) return { label: "Confirmed", cls: "bg-[color:var(--teal)]/10 text-[color:var(--teal)]" };
-  return { label: "Please confirm", cls: "bg-destructive/10 text-destructive" };
+  return { label: "Scheduled", cls: "bg-[color:var(--teal)]/10 text-[color:var(--teal)]" };
 }
 
 const digits = (p: string) => p.replace(/[^+\d]/g, "");
