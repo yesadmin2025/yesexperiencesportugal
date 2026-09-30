@@ -12,10 +12,15 @@ const groups = [
     { to: "/admin/enquiries", label: "Enquiries" },
     { to: "/admin/activity", label: "Activity" },
     { to: "/admin/settings", label: "Connections & automation" },
+    { to: "/admin/studio-proposals", label: "Studio proposals" },
+    { to: "/admin/emails", label: "Email delivery" },
+    { to: "/admin/webhook-events", label: "Payment events" },
+    { to: "/admin/payments-env", label: "Payment settings" },
   ] },
   { title: "Experience content", links: [
     { to: "/admin/experiences", label: "Tour details" },
     ...ADMIN_GROUPS.find((g) => g.title === "Prices")?.links ?? [],
+    ...(ADMIN_GROUPS.find((g) => g.title === "Experiences & content")?.links ?? []).filter((l) => l.to !== "/admin/experiences"),
   ] },
   { title: "Website & checks", links: ADMIN_GROUPS.filter((g) => ["Reviews", "Search & visibility", "Health & diagnostics"].includes(g.title)).flatMap((g) => g.links) },
 ];
