@@ -1,12 +1,17 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { fetchMyTours, fmtDate, todayIso, type GuideTour } from "@/components/guide/guide-data";
+import { fetchMyTours, fmtDate, type GuideTour } from "@/components/guide/guide-data";
 import { TourCard } from "@/components/guide/TourCard";
 
 export const Route = createFileRoute("/guide/")({
   head: () => ({ meta: [{ title: "Today · YES Guide" }] }),
   component: GuideToday,
 });
+
+/** Local (Portugal) calendar date, not UTC. */
+function localIso(d = new Date()) {
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+}
 
 function GuideToday() {
   const [tours, setTours] = useState<GuideTour[] | null>(null);
@@ -15,45 +20,38 @@ function GuideToday() {
     fetchMyTours().then(setTours).catch((e) => setErr(e.message));
   }, []);
   if (err) return <p className="text-sm text-destructive">{err}</p>;
-  if (!tours) return <p className="text-sm text-muted-foreground">Loading…</p>;
+  if (!tours) return <p className="text-sm text-muted-foreground">Loading your tours…</p>;
 
-  const today = todayIso();
-  const tomorrow = new Date(Date.now() + 86400000).toISOString().slice(0, 10);
-  const todays = tours.filter((t) => t.tour_date === today);
-  const tomorrows = tours.filter((t) => t.tour_date === tomorrow);
-  const next = tours.find((t) => t.tour_date > tomorrow);
-  const toConfirm = tours.filter((t) => t.tour_date >= today && !t.guide_confirmed_at && !t.booking_cancelled).length;
+  const today = localIso();
+  const active = tours.filter((t) => !t.booking_cancelled);
+  const todays = active.filter((t) => t.tour_date === today);
+  const next = active
+    .filter((t) => t.tour_date > today)
+    .sort((a, b) => (a.tour_date + (a.start_time ?? "")).localeCompare(b.tour_date + (b.start_time ?? "")))[0];
+  const toConfirm = active.filter((t) => t.tour_date >= today && !t.guide_confirmed_at).length;
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-6">
+      <div>
+        <h1 className="font-[family-name:var(--font-editorial)] text-[28px] leading-tight">Today</h1>
+        <p className="text-sm text-muted-foreground">{fmtDate(today)}</p>
+      </div>
       {toConfirm > 0 && (
         <p className="bg-destructive/10 text-destructive text-sm p-3">
-          {toConfirm} tour{toConfirm > 1 ? "s" : ""} waiting for your confirmation.
+          {toConfirm} tour{toConfirm > 1 ? "s" : ""} waiting for your confirmation. Open the tour and tap Confirm.
         </p>
       )}
-      <Block title={`Today · ${fmtDate(today)}`}>
-        {todays.length ? todays.map((t) => <TourCard key={t.assignment_id} t={t} big />) : <Empty>No tour today.</Empty>}
-      </Block>
-      <Block title="Tomorrow">
-        {tomorrows.length ? tomorrows.map((t) => <TourCard key={t.assignment_id} t={t} />) : <Empty>No tour tomorrow.</Empty>}
-      </Block>
-      {next && (
-        <Block title={`Next · ${fmtDate(next.tour_date)}`}>
+      {todays.length ? (
+        <div className="space-y-4">{todays.map((t) => <TourCard key={t.assignment_id} t={t} />)}</div>
+      ) : (
+        <p className="border border-border p-4 text-sm">No tours assigned for today.</p>
+      )}
+      {!todays.length && next && (
+        <section className="space-y-3">
+          <h2 className="text-[11px] uppercase tracking-[0.22em] text-muted-foreground">Your next tour</h2>
           <TourCard t={next} />
-        </Block>
+        </section>
       )}
     </div>
   );
-}
-
-function Block({ title, children }: { title: string; children: React.ReactNode }) {
-  return (
-    <section>
-      <h2 className="text-[11px] uppercase tracking-[0.22em] text-muted-foreground mb-3">{title}</h2>
-      <div className="space-y-3">{children}</div>
-    </section>
-  );
-}
-function Empty({ children }: { children: React.ReactNode }) {
-  return <p className="text-sm text-muted-foreground">{children}</p>;
 }
