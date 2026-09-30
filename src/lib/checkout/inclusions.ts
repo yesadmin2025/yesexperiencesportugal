@@ -43,3 +43,19 @@ export function resolveClientIncludedItems(
   }
   return undefined;
 }
+
+export interface CheckoutInclusions {
+  included: string[];
+  notIncluded: string[];
+}
+
+/** Full verified Included / Not included lists shown to guests before they pay. Never shortened, never invented. */
+export function resolveCheckoutInclusions(
+  meta: ViatorMetaLike | null | undefined,
+  tour: TourLike,
+): CheckoutInclusions {
+  const content = tour?.id ? getTourContent(tour.id) : null;
+  const included = (resolveClientIncludedItems(meta, tour) ?? []).map((s) => s.trim()).filter(Boolean);
+  const notIncluded = (content?.notIncluded ?? []).map((s) => s.trim()).filter(Boolean);
+  return { included, notIncluded };
+}
