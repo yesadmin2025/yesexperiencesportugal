@@ -59,3 +59,11 @@
 - [ ] Resubmit /about to Google + private-tour landing pages (needs owner scope decision)
 - [ ] Auto-assign a guide after Studio payment (needs owner decision; currently office assigns)
 - [ ] Guide self sign-up without saved email (needs owner approval model)
+
+# Admin consolidation (preview only)
+
+- [x] Operations home: Today, Upcoming (14 days), Needs attention
+- [x] Vouchers & Payments tabs with one shared matching rule set
+- [x] Rows open the single Booking Details page
+- [x] Guide app invite sends real email (tested on owner's own guide profile)
+- [x] Admin walk at 393px: Operations, Bookings, Vouchers & Payments

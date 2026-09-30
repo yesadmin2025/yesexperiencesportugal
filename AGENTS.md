@@ -11,3 +11,4 @@
 - Show the Signature day recap before guest details from the same verified public itinerary and inclusions used on the tour page; this keeps booking clarity without duplicating or inventing tour facts.
 - Use optional claim-adjacent EditorialSources for external proof; keep YES links primary.
 - Guide scheduling uses DB conflict guards, bookings as truth, and RLS-safe RPCs; `/guide` is the only work list, has 3 tabs, and emits only its scoped PWA manifest.
+- Classify every booking into one Vouchers & Payments bucket via `src/lib/ops/payment-reconciliation.ts`; one rule set keeps admin screens consistent.
