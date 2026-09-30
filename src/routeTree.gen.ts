@@ -151,6 +151,7 @@ import { Route as AdminPricingRouteImport } from './routes/admin.pricing'
 import { Route as AdminPriceMapRouteImport } from './routes/admin.price-map'
 import { Route as AdminPhotosRouteImport } from './routes/admin.photos'
 import { Route as AdminPaymentsEnvRouteImport } from './routes/admin.payments-env'
+import { Route as AdminPaymentsRouteImport } from './routes/admin.payments'
 import { Route as AdminPathPhotosRouteImport } from './routes/admin.path-photos'
 import { Route as AdminOperationsRouteImport } from './routes/admin.operations'
 import { Route as AdminLegacyScanRouteImport } from './routes/admin.legacy-scan'
@@ -942,6 +943,11 @@ const AdminPaymentsEnvRoute = AdminPaymentsEnvRouteImport.update({
   path: '/payments-env',
   getParentRoute: () => AdminRoute,
 } as any)
+const AdminPaymentsRoute = AdminPaymentsRouteImport.update({
+  id: '/payments',
+  path: '/payments',
+  getParentRoute: () => AdminRoute,
+} as any)
 const AdminPathPhotosRoute = AdminPathPhotosRouteImport.update({
   id: '/path-photos',
   path: '/path-photos',
@@ -1406,6 +1412,7 @@ export interface FileRoutesByFullPath {
   '/admin/legacy-scan': typeof AdminLegacyScanRoute
   '/admin/operations': typeof AdminOperationsRoute
   '/admin/path-photos': typeof AdminPathPhotosRoute
+  '/admin/payments': typeof AdminPaymentsRoute
   '/admin/payments-env': typeof AdminPaymentsEnvRoute
   '/admin/photos': typeof AdminPhotosRoute
   '/admin/price-map': typeof AdminPriceMapRoute
@@ -1611,6 +1618,7 @@ export interface FileRoutesByTo {
   '/admin/legacy-scan': typeof AdminLegacyScanRoute
   '/admin/operations': typeof AdminOperationsRoute
   '/admin/path-photos': typeof AdminPathPhotosRoute
+  '/admin/payments': typeof AdminPaymentsRoute
   '/admin/payments-env': typeof AdminPaymentsEnvRoute
   '/admin/photos': typeof AdminPhotosRoute
   '/admin/price-map': typeof AdminPriceMapRoute
@@ -1821,6 +1829,7 @@ export interface FileRoutesById {
   '/admin/legacy-scan': typeof AdminLegacyScanRoute
   '/admin/operations': typeof AdminOperationsRoute
   '/admin/path-photos': typeof AdminPathPhotosRoute
+  '/admin/payments': typeof AdminPaymentsRoute
   '/admin/payments-env': typeof AdminPaymentsEnvRoute
   '/admin/photos': typeof AdminPhotosRoute
   '/admin/price-map': typeof AdminPriceMapRoute
@@ -2032,6 +2041,7 @@ export interface FileRouteTypes {
     | '/admin/legacy-scan'
     | '/admin/operations'
     | '/admin/path-photos'
+    | '/admin/payments'
     | '/admin/payments-env'
     | '/admin/photos'
     | '/admin/price-map'
@@ -2237,6 +2247,7 @@ export interface FileRouteTypes {
     | '/admin/legacy-scan'
     | '/admin/operations'
     | '/admin/path-photos'
+    | '/admin/payments'
     | '/admin/payments-env'
     | '/admin/photos'
     | '/admin/price-map'
@@ -2446,6 +2457,7 @@ export interface FileRouteTypes {
     | '/admin/legacy-scan'
     | '/admin/operations'
     | '/admin/path-photos'
+    | '/admin/payments'
     | '/admin/payments-env'
     | '/admin/photos'
     | '/admin/price-map'
@@ -3671,6 +3683,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminPaymentsEnvRouteImport
       parentRoute: typeof AdminRoute
     }
+    '/admin/payments': {
+      id: '/admin/payments'
+      path: '/payments'
+      fullPath: '/admin/payments'
+      preLoaderRoute: typeof AdminPaymentsRouteImport
+      parentRoute: typeof AdminRoute
+    }
     '/admin/path-photos': {
       id: '/admin/path-photos'
       path: '/path-photos'
@@ -4157,6 +4176,7 @@ interface AdminRouteChildren {
   AdminLegacyScanRoute: typeof AdminLegacyScanRoute
   AdminOperationsRoute: typeof AdminOperationsRoute
   AdminPathPhotosRoute: typeof AdminPathPhotosRoute
+  AdminPaymentsRoute: typeof AdminPaymentsRoute
   AdminPaymentsEnvRoute: typeof AdminPaymentsEnvRoute
   AdminPhotosRoute: typeof AdminPhotosRoute
   AdminPriceMapRoute: typeof AdminPriceMapRoute
@@ -4212,6 +4232,7 @@ const AdminRouteChildren: AdminRouteChildren = {
   AdminLegacyScanRoute: AdminLegacyScanRoute,
   AdminOperationsRoute: AdminOperationsRoute,
   AdminPathPhotosRoute: AdminPathPhotosRoute,
+  AdminPaymentsRoute: AdminPaymentsRoute,
   AdminPaymentsEnvRoute: AdminPaymentsEnvRoute,
   AdminPhotosRoute: AdminPhotosRoute,
   AdminPriceMapRoute: AdminPriceMapRoute,
