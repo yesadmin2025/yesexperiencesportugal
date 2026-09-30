@@ -86,6 +86,39 @@ export const sendGuideAppInvite = createServerFn({ method: "POST" })
     return { ok: true, email };
   });
 
+/** Approve or reject a self-service Guide App sign-up; approval emails the guide at once. */
+export const reviewGuideRequest = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((input: unknown) =>
+    z.object({ guideId: z.string().uuid(), decision: z.enum(["approve", "reject"]) }).parse(input),
+  )
+  .handler(async ({ data, context }) => {
+    await assertAdmin(context);
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const approve = data.decision === "approve";
+    const { data: guide, error } = await supabaseAdmin
+      .from("guides")
+      .update({ approval_status: approve ? "approved" : "rejected", active: approve })
+      .eq("id", data.guideId)
+      .eq("approval_status", "pending")
+      .select("id, name, email")
+      .maybeSingle();
+    if (error) throw new Error(error.message);
+    if (!guide) throw new Error("This request was already reviewed.");
+    let notified = false;
+    if (approve && guide.email) {
+      const { sendTransactionalInternal } = await import("@/lib/email/send-internal.server");
+      const result = await sendTransactionalInternal({
+        templateName: "guide-app-invite",
+        recipientEmail: guide.email,
+        idempotencyKey: `guide-approved-${guide.id}`,
+        templateData: { guideName: guide.name, guideEmail: guide.email },
+      });
+      notified = result.ok;
+    }
+    return { ok: true, notified };
+  });
+
 const guideInput = z.object({
   id: z.string().uuid().optional(),
   name: z.string().trim().min(2).max(120),
