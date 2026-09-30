@@ -9,7 +9,7 @@ export const Route = createFileRoute("/guide/")({
   component: GuideToursHome,
 });
 
-type Alert = { id: string; title: string; message: string | null; assignment_id: string | null; notification_type: string };
+export type GuideAlert = { id: string; title: string; message: string | null; assignment_id: string | null; notification_type: string };
 
 /** Local (Portugal) calendar date, not UTC. */
 function localIso(d = new Date()) {
@@ -18,7 +18,7 @@ function localIso(d = new Date()) {
 
 function GuideToursHome() {
   const [tours, setTours] = useState<GuideTour[] | null>(null);
-  const [alerts, setAlerts] = useState<Alert[]>([]);
+  const [alerts, setAlerts] = useState<GuideAlert[]>([]);
   const [showAll, setShowAll] = useState(false);
   const [err, setErr] = useState<string | null>(null);
   useEffect(() => {
@@ -28,12 +28,16 @@ function GuideToursHome() {
       .is("read_at", null)
       .order("created_at", { ascending: false })
       .limit(3)
-      .then(({ data }: { data: Alert[] | null }) => setAlerts(data ?? []));
+      .then(({ data }: { data: GuideAlert[] | null }) => setAlerts(data ?? []));
   }, []);
   if (err) return <p className="text-sm text-destructive">{err}</p>;
   if (!tours) return <p className="text-sm text-muted-foreground">Loading your tours…</p>;
 
-  const today = localIso();
+  return <MyToursContent tours={tours} alerts={alerts} today={localIso()} />;
+}
+
+export function MyToursContent({ tours, alerts, today }: { tours: GuideTour[]; alerts: GuideAlert[]; today: string }) {
+  const [showAll, setShowAll] = useState(false);
   const active = tours.filter((t) => !t.booking_cancelled);
   const todays = active.filter((t) => t.tour_date === today);
   const upcoming = active
