@@ -30,8 +30,9 @@ const GuideAppInvite = ({ guideName, guideEmail, appUrl }: GuideAppInviteProps) 
       </Text>
       <Text style={step}>1. Open the link below on your phone.</Text>
       <Text style={step}>
-        2. Sign in or create an account with{" "}
-        {guideEmail ? <strong>{guideEmail}</strong> : "the email the office has registered for you"}.
+        2. First time: create app access with{" "}
+        {guideEmail ? <strong>{guideEmail}</strong> : "the same email the office has registered for you"}
+        {" "}and choose your password. Your guide profile is not yet a sign-in account.
       </Text>
       <Text style={step}>3. Once inside, tap “Install Guide App”.</Text>
       <Text style={{ ...step, margin: "0 0 24px" }}>

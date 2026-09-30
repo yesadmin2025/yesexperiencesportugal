@@ -42,4 +42,12 @@ describe("Guide PWA installation isolation", () => {
     expect(worker).toContain("event.respondWith(fetch(request).catch(() => caches.match(OFFLINE_URL)))");
     expect(worker).not.toMatch(/redirect\s*\([^)]*["']\/["']/);
   });
+
+  it("clearly distinguishes an existing guide profile from first-time app access", () => {
+    const guide = read("src/routes/guide.tsx");
+    expect(guide).toContain("Create Guide App access");
+    expect(guide).toContain("use the same email registered by the office");
+    expect(guide).toContain("Your existing guide profile is not yet a sign-in account");
+    expect(guide).toContain("Returning guide: use the email registered by the office");
+  });
 });
