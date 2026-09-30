@@ -33,18 +33,20 @@ type Gate = "checking" | "signed-out" | "not-guide" | "ok";
 const TABS = [
   { to: "/guide", label: "Today", icon: Home, exact: true },
   { to: "/guide/calendar", label: "Calendar", icon: CalendarDays, exact: false },
-  { to: "/guide/tours", label: "Tours", icon: ClipboardList, exact: false },
   { to: "/guide/availability", label: "Availability", icon: CalendarCheck, exact: false },
+  { to: "/guide/tours", label: "All my tours", icon: ClipboardList, exact: false },
   { to: "/guide/notifications", label: "Alerts", icon: Bell, exact: false },
   { to: "/guide/profile", label: "Profile", icon: User, exact: false },
 ] as const;
+
+const PRIMARY = ["/guide", "/guide/calendar", "/guide/availability"];
 
 function GuideLayout() {
   const [gate, setGate] = useState<Gate>("checking");
   const [unread, setUnread] = useState(0);
   const [moreOpen, setMoreOpen] = useState(false);
-  const primaryTabs = TABS.filter(({ to }) => ["/guide", "/guide/calendar", "/guide/tours"].includes(to));
-  const moreTabs = TABS.filter(({ to }) => !["/guide", "/guide/calendar", "/guide/tours"].includes(to));
+  const primaryTabs = TABS.filter(({ to }) => PRIMARY.includes(to));
+  const moreTabs = TABS.filter(({ to }) => !PRIMARY.includes(to));
 
   const check = async () => {
     const { data } = await supabase.auth.getUser();
