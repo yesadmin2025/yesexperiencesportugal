@@ -18,7 +18,14 @@ export type ReconRow = {
   preferred_date: string | null;
   pickup_location: string | null;
   review_required: boolean | null;
+  metadata?: unknown;
 };
+
+/** A payment toward a package (deposit/instalment) whose tours live on their own booking rows. */
+export function isPackagePayment(row: ReconRow): boolean {
+  const m = (row.metadata ?? {}) as Record<string, unknown>;
+  return m["financial_parent"] === true || m["financial_installment"] === true;
+}
 
 export type ReconBucket = "matched" | "missing_details" | "no_payment" | "review" | "refunded";
 
@@ -55,6 +62,7 @@ export function classifyBooking(row: ReconRow): ReconBucket {
   if (row.status === "cancelled" || row.status === "refunded" || row.payment_status === "REFUNDED") return "refunded";
   if (row.review_required) return "review";
   if (!paymentEvidence(row)) return "no_payment";
+  if (isPackagePayment(row)) return "matched";
   if (missingDetails(row).length) return "missing_details";
   return "matched";
 }
