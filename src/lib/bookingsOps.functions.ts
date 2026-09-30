@@ -28,7 +28,7 @@ const LIST_COLUMNS = [
   "id", "created_at", "booking_type", "source", "source_channel", "source_tour_id", "tour_title",
   "external_booking_ref", "customer_name", "customer_email", "customer_phone", "guests",
   "preferred_date", "start_time", "pickup_location", "amount_total", "amount_paid", "currency",
-  "status", "payment_status", "assigned_guide_id", "review_required", "review_reason",
+  "status", "metadata", "payment_status", "assigned_guide_id", "review_required", "review_reason",
   "cancelled_at", "stripe_session_id",
 ].join(", ");
 
