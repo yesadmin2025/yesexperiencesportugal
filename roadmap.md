@@ -53,3 +53,4 @@
 - [x] Verify at 393px, finance-field exclusion, overlap guard, notification flow
 
 - [x] Guide App corrections: snapshot itinerary + source_tour_id fallback, real partial-hour availability, server-side partial-hour assignment check (preview only)
+- [ ] Fix Guide App iPhone Home Screen opening public site (must launch /guide)
