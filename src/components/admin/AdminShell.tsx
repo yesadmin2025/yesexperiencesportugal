@@ -10,14 +10,15 @@
  */
 import { Link, useNavigate } from "@tanstack/react-router";
 import { createContext, useContext, useEffect, useState, type ReactNode } from "react";
-import { CalendarDays, CalendarRange, Compass, FileText, Home, Menu, Settings, Smartphone, Users, X } from "lucide-react";
+import { CalendarDays, CalendarRange, Compass, FileText, Home, Menu, Settings, Smartphone, Wallet, Users, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 
 const NAV = [
-  { to: "/admin", label: "Today", icon: Home, exact: true },
+  { to: "/admin", label: "Operations", icon: Home, exact: true },
   { to: "/admin/bookings", label: "Bookings", icon: CalendarDays, exact: false },
-  { to: "/admin/operations", label: "Operations", icon: Compass, exact: false },
+  { to: "/admin/payments", label: "Vouchers & Payments", icon: Wallet, exact: false },
+  { to: "/admin/operations", label: "Planning board", icon: Compass, exact: false },
   { to: "/admin/tour-calendar", label: "Tour Calendar", icon: CalendarRange, exact: false },
   { to: "/admin/experiences", label: "Tour Details", icon: FileText, exact: false },
   { to: "/admin/guides", label: "Guides", icon: Users, exact: false },
@@ -62,8 +63,8 @@ function useAdminGate(): Gate {
 export function AdminFrame({ children }: { children: ReactNode }) {
   const gate = useAdminGate();
   const [moreOpen, setMoreOpen] = useState(false);
-  const mobilePrimary = NAV.filter(({ to }) => ["/admin", "/admin/bookings", "/admin/tour-calendar"].includes(to));
-  const mobileMore = NAV.filter(({ to }) => !["/admin", "/admin/bookings", "/admin/tour-calendar"].includes(to));
+  const mobilePrimary = NAV.filter(({ to }) => ["/admin", "/admin/bookings", "/admin/payments"].includes(to));
+  const mobileMore = NAV.filter(({ to }) => !["/admin", "/admin/bookings", "/admin/payments"].includes(to));
   return (
     <FrameContext.Provider value={true}>
       <div className="min-h-[100dvh] bg-[color:var(--ivory)] text-[color:var(--charcoal)]">
