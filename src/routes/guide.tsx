@@ -84,6 +84,10 @@ function GuideLayout() {
         // Some mobile browsers require a service worker for notifications; in-app alert + email remain the guaranteed channels.
       }
     };
+    const onFocus = () => { if (document.visibilityState === "visible") bump(); };
+    window.addEventListener("focus", onFocus);
+    document.addEventListener("visibilitychange", onFocus);
+    const poll = setInterval(onFocus, 120000);
     const channel = supabase
       .channel("guide-live")
       .on("postgres_changes", { event: "*", schema: "public", table: "tour_assignments" }, bump)
@@ -91,7 +95,7 @@ function GuideLayout() {
       .on("postgres_changes", { event: "INSERT", schema: "public", table: "ops_notifications" }, onNewNotification)
       .on("postgres_changes", { event: "UPDATE", schema: "public", table: "ops_notifications" }, bump)
       .subscribe();
-    return () => { clearTimeout(t); void supabase.removeChannel(channel); };
+    return () => { clearTimeout(t); clearInterval(poll); window.removeEventListener("focus", onFocus); document.removeEventListener("visibilitychange", onFocus); void supabase.removeChannel(channel); };
   }, [gate]);
 
   const enableNotifications = async () => {
@@ -146,46 +150,24 @@ function GuideLayout() {
   );
 }
 
-/** Signed in, but not an approved guide yet: request access, then wait for the office. */
+/** Signed in, but this email is not linked to an active guide profile: no access is granted. */
 function GuideJoinRequest() {
   const [pending, setPending] = useState<boolean | null>(null);
-  const [name, setName] = useState("");
-  const [phone, setPhone] = useState("");
-  const [busy, setBusy] = useState(false);
-
+  const [email, setEmail] = useState<string>("");
   useEffect(() => {
     void db.rpc("guide_access_pending").then(({ data }: { data: boolean | null }) => setPending(!!data));
+    void supabase.auth.getUser().then(({ data }) => setEmail(data.user?.email ?? ""));
   }, []);
-
-  const submit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setBusy(true);
-    const { error } = await db.rpc("guide_request_access", { _name: name, _phone: phone });
-    setBusy(false);
-    if (error) return toast.error(errMsg(error));
-    setPending(true);
-  };
-
   if (pending === null) return null;
   return (
     <div className="w-full max-w-sm space-y-4">
       <p className="text-[11px] uppercase tracking-[0.22em] text-[color:var(--gold)]">YES Guide</p>
-      {pending ? (
-        <>
-          <h1 className="font-[family-name:var(--font-editorial)] text-[28px] leading-tight">Waiting for approval</h1>
-          <p className="text-sm text-muted-foreground">Thank you. The office will review your request; your tours appear here once you're approved.</p>
-        </>
-      ) : (
-        <form onSubmit={submit} className="space-y-4">
-          <h1 className="font-[family-name:var(--font-editorial)] text-[28px] leading-tight">Join as a guide</h1>
-          <p className="text-sm text-muted-foreground">This email isn't registered yet. Send your details and the office will approve your access.</p>
-          <input required minLength={2} value={name} onChange={(e) => setName(e.target.value)} placeholder="Full name" autoComplete="name" className="w-full min-h-12 border border-border px-3 bg-background" />
-          <input type="tel" value={phone} onChange={(e) => setPhone(e.target.value)} placeholder="Phone / WhatsApp" autoComplete="tel" className="w-full min-h-12 border border-border px-3 bg-background" />
-          <button disabled={busy} className="w-full min-h-12 bg-[color:var(--teal)] text-primary-foreground text-[12px] uppercase tracking-[0.18em] disabled:opacity-50">
-            {busy ? "Sending…" : "Request access"}
-          </button>
-        </form>
-      )}
+      <h1 className="font-[family-name:var(--font-editorial)] text-[28px] leading-tight">{pending ? "Waiting for approval" : "Access not found"}</h1>
+      <p className="text-sm text-muted-foreground">
+        {pending
+          ? "The office is reviewing your access. Your tours appear here once you're approved."
+          : <>We couldn't find an active guide profile for <strong className="break-all text-foreground">{email || "this email"}</strong>. Please contact the office so they can add or correct your email, then sign in again.</>}
+      </p>
       <button className="min-h-11 px-4 border border-border text-[12px] uppercase tracking-[0.18em]" onClick={() => supabase.auth.signOut()}>Sign out</button>
     </div>
   );
@@ -194,20 +176,25 @@ function GuideJoinRequest() {
 function GuideSignIn() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [mode, setMode] = useState<"signin" | "signup">("signin");
+  const [mode, setMode] = useState<"signin" | "signup" | "reset">("signin");
   const [busy, setBusy] = useState(false);
 
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
     setBusy(true);
     try {
-      if (mode === "signin") {
+      if (mode === "reset") {
+        const { error } = await supabase.auth.resetPasswordForEmail(email, { redirectTo: `${window.location.origin}/guide-reset-password` });
+        if (error) throw error;
+        toast.success("If this email has an account, a reset link is on its way.");
+        setMode("signin");
+      } else if (mode === "signin") {
         const { error } = await supabase.auth.signInWithPassword({ email, password });
         if (error) throw error;
       } else {
         const { error } = await supabase.auth.signUp({ email, password, options: { emailRedirectTo: `${window.location.origin}/guide` } });
         if (error) throw error;
-        toast.success("Check your email to confirm your account.");
+        toast.success("Check your email and tap the confirmation link. If you already have an account, sign in instead.");
         setMode("signin");
       }
     } catch (err) {
@@ -222,17 +209,19 @@ function GuideSignIn() {
       <form onSubmit={submit} className="w-full max-w-sm space-y-4">
         <p className="text-[11px] uppercase tracking-[0.22em] text-[color:var(--gold)]">YES Experiences</p>
         <h1 className="font-[family-name:var(--font-editorial)] text-[32px] leading-tight">
-          {mode === "signin" ? "Guide sign-in" : "Create Guide App access"}
+          {mode === "signin" ? "Guide sign-in" : mode === "reset" ? "Reset your password" : "Create Guide App access"}
         </h1>
         <p className="text-sm leading-relaxed text-muted-foreground">
           {mode === "signin"
             ? "Returning guide: use the email registered by the office and the password you created for the Guide App."
-            : "First time here: use the same email registered by the office, then choose your own password. Your existing guide profile is not yet a sign-in account. New guide? Use any email — the office approves your access."}
+            : mode === "reset"
+              ? "Enter your guide email and we'll send a link to choose a new password."
+              : "First time here: use the exact email the office saved for you, then choose your own password. Only do this once — afterwards, sign in."}
         </p>
         <input type="email" required autoComplete="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="Email" className="w-full min-h-12 border border-border px-3 bg-background" />
-        <input type="password" required minLength={8} autoComplete={mode === "signin" ? "current-password" : "new-password"} value={password} onChange={(e) => setPassword(e.target.value)} placeholder="Password" className="w-full min-h-12 border border-border px-3 bg-background" />
+        {mode !== "reset" ? <input type="password" required minLength={8} autoComplete={mode === "signin" ? "current-password" : "new-password"} value={password} onChange={(e) => setPassword(e.target.value)} placeholder="Password" className="w-full min-h-12 border border-border px-3 bg-background" /> : null}
         <button disabled={busy} className="w-full min-h-12 bg-[color:var(--teal)] text-primary-foreground text-[12px] uppercase tracking-[0.18em] disabled:opacity-50">
-          {mode === "signin" ? "Sign in" : "Create account"}
+          {mode === "signin" ? "Sign in" : mode === "reset" ? "Send reset link" : "Create account"}
         </button>
         <button
           type="button"
@@ -245,8 +234,9 @@ function GuideSignIn() {
           Continue with Google
         </button>
         <button type="button" className="w-full text-sm text-[color:var(--teal)] min-h-11" onClick={() => setMode(mode === "signin" ? "signup" : "signin")}>
-          {mode === "signin" ? "First time? Create app access" : "Returning guide? Sign in"}
+          {mode === "signin" ? "First time? Create your password" : "Returning guide? Sign in"}
         </button>
+        {mode === "signin" ? <button type="button" className="w-full text-sm text-muted-foreground min-h-11" onClick={() => setMode("reset")}>Forgot password?</button> : null}
       </form>
     </div>
   );

@@ -38,7 +38,7 @@ export const listGuides = createServerFn({ method: "POST" })
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const { data, error } = await supabaseAdmin
       .from("guides")
-      .select("id, name, email, phone, notes, active, user_id, approval_status")
+      .select("id, name, email, phone, notes, active, user_id, approval_status, app_invited_at")
       .order("name", { ascending: true });
     if (error) throw new Error(error.message);
     // Expose only whether an app account is linked — never the auth user id.
@@ -61,13 +61,14 @@ export const sendGuideAppInvite = createServerFn({ method: "POST" })
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const { data: guide, error } = await supabaseAdmin
       .from("guides")
-      .select("id, name, email")
+      .select("id, name, email, active, approval_status, app_invite_count")
       .eq("id", data.guideId)
       .maybeSingle();
     if (error) throw new Error(error.message);
     if (!guide) throw new Error("Guide not found.");
     const email = guide.email?.trim();
-    if (!email) throw new Error("This guide has no email saved.");
+    if (!email) throw new Error("Add an email to this guide before inviting.");
+    if (!guide.active || guide.approval_status === "pending") throw new Error("Activate this guide before inviting.");
 
     const { sendTransactionalInternal } = await import("@/lib/email/send-internal.server");
     const result = await sendTransactionalInternal({
@@ -83,6 +84,10 @@ export const sendGuideAppInvite = createServerFn({ method: "POST" })
           : "The invite could not be sent. Please try again.",
       );
     }
+    await supabaseAdmin
+      .from("guides")
+      .update({ app_invited_at: new Date().toISOString(), app_invite_count: (guide.app_invite_count ?? 0) + 1 })
+      .eq("id", guide.id);
     return { ok: true, email };
   });
 

@@ -26,7 +26,7 @@ describe("Guide App simple information architecture", () => {
     expect(home).toContain("No upcoming tours assigned.");
     expect(home).toContain('from("ops_notifications")');
     expect(card).toContain("View details");
-    expect(card).toContain("Pickup location not added");
+    expect(card).toContain("Pickup not added yet");
     expect(card).not.toContain("<GuestActions t={t}");
   });
 

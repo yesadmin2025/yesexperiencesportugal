@@ -33,8 +33,8 @@ describe("My Tours signed-in state", () => {
     expect(screen.getByRole("heading", { name: "Today" })).toBeTruthy();
     expect(screen.getByRole("heading", { name: "Upcoming" })).toBeTruthy();
     expect(screen.getByText("New assignment")).toBeTruthy();
-    expect(screen.getByText(/Wed, 30 Sept · 08:30/)).toBeTruthy();
-    expect(screen.getByText(/Thu, 8 Oct · 08:30/)).toBeTruthy();
+    expect(screen.getByText(/Wednesday 30 September/)).toBeTruthy();
+    expect(screen.getByText(/Thursday 8 October/)).toBeTruthy();
     expect(screen.getByText("Arrábida Wine Tour")).toBeTruthy();
     expect(screen.getAllByText("John Smith · 2 guests")).toHaveLength(4);
     expect(screen.getAllByText("VIP Executive Picoas")).toHaveLength(4);

@@ -12,3 +12,4 @@
 - Guide scheduling uses DB conflict guards and RLS-safe RPCs; `/guide` is the only work list (3 tabs, scoped PWA manifest).
 - Ops booking data rules: see `src/lib/ops/AGENTS.md`.
 - Admin daily navigation is Operations, Bookings, Payments, Guides, More; legacy planning and tour-calendar URLs redirect to Operations because each booking has one full detail page and one shared canonical list.
+- Guide App access labels come only from `src/lib/guide-access.ts`, and linking uses `guide_claim_account` (one active profile per confirmed email, unique email/user indexes); Admin and the Guide App describe access identically and no one can claim another profile.

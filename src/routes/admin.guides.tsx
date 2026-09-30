@@ -1,4 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
+import { guideAccessState, GUIDE_ACCESS_LABEL } from "@/lib/guide-access";
 import { useServerFn } from "@tanstack/react-start";
 import { useEffect, useState } from "react";
 import { AdminShell } from "@/components/admin/AdminShell";
@@ -26,7 +27,7 @@ function GuidesPage() {
       const next = board?.assignments.filter((a) => a.guide_id === g.id && a.status !== "declined").sort((a, b) => a.start_at.localeCompare(b.start_at))[0];
       const booking = board?.bookings.find((b) => b.id === next?.booking_id);
       const slots = board?.availability.filter((a) => a.guide_id === g.id) ?? [];
-      return <li key={g.id} className="py-5"><div className="flex flex-col justify-between gap-3 sm:flex-row"><div className="min-w-0 space-y-1 text-sm"><h2 className="font-[family-name:var(--font-editorial)] text-xl">{g.name}</h2><p className="break-all text-muted-foreground">{[g.email, g.phone].filter(Boolean).join(" · ") || "No contact saved"}</p><p>{g.active ? "Active" : "Inactive"} · {g.app_linked ? "App connected" : g.approval_status === "pending" ? "Access awaiting approval" : "App not connected"}</p><p className="text-muted-foreground">Next tour: {booking ? `${booking.preferred_date ?? "Date to confirm"} · ${booking.tour_title ?? booking.source_tour_id ?? "Tour to confirm"}` : "None scheduled"}</p><p className="text-muted-foreground">Availability: {slots.length ? slots.map((s) => s.status).join(", ") : "Not set for the next 30 days"}</p></div><Link to="/admin/guides/$id" params={{ id: g.id }} className="inline-flex min-h-11 shrink-0 items-center self-start text-sm text-primary underline underline-offset-4">Open guide →</Link></div></li>;
+      return <li key={g.id} className="py-5"><div className="flex flex-col justify-between gap-3 sm:flex-row"><div className="min-w-0 space-y-1 text-sm"><h2 className="font-[family-name:var(--font-editorial)] text-xl">{g.name}</h2><p className="break-all text-muted-foreground">{[g.email, g.phone].filter(Boolean).join(" · ") || "No contact saved"}</p><p>{g.active ? "Active" : "Inactive"} · {GUIDE_ACCESS_LABEL[guideAccessState(g)]}</p><p className="text-muted-foreground">Next tour: {booking ? `${booking.preferred_date ?? "Date to confirm"} · ${booking.tour_title ?? "Tour to confirm"}` : "None scheduled"}</p><p className="text-muted-foreground">Availability: {slots.length ? slots.map((s) => s.status).join(", ") : "Not set for the next 30 days"}</p></div><Link to="/admin/guides/$id" params={{ id: g.id }} className="inline-flex min-h-11 shrink-0 items-center self-start text-sm text-primary underline underline-offset-4">Open guide →</Link></div></li>;
     })}</ul>
     {guides.length === 0 && !error ? <p className="py-6 text-sm text-muted-foreground">Loading guides…</p> : null}
   </AdminShell>;
