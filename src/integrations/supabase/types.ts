@@ -1995,6 +1995,7 @@ export type Database = {
       guides: {
         Row: {
           active: boolean
+          approval_status: string
           created_at: string
           email: string | null
           id: string
@@ -2010,6 +2011,7 @@ export type Database = {
         }
         Insert: {
           active?: boolean
+          approval_status?: string
           created_at?: string
           email?: string | null
           id?: string
@@ -2025,6 +2027,7 @@ export type Database = {
         }
         Update: {
           active?: boolean
+          approval_status?: string
           created_at?: string
           email?: string | null
           id?: string
@@ -3878,6 +3881,7 @@ export type Database = {
         Args: { payload: Json; queue_name: string }
         Returns: number
       }
+      guide_access_pending: { Args: never; Returns: boolean }
       guide_claim_account: { Args: never; Returns: string }
       guide_confirm_assignment: {
         Args: { _assignment_id: string }
@@ -3925,6 +3929,10 @@ export type Database = {
         Args: { _booking_id: string; _message: string }
         Returns: string
       }
+      guide_request_access: {
+        Args: { _name: string; _phone: string }
+        Returns: string
+      }
       guide_update_profile: {
         Args: {
           _languages: string[]
@@ -3965,6 +3973,7 @@ export type Database = {
         Args: { _booking_id: string; _guide_id: string }
         Returns: string
       }
+      ops_auto_assign_guide: { Args: { _booking_id: string }; Returns: string }
       ops_booking_window: {
         Args: { _booking_id: string }
         Returns: Record<string, unknown>
