@@ -64,7 +64,9 @@ function TourDetails() {
   const bookingItinerary = Array.isArray(tour.itinerary) ? tour.itinerary : [];
   const bookingIncluded = Array.isArray(tour.included_items) ? tour.included_items.filter((x) => typeof x === "string" && x.trim()) : [];
   // Last-resort fallback: the public Signature catalogue (labels, stories, inclusions only — never prices).
-  const catalogue = tour.source_tour_id ? findTour(tour.source_tour_id) : undefined;
+  // Only when the booking IS that Signature tour (same title or no title of its own) — a custom day never borrows it.
+  const found = tour.source_tour_id ? findTour(tour.source_tour_id) : undefined;
+  const catalogue = found && (!tour.tour_title || tour.tour_title.trim().toLowerCase() === found.title.trim().toLowerCase() || tour.tour_title === tour.source_tour_id) ? found : undefined;
   const itinerary = bookingItinerary.length
     ? bookingItinerary
     : (catalogue?.stops ?? []).map((s, i) => ({ order: i + 1, label: s.label, note: s.story || null, durationMinutes: null }));
@@ -76,7 +78,7 @@ function TourDetails() {
         <Link to="/guide" className="text-sm text-[color:var(--teal)]">← My Tours</Link>
         <p className="mt-3 text-[11px] uppercase tracking-[0.22em] text-muted-foreground">Tour Details</p>
         <p className="mt-1 font-[family-name:var(--font-editorial)] text-[26px] font-medium leading-tight">{new Date(`${tour.tour_date}T12:00:00Z`).toLocaleDateString("en-GB", { weekday: "long", day: "numeric", month: "long" })} · {tour.start_time?.slice(0, 5) ?? "Time not set"}</p>
-        <h1 className="mt-2 text-[20px] font-semibold leading-tight">{tour.tour_title ?? "Tour name not added"}</h1>
+        <h1 className="mt-2 text-[20px] font-semibold leading-tight">{tour.tour_title ?? "Tour name not added yet"}</h1>
         <span className={`inline-block mt-2 text-[11px] px-2 py-0.5 ${b.cls}`}>{b.label}</span>
       </div>
       <TourEssentials t={tour} />
