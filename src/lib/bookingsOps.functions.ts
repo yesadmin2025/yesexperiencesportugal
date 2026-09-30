@@ -150,7 +150,7 @@ export const listOpsBookings = createServerFn({ method: "POST" })
 
     const { data: guides } = await supabaseAdmin
       .from("guides")
-      .select("id, name, active")
+      .select("id, name, active, email")
       .order("name", { ascending: true });
 
     const { count: reviewCount } = await supabaseAdmin
