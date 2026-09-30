@@ -35,7 +35,7 @@ const GuideAppInvite = ({ guideName, guideEmail, appUrl }: GuideAppInviteProps) 
       </Text>
       <Text style={step}>3. Once inside, tap “Install Guide App”.</Text>
       <Text style={{ ...step, margin: "0 0 24px" }}>
-        4. On iPhone: tap Share, then Add to Home Screen.
+        4. On iPhone: while on the Guide App page in Safari, tap Share, then Add to Home Screen. Add it from the Guide App page, not the main website.
       </Text>
     </AuthShell>
   );

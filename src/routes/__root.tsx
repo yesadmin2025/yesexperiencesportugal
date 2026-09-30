@@ -147,7 +147,7 @@ export const Route = createRootRoute({
       throw redirect({ to: "/", replace: true });
     }
   },
-  head: () => ({
+  head: ({ matches }) => ({
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1, viewport-fit=cover" },
@@ -199,7 +199,11 @@ export const Route = createRootRoute({
         sizes: "180x180",
         href: "/apple-touch-icon.png",
       },
-      { rel: "manifest", href: "/site.webmanifest" },
+      // The Guide App (/guide) declares its own manifest. Emitting the public
+      // one there too makes phones install the public site instead.
+      ...(matches.some((m) => m.routeId.startsWith("/guide"))
+        ? []
+        : [{ rel: "manifest", href: "/site.webmanifest" }]),
       { rel: "preconnect", href: "https://fonts.googleapis.com" },
       { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
       // Perf: GTM boots late (idle / first interaction), so we only warm DNS —
