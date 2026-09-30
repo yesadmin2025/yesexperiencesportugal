@@ -13,6 +13,7 @@ import { template as legacyDomainReady } from "./legacy-domain-ready";
 import { template as signatureStory } from "./signature-story";
 import { template as viatorDriftAlert } from "./viator-drift-alert";
 import { template as guideAppInvite } from "./guide-app-invite";
+import { template as guideAppDeclined } from "./guide-app-declined";
 
 export interface TemplateEntry {
   component: ComponentType<any>;
@@ -41,4 +42,5 @@ export const TEMPLATES: Record<string, TemplateEntry> = {
   "signature-story": signatureStory,
   "viator-drift-alert": viatorDriftAlert,
   "guide-app-invite": guideAppInvite,
+  "guide-app-declined": guideAppDeclined,
 };

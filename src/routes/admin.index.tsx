@@ -10,6 +10,11 @@ import { useServerFn } from "@tanstack/react-start";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { AdminSectionTitle, AdminShell } from "@/components/admin/AdminShell";
 import { getOpsIntegrationStatus, listOpsBookings } from "@/lib/bookingsOps.functions";
+import { getOperationsBoard } from "@/lib/operations.functions";
+
+type Avail = { id: string; guide_id: string; status: string; start_at: string; end_at: string };
+const AVAIL_LABEL: Record<string, string> = { available: "Free", unavailable: "Busy", vacation: "Vacation", partial: "Partly free", morning: "Free mornings", afternoon: "Free afternoons", custom: "Free some hours" };
+const lisbonTime = (iso: string) => new Date(iso).toLocaleString("en-GB", { timeZone: "Europe/Lisbon", weekday: "short", day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" });
 
 export const Route = createFileRoute("/admin/")({
   head: () => ({
@@ -58,6 +63,8 @@ type Exception = { key: string; text: string; detail: string; action: string; bo
 function TodayPage() {
   const loadBookings = useServerFn(listOpsBookings);
   const loadIntegrations = useServerFn(getOpsIntegrationStatus);
+  const loadBoard = useServerFn(getOperationsBoard);
+  const [avail, setAvail] = useState<Avail[]>([]);
 
   const [week, setWeek] = useState<Row[]>([]);
   const [undated, setUndated] = useState<Row[]>([]);
@@ -92,6 +99,13 @@ function TodayPage() {
     }
 
     try {
+      const board = await loadBoard({ data: { from: today, to: weekEnd } });
+      setAvail(((board.availability ?? []) as Avail[]).sort((a, b) => a.start_at.localeCompare(b.start_at)));
+    } catch {
+      setAvail([]);
+    }
+
+    try {
       const status = await loadIntegrations({});
       const gmail = (status.state as Array<Record<string, unknown>>).find((entry) => entry["id"] === "gmail_bookings");
       const lastRun = typeof gmail?.["last_run_at"] === "string" ? new Date(gmail["last_run_at"] as string) : null;
@@ -107,7 +121,7 @@ function TodayPage() {
       setAutomationProblem(null);
     }
     setLoaded(true);
-  }, [loadBookings, loadIntegrations, today, weekEnd, monthStart, monthEnd]);
+  }, [loadBookings, loadIntegrations, loadBoard, today, weekEnd, monthStart, monthEnd]);
 
   useEffect(() => {
     void refresh();
@@ -186,6 +200,25 @@ function TodayPage() {
       <div className="mt-10 space-y-10">
         <DayBlock title="Today" rows={todayRows} guideName={guideName} empty="No tours today." />
         <DayBlock title="Upcoming · next 14 days" rows={upcomingRows} guideName={guideName} showDate empty="No upcoming tours." />
+        <section aria-label="Guide availability">
+          <AdminSectionTitle count={avail.length}>Guide availability · next 14 days</AdminSectionTitle>
+          {avail.length === 0 ? (
+            <p className="mt-3 text-[13px] text-[color:var(--charcoal-soft)]">No guide has set free or busy times for these days.</p>
+          ) : (
+            <ul className="mt-3 divide-y divide-[color:var(--charcoal)]/[0.07] border-y border-[color:var(--charcoal)]/[0.07]">
+              {avail.map((a) => (
+                <li key={a.id} className="flex flex-wrap items-baseline justify-between gap-x-3 py-3 text-[14px]">
+                  <span className="text-[color:var(--charcoal)]">
+                    <strong className="font-medium">{guideName(a.guide_id) ?? "Guide"}</strong> · {AVAIL_LABEL[a.status] ?? a.status}
+                  </span>
+                  <span className="text-[13px] text-[color:var(--charcoal-soft)]">
+                    {lisbonTime(a.start_at)} – {lisbonTime(a.end_at)}
+                  </span>
+                </li>
+              ))}
+            </ul>
+          )}
+        </section>
       </div>
 
       {loaded ? (
