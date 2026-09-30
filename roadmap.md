@@ -54,6 +54,8 @@
 
 - [x] Guide App corrections: snapshot itinerary + source_tour_id fallback, real partial-hour availability, server-side partial-hour assignment check (preview only)
 - [x] Fix Guide App Home Screen launch and isolate its manifest/install prompt from the public PWA (must launch /guide)
+- [ ] Simplify Guide App to three tabs with one My Tours home for Today, Upcoming, and unread alerts
+- [ ] Validate signed-in My Tours states with safe mock data at 393px, then run focused checks
 - [ ] Resubmit /about to Google + private-tour landing pages (needs owner scope decision)
 - [ ] Auto-assign a guide after Studio payment (needs owner decision; currently office assigns)
 - [ ] Guide self sign-up without saved email (needs owner approval model)
