@@ -6,6 +6,7 @@ import { BookingListRow } from "@/components/admin/ops/BookingListRow";
 import { Button } from "@/components/ui/button";
 import { listOpsBookings } from "@/lib/bookingsOps.functions";
 import { listPaymentRecords } from "@/lib/payments.functions";
+import { guideAssignmentAttention } from "@/lib/guide-access";
 
 type List = Awaited<ReturnType<typeof listOpsBookings>>;
 const day = (n = 0) => new Intl.DateTimeFormat("en-CA", { timeZone: "Europe/Lisbon" }).format(new Date(Date.now() + n * 86400000));
@@ -35,7 +36,7 @@ function OperationsPage() {
   const todayRows = scheduled.filter((b) => b.preferred_date === today);
   const upcoming = scheduled.filter((b) => b.preferred_date && b.preferred_date > today && b.preferred_date <= day(14));
   const issues = [...scheduled, ...undated.filter((b) => b.completeness.state !== "package_payment" && b.status !== "failed" && b.status !== "cancelled" && b.status !== "refunded")].map((b) => {
-    const reasons = [!b.guide_id && "No guide", ...guideAssignmentAttention(b, data.guides.find((g) => g.id === b.guide_id)), b.completeness.state === "incomplete" && b.completeness_label, paymentIssues.has(b.id) && "Payment needs review", b.review_required && (b.review_reason || "Operational change to review")].filter(Boolean) as string[];
+    const reasons = [...guideAssignmentAttention(b, (list?.guides as Array<{ id: string; active?: boolean | null; email?: string | null }> | undefined)?.find((g) => g.id === b.guide_id)), b.completeness.state === "incomplete" && b.completeness_label, paymentIssues.has(b.id) && "Payment needs review", b.review_required && (b.review_reason || "Operational change to review")].filter(Boolean) as string[];
     return { row: b, reason: reasons.join(" · ") };
   }).filter((x) => x.reason);
   const dates = Array.from({ length: 15 }, (_, n) => day(n));
