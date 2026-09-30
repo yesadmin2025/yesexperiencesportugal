@@ -1761,7 +1761,7 @@ function TailorPage() {
           region: tour.region,
           beats: publicSelectionLabels,
           itinerary: publicSelectionLabels.map((label) => ({ label })),
-          ...resolveCheckoutInclusions(metaForSummary, tour),
+          ...resolveCheckoutInclusions(meta, tour),
         }}
         initial={{
           tourDate: date,
@@ -1800,7 +1800,7 @@ function TailorPage() {
              startTime: pickup,
              beats: publicSelectionLabels,
              itinerary: publicSelectionLabels.map((label) => ({ label })),
-             ...resolveCheckoutInclusions(metaForSummary, tour),
+             ...resolveCheckoutInclusions(meta, tour),
             guests,
             adults: composition.adults,
             minorAges: [...composition.minorAges],

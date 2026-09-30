@@ -780,7 +780,7 @@ export function SimpleBookingForm({ tour }: { tour: SignatureTour }) {
           region: tour.region,
           beats: signatureBeats,
           itinerary,
-          ...resolveCheckoutInclusions(meta, tour),
+          ...resolveCheckoutInclusions(getViatorMeta(tour.id), tour),
         }}
         initial={{
           tourDate: date,
@@ -819,7 +819,7 @@ export function SimpleBookingForm({ tour }: { tour: SignatureTour }) {
              pickupLabel: pickup,
               beats: signatureBeats,
               itinerary,
-              ...resolveCheckoutInclusions(meta, tour),
+              ...resolveCheckoutInclusions(getViatorMeta(tour.id), tour),
             guests,
             adults: composition.adults,
             minorAges: [...composition.minorAges],
