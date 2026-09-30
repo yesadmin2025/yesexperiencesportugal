@@ -25,7 +25,7 @@ import {
 
 const TITLE = "About YES Experiences Portugal · Our Story & Founder";
 const DESCRIPTION =
-  "YES Experiences Portugal is a private tour company founded by Nídia Almeida in Sesimbra. Meet the local team behind our private days and journeys.";
+  "YES Experiences Portugal is a private tour company founded by Nídia Almeida. Meet the local team behind our private days and journeys across Portugal.";
 const founderSrcSet = [480, 720, 900, 1200]
   .map((width) => `${founderAsset.url}?w=${width}&q=78 ${width}w`)
   .join(", ");
