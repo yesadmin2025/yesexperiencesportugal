@@ -59,6 +59,7 @@ const listInput = z.object({
   guide: z.string().optional(), // uuid | "unassigned" | "all"
   tour: z.string().max(200).optional(),
   reviewOnly: z.boolean().optional(),
+  offset: z.number().int().min(0).default(0),
   limit: z.number().int().min(1).max(500).default(200),
 });
 
@@ -69,11 +70,25 @@ export const listOpsBookings = createServerFn({ method: "POST" })
     await assertAdmin(context);
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
 
+    const term = data.search?.trim();
+    let paymentBookingIds: string[] = [];
+    if (term && term.length >= 2) {
+      const safeRef = term.replace(/[%,()]/g, " ").trim();
+      if (safeRef) {
+        const { data: payments, error: paymentError } = await supabaseAdmin.from("payment_records")
+          .select("booking_id")
+          .or(`external_reference.ilike.%${safeRef}%,provider_payment_id.ilike.%${safeRef}%`)
+          .not("booking_id", "is", null).limit(500);
+        if (paymentError) throw new Error(paymentError.message);
+        paymentBookingIds = [...new Set((payments ?? []).map((p) => p.booking_id).filter((id): id is string => Boolean(id)))];
+      }
+    }
+
     let query = supabaseAdmin
       .from("bookings")
-      .select(LIST_COLUMNS)
+      .select(LIST_COLUMNS, { count: "exact" })
       .order("preferred_date", { ascending: true, nullsFirst: false })
-      .limit(data.limit);
+      .range(data.offset, data.offset + data.limit - 1);
 
     if (data.status !== "all") query = query.eq("status", data.status);
     if (data.paymentStatus !== "all") query = query.eq("payment_status", data.paymentStatus);
@@ -86,7 +101,6 @@ export const listOpsBookings = createServerFn({ method: "POST" })
       if (safeTour) query = query.or(`source_tour_id.ilike.%${safeTour}%,tour_title.ilike.%${safeTour}%`);
     }
 
-    const term = data.search?.trim();
     if (term) {
       const safe = term.replace(/[%,()]/g, " ").trim();
       if (safe) {
@@ -99,12 +113,13 @@ export const listOpsBookings = createServerFn({ method: "POST" })
             `stripe_session_id.ilike.%${safe}%`,
             `tour_title.ilike.%${safe}%`,
             `source_tour_id.ilike.%${safe}%`,
+            ...(paymentBookingIds.length ? [`id.in.(${paymentBookingIds.join(",")})`] : []),
           ].join(","),
         );
       }
     }
 
-    const { data: rawRows, error } = await query;
+    const { data: rawRows, error, count } = await query;
     if (error) throw new Error(error.message);
 
     // Guide truth = active tour_assignments (never the mirror column).
@@ -125,7 +140,7 @@ export const listOpsBookings = createServerFn({ method: "POST" })
       .select("id", { count: "exact", head: true })
       .eq("status", "pending");
 
-    return { bookings: rows, guides: guides ?? [], reviewCount: reviewCount ?? 0 };
+    return { bookings: rows, guides: guides ?? [], reviewCount: reviewCount ?? 0, total: count ?? 0 };
   });
 
 export const getOpsBooking = createServerFn({ method: "POST" })
