@@ -196,6 +196,7 @@ import { Route as ApiPublicBookingRequestRouteImport } from './routes/api/public
 import { Route as ApiPublicBookingItineraryDataRouteImport } from './routes/api/public/booking-itinerary-data'
 import { Route as ApiPublicBookingItineraryRouteImport } from './routes/api/public/booking-itinerary'
 import { Route as ApiPublicBookingCalendarRouteImport } from './routes/api/public/booking-calendar'
+import { Route as AdminBookingsNewRouteImport } from './routes/admin.bookings.new'
 import { Route as AdminBookingsIdRouteImport } from './routes/admin.bookings.$id'
 import { Route as Char91DotmcpChar93InvokeToolToolRouteImport } from './routes/[.mcp]/invoke-tool/$tool'
 import { Route as DotlovableOauthConsentRouteImport } from './routes/[.]lovable.oauth.consent'
@@ -1176,6 +1177,11 @@ const ApiPublicBookingCalendarRoute =
     path: '/api/public/booking-calendar',
     getParentRoute: () => rootRouteImport,
   } as any)
+const AdminBookingsNewRoute = AdminBookingsNewRouteImport.update({
+  id: '/bookings/new',
+  path: '/bookings/new',
+  getParentRoute: () => AdminRoute,
+} as any)
 const AdminBookingsIdRoute = AdminBookingsIdRouteImport.update({
   id: '/bookings/$id',
   path: '/bookings/$id',
@@ -1474,6 +1480,7 @@ export interface FileRoutesByFullPath {
   '/.lovable/oauth/consent': typeof DotlovableOauthConsentRoute
   '/.mcp/invoke-tool/$tool': typeof Char91DotmcpChar93InvokeToolToolRoute
   '/admin/bookings/$id': typeof AdminBookingsIdRoute
+  '/admin/bookings/new': typeof AdminBookingsNewRoute
   '/api/public/booking-calendar': typeof ApiPublicBookingCalendarRoute
   '/api/public/booking-itinerary': typeof ApiPublicBookingItineraryRoute
   '/api/public/booking-itinerary-data': typeof ApiPublicBookingItineraryDataRoute
@@ -1680,6 +1687,7 @@ export interface FileRoutesByTo {
   '/.lovable/oauth/consent': typeof DotlovableOauthConsentRoute
   '/.mcp/invoke-tool/$tool': typeof Char91DotmcpChar93InvokeToolToolRoute
   '/admin/bookings/$id': typeof AdminBookingsIdRoute
+  '/admin/bookings/new': typeof AdminBookingsNewRoute
   '/api/public/booking-calendar': typeof ApiPublicBookingCalendarRoute
   '/api/public/booking-itinerary': typeof ApiPublicBookingItineraryRoute
   '/api/public/booking-itinerary-data': typeof ApiPublicBookingItineraryDataRoute
@@ -1891,6 +1899,7 @@ export interface FileRoutesById {
   '/.lovable/oauth/consent': typeof DotlovableOauthConsentRoute
   '/.mcp/invoke-tool/$tool': typeof Char91DotmcpChar93InvokeToolToolRoute
   '/admin/bookings/$id': typeof AdminBookingsIdRoute
+  '/admin/bookings/new': typeof AdminBookingsNewRoute
   '/api/public/booking-calendar': typeof ApiPublicBookingCalendarRoute
   '/api/public/booking-itinerary': typeof ApiPublicBookingItineraryRoute
   '/api/public/booking-itinerary-data': typeof ApiPublicBookingItineraryDataRoute
@@ -2103,6 +2112,7 @@ export interface FileRouteTypes {
     | '/.lovable/oauth/consent'
     | '/.mcp/invoke-tool/$tool'
     | '/admin/bookings/$id'
+    | '/admin/bookings/new'
     | '/api/public/booking-calendar'
     | '/api/public/booking-itinerary'
     | '/api/public/booking-itinerary-data'
@@ -2309,6 +2319,7 @@ export interface FileRouteTypes {
     | '/.lovable/oauth/consent'
     | '/.mcp/invoke-tool/$tool'
     | '/admin/bookings/$id'
+    | '/admin/bookings/new'
     | '/api/public/booking-calendar'
     | '/api/public/booking-itinerary'
     | '/api/public/booking-itinerary-data'
@@ -2519,6 +2530,7 @@ export interface FileRouteTypes {
     | '/.lovable/oauth/consent'
     | '/.mcp/invoke-tool/$tool'
     | '/admin/bookings/$id'
+    | '/admin/bookings/new'
     | '/api/public/booking-calendar'
     | '/api/public/booking-itinerary'
     | '/api/public/booking-itinerary-data'
@@ -3998,6 +4010,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicBookingCalendarRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/admin/bookings/new': {
+      id: '/admin/bookings/new'
+      path: '/bookings/new'
+      fullPath: '/admin/bookings/new'
+      preLoaderRoute: typeof AdminBookingsNewRouteImport
+      parentRoute: typeof AdminRoute
+    }
     '/admin/bookings/$id': {
       id: '/admin/bookings/$id'
       path: '/bookings/$id'
@@ -4201,6 +4220,7 @@ interface AdminRouteChildren {
   AdminWebhookEventsRoute: typeof AdminWebhookEventsRoute
   AdminIndexRoute: typeof AdminIndexRoute
   AdminBookingsIdRoute: typeof AdminBookingsIdRoute
+  AdminBookingsNewRoute: typeof AdminBookingsNewRoute
   AdminBookingsIndexRoute: typeof AdminBookingsIndexRoute
 }
 
@@ -4257,6 +4277,7 @@ const AdminRouteChildren: AdminRouteChildren = {
   AdminWebhookEventsRoute: AdminWebhookEventsRoute,
   AdminIndexRoute: AdminIndexRoute,
   AdminBookingsIdRoute: AdminBookingsIdRoute,
+  AdminBookingsNewRoute: AdminBookingsNewRoute,
   AdminBookingsIndexRoute: AdminBookingsIndexRoute,
 }
 
