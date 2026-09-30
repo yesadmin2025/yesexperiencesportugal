@@ -59,7 +59,6 @@ function TourDetails() {
     }
   };
 
-  const pax = fmtPax(tour.pax_breakdown);
   const bookingItinerary = Array.isArray(tour.itinerary) ? tour.itinerary : [];
   const bookingIncluded = Array.isArray(tour.included_items) ? tour.included_items.filter((x) => typeof x === "string" && x.trim()) : [];
   // Last-resort fallback: the public Signature catalogue (labels, stories, inclusions only — never prices).
