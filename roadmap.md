@@ -53,4 +53,7 @@
 - [x] Verify at 393px, finance-field exclusion, overlap guard, notification flow
 
 - [x] Guide App corrections: snapshot itinerary + source_tour_id fallback, real partial-hour availability, server-side partial-hour assignment check (preview only)
-- [ ] Fix Guide App iPhone Home Screen opening public site (must launch /guide)
+- [x] Fix Guide App iPhone Home Screen opening public site (must launch /guide)
+- [ ] Resubmit /about to Google + private-tour landing pages (needs owner scope decision)
+- [ ] Auto-assign a guide after Studio payment (needs owner decision; currently office assigns)
+- [ ] Guide self sign-up without saved email (needs owner approval model)
