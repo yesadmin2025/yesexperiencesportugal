@@ -13,6 +13,62 @@ import { getOpsIntegrationStatus, listOpsBookings } from "@/lib/bookingsOps.func
 import { getOperationsBoard } from "@/lib/operations.functions";
 
 type Avail = { id: string; guide_id: string; status: string; start_at: string; end_at: string };
+type Assign = { booking_id: string; guide_id: string; status: string; start_at: string };
+type Weekly = { id: string; guide_id: string; weekday: number; status: string };
+const GUIDE_STATUS: Record<string, { label: string; tone: string }> = {
+  confirmed: { label: "confirmed", tone: "text-[color:var(--teal)]" },
+  declined: { label: "declined", tone: "text-[#9B2C2C]" },
+  changed: { label: "to reconfirm", tone: "text-[#8A6B23]" },
+  assigned: { label: "not confirmed", tone: "text-[#8A6B23]" },
+};
+const lisbonDateOf = (iso: string) => new Intl.DateTimeFormat("en-CA", { timeZone: "Europe/Lisbon" }).format(new Date(iso));
+
+function WeekGrid({ guides, avail, weekly, assigns }: { guides: Guide[]; avail: Avail[]; weekly: Weekly[]; assigns: Assign[] }) {
+  const days = Array.from({ length: 7 }, (_, i) => lisbonDay(i));
+  const cell = (gid: string, day: string) => {
+    if (assigns.some((a) => a.guide_id === gid && a.status !== "declined" && lisbonDateOf(a.start_at) === day)) return { t: "Tour", c: "bg-[color:var(--teal)] text-primary-foreground" };
+    const one = avail.find((a) => a.guide_id === gid && lisbonDateOf(a.start_at) <= day && lisbonDateOf(a.end_at) >= day);
+    const status = one?.status ?? weekly.find((w) => w.guide_id === gid && w.weekday === new Date(`${day}T12:00:00Z`).getUTCDay())?.status;
+    if (!status) return { t: "·", c: "text-[color:var(--charcoal-soft)]" };
+    if (status === "unavailable" || status === "vacation") return { t: status === "vacation" ? "Away" : "Busy", c: "bg-[color:var(--charcoal)]/[0.08] text-[color:var(--charcoal)]" };
+    if (status === "available") return { t: "Free", c: "bg-[color:var(--gold-soft)] text-[color:var(--charcoal)]" };
+    return { t: "Part", c: "border border-[color:var(--gold)] text-[color:var(--charcoal)]" };
+  };
+  return (
+    <section aria-label="Guide week">
+      <AdminSectionTitle count={guides.length}>Guides this week</AdminSectionTitle>
+      <p className="mt-2 text-[12px] text-[color:var(--charcoal-soft)]">Tour = assigned · Free / Busy / Away / Part = set by the guide · “·” = not set</p>
+      <table className="mt-3 w-full table-fixed border-collapse text-[11px]">
+        <thead>
+          <tr>
+            <th className="w-[76px] text-left font-normal" />
+            {days.map((d) => (
+              <th key={d} className="pb-1 text-center font-normal text-[color:var(--charcoal-soft)]">
+                {new Date(`${d}T12:00:00Z`).toLocaleDateString("en-GB", { weekday: "narrow" })}
+                <span className="block tabular-nums">{Number(d.slice(8))}</span>
+              </th>
+            ))}
+          </tr>
+        </thead>
+        <tbody>
+          {guides.map((g) => (
+            <tr key={g.id} className="border-t border-[color:var(--charcoal)]/[0.07]">
+              <td className="truncate py-2 pr-1 text-[12.5px] text-[color:var(--charcoal)]">{g.name.split(" ")[0]}</td>
+              {days.map((d) => {
+                const x = cell(g.id, d);
+                return (
+                  <td key={d} className="p-0.5">
+                    <span className={`flex h-8 items-center justify-center rounded text-[10.5px] ${x.c}`}>{x.t}</span>
+                  </td>
+                );
+              })}
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </section>
+  );
+}
 const AVAIL_LABEL: Record<string, string> = { available: "Free", unavailable: "Busy", vacation: "Vacation", partial: "Partly free", morning: "Free mornings", afternoon: "Free afternoons", custom: "Free some hours" };
 const lisbonTime = (iso: string) => new Date(iso).toLocaleString("en-GB", { timeZone: "Europe/Lisbon", weekday: "short", day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" });
 
@@ -66,6 +122,7 @@ function TodayPage() {
   const loadBoard = useServerFn(getOperationsBoard);
   const [avail, setAvail] = useState<Avail[]>([]);
   const [weekly, setWeekly] = useState<Array<{ id: string; guide_id: string; weekday: number; status: string }>>([]);
+  const [assigns, setAssigns] = useState<Assign[]>([]);
 
   const [week, setWeek] = useState<Row[]>([]);
   const [undated, setUndated] = useState<Row[]>([]);
@@ -203,11 +260,10 @@ function TodayPage() {
       <div className="mt-10 space-y-10">
         <DayBlock title="Today" rows={todayRows} guideName={guideName} empty="No tours today." />
         <DayBlock title="Upcoming · next 14 days" rows={upcomingRows} guideName={guideName} showDate empty="No upcoming tours." />
-        <section aria-label="Guide availability">
-          <AdminSectionTitle count={avail.length}>Guide availability · next 14 days</AdminSectionTitle>
-          {avail.length === 0 ? (
-            <p className="mt-3 text-[13px] text-[color:var(--charcoal-soft)]">No guide has set free or busy times for these days.</p>
-          ) : (
+        <WeekGrid guides={guides} avail={avail} weekly={weekly} assigns={assigns} />
+        {avail.length > 0 ? (
+          <section aria-label="Guide availability details">
+            <AdminSectionTitle count={avail.length}>Availability details · next 14 days</AdminSectionTitle>
             <ul className="mt-3 divide-y divide-[color:var(--charcoal)]/[0.07] border-y border-[color:var(--charcoal)]/[0.07]">
               {avail.map((a) => (
                 <li key={a.id} className="flex flex-wrap items-baseline justify-between gap-x-3 py-3 text-[14px]">
@@ -220,25 +276,8 @@ function TodayPage() {
                 </li>
               ))}
             </ul>
-          )}
-          {weekly.length > 0 ? (
-            <>
-              <p className="mt-5 text-[11px] uppercase tracking-[0.22em] text-[color:var(--charcoal-soft)]">Every week</p>
-              <ul className="mt-2 divide-y divide-[color:var(--charcoal)]/[0.07] border-y border-[color:var(--charcoal)]/[0.07]">
-                {weekly.map((w) => (
-                  <li key={w.id} className="flex flex-wrap items-baseline justify-between gap-x-3 py-3 text-[14px]">
-                    <span className="text-[color:var(--charcoal)]">
-                      <strong className="font-medium">{guideName(w.guide_id) ?? "Guide"}</strong> · {AVAIL_LABEL[w.status] ?? w.status}
-                    </span>
-                    <span className="text-[13px] text-[color:var(--charcoal-soft)]">
-                      Every {["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"][w.weekday] ?? "week"}
-                    </span>
-                  </li>
-                ))}
-              </ul>
-            </>
-          ) : null}
-        </section>
+          </section>
+        ) : null}
       </div>
 
       {loaded ? (
