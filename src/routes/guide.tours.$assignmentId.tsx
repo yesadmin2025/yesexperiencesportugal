@@ -129,13 +129,34 @@ function TourDetails() {
 
       {!tour.booking_cancelled && (
         <div className="space-y-3">
-          {!tour.guide_confirmed_at || tour.status === "changed" ? (
+          {tour.status === "declined" ? (
+            <p className="text-sm text-destructive">You declined this tour. The office will reassign it.</p>
+          ) : null}
+          {!tour.guide_confirmed_at || tour.status === "changed" || tour.status === "declined" ? (
             <button disabled={busy} onClick={() => act(() => db.rpc("guide_confirm_assignment", { _assignment_id: tour.assignment_id }), "Confirmed — thank you")} className="w-full min-h-12 bg-[color:var(--teal)] text-primary-foreground text-[12px] uppercase tracking-[0.18em] disabled:opacity-50">
-              Confirm assignment
+              {tour.status === "declined" ? "I can do it after all · Confirm" : "Confirm assignment"}
             </button>
           ) : (
             <p className="text-sm text-[color:var(--teal)]">You confirmed this tour.</p>
           )}
+          {tour.status !== "declined" ? (
+            showDecline ? (
+              <div className="space-y-2">
+                <textarea value={declineReason} onChange={(e) => setDeclineReason(e.target.value)} rows={2} className="w-full border border-border p-2 text-sm bg-background" placeholder="Why can't you do it? (optional)" />
+                <button
+                  disabled={busy}
+                  onClick={() => act(() => db.rpc("guide_decline_assignment", { _assignment_id: tour.assignment_id, _reason: declineReason.trim() }), "Sent — the office will reassign it")}
+                  className="w-full min-h-12 border border-destructive text-destructive text-[12px] uppercase tracking-[0.18em] disabled:opacity-50"
+                >
+                  Decline this tour
+                </button>
+              </div>
+            ) : (
+              <button onClick={() => setShowDecline(true)} className="w-full min-h-12 border border-border text-[12px] uppercase tracking-[0.18em]">
+                I can't do this tour
+              </button>
+            )
+          ) : null}
           {showIssue ? (
             <div className="space-y-2">
               <textarea value={issue} onChange={(e) => setIssue(e.target.value)} rows={3} className="w-full border border-border p-2 text-sm bg-background" placeholder="What's the problem? The office will contact you." />
