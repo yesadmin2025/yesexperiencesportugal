@@ -41,14 +41,15 @@ function BookingsPage() {
     let live = true;
     setLoading(true);
     load({ data: { search: search || undefined, dateFrom: from || undefined, dateTo: to || undefined,
-      channels: channel === "all" ? undefined : [channel], status, guide, offset, limit: LIMIT } })
+      channels: channel === "all" ? undefined : [channel], status, guide,
+      paymentState: payment as "all" | "paid" | "partially_paid" | "paid_via_parent" | "refunded" | "cancelled" | "awaiting_payment" | "unknown",
+      completenessState: details as "all" | "complete" | "incomplete" | "package_payment", offset, limit: LIMIT } })
       .then((res) => { if (live) { setData(res); setError(null); } })
       .catch((e) => { if (live) setError(e instanceof Error ? e.message : "Could not load bookings."); })
       .finally(() => { if (live) setLoading(false); });
     return () => { live = false; };
-  }, [load, search, from, to, channel, status, guide, offset]);
-  const rows = (data?.bookings ?? []).filter((r) => (payment === "all" || r.payment_state === payment) &&
-    (details === "all" || (details === "incomplete" ? r.completeness.state === "incomplete" : r.completeness.state === details)));
+  }, [load, search, from, to, channel, status, guide, payment, details, offset]);
+  const rows = data?.bookings ?? [];
   const select = "min-h-11 w-full min-w-0 border border-border bg-background px-2 text-sm";
   const label = "min-w-0 text-xs text-muted-foreground";
   return <AdminShell eyebrow="All channels" title="Bookings" actions={<Button asChild><Link to="/admin/bookings/new">New booking</Link></Button>}>
@@ -63,8 +64,8 @@ function BookingsPage() {
       <label className={label}>Source<select className={select} value={channel} onChange={(e) => { setOffset(0); setChannel(e.target.value as typeof channel); }}><option value="all">All sources</option>{OPS_CHANNELS.map((c) => <option key={c} value={c}>{c}</option>)}</select></label>
       <label className={label}>Booking status<select className={select} value={status} onChange={(e) => { setOffset(0); setStatus(e.target.value as typeof status); }}>{["all", "paid", "pending", "cancelled", "refunded", "failed"].map((s) => <option key={s} value={s}>{s === "all" ? "All statuses" : s}</option>)}</select></label>
       <label className={label}>Guide<select className={select} value={guide} onChange={(e) => { setOffset(0); setGuide(e.target.value); }}><option value="all">All guides</option><option value="unassigned">Unassigned</option>{data?.guides.map((g) => <option value={g.id} key={g.id}>{g.name}</option>)}</select></label>
-      <label className={label}>Payment<select className={select} value={payment} onChange={(e) => setPayment(e.target.value)}><option value="all">All payment states</option>{["paid", "partially_paid", "paid_via_parent", "refunded", "cancelled", "awaiting_payment", "unknown"].map((s) => <option key={s} value={s}>{s.replaceAll("_", " ")}</option>)}</select></label>
-      <label className={label}>Booking details<select className={select} value={details} onChange={(e) => setDetails(e.target.value)}><option value="all">All details</option><option value="complete">Complete</option><option value="incomplete">Missing details</option><option value="package_payment">Package payment</option></select></label>
+      <label className={label}>Payment<select className={select} value={payment} onChange={(e) => { setOffset(0); setPayment(e.target.value); }}><option value="all">All payment states</option>{["paid", "partially_paid", "paid_via_parent", "refunded", "cancelled", "awaiting_payment", "unknown"].map((s) => <option key={s} value={s}>{s.replaceAll("_", " ")}</option>)}</select></label>
+      <label className={label}>Booking details<select className={select} value={details} onChange={(e) => { setOffset(0); setDetails(e.target.value); }}><option value="all">All details</option><option value="complete">Complete</option><option value="incomplete">Missing details</option><option value="package_payment">Package payment</option></select></label>
     </div>
     <p className="mt-5 text-xs text-muted-foreground">{loading ? "Loading…" : `${rows.length} shown · ${data?.total ?? 0} matching bookings`}</p>
     {error ? <p role="alert" className="mt-3 text-destructive">{error}</p> : null}

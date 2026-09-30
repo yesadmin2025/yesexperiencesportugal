@@ -57,6 +57,8 @@ const listInput = z.object({
   status: z.enum(["pending", "paid", "cancelled", "refunded", "failed", "all"]).default("all"),
   paymentStatus: z.enum(["PAID", "PENDING_PAYMENT", "REFUNDED", "UNKNOWN", "all"]).default("all"),
   guide: z.string().optional(), // uuid | "unassigned" | "all"
+  paymentState: z.enum(["paid", "partially_paid", "paid_via_parent", "refunded", "cancelled", "awaiting_payment", "unknown", "all"]).default("all"),
+  completenessState: z.enum(["complete", "incomplete", "package_payment", "all"]).default("all"),
   tour: z.string().max(200).optional(),
   reviewOnly: z.boolean().optional(),
   offset: z.number().int().min(0).default(0),
@@ -87,8 +89,7 @@ export const listOpsBookings = createServerFn({ method: "POST" })
     let query = supabaseAdmin
       .from("bookings")
       .select(LIST_COLUMNS, { count: "exact" })
-      .order("preferred_date", { ascending: true, nullsFirst: false })
-      .range(data.offset, data.offset + data.limit - 1);
+      .order("preferred_date", { ascending: true, nullsFirst: false });
 
     if (data.status !== "all") query = query.eq("status", data.status);
     if (data.paymentStatus !== "all") query = query.eq("payment_status", data.paymentStatus);
@@ -119,16 +120,31 @@ export const listOpsBookings = createServerFn({ method: "POST" })
       }
     }
 
-    const { data: rawRows, error, count } = await query;
-    if (error) throw new Error(error.message);
-
+    const postFilter = (data.guide && data.guide !== "all") || data.paymentState !== "all" || data.completenessState !== "all";
+    const list: RawBooking[] = [];
+    let count = 0;
+    if (postFilter) {
+      for (let from = 0; ; from += 500) {
+        const result = await query.range(from, from + 499);
+        if (result.error) throw new Error(result.error.message);
+        list.push(...((result.data ?? []) as unknown as RawBooking[]));
+        if ((result.data ?? []).length < 500) break;
+      }
+    } else {
+      const result = await query.range(data.offset, data.offset + data.limit - 1);
+      if (result.error) throw new Error(result.error.message);
+      list.push(...((result.data ?? []) as unknown as RawBooking[]));
+      count = result.count ?? 0;
+    }
     // Guide truth = active tour_assignments (never the mirror column).
-    const list = (rawRows ?? []) as unknown as RawBooking[];
     const assignments = await loadActiveAssignments(supabaseAdmin, list.map((r) => r.id));
     let rows = canonicalizeAll(list, assignments);
     if (data.guide && data.guide !== "all") {
       rows = rows.filter((r) => (data.guide === "unassigned" ? r.guide_id === null : r.guide_id === data.guide));
     }
+    if (data.paymentState !== "all") rows = rows.filter((r) => r.payment_state === data.paymentState);
+    if (data.completenessState !== "all") rows = rows.filter((r) => r.completeness.state === data.completenessState);
+    if (postFilter) { count = rows.length; rows = rows.slice(data.offset, data.offset + data.limit); }
 
     const { data: guides } = await supabaseAdmin
       .from("guides")
