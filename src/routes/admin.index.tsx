@@ -13,7 +13,7 @@ import { getOpsIntegrationStatus, listOpsBookings } from "@/lib/bookingsOps.func
 
 export const Route = createFileRoute("/admin/")({
   head: () => ({
-    meta: [{ title: "Today · YES Operations" }, { name: "robots", content: "noindex, nofollow" }],
+    meta: [{ title: "Operations · YES Admin" }, { name: "description", content: "Today, upcoming tours and what needs attention." }, { property: "og:title", content: "Operations · YES Admin" }, { property: "og:description", content: "Today, upcoming tours and what needs attention." }, { property: "og:type", content: "website" }, { name: "twitter:card", content: "summary" }, { name: "robots", content: "noindex, nofollow" }],
   }),
   component: TodayPage,
   errorComponent: ({ error }) => <div className="p-8 text-sm">Could not load Today: {error.message}</div>,
@@ -69,8 +69,7 @@ function TodayPage() {
   const [error, setError] = useState<string | null>(null);
 
   const today = lisbonDay(0);
-  const tomorrow = lisbonDay(1);
-  const weekEnd = lisbonDay(7);
+  const weekEnd = lisbonDay(14);
   const [year, monthIdx] = today.split("-").map(Number);
   const monthStart = `${today.slice(0, 7)}-01`;
   const monthEnd = `${today.slice(0, 7)}-${String(new Date(Date.UTC(year, monthIdx, 0)).getUTCDate()).padStart(2, "0")}`;
@@ -154,11 +153,9 @@ function TodayPage() {
   }, [week, undated, reviewCount, automationProblem]);
 
   const todayRows = week.filter((row) => row.preferred_date === today);
-  const tomorrowRows = week.filter((row) => row.preferred_date === tomorrow);
-  const nextDays = Array.from({ length: 6 }, (_, index) => lisbonDay(index + 2)).map((date) => ({
-    date,
-    rows: week.filter((row) => row.preferred_date === date),
-  }));
+  const upcomingRows = week
+    .filter((row) => row.preferred_date && row.preferred_date > today)
+    .sort((a, b) => `${a.preferred_date}${a.start_time ?? "99"}`.localeCompare(`${b.preferred_date}${b.start_time ?? "99"}`));
 
   const monthCents = month.reduce((sum, row) => sum + (row.amount_paid ?? row.amount_total ?? 0), 0);
   const currency = (month[0]?.currency ?? "eur").toUpperCase();
@@ -173,7 +170,7 @@ function TodayPage() {
       ].join(" · ");
 
   return (
-    <AdminShell eyebrow={new Date().toLocaleDateString("en-GB", { weekday: "long", day: "numeric", month: "long" })} title="Today">
+    <AdminShell eyebrow={new Date().toLocaleDateString("en-GB", { weekday: "long", day: "numeric", month: "long" })} title="Operations">
       <p
         className={`flex items-center gap-2.5 text-[15px] ${exceptions.length ? "text-[color:var(--charcoal)]" : "text-[color:var(--charcoal-soft)]"}`}
         aria-live="polite"
@@ -186,9 +183,15 @@ function TodayPage() {
       </p>
       {error ? <p className="mt-2 text-[13px] text-[#9B2C2C]">{error}</p> : null}
 
-      {exceptions.length > 0 ? (
+      <div className="mt-10 space-y-10">
+        <DayBlock title="Today" rows={todayRows} guideName={guideName} empty="No tours today." />
+        <DayBlock title="Upcoming · next 14 days" rows={upcomingRows} guideName={guideName} showDate empty="No upcoming tours." />
+      </div>
+
+      {loaded ? (
         <section className="mt-10">
-          <AdminSectionTitle count={exceptions.length}>Needs you</AdminSectionTitle>
+          <AdminSectionTitle count={exceptions.length}>Needs attention</AdminSectionTitle>
+          {exceptions.length === 0 ? <p className="mt-3 text-[13px] text-[color:var(--charcoal-soft)]">Nothing needs you.</p> : null}
           <ul className="mt-3 divide-y divide-[color:var(--charcoal)]/[0.07] border-y border-[color:var(--charcoal)]/[0.07]">
             {exceptions.slice(0, 8).map((item) => (
               <li key={item.key}>
@@ -203,37 +206,6 @@ function TodayPage() {
           ) : null}
         </section>
       ) : null}
-
-      <div className="mt-10 grid gap-10 md:grid-cols-2">
-        <DayBlock title="Today" rows={todayRows} guideName={guideName} />
-        <DayBlock title="Tomorrow" rows={tomorrowRows} guideName={guideName} />
-      </div>
-
-      <section className="mt-10">
-        <AdminSectionTitle>Next days</AdminSectionTitle>
-        <ul className="mt-3 divide-y divide-[color:var(--charcoal)]/[0.07] border-y border-[color:var(--charcoal)]/[0.07]">
-          {nextDays.map(({ date, rows }) => {
-            const unassigned = rows.filter((row) => !row.assigned_guide_id).length;
-            return (
-              <li key={date}>
-                <Link
-                  to="/admin/bookings"
-                  search={{ focus: "week" }}
-                  className="flex min-h-11 items-center justify-between gap-3 py-2 text-[13.5px]"
-                >
-                  <span className="w-28 shrink-0 text-[color:var(--charcoal-soft)]">{dayLabel(date)}</span>
-                  <span className="flex-1 text-[color:var(--charcoal)]">
-                    {rows.length === 0 ? <span className="text-[color:var(--charcoal-soft)]">—</span> : `${rows.length} trip${rows.length === 1 ? "" : "s"}`}
-                  </span>
-                  {unassigned > 0 ? (
-                    <span className="text-[11px] uppercase tracking-[0.14em] text-[#8A6B23]">{unassigned} without guide</span>
-                  ) : null}
-                </Link>
-              </li>
-            );
-          })}
-        </ul>
-      </section>
 
       {loaded && month.length > 0 ? (
         <p className="mt-12 text-[12px] text-[color:var(--charcoal-soft)]">
@@ -258,7 +230,7 @@ function ExceptionLink({ item }: { item: Exception }) {
   const className = "flex min-h-14 items-center gap-3 py-2.5";
   if (item.bookingId) {
     return (
-      <Link to="/admin/bookings" search={{ open: item.bookingId }} className={className}>
+      <Link to="/admin/bookings/$id" params={{ id: item.bookingId }} className={className}>
         {body}
       </Link>
     );
@@ -277,23 +249,23 @@ function ExceptionLink({ item }: { item: Exception }) {
   );
 }
 
-function DayBlock({ title, rows, guideName }: { title: string; rows: Row[]; guideName: (id: string | null) => string | null }) {
-  const sorted = [...rows].sort((a, b) => (a.start_time ?? "99").localeCompare(b.start_time ?? "99"));
+function DayBlock({ title, rows, guideName, showDate = false, empty }: { title: string; rows: Row[]; guideName: (id: string | null) => string | null; showDate?: boolean; empty: string }) {
+  const sorted = showDate ? rows : [...rows].sort((a, b) => (a.start_time ?? "99").localeCompare(b.start_time ?? "99"));
   return (
     <section>
       <AdminSectionTitle count={rows.length}>{title}</AdminSectionTitle>
       {sorted.length === 0 ? (
-        <p className="mt-3 text-[13px] text-[color:var(--charcoal-soft)]">No trips.</p>
+        <p className="mt-3 text-[13px] text-[color:var(--charcoal-soft)]">{empty}</p>
       ) : (
         <ul className="mt-3 space-y-0.5">
           {sorted.map((row) => (
             <li key={row.id}>
               <Link
-                to="/admin/bookings"
-                search={{ open: row.id }}
+                to="/admin/bookings/$id"
+                params={{ id: row.id }}
                 className="flex min-h-11 items-baseline gap-3 rounded-md py-2 text-[13.5px] hover:bg-[color:var(--sand)]/60"
               >
-                <span className="w-12 shrink-0 tabular-nums text-[color:var(--charcoal-soft)]">{row.start_time ?? "—"}</span>
+                <span className={`${showDate ? "w-20" : "w-12"} shrink-0 tabular-nums text-[color:var(--charcoal-soft)]`}>{showDate && row.preferred_date ? <span className="block text-[12px]">{dayLabel(row.preferred_date)}</span> : null}{row.start_time ?? "—"}</span>
                 <span className="min-w-0 flex-1">
                   <span className="block truncate text-[color:var(--charcoal)]">{tourOf(row) ?? "Tour to confirm"}</span>
                   <span className="block truncate text-[12px] text-[color:var(--charcoal-soft)]">
