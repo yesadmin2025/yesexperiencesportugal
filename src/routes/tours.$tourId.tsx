@@ -279,7 +279,7 @@ export const Route = createFileRoute("/tours/$tourId")({
           <h1 className="serif text-3xl" data-mixed-emphasis="exempt">
             Something went sideways
           </h1>
-          <p className="mt-3 text-[color:var(--charcoal-soft)] text-sm">{error.message}</p>
+          <p className="mt-3 text-[color:var(--charcoal-soft)] text-sm">{(error as Error).message}</p>
           <Link
             to="/experiences"
             className="mt-6 inline-flex items-center gap-2 text-xs uppercase tracking-[0.12em] text-[color:var(--teal)]"

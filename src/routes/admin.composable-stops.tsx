@@ -58,7 +58,8 @@ const emptyForm: RowForm = {
   notes: "",
 };
 
-function AdminComposableStopsError({ error, reset }: { error: Error; reset: () => void }) {
+function AdminComposableStopsError({ error: rawError, reset }: { error: unknown; reset: () => void }) {
+  const error = (rawError instanceof Error ? rawError : new Error(String(rawError)));
   const router = useRouter();
   return (
     <SiteLayout>

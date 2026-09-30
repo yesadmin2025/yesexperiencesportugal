@@ -228,7 +228,7 @@ export const resendNotification = createServerFn({ method: "POST" })
           booking_id: data.bookingId,
           assignment_id: a.id,
           notification_type: "reminder",
-          title: "Please confirm your tour",
+          title: "Reminder: upcoming tour on your schedule",
         })
       ).error,
     );

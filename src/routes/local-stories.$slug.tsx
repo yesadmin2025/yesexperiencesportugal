@@ -208,7 +208,7 @@ export const Route = createFileRoute("/local-stories/$slug")({
       };
     }
 
-    const post = loaderData?.dbPost ?? null;
+    const post = (loaderData as { dbPost?: any } | undefined)?.dbPost ?? null;
     if (!post) {
       return {
         meta: [
@@ -295,7 +295,7 @@ function Page() {
 
   if (article) return <StaticArticleView article={article} />;
 
-  const post = loaderData?.dbPost;
+  const post = (loaderData as { dbPost?: any } | undefined)?.dbPost;
   if (!post) throw notFound();
   return <DbPostView post={post} />;
 }
@@ -692,7 +692,8 @@ function NotFoundView() {
   );
 }
 
-function ErrorView({ error, reset }: { error: Error; reset: () => void }) {
+function ErrorView({ error: rawError, reset }: { error: unknown; reset: () => void }) {
+  const error = (rawError instanceof Error ? rawError : new Error(String(rawError)));
   const router = useRouter();
   return (
     <SiteLayout>

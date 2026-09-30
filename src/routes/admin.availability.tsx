@@ -65,7 +65,8 @@ const MONTHS = [
   "December",
 ] as const;
 
-function AdminAvailabilityError({ error, reset }: { error: Error; reset: () => void }) {
+function AdminAvailabilityError({ error: rawError, reset }: { error: unknown; reset: () => void }) {
+  const error = (rawError instanceof Error ? rawError : new Error(String(rawError)));
   const router = useRouter();
   return (
     <SiteLayout>

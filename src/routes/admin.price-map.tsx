@@ -39,7 +39,8 @@ function serialize(form: RowForm): string {
   return `${form.price.trim()}|${form.unit}|${form.minGuests.trim()}|${form.active}`;
 }
 
-function PriceMapError({ error, reset }: { error: Error; reset: () => void }) {
+function PriceMapError({ error: rawError, reset }: { error: unknown; reset: () => void }) {
+  const error = (rawError instanceof Error ? rawError : new Error(String(rawError)));
   const router = useRouter();
   return (
     <SiteLayout>

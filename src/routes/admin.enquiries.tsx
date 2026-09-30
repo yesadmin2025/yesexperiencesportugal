@@ -27,7 +27,7 @@ export const Route = createFileRoute("/admin/enquiries")({
     ],
   }),
   component: AdminEnquiriesPage,
-  errorComponent: ({ error }) => <div className="p-8 text-red-700">Error: {error.message}</div>,
+  errorComponent: ({ error }) => <div className="p-8 text-red-700">Error: {(error as Error).message}</div>,
   notFoundComponent: () => <div className="p-8">Not found</div>,
 });
 

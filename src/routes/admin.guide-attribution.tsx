@@ -18,7 +18,7 @@ export const Route = createFileRoute("/admin/guide-attribution")({
       { name: "robots", content: "noindex, nofollow" },
     ],
   }),
-  errorComponent: ({ error }) => <div className="p-8 text-red-700">Error: {error.message}</div>,
+  errorComponent: ({ error }) => <div className="p-8 text-red-700">Error: {(error as Error).message}</div>,
 });
 
 const RANGES = [7, 30, 90] as const;

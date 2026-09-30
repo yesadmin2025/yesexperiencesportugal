@@ -32,7 +32,7 @@ export const Route = createFileRoute("/admin/gbp-legacy-removal")({
     <SiteLayout>
       <section className="pt-32 pb-20 container-x max-w-2xl">
         <h1 className="text-2xl">GBP legacy removal — erro</h1>
-        <p className="mt-3 text-sm text-[color:var(--charcoal-soft)]">{error.message}</p>
+        <p className="mt-3 text-sm text-[color:var(--charcoal-soft)]">{(error as Error).message}</p>
         <button
           type="button"
           onClick={reset}

@@ -51,7 +51,8 @@ export const Route = createFileRoute("/admin/pricing-tool")({
   ),
 });
 
-function PricingToolError({ error, reset }: { error: Error; reset: () => void }) {
+function PricingToolError({ error: rawError, reset }: { error: unknown; reset: () => void }) {
+  const error = (rawError instanceof Error ? rawError : new Error(String(rawError)));
   const router = useRouter();
   return (
     <SiteLayout>
