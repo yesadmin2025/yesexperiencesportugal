@@ -41,6 +41,9 @@ type Row = {
   assigned_guide_id: string | null;
   review_required: boolean;
   review_reason: string | null;
+  legacy_guide_id?: string | null;
+  payment_label?: string;
+  completeness_label?: string;
 };
 
 type Guide = { id: string; name: string; active?: boolean | null };
@@ -81,7 +84,7 @@ function attentionReasons(row: Row): string[] {
   if (!isLive(row)) return [];
   const reasons: string[] = [];
   if (row.review_required) reasons.push(row.review_reason ?? "Flagged for a check");
-  if (!row.assigned_guide_id) reasons.push("No guide");
+  if (!row.assigned_guide_id) reasons.push(row.legacy_guide_id ? "Guide not scheduled — reassign" : "No guide");
   if (!row.tour_title && !row.source_tour_id) reasons.push("Tour missing");
   if (!row.pickup_location) reasons.push("Pickup missing");
   if (row.payment_status === "PENDING_PAYMENT") reasons.push("Awaiting payment");
@@ -394,7 +397,7 @@ export function OpsBookingsHub({
                 </span>
                 <span className="shrink-0 text-right text-[12px]">
                   <StatusWord row={row} />
-                  <span className="block text-[color:var(--charcoal-soft)]">{money(row)}</span>
+                  <span className="block text-[color:var(--charcoal-soft)]">{row.payment_label ?? ""} · {money(row)}</span>
                 </span>
               </button>
             </li>

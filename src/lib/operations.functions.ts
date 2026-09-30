@@ -6,6 +6,7 @@
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
+import { canonicalizeAll, type ActiveAssignment, type RawBooking } from "@/lib/ops/booking-read-model";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type Ctx = { supabase: any; userId: string };
@@ -35,7 +36,7 @@ export const getOperationsBoard = createServerFn({ method: "POST" })
         sb
           .from("bookings")
           .select(
-            "id, tour_title, source_tour_id, preferred_date, start_time, guests, customer_name, pickup_location, language, status, cancelled_at, client_notes, assigned_guide_id",
+            "id, tour_title, source_tour_id, preferred_date, start_time, guests, customer_name, pickup_location, language, status, payment_status, source_channel, stripe_session_id, external_booking_ref, metadata, cancelled_at, client_notes, assigned_guide_id",
           )
           .gte("preferred_date", data.from)
           .lte("preferred_date", data.to)
@@ -63,8 +64,14 @@ export const getOperationsBoard = createServerFn({ method: "POST" })
         sb.from("operational_activity_log").select("*").order("created_at", { ascending: false }).limit(100),
       ]);
     for (const r of [bookings, guides, assignments, availability, recurring, notes, notifications, issues, log]) fail(r.error);
+    const bookingRows = (bookings.data ?? []) as unknown as RawBooking[];
+    const ids = bookingRows.map((b) => b.id);
+    const active = ids.length
+      ? await sb.from("tour_assignments").select("id, booking_id, guide_id, status").is("removed_at", null).in("booking_id", ids)
+      : { data: [], error: null };
+    fail(active.error);
     return {
-      bookings: bookings.data ?? [],
+      bookings: canonicalizeAll(bookingRows, (active.data ?? []) as ActiveAssignment[]),
       guides: guides.data ?? [],
       assignments: assignments.data ?? [],
       availability: availability.data ?? [],

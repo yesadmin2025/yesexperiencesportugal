@@ -1,6 +1,6 @@
 /**
  * /admin/payments — Vouchers & Payments. Every booking sits in exactly one
- * tab (see lib/ops/payment-reconciliation). Read-only; fixes happen on the
+ * payment tab; booking details completeness is shown separately. Read-only; fixes happen on the
  * single Booking Details page.
  */
 import { createFileRoute, Link } from "@tanstack/react-router";
@@ -27,7 +27,7 @@ export const Route = createFileRoute("/admin/payments")({
   notFoundComponent: () => <div className="p-8">Not found</div>,
 });
 
-type Row = ReconRow & { customer_email: string; guests: number; amount_total: number | null; amount_paid: number | null; currency: string | null };
+type Row = ReconRow & { payment_label?: string; completeness_label?: string; completeness?: { state: string }; legacy_guide_id?: string | null; customer_email: string; guests: number; amount_total: number | null; amount_paid: number | null; currency: string | null };
 
 const day = (iso: string | null) =>
   iso ? new Date(`${iso}T12:00:00`).toLocaleDateString("en-GB", { weekday: "short", day: "numeric", month: "short", year: "numeric" }) : "No date";
@@ -36,8 +36,9 @@ function PaymentsPage() {
   const load = useServerFn(listOpsBookings);
   const [rows, setRows] = useState<Row[] | null>(null);
   const [error, setError] = useState<string | null>(null);
-  const [tab, setTab] = useState<ReconBucket>("missing_details");
+  const [tab, setTab] = useState<ReconBucket>("paid");
   const [q, setQ] = useState("");
+  const [onlyIncomplete, setOnlyIncomplete] = useState(false);
 
   useEffect(() => {
     load({ data: { status: "all", limit: 500 } })
@@ -47,7 +48,8 @@ function PaymentsPage() {
 
   const groups = useMemo(() => groupBookings(rows ?? []), [rows]);
   const term = q.trim().toLowerCase();
-  const visible = groups[tab].filter((r) =>
+  const incompleteCount = groups[tab].filter((r) => missingDetails(r).length > 0).length;
+  const visible = groups[tab].filter((r) => (!onlyIncomplete || missingDetails(r).length > 0)).filter((r) =>
     !term || [r.customer_name, r.customer_email, r.external_booking_ref, r.stripe_session_id, r.tour_title].some((v) => v?.toLowerCase().includes(term)),
   );
   const current = RECON_TABS.find((t) => t.id === tab)!;
@@ -68,6 +70,10 @@ function PaymentsPage() {
         ))}
       </div>
       <p className="mt-3 text-[13px] text-[color:var(--charcoal-soft)]">{current.hint}</p>
+      <label className="mt-3 flex min-h-11 items-center gap-2 text-[13px] text-[color:var(--charcoal)]">
+        <input type="checkbox" checked={onlyIncomplete} onChange={(e) => setOnlyIncomplete(e.target.checked)} className="h-4 w-4 accent-[color:var(--teal)]" />
+        Only bookings with details missing <span className="tabular-nums text-[color:var(--charcoal-soft)]">{rows ? incompleteCount : "…"}</span>
+      </label>
       <input
         type="search"
         value={q}
@@ -92,7 +98,10 @@ function PaymentsPage() {
                   <span className="block truncate text-[12px] text-[color:var(--charcoal-soft)]">
                     {evidence ?? "No payment on record"}
                     {r.external_booking_ref ? ` · Ref ${r.external_booking_ref}` : ""}
-                    {tab === "missing_details" && missing.length ? ` · Missing ${missing.join(", ")}` : ""}
+                  </span>
+                  <span className="mt-1 flex flex-wrap gap-x-3 text-[11.5px]">
+                    <span className="text-[color:var(--charcoal)]"><span className="text-[color:var(--charcoal-soft)]">Payment · </span>{r.payment_label ?? "—"}</span>
+                    <span className={missing.length ? "text-[#8A6B23]" : "text-[color:var(--teal)]"}><span className="text-[color:var(--charcoal-soft)]">Details · </span>{r.completeness_label ?? (missing.length ? `Missing ${missing.join(", ")}` : "Complete")}</span>
                   </span>
                 </span>
                 <span className="shrink-0 text-right">

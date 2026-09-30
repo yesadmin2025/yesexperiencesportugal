@@ -1,0 +1,1 @@
+REVOKE EXECUTE ON FUNCTION public.enforce_assigned_guide_mirror() FROM PUBLIC, anon, authenticated;

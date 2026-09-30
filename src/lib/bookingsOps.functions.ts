@@ -11,6 +11,7 @@ import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 import type { Json } from "@/integrations/supabase/types";
+import { canonicalize, canonicalizeAll, type ActiveAssignment, type RawBooking } from "@/lib/ops/booking-read-model";
 import { buildBookingBriefSections, briefSectionsToText, type BriefBookingRow } from "@/lib/ops/booking-brief";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -20,6 +21,22 @@ async function assertAdmin(context: { supabase: any; userId: string }) {
     _role: "admin",
   });
   if (error || data !== true) throw new Error("Forbidden");
+}
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+async function loadActiveAssignments(admin: any, bookingIds: string[]): Promise<ActiveAssignment[]> {
+  if (bookingIds.length === 0) return [];
+  const out: ActiveAssignment[] = [];
+  for (let i = 0; i < bookingIds.length; i += 200) {
+    const { data, error } = await admin
+      .from("tour_assignments")
+      .select("id, booking_id, guide_id, status")
+      .is("removed_at", null)
+      .in("booking_id", bookingIds.slice(i, i + 200));
+    if (error) throw new Error(error.message);
+    out.push(...((data ?? []) as ActiveAssignment[]));
+  }
+  return out;
 }
 
 export const OPS_CHANNELS = ["WEBSITE", "DIRECT", "VIATOR", "GETYOURGUIDE", "BOKUN", "OTHER"] as const;
@@ -64,11 +81,6 @@ export const listOpsBookings = createServerFn({ method: "POST" })
     if (data.dateTo) query = query.lte("preferred_date", data.dateTo);
     if (data.channels && data.channels.length > 0) query = query.in("source_channel", data.channels);
     if (data.reviewOnly) query = query.eq("review_required", true);
-    if (data.guide && data.guide !== "all") {
-      query = data.guide === "unassigned"
-        ? query.is("assigned_guide_id", null)
-        : query.eq("assigned_guide_id", data.guide);
-    }
     if (data.tour) {
       const safeTour = data.tour.replace(/[%,()]/g, " ").trim();
       if (safeTour) query = query.or(`source_tour_id.ilike.%${safeTour}%,tour_title.ilike.%${safeTour}%`);
@@ -92,8 +104,16 @@ export const listOpsBookings = createServerFn({ method: "POST" })
       }
     }
 
-    const { data: rows, error } = await query;
+    const { data: rawRows, error } = await query;
     if (error) throw new Error(error.message);
+
+    // Guide truth = active tour_assignments (never the mirror column).
+    const list = (rawRows ?? []) as unknown as RawBooking[];
+    const assignments = await loadActiveAssignments(supabaseAdmin, list.map((r) => r.id));
+    let rows = canonicalizeAll(list, assignments);
+    if (data.guide && data.guide !== "all") {
+      rows = rows.filter((r) => (data.guide === "unassigned" ? r.guide_id === null : r.guide_id === data.guide));
+    }
 
     const { data: guides } = await supabaseAdmin
       .from("guides")
@@ -105,7 +125,7 @@ export const listOpsBookings = createServerFn({ method: "POST" })
       .select("id", { count: "exact", head: true })
       .eq("status", "pending");
 
-    return { bookings: rows ?? [], guides: guides ?? [], reviewCount: reviewCount ?? 0 };
+    return { bookings: rows, guides: guides ?? [], reviewCount: reviewCount ?? 0 };
   });
 
 export const getOpsBooking = createServerFn({ method: "POST" })
@@ -135,12 +155,14 @@ export const getOpsBooking = createServerFn({ method: "POST" })
       .order("created_at", { ascending: false })
       .limit(20);
 
+    const [active] = await loadActiveAssignments(supabaseAdmin, [booking.id]);
+    const canonical = canonicalize(booking as unknown as RawBooking, active);
     const sections = buildBookingBriefSections(booking as unknown as BriefBookingRow);
     const metadata = (booking.metadata ?? {}) as Record<string, unknown>;
     const draft = typeof metadata["guide_brief_draft"] === "string" ? (metadata["guide_brief_draft"] as string) : null;
 
     return {
-      booking,
+      booking: { ...booking, ...canonical } as typeof booking & typeof canonical,
       guides: guides ?? [],
       ingestion: ingestion ?? [],
       brief: sections,
@@ -195,7 +217,16 @@ export const updateOpsBooking = createServerFn({ method: "POST" })
       changes[column] = { from: from == null ? null : String(from), to: to == null ? null : String(to) };
     };
 
-    if (data.assignedGuideId !== undefined) set("assigned_guide_id", data.assignedGuideId);
+    // Guide changes go through the assignment RPCs (conflict guards, mirror
+    // sync, activity log). The mirror column is never written directly.
+    let guideChanged = false;
+    if (data.assignedGuideId !== undefined) {
+      const { error: rpcError } = data.assignedGuideId
+        ? await context.supabase.rpc("ops_assign_guide", { _booking_id: data.id, _guide_id: data.assignedGuideId })
+        : await context.supabase.rpc("ops_remove_assignment", { _booking_id: data.id });
+      if (rpcError) throw new Error(rpcError.message);
+      guideChanged = true;
+    }
     if (data.pickupLocation !== undefined) set("pickup_location", data.pickupLocation || null);
     if (data.dropoffLocation !== undefined) set("dropoff_location", data.dropoffLocation || null);
     if (data.preferredDate !== undefined) set("preferred_date", data.preferredDate);
@@ -218,7 +249,7 @@ export const updateOpsBooking = createServerFn({ method: "POST" })
       set("operational_notes", next);
     }
 
-    if (Object.keys(patch).length === 0) return { ok: true, changed: false };
+    if (Object.keys(patch).length === 0) return { ok: true, changed: guideChanged };
 
     const previousMetadata =
       booking.metadata && typeof booking.metadata === "object" && !Array.isArray(booking.metadata)
