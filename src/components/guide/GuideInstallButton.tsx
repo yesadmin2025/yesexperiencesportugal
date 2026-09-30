@@ -36,7 +36,7 @@ export function GuideInstallButton({ className }: { className?: string }) {
       className={className}
       onClick={async () => {
         if (!prompt) {
-          toast.info("On iPhone, tap Share, then Add to Home Screen.");
+          toast.info("On iPhone: open this page (yesexperiencesportugal.com/guide) in Safari, tap Share, then Add to Home Screen. If you added the icon from another page, delete it and add it again from here.", { duration: 9000 });
           return;
         }
         await prompt.prompt();
