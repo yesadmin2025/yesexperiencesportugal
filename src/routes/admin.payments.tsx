@@ -20,9 +20,9 @@ import {
 export const Route = createFileRoute("/admin/payments")({
   head: () => ({
     meta: [
-      { title: "Vouchers & Payments · YES Admin" },
+      { title: "Payments · YES Admin" },
       { name: "description", content: "Match payments and partner vouchers to bookings." },
-      { property: "og:title", content: "Vouchers & Payments · YES Admin" },
+      { property: "og:title", content: "Payments · YES Admin" },
       { property: "og:description", content: "Match payments and partner vouchers to bookings." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
@@ -101,6 +101,15 @@ function PaymentsPage() {
     void refresh();
   }, [refresh]);
 
+  // Open on the first tab that needs a person, else Matched.
+  const [picked, setPicked] = useState(false);
+  useEffect(() => {
+    if (picked || !payments) return;
+    setPicked(true);
+    const first = (["unmatched", "needs_review", "suggested"] as const).find((s) => payments.some((p) => p.match_status === s));
+    setTab(first ?? "matched");
+  }, [payments, picked]);
+
   const counts = useMemo(() => {
     const c: Record<Tab, number> = { unmatched: 0, suggested: 0, matched: 0, needs_review: 0, all: 0 };
     for (const p of payments ?? []) {
@@ -121,7 +130,7 @@ function PaymentsPage() {
   const current = TABS.find((t) => t.id === tab)!;
 
   return (
-    <AdminShell eyebrow="Reconciliation" title="Vouchers & Payments">
+    <AdminShell eyebrow="Reconciliation" title="Payments">
       <div role="tablist" aria-label="Match status" className="flex flex-wrap gap-2">
         {TABS.map((t) => (
           <button
@@ -256,7 +265,7 @@ function PaymentCard({ payment: p, bookings, onChanged }: { payment: Payment; bo
       ) : null}
       {!linked && suggested ? (
         <div className="mt-3 border-t border-[color:var(--charcoal)]/[0.07] pt-3">
-          <p className="text-[11px] uppercase tracking-[0.16em] text-[color:var(--charcoal-soft)]">Suggested booking</p>
+          <p className="text-[11px] uppercase tracking-[0.16em] text-[#8A6B23]">Possible match — check before linking</p>
           <BookingLine b={suggested} />
         </div>
       ) : null}
