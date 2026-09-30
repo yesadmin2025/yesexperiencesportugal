@@ -20,6 +20,7 @@ describe("guide-app-invite email", () => {
     expect(html).toContain("m@example.com");
     expect(html).toContain("Add to Home Screen");
     expect(html).toContain("Install Guide App");
+    expect(html).toContain("Your guide profile is not yet a sign-in account");
     expect(html).toMatch(/No prices or financial information/);
   });
 });
