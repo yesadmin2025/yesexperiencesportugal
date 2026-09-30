@@ -11,3 +11,4 @@
 - External proof uses optional claim-adjacent EditorialSources; YES links stay primary.
 - Guide scheduling uses DB conflict guards and RLS-safe RPCs; `/guide` is the only work list (3 tabs, scoped PWA manifest).
 - Ops booking data rules: see `src/lib/ops/AGENTS.md`.
+- Admin daily navigation is Operations, Bookings, Payments, Guides, More; legacy planning and tour-calendar URLs redirect to Operations because each booking has one full detail page and one shared canonical list.
