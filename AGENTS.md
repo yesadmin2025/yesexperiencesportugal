@@ -1,16 +1,13 @@
 # Project architecture decisions
 
-- Keep `/studio`, `/portugal-travel-designer` and `/proposal-in-portugal` as canonical sales routes; legacy `/studio-v3`, `/multi-day` and `/proposals` issue direct permanent HTTP redirects so indexed inbound links retain their destination without duplicate sitemap entries.
-- Keep P23 as a reserve-as-designed Signature and redirect its Tailor deep link to its tour page until workshop venues and alternatives are verified; this prevents suggesting unconfirmed itinerary changes.
-- Store experience search title, description and H1 proposals in admin-only drafts, separate from published copy; this lets owners prepare edits without changing live tour facts or metadata.
-- Compose WhatsApp reservation messages only from an already verified paid session on the confirmation page; this prevents sharing unverified booking details.
-- Keep each published Signature search title, H1 and opening in the existing Signature SEO map, while leaving prices and itinerary in verified tour content; this separates search copy from operational facts.- Gate guest AI calls on public Studio/Builder through `allowAiCall`/`aiCallAllowed` (server-side hashed-IP + global daily caps), never client session IDs or sign-in only; this keeps personalisation for guests while bounding cost.
-
-- Attach per-stop itinerary photos only from an explicit `tour_gallery_photos.stop_label` assignment made in `/admin/photos`; curated `tour.stops[].image` assets stay in the hero/gallery, because they are not guaranteed to be photos of that named place.
-- Derive the tour-page route glance from real OSRM leg minutes (`useRouteLegMinutes`) and never sum them into a total driving claim; stop order in the SOT is narrative, not the driven sequence.
-- Show the Signature day recap before guest details from the same verified public itinerary and inclusions used on the tour page; this keeps booking clarity without duplicating or inventing tour facts.
-- Use optional claim-adjacent EditorialSources for external proof; keep YES links primary.
-- Guide scheduling uses DB conflict guards, bookings as truth, and RLS-safe RPCs; `/guide` is the only work list, has 3 tabs, and emits only its scoped PWA manifest.
-- Classify every booking into one Vouchers & Payments bucket via `src/lib/ops/payment-reconciliation.ts`; one rule set keeps admin screens consistent.
-- Admin reads guide, payment state and details completeness only through `src/lib/ops/booking-read-model.ts` (guide = active `tour_assignments`; `bookings.assigned_guide_id` is a DB-enforced mirror); one mapping keeps every screen and the Guide App in agreement.
-- Empty pickup/date/tour fields are filled only by the `bookings_normalize_details` DB trigger when all of a booking's own sources agree, logged in `booking_repair_log`; one rule covers every writer (Stripe, vouchers, manual).
+- `/studio`, `/portugal-travel-designer`, `/proposal-in-portugal` are canonical; legacy `/studio-v3`, `/multi-day`, `/proposals` 301 to them to keep inbound links without duplicate sitemap entries.
+- P23 is reserve-as-designed; its Tailor link redirects to its tour page until venues are verified, to avoid unconfirmed changes.
+- SEO title/description/H1 proposals live in admin-only drafts; published Signature search copy lives in the Signature SEO map, facts in verified tour content.
+- WhatsApp reservation messages come only from a verified paid session on the confirmation page.
+- Guest AI calls on Studio/Builder go through `allowAiCall`/`aiCallAllowed` (hashed-IP + daily caps) to bound cost.
+- Per-stop photos come only from `tour_gallery_photos.stop_label` set in `/admin/photos`; curated stop images aren't proof of place.
+- Route glance uses OSRM leg minutes (`useRouteLegMinutes`), never a summed driving total; stop order is narrative.
+- Signature day recap before guest details reuses the tour page's verified itinerary/inclusions.
+- External proof uses optional claim-adjacent EditorialSources; YES links stay primary.
+- Guide scheduling uses DB conflict guards and RLS-safe RPCs; `/guide` is the only work list (3 tabs, scoped PWA manifest).
+- Ops booking data rules: see `src/lib/ops/AGENTS.md`.
