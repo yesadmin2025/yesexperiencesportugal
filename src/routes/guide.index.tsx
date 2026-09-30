@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { db, fetchMyTours, type GuideTour } from "@/components/guide/guide-data";
 import { TourCard } from "@/components/guide/TourCard";
 import { Button } from "@/components/ui/button";
+import { useGuideRefresh } from "@/components/guide/guide-refresh";
 
 export const Route = createFileRoute("/guide/")({
   head: () => ({ meta: [{ title: "My Tours · YES Guide" }] }),
@@ -20,15 +21,16 @@ function GuideToursHome() {
   const [tours, setTours] = useState<GuideTour[] | null>(null);
   const [alerts, setAlerts] = useState<GuideAlert[]>([]);
   const [err, setErr] = useState<string | null>(null);
+  const version = useGuideRefresh();
   useEffect(() => {
-    fetchMyTours().then(setTours).catch((e) => setErr(e.message));
+    fetchMyTours().then((t) => { setTours(t); setErr(null); }).catch((e) => setErr(e.message));
     db.from("ops_notifications")
       .select("id, title, message, assignment_id, notification_type")
       .is("read_at", null)
       .order("created_at", { ascending: false })
       .limit(3)
       .then(({ data }: { data: GuideAlert[] | null }) => setAlerts(data ?? []));
-  }, []);
+  }, [version]);
   if (err) return <p className="text-sm text-destructive">{err}</p>;
   if (!tours) return <p className="text-sm text-muted-foreground">Loading your tours…</p>;
 

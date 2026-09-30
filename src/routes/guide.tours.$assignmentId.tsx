@@ -20,20 +20,26 @@ function TourDetails() {
   const [showIssue, setShowIssue] = useState(false);
   const [busy, setBusy] = useState(false);
 
+  const version = useGuideRefresh();
+  const markedRef = useRef<string | null>(null);
   const load = useCallback(async () => {
     const all = await fetchMyTours();
     const t = all.find((x) => x.assignment_id === assignmentId) ?? null;
     setTour(t);
     if (t) {
-      await db.rpc("guide_mark_viewed", { _assignment_id: t.assignment_id });
+      // Mark viewed once per tour — repeating it re-triggered live refreshes in a loop (screen shaking).
+      if (markedRef.current !== t.assignment_id) {
+        markedRef.current = t.assignment_id;
+        await db.rpc("guide_mark_viewed", { _assignment_id: t.assignment_id });
+      }
       const { data } = await db.from("operational_notes").select("id, note, priority, created_at").eq("booking_id", t.booking_id).order("created_at", { ascending: false });
       setNotes(data ?? []);
     }
   }, [assignmentId]);
 
   useEffect(() => {
-    load().catch(() => setTour(null));
-  }, [load]);
+    load().catch(() => setTour((prev) => (prev === undefined ? null : prev)));
+  }, [load, version]);
 
   if (tour === undefined) return <p className="text-sm text-muted-foreground">Loading…</p>;
   if (tour === null)

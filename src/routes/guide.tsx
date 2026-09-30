@@ -10,6 +10,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { lovable } from "@/integrations/lovable";
 import { db, errMsg } from "@/components/guide/guide-data";
 import { GuideInstallButton } from "@/components/guide/GuideInstallButton";
+import { GuideRefreshContext } from "@/components/guide/guide-refresh";
 import { Button } from "@/components/ui/button";
 
 export const Route = createFileRoute("/guide")({
@@ -130,7 +131,7 @@ function GuideLayout() {
         </div>
       </header>
       <main className="px-4 py-5 max-w-xl mx-auto">
-        <div key={version}><Outlet /></div>
+        <GuideRefreshContext.Provider value={version}><Outlet /></GuideRefreshContext.Provider>
       </main>
       <nav aria-label="Guide" className="fixed bottom-0 inset-x-0 z-10 bg-background border-t border-border grid grid-cols-3 pb-[env(safe-area-inset-bottom)]">
         {TABS.map(({ to, label, icon: Icon, exact }) => (
