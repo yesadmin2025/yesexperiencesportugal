@@ -76,3 +76,5 @@
 - [ ] Guides: concise directory and individual guide detail
 - [ ] More: demote duplicate planning/calendar/technical destinations
 - [ ] Verify signed-in mobile and desktop flows, focused tests and preview build
+
+- [ ] Investigate checkout payment-step concern: live Stripe checkout already exists (cs_live_ sessions); verify what guest sees before paying and confirm end-to-end

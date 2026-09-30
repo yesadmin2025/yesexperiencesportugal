@@ -1,11 +1,11 @@
-import { createFileRoute, Link, redirect } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
-import { db, fetchMyTours, todayIso, type GuideTour } from "@/components/guide/guide-data";
+import { db, fetchMyTours, fmtPax, todayIso, type GuideTour } from "@/components/guide/guide-data";
 import { MonthCalendar, type CalendarDayTone } from "@/components/calendar/MonthCalendar";
 import { Button } from "@/components/ui/button";
+import { useGuideRefresh } from "@/components/guide/guide-refresh";
 
 export const Route = createFileRoute("/guide/calendar")({
-  beforeLoad: () => { throw redirect({ to: "/guide" }); },
   head: () => ({ meta: [
     { title: "My tour calendar · YES Guide" },
     { name: "description", content: "Private calendar for a YES Experiences guide's assigned tours and availability." },
@@ -33,10 +33,11 @@ function GuideCalendar() {
   const [selected, setSelected] = useState(todayIso());
   const [tours, setTours] = useState<GuideTour[]>([]);
   const [avail, setAvail] = useState<Avail[]>([]);
+  const version = useGuideRefresh();
   useEffect(() => {
     fetchMyTours().then(setTours).catch(() => undefined);
     db.from("guide_availability").select("start_at, end_at, status").then((r: { data: Avail[] | null }) => setAvail(r.data ?? []));
-  }, []);
+  }, [version]);
 
   const days = useMemo(() => {
     const first = new Date(`${month}-01T12:00:00Z`);
@@ -102,7 +103,7 @@ function GuideCalendar() {
             {selectedTours.map((tour) => (
               <Button key={tour.assignment_id} asChild variant="outline" className="h-auto min-h-14 w-full justify-between whitespace-normal px-3 py-3 text-left">
                 <Link to="/guide/tours/$assignmentId" params={{ assignmentId: tour.assignment_id }}>
-                  <span><strong className="block">{tour.tour_title}</strong><span className="text-xs text-muted-foreground">{tour.start_time?.slice(0, 5) ?? "Time not set"}</span></span>
+                  <span><strong className="block">{tour.tour_title}</strong><span className="text-xs text-muted-foreground">{tour.start_time?.slice(0, 5) ?? "Time not set"}{tour.guests ? ` · ${tour.guests} guest${tour.guests === 1 ? "" : "s"}` : ""}{fmtPax(tour.pax_breakdown) ? ` (${fmtPax(tour.pax_breakdown)})` : ""}{tour.guest_first_name ? ` · ${tour.guest_first_name}` : ""}</span></span>
                   <span aria-hidden>→</span>
                 </Link>
               </Button>
