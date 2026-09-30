@@ -159,10 +159,12 @@ function TodayPage() {
     try {
       const board = await loadBoard({ data: { from: today, to: weekEnd } });
       setAvail(((board.availability ?? []) as Avail[]).sort((a, b) => a.start_at.localeCompare(b.start_at)));
+      setAssigns((board.assignments ?? []) as Assign[]);
       setWeekly(((board.recurring ?? []) as Array<{ id: string; guide_id: string; weekday: number; status: string }>).sort((a, b) => a.weekday - b.weekday));
     } catch {
       setAvail([]);
       setWeekly([]);
+      setAssigns([]);
     }
 
     try {
@@ -258,8 +260,8 @@ function TodayPage() {
       {error ? <p className="mt-2 text-[13px] text-[#9B2C2C]">{error}</p> : null}
 
       <div className="mt-10 space-y-10">
-        <DayBlock title="Today" rows={todayRows} guideName={guideName} empty="No tours today." />
-        <DayBlock title="Upcoming · next 14 days" rows={upcomingRows} guideName={guideName} showDate empty="No upcoming tours." />
+        <DayBlock title="Today" rows={todayRows} guideName={guideName} assigns={assigns} empty="No tours today." />
+        <DayBlock title="Upcoming · next 14 days" rows={upcomingRows} guideName={guideName} assigns={assigns} showDate empty="No upcoming tours." />
         <WeekGrid guides={guides} avail={avail} weekly={weekly} assigns={assigns} />
         {avail.length > 0 ? (
           <section aria-label="Guide availability details">
@@ -341,7 +343,7 @@ function ExceptionLink({ item }: { item: Exception }) {
   );
 }
 
-function DayBlock({ title, rows, guideName, showDate = false, empty }: { title: string; rows: Row[]; guideName: (id: string | null) => string | null; showDate?: boolean; empty: string }) {
+function DayBlock({ title, rows, guideName, assigns, showDate = false, empty }: { title: string; rows: Row[]; guideName: (id: string | null) => string | null; assigns: Assign[]; showDate?: boolean; empty: string }) {
   const sorted = showDate ? rows : [...rows].sort((a, b) => (a.start_time ?? "99").localeCompare(b.start_time ?? "99"));
   return (
     <section>
@@ -367,6 +369,10 @@ function DayBlock({ title, rows, guideName, showDate = false, empty }: { title: 
                 </span>
                 <span className={`shrink-0 text-[11.5px] ${row.assigned_guide_id ? "text-[color:var(--charcoal-soft)]" : "text-[#8A6B23]"}`}>
                   {guideName(row.assigned_guide_id) ?? "No guide"}
+                  {(() => {
+                    const st = row.assigned_guide_id ? GUIDE_STATUS[assigns.find((a) => a.booking_id === row.id && a.guide_id === row.assigned_guide_id)?.status ?? ""] : undefined;
+                    return st ? <span className={`block text-right text-[10.5px] ${st.tone}`}>{st.label}</span> : null;
+                  })()}
                 </span>
               </Link>
             </li>
