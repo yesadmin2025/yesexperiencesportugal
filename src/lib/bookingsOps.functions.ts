@@ -57,8 +57,11 @@ const listInput = z.object({
   status: z.enum(["pending", "paid", "cancelled", "refunded", "failed", "all"]).default("all"),
   paymentStatus: z.enum(["PAID", "PENDING_PAYMENT", "REFUNDED", "UNKNOWN", "all"]).default("all"),
   guide: z.string().optional(), // uuid | "unassigned" | "all"
+  paymentState: z.enum(["paid", "partially_paid", "paid_via_parent", "refunded", "cancelled", "awaiting_payment", "unknown", "all"]).default("all"),
+  completenessState: z.enum(["complete", "incomplete", "package_payment", "all"]).default("all"),
   tour: z.string().max(200).optional(),
   reviewOnly: z.boolean().optional(),
+  offset: z.number().int().min(0).default(0),
   limit: z.number().int().min(1).max(500).default(200),
 });
 
@@ -69,11 +72,24 @@ export const listOpsBookings = createServerFn({ method: "POST" })
     await assertAdmin(context);
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
 
+    const term = data.search?.trim();
+    let paymentBookingIds: string[] = [];
+    if (term && term.length >= 2) {
+      const safeRef = term.replace(/[%,()]/g, " ").trim();
+      if (safeRef) {
+        const { data: payments, error: paymentError } = await supabaseAdmin.from("payment_records")
+          .select("booking_id")
+          .or(`external_reference.ilike.%${safeRef}%,provider_payment_id.ilike.%${safeRef}%`)
+          .not("booking_id", "is", null).limit(500);
+        if (paymentError) throw new Error(paymentError.message);
+        paymentBookingIds = [...new Set((payments ?? []).map((p) => p.booking_id).filter((id): id is string => Boolean(id)))];
+      }
+    }
+
     let query = supabaseAdmin
       .from("bookings")
-      .select(LIST_COLUMNS)
-      .order("preferred_date", { ascending: true, nullsFirst: false })
-      .limit(data.limit);
+      .select(LIST_COLUMNS, { count: "exact" })
+      .order("preferred_date", { ascending: true, nullsFirst: false });
 
     if (data.status !== "all") query = query.eq("status", data.status);
     if (data.paymentStatus !== "all") query = query.eq("payment_status", data.paymentStatus);
@@ -86,7 +102,6 @@ export const listOpsBookings = createServerFn({ method: "POST" })
       if (safeTour) query = query.or(`source_tour_id.ilike.%${safeTour}%,tour_title.ilike.%${safeTour}%`);
     }
 
-    const term = data.search?.trim();
     if (term) {
       const safe = term.replace(/[%,()]/g, " ").trim();
       if (safe) {
@@ -99,21 +114,37 @@ export const listOpsBookings = createServerFn({ method: "POST" })
             `stripe_session_id.ilike.%${safe}%`,
             `tour_title.ilike.%${safe}%`,
             `source_tour_id.ilike.%${safe}%`,
+            ...(paymentBookingIds.length ? [`id.in.(${paymentBookingIds.join(",")})`] : []),
           ].join(","),
         );
       }
     }
 
-    const { data: rawRows, error } = await query;
-    if (error) throw new Error(error.message);
-
+    const postFilter = (data.guide && data.guide !== "all") || data.paymentState !== "all" || data.completenessState !== "all";
+    const list: RawBooking[] = [];
+    let count = 0;
+    if (postFilter) {
+      for (let from = 0; ; from += 500) {
+        const result = await query.range(from, from + 499);
+        if (result.error) throw new Error(result.error.message);
+        list.push(...((result.data ?? []) as unknown as RawBooking[]));
+        if ((result.data ?? []).length < 500) break;
+      }
+    } else {
+      const result = await query.range(data.offset, data.offset + data.limit - 1);
+      if (result.error) throw new Error(result.error.message);
+      list.push(...((result.data ?? []) as unknown as RawBooking[]));
+      count = result.count ?? 0;
+    }
     // Guide truth = active tour_assignments (never the mirror column).
-    const list = (rawRows ?? []) as unknown as RawBooking[];
     const assignments = await loadActiveAssignments(supabaseAdmin, list.map((r) => r.id));
     let rows = canonicalizeAll(list, assignments);
     if (data.guide && data.guide !== "all") {
       rows = rows.filter((r) => (data.guide === "unassigned" ? r.guide_id === null : r.guide_id === data.guide));
     }
+    if (data.paymentState !== "all") rows = rows.filter((r) => r.payment_state === data.paymentState);
+    if (data.completenessState !== "all") rows = rows.filter((r) => r.completeness.state === data.completenessState);
+    if (postFilter) { count = rows.length; rows = rows.slice(data.offset, data.offset + data.limit); }
 
     const { data: guides } = await supabaseAdmin
       .from("guides")
@@ -125,7 +156,7 @@ export const listOpsBookings = createServerFn({ method: "POST" })
       .select("id", { count: "exact", head: true })
       .eq("status", "pending");
 
-    return { bookings: rows, guides: guides ?? [], reviewCount: reviewCount ?? 0 };
+    return { bookings: rows, guides: guides ?? [], reviewCount: reviewCount ?? 0, total: count ?? 0 };
   });
 
 export const getOpsBooking = createServerFn({ method: "POST" })

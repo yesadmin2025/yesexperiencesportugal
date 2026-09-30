@@ -58,7 +58,7 @@ export function BookingPaymentsPanel({ bookingId, paymentLabel }: { bookingId: s
       {paymentLabel ? <p className="mt-1 text-[13px] text-[color:var(--charcoal-soft)]">Payment status · {paymentLabel}</p> : null}
       {error ? <p role="alert" className="mt-3 text-sm">{error}</p> : null}
       {data && own.length === 0 && data.viaParent.length === 0 ? (
-        <p className="mt-3 text-[13px] text-[color:var(--charcoal-soft)]">No payment or voucher linked yet. Link one from Vouchers & Payments.</p>
+        <p className="mt-3 text-[13px] text-[color:var(--charcoal-soft)]">No payment or voucher linked yet. Link one from Payments.</p>
       ) : null}
       <ul className="mt-2 divide-y divide-[color:var(--sand)]">
         {own.map((p) => row(p, false))}

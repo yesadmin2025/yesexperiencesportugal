@@ -154,6 +154,7 @@ import { Route as AdminPaymentsEnvRouteImport } from './routes/admin.payments-en
 import { Route as AdminPaymentsRouteImport } from './routes/admin.payments'
 import { Route as AdminPathPhotosRouteImport } from './routes/admin.path-photos'
 import { Route as AdminOperationsRouteImport } from './routes/admin.operations'
+import { Route as AdminMoreRouteImport } from './routes/admin.more'
 import { Route as AdminLegacyScanRouteImport } from './routes/admin.legacy-scan'
 import { Route as AdminLegacyDomainsMonitorRouteImport } from './routes/admin.legacy-domains-monitor'
 import { Route as AdminLegacyDomainUnlinkRouteImport } from './routes/admin.legacy-domain-unlink'
@@ -196,6 +197,7 @@ import { Route as ApiPublicBookingRequestRouteImport } from './routes/api/public
 import { Route as ApiPublicBookingItineraryDataRouteImport } from './routes/api/public/booking-itinerary-data'
 import { Route as ApiPublicBookingItineraryRouteImport } from './routes/api/public/booking-itinerary'
 import { Route as ApiPublicBookingCalendarRouteImport } from './routes/api/public/booking-calendar'
+import { Route as AdminGuidesIdRouteImport } from './routes/admin.guides.$id'
 import { Route as AdminBookingsNewRouteImport } from './routes/admin.bookings.new'
 import { Route as AdminBookingsIdRouteImport } from './routes/admin.bookings.$id'
 import { Route as Char91DotmcpChar93InvokeToolToolRouteImport } from './routes/[.mcp]/invoke-tool/$tool'
@@ -959,6 +961,11 @@ const AdminOperationsRoute = AdminOperationsRouteImport.update({
   path: '/operations',
   getParentRoute: () => AdminRoute,
 } as any)
+const AdminMoreRoute = AdminMoreRouteImport.update({
+  id: '/more',
+  path: '/more',
+  getParentRoute: () => AdminRoute,
+} as any)
 const AdminLegacyScanRoute = AdminLegacyScanRouteImport.update({
   id: '/legacy-scan',
   path: '/legacy-scan',
@@ -1177,6 +1184,11 @@ const ApiPublicBookingCalendarRoute =
     path: '/api/public/booking-calendar',
     getParentRoute: () => rootRouteImport,
   } as any)
+const AdminGuidesIdRoute = AdminGuidesIdRouteImport.update({
+  id: '/$id',
+  path: '/$id',
+  getParentRoute: () => AdminGuidesRoute,
+} as any)
 const AdminBookingsNewRoute = AdminBookingsNewRouteImport.update({
   id: '/bookings/new',
   path: '/bookings/new',
@@ -1410,12 +1422,13 @@ export interface FileRoutesByFullPath {
   '/admin/gbp-legacy-removal': typeof AdminGbpLegacyRemovalRoute
   '/admin/gsc': typeof AdminGscRoute
   '/admin/guide-attribution': typeof AdminGuideAttributionRoute
-  '/admin/guides': typeof AdminGuidesRoute
+  '/admin/guides': typeof AdminGuidesRouteWithChildren
   '/admin/image-swap': typeof AdminImageSwapRoute
   '/admin/import-tours': typeof AdminImportToursRoute
   '/admin/legacy-domain-unlink': typeof AdminLegacyDomainUnlinkRoute
   '/admin/legacy-domains-monitor': typeof AdminLegacyDomainsMonitorRoute
   '/admin/legacy-scan': typeof AdminLegacyScanRoute
+  '/admin/more': typeof AdminMoreRoute
   '/admin/operations': typeof AdminOperationsRoute
   '/admin/path-photos': typeof AdminPathPhotosRoute
   '/admin/payments': typeof AdminPaymentsRoute
@@ -1481,6 +1494,7 @@ export interface FileRoutesByFullPath {
   '/.mcp/invoke-tool/$tool': typeof Char91DotmcpChar93InvokeToolToolRoute
   '/admin/bookings/$id': typeof AdminBookingsIdRoute
   '/admin/bookings/new': typeof AdminBookingsNewRoute
+  '/admin/guides/$id': typeof AdminGuidesIdRoute
   '/api/public/booking-calendar': typeof ApiPublicBookingCalendarRoute
   '/api/public/booking-itinerary': typeof ApiPublicBookingItineraryRoute
   '/api/public/booking-itinerary-data': typeof ApiPublicBookingItineraryDataRoute
@@ -1617,12 +1631,13 @@ export interface FileRoutesByTo {
   '/admin/gbp-legacy-removal': typeof AdminGbpLegacyRemovalRoute
   '/admin/gsc': typeof AdminGscRoute
   '/admin/guide-attribution': typeof AdminGuideAttributionRoute
-  '/admin/guides': typeof AdminGuidesRoute
+  '/admin/guides': typeof AdminGuidesRouteWithChildren
   '/admin/image-swap': typeof AdminImageSwapRoute
   '/admin/import-tours': typeof AdminImportToursRoute
   '/admin/legacy-domain-unlink': typeof AdminLegacyDomainUnlinkRoute
   '/admin/legacy-domains-monitor': typeof AdminLegacyDomainsMonitorRoute
   '/admin/legacy-scan': typeof AdminLegacyScanRoute
+  '/admin/more': typeof AdminMoreRoute
   '/admin/operations': typeof AdminOperationsRoute
   '/admin/path-photos': typeof AdminPathPhotosRoute
   '/admin/payments': typeof AdminPaymentsRoute
@@ -1688,6 +1703,7 @@ export interface FileRoutesByTo {
   '/.mcp/invoke-tool/$tool': typeof Char91DotmcpChar93InvokeToolToolRoute
   '/admin/bookings/$id': typeof AdminBookingsIdRoute
   '/admin/bookings/new': typeof AdminBookingsNewRoute
+  '/admin/guides/$id': typeof AdminGuidesIdRoute
   '/api/public/booking-calendar': typeof ApiPublicBookingCalendarRoute
   '/api/public/booking-itinerary': typeof ApiPublicBookingItineraryRoute
   '/api/public/booking-itinerary-data': typeof ApiPublicBookingItineraryDataRoute
@@ -1829,12 +1845,13 @@ export interface FileRoutesById {
   '/admin/gbp-legacy-removal': typeof AdminGbpLegacyRemovalRoute
   '/admin/gsc': typeof AdminGscRoute
   '/admin/guide-attribution': typeof AdminGuideAttributionRoute
-  '/admin/guides': typeof AdminGuidesRoute
+  '/admin/guides': typeof AdminGuidesRouteWithChildren
   '/admin/image-swap': typeof AdminImageSwapRoute
   '/admin/import-tours': typeof AdminImportToursRoute
   '/admin/legacy-domain-unlink': typeof AdminLegacyDomainUnlinkRoute
   '/admin/legacy-domains-monitor': typeof AdminLegacyDomainsMonitorRoute
   '/admin/legacy-scan': typeof AdminLegacyScanRoute
+  '/admin/more': typeof AdminMoreRoute
   '/admin/operations': typeof AdminOperationsRoute
   '/admin/path-photos': typeof AdminPathPhotosRoute
   '/admin/payments': typeof AdminPaymentsRoute
@@ -1900,6 +1917,7 @@ export interface FileRoutesById {
   '/.mcp/invoke-tool/$tool': typeof Char91DotmcpChar93InvokeToolToolRoute
   '/admin/bookings/$id': typeof AdminBookingsIdRoute
   '/admin/bookings/new': typeof AdminBookingsNewRoute
+  '/admin/guides/$id': typeof AdminGuidesIdRoute
   '/api/public/booking-calendar': typeof ApiPublicBookingCalendarRoute
   '/api/public/booking-itinerary': typeof ApiPublicBookingItineraryRoute
   '/api/public/booking-itinerary-data': typeof ApiPublicBookingItineraryDataRoute
@@ -2048,6 +2066,7 @@ export interface FileRouteTypes {
     | '/admin/legacy-domain-unlink'
     | '/admin/legacy-domains-monitor'
     | '/admin/legacy-scan'
+    | '/admin/more'
     | '/admin/operations'
     | '/admin/path-photos'
     | '/admin/payments'
@@ -2113,6 +2132,7 @@ export interface FileRouteTypes {
     | '/.mcp/invoke-tool/$tool'
     | '/admin/bookings/$id'
     | '/admin/bookings/new'
+    | '/admin/guides/$id'
     | '/api/public/booking-calendar'
     | '/api/public/booking-itinerary'
     | '/api/public/booking-itinerary-data'
@@ -2255,6 +2275,7 @@ export interface FileRouteTypes {
     | '/admin/legacy-domain-unlink'
     | '/admin/legacy-domains-monitor'
     | '/admin/legacy-scan'
+    | '/admin/more'
     | '/admin/operations'
     | '/admin/path-photos'
     | '/admin/payments'
@@ -2320,6 +2341,7 @@ export interface FileRouteTypes {
     | '/.mcp/invoke-tool/$tool'
     | '/admin/bookings/$id'
     | '/admin/bookings/new'
+    | '/admin/guides/$id'
     | '/api/public/booking-calendar'
     | '/api/public/booking-itinerary'
     | '/api/public/booking-itinerary-data'
@@ -2466,6 +2488,7 @@ export interface FileRouteTypes {
     | '/admin/legacy-domain-unlink'
     | '/admin/legacy-domains-monitor'
     | '/admin/legacy-scan'
+    | '/admin/more'
     | '/admin/operations'
     | '/admin/path-photos'
     | '/admin/payments'
@@ -2531,6 +2554,7 @@ export interface FileRouteTypes {
     | '/.mcp/invoke-tool/$tool'
     | '/admin/bookings/$id'
     | '/admin/bookings/new'
+    | '/admin/guides/$id'
     | '/api/public/booking-calendar'
     | '/api/public/booking-itinerary'
     | '/api/public/booking-itinerary-data'
@@ -3716,6 +3740,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminOperationsRouteImport
       parentRoute: typeof AdminRoute
     }
+    '/admin/more': {
+      id: '/admin/more'
+      path: '/more'
+      fullPath: '/admin/more'
+      preLoaderRoute: typeof AdminMoreRouteImport
+      parentRoute: typeof AdminRoute
+    }
     '/admin/legacy-scan': {
       id: '/admin/legacy-scan'
       path: '/legacy-scan'
@@ -4010,6 +4041,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicBookingCalendarRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/admin/guides/$id': {
+      id: '/admin/guides/$id'
+      path: '/$id'
+      fullPath: '/admin/guides/$id'
+      preLoaderRoute: typeof AdminGuidesIdRouteImport
+      parentRoute: typeof AdminGuidesRoute
+    }
     '/admin/bookings/new': {
       id: '/admin/bookings/new'
       path: '/bookings/new'
@@ -4167,6 +4205,18 @@ declare module '@tanstack/react-router' {
   }
 }
 
+interface AdminGuidesRouteChildren {
+  AdminGuidesIdRoute: typeof AdminGuidesIdRoute
+}
+
+const AdminGuidesRouteChildren: AdminGuidesRouteChildren = {
+  AdminGuidesIdRoute: AdminGuidesIdRoute,
+}
+
+const AdminGuidesRouteWithChildren = AdminGuidesRoute._addFileChildren(
+  AdminGuidesRouteChildren,
+)
+
 interface AdminRouteChildren {
   AdminActivityRoute: typeof AdminActivityRoute
   AdminAiAuditRoute: typeof AdminAiAuditRoute
@@ -4187,12 +4237,13 @@ interface AdminRouteChildren {
   AdminGbpLegacyRemovalRoute: typeof AdminGbpLegacyRemovalRoute
   AdminGscRoute: typeof AdminGscRoute
   AdminGuideAttributionRoute: typeof AdminGuideAttributionRoute
-  AdminGuidesRoute: typeof AdminGuidesRoute
+  AdminGuidesRoute: typeof AdminGuidesRouteWithChildren
   AdminImageSwapRoute: typeof AdminImageSwapRoute
   AdminImportToursRoute: typeof AdminImportToursRoute
   AdminLegacyDomainUnlinkRoute: typeof AdminLegacyDomainUnlinkRoute
   AdminLegacyDomainsMonitorRoute: typeof AdminLegacyDomainsMonitorRoute
   AdminLegacyScanRoute: typeof AdminLegacyScanRoute
+  AdminMoreRoute: typeof AdminMoreRoute
   AdminOperationsRoute: typeof AdminOperationsRoute
   AdminPathPhotosRoute: typeof AdminPathPhotosRoute
   AdminPaymentsRoute: typeof AdminPaymentsRoute
@@ -4244,12 +4295,13 @@ const AdminRouteChildren: AdminRouteChildren = {
   AdminGbpLegacyRemovalRoute: AdminGbpLegacyRemovalRoute,
   AdminGscRoute: AdminGscRoute,
   AdminGuideAttributionRoute: AdminGuideAttributionRoute,
-  AdminGuidesRoute: AdminGuidesRoute,
+  AdminGuidesRoute: AdminGuidesRouteWithChildren,
   AdminImageSwapRoute: AdminImageSwapRoute,
   AdminImportToursRoute: AdminImportToursRoute,
   AdminLegacyDomainUnlinkRoute: AdminLegacyDomainUnlinkRoute,
   AdminLegacyDomainsMonitorRoute: AdminLegacyDomainsMonitorRoute,
   AdminLegacyScanRoute: AdminLegacyScanRoute,
+  AdminMoreRoute: AdminMoreRoute,
   AdminOperationsRoute: AdminOperationsRoute,
   AdminPathPhotosRoute: AdminPathPhotosRoute,
   AdminPaymentsRoute: AdminPaymentsRoute,

@@ -8,6 +8,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { AdminShell } from "@/components/admin/AdminShell";
+import { Button } from "@/components/ui/button";
 import {
   listPaymentRecords,
   matchPayment,
@@ -133,15 +134,17 @@ function PaymentsPage() {
     <AdminShell eyebrow="Reconciliation" title="Payments">
       <div role="tablist" aria-label="Match status" className="flex flex-wrap gap-2">
         {TABS.map((t) => (
-          <button
+          <Button
             key={t.id}
+            type="button"
+            variant={tab === t.id ? "default" : "outline"}
             role="tab"
             aria-selected={tab === t.id}
             onClick={() => setTab(t.id)}
-            className={`min-h-11 rounded-full border px-4 text-[13px] ${tab === t.id ? "border-[color:var(--teal)] bg-[color:var(--teal)] text-[color:var(--ivory)]" : "border-[color:var(--charcoal)]/15 text-[color:var(--charcoal)]"}`}
+            className="min-h-11 px-3 text-[12px]"
           >
             {t.label} <span className="ml-1 tabular-nums opacity-80">{payments ? counts[t.id] : "…"}</span>
-          </button>
+          </Button>
         ))}
       </div>
       <p className="mt-3 text-[13px] text-[color:var(--charcoal-soft)]">{current.hint}</p>
@@ -274,7 +277,7 @@ function PaymentCard({ payment: p, bookings, onChanged }: { payment: Payment; bo
           <p className="text-[11px] uppercase tracking-[0.16em] text-[color:var(--charcoal-soft)]">Possible bookings</p>
           <ul className="mt-1 space-y-2">
             {candidates.map((c) => (
-              <li key={c.booking_id} className="flex items-start justify-between gap-3">
+              <li key={c.booking_id} className="flex flex-col items-start gap-1 sm:flex-row sm:justify-between sm:gap-3">
                 <BookingLine b={bookings[c.booking_id]!} extra={c.label} />
                 <button type="button" disabled={busy} onClick={() => doMatch(c.booking_id, `Chosen from candidates: ${c.reasons.join(", ")}`)} className="min-h-11 shrink-0 rounded-md border border-[color:var(--teal)] px-3 text-[12px] text-[color:var(--teal)]">
                   Link
@@ -327,7 +330,7 @@ function PaymentCard({ payment: p, bookings, onChanged }: { payment: Payment; bo
           {results && results.length === 0 ? <p className="mt-2 text-[12.5px] text-[color:var(--charcoal-soft)]">No bookings found.</p> : null}
           <ul className="mt-2 space-y-2">
             {(results ?? []).map((b) => (
-              <li key={b.id} className="flex items-start justify-between gap-3">
+              <li key={b.id} className="flex flex-col items-start gap-1 sm:flex-row sm:justify-between sm:gap-3">
                 <BookingLine b={b} />
                 <button type="button" disabled={busy || b.id === p.booking_id} onClick={() => doMatch(b.id, "Chosen by admin from search")} className="min-h-11 shrink-0 rounded-md border border-[color:var(--teal)] px-3 text-[12px] text-[color:var(--teal)] disabled:opacity-40">
                   Link

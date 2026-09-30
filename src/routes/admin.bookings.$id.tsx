@@ -1,512 +1,79 @@
-/**
- * /admin/bookings/$id — full detail of one reservation.
- *
- * Everything below the contact block renders the frozen purchase snapshot
- * captured when payment succeeded, so later edits to tours, itineraries or
- * pricing tables never change what a past guest actually bought.
- */
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useEffect, useState } from "react";
 import { useServerFn } from "@tanstack/react-start";
-import {
-  cancelAndRefundBooking,
-  getAdminBooking,
-  notifyBookingCustomer,
-  updateAdminBooking,
-} from "@/lib/bookingsAdmin.functions";
-import { Button } from "@/components/ui/button";
-import { GuideBriefPanel } from "@/components/admin/GuideBriefPanel";
-import { OpsBookingDetail } from "@/components/admin/ops/OpsBookingDetail";
+import { useEffect, useState } from "react";
+import { AdminShell } from "@/components/admin/AdminShell";
 import { BookingPaymentsPanel } from "@/components/admin/BookingPaymentsPanel";
-import {
-  buildSnapshotEmailPreview,
-  validateBookingSnapshot,
-} from "@/lib/booking-snapshot-contract";
+import { Button } from "@/components/ui/button";
+import { getOpsBooking, updateOpsBooking } from "@/lib/bookingsOps.functions";
+import { getAdminBooking, cancelAndRefundBooking } from "@/lib/bookingsAdmin.functions";
+import { buildSnapshotEmailPreview } from "@/lib/booking-snapshot-contract";
 
+type Data = Awaited<ReturnType<typeof getOpsBooking>>;
+const text = (v: unknown) => typeof v === "string" && v.trim() ? v : "—";
+const items = (v: unknown): string[] => Array.isArray(v) ? v.filter((s): s is string => typeof s === "string" && !!s.trim()) : [];
+function Line({ label, value }: { label: string; value: React.ReactNode }) { return <div className="grid gap-1 border-b border-border py-2 text-sm last:border-0 sm:grid-cols-[9rem_1fr]"><dt className="text-muted-foreground">{label}</dt><dd className="min-w-0 break-words">{value || "—"}</dd></div>; }
+function Section({ title, children }: { title: string; children: React.ReactNode }) { return <section className="border-t border-border pt-6"><h2 className="font-[family-name:var(--font-editorial)] text-2xl">{title}</h2><div className="mt-3">{children}</div></section>; }
 export const Route = createFileRoute("/admin/bookings/$id")({
-  component: AdminBookingDetailPage,
-  head: () => ({
-    meta: [{ title: "Booking · Admin" }, { name: "robots", content: "noindex, nofollow" }],
-  }),
-  errorComponent: ({ error }) => <div className="p-8 text-red-700">Error: {error.message}</div>,
-  notFoundComponent: () => <div className="p-8">Not found</div>,
+  component: BookingDetail,
+  head: () => ({ meta: [{ title: "Booking details · YES Admin" }, { name: "description", content: "Private booking and operations details." }, { property: "og:title", content: "Booking details · YES Admin" }, { property: "og:description", content: "Private booking and operations details." }, { property: "og:type", content: "website" }, { name: "twitter:card", content: "summary" }, { name: "robots", content: "noindex, nofollow" }] }),
 });
-
-/* eslint-disable @typescript-eslint/no-explicit-any */
-type AnyRec = Record<string, any>;
-
-function money(n: number | null | undefined, currency = "EUR") {
-  if (n == null || !Number.isFinite(n)) return "—";
-  return new Intl.NumberFormat("en-GB", { style: "currency", currency }).format(n);
-}
-
-function Row({ label, value }: { label: string; value: React.ReactNode }) {
-  if (value == null || value === "" || (Array.isArray(value) && value.length === 0)) return null;
-  return (
-    <div className="py-2">
-      <div className="text-[11px] uppercase tracking-[0.18em] text-[color:var(--charcoal-soft)]">
-        {label}
-      </div>
-      <div className="text-sm text-[color:var(--charcoal)]">{value}</div>
-    </div>
-  );
-}
-
-function Card({ title, children }: { title: string; children: React.ReactNode }) {
-  return (
-    <section className="mt-8 rounded-lg border border-[color:var(--sand)] bg-white p-5">
-      <h2 className="font-[family-name:var(--font-editorial)] text-xl text-[color:var(--charcoal)]">
-        {title}
-      </h2>
-      <div className="mt-3 divide-y divide-[color:var(--sand)]">{children}</div>
-    </section>
-  );
-}
-function PreviewList({ label, items }: { label: string; items: string[] }) {
-  return (
-    <div>
-      <div className="text-[11px] uppercase tracking-[0.18em] text-[color:var(--charcoal-soft)]">
-        {label}
-      </div>
-      {items.length === 0 ? (
-        <p className="text-[color:var(--charcoal-soft)]">— not included in the emails</p>
-      ) : (
-        <ul className="mt-1 space-y-1">
-          {items.map((item, i) => (
-            <li key={i}>{item}</li>
-          ))}
-        </ul>
-      )}
-    </div>
-  );
-}
-
-function AdminBookingDetailPage() {
+function BookingDetail() {
   const { id } = Route.useParams();
-  const get = useServerFn(getAdminBooking);
-  const cancelAndRefund = useServerFn(cancelAndRefundBooking);
-  const [booking, setBooking] = useState<AnyRec | null>(null);
-  const [snapshot, setSnapshot] = useState<AnyRec | null>(null);
+  const load = useServerFn(getOpsBooking);
+  const loadPurchase = useServerFn(getAdminBooking);
+  const update = useServerFn(updateOpsBooking);
+  const refund = useServerFn(cancelAndRefundBooking);
+  const [data, setData] = useState<Data | null>(null);
+  const [purchase, setPurchase] = useState<Awaited<ReturnType<typeof getAdminBooking>> | null>(null);
   const [error, setError] = useState<string | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [refundBusy, setRefundBusy] = useState(false);
-  const [refundMessage, setRefundMessage] = useState<string | null>(null);
-  const [editOpen, setEditOpen] = useState(false);
-  const [editName, setEditName] = useState("");
-  const [editPhone, setEditPhone] = useState("");
-  const [editDate, setEditDate] = useState("");
-  const [editNotes, setEditNotes] = useState("");
-  const [editBusy, setEditBusy] = useState(false);
-  const [editMessage, setEditMessage] = useState<string | null>(null);
-  const [notifyText, setNotifyText] = useState("");
-  const [notifyBusy, setNotifyBusy] = useState(false);
-  const [notifyMessage, setNotifyMessage] = useState<string | null>(null);
-  const saveEdit = useServerFn(updateAdminBooking);
-  const notifyGuest = useServerFn(notifyBookingCustomer);
-
-  useEffect(() => {
-    let active = true;
-    get({ data: { id } })
-      .then((r) => {
-        if (!active) return;
-        const b = (r.booking as AnyRec) ?? null;
-        setBooking(b);
-        setSnapshot((r.snapshot as AnyRec) ?? null);
-        if (b) {
-          setEditName(b.customer_name ?? "");
-          setEditPhone(b.customer_phone ?? "");
-          setEditDate(b.preferred_date ?? "");
-          setEditNotes(b.notes ?? "");
-        }
-      })
-      .catch((e: unknown) => active && setError(e instanceof Error ? e.message : String(e)))
-      .finally(() => active && setLoading(false));
-    return () => {
-      active = false;
-    };
-  }, [id, get]);
-
-  if (loading) return <div className="p-8 text-sm">Loading…</div>;
-  if (error) return <div className="p-8 text-sm text-red-700">{error}</div>;
-  if (!booking) return <div className="p-8 text-sm">Booking not found.</div>;
-
-  const currency = String(booking.currency || "eur").toUpperCase();
-  const pricing = (snapshot?.pricing ?? {}) as AnyRec;
-  const itinerary = Array.isArray(snapshot?.itinerary) ? snapshot!.itinerary : [];
-  const addOns = Array.isArray(snapshot?.addOns) ? snapshot!.addOns : [];
-  const removed = Array.isArray(snapshot?.removedOptions) ? snapshot!.removedOptions : [];
-  const notes = Array.isArray(snapshot?.notes) ? snapshot!.notes : [];
-  const emailPreview = buildSnapshotEmailPreview(snapshot);
-  const snapshotCheck = validateBookingSnapshot(snapshot);
-  const composition = (snapshot?.composition ??
-    booking.booking_details?.composition ??
-    {}) as AnyRec;
-
-  return (
-    <main className="mx-auto max-w-3xl px-4 py-8 md:px-10 md:py-12">
-      <Link to="/admin/bookings" className="inline-flex min-h-11 items-center text-sm text-[color:var(--charcoal-soft)]">
-        ← All bookings
-      </Link>
-      <h1 className="mt-2 font-[family-name:var(--font-editorial)] text-[28px] leading-tight text-[color:var(--charcoal)] md:text-[34px]">
-        {snapshot?.experienceName || booking.tour_title || booking.source_tour_id || "Booking"}
-      </h1>
-
-      <div className="mt-6">
-        <OpsBookingDetail bookingId={id} hideFullPageLink />
-      </div>
-
-      <details className="group mt-10 border-t border-[color:var(--charcoal)]/[0.08] pt-4">
-        <summary className="flex min-h-11 cursor-pointer list-none items-center justify-between text-[11px] uppercase tracking-[0.2em] text-[color:var(--charcoal-soft)]">
-          Purchase record, guest messages &amp; refunds
-          <span aria-hidden className="transition-transform duration-200 group-open:rotate-45">+</span>
-        </summary>
-      <p className="mt-2 text-sm text-[color:var(--charcoal-soft)]">
-        {booking.status} · {booking.booking_type} · {new Date(booking.created_at).toLocaleString()}
-      </p>
-
-      <BookingPaymentsPanel bookingId={id} />
-
-
-
-      {booking.status === "paid" ? (
-        <section className="mt-6 border-y border-[color:var(--border)] py-5">
-          <p className="text-sm leading-relaxed text-[color:var(--charcoal-soft)]">
-            Cancelling submits a full refund to the original payment method and emails the guest.
-          </p>
-          <Button
-            type="button"
-            variant="destructive"
-            className="mt-4 min-h-[44px]"
-            disabled={refundBusy}
-            onClick={async () => {
-              if (!window.confirm("Cancel this booking and submit a full refund? This cannot be undone.")) return;
-              setRefundBusy(true);
-              setRefundMessage(null);
-              try {
-                const result = await cancelAndRefund({ data: { id } });
-                setBooking((current) => current ? { ...current, status: result.status } : current);
-                setRefundMessage(
-                  result.alreadyProcessed
-                    ? "Stripe had already refunded this payment. The booking is now reconciled as refunded and the guest email was queued."
-                    : "Cancellation confirmed. The refund was submitted and the guest email was queued.",
-                );
-              } catch (cause) {
-                setRefundMessage(cause instanceof Error ? cause.message : "The refund could not be submitted.");
-              } finally {
-                setRefundBusy(false);
-              }
-            }}
-          >
-            {refundBusy ? "Submitting refund…" : "Cancel and refund booking"}
-          </Button>
-        </section>
-      ) : null}
-      {refundMessage ? (
-        <p role="status" className="mt-4 rounded-[6px] border border-[color:var(--border)] bg-[color:var(--sand)] p-4 text-sm text-[color:var(--charcoal)]">
-          {refundMessage}
-        </p>
-      ) : null}
-
-      <section className="mt-6 rounded-lg border border-[color:var(--sand)] bg-white p-5">
-        <div className="flex flex-wrap gap-2">
-          <Button
-            type="button"
-            variant="outline"
-            className="min-h-[44px]"
-            onClick={() => setEditOpen((v) => !v)}
-            aria-expanded={editOpen}
-          >
-            {editOpen ? "Close edit" : "Edit booking"}
-          </Button>
-        </div>
-
-        {editOpen ? (
-          <div className="mt-4 space-y-3">
-            <label className="block text-sm">
-              <span className="text-[11px] uppercase tracking-[0.18em] text-[color:var(--charcoal-soft)]">
-                Guest name
-              </span>
-              <input
-                value={editName}
-                onChange={(e) => setEditName(e.target.value)}
-                className="mt-1 w-full rounded-md border border-[color:var(--sand)] px-3 py-2.5 text-base"
-              />
-            </label>
-            <label className="block text-sm">
-              <span className="text-[11px] uppercase tracking-[0.18em] text-[color:var(--charcoal-soft)]">
-                Guest phone
-              </span>
-              <input
-                value={editPhone}
-                onChange={(e) => setEditPhone(e.target.value)}
-                className="mt-1 w-full rounded-md border border-[color:var(--sand)] px-3 py-2.5 text-base"
-              />
-            </label>
-            <label className="block text-sm">
-              <span className="text-[11px] uppercase tracking-[0.18em] text-[color:var(--charcoal-soft)]">
-                Trip date
-              </span>
-              <input
-                type="date"
-                value={editDate}
-                onChange={(e) => setEditDate(e.target.value)}
-                className="mt-1 block w-full min-w-0 max-w-full rounded-md border border-[color:var(--sand)] px-3 py-2.5 text-base"
-              />
-            </label>
-            <label className="block text-sm">
-              <span className="text-[11px] uppercase tracking-[0.18em] text-[color:var(--charcoal-soft)]">
-                Internal notes
-              </span>
-              <textarea
-                value={editNotes}
-                onChange={(e) => setEditNotes(e.target.value)}
-                rows={3}
-                className="mt-1 w-full rounded-md border border-[color:var(--sand)] px-3 py-2.5 text-base"
-              />
-            </label>
-            <p className="text-xs text-[color:var(--charcoal-soft)]">
-              Only operational details. Price and payment state never change here.
-            </p>
-            <Button
-              type="button"
-              className="min-h-[44px]"
-              disabled={editBusy}
-              onClick={async () => {
-                setEditBusy(true);
-                setEditMessage(null);
-                try {
-                  const result = await saveEdit({
-                    data: {
-                      id,
-                      customerName: editName.trim() || undefined,
-                      customerPhone: editPhone.trim() || null,
-                      preferredDate: editDate || null,
-                      notes: editNotes.trim() || null,
-                    },
-                  });
-                  if (result.changed) {
-                    setBooking((current: AnyRec | null) =>
-                      current
-                        ? {
-                            ...current,
-                            customer_name: editName.trim() || current.customer_name,
-                            customer_phone: editPhone.trim() || null,
-                            preferred_date: editDate || null,
-                            notes: editNotes.trim() || null,
-                          }
-                        : current,
-                    );
-                  }
-                  setEditMessage(result.changed ? "Saved." : "Nothing changed.");
-                } catch (cause) {
-                  setEditMessage(cause instanceof Error ? cause.message : "Could not save.");
-                } finally {
-                  setEditBusy(false);
-                }
-              }}
-            >
-              {editBusy ? "Saving…" : "Save changes"}
-            </Button>
-            {editMessage ? (
-              <p role="status" className="text-sm text-[color:var(--charcoal)]">
-                {editMessage}
-              </p>
-            ) : null}
-          </div>
-        ) : null}
-
-        <div className="mt-6 border-t border-[color:var(--sand)] pt-5">
-          <h3 className="text-[11px] uppercase tracking-[0.18em] text-[color:var(--charcoal-soft)]">
-            Notify guest
-          </h3>
-          <textarea
-            value={notifyText}
-            onChange={(e) => setNotifyText(e.target.value)}
-            rows={4}
-            placeholder="Write the message the guest receives by email…"
-            aria-label="Message to the guest"
-            className="mt-2 w-full rounded-md border border-[color:var(--sand)] px-3 py-2.5 text-base"
-          />
-          <Button
-            type="button"
-            variant="outline"
-            className="mt-2 min-h-[44px]"
-            disabled={notifyBusy || notifyText.trim().length < 10}
-            onClick={async () => {
-              if (!window.confirm(`Email this message to ${booking.customer_email}?`)) return;
-              setNotifyBusy(true);
-              setNotifyMessage(null);
-              try {
-                await notifyGuest({ data: { id, message: notifyText.trim() } });
-                setNotifyMessage(`Email sent to ${booking.customer_email}.`);
-                setNotifyText("");
-              } catch (cause) {
-                setNotifyMessage(cause instanceof Error ? cause.message : "The email could not be sent.");
-              } finally {
-                setNotifyBusy(false);
-              }
-            }}
-          >
-            {notifyBusy ? "Sending…" : "Send email to guest"}
-          </Button>
-          {notifyMessage ? (
-            <p role="status" className="mt-2 text-sm text-[color:var(--charcoal)]">
-              {notifyMessage}
-            </p>
-          ) : null}
-        </div>
-
-        <div className="mt-6 border-t border-[color:var(--sand)] pt-5">
-          <h3 className="text-[11px] uppercase tracking-[0.18em] text-[color:var(--charcoal-soft)]">
-            Send to the guide
-          </h3>
-          <p className="mt-1 text-sm text-[color:var(--charcoal-soft)]">
-            Operational summary without any prices.
-          </p>
-          <GuideBriefPanel bookingId={booking.id} />
-        </div>
-      </section>
-
-      <Card title="Customer">
-        <Row label="Name" value={booking.customer_name ?? snapshot?.customerName} />
-        <Row label="Email" value={booking.customer_email} />
-        <Row label="Phone" value={booking.customer_phone ?? snapshot?.customerPhone} />
-        <Row label="Booking reference" value={booking.stripe_session_id} />
-      </Card>
-
-      <Card title="Experience">
-        <Row label="Experience" value={snapshot?.experienceName ?? booking.source_tour_id} />
-        <Row label="Date" value={booking.preferred_date ?? snapshot?.dateExact} />
-        <Row label="Start time" value={snapshot?.startTime} />
-        <Row label="Duration" value={snapshot?.durationLabel} />
-        <Row label="Pickup" value={snapshot?.pickup} />
-        <Row
-          label="Guests"
-          value={
-            composition?.adults != null
-              ? `${booking.guests} total · ${composition.adults} adult${composition.adults === 1 ? "" : "s"}${
-                  Array.isArray(composition.minorAges) && composition.minorAges.length > 0
-                    ? ` · minors aged ${composition.minorAges.join(", ")}`
-                    : ""
-                }`
-              : booking.guests
-          }
-        />
-      </Card>
-
-      {itinerary.length > 0 ? (
-        <Card title="Booked itinerary">
-          <ol className="list-decimal space-y-1 pl-5 pt-2 text-sm text-[color:var(--charcoal)]">
-            {itinerary.map((s: AnyRec, i: number) => (
-              <li key={i}>
-                {s.label}
-                {s.durationMinutes ? ` · ${s.durationMinutes} min` : ""}
-                {s.note ? ` — ${s.note}` : ""}
-              </li>
-            ))}
-          </ol>
-        </Card>
-      ) : null}
-
-      {addOns.length > 0 || removed.length > 0 ? (
-        <Card title="Adjustments">
-          <Row
-            label="Selected add-ons"
-            value={
-              addOns.length > 0 ? (
-                <ul className="list-disc pl-5">
-                  {addOns.map((a: AnyRec, i: number) => (
-                    <li key={i}>
-                      {a.label}
-                      {a.priceEur ? ` · ${money(a.priceEur, "EUR")} pp` : ""}
-                    </li>
-                  ))}
-                </ul>
-              ) : null
-            }
-          />
-          <Row
-            label="Removed options"
-            value={
-              removed.length > 0 ? (
-                <ul className="list-disc pl-5">
-                  {removed.map((r: string, i: number) => (
-                    <li key={i}>{r}</li>
-                  ))}
-                </ul>
-              ) : null
-            }
-          />
-        </Card>
-      ) : null}
-
-      {notes.length > 0 ? (
-        <Card title="Customer notes">
-          <ul className="list-disc pl-5 pt-2 text-sm text-[color:var(--charcoal)]">
-            {notes.map((n: string, i: number) => (
-              <li key={i}>{n}</li>
-            ))}
-          </ul>
-        </Card>
-      ) : null}
-
-      <Card title="Pricing breakdown">
-        <Row label="Base per person" value={money(pricing.basePerPaxEur)} />
-        <Row label="Final per person" value={money(pricing.finalPerPaxEur)} />
-        <Row
-          label="Stops removed"
-          value={pricing.principalsRemoved ? String(pricing.principalsRemoved) : null}
-        />
-        <Row
-          label="Tailor supplements"
-          value={pricing.tailorSupplementsEur ? money(pricing.tailorSupplementsEur) : null}
-        />
-        <Row
-          label="Lunch removal credit (pp)"
-          value={
-            pricing.lunchRemovalCreditEurPerPax
-              ? `− ${money(pricing.lunchRemovalCreditEurPerPax)}`
-              : null
-          }
-        />
-        <Row label="Experience subtotal" value={money(pricing.tourSubtotalEur)} />
-        <Row
-          label="Add-ons total"
-          value={pricing.addOnsTotalEur ? money(pricing.addOnsTotalEur) : null}
-        />
-        <Row
-          label="Total paid"
-          value={new Intl.NumberFormat("en-GB", { style: "currency", currency }).format(
-            (booking.amount_total || 0) / 100,
-          )}
-        />
-      </Card>
-
-      <Card title="Confirmation email preview">
-        <div className="space-y-4 pt-3 text-sm text-[color:var(--charcoal)]">
-          <p className="text-[color:var(--charcoal-soft)]">
-            Exactly what the guest receipt and the team alert render for this booking.
-          </p>
-          {snapshotCheck.ok ? null : (
-            <p className="rounded border border-red-200 bg-red-50 p-3 text-red-800">
-              Incomplete snapshot — these emails would be missing:{" "}
-              {snapshotCheck.missing.join(", ")}.
-            </p>
-          )}
-          <PreviewList label="Your day, stop by stop" items={emailPreview.itineraryLines} />
-          <PreviewList label="Included" items={emailPreview.includedItems} />
-          <PreviewList label="Add-ons" items={emailPreview.addOnLabels} />
-          <PreviewList label="Adjusted for you" items={emailPreview.removedOptions} />
-          <PreviewList label="Your notes" items={emailPreview.customerNotes} />
-        </div>
-      </Card>
-
-      {!snapshot ? (
-        <p className="mt-6 text-sm text-[color:var(--charcoal-soft)]">
-          No purchase snapshot was captured for this booking (it predates snapshotting).
-        </p>
-      ) : null}
-      </details>
-    </main>
-  );
+  const [busy, setBusy] = useState(false);
+  const [notice, setNotice] = useState<string | null>(null);
+  const [pickup, setPickup] = useState("");
+  const [date, setDate] = useState("");
+  const [start, setStart] = useState("");
+  const [guide, setGuide] = useState("");
+  const [note, setNote] = useState("");
+  const refresh = async () => {
+    const [a, p] = await Promise.all([load({ data: { id } }), loadPurchase({ data: { id } })]);
+    setData(a); setPurchase(p);
+    if (a.booking) { setPickup(a.booking.pickup_location ?? ""); setDate(a.booking.preferred_date ?? ""); setStart(a.booking.start_time ?? ""); setGuide(a.booking.guide_id ?? ""); }
+  };
+  useEffect(() => { let live = true; Promise.all([load({ data: { id } }), loadPurchase({ data: { id } })]).then(([a, p]) => { if (!live) return; setData(a); setPurchase(p); if (a.booking) { setPickup(a.booking.pickup_location ?? ""); setDate(a.booking.preferred_date ?? ""); setStart(a.booking.start_time ?? ""); setGuide(a.booking.guide_id ?? ""); } }).catch((e) => { if (live) setError(e instanceof Error ? e.message : "Could not load booking."); }); return () => { live = false; }; }, [id, load, loadPurchase]);
+  const b = data?.booking;
+  const snap = purchase?.snapshot && typeof purchase.snapshot === "object" && !Array.isArray(purchase.snapshot) ? purchase.snapshot as Record<string, unknown> : null;
+  const preview = buildSnapshotEmailPreview(snap);
+  const metadata = b?.metadata && typeof b.metadata === "object" && !Array.isArray(b.metadata) ? b.metadata as Record<string, unknown> : {};
+  const history = Array.isArray(metadata.ops_edits) ? metadata.ops_edits as Array<Record<string, unknown>> : [];
+  const run = async (fn: () => Promise<unknown>, success: string) => { setBusy(true); setNotice(null); try { await fn(); await refresh(); setNotice(success); } catch (e) { setNotice(e instanceof Error ? e.message : "Could not save."); } finally { setBusy(false); } };
+  const inputClass = "mt-1 min-h-11 w-full min-w-0 border border-border bg-background px-3 text-base";
+  return <AdminShell eyebrow="Reservation" title={text(b?.tour_title ?? b?.source_tour_id) === "—" ? "Booking details" : text(b?.tour_title ?? b?.source_tour_id)}>
+    <Link to="/admin/bookings" className="inline-flex min-h-11 items-center text-sm text-primary">← All bookings</Link>
+    {error ? <p role="alert" className="text-destructive">{error}</p> : null}
+    {!data && !error ? <p className="text-sm">Loading booking…</p> : null}
+    {data && !b ? <p>Booking not found.</p> : null}
+    {b ? <div className="mt-5 space-y-8">
+      <p className="text-sm">Payment: {b.payment_label} · Booking details: {b.completeness_label}</p>
+      <Section title="Tour"><dl>
+        <Line label="Date" value={text(b.preferred_date)} /><Line label="Pickup time" value={text(b.start_time)} />
+        <Line label="Experience" value={text(b.tour_title ?? b.source_tour_id)} /><Line label="Pickup" value={text(b.pickup_location)} /><Line label="Drop-off" value={text(b.dropoff_location)} />
+        <Line label="Guests" value={b.guests} /><Line label="Language" value={text(b.language)} />
+      </dl><div className="mt-4 space-y-3 text-sm"><div><h3 className="font-medium">Itinerary / stops</h3>{preview.itineraryLines.length ? <ul className="mt-1 list-disc pl-5">{preview.itineraryLines.map((v, i) => <li key={i}>{v}</li>)}</ul> : <p className="text-muted-foreground">Not recorded for this booking.</p>}</div><div><h3 className="font-medium">Included</h3>{(items(b.inclusions).length ? items(b.inclusions) : preview.includedItems).length ? <ul className="mt-1 list-disc pl-5">{(items(b.inclusions).length ? items(b.inclusions) : preview.includedItems).map((v, i) => <li key={i}>{v}</li>)}</ul> : <p className="text-muted-foreground">Not recorded.</p>}</div></div>
+      </Section>
+      <Section title="Guest"><dl><Line label="Name" value={text(b.customer_name)} /><Line label="Email" value={b.customer_email ? <a className="break-all text-primary underline" href={`mailto:${b.customer_email}`}>{b.customer_email}</a> : "—"} /><Line label="Phone" value={b.customer_phone ? <a className="text-primary underline" href={`tel:${b.customer_phone}`}>{b.customer_phone}</a> : "—"} /><Line label="Requests" value={text(b.client_notes ?? b.notes)} /></dl></Section>
+      <Section title="Operations"><dl><Line label="Guide" value={data.guides.find((g) => g.id === b.guide_id)?.name ?? (b.legacy_guide_id ? "Guide not scheduled — reassign" : "Unassigned")} /><Line label="Guide confirmation" value={b.assignment_status === "confirmed" ? "Confirmed" : b.assignment_status === "declined" ? "Declined" : b.guide_id ? "Not confirmed" : "Unassigned"} /><Line label="Internal notes" value={text(b.operational_notes)} /><Line label="Source" value={text(b.source_channel ?? b.source)} /><Line label="Booking reference" value={text(b.stripe_session_id ?? b.id)} /><Line label="External reference" value={text(b.external_booking_ref)} /></dl>
+        <details className="mt-4 border-t border-border"><summary className="flex min-h-11 cursor-pointer items-center text-sm text-primary">Edit operations</summary><div className="grid gap-3 pb-4 sm:grid-cols-2">
+          <label className="text-xs text-muted-foreground">Date<input type="date" className={inputClass} value={date} onChange={(e) => setDate(e.target.value)} /></label>
+          <label className="text-xs text-muted-foreground">Pickup time<input type="time" className={inputClass} value={start.slice(0, 5)} onChange={(e) => setStart(e.target.value)} /></label>
+          <label className="text-xs text-muted-foreground">Pickup<input className={inputClass} value={pickup} onChange={(e) => setPickup(e.target.value)} /></label>
+          <label className="text-xs text-muted-foreground">Guide<select className={inputClass} value={guide} onChange={(e) => setGuide(e.target.value)}><option value="">Unassigned</option>{data.guides.map((g) => <option key={g.id} value={g.id}>{g.name}</option>)}</select></label>
+          <div className="sm:col-span-2"><Button disabled={busy} onClick={() => void run(() => update({ data: { id, ...(date !== (b.preferred_date ?? "") ? { preferredDate: date || null } : {}), ...(start !== (b.start_time ?? "").slice(0, 5) ? { startTime: start || null } : {}), ...(pickup !== (b.pickup_location ?? "") ? { pickupLocation: pickup || null } : {}), ...(guide !== (b.guide_id ?? "") ? { assignedGuideId: guide || null } : {}) } }), "Operations saved.")}>Save changes</Button></div>
+          <label className="sm:col-span-2 text-xs text-muted-foreground">Add internal note<textarea className={`${inputClass} min-h-20 py-2`} value={note} onChange={(e) => setNote(e.target.value)} /></label>
+          <div className="sm:col-span-2"><Button variant="outline" disabled={busy || !note.trim()} onClick={() => void run(async () => { await update({ data: { id, appendOperationalNote: note.trim() } }); setNote(""); }, "Note added.")}>Add note</Button></div>
+        </div></details>
+      </Section>
+      <BookingPaymentsPanel bookingId={id} paymentLabel={b.payment_label} />
+      <Section title="History"><dl><Line label="Created" value={new Date(b.created_at).toLocaleString("en-GB")} /><Line label="Booking status" value={text(b.status)} /></dl>{history.length ? <ul className="mt-3 divide-y divide-border text-sm">{history.slice().reverse().map((h, i) => <li key={i} className="py-2">{typeof h.at === "string" ? new Date(h.at).toLocaleString("en-GB") : "Change recorded"} · {h.changes && typeof h.changes === "object" ? Object.keys(h.changes).map((k) => k.replaceAll("_", " ")).join(", ") : "Operations updated"}</li>)}</ul> : <p className="mt-2 text-sm text-muted-foreground">No changes recorded.</p>}{b.status === "paid" ? <div className="mt-5 border-t border-border pt-4"><p className="text-sm text-muted-foreground">Cancellation submits a full refund and emails the guest.</p><Button className="mt-3" variant="destructive" disabled={busy} onClick={() => { if (window.confirm("Cancel this booking and submit a full refund? This cannot be undone.")) void run(() => refund({ data: { id } }), "Cancellation and refund submitted."); }}>Cancel and refund booking</Button></div> : null}</Section>
+      {notice ? <p role="status" className="text-sm text-primary">{notice}</p> : null}
+    </div> : null}
+  </AdminShell>;
 }

@@ -67,3 +67,12 @@
 - [x] Rows open the single Booking Details page
 - [x] Guide app invite sends real email (tested on owner's own guide profile)
 - [x] Admin walk at 393px: Operations, Bookings, Vouchers & Payments
+
+# Phase 3 admin simplification (preview only)
+
+- [ ] Operations: clear Today / Upcoming / Needs attention list with optional calendar
+- [ ] Bookings: single searchable/filterable list opening one detail page
+- [ ] Booking Details: Tour / Guest / Operations / Payment & Vouchers / History
+- [ ] Guides: concise directory and individual guide detail
+- [ ] More: demote duplicate planning/calendar/technical destinations
+- [ ] Verify signed-in mobile and desktop flows, focused tests and preview build

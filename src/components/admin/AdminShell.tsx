@@ -1,6 +1,5 @@
 /**
- * AdminShell — the calm frame around the four primary admin destinations:
- * Today · Bookings · Guides · Settings.
+ * AdminShell — the calm frame around five primary admin destinations.
  *
  * `AdminFrame` is mounted once by the /admin layout route, so every admin
  * page (old or new) sits inside the same menu. Pages that use `AdminShell`
@@ -10,7 +9,7 @@
  */
 import { Link, useNavigate } from "@tanstack/react-router";
 import { createContext, useContext, useEffect, useState, type ReactNode } from "react";
-import { CalendarDays, CalendarRange, Compass, FileText, Home, Menu, Smartphone, Wallet, Users, X } from "lucide-react";
+import { CalendarDays, Home, Menu, Wallet, Users } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 
@@ -19,16 +18,7 @@ const NAV = [
   { to: "/admin/bookings", label: "Bookings", icon: CalendarDays, exact: false },
   { to: "/admin/payments", label: "Payments", icon: Wallet, exact: false },
   { to: "/admin/guides", label: "Guides", icon: Users, exact: false },
-  { to: "/admin/settings", label: "More", icon: Menu, exact: false },
-] as const;
-
-/** Rare tools: reachable, never competing with the four primary screens. */
-const MORE = [
-  { to: "/admin/operations", label: "Planning board", icon: Compass, exact: false },
-  { to: "/admin/tour-calendar", label: "Tour calendar", icon: CalendarRange, exact: false },
-  { to: "/admin/experiences", label: "Tour details", icon: FileText, exact: false },
-  { to: "/guide", label: "Guide App", icon: Smartphone, exact: false },
-  { to: "/admin/settings", label: "Settings & tools", icon: Menu, exact: false },
+  { to: "/admin/more", label: "More", icon: Menu, exact: false },
 ] as const;
 
 type Gate = "checking" | "ok" | "denied";
@@ -67,9 +57,6 @@ function useAdminGate(): Gate {
 /** Mounted once by src/routes/admin.tsx around every admin page. */
 export function AdminFrame({ children }: { children: ReactNode }) {
   const gate = useAdminGate();
-  const [moreOpen, setMoreOpen] = useState(false);
-  const mobilePrimary = NAV.filter(({ to }) => to !== "/admin/settings");
-  const mobileMore = MORE;
   return (
     <FrameContext.Provider value={true}>
       <div className="min-h-[100dvh] bg-[color:var(--ivory)] text-[color:var(--charcoal)]">
@@ -105,26 +92,11 @@ export function AdminFrame({ children }: { children: ReactNode }) {
           )}
         </div>
 
-        {moreOpen ? (
-          <div className="fixed inset-x-3 bottom-20 z-50 border border-border bg-background p-2 shadow-lg md:hidden">
-            <div className="flex items-center justify-between px-2 pb-2">
-              <p className="text-[11px] uppercase text-muted-foreground">More</p>
-              <Button variant="ghost" size="icon" className="h-11 w-11" onClick={() => setMoreOpen(false)} aria-label="Close menu"><X aria-hidden /></Button>
-            </div>
-            <nav aria-label="More admin pages" className="grid grid-cols-2 gap-1">
-              {mobileMore.map(({ to, label, icon: Icon, exact }) => (
-                <Link key={to} to={to} activeOptions={{ exact }} onClick={() => setMoreOpen(false)} className="flex min-h-14 items-center gap-3 px-3 text-sm text-muted-foreground data-[status=active]:bg-muted data-[status=active]:text-primary">
-                  <Icon size={18} strokeWidth={1.6} aria-hidden />{label}
-                </Link>
-              ))}
-            </nav>
-          </div>
-        ) : null}
         <nav
           aria-label="Admin"
           className="fixed inset-x-0 bottom-0 z-40 grid grid-cols-5 border-t border-[color:var(--charcoal)]/[0.08] bg-[color:var(--ivory)]/95 pb-[env(safe-area-inset-bottom)] backdrop-blur md:hidden"
         >
-          {mobilePrimary.map(({ to, label, icon: Icon, exact }) => (
+          {NAV.map(({ to, label, icon: Icon, exact }) => (
             <Link
               key={to}
               to={to}
@@ -135,9 +107,6 @@ export function AdminFrame({ children }: { children: ReactNode }) {
               {label}
             </Link>
           ))}
-          <Button variant="ghost" className="h-auto min-h-14 rounded-none flex-col gap-1 px-1 text-[11px] uppercase text-muted-foreground" onClick={() => setMoreOpen((open) => !open)} aria-expanded={moreOpen} aria-label="More admin pages">
-            <Menu size={18} strokeWidth={1.6} aria-hidden />More
-          </Button>
         </nav>
       </div>
     </FrameContext.Provider>
