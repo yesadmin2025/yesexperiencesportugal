@@ -424,7 +424,16 @@ export const resolveOpsReviewCandidate = createServerFn({ method: "POST" })
       matched_booking_id: inserted?.id ?? null, reason: "approved_by_admin", actor_user_id: context.userId,
     });
 
-    return { ok: true, action: "created", bookingId: inserted?.id ?? null };
+    // Auto-assign the least busy free guide; conflicts and availability are
+    // enforced by the database. The office can still reassign in Operations.
+    let assignedGuideId: string | null = null;
+    if (inserted?.id) {
+      const { data: gid, error: autoErr } = await context.supabase.rpc("ops_auto_assign_guide", { _booking_id: inserted.id });
+      if (autoErr) console.error("auto-assign failed", autoErr.message);
+      assignedGuideId = (gid as string | null) ?? null;
+    }
+
+    return { ok: true, action: "created", bookingId: inserted?.id ?? null, assignedGuideId };
   });
 
 /* ------------------------------------------------------------- ingestion runs */

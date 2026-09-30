@@ -107,11 +107,8 @@ function GuideLayout() {
   if (gate === "not-guide")
     return (
       <div className="min-h-screen grid place-items-center p-6 text-center">
-        <div className="max-w-sm space-y-4">
-          <h1 className="font-[family-name:var(--font-editorial)] text-[28px]">No guide profile</h1>
-          <p className="text-sm text-muted-foreground">This account isn't linked to a YES guide. Ask the office to add your email in the guides list, then sign in again.</p>
-          <button className="min-h-11 px-4 border border-border text-[12px] uppercase tracking-[0.18em]" onClick={() => supabase.auth.signOut()}>Sign out</button>
-        </div>
+        <GuideJoinRequest />
+
       </div>
     );
 
@@ -145,6 +142,51 @@ function GuideLayout() {
           </Link>
         ))}
       </nav>
+    </div>
+  );
+}
+
+/** Signed in, but not an approved guide yet: request access, then wait for the office. */
+function GuideJoinRequest() {
+  const [pending, setPending] = useState<boolean | null>(null);
+  const [name, setName] = useState("");
+  const [phone, setPhone] = useState("");
+  const [busy, setBusy] = useState(false);
+
+  useEffect(() => {
+    void db.rpc("guide_access_pending").then(({ data }: { data: boolean | null }) => setPending(!!data));
+  }, []);
+
+  const submit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setBusy(true);
+    const { error } = await db.rpc("guide_request_access", { _name: name, _phone: phone });
+    setBusy(false);
+    if (error) return toast.error(errMsg(error));
+    setPending(true);
+  };
+
+  if (pending === null) return null;
+  return (
+    <div className="w-full max-w-sm space-y-4">
+      <p className="text-[11px] uppercase tracking-[0.22em] text-[color:var(--gold)]">YES Guide</p>
+      {pending ? (
+        <>
+          <h1 className="font-[family-name:var(--font-editorial)] text-[28px] leading-tight">Waiting for approval</h1>
+          <p className="text-sm text-muted-foreground">Thank you. The office will review your request; your tours appear here once you're approved.</p>
+        </>
+      ) : (
+        <form onSubmit={submit} className="space-y-4">
+          <h1 className="font-[family-name:var(--font-editorial)] text-[28px] leading-tight">Join as a guide</h1>
+          <p className="text-sm text-muted-foreground">This email isn't registered yet. Send your details and the office will approve your access.</p>
+          <input required minLength={2} value={name} onChange={(e) => setName(e.target.value)} placeholder="Full name" autoComplete="name" className="w-full min-h-12 border border-border px-3 bg-background" />
+          <input type="tel" value={phone} onChange={(e) => setPhone(e.target.value)} placeholder="Phone / WhatsApp" autoComplete="tel" className="w-full min-h-12 border border-border px-3 bg-background" />
+          <button disabled={busy} className="w-full min-h-12 bg-[color:var(--teal)] text-primary-foreground text-[12px] uppercase tracking-[0.18em] disabled:opacity-50">
+            {busy ? "Sending…" : "Request access"}
+          </button>
+        </form>
+      )}
+      <button className="min-h-11 px-4 border border-border text-[12px] uppercase tracking-[0.18em]" onClick={() => supabase.auth.signOut()}>Sign out</button>
     </div>
   );
 }
