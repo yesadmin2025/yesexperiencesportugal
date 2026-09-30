@@ -2677,6 +2677,158 @@ export type Database = {
           },
         ]
       }
+      payment_match_log: {
+        Row: {
+          action: string
+          actor_user_id: string | null
+          booking_id: string | null
+          confidence: number | null
+          created_at: string
+          id: string
+          new_status: string | null
+          payment_id: string
+          previous_booking_id: string | null
+          previous_status: string | null
+          reason: string | null
+        }
+        Insert: {
+          action: string
+          actor_user_id?: string | null
+          booking_id?: string | null
+          confidence?: number | null
+          created_at?: string
+          id?: string
+          new_status?: string | null
+          payment_id: string
+          previous_booking_id?: string | null
+          previous_status?: string | null
+          reason?: string | null
+        }
+        Update: {
+          action?: string
+          actor_user_id?: string | null
+          booking_id?: string | null
+          confidence?: number | null
+          created_at?: string
+          id?: string
+          new_status?: string | null
+          payment_id?: string
+          previous_booking_id?: string | null
+          previous_status?: string | null
+          reason?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "payment_match_log_payment_id_fkey"
+            columns: ["payment_id"]
+            isOneToOne: false
+            referencedRelation: "payment_records"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      payment_records: {
+        Row: {
+          amount: number | null
+          booking_id: string | null
+          created_at: string
+          currency: string | null
+          environment: string
+          event_at: string | null
+          external_reference: string | null
+          id: string
+          idempotency_key: string
+          kind: string
+          match_candidates: Json
+          match_confidence: number | null
+          match_reason: string | null
+          match_status: string
+          matched_at: string | null
+          matched_by: string | null
+          metadata: Json
+          payer_email: string | null
+          payer_name: string | null
+          payment_intent_id: string | null
+          provider: string
+          provider_event_ids: string[]
+          provider_payment_id: string | null
+          source_table: string | null
+          suggested_booking_id: string | null
+          updated_at: string
+        }
+        Insert: {
+          amount?: number | null
+          booking_id?: string | null
+          created_at?: string
+          currency?: string | null
+          environment?: string
+          event_at?: string | null
+          external_reference?: string | null
+          id?: string
+          idempotency_key: string
+          kind?: string
+          match_candidates?: Json
+          match_confidence?: number | null
+          match_reason?: string | null
+          match_status?: string
+          matched_at?: string | null
+          matched_by?: string | null
+          metadata?: Json
+          payer_email?: string | null
+          payer_name?: string | null
+          payment_intent_id?: string | null
+          provider: string
+          provider_event_ids?: string[]
+          provider_payment_id?: string | null
+          source_table?: string | null
+          suggested_booking_id?: string | null
+          updated_at?: string
+        }
+        Update: {
+          amount?: number | null
+          booking_id?: string | null
+          created_at?: string
+          currency?: string | null
+          environment?: string
+          event_at?: string | null
+          external_reference?: string | null
+          id?: string
+          idempotency_key?: string
+          kind?: string
+          match_candidates?: Json
+          match_confidence?: number | null
+          match_reason?: string | null
+          match_status?: string
+          matched_at?: string | null
+          matched_by?: string | null
+          metadata?: Json
+          payer_email?: string | null
+          payer_name?: string | null
+          payment_intent_id?: string | null
+          provider?: string
+          provider_event_ids?: string[]
+          provider_payment_id?: string | null
+          source_table?: string | null
+          suggested_booking_id?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "payment_records_booking_id_fkey"
+            columns: ["booking_id"]
+            isOneToOne: false
+            referencedRelation: "bookings"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "payment_records_suggested_booking_id_fkey"
+            columns: ["suggested_booking_id"]
+            isOneToOne: false
+            referencedRelation: "bookings"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       review_submission_tokens: {
         Row: {
           booking_id: string | null
@@ -4031,9 +4183,41 @@ export type Database = {
         Args: { _booking_id: string }
         Returns: Record<string, unknown>
       }
+      ops_payment_match: {
+        Args: { _booking_id: string; _payment_id: string; _reason?: string }
+        Returns: undefined
+      }
+      ops_payment_set_suggestion: {
+        Args: {
+          _booking_id: string
+          _candidates: Json
+          _confidence: number
+          _payment_id: string
+          _reason: string
+          _status: string
+        }
+        Returns: boolean
+      }
+      ops_payment_unmatch: {
+        Args: { _payment_id: string; _reason?: string }
+        Returns: undefined
+      }
       ops_remove_assignment: {
         Args: { _booking_id: string }
         Returns: undefined
+      }
+      payments_autolink: {
+        Args: { _bookings: string[]; _payment_id: string; _reason: string }
+        Returns: undefined
+      }
+      payments_backfill: { Args: never; Returns: Json }
+      payments_upsert_booking_voucher: {
+        Args: { _booking_id: string }
+        Returns: string
+      }
+      payments_upsert_stripe_session: {
+        Args: { _session_id: string }
+        Returns: string
       }
       public_fully_booked_dates: {
         Args: { _from: string; _to: string }
