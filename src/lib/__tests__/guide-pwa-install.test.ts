@@ -26,6 +26,7 @@ describe("Guide PWA installation isolation", () => {
     expect(root).toContain('m.routeId.startsWith("/guide")');
     expect(root).toContain("!isGuideApp ? <InstallAppPrompt /> : null");
     expect(guide).toContain('{ rel: "manifest", href: "/guide.webmanifest" }');
+    expect(guide).toContain('{ name: "application-name", content: "YES Guide" }');
     expect(guide).not.toContain("querySelector<HTMLLinkElement>");
   });
 

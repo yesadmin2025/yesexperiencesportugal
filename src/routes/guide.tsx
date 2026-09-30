@@ -19,6 +19,7 @@ export const Route = createFileRoute("/guide")({
       { title: "YES Guide" },
       { name: "robots", content: "noindex, nofollow" },
       { name: "theme-color", content: "var(--teal)" },
+      { name: "application-name", content: "YES Guide" },
       { name: "apple-mobile-web-app-capable", content: "yes" },
       { name: "apple-mobile-web-app-title", content: "YES Guide" },
     ],
