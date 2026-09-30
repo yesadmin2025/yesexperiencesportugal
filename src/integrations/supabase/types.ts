@@ -2034,6 +2034,8 @@ export type Database = {
       guides: {
         Row: {
           active: boolean
+          app_invite_count: number
+          app_invited_at: string | null
           approval_status: string
           created_at: string
           email: string | null
@@ -2050,6 +2052,8 @@ export type Database = {
         }
         Insert: {
           active?: boolean
+          app_invite_count?: number
+          app_invited_at?: string | null
           approval_status?: string
           created_at?: string
           email?: string | null
@@ -2066,6 +2070,8 @@ export type Database = {
         }
         Update: {
           active?: boolean
+          app_invite_count?: number
+          app_invited_at?: string | null
           approval_status?: string
           created_at?: string
           email?: string | null
