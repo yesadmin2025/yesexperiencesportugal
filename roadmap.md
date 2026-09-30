@@ -79,4 +79,4 @@
 
 - [ ] Investigate checkout payment-step concern: live Stripe checkout already exists (cs_live_ sessions); verify what guest sees before paying and confirm end-to-end
 
-- [ ] Publish checkout inclusions fix + Guide calendar; confirm live page renders correctly
+- [x] Publish checkout inclusions fix + Guide calendar; confirmed live (home + /guide 200, guide.webmanifest 200)
