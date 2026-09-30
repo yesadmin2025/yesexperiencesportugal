@@ -38,7 +38,7 @@ export const listGuides = createServerFn({ method: "POST" })
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const { data, error } = await supabaseAdmin
       .from("guides")
-      .select("id, name, email, phone, notes, active, user_id")
+      .select("id, name, email, phone, notes, active, user_id, approval_status")
       .order("name", { ascending: true });
     if (error) throw new Error(error.message);
     // Expose only whether an app account is linked — never the auth user id.
@@ -107,6 +107,7 @@ export const saveGuide = createServerFn({ method: "POST" })
       phone: data.phone || null,
       notes: data.notes || null,
       active: data.active,
+      ...(data.active ? { approval_status: "approved" } : {}),
     };
     if (data.id) {
       const { error } = await supabaseAdmin.from("guides").update(row).eq("id", data.id);

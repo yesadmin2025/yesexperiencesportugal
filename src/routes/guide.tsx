@@ -227,7 +227,7 @@ function GuideSignIn() {
         <p className="text-sm leading-relaxed text-muted-foreground">
           {mode === "signin"
             ? "Returning guide: use the email registered by the office and the password you created for the Guide App."
-            : "First time here: use the same email registered by the office, then choose your own password. Your existing guide profile is not yet a sign-in account."}
+            : "First time here: use the same email registered by the office, then choose your own password. Your existing guide profile is not yet a sign-in account. New guide? Use any email — the office approves your access."}
         </p>
         <input type="email" required autoComplete="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="Email" className="w-full min-h-12 border border-border px-3 bg-background" />
         <input type="password" required minLength={8} autoComplete={mode === "signin" ? "current-password" : "new-password"} value={password} onChange={(e) => setPassword(e.target.value)} placeholder="Password" className="w-full min-h-12 border border-border px-3 bg-background" />

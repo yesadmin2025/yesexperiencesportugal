@@ -27,6 +27,7 @@ type Guide = {
   notes: string | null;
   active: boolean;
   app_linked: boolean;
+  approval_status?: string;
 };
 
 const EMPTY = { id: "", name: "", email: "", phone: "", notes: "", active: true };
@@ -155,7 +156,7 @@ function AdminGuidesPage() {
         {guides.map((g) => (
           <li key={g.id} className="py-3">
             <div className="text-sm text-[color:var(--charcoal)]">
-              {g.name} {g.active ? "" : "· inactive"}
+              {g.name} {g.approval_status === "pending" ? "· awaiting approval (tick Active and save)" : g.active ? "" : "· inactive"}
               {g.app_linked ? (
                 <span className="ml-2 text-xs text-[color:var(--teal)]">· App connected</span>
               ) : null}
