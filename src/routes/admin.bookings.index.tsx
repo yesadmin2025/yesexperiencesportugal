@@ -71,6 +71,6 @@ function BookingsPage() {
     {error ? <p role="alert" className="mt-3 text-destructive">{error}</p> : null}
     <ul className="mt-3 border-t border-border">{rows.map((row) => <BookingListRow key={row.id} row={row} guides={data?.guides ?? []} />)}</ul>
     {!loading && !rows.length ? <p className="py-6 text-sm text-muted-foreground">No bookings found. Adjust the filters or search.</p> : null}
-    <div className="mt-4 flex items-center justify-between gap-2"><Button variant="outline" disabled={offset === 0 || loading} onClick={() => setOffset(Math.max(0, offset - LIMIT))}>Previous</Button><span className="text-xs text-muted-foreground">{offset + 1}–{Math.min(offset + LIMIT, data?.total ?? 0)}</span><Button variant="outline" disabled={loading || offset + LIMIT >= (data?.total ?? 0)} onClick={() => setOffset(offset + LIMIT)}>Next</Button></div>
+    <div className="mt-4 flex items-center justify-between gap-2"><Button variant="outline" disabled={offset === 0 || loading} onClick={() => setOffset(Math.max(0, offset - LIMIT))}>Previous</Button><span className="text-xs text-muted-foreground">{data?.total ? offset + 1 : 0}–{Math.min(offset + LIMIT, data?.total ?? 0)}</span><Button variant="outline" disabled={loading || offset + LIMIT >= (data?.total ?? 0)} onClick={() => setOffset(offset + LIMIT)}>Next</Button></div>
   </AdminShell>;
 }
