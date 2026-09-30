@@ -12,3 +12,5 @@
 - Use optional claim-adjacent EditorialSources for external proof; keep YES links primary.
 - Guide scheduling uses DB conflict guards, bookings as truth, and RLS-safe RPCs; `/guide` is the only work list, has 3 tabs, and emits only its scoped PWA manifest.
 - Classify every booking into one Vouchers & Payments bucket via `src/lib/ops/payment-reconciliation.ts`; one rule set keeps admin screens consistent.
+- Admin reads guide, payment state and details completeness only through `src/lib/ops/booking-read-model.ts` (guide = active `tour_assignments`; `bookings.assigned_guide_id` is a DB-enforced mirror); one mapping keeps every screen and the Guide App in agreement.
+- Empty pickup/date/tour fields are filled only by the `bookings_normalize_details` DB trigger when all of a booking's own sources agree, logged in `booking_repair_log`; one rule covers every writer (Stripe, vouchers, manual).
