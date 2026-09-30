@@ -8,6 +8,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { AdminShell } from "@/components/admin/AdminShell";
+import { Button } from "@/components/ui/button";
 import {
   listPaymentRecords,
   matchPayment,
@@ -133,15 +134,17 @@ function PaymentsPage() {
     <AdminShell eyebrow="Reconciliation" title="Payments">
       <div role="tablist" aria-label="Match status" className="flex flex-wrap gap-2">
         {TABS.map((t) => (
-          <button
+          <Button
             key={t.id}
+            type="button"
+            variant={tab === t.id ? "default" : "outline"}
             role="tab"
             aria-selected={tab === t.id}
             onClick={() => setTab(t.id)}
-            className={`min-h-11 rounded-full border px-4 text-[13px] ${tab === t.id ? "border-[color:var(--teal)] bg-[color:var(--teal)] text-[color:var(--ivory)]" : "border-[color:var(--charcoal)]/15 text-[color:var(--charcoal)]"}`}
+            className="min-h-11 px-3 text-[12px]"
           >
             {t.label} <span className="ml-1 tabular-nums opacity-80">{payments ? counts[t.id] : "…"}</span>
-          </button>
+          </Button>
         ))}
       </div>
       <p className="mt-3 text-[13px] text-[color:var(--charcoal-soft)]">{current.hint}</p>

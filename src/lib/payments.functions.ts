@@ -8,7 +8,7 @@ import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 import { decideMatch, parentBookingIds, type MatchBooking, type MatchPayment } from "@/lib/ops/payment-matcher";
-import { derivePaymentState, deriveCompleteness, PAYMENT_LABEL, completenessLabel } from "@/lib/ops/booking-state";
+import { canonicalize, type RawBooking } from "@/lib/ops/booking-read-model";
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 async function assertAdmin(context: { supabase: any; userId: string }) {
@@ -38,7 +38,7 @@ export type BookingSummary = {
 };
 
 function summarize(b: any): BookingSummary {
-  const state = derivePaymentState(b);
+  const record = canonicalize(b as RawBooking, null);
   return {
     id: b.id,
     customer_name: b.customer_name,
@@ -49,9 +49,9 @@ function summarize(b: any): BookingSummary {
     source_channel: b.source_channel,
     amount_total: b.amount_total,
     currency: b.currency,
-    payment_label: PAYMENT_LABEL[state],
-    completeness_label: completenessLabel(deriveCompleteness(b)),
-    closed: state === "cancelled" || state === "refunded",
+    payment_label: record.payment_label,
+    completeness_label: record.completeness_label,
+    closed: record.payment_state === "cancelled" || record.payment_state === "refunded",
   };
 }
 
