@@ -40,7 +40,7 @@ function TourDetails() {
     return (
       <div className="space-y-3">
         <p className="text-sm">Tour not found.</p>
-        <Link to="/guide/tours" className="text-sm text-[color:var(--teal)]">Back to my tours</Link>
+        <Link to="/guide" className="text-sm text-[color:var(--teal)]">Back to My Tours</Link>
       </div>
     );
 
