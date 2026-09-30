@@ -9,615 +9,252 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as IndexRouteImport } from './routes/index'
-import { Route as AboutRouteImport } from './routes/about'
-import { Route as AdminRouteImport } from './routes/admin'
-import { Route as AlentejoWineTourFromLisbonRouteImport } from './routes/alentejo-wine-tour-from-lisbon'
-import { Route as ArrabidaDayTripFromLisbonRouteImport } from './routes/arrabida-day-trip-from-lisbon'
-import { Route as ArrabidaWineTourRouteImport } from './routes/arrabida-wine-tour'
-import { Route as AuthRouteImport } from './routes/auth'
-import { Route as BestWineTastingNearLisbonRouteImport } from './routes/best-wine-tasting-near-lisbon'
-import { Route as BestWineToursLisbonRouteImport } from './routes/best-wine-tours-lisbon'
-import { Route as BookRouteImport } from './routes/book'
-import { Route as BookingConfirmedRouteImport } from './routes/booking-confirmed'
-import { Route as BookingReceiptRouteImport } from './routes/booking-receipt'
-import { Route as BrandQaRouteImport } from './routes/brand-qa'
-import { Route as BuilderRouteImport } from './routes/builder'
-import { Route as ContactRouteImport } from './routes/contact'
-import { Route as CookiesRouteImport } from './routes/cookies'
-import { Route as CorporateRouteImport } from './routes/corporate'
-import { Route as DayToursRouteImport } from './routes/day-tours'
-import { Route as DayTripsFromLisbonRouteImport } from './routes/day-trips-from-lisbon'
-import { Route as EvoraAlentejoWineTourRouteImport } from './routes/evora-alentejo-wine-tour'
-import { Route as EvoraPrivateTourFromLisbonRouteImport } from './routes/evora-private-tour-from-lisbon'
-import { Route as ExperienceStudioRouteImport } from './routes/experience-studio'
-import { Route as ExperiencesRouteImport } from './routes/experiences'
-import { Route as FaqRouteImport } from './routes/faq'
-import { Route as GuideRouteImport } from './routes/guide'
-import { Route as GuideResetPasswordRouteImport } from './routes/guide-reset-password'
-import { Route as HeroVerifyRouteImport } from './routes/hero-verify'
-import { Route as HowManyDaysInPortugalRouteImport } from './routes/how-many-days-in-portugal'
-import { Route as ItineraryRouteImport } from './routes/itinerary'
-import { Route as LisbonPrivateToursRouteImport } from './routes/lisbon-private-tours'
-import { Route as LisbonWineTourPickupAndWineriesRouteImport } from './routes/lisbon-wine-tour-pickup-and-wineries'
-import { Route as LisbonWineTourPricesAndInclusionsRouteImport } from './routes/lisbon-wine-tour-prices-and-inclusions'
-import { Route as LisbonWineToursRouteImport } from './routes/lisbon-wine-tours'
-import { Route as LocalStoriesRouteImport } from './routes/local-stories'
-import { Route as LuxuryToursPortugalRouteImport } from './routes/luxury-tours-portugal'
-import { Route as McpRouteImport } from './routes/mcp'
-import { Route as McpSigninRouteImport } from './routes/mcp-signin'
-import { Route as MomentsRouteImport } from './routes/moments'
-import { Route as MultiDayRouteImport } from './routes/multi-day'
-import { Route as PartnersRouteImport } from './routes/partners'
-import { Route as PortugalForAmericanTravelersRouteImport } from './routes/portugal-for-american-travelers'
-import { Route as PortugalItineraryRouteImport } from './routes/portugal-itinerary'
-import { Route as PortugalToursRouteImport } from './routes/portugal-tours'
-import { Route as PortugalTravelDesignerRouteImport } from './routes/portugal-travel-designer'
-import { Route as PortugalWineToursRouteImport } from './routes/portugal-wine-tours'
-import { Route as PressRouteImport } from './routes/press'
-import { Route as PreviewCheckRouteImport } from './routes/preview-check'
-import { Route as PrivacyRouteImport } from './routes/privacy'
-import { Route as PrivateToursAlentejoEvoraRouteImport } from './routes/private-tours-alentejo-evora'
-import { Route as PrivateToursArrabidaSesimbraRouteImport } from './routes/private-tours-arrabida-sesimbra'
-import { Route as PrivateToursAzeitaoRouteImport } from './routes/private-tours-azeitao'
-import { Route as PrivateToursAzeitaoSetubalRouteImport } from './routes/private-tours-azeitao-setubal'
-import { Route as PrivateToursCascaisRouteImport } from './routes/private-tours-cascais'
-import { Route as PrivateToursCentroSilverCoastRouteImport } from './routes/private-tours-centro-silver-coast'
-import { Route as PrivateToursComportaRouteImport } from './routes/private-tours-comporta'
-import { Route as PrivateToursComportaTroiaRouteImport } from './routes/private-tours-comporta-troia'
-import { Route as PrivateToursEvoraRouteImport } from './routes/private-tours-evora'
-import { Route as PrivateToursFromLisbonRouteImport } from './routes/private-tours-from-lisbon'
-import { Route as PrivateToursLisbonRouteImport } from './routes/private-tours-lisbon'
-import { Route as PrivateToursPortugalRouteImport } from './routes/private-tours-portugal'
-import { Route as PrivateToursSesimbraRouteImport } from './routes/private-tours-sesimbra'
-import { Route as PrivateToursSetubalRouteImport } from './routes/private-tours-setubal'
-import { Route as PrivateToursSintraRouteImport } from './routes/private-tours-sintra'
-import { Route as PrivateToursSintraCascaisRouteImport } from './routes/private-tours-sintra-cascais'
-import { Route as PrivateToursTroiaRouteImport } from './routes/private-tours-troia'
-import { Route as PrivateWineTourLisbonRouteImport } from './routes/private-wine-tour-lisbon'
-import { Route as ProposalInPortugalRouteImport } from './routes/proposal-in-portugal'
-import { Route as ProposalsRouteImport } from './routes/proposals'
-import { Route as PtRouteImport } from './routes/pt'
-import { Route as RegionsOfPortugalRouteImport } from './routes/regions-of-portugal'
-import { Route as ReviewsRouteImport } from './routes/reviews'
-import { Route as SearchRouteImport } from './routes/search'
-import { Route as SintraDayTourFromLisbonRouteImport } from './routes/sintra-day-tour-from-lisbon'
-import { Route as SitemapImagesDotxmlRouteImport } from './routes/sitemap-images[.]xml'
-import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
-import { Route as StudioRouteImport } from './routes/studio'
-import { Route as StudioDriftRouteImport } from './routes/studio-drift'
-import { Route as StudioLivingAtlasPreviewRouteImport } from './routes/studio-living-atlas-preview'
-import { Route as StudioV2RouteImport } from './routes/studio-v2'
-import { Route as StudioV3RouteImport } from './routes/studio-v3'
-import { Route as TermsRouteImport } from './routes/terms'
-import { Route as TradeRouteImport } from './routes/trade'
-import { Route as TypographyAuditRouteImport } from './routes/typography-audit'
-import { Route as UnsubscribeRouteImport } from './routes/unsubscribe'
 import { Route as WineToursLisbonRouteImport } from './routes/wine-tours-lisbon'
-import { Route as Char91DotmcpChar93ListToolsRouteImport } from './routes/[.mcp]/list-tools'
-import { Route as Char91DotwellKnownChar93OauthProtectedResourceRouteImport } from './routes/[.well-known]/oauth-protected-resource'
-import { Route as AdminIndexRouteImport } from './routes/admin.index'
-import { Route as AdminActivityRouteImport } from './routes/admin.activity'
-import { Route as AdminAiAuditRouteImport } from './routes/admin.ai-audit'
-import { Route as AdminAnalyticsHealthRouteImport } from './routes/admin.analytics-health'
-import { Route as AdminAvailabilityRouteImport } from './routes/admin.availability'
-import { Route as AdminBuilderImagesRouteImport } from './routes/admin.builder-images'
-import { Route as AdminBuilderImagesQaRouteImport } from './routes/admin.builder-images-qa'
-import { Route as AdminComposableStopsRouteImport } from './routes/admin.composable-stops'
-import { Route as AdminDnsWatchRouteImport } from './routes/admin.dns-watch'
-import { Route as AdminDomainsHealthRouteImport } from './routes/admin.domains-health'
-import { Route as AdminDriftBehaviorRouteImport } from './routes/admin.drift-behavior'
-import { Route as AdminDriftBibleRouteImport } from './routes/admin.drift-bible'
-import { Route as AdminE2eReportRouteImport } from './routes/admin.e2e-report'
-import { Route as AdminEmailsRouteImport } from './routes/admin.emails'
-import { Route as AdminEnquiriesRouteImport } from './routes/admin.enquiries'
-import { Route as AdminErrorLogsRouteImport } from './routes/admin.error-logs'
-import { Route as AdminExperiencesRouteImport } from './routes/admin.experiences'
-import { Route as AdminGbpLegacyRemovalRouteImport } from './routes/admin.gbp-legacy-removal'
-import { Route as AdminGscRouteImport } from './routes/admin.gsc'
-import { Route as AdminGuideAttributionRouteImport } from './routes/admin.guide-attribution'
-import { Route as AdminImageSwapRouteImport } from './routes/admin.image-swap'
-import { Route as AdminImportToursRouteImport } from './routes/admin.import-tours'
-import { Route as AdminLegacyDomainUnlinkRouteImport } from './routes/admin.legacy-domain-unlink'
-import { Route as AdminLegacyDomainsMonitorRouteImport } from './routes/admin.legacy-domains-monitor'
-import { Route as AdminLegacyScanRouteImport } from './routes/admin.legacy-scan'
-import { Route as AdminMoreRouteImport } from './routes/admin.more'
-import { Route as AdminOperationsRouteImport } from './routes/admin.operations'
-import { Route as AdminPathPhotosRouteImport } from './routes/admin.path-photos'
-import { Route as AdminPaymentsRouteImport } from './routes/admin.payments'
-import { Route as AdminPaymentsEnvRouteImport } from './routes/admin.payments-env'
-import { Route as AdminPhotosRouteImport } from './routes/admin.photos'
-import { Route as AdminPriceMapRouteImport } from './routes/admin.price-map'
-import { Route as AdminPricingRouteImport } from './routes/admin.pricing'
-import { Route as AdminPricingToolRouteImport } from './routes/admin.pricing-tool'
-import { Route as AdminRedirectsMonitorRouteImport } from './routes/admin.redirects-monitor'
-import { Route as AdminReviewsRouteImport } from './routes/admin.reviews'
-import { Route as AdminSeoExperiencesRouteImport } from './routes/admin.seo-experiences'
-import { Route as AdminSeoJsonldRouteImport } from './routes/admin.seo-jsonld'
-import { Route as AdminSeoMonitorRouteImport } from './routes/admin.seo-monitor'
-import { Route as AdminSeoStrategyRouteImport } from './routes/admin.seo-strategy'
-import { Route as AdminSettingsRouteImport } from './routes/admin.settings'
-import { Route as AdminSotDiffRouteImport } from './routes/admin.sot-diff'
-import { Route as AdminSotRefreshRouteImport } from './routes/admin.sot-refresh'
-import { Route as AdminStopParityRouteImport } from './routes/admin.stop-parity'
-import { Route as AdminStudioProposalsRouteImport } from './routes/admin.studio-proposals'
-import { Route as AdminStudioV3AuditRouteImport } from './routes/admin.studio-v3-audit'
-import { Route as AdminStudioV3FunnelRouteImport } from './routes/admin.studio-v3-funnel'
-import { Route as AdminTourCalendarRouteImport } from './routes/admin.tour-calendar'
-import { Route as AdminTourLinkAuditRouteImport } from './routes/admin.tour-link-audit'
-import { Route as AdminViatorValidationRouteImport } from './routes/admin.viator-validation'
-import { Route as AdminWebhookEventsRouteImport } from './routes/admin.webhook-events'
-import { Route as ApiHealthRouteImport } from './routes/api/health'
-import { Route as ApiImgRouteImport } from './routes/api/img'
-import { Route as ApiVerifyHeroRouteImport } from './routes/api/verify-hero'
-import { Route as CheckoutTokenRouteImport } from './routes/checkout.$token'
-import { Route as E2ePostmessageProbeRouteImport } from './routes/e2e.postmessage-probe'
-import { Route as EmailUnsubscribeRouteImport } from './routes/email/unsubscribe'
-import { Route as GuideIndexRouteImport } from './routes/guide.index'
-import { Route as GuideAvailabilityRouteImport } from './routes/guide.availability'
-import { Route as GuideCalendarRouteImport } from './routes/guide.calendar'
-import { Route as GuideNotificationsRouteImport } from './routes/guide.notifications'
-import { Route as GuideProfileRouteImport } from './routes/guide.profile'
-import { Route as ITokenRouteImport } from './routes/i.$token'
-import { Route as Itineraries10DayPrivatePortugalTourRouteImport } from './routes/itineraries.10-day-private-portugal-tour'
-import { Route as LocalStoriesIndexRouteImport } from './routes/local-stories.index'
-import { Route as LocalStoriesSlugRouteImport } from './routes/local-stories.$slug'
-import { Route as PartnersSplatRouteImport } from './routes/partners.$'
+import { Route as UnsubscribeRouteImport } from './routes/unsubscribe'
+import { Route as TypographyAuditRouteImport } from './routes/typography-audit'
+import { Route as TradeRouteImport } from './routes/trade'
+import { Route as TermsRouteImport } from './routes/terms'
+import { Route as StudioV3RouteImport } from './routes/studio-v3'
+import { Route as StudioV2RouteImport } from './routes/studio-v2'
+import { Route as StudioLivingAtlasPreviewRouteImport } from './routes/studio-living-atlas-preview'
+import { Route as StudioDriftRouteImport } from './routes/studio-drift'
+import { Route as StudioRouteImport } from './routes/studio'
+import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
+import { Route as SitemapImagesDotxmlRouteImport } from './routes/sitemap-images[.]xml'
+import { Route as SintraDayTourFromLisbonRouteImport } from './routes/sintra-day-tour-from-lisbon'
+import { Route as SearchRouteImport } from './routes/search'
+import { Route as ReviewsRouteImport } from './routes/reviews'
+import { Route as RegionsOfPortugalRouteImport } from './routes/regions-of-portugal'
+import { Route as PtRouteImport } from './routes/pt'
+import { Route as ProposalsRouteImport } from './routes/proposals'
+import { Route as ProposalInPortugalRouteImport } from './routes/proposal-in-portugal'
+import { Route as PrivateWineTourLisbonRouteImport } from './routes/private-wine-tour-lisbon'
+import { Route as PrivateToursTroiaRouteImport } from './routes/private-tours-troia'
+import { Route as PrivateToursSintraCascaisRouteImport } from './routes/private-tours-sintra-cascais'
+import { Route as PrivateToursSintraRouteImport } from './routes/private-tours-sintra'
+import { Route as PrivateToursSetubalRouteImport } from './routes/private-tours-setubal'
+import { Route as PrivateToursSesimbraRouteImport } from './routes/private-tours-sesimbra'
+import { Route as PrivateToursPortugalRouteImport } from './routes/private-tours-portugal'
+import { Route as PrivateToursLisbonRouteImport } from './routes/private-tours-lisbon'
+import { Route as PrivateToursFromLisbonRouteImport } from './routes/private-tours-from-lisbon'
+import { Route as PrivateToursEvoraRouteImport } from './routes/private-tours-evora'
+import { Route as PrivateToursComportaTroiaRouteImport } from './routes/private-tours-comporta-troia'
+import { Route as PrivateToursComportaRouteImport } from './routes/private-tours-comporta'
+import { Route as PrivateToursCentroSilverCoastRouteImport } from './routes/private-tours-centro-silver-coast'
+import { Route as PrivateToursCascaisRouteImport } from './routes/private-tours-cascais'
+import { Route as PrivateToursAzeitaoSetubalRouteImport } from './routes/private-tours-azeitao-setubal'
+import { Route as PrivateToursAzeitaoRouteImport } from './routes/private-tours-azeitao'
+import { Route as PrivateToursArrabidaSesimbraRouteImport } from './routes/private-tours-arrabida-sesimbra'
+import { Route as PrivateToursAlentejoEvoraRouteImport } from './routes/private-tours-alentejo-evora'
+import { Route as PrivacyRouteImport } from './routes/privacy'
+import { Route as PreviewCheckRouteImport } from './routes/preview-check'
+import { Route as PressRouteImport } from './routes/press'
+import { Route as PortugalWineToursRouteImport } from './routes/portugal-wine-tours'
+import { Route as PortugalTravelDesignerRouteImport } from './routes/portugal-travel-designer'
+import { Route as PortugalToursRouteImport } from './routes/portugal-tours'
+import { Route as PortugalItineraryRouteImport } from './routes/portugal-itinerary'
+import { Route as PortugalForAmericanTravelersRouteImport } from './routes/portugal-for-american-travelers'
+import { Route as PartnersRouteImport } from './routes/partners'
+import { Route as MultiDayRouteImport } from './routes/multi-day'
+import { Route as MomentsRouteImport } from './routes/moments'
+import { Route as McpSigninRouteImport } from './routes/mcp-signin'
+import { Route as McpRouteImport } from './routes/mcp'
+import { Route as LuxuryToursPortugalRouteImport } from './routes/luxury-tours-portugal'
+import { Route as LocalStoriesRouteImport } from './routes/local-stories'
+import { Route as LisbonWineToursRouteImport } from './routes/lisbon-wine-tours'
+import { Route as LisbonWineTourPricesAndInclusionsRouteImport } from './routes/lisbon-wine-tour-prices-and-inclusions'
+import { Route as LisbonWineTourPickupAndWineriesRouteImport } from './routes/lisbon-wine-tour-pickup-and-wineries'
+import { Route as LisbonPrivateToursRouteImport } from './routes/lisbon-private-tours'
+import { Route as ItineraryRouteImport } from './routes/itinerary'
+import { Route as HowManyDaysInPortugalRouteImport } from './routes/how-many-days-in-portugal'
+import { Route as HeroVerifyRouteImport } from './routes/hero-verify'
+import { Route as GuideResetPasswordRouteImport } from './routes/guide-reset-password'
+import { Route as GuideRouteImport } from './routes/guide'
+import { Route as FaqRouteImport } from './routes/faq'
+import { Route as ExperiencesRouteImport } from './routes/experiences'
+import { Route as ExperienceStudioRouteImport } from './routes/experience-studio'
+import { Route as EvoraPrivateTourFromLisbonRouteImport } from './routes/evora-private-tour-from-lisbon'
+import { Route as EvoraAlentejoWineTourRouteImport } from './routes/evora-alentejo-wine-tour'
+import { Route as DayTripsFromLisbonRouteImport } from './routes/day-trips-from-lisbon'
+import { Route as DayToursRouteImport } from './routes/day-tours'
+import { Route as CorporateRouteImport } from './routes/corporate'
+import { Route as CookiesRouteImport } from './routes/cookies'
+import { Route as ContactRouteImport } from './routes/contact'
+import { Route as BuilderRouteImport } from './routes/builder'
+import { Route as BrandQaRouteImport } from './routes/brand-qa'
+import { Route as BookingReceiptRouteImport } from './routes/booking-receipt'
+import { Route as BookingConfirmedRouteImport } from './routes/booking-confirmed'
+import { Route as BookRouteImport } from './routes/book'
+import { Route as BestWineToursLisbonRouteImport } from './routes/best-wine-tours-lisbon'
+import { Route as BestWineTastingNearLisbonRouteImport } from './routes/best-wine-tasting-near-lisbon'
+import { Route as AuthRouteImport } from './routes/auth'
+import { Route as ArrabidaWineTourRouteImport } from './routes/arrabida-wine-tour'
+import { Route as ArrabidaDayTripFromLisbonRouteImport } from './routes/arrabida-day-trip-from-lisbon'
+import { Route as AlentejoWineTourFromLisbonRouteImport } from './routes/alentejo-wine-tour-from-lisbon'
+import { Route as AdminRouteImport } from './routes/admin'
+import { Route as AboutRouteImport } from './routes/about'
+import { Route as IndexRouteImport } from './routes/index'
 import { Route as PtIndexRouteImport } from './routes/pt.index'
-import { Route as PtSplatRouteImport } from './routes/pt.$'
-import { Route as PtAboutRouteImport } from './routes/pt.about'
-import { Route as PtContactRouteImport } from './routes/pt.contact'
-import { Route as PtCookiesRouteImport } from './routes/pt.cookies'
-import { Route as PtCorporateRouteImport } from './routes/pt.corporate'
-import { Route as PtDayToursRouteImport } from './routes/pt.day-tours'
-import { Route as PtExperiencesRouteImport } from './routes/pt.experiences'
-import { Route as PtFaqRouteImport } from './routes/pt.faq'
-import { Route as PtMomentsRouteImport } from './routes/pt.moments'
-import { Route as PtPrivacyRouteImport } from './routes/pt.privacy'
-import { Route as PtProposalsRouteImport } from './routes/pt.proposals'
-import { Route as PtReviewsRouteImport } from './routes/pt.reviews'
-import { Route as PtTermsRouteImport } from './routes/pt.terms'
-import { Route as QaHeroRouteImport } from './routes/qa.hero'
-import { Route as QaMobileRouteImport } from './routes/qa.mobile'
-import { Route as ReviewTokenRouteImport } from './routes/review.$token'
-import { Route as STokenRouteImport } from './routes/s.$token'
+import { Route as LocalStoriesIndexRouteImport } from './routes/local-stories.index'
+import { Route as GuideIndexRouteImport } from './routes/guide.index'
+import { Route as AdminIndexRouteImport } from './routes/admin.index'
 import { Route as ToursTourIdRouteImport } from './routes/tours.$tourId'
-import { Route as DotlovableOauthConsentRouteImport } from './routes/[.]lovable.oauth.consent'
-import { Route as Char91DotmcpChar93InvokeToolToolRouteImport } from './routes/[.mcp]/invoke-tool/$tool'
-import { Route as AdminBookingsIndexRouteImport } from './routes/admin.bookings.index'
-import { Route as AdminBookingsIdRouteImport } from './routes/admin.bookings.$id'
-import { Route as AdminBookingsNewRouteImport } from './routes/admin.bookings.new'
-import { Route as AdminGuidesIndexRouteImport } from './routes/admin.guides.index'
-import { Route as AdminGuidesIdRouteImport } from './routes/admin.guides.$id'
-import { Route as ApiPublicBookingCalendarRouteImport } from './routes/api/public/booking-calendar'
-import { Route as ApiPublicBookingItineraryRouteImport } from './routes/api/public/booking-itinerary'
-import { Route as ApiPublicBookingItineraryDataRouteImport } from './routes/api/public/booking-itinerary-data'
-import { Route as ApiPublicBookingRequestRouteImport } from './routes/api/public/booking-request'
-import { Route as ApiPublicContactRouteImport } from './routes/api/public/contact'
-import { Route as ApiPublicEditorialPhotoRouteImport } from './routes/api/public/editorial-photo'
-import { Route as ApiPublicPricingSsotRouteImport } from './routes/api/public/pricing-ssot'
-import { Route as ApiPublicProposalRequestRouteImport } from './routes/api/public/proposal-request'
-import { Route as FunctionsV1StripeWebhookRouteImport } from './routes/functions.v1.stripe-webhook'
+import { Route as STokenRouteImport } from './routes/s.$token'
+import { Route as ReviewTokenRouteImport } from './routes/review.$token'
+import { Route as QaMobileRouteImport } from './routes/qa.mobile'
+import { Route as QaHeroRouteImport } from './routes/qa.hero'
+import { Route as PtTermsRouteImport } from './routes/pt.terms'
+import { Route as PtReviewsRouteImport } from './routes/pt.reviews'
+import { Route as PtProposalsRouteImport } from './routes/pt.proposals'
+import { Route as PtPrivacyRouteImport } from './routes/pt.privacy'
+import { Route as PtMomentsRouteImport } from './routes/pt.moments'
+import { Route as PtFaqRouteImport } from './routes/pt.faq'
+import { Route as PtExperiencesRouteImport } from './routes/pt.experiences'
+import { Route as PtDayToursRouteImport } from './routes/pt.day-tours'
+import { Route as PtCorporateRouteImport } from './routes/pt.corporate'
+import { Route as PtCookiesRouteImport } from './routes/pt.cookies'
+import { Route as PtContactRouteImport } from './routes/pt.contact'
+import { Route as PtAboutRouteImport } from './routes/pt.about'
+import { Route as PtSplatRouteImport } from './routes/pt.$'
+import { Route as PartnersSplatRouteImport } from './routes/partners.$'
+import { Route as LocalStoriesSlugRouteImport } from './routes/local-stories.$slug'
+import { Route as Itineraries10DayPrivatePortugalTourRouteImport } from './routes/itineraries.10-day-private-portugal-tour'
+import { Route as ITokenRouteImport } from './routes/i.$token'
+import { Route as GuideProfileRouteImport } from './routes/guide.profile'
+import { Route as GuideNotificationsRouteImport } from './routes/guide.notifications'
+import { Route as GuideCalendarRouteImport } from './routes/guide.calendar'
+import { Route as GuideAvailabilityRouteImport } from './routes/guide.availability'
+import { Route as EmailUnsubscribeRouteImport } from './routes/email/unsubscribe'
+import { Route as E2ePostmessageProbeRouteImport } from './routes/e2e.postmessage-probe'
+import { Route as CheckoutTokenRouteImport } from './routes/checkout.$token'
+import { Route as ApiVerifyHeroRouteImport } from './routes/api/verify-hero'
+import { Route as ApiImgRouteImport } from './routes/api/img'
+import { Route as ApiHealthRouteImport } from './routes/api/health'
+import { Route as AdminWebhookEventsRouteImport } from './routes/admin.webhook-events'
+import { Route as AdminViatorValidationRouteImport } from './routes/admin.viator-validation'
+import { Route as AdminTourLinkAuditRouteImport } from './routes/admin.tour-link-audit'
+import { Route as AdminTourCalendarRouteImport } from './routes/admin.tour-calendar'
+import { Route as AdminStudioV3FunnelRouteImport } from './routes/admin.studio-v3-funnel'
+import { Route as AdminStudioV3AuditRouteImport } from './routes/admin.studio-v3-audit'
+import { Route as AdminStudioProposalsRouteImport } from './routes/admin.studio-proposals'
+import { Route as AdminStopParityRouteImport } from './routes/admin.stop-parity'
+import { Route as AdminSotRefreshRouteImport } from './routes/admin.sot-refresh'
+import { Route as AdminSotDiffRouteImport } from './routes/admin.sot-diff'
+import { Route as AdminSettingsRouteImport } from './routes/admin.settings'
+import { Route as AdminSeoStrategyRouteImport } from './routes/admin.seo-strategy'
+import { Route as AdminSeoMonitorRouteImport } from './routes/admin.seo-monitor'
+import { Route as AdminSeoJsonldRouteImport } from './routes/admin.seo-jsonld'
+import { Route as AdminSeoExperiencesRouteImport } from './routes/admin.seo-experiences'
+import { Route as AdminReviewsRouteImport } from './routes/admin.reviews'
+import { Route as AdminRedirectsMonitorRouteImport } from './routes/admin.redirects-monitor'
+import { Route as AdminPricingToolRouteImport } from './routes/admin.pricing-tool'
+import { Route as AdminPricingRouteImport } from './routes/admin.pricing'
+import { Route as AdminPriceMapRouteImport } from './routes/admin.price-map'
+import { Route as AdminPhotosRouteImport } from './routes/admin.photos'
+import { Route as AdminPaymentsEnvRouteImport } from './routes/admin.payments-env'
+import { Route as AdminPaymentsRouteImport } from './routes/admin.payments'
+import { Route as AdminPathPhotosRouteImport } from './routes/admin.path-photos'
+import { Route as AdminOperationsRouteImport } from './routes/admin.operations'
+import { Route as AdminMoreRouteImport } from './routes/admin.more'
+import { Route as AdminLegacyScanRouteImport } from './routes/admin.legacy-scan'
+import { Route as AdminLegacyDomainsMonitorRouteImport } from './routes/admin.legacy-domains-monitor'
+import { Route as AdminLegacyDomainUnlinkRouteImport } from './routes/admin.legacy-domain-unlink'
+import { Route as AdminImportToursRouteImport } from './routes/admin.import-tours'
+import { Route as AdminImageSwapRouteImport } from './routes/admin.image-swap'
+import { Route as AdminGuideAttributionRouteImport } from './routes/admin.guide-attribution'
+import { Route as AdminGscRouteImport } from './routes/admin.gsc'
+import { Route as AdminGbpLegacyRemovalRouteImport } from './routes/admin.gbp-legacy-removal'
+import { Route as AdminExperiencesRouteImport } from './routes/admin.experiences'
+import { Route as AdminErrorLogsRouteImport } from './routes/admin.error-logs'
+import { Route as AdminEnquiriesRouteImport } from './routes/admin.enquiries'
+import { Route as AdminEmailsRouteImport } from './routes/admin.emails'
+import { Route as AdminE2eReportRouteImport } from './routes/admin.e2e-report'
+import { Route as AdminDriftBibleRouteImport } from './routes/admin.drift-bible'
+import { Route as AdminDriftBehaviorRouteImport } from './routes/admin.drift-behavior'
+import { Route as AdminDomainsHealthRouteImport } from './routes/admin.domains-health'
+import { Route as AdminDnsWatchRouteImport } from './routes/admin.dns-watch'
+import { Route as AdminComposableStopsRouteImport } from './routes/admin.composable-stops'
+import { Route as AdminBuilderImagesQaRouteImport } from './routes/admin.builder-images-qa'
+import { Route as AdminBuilderImagesRouteImport } from './routes/admin.builder-images'
+import { Route as AdminAvailabilityRouteImport } from './routes/admin.availability'
+import { Route as AdminAnalyticsHealthRouteImport } from './routes/admin.analytics-health'
+import { Route as AdminAiAuditRouteImport } from './routes/admin.ai-audit'
+import { Route as AdminActivityRouteImport } from './routes/admin.activity'
+import { Route as Char91DotwellKnownChar93OauthProtectedResourceRouteImport } from './routes/[.well-known]/oauth-protected-resource'
+import { Route as Char91DotmcpChar93ListToolsRouteImport } from './routes/[.mcp]/list-tools'
 import { Route as GuideToursIndexRouteImport } from './routes/guide.tours.index'
-import { Route as GuideToursAssignmentIdRouteImport } from './routes/guide.tours.$assignmentId'
-import { Route as LovableEmailSuppressionRouteImport } from './routes/lovable/email/suppression'
-import { Route as StudioV2ITokenRouteImport } from './routes/studio-v2.i.$token'
+import { Route as AdminGuidesIndexRouteImport } from './routes/admin.guides.index'
+import { Route as AdminBookingsIndexRouteImport } from './routes/admin.bookings.index'
 import { Route as ToursTourIdTailorRouteImport } from './routes/tours_.$tourId.tailor'
-import { Route as ApiPublicFeedsThingsToDoDotjsonRouteImport } from './routes/api/public/feeds/things-to-do[.]json'
-import { Route as ApiPublicFeedsThingsToDoDotxmlRouteImport } from './routes/api/public/feeds/things-to-do[.]xml'
-import { Route as ApiPublicHooksBokunBookingRouteImport } from './routes/api/public/hooks/bokun-booking'
-import { Route as ApiPublicHooksBookingCancelledEmailRouteImport } from './routes/api/public/hooks/booking-cancelled-email'
-import { Route as ApiPublicHooksCheckoutEmailRouteImport } from './routes/api/public/hooks/checkout-email'
-import { Route as ApiPublicHooksDnsWatchRouteImport } from './routes/api/public/hooks/dns-watch'
-import { Route as ApiPublicHooksEmailFlushRouteImport } from './routes/api/public/hooks/email-flush'
-import { Route as ApiPublicHooksEnquiryFollowupRouteImport } from './routes/api/public/hooks/enquiry-followup'
-import { Route as ApiPublicHooksGmailBookingScanRouteImport } from './routes/api/public/hooks/gmail-booking-scan'
-import { Route as ApiPublicHooksImportTripadvisorReviewsRouteImport } from './routes/api/public/hooks/import-tripadvisor-reviews'
-import { Route as ApiPublicHooksStripeWebhookHealthRouteImport } from './routes/api/public/hooks/stripe-webhook-health'
-import { Route as ApiPublicHooksViatorDriftCheckRouteImport } from './routes/api/public/hooks/viator-drift-check'
-import { Route as ApiPublicWhatsappWebhookRouteImport } from './routes/api/public/whatsapp/webhook'
-import { Route as LovableEmailAuthPreviewRouteImport } from './routes/lovable/email/auth/preview'
-import { Route as LovableEmailAuthWebhookRouteImport } from './routes/lovable/email/auth/webhook'
-import { Route as LovableEmailQueueProcessRouteImport } from './routes/lovable/email/queue/process'
-import { Route as LovableEmailTransactionalPreviewRouteImport } from './routes/lovable/email/transactional/preview'
+import { Route as StudioV2ITokenRouteImport } from './routes/studio-v2.i.$token'
+import { Route as LovableEmailSuppressionRouteImport } from './routes/lovable/email/suppression'
+import { Route as GuideToursAssignmentIdRouteImport } from './routes/guide.tours.$assignmentId'
+import { Route as FunctionsV1StripeWebhookRouteImport } from './routes/functions.v1.stripe-webhook'
+import { Route as ApiPublicProposalRequestRouteImport } from './routes/api/public/proposal-request'
+import { Route as ApiPublicPricingSsotRouteImport } from './routes/api/public/pricing-ssot'
+import { Route as ApiPublicEditorialPhotoRouteImport } from './routes/api/public/editorial-photo'
+import { Route as ApiPublicContactRouteImport } from './routes/api/public/contact'
+import { Route as ApiPublicBookingRequestRouteImport } from './routes/api/public/booking-request'
+import { Route as ApiPublicBookingItineraryDataRouteImport } from './routes/api/public/booking-itinerary-data'
+import { Route as ApiPublicBookingItineraryRouteImport } from './routes/api/public/booking-itinerary'
+import { Route as ApiPublicBookingCalendarRouteImport } from './routes/api/public/booking-calendar'
+import { Route as AdminGuidesIdRouteImport } from './routes/admin.guides.$id'
+import { Route as AdminBookingsNewRouteImport } from './routes/admin.bookings.new'
+import { Route as AdminBookingsIdRouteImport } from './routes/admin.bookings.$id'
+import { Route as Char91DotmcpChar93InvokeToolToolRouteImport } from './routes/[.mcp]/invoke-tool/$tool'
+import { Route as DotlovableOauthConsentRouteImport } from './routes/[.]lovable.oauth.consent'
 import { Route as LovableEmailTransactionalSendRouteImport } from './routes/lovable/email/transactional/send'
+import { Route as LovableEmailTransactionalPreviewRouteImport } from './routes/lovable/email/transactional/preview'
+import { Route as LovableEmailQueueProcessRouteImport } from './routes/lovable/email/queue/process'
+import { Route as LovableEmailAuthWebhookRouteImport } from './routes/lovable/email/auth/webhook'
+import { Route as LovableEmailAuthPreviewRouteImport } from './routes/lovable/email/auth/preview'
+import { Route as ApiPublicWhatsappWebhookRouteImport } from './routes/api/public/whatsapp/webhook'
+import { Route as ApiPublicHooksViatorDriftCheckRouteImport } from './routes/api/public/hooks/viator-drift-check'
+import { Route as ApiPublicHooksStripeWebhookHealthRouteImport } from './routes/api/public/hooks/stripe-webhook-health'
+import { Route as ApiPublicHooksImportTripadvisorReviewsRouteImport } from './routes/api/public/hooks/import-tripadvisor-reviews'
+import { Route as ApiPublicHooksGmailBookingScanRouteImport } from './routes/api/public/hooks/gmail-booking-scan'
+import { Route as ApiPublicHooksEnquiryFollowupRouteImport } from './routes/api/public/hooks/enquiry-followup'
+import { Route as ApiPublicHooksEmailFlushRouteImport } from './routes/api/public/hooks/email-flush'
+import { Route as ApiPublicHooksDnsWatchRouteImport } from './routes/api/public/hooks/dns-watch'
+import { Route as ApiPublicHooksCheckoutEmailRouteImport } from './routes/api/public/hooks/checkout-email'
+import { Route as ApiPublicHooksBookingCancelledEmailRouteImport } from './routes/api/public/hooks/booking-cancelled-email'
+import { Route as ApiPublicHooksBokunBookingRouteImport } from './routes/api/public/hooks/bokun-booking'
+import { Route as ApiPublicFeedsThingsToDoDotxmlRouteImport } from './routes/api/public/feeds/things-to-do[.]xml'
+import { Route as ApiPublicFeedsThingsToDoDotjsonRouteImport } from './routes/api/public/feeds/things-to-do[.]json'
 
-const IndexRoute = IndexRouteImport.update({
-  id: '/',
-  path: '/',
+const WineToursLisbonRoute = WineToursLisbonRouteImport.update({
+  id: '/wine-tours-lisbon',
+  path: '/wine-tours-lisbon',
   getParentRoute: () => rootRouteImport,
 } as any)
-const AboutRoute = AboutRouteImport.update({
-  id: '/about',
-  path: '/about',
+const UnsubscribeRoute = UnsubscribeRouteImport.update({
+  id: '/unsubscribe',
+  path: '/unsubscribe',
   getParentRoute: () => rootRouteImport,
 } as any)
-const AdminRoute = AdminRouteImport.update({
-  id: '/admin',
-  path: '/admin',
+const TypographyAuditRoute = TypographyAuditRouteImport.update({
+  id: '/typography-audit',
+  path: '/typography-audit',
   getParentRoute: () => rootRouteImport,
 } as any)
-const AlentejoWineTourFromLisbonRoute =
-  AlentejoWineTourFromLisbonRouteImport.update({
-    id: '/alentejo-wine-tour-from-lisbon',
-    path: '/alentejo-wine-tour-from-lisbon',
-    getParentRoute: () => rootRouteImport,
-  } as any)
-const ArrabidaDayTripFromLisbonRoute =
-  ArrabidaDayTripFromLisbonRouteImport.update({
-    id: '/arrabida-day-trip-from-lisbon',
-    path: '/arrabida-day-trip-from-lisbon',
-    getParentRoute: () => rootRouteImport,
-  } as any)
-const ArrabidaWineTourRoute = ArrabidaWineTourRouteImport.update({
-  id: '/arrabida-wine-tour',
-  path: '/arrabida-wine-tour',
+const TradeRoute = TradeRouteImport.update({
+  id: '/trade',
+  path: '/trade',
   getParentRoute: () => rootRouteImport,
 } as any)
-const AuthRoute = AuthRouteImport.update({
-  id: '/auth',
-  path: '/auth',
+const TermsRoute = TermsRouteImport.update({
+  id: '/terms',
+  path: '/terms',
   getParentRoute: () => rootRouteImport,
 } as any)
-const BestWineTastingNearLisbonRoute =
-  BestWineTastingNearLisbonRouteImport.update({
-    id: '/best-wine-tasting-near-lisbon',
-    path: '/best-wine-tasting-near-lisbon',
-    getParentRoute: () => rootRouteImport,
-  } as any)
-const BestWineToursLisbonRoute = BestWineToursLisbonRouteImport.update({
-  id: '/best-wine-tours-lisbon',
-  path: '/best-wine-tours-lisbon',
+const StudioV3Route = StudioV3RouteImport.update({
+  id: '/studio-v3',
+  path: '/studio-v3',
   getParentRoute: () => rootRouteImport,
 } as any)
-const BookRoute = BookRouteImport.update({
-  id: '/book',
-  path: '/book',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const BookingConfirmedRoute = BookingConfirmedRouteImport.update({
-  id: '/booking-confirmed',
-  path: '/booking-confirmed',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const BookingReceiptRoute = BookingReceiptRouteImport.update({
-  id: '/booking-receipt',
-  path: '/booking-receipt',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const BrandQaRoute = BrandQaRouteImport.update({
-  id: '/brand-qa',
-  path: '/brand-qa',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const BuilderRoute = BuilderRouteImport.update({
-  id: '/builder',
-  path: '/builder',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ContactRoute = ContactRouteImport.update({
-  id: '/contact',
-  path: '/contact',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const CookiesRoute = CookiesRouteImport.update({
-  id: '/cookies',
-  path: '/cookies',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const CorporateRoute = CorporateRouteImport.update({
-  id: '/corporate',
-  path: '/corporate',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const DayToursRoute = DayToursRouteImport.update({
-  id: '/day-tours',
-  path: '/day-tours',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const DayTripsFromLisbonRoute = DayTripsFromLisbonRouteImport.update({
-  id: '/day-trips-from-lisbon',
-  path: '/day-trips-from-lisbon',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const EvoraAlentejoWineTourRoute = EvoraAlentejoWineTourRouteImport.update({
-  id: '/evora-alentejo-wine-tour',
-  path: '/evora-alentejo-wine-tour',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const EvoraPrivateTourFromLisbonRoute =
-  EvoraPrivateTourFromLisbonRouteImport.update({
-    id: '/evora-private-tour-from-lisbon',
-    path: '/evora-private-tour-from-lisbon',
-    getParentRoute: () => rootRouteImport,
-  } as any)
-const ExperienceStudioRoute = ExperienceStudioRouteImport.update({
-  id: '/experience-studio',
-  path: '/experience-studio',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ExperiencesRoute = ExperiencesRouteImport.update({
-  id: '/experiences',
-  path: '/experiences',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const FaqRoute = FaqRouteImport.update({
-  id: '/faq',
-  path: '/faq',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const GuideRoute = GuideRouteImport.update({
-  id: '/guide',
-  path: '/guide',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const GuideResetPasswordRoute = GuideResetPasswordRouteImport.update({
-  id: '/guide-reset-password',
-  path: '/guide-reset-password',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const HeroVerifyRoute = HeroVerifyRouteImport.update({
-  id: '/hero-verify',
-  path: '/hero-verify',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const HowManyDaysInPortugalRoute = HowManyDaysInPortugalRouteImport.update({
-  id: '/how-many-days-in-portugal',
-  path: '/how-many-days-in-portugal',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ItineraryRoute = ItineraryRouteImport.update({
-  id: '/itinerary',
-  path: '/itinerary',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const LisbonPrivateToursRoute = LisbonPrivateToursRouteImport.update({
-  id: '/lisbon-private-tours',
-  path: '/lisbon-private-tours',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const LisbonWineTourPickupAndWineriesRoute =
-  LisbonWineTourPickupAndWineriesRouteImport.update({
-    id: '/lisbon-wine-tour-pickup-and-wineries',
-    path: '/lisbon-wine-tour-pickup-and-wineries',
-    getParentRoute: () => rootRouteImport,
-  } as any)
-const LisbonWineTourPricesAndInclusionsRoute =
-  LisbonWineTourPricesAndInclusionsRouteImport.update({
-    id: '/lisbon-wine-tour-prices-and-inclusions',
-    path: '/lisbon-wine-tour-prices-and-inclusions',
-    getParentRoute: () => rootRouteImport,
-  } as any)
-const LisbonWineToursRoute = LisbonWineToursRouteImport.update({
-  id: '/lisbon-wine-tours',
-  path: '/lisbon-wine-tours',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const LocalStoriesRoute = LocalStoriesRouteImport.update({
-  id: '/local-stories',
-  path: '/local-stories',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const LuxuryToursPortugalRoute = LuxuryToursPortugalRouteImport.update({
-  id: '/luxury-tours-portugal',
-  path: '/luxury-tours-portugal',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const McpRoute = McpRouteImport.update({
-  id: '/mcp',
-  path: '/mcp',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const McpSigninRoute = McpSigninRouteImport.update({
-  id: '/mcp-signin',
-  path: '/mcp-signin',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const MomentsRoute = MomentsRouteImport.update({
-  id: '/moments',
-  path: '/moments',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const MultiDayRoute = MultiDayRouteImport.update({
-  id: '/multi-day',
-  path: '/multi-day',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const PartnersRoute = PartnersRouteImport.update({
-  id: '/partners',
-  path: '/partners',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const PortugalForAmericanTravelersRoute =
-  PortugalForAmericanTravelersRouteImport.update({
-    id: '/portugal-for-american-travelers',
-    path: '/portugal-for-american-travelers',
-    getParentRoute: () => rootRouteImport,
-  } as any)
-const PortugalItineraryRoute = PortugalItineraryRouteImport.update({
-  id: '/portugal-itinerary',
-  path: '/portugal-itinerary',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const PortugalToursRoute = PortugalToursRouteImport.update({
-  id: '/portugal-tours',
-  path: '/portugal-tours',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const PortugalTravelDesignerRoute = PortugalTravelDesignerRouteImport.update({
-  id: '/portugal-travel-designer',
-  path: '/portugal-travel-designer',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const PortugalWineToursRoute = PortugalWineToursRouteImport.update({
-  id: '/portugal-wine-tours',
-  path: '/portugal-wine-tours',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const PressRoute = PressRouteImport.update({
-  id: '/press',
-  path: '/press',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const PreviewCheckRoute = PreviewCheckRouteImport.update({
-  id: '/preview-check',
-  path: '/preview-check',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const PrivacyRoute = PrivacyRouteImport.update({
-  id: '/privacy',
-  path: '/privacy',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const PrivateToursAlentejoEvoraRoute =
-  PrivateToursAlentejoEvoraRouteImport.update({
-    id: '/private-tours-alentejo-evora',
-    path: '/private-tours-alentejo-evora',
-    getParentRoute: () => rootRouteImport,
-  } as any)
-const PrivateToursArrabidaSesimbraRoute =
-  PrivateToursArrabidaSesimbraRouteImport.update({
-    id: '/private-tours-arrabida-sesimbra',
-    path: '/private-tours-arrabida-sesimbra',
-    getParentRoute: () => rootRouteImport,
-  } as any)
-const PrivateToursAzeitaoRoute = PrivateToursAzeitaoRouteImport.update({
-  id: '/private-tours-azeitao',
-  path: '/private-tours-azeitao',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const PrivateToursAzeitaoSetubalRoute =
-  PrivateToursAzeitaoSetubalRouteImport.update({
-    id: '/private-tours-azeitao-setubal',
-    path: '/private-tours-azeitao-setubal',
-    getParentRoute: () => rootRouteImport,
-  } as any)
-const PrivateToursCascaisRoute = PrivateToursCascaisRouteImport.update({
-  id: '/private-tours-cascais',
-  path: '/private-tours-cascais',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const PrivateToursCentroSilverCoastRoute =
-  PrivateToursCentroSilverCoastRouteImport.update({
-    id: '/private-tours-centro-silver-coast',
-    path: '/private-tours-centro-silver-coast',
-    getParentRoute: () => rootRouteImport,
-  } as any)
-const PrivateToursComportaRoute = PrivateToursComportaRouteImport.update({
-  id: '/private-tours-comporta',
-  path: '/private-tours-comporta',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const PrivateToursComportaTroiaRoute =
-  PrivateToursComportaTroiaRouteImport.update({
-    id: '/private-tours-comporta-troia',
-    path: '/private-tours-comporta-troia',
-    getParentRoute: () => rootRouteImport,
-  } as any)
-const PrivateToursEvoraRoute = PrivateToursEvoraRouteImport.update({
-  id: '/private-tours-evora',
-  path: '/private-tours-evora',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const PrivateToursFromLisbonRoute = PrivateToursFromLisbonRouteImport.update({
-  id: '/private-tours-from-lisbon',
-  path: '/private-tours-from-lisbon',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const PrivateToursLisbonRoute = PrivateToursLisbonRouteImport.update({
-  id: '/private-tours-lisbon',
-  path: '/private-tours-lisbon',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const PrivateToursPortugalRoute = PrivateToursPortugalRouteImport.update({
-  id: '/private-tours-portugal',
-  path: '/private-tours-portugal',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const PrivateToursSesimbraRoute = PrivateToursSesimbraRouteImport.update({
-  id: '/private-tours-sesimbra',
-  path: '/private-tours-sesimbra',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const PrivateToursSetubalRoute = PrivateToursSetubalRouteImport.update({
-  id: '/private-tours-setubal',
-  path: '/private-tours-setubal',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const PrivateToursSintraRoute = PrivateToursSintraRouteImport.update({
-  id: '/private-tours-sintra',
-  path: '/private-tours-sintra',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const PrivateToursSintraCascaisRoute =
-  PrivateToursSintraCascaisRouteImport.update({
-    id: '/private-tours-sintra-cascais',
-    path: '/private-tours-sintra-cascais',
-    getParentRoute: () => rootRouteImport,
-  } as any)
-const PrivateToursTroiaRoute = PrivateToursTroiaRouteImport.update({
-  id: '/private-tours-troia',
-  path: '/private-tours-troia',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const PrivateWineTourLisbonRoute = PrivateWineTourLisbonRouteImport.update({
-  id: '/private-wine-tour-lisbon',
-  path: '/private-wine-tour-lisbon',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ProposalInPortugalRoute = ProposalInPortugalRouteImport.update({
-  id: '/proposal-in-portugal',
-  path: '/proposal-in-portugal',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ProposalsRoute = ProposalsRouteImport.update({
-  id: '/proposals',
-  path: '/proposals',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const PtRoute = PtRouteImport.update({
-  id: '/pt',
-  path: '/pt',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const RegionsOfPortugalRoute = RegionsOfPortugalRouteImport.update({
-  id: '/regions-of-portugal',
-  path: '/regions-of-portugal',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ReviewsRoute = ReviewsRouteImport.update({
-  id: '/reviews',
-  path: '/reviews',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const SearchRoute = SearchRouteImport.update({
-  id: '/search',
-  path: '/search',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const SintraDayTourFromLisbonRoute = SintraDayTourFromLisbonRouteImport.update({
-  id: '/sintra-day-tour-from-lisbon',
-  path: '/sintra-day-tour-from-lisbon',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const SitemapImagesDotxmlRoute = SitemapImagesDotxmlRouteImport.update({
-  id: '/sitemap-images.xml',
-  path: '/sitemap-images.xml',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
-  id: '/sitemap.xml',
-  path: '/sitemap.xml',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const StudioRoute = StudioRouteImport.update({
-  id: '/studio',
-  path: '/studio',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const StudioDriftRoute = StudioDriftRouteImport.update({
-  id: '/studio-drift',
-  path: '/studio-drift',
+const StudioV2Route = StudioV2RouteImport.update({
+  id: '/studio-v2',
+  path: '/studio-v2',
   getParentRoute: () => rootRouteImport,
 } as any)
 const StudioLivingAtlasPreviewRoute =
@@ -626,166 +263,718 @@ const StudioLivingAtlasPreviewRoute =
     path: '/studio-living-atlas-preview',
     getParentRoute: () => rootRouteImport,
   } as any)
-const StudioV2Route = StudioV2RouteImport.update({
-  id: '/studio-v2',
-  path: '/studio-v2',
+const StudioDriftRoute = StudioDriftRouteImport.update({
+  id: '/studio-drift',
+  path: '/studio-drift',
   getParentRoute: () => rootRouteImport,
 } as any)
-const StudioV3Route = StudioV3RouteImport.update({
-  id: '/studio-v3',
-  path: '/studio-v3',
+const StudioRoute = StudioRouteImport.update({
+  id: '/studio',
+  path: '/studio',
   getParentRoute: () => rootRouteImport,
 } as any)
-const TermsRoute = TermsRouteImport.update({
-  id: '/terms',
-  path: '/terms',
+const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
+  id: '/sitemap.xml',
+  path: '/sitemap.xml',
   getParentRoute: () => rootRouteImport,
 } as any)
-const TradeRoute = TradeRouteImport.update({
-  id: '/trade',
-  path: '/trade',
+const SitemapImagesDotxmlRoute = SitemapImagesDotxmlRouteImport.update({
+  id: '/sitemap-images.xml',
+  path: '/sitemap-images.xml',
   getParentRoute: () => rootRouteImport,
 } as any)
-const TypographyAuditRoute = TypographyAuditRouteImport.update({
-  id: '/typography-audit',
-  path: '/typography-audit',
+const SintraDayTourFromLisbonRoute = SintraDayTourFromLisbonRouteImport.update({
+  id: '/sintra-day-tour-from-lisbon',
+  path: '/sintra-day-tour-from-lisbon',
   getParentRoute: () => rootRouteImport,
 } as any)
-const UnsubscribeRoute = UnsubscribeRouteImport.update({
-  id: '/unsubscribe',
-  path: '/unsubscribe',
+const SearchRoute = SearchRouteImport.update({
+  id: '/search',
+  path: '/search',
   getParentRoute: () => rootRouteImport,
 } as any)
-const WineToursLisbonRoute = WineToursLisbonRouteImport.update({
-  id: '/wine-tours-lisbon',
-  path: '/wine-tours-lisbon',
+const ReviewsRoute = ReviewsRouteImport.update({
+  id: '/reviews',
+  path: '/reviews',
   getParentRoute: () => rootRouteImport,
 } as any)
-const Char91DotmcpChar93ListToolsRoute =
-  Char91DotmcpChar93ListToolsRouteImport.update({
-    id: '/.mcp/list-tools',
-    path: '/.mcp/list-tools',
+const RegionsOfPortugalRoute = RegionsOfPortugalRouteImport.update({
+  id: '/regions-of-portugal',
+  path: '/regions-of-portugal',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PtRoute = PtRouteImport.update({
+  id: '/pt',
+  path: '/pt',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ProposalsRoute = ProposalsRouteImport.update({
+  id: '/proposals',
+  path: '/proposals',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ProposalInPortugalRoute = ProposalInPortugalRouteImport.update({
+  id: '/proposal-in-portugal',
+  path: '/proposal-in-portugal',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PrivateWineTourLisbonRoute = PrivateWineTourLisbonRouteImport.update({
+  id: '/private-wine-tour-lisbon',
+  path: '/private-wine-tour-lisbon',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PrivateToursTroiaRoute = PrivateToursTroiaRouteImport.update({
+  id: '/private-tours-troia',
+  path: '/private-tours-troia',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PrivateToursSintraCascaisRoute =
+  PrivateToursSintraCascaisRouteImport.update({
+    id: '/private-tours-sintra-cascais',
+    path: '/private-tours-sintra-cascais',
     getParentRoute: () => rootRouteImport,
   } as any)
-const Char91DotwellKnownChar93OauthProtectedResourceRoute =
-  Char91DotwellKnownChar93OauthProtectedResourceRouteImport.update({
-    id: '/.well-known/oauth-protected-resource',
-    path: '/.well-known/oauth-protected-resource',
+const PrivateToursSintraRoute = PrivateToursSintraRouteImport.update({
+  id: '/private-tours-sintra',
+  path: '/private-tours-sintra',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PrivateToursSetubalRoute = PrivateToursSetubalRouteImport.update({
+  id: '/private-tours-setubal',
+  path: '/private-tours-setubal',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PrivateToursSesimbraRoute = PrivateToursSesimbraRouteImport.update({
+  id: '/private-tours-sesimbra',
+  path: '/private-tours-sesimbra',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PrivateToursPortugalRoute = PrivateToursPortugalRouteImport.update({
+  id: '/private-tours-portugal',
+  path: '/private-tours-portugal',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PrivateToursLisbonRoute = PrivateToursLisbonRouteImport.update({
+  id: '/private-tours-lisbon',
+  path: '/private-tours-lisbon',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PrivateToursFromLisbonRoute = PrivateToursFromLisbonRouteImport.update({
+  id: '/private-tours-from-lisbon',
+  path: '/private-tours-from-lisbon',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PrivateToursEvoraRoute = PrivateToursEvoraRouteImport.update({
+  id: '/private-tours-evora',
+  path: '/private-tours-evora',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PrivateToursComportaTroiaRoute =
+  PrivateToursComportaTroiaRouteImport.update({
+    id: '/private-tours-comporta-troia',
+    path: '/private-tours-comporta-troia',
     getParentRoute: () => rootRouteImport,
   } as any)
+const PrivateToursComportaRoute = PrivateToursComportaRouteImport.update({
+  id: '/private-tours-comporta',
+  path: '/private-tours-comporta',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PrivateToursCentroSilverCoastRoute =
+  PrivateToursCentroSilverCoastRouteImport.update({
+    id: '/private-tours-centro-silver-coast',
+    path: '/private-tours-centro-silver-coast',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const PrivateToursCascaisRoute = PrivateToursCascaisRouteImport.update({
+  id: '/private-tours-cascais',
+  path: '/private-tours-cascais',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PrivateToursAzeitaoSetubalRoute =
+  PrivateToursAzeitaoSetubalRouteImport.update({
+    id: '/private-tours-azeitao-setubal',
+    path: '/private-tours-azeitao-setubal',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const PrivateToursAzeitaoRoute = PrivateToursAzeitaoRouteImport.update({
+  id: '/private-tours-azeitao',
+  path: '/private-tours-azeitao',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PrivateToursArrabidaSesimbraRoute =
+  PrivateToursArrabidaSesimbraRouteImport.update({
+    id: '/private-tours-arrabida-sesimbra',
+    path: '/private-tours-arrabida-sesimbra',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const PrivateToursAlentejoEvoraRoute =
+  PrivateToursAlentejoEvoraRouteImport.update({
+    id: '/private-tours-alentejo-evora',
+    path: '/private-tours-alentejo-evora',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const PrivacyRoute = PrivacyRouteImport.update({
+  id: '/privacy',
+  path: '/privacy',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PreviewCheckRoute = PreviewCheckRouteImport.update({
+  id: '/preview-check',
+  path: '/preview-check',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PressRoute = PressRouteImport.update({
+  id: '/press',
+  path: '/press',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PortugalWineToursRoute = PortugalWineToursRouteImport.update({
+  id: '/portugal-wine-tours',
+  path: '/portugal-wine-tours',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PortugalTravelDesignerRoute = PortugalTravelDesignerRouteImport.update({
+  id: '/portugal-travel-designer',
+  path: '/portugal-travel-designer',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PortugalToursRoute = PortugalToursRouteImport.update({
+  id: '/portugal-tours',
+  path: '/portugal-tours',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PortugalItineraryRoute = PortugalItineraryRouteImport.update({
+  id: '/portugal-itinerary',
+  path: '/portugal-itinerary',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PortugalForAmericanTravelersRoute =
+  PortugalForAmericanTravelersRouteImport.update({
+    id: '/portugal-for-american-travelers',
+    path: '/portugal-for-american-travelers',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const PartnersRoute = PartnersRouteImport.update({
+  id: '/partners',
+  path: '/partners',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MultiDayRoute = MultiDayRouteImport.update({
+  id: '/multi-day',
+  path: '/multi-day',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MomentsRoute = MomentsRouteImport.update({
+  id: '/moments',
+  path: '/moments',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const McpSigninRoute = McpSigninRouteImport.update({
+  id: '/mcp-signin',
+  path: '/mcp-signin',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const McpRoute = McpRouteImport.update({
+  id: '/mcp',
+  path: '/mcp',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LuxuryToursPortugalRoute = LuxuryToursPortugalRouteImport.update({
+  id: '/luxury-tours-portugal',
+  path: '/luxury-tours-portugal',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LocalStoriesRoute = LocalStoriesRouteImport.update({
+  id: '/local-stories',
+  path: '/local-stories',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LisbonWineToursRoute = LisbonWineToursRouteImport.update({
+  id: '/lisbon-wine-tours',
+  path: '/lisbon-wine-tours',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LisbonWineTourPricesAndInclusionsRoute =
+  LisbonWineTourPricesAndInclusionsRouteImport.update({
+    id: '/lisbon-wine-tour-prices-and-inclusions',
+    path: '/lisbon-wine-tour-prices-and-inclusions',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const LisbonWineTourPickupAndWineriesRoute =
+  LisbonWineTourPickupAndWineriesRouteImport.update({
+    id: '/lisbon-wine-tour-pickup-and-wineries',
+    path: '/lisbon-wine-tour-pickup-and-wineries',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const LisbonPrivateToursRoute = LisbonPrivateToursRouteImport.update({
+  id: '/lisbon-private-tours',
+  path: '/lisbon-private-tours',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ItineraryRoute = ItineraryRouteImport.update({
+  id: '/itinerary',
+  path: '/itinerary',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const HowManyDaysInPortugalRoute = HowManyDaysInPortugalRouteImport.update({
+  id: '/how-many-days-in-portugal',
+  path: '/how-many-days-in-portugal',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const HeroVerifyRoute = HeroVerifyRouteImport.update({
+  id: '/hero-verify',
+  path: '/hero-verify',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const GuideResetPasswordRoute = GuideResetPasswordRouteImport.update({
+  id: '/guide-reset-password',
+  path: '/guide-reset-password',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const GuideRoute = GuideRouteImport.update({
+  id: '/guide',
+  path: '/guide',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const FaqRoute = FaqRouteImport.update({
+  id: '/faq',
+  path: '/faq',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ExperiencesRoute = ExperiencesRouteImport.update({
+  id: '/experiences',
+  path: '/experiences',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ExperienceStudioRoute = ExperienceStudioRouteImport.update({
+  id: '/experience-studio',
+  path: '/experience-studio',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const EvoraPrivateTourFromLisbonRoute =
+  EvoraPrivateTourFromLisbonRouteImport.update({
+    id: '/evora-private-tour-from-lisbon',
+    path: '/evora-private-tour-from-lisbon',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const EvoraAlentejoWineTourRoute = EvoraAlentejoWineTourRouteImport.update({
+  id: '/evora-alentejo-wine-tour',
+  path: '/evora-alentejo-wine-tour',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DayTripsFromLisbonRoute = DayTripsFromLisbonRouteImport.update({
+  id: '/day-trips-from-lisbon',
+  path: '/day-trips-from-lisbon',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DayToursRoute = DayToursRouteImport.update({
+  id: '/day-tours',
+  path: '/day-tours',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CorporateRoute = CorporateRouteImport.update({
+  id: '/corporate',
+  path: '/corporate',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CookiesRoute = CookiesRouteImport.update({
+  id: '/cookies',
+  path: '/cookies',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ContactRoute = ContactRouteImport.update({
+  id: '/contact',
+  path: '/contact',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const BuilderRoute = BuilderRouteImport.update({
+  id: '/builder',
+  path: '/builder',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const BrandQaRoute = BrandQaRouteImport.update({
+  id: '/brand-qa',
+  path: '/brand-qa',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const BookingReceiptRoute = BookingReceiptRouteImport.update({
+  id: '/booking-receipt',
+  path: '/booking-receipt',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const BookingConfirmedRoute = BookingConfirmedRouteImport.update({
+  id: '/booking-confirmed',
+  path: '/booking-confirmed',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const BookRoute = BookRouteImport.update({
+  id: '/book',
+  path: '/book',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const BestWineToursLisbonRoute = BestWineToursLisbonRouteImport.update({
+  id: '/best-wine-tours-lisbon',
+  path: '/best-wine-tours-lisbon',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const BestWineTastingNearLisbonRoute =
+  BestWineTastingNearLisbonRouteImport.update({
+    id: '/best-wine-tasting-near-lisbon',
+    path: '/best-wine-tasting-near-lisbon',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const AuthRoute = AuthRouteImport.update({
+  id: '/auth',
+  path: '/auth',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ArrabidaWineTourRoute = ArrabidaWineTourRouteImport.update({
+  id: '/arrabida-wine-tour',
+  path: '/arrabida-wine-tour',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ArrabidaDayTripFromLisbonRoute =
+  ArrabidaDayTripFromLisbonRouteImport.update({
+    id: '/arrabida-day-trip-from-lisbon',
+    path: '/arrabida-day-trip-from-lisbon',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const AlentejoWineTourFromLisbonRoute =
+  AlentejoWineTourFromLisbonRouteImport.update({
+    id: '/alentejo-wine-tour-from-lisbon',
+    path: '/alentejo-wine-tour-from-lisbon',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const AdminRoute = AdminRouteImport.update({
+  id: '/admin',
+  path: '/admin',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AboutRoute = AboutRouteImport.update({
+  id: '/about',
+  path: '/about',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const IndexRoute = IndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PtIndexRoute = PtIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => PtRoute,
+} as any)
+const LocalStoriesIndexRoute = LocalStoriesIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => LocalStoriesRoute,
+} as any)
+const GuideIndexRoute = GuideIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => GuideRoute,
+} as any)
 const AdminIndexRoute = AdminIndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => AdminRoute,
 } as any)
-const AdminActivityRoute = AdminActivityRouteImport.update({
-  id: '/activity',
-  path: '/activity',
-  getParentRoute: () => AdminRoute,
+const ToursTourIdRoute = ToursTourIdRouteImport.update({
+  id: '/tours/$tourId',
+  path: '/tours/$tourId',
+  getParentRoute: () => rootRouteImport,
 } as any)
-const AdminAiAuditRoute = AdminAiAuditRouteImport.update({
-  id: '/ai-audit',
-  path: '/ai-audit',
-  getParentRoute: () => AdminRoute,
+const STokenRoute = STokenRouteImport.update({
+  id: '/s/$token',
+  path: '/s/$token',
+  getParentRoute: () => rootRouteImport,
 } as any)
-const AdminAnalyticsHealthRoute = AdminAnalyticsHealthRouteImport.update({
-  id: '/analytics-health',
-  path: '/analytics-health',
-  getParentRoute: () => AdminRoute,
+const ReviewTokenRoute = ReviewTokenRouteImport.update({
+  id: '/review/$token',
+  path: '/review/$token',
+  getParentRoute: () => rootRouteImport,
 } as any)
-const AdminAvailabilityRoute = AdminAvailabilityRouteImport.update({
-  id: '/availability',
-  path: '/availability',
-  getParentRoute: () => AdminRoute,
+const QaMobileRoute = QaMobileRouteImport.update({
+  id: '/qa/mobile',
+  path: '/qa/mobile',
+  getParentRoute: () => rootRouteImport,
 } as any)
-const AdminBuilderImagesRoute = AdminBuilderImagesRouteImport.update({
-  id: '/builder-images',
-  path: '/builder-images',
-  getParentRoute: () => AdminRoute,
+const QaHeroRoute = QaHeroRouteImport.update({
+  id: '/qa/hero',
+  path: '/qa/hero',
+  getParentRoute: () => rootRouteImport,
 } as any)
-const AdminBuilderImagesQaRoute = AdminBuilderImagesQaRouteImport.update({
-  id: '/builder-images-qa',
-  path: '/builder-images-qa',
-  getParentRoute: () => AdminRoute,
+const PtTermsRoute = PtTermsRouteImport.update({
+  id: '/terms',
+  path: '/terms',
+  getParentRoute: () => PtRoute,
 } as any)
-const AdminComposableStopsRoute = AdminComposableStopsRouteImport.update({
-  id: '/composable-stops',
-  path: '/composable-stops',
-  getParentRoute: () => AdminRoute,
+const PtReviewsRoute = PtReviewsRouteImport.update({
+  id: '/reviews',
+  path: '/reviews',
+  getParentRoute: () => PtRoute,
 } as any)
-const AdminDnsWatchRoute = AdminDnsWatchRouteImport.update({
-  id: '/dns-watch',
-  path: '/dns-watch',
-  getParentRoute: () => AdminRoute,
+const PtProposalsRoute = PtProposalsRouteImport.update({
+  id: '/proposals',
+  path: '/proposals',
+  getParentRoute: () => PtRoute,
 } as any)
-const AdminDomainsHealthRoute = AdminDomainsHealthRouteImport.update({
-  id: '/domains-health',
-  path: '/domains-health',
-  getParentRoute: () => AdminRoute,
+const PtPrivacyRoute = PtPrivacyRouteImport.update({
+  id: '/privacy',
+  path: '/privacy',
+  getParentRoute: () => PtRoute,
 } as any)
-const AdminDriftBehaviorRoute = AdminDriftBehaviorRouteImport.update({
-  id: '/drift-behavior',
-  path: '/drift-behavior',
-  getParentRoute: () => AdminRoute,
+const PtMomentsRoute = PtMomentsRouteImport.update({
+  id: '/moments',
+  path: '/moments',
+  getParentRoute: () => PtRoute,
 } as any)
-const AdminDriftBibleRoute = AdminDriftBibleRouteImport.update({
-  id: '/drift-bible',
-  path: '/drift-bible',
-  getParentRoute: () => AdminRoute,
+const PtFaqRoute = PtFaqRouteImport.update({
+  id: '/faq',
+  path: '/faq',
+  getParentRoute: () => PtRoute,
 } as any)
-const AdminE2eReportRoute = AdminE2eReportRouteImport.update({
-  id: '/e2e-report',
-  path: '/e2e-report',
-  getParentRoute: () => AdminRoute,
-} as any)
-const AdminEmailsRoute = AdminEmailsRouteImport.update({
-  id: '/emails',
-  path: '/emails',
-  getParentRoute: () => AdminRoute,
-} as any)
-const AdminEnquiriesRoute = AdminEnquiriesRouteImport.update({
-  id: '/enquiries',
-  path: '/enquiries',
-  getParentRoute: () => AdminRoute,
-} as any)
-const AdminErrorLogsRoute = AdminErrorLogsRouteImport.update({
-  id: '/error-logs',
-  path: '/error-logs',
-  getParentRoute: () => AdminRoute,
-} as any)
-const AdminExperiencesRoute = AdminExperiencesRouteImport.update({
+const PtExperiencesRoute = PtExperiencesRouteImport.update({
   id: '/experiences',
   path: '/experiences',
+  getParentRoute: () => PtRoute,
+} as any)
+const PtDayToursRoute = PtDayToursRouteImport.update({
+  id: '/day-tours',
+  path: '/day-tours',
+  getParentRoute: () => PtRoute,
+} as any)
+const PtCorporateRoute = PtCorporateRouteImport.update({
+  id: '/corporate',
+  path: '/corporate',
+  getParentRoute: () => PtRoute,
+} as any)
+const PtCookiesRoute = PtCookiesRouteImport.update({
+  id: '/cookies',
+  path: '/cookies',
+  getParentRoute: () => PtRoute,
+} as any)
+const PtContactRoute = PtContactRouteImport.update({
+  id: '/contact',
+  path: '/contact',
+  getParentRoute: () => PtRoute,
+} as any)
+const PtAboutRoute = PtAboutRouteImport.update({
+  id: '/about',
+  path: '/about',
+  getParentRoute: () => PtRoute,
+} as any)
+const PtSplatRoute = PtSplatRouteImport.update({
+  id: '/$',
+  path: '/$',
+  getParentRoute: () => PtRoute,
+} as any)
+const PartnersSplatRoute = PartnersSplatRouteImport.update({
+  id: '/$',
+  path: '/$',
+  getParentRoute: () => PartnersRoute,
+} as any)
+const LocalStoriesSlugRoute = LocalStoriesSlugRouteImport.update({
+  id: '/$slug',
+  path: '/$slug',
+  getParentRoute: () => LocalStoriesRoute,
+} as any)
+const Itineraries10DayPrivatePortugalTourRoute =
+  Itineraries10DayPrivatePortugalTourRouteImport.update({
+    id: '/itineraries/10-day-private-portugal-tour',
+    path: '/itineraries/10-day-private-portugal-tour',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const ITokenRoute = ITokenRouteImport.update({
+  id: '/i/$token',
+  path: '/i/$token',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const GuideProfileRoute = GuideProfileRouteImport.update({
+  id: '/profile',
+  path: '/profile',
+  getParentRoute: () => GuideRoute,
+} as any)
+const GuideNotificationsRoute = GuideNotificationsRouteImport.update({
+  id: '/notifications',
+  path: '/notifications',
+  getParentRoute: () => GuideRoute,
+} as any)
+const GuideCalendarRoute = GuideCalendarRouteImport.update({
+  id: '/calendar',
+  path: '/calendar',
+  getParentRoute: () => GuideRoute,
+} as any)
+const GuideAvailabilityRoute = GuideAvailabilityRouteImport.update({
+  id: '/availability',
+  path: '/availability',
+  getParentRoute: () => GuideRoute,
+} as any)
+const EmailUnsubscribeRoute = EmailUnsubscribeRouteImport.update({
+  id: '/email/unsubscribe',
+  path: '/email/unsubscribe',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const E2ePostmessageProbeRoute = E2ePostmessageProbeRouteImport.update({
+  id: '/e2e/postmessage-probe',
+  path: '/e2e/postmessage-probe',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CheckoutTokenRoute = CheckoutTokenRouteImport.update({
+  id: '/checkout/$token',
+  path: '/checkout/$token',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiVerifyHeroRoute = ApiVerifyHeroRouteImport.update({
+  id: '/api/verify-hero',
+  path: '/api/verify-hero',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiImgRoute = ApiImgRouteImport.update({
+  id: '/api/img',
+  path: '/api/img',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiHealthRoute = ApiHealthRouteImport.update({
+  id: '/api/health',
+  path: '/api/health',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdminWebhookEventsRoute = AdminWebhookEventsRouteImport.update({
+  id: '/webhook-events',
+  path: '/webhook-events',
   getParentRoute: () => AdminRoute,
 } as any)
-const AdminGbpLegacyRemovalRoute = AdminGbpLegacyRemovalRouteImport.update({
-  id: '/gbp-legacy-removal',
-  path: '/gbp-legacy-removal',
+const AdminViatorValidationRoute = AdminViatorValidationRouteImport.update({
+  id: '/viator-validation',
+  path: '/viator-validation',
   getParentRoute: () => AdminRoute,
 } as any)
-const AdminGscRoute = AdminGscRouteImport.update({
-  id: '/gsc',
-  path: '/gsc',
+const AdminTourLinkAuditRoute = AdminTourLinkAuditRouteImport.update({
+  id: '/tour-link-audit',
+  path: '/tour-link-audit',
   getParentRoute: () => AdminRoute,
 } as any)
-const AdminGuideAttributionRoute = AdminGuideAttributionRouteImport.update({
-  id: '/guide-attribution',
-  path: '/guide-attribution',
+const AdminTourCalendarRoute = AdminTourCalendarRouteImport.update({
+  id: '/tour-calendar',
+  path: '/tour-calendar',
   getParentRoute: () => AdminRoute,
 } as any)
-const AdminImageSwapRoute = AdminImageSwapRouteImport.update({
-  id: '/image-swap',
-  path: '/image-swap',
+const AdminStudioV3FunnelRoute = AdminStudioV3FunnelRouteImport.update({
+  id: '/studio-v3-funnel',
+  path: '/studio-v3-funnel',
   getParentRoute: () => AdminRoute,
 } as any)
-const AdminImportToursRoute = AdminImportToursRouteImport.update({
-  id: '/import-tours',
-  path: '/import-tours',
+const AdminStudioV3AuditRoute = AdminStudioV3AuditRouteImport.update({
+  id: '/studio-v3-audit',
+  path: '/studio-v3-audit',
   getParentRoute: () => AdminRoute,
 } as any)
-const AdminLegacyDomainUnlinkRoute = AdminLegacyDomainUnlinkRouteImport.update({
-  id: '/legacy-domain-unlink',
-  path: '/legacy-domain-unlink',
+const AdminStudioProposalsRoute = AdminStudioProposalsRouteImport.update({
+  id: '/studio-proposals',
+  path: '/studio-proposals',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminStopParityRoute = AdminStopParityRouteImport.update({
+  id: '/stop-parity',
+  path: '/stop-parity',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminSotRefreshRoute = AdminSotRefreshRouteImport.update({
+  id: '/sot-refresh',
+  path: '/sot-refresh',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminSotDiffRoute = AdminSotDiffRouteImport.update({
+  id: '/sot-diff',
+  path: '/sot-diff',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminSettingsRoute = AdminSettingsRouteImport.update({
+  id: '/settings',
+  path: '/settings',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminSeoStrategyRoute = AdminSeoStrategyRouteImport.update({
+  id: '/seo-strategy',
+  path: '/seo-strategy',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminSeoMonitorRoute = AdminSeoMonitorRouteImport.update({
+  id: '/seo-monitor',
+  path: '/seo-monitor',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminSeoJsonldRoute = AdminSeoJsonldRouteImport.update({
+  id: '/seo-jsonld',
+  path: '/seo-jsonld',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminSeoExperiencesRoute = AdminSeoExperiencesRouteImport.update({
+  id: '/seo-experiences',
+  path: '/seo-experiences',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminReviewsRoute = AdminReviewsRouteImport.update({
+  id: '/reviews',
+  path: '/reviews',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminRedirectsMonitorRoute = AdminRedirectsMonitorRouteImport.update({
+  id: '/redirects-monitor',
+  path: '/redirects-monitor',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminPricingToolRoute = AdminPricingToolRouteImport.update({
+  id: '/pricing-tool',
+  path: '/pricing-tool',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminPricingRoute = AdminPricingRouteImport.update({
+  id: '/pricing',
+  path: '/pricing',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminPriceMapRoute = AdminPriceMapRouteImport.update({
+  id: '/price-map',
+  path: '/price-map',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminPhotosRoute = AdminPhotosRouteImport.update({
+  id: '/photos',
+  path: '/photos',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminPaymentsEnvRoute = AdminPaymentsEnvRouteImport.update({
+  id: '/payments-env',
+  path: '/payments-env',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminPaymentsRoute = AdminPaymentsRouteImport.update({
+  id: '/payments',
+  path: '/payments',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminPathPhotosRoute = AdminPathPhotosRouteImport.update({
+  id: '/path-photos',
+  path: '/path-photos',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminOperationsRoute = AdminOperationsRouteImport.update({
+  id: '/operations',
+  path: '/operations',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminMoreRoute = AdminMoreRouteImport.update({
+  id: '/more',
+  path: '/more',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminLegacyScanRoute = AdminLegacyScanRouteImport.update({
+  id: '/legacy-scan',
+  path: '/legacy-scan',
   getParentRoute: () => AdminRoute,
 } as any)
 const AdminLegacyDomainsMonitorRoute =
@@ -794,357 +983,199 @@ const AdminLegacyDomainsMonitorRoute =
     path: '/legacy-domains-monitor',
     getParentRoute: () => AdminRoute,
   } as any)
-const AdminLegacyScanRoute = AdminLegacyScanRouteImport.update({
-  id: '/legacy-scan',
-  path: '/legacy-scan',
+const AdminLegacyDomainUnlinkRoute = AdminLegacyDomainUnlinkRouteImport.update({
+  id: '/legacy-domain-unlink',
+  path: '/legacy-domain-unlink',
   getParentRoute: () => AdminRoute,
 } as any)
-const AdminMoreRoute = AdminMoreRouteImport.update({
-  id: '/more',
-  path: '/more',
+const AdminImportToursRoute = AdminImportToursRouteImport.update({
+  id: '/import-tours',
+  path: '/import-tours',
   getParentRoute: () => AdminRoute,
 } as any)
-const AdminOperationsRoute = AdminOperationsRouteImport.update({
-  id: '/operations',
-  path: '/operations',
+const AdminImageSwapRoute = AdminImageSwapRouteImport.update({
+  id: '/image-swap',
+  path: '/image-swap',
   getParentRoute: () => AdminRoute,
 } as any)
-const AdminPathPhotosRoute = AdminPathPhotosRouteImport.update({
-  id: '/path-photos',
-  path: '/path-photos',
+const AdminGuideAttributionRoute = AdminGuideAttributionRouteImport.update({
+  id: '/guide-attribution',
+  path: '/guide-attribution',
   getParentRoute: () => AdminRoute,
 } as any)
-const AdminPaymentsRoute = AdminPaymentsRouteImport.update({
-  id: '/payments',
-  path: '/payments',
+const AdminGscRoute = AdminGscRouteImport.update({
+  id: '/gsc',
+  path: '/gsc',
   getParentRoute: () => AdminRoute,
 } as any)
-const AdminPaymentsEnvRoute = AdminPaymentsEnvRouteImport.update({
-  id: '/payments-env',
-  path: '/payments-env',
+const AdminGbpLegacyRemovalRoute = AdminGbpLegacyRemovalRouteImport.update({
+  id: '/gbp-legacy-removal',
+  path: '/gbp-legacy-removal',
   getParentRoute: () => AdminRoute,
 } as any)
-const AdminPhotosRoute = AdminPhotosRouteImport.update({
-  id: '/photos',
-  path: '/photos',
-  getParentRoute: () => AdminRoute,
-} as any)
-const AdminPriceMapRoute = AdminPriceMapRouteImport.update({
-  id: '/price-map',
-  path: '/price-map',
-  getParentRoute: () => AdminRoute,
-} as any)
-const AdminPricingRoute = AdminPricingRouteImport.update({
-  id: '/pricing',
-  path: '/pricing',
-  getParentRoute: () => AdminRoute,
-} as any)
-const AdminPricingToolRoute = AdminPricingToolRouteImport.update({
-  id: '/pricing-tool',
-  path: '/pricing-tool',
-  getParentRoute: () => AdminRoute,
-} as any)
-const AdminRedirectsMonitorRoute = AdminRedirectsMonitorRouteImport.update({
-  id: '/redirects-monitor',
-  path: '/redirects-monitor',
-  getParentRoute: () => AdminRoute,
-} as any)
-const AdminReviewsRoute = AdminReviewsRouteImport.update({
-  id: '/reviews',
-  path: '/reviews',
-  getParentRoute: () => AdminRoute,
-} as any)
-const AdminSeoExperiencesRoute = AdminSeoExperiencesRouteImport.update({
-  id: '/seo-experiences',
-  path: '/seo-experiences',
-  getParentRoute: () => AdminRoute,
-} as any)
-const AdminSeoJsonldRoute = AdminSeoJsonldRouteImport.update({
-  id: '/seo-jsonld',
-  path: '/seo-jsonld',
-  getParentRoute: () => AdminRoute,
-} as any)
-const AdminSeoMonitorRoute = AdminSeoMonitorRouteImport.update({
-  id: '/seo-monitor',
-  path: '/seo-monitor',
-  getParentRoute: () => AdminRoute,
-} as any)
-const AdminSeoStrategyRoute = AdminSeoStrategyRouteImport.update({
-  id: '/seo-strategy',
-  path: '/seo-strategy',
-  getParentRoute: () => AdminRoute,
-} as any)
-const AdminSettingsRoute = AdminSettingsRouteImport.update({
-  id: '/settings',
-  path: '/settings',
-  getParentRoute: () => AdminRoute,
-} as any)
-const AdminSotDiffRoute = AdminSotDiffRouteImport.update({
-  id: '/sot-diff',
-  path: '/sot-diff',
-  getParentRoute: () => AdminRoute,
-} as any)
-const AdminSotRefreshRoute = AdminSotRefreshRouteImport.update({
-  id: '/sot-refresh',
-  path: '/sot-refresh',
-  getParentRoute: () => AdminRoute,
-} as any)
-const AdminStopParityRoute = AdminStopParityRouteImport.update({
-  id: '/stop-parity',
-  path: '/stop-parity',
-  getParentRoute: () => AdminRoute,
-} as any)
-const AdminStudioProposalsRoute = AdminStudioProposalsRouteImport.update({
-  id: '/studio-proposals',
-  path: '/studio-proposals',
-  getParentRoute: () => AdminRoute,
-} as any)
-const AdminStudioV3AuditRoute = AdminStudioV3AuditRouteImport.update({
-  id: '/studio-v3-audit',
-  path: '/studio-v3-audit',
-  getParentRoute: () => AdminRoute,
-} as any)
-const AdminStudioV3FunnelRoute = AdminStudioV3FunnelRouteImport.update({
-  id: '/studio-v3-funnel',
-  path: '/studio-v3-funnel',
-  getParentRoute: () => AdminRoute,
-} as any)
-const AdminTourCalendarRoute = AdminTourCalendarRouteImport.update({
-  id: '/tour-calendar',
-  path: '/tour-calendar',
-  getParentRoute: () => AdminRoute,
-} as any)
-const AdminTourLinkAuditRoute = AdminTourLinkAuditRouteImport.update({
-  id: '/tour-link-audit',
-  path: '/tour-link-audit',
-  getParentRoute: () => AdminRoute,
-} as any)
-const AdminViatorValidationRoute = AdminViatorValidationRouteImport.update({
-  id: '/viator-validation',
-  path: '/viator-validation',
-  getParentRoute: () => AdminRoute,
-} as any)
-const AdminWebhookEventsRoute = AdminWebhookEventsRouteImport.update({
-  id: '/webhook-events',
-  path: '/webhook-events',
-  getParentRoute: () => AdminRoute,
-} as any)
-const ApiHealthRoute = ApiHealthRouteImport.update({
-  id: '/api/health',
-  path: '/api/health',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ApiImgRoute = ApiImgRouteImport.update({
-  id: '/api/img',
-  path: '/api/img',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ApiVerifyHeroRoute = ApiVerifyHeroRouteImport.update({
-  id: '/api/verify-hero',
-  path: '/api/verify-hero',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const CheckoutTokenRoute = CheckoutTokenRouteImport.update({
-  id: '/checkout/$token',
-  path: '/checkout/$token',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const E2ePostmessageProbeRoute = E2ePostmessageProbeRouteImport.update({
-  id: '/e2e/postmessage-probe',
-  path: '/e2e/postmessage-probe',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const EmailUnsubscribeRoute = EmailUnsubscribeRouteImport.update({
-  id: '/email/unsubscribe',
-  path: '/email/unsubscribe',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const GuideIndexRoute = GuideIndexRouteImport.update({
-  id: '/',
-  path: '/',
-  getParentRoute: () => GuideRoute,
-} as any)
-const GuideAvailabilityRoute = GuideAvailabilityRouteImport.update({
-  id: '/availability',
-  path: '/availability',
-  getParentRoute: () => GuideRoute,
-} as any)
-const GuideCalendarRoute = GuideCalendarRouteImport.update({
-  id: '/calendar',
-  path: '/calendar',
-  getParentRoute: () => GuideRoute,
-} as any)
-const GuideNotificationsRoute = GuideNotificationsRouteImport.update({
-  id: '/notifications',
-  path: '/notifications',
-  getParentRoute: () => GuideRoute,
-} as any)
-const GuideProfileRoute = GuideProfileRouteImport.update({
-  id: '/profile',
-  path: '/profile',
-  getParentRoute: () => GuideRoute,
-} as any)
-const ITokenRoute = ITokenRouteImport.update({
-  id: '/i/$token',
-  path: '/i/$token',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const Itineraries10DayPrivatePortugalTourRoute =
-  Itineraries10DayPrivatePortugalTourRouteImport.update({
-    id: '/itineraries/10-day-private-portugal-tour',
-    path: '/itineraries/10-day-private-portugal-tour',
-    getParentRoute: () => rootRouteImport,
-  } as any)
-const LocalStoriesIndexRoute = LocalStoriesIndexRouteImport.update({
-  id: '/',
-  path: '/',
-  getParentRoute: () => LocalStoriesRoute,
-} as any)
-const LocalStoriesSlugRoute = LocalStoriesSlugRouteImport.update({
-  id: '/$slug',
-  path: '/$slug',
-  getParentRoute: () => LocalStoriesRoute,
-} as any)
-const PartnersSplatRoute = PartnersSplatRouteImport.update({
-  id: '/$',
-  path: '/$',
-  getParentRoute: () => PartnersRoute,
-} as any)
-const PtIndexRoute = PtIndexRouteImport.update({
-  id: '/',
-  path: '/',
-  getParentRoute: () => PtRoute,
-} as any)
-const PtSplatRoute = PtSplatRouteImport.update({
-  id: '/$',
-  path: '/$',
-  getParentRoute: () => PtRoute,
-} as any)
-const PtAboutRoute = PtAboutRouteImport.update({
-  id: '/about',
-  path: '/about',
-  getParentRoute: () => PtRoute,
-} as any)
-const PtContactRoute = PtContactRouteImport.update({
-  id: '/contact',
-  path: '/contact',
-  getParentRoute: () => PtRoute,
-} as any)
-const PtCookiesRoute = PtCookiesRouteImport.update({
-  id: '/cookies',
-  path: '/cookies',
-  getParentRoute: () => PtRoute,
-} as any)
-const PtCorporateRoute = PtCorporateRouteImport.update({
-  id: '/corporate',
-  path: '/corporate',
-  getParentRoute: () => PtRoute,
-} as any)
-const PtDayToursRoute = PtDayToursRouteImport.update({
-  id: '/day-tours',
-  path: '/day-tours',
-  getParentRoute: () => PtRoute,
-} as any)
-const PtExperiencesRoute = PtExperiencesRouteImport.update({
+const AdminExperiencesRoute = AdminExperiencesRouteImport.update({
   id: '/experiences',
   path: '/experiences',
-  getParentRoute: () => PtRoute,
+  getParentRoute: () => AdminRoute,
 } as any)
-const PtFaqRoute = PtFaqRouteImport.update({
-  id: '/faq',
-  path: '/faq',
-  getParentRoute: () => PtRoute,
+const AdminErrorLogsRoute = AdminErrorLogsRouteImport.update({
+  id: '/error-logs',
+  path: '/error-logs',
+  getParentRoute: () => AdminRoute,
 } as any)
-const PtMomentsRoute = PtMomentsRouteImport.update({
-  id: '/moments',
-  path: '/moments',
-  getParentRoute: () => PtRoute,
+const AdminEnquiriesRoute = AdminEnquiriesRouteImport.update({
+  id: '/enquiries',
+  path: '/enquiries',
+  getParentRoute: () => AdminRoute,
 } as any)
-const PtPrivacyRoute = PtPrivacyRouteImport.update({
-  id: '/privacy',
-  path: '/privacy',
-  getParentRoute: () => PtRoute,
+const AdminEmailsRoute = AdminEmailsRouteImport.update({
+  id: '/emails',
+  path: '/emails',
+  getParentRoute: () => AdminRoute,
 } as any)
-const PtProposalsRoute = PtProposalsRouteImport.update({
-  id: '/proposals',
-  path: '/proposals',
-  getParentRoute: () => PtRoute,
+const AdminE2eReportRoute = AdminE2eReportRouteImport.update({
+  id: '/e2e-report',
+  path: '/e2e-report',
+  getParentRoute: () => AdminRoute,
 } as any)
-const PtReviewsRoute = PtReviewsRouteImport.update({
-  id: '/reviews',
-  path: '/reviews',
-  getParentRoute: () => PtRoute,
+const AdminDriftBibleRoute = AdminDriftBibleRouteImport.update({
+  id: '/drift-bible',
+  path: '/drift-bible',
+  getParentRoute: () => AdminRoute,
 } as any)
-const PtTermsRoute = PtTermsRouteImport.update({
-  id: '/terms',
-  path: '/terms',
-  getParentRoute: () => PtRoute,
+const AdminDriftBehaviorRoute = AdminDriftBehaviorRouteImport.update({
+  id: '/drift-behavior',
+  path: '/drift-behavior',
+  getParentRoute: () => AdminRoute,
 } as any)
-const QaHeroRoute = QaHeroRouteImport.update({
-  id: '/qa/hero',
-  path: '/qa/hero',
-  getParentRoute: () => rootRouteImport,
+const AdminDomainsHealthRoute = AdminDomainsHealthRouteImport.update({
+  id: '/domains-health',
+  path: '/domains-health',
+  getParentRoute: () => AdminRoute,
 } as any)
-const QaMobileRoute = QaMobileRouteImport.update({
-  id: '/qa/mobile',
-  path: '/qa/mobile',
-  getParentRoute: () => rootRouteImport,
+const AdminDnsWatchRoute = AdminDnsWatchRouteImport.update({
+  id: '/dns-watch',
+  path: '/dns-watch',
+  getParentRoute: () => AdminRoute,
 } as any)
-const ReviewTokenRoute = ReviewTokenRouteImport.update({
-  id: '/review/$token',
-  path: '/review/$token',
-  getParentRoute: () => rootRouteImport,
+const AdminComposableStopsRoute = AdminComposableStopsRouteImport.update({
+  id: '/composable-stops',
+  path: '/composable-stops',
+  getParentRoute: () => AdminRoute,
 } as any)
-const STokenRoute = STokenRouteImport.update({
-  id: '/s/$token',
-  path: '/s/$token',
-  getParentRoute: () => rootRouteImport,
+const AdminBuilderImagesQaRoute = AdminBuilderImagesQaRouteImport.update({
+  id: '/builder-images-qa',
+  path: '/builder-images-qa',
+  getParentRoute: () => AdminRoute,
 } as any)
-const ToursTourIdRoute = ToursTourIdRouteImport.update({
-  id: '/tours/$tourId',
-  path: '/tours/$tourId',
-  getParentRoute: () => rootRouteImport,
+const AdminBuilderImagesRoute = AdminBuilderImagesRouteImport.update({
+  id: '/builder-images',
+  path: '/builder-images',
+  getParentRoute: () => AdminRoute,
 } as any)
-const DotlovableOauthConsentRoute = DotlovableOauthConsentRouteImport.update({
-  id: '/.lovable/oauth/consent',
-  path: '/.lovable/oauth/consent',
-  getParentRoute: () => rootRouteImport,
+const AdminAvailabilityRoute = AdminAvailabilityRouteImport.update({
+  id: '/availability',
+  path: '/availability',
+  getParentRoute: () => AdminRoute,
 } as any)
-const Char91DotmcpChar93InvokeToolToolRoute =
-  Char91DotmcpChar93InvokeToolToolRouteImport.update({
-    id: '/.mcp/invoke-tool/$tool',
-    path: '/.mcp/invoke-tool/$tool',
+const AdminAnalyticsHealthRoute = AdminAnalyticsHealthRouteImport.update({
+  id: '/analytics-health',
+  path: '/analytics-health',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminAiAuditRoute = AdminAiAuditRouteImport.update({
+  id: '/ai-audit',
+  path: '/ai-audit',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminActivityRoute = AdminActivityRouteImport.update({
+  id: '/activity',
+  path: '/activity',
+  getParentRoute: () => AdminRoute,
+} as any)
+const Char91DotwellKnownChar93OauthProtectedResourceRoute =
+  Char91DotwellKnownChar93OauthProtectedResourceRouteImport.update({
+    id: '/.well-known/oauth-protected-resource',
+    path: '/.well-known/oauth-protected-resource',
     getParentRoute: () => rootRouteImport,
   } as any)
-const AdminBookingsIndexRoute = AdminBookingsIndexRouteImport.update({
-  id: '/bookings/',
-  path: '/bookings/',
-  getParentRoute: () => AdminRoute,
-} as any)
-const AdminBookingsIdRoute = AdminBookingsIdRouteImport.update({
-  id: '/bookings/$id',
-  path: '/bookings/$id',
-  getParentRoute: () => AdminRoute,
-} as any)
-const AdminBookingsNewRoute = AdminBookingsNewRouteImport.update({
-  id: '/bookings/new',
-  path: '/bookings/new',
-  getParentRoute: () => AdminRoute,
+const Char91DotmcpChar93ListToolsRoute =
+  Char91DotmcpChar93ListToolsRouteImport.update({
+    id: '/.mcp/list-tools',
+    path: '/.mcp/list-tools',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const GuideToursIndexRoute = GuideToursIndexRouteImport.update({
+  id: '/tours/',
+  path: '/tours/',
+  getParentRoute: () => GuideRoute,
 } as any)
 const AdminGuidesIndexRoute = AdminGuidesIndexRouteImport.update({
   id: '/guides/',
   path: '/guides/',
   getParentRoute: () => AdminRoute,
 } as any)
-const AdminGuidesIdRoute = AdminGuidesIdRouteImport.update({
-  id: '/guides/$id',
-  path: '/guides/$id',
+const AdminBookingsIndexRoute = AdminBookingsIndexRouteImport.update({
+  id: '/bookings/',
+  path: '/bookings/',
   getParentRoute: () => AdminRoute,
 } as any)
-const ApiPublicBookingCalendarRoute =
-  ApiPublicBookingCalendarRouteImport.update({
-    id: '/api/public/booking-calendar',
-    path: '/api/public/booking-calendar',
+const ToursTourIdTailorRoute = ToursTourIdTailorRouteImport.update({
+  id: '/tours_/$tourId/tailor',
+  path: '/tours/$tourId/tailor',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const StudioV2ITokenRoute = StudioV2ITokenRouteImport.update({
+  id: '/i/$token',
+  path: '/i/$token',
+  getParentRoute: () => StudioV2Route,
+} as any)
+const LovableEmailSuppressionRoute = LovableEmailSuppressionRouteImport.update({
+  id: '/lovable/email/suppression',
+  path: '/lovable/email/suppression',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const GuideToursAssignmentIdRoute = GuideToursAssignmentIdRouteImport.update({
+  id: '/tours/$assignmentId',
+  path: '/tours/$assignmentId',
+  getParentRoute: () => GuideRoute,
+} as any)
+const FunctionsV1StripeWebhookRoute =
+  FunctionsV1StripeWebhookRouteImport.update({
+    id: '/functions/v1/stripe-webhook',
+    path: '/functions/v1/stripe-webhook',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const ApiPublicProposalRequestRoute =
+  ApiPublicProposalRequestRouteImport.update({
+    id: '/api/public/proposal-request',
+    path: '/api/public/proposal-request',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const ApiPublicPricingSsotRoute = ApiPublicPricingSsotRouteImport.update({
+  id: '/api/public/pricing-ssot',
+  path: '/api/public/pricing-ssot',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiPublicEditorialPhotoRoute = ApiPublicEditorialPhotoRouteImport.update({
+  id: '/api/public/editorial-photo',
+  path: '/api/public/editorial-photo',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiPublicContactRoute = ApiPublicContactRouteImport.update({
+  id: '/api/public/contact',
+  path: '/api/public/contact',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiPublicBookingRequestRoute = ApiPublicBookingRequestRouteImport.update({
+  id: '/api/public/booking-request',
+  path: '/api/public/booking-request',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiPublicBookingItineraryDataRoute =
+  ApiPublicBookingItineraryDataRouteImport.update({
+    id: '/api/public/booking-itinerary-data',
+    path: '/api/public/booking-itinerary-data',
     getParentRoute: () => rootRouteImport,
   } as any)
 const ApiPublicBookingItineraryRoute =
@@ -1153,160 +1184,42 @@ const ApiPublicBookingItineraryRoute =
     path: '/api/public/booking-itinerary',
     getParentRoute: () => rootRouteImport,
   } as any)
-const ApiPublicBookingItineraryDataRoute =
-  ApiPublicBookingItineraryDataRouteImport.update({
-    id: '/api/public/booking-itinerary-data',
-    path: '/api/public/booking-itinerary-data',
+const ApiPublicBookingCalendarRoute =
+  ApiPublicBookingCalendarRouteImport.update({
+    id: '/api/public/booking-calendar',
+    path: '/api/public/booking-calendar',
     getParentRoute: () => rootRouteImport,
   } as any)
-const ApiPublicBookingRequestRoute = ApiPublicBookingRequestRouteImport.update({
-  id: '/api/public/booking-request',
-  path: '/api/public/booking-request',
+const AdminGuidesIdRoute = AdminGuidesIdRouteImport.update({
+  id: '/guides/$id',
+  path: '/guides/$id',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminBookingsNewRoute = AdminBookingsNewRouteImport.update({
+  id: '/bookings/new',
+  path: '/bookings/new',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminBookingsIdRoute = AdminBookingsIdRouteImport.update({
+  id: '/bookings/$id',
+  path: '/bookings/$id',
+  getParentRoute: () => AdminRoute,
+} as any)
+const Char91DotmcpChar93InvokeToolToolRoute =
+  Char91DotmcpChar93InvokeToolToolRouteImport.update({
+    id: '/.mcp/invoke-tool/$tool',
+    path: '/.mcp/invoke-tool/$tool',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const DotlovableOauthConsentRoute = DotlovableOauthConsentRouteImport.update({
+  id: '/.lovable/oauth/consent',
+  path: '/.lovable/oauth/consent',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ApiPublicContactRoute = ApiPublicContactRouteImport.update({
-  id: '/api/public/contact',
-  path: '/api/public/contact',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ApiPublicEditorialPhotoRoute = ApiPublicEditorialPhotoRouteImport.update({
-  id: '/api/public/editorial-photo',
-  path: '/api/public/editorial-photo',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ApiPublicPricingSsotRoute = ApiPublicPricingSsotRouteImport.update({
-  id: '/api/public/pricing-ssot',
-  path: '/api/public/pricing-ssot',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ApiPublicProposalRequestRoute =
-  ApiPublicProposalRequestRouteImport.update({
-    id: '/api/public/proposal-request',
-    path: '/api/public/proposal-request',
-    getParentRoute: () => rootRouteImport,
-  } as any)
-const FunctionsV1StripeWebhookRoute =
-  FunctionsV1StripeWebhookRouteImport.update({
-    id: '/functions/v1/stripe-webhook',
-    path: '/functions/v1/stripe-webhook',
-    getParentRoute: () => rootRouteImport,
-  } as any)
-const GuideToursIndexRoute = GuideToursIndexRouteImport.update({
-  id: '/tours/',
-  path: '/tours/',
-  getParentRoute: () => GuideRoute,
-} as any)
-const GuideToursAssignmentIdRoute = GuideToursAssignmentIdRouteImport.update({
-  id: '/tours/$assignmentId',
-  path: '/tours/$assignmentId',
-  getParentRoute: () => GuideRoute,
-} as any)
-const LovableEmailSuppressionRoute = LovableEmailSuppressionRouteImport.update({
-  id: '/lovable/email/suppression',
-  path: '/lovable/email/suppression',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const StudioV2ITokenRoute = StudioV2ITokenRouteImport.update({
-  id: '/i/$token',
-  path: '/i/$token',
-  getParentRoute: () => StudioV2Route,
-} as any)
-const ToursTourIdTailorRoute = ToursTourIdTailorRouteImport.update({
-  id: '/tours_/$tourId/tailor',
-  path: '/tours/$tourId/tailor',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ApiPublicFeedsThingsToDoDotjsonRoute =
-  ApiPublicFeedsThingsToDoDotjsonRouteImport.update({
-    id: '/api/public/feeds/things-to-do.json',
-    path: '/api/public/feeds/things-to-do.json',
-    getParentRoute: () => rootRouteImport,
-  } as any)
-const ApiPublicFeedsThingsToDoDotxmlRoute =
-  ApiPublicFeedsThingsToDoDotxmlRouteImport.update({
-    id: '/api/public/feeds/things-to-do.xml',
-    path: '/api/public/feeds/things-to-do.xml',
-    getParentRoute: () => rootRouteImport,
-  } as any)
-const ApiPublicHooksBokunBookingRoute =
-  ApiPublicHooksBokunBookingRouteImport.update({
-    id: '/api/public/hooks/bokun-booking',
-    path: '/api/public/hooks/bokun-booking',
-    getParentRoute: () => rootRouteImport,
-  } as any)
-const ApiPublicHooksBookingCancelledEmailRoute =
-  ApiPublicHooksBookingCancelledEmailRouteImport.update({
-    id: '/api/public/hooks/booking-cancelled-email',
-    path: '/api/public/hooks/booking-cancelled-email',
-    getParentRoute: () => rootRouteImport,
-  } as any)
-const ApiPublicHooksCheckoutEmailRoute =
-  ApiPublicHooksCheckoutEmailRouteImport.update({
-    id: '/api/public/hooks/checkout-email',
-    path: '/api/public/hooks/checkout-email',
-    getParentRoute: () => rootRouteImport,
-  } as any)
-const ApiPublicHooksDnsWatchRoute = ApiPublicHooksDnsWatchRouteImport.update({
-  id: '/api/public/hooks/dns-watch',
-  path: '/api/public/hooks/dns-watch',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ApiPublicHooksEmailFlushRoute =
-  ApiPublicHooksEmailFlushRouteImport.update({
-    id: '/api/public/hooks/email-flush',
-    path: '/api/public/hooks/email-flush',
-    getParentRoute: () => rootRouteImport,
-  } as any)
-const ApiPublicHooksEnquiryFollowupRoute =
-  ApiPublicHooksEnquiryFollowupRouteImport.update({
-    id: '/api/public/hooks/enquiry-followup',
-    path: '/api/public/hooks/enquiry-followup',
-    getParentRoute: () => rootRouteImport,
-  } as any)
-const ApiPublicHooksGmailBookingScanRoute =
-  ApiPublicHooksGmailBookingScanRouteImport.update({
-    id: '/api/public/hooks/gmail-booking-scan',
-    path: '/api/public/hooks/gmail-booking-scan',
-    getParentRoute: () => rootRouteImport,
-  } as any)
-const ApiPublicHooksImportTripadvisorReviewsRoute =
-  ApiPublicHooksImportTripadvisorReviewsRouteImport.update({
-    id: '/api/public/hooks/import-tripadvisor-reviews',
-    path: '/api/public/hooks/import-tripadvisor-reviews',
-    getParentRoute: () => rootRouteImport,
-  } as any)
-const ApiPublicHooksStripeWebhookHealthRoute =
-  ApiPublicHooksStripeWebhookHealthRouteImport.update({
-    id: '/api/public/hooks/stripe-webhook-health',
-    path: '/api/public/hooks/stripe-webhook-health',
-    getParentRoute: () => rootRouteImport,
-  } as any)
-const ApiPublicHooksViatorDriftCheckRoute =
-  ApiPublicHooksViatorDriftCheckRouteImport.update({
-    id: '/api/public/hooks/viator-drift-check',
-    path: '/api/public/hooks/viator-drift-check',
-    getParentRoute: () => rootRouteImport,
-  } as any)
-const ApiPublicWhatsappWebhookRoute =
-  ApiPublicWhatsappWebhookRouteImport.update({
-    id: '/api/public/whatsapp/webhook',
-    path: '/api/public/whatsapp/webhook',
-    getParentRoute: () => rootRouteImport,
-  } as any)
-const LovableEmailAuthPreviewRoute = LovableEmailAuthPreviewRouteImport.update({
-  id: '/lovable/email/auth/preview',
-  path: '/lovable/email/auth/preview',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const LovableEmailAuthWebhookRoute = LovableEmailAuthWebhookRouteImport.update({
-  id: '/lovable/email/auth/webhook',
-  path: '/lovable/email/auth/webhook',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const LovableEmailQueueProcessRoute =
-  LovableEmailQueueProcessRouteImport.update({
-    id: '/lovable/email/queue/process',
-    path: '/lovable/email/queue/process',
+const LovableEmailTransactionalSendRoute =
+  LovableEmailTransactionalSendRouteImport.update({
+    id: '/lovable/email/transactional/send',
+    path: '/lovable/email/transactional/send',
     getParentRoute: () => rootRouteImport,
   } as any)
 const LovableEmailTransactionalPreviewRoute =
@@ -1315,10 +1228,97 @@ const LovableEmailTransactionalPreviewRoute =
     path: '/lovable/email/transactional/preview',
     getParentRoute: () => rootRouteImport,
   } as any)
-const LovableEmailTransactionalSendRoute =
-  LovableEmailTransactionalSendRouteImport.update({
-    id: '/lovable/email/transactional/send',
-    path: '/lovable/email/transactional/send',
+const LovableEmailQueueProcessRoute =
+  LovableEmailQueueProcessRouteImport.update({
+    id: '/lovable/email/queue/process',
+    path: '/lovable/email/queue/process',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const LovableEmailAuthWebhookRoute = LovableEmailAuthWebhookRouteImport.update({
+  id: '/lovable/email/auth/webhook',
+  path: '/lovable/email/auth/webhook',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LovableEmailAuthPreviewRoute = LovableEmailAuthPreviewRouteImport.update({
+  id: '/lovable/email/auth/preview',
+  path: '/lovable/email/auth/preview',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiPublicWhatsappWebhookRoute =
+  ApiPublicWhatsappWebhookRouteImport.update({
+    id: '/api/public/whatsapp/webhook',
+    path: '/api/public/whatsapp/webhook',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const ApiPublicHooksViatorDriftCheckRoute =
+  ApiPublicHooksViatorDriftCheckRouteImport.update({
+    id: '/api/public/hooks/viator-drift-check',
+    path: '/api/public/hooks/viator-drift-check',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const ApiPublicHooksStripeWebhookHealthRoute =
+  ApiPublicHooksStripeWebhookHealthRouteImport.update({
+    id: '/api/public/hooks/stripe-webhook-health',
+    path: '/api/public/hooks/stripe-webhook-health',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const ApiPublicHooksImportTripadvisorReviewsRoute =
+  ApiPublicHooksImportTripadvisorReviewsRouteImport.update({
+    id: '/api/public/hooks/import-tripadvisor-reviews',
+    path: '/api/public/hooks/import-tripadvisor-reviews',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const ApiPublicHooksGmailBookingScanRoute =
+  ApiPublicHooksGmailBookingScanRouteImport.update({
+    id: '/api/public/hooks/gmail-booking-scan',
+    path: '/api/public/hooks/gmail-booking-scan',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const ApiPublicHooksEnquiryFollowupRoute =
+  ApiPublicHooksEnquiryFollowupRouteImport.update({
+    id: '/api/public/hooks/enquiry-followup',
+    path: '/api/public/hooks/enquiry-followup',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const ApiPublicHooksEmailFlushRoute =
+  ApiPublicHooksEmailFlushRouteImport.update({
+    id: '/api/public/hooks/email-flush',
+    path: '/api/public/hooks/email-flush',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const ApiPublicHooksDnsWatchRoute = ApiPublicHooksDnsWatchRouteImport.update({
+  id: '/api/public/hooks/dns-watch',
+  path: '/api/public/hooks/dns-watch',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiPublicHooksCheckoutEmailRoute =
+  ApiPublicHooksCheckoutEmailRouteImport.update({
+    id: '/api/public/hooks/checkout-email',
+    path: '/api/public/hooks/checkout-email',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const ApiPublicHooksBookingCancelledEmailRoute =
+  ApiPublicHooksBookingCancelledEmailRouteImport.update({
+    id: '/api/public/hooks/booking-cancelled-email',
+    path: '/api/public/hooks/booking-cancelled-email',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const ApiPublicHooksBokunBookingRoute =
+  ApiPublicHooksBokunBookingRouteImport.update({
+    id: '/api/public/hooks/bokun-booking',
+    path: '/api/public/hooks/bokun-booking',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const ApiPublicFeedsThingsToDoDotxmlRoute =
+  ApiPublicFeedsThingsToDoDotxmlRouteImport.update({
+    id: '/api/public/feeds/things-to-do.xml',
+    path: '/api/public/feeds/things-to-do.xml',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const ApiPublicFeedsThingsToDoDotjsonRoute =
+  ApiPublicFeedsThingsToDoDotjsonRouteImport.update({
+    id: '/api/public/feeds/things-to-do.json',
+    path: '/api/public/feeds/things-to-do.json',
     getParentRoute: () => rootRouteImport,
   } as any)
 
@@ -2738,585 +2738,11 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/': {
-      id: '/'
-      path: '/'
-      fullPath: '/'
-      preLoaderRoute: typeof IndexRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/about': {
-      id: '/about'
-      path: '/about'
-      fullPath: '/about'
-      preLoaderRoute: typeof AboutRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/admin': {
-      id: '/admin'
-      path: '/admin'
-      fullPath: '/admin'
-      preLoaderRoute: typeof AdminRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/alentejo-wine-tour-from-lisbon': {
-      id: '/alentejo-wine-tour-from-lisbon'
-      path: '/alentejo-wine-tour-from-lisbon'
-      fullPath: '/alentejo-wine-tour-from-lisbon'
-      preLoaderRoute: typeof AlentejoWineTourFromLisbonRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/arrabida-day-trip-from-lisbon': {
-      id: '/arrabida-day-trip-from-lisbon'
-      path: '/arrabida-day-trip-from-lisbon'
-      fullPath: '/arrabida-day-trip-from-lisbon'
-      preLoaderRoute: typeof ArrabidaDayTripFromLisbonRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/arrabida-wine-tour': {
-      id: '/arrabida-wine-tour'
-      path: '/arrabida-wine-tour'
-      fullPath: '/arrabida-wine-tour'
-      preLoaderRoute: typeof ArrabidaWineTourRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/auth': {
-      id: '/auth'
-      path: '/auth'
-      fullPath: '/auth'
-      preLoaderRoute: typeof AuthRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/best-wine-tasting-near-lisbon': {
-      id: '/best-wine-tasting-near-lisbon'
-      path: '/best-wine-tasting-near-lisbon'
-      fullPath: '/best-wine-tasting-near-lisbon'
-      preLoaderRoute: typeof BestWineTastingNearLisbonRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/best-wine-tours-lisbon': {
-      id: '/best-wine-tours-lisbon'
-      path: '/best-wine-tours-lisbon'
-      fullPath: '/best-wine-tours-lisbon'
-      preLoaderRoute: typeof BestWineToursLisbonRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/book': {
-      id: '/book'
-      path: '/book'
-      fullPath: '/book'
-      preLoaderRoute: typeof BookRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/booking-confirmed': {
-      id: '/booking-confirmed'
-      path: '/booking-confirmed'
-      fullPath: '/booking-confirmed'
-      preLoaderRoute: typeof BookingConfirmedRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/booking-receipt': {
-      id: '/booking-receipt'
-      path: '/booking-receipt'
-      fullPath: '/booking-receipt'
-      preLoaderRoute: typeof BookingReceiptRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/brand-qa': {
-      id: '/brand-qa'
-      path: '/brand-qa'
-      fullPath: '/brand-qa'
-      preLoaderRoute: typeof BrandQaRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/builder': {
-      id: '/builder'
-      path: '/builder'
-      fullPath: '/builder'
-      preLoaderRoute: typeof BuilderRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/contact': {
-      id: '/contact'
-      path: '/contact'
-      fullPath: '/contact'
-      preLoaderRoute: typeof ContactRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/cookies': {
-      id: '/cookies'
-      path: '/cookies'
-      fullPath: '/cookies'
-      preLoaderRoute: typeof CookiesRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/corporate': {
-      id: '/corporate'
-      path: '/corporate'
-      fullPath: '/corporate'
-      preLoaderRoute: typeof CorporateRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/day-tours': {
-      id: '/day-tours'
-      path: '/day-tours'
-      fullPath: '/day-tours'
-      preLoaderRoute: typeof DayToursRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/day-trips-from-lisbon': {
-      id: '/day-trips-from-lisbon'
-      path: '/day-trips-from-lisbon'
-      fullPath: '/day-trips-from-lisbon'
-      preLoaderRoute: typeof DayTripsFromLisbonRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/evora-alentejo-wine-tour': {
-      id: '/evora-alentejo-wine-tour'
-      path: '/evora-alentejo-wine-tour'
-      fullPath: '/evora-alentejo-wine-tour'
-      preLoaderRoute: typeof EvoraAlentejoWineTourRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/evora-private-tour-from-lisbon': {
-      id: '/evora-private-tour-from-lisbon'
-      path: '/evora-private-tour-from-lisbon'
-      fullPath: '/evora-private-tour-from-lisbon'
-      preLoaderRoute: typeof EvoraPrivateTourFromLisbonRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/experience-studio': {
-      id: '/experience-studio'
-      path: '/experience-studio'
-      fullPath: '/experience-studio'
-      preLoaderRoute: typeof ExperienceStudioRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/experiences': {
-      id: '/experiences'
-      path: '/experiences'
-      fullPath: '/experiences'
-      preLoaderRoute: typeof ExperiencesRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/faq': {
-      id: '/faq'
-      path: '/faq'
-      fullPath: '/faq'
-      preLoaderRoute: typeof FaqRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/guide': {
-      id: '/guide'
-      path: '/guide'
-      fullPath: '/guide'
-      preLoaderRoute: typeof GuideRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/guide-reset-password': {
-      id: '/guide-reset-password'
-      path: '/guide-reset-password'
-      fullPath: '/guide-reset-password'
-      preLoaderRoute: typeof GuideResetPasswordRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/hero-verify': {
-      id: '/hero-verify'
-      path: '/hero-verify'
-      fullPath: '/hero-verify'
-      preLoaderRoute: typeof HeroVerifyRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/how-many-days-in-portugal': {
-      id: '/how-many-days-in-portugal'
-      path: '/how-many-days-in-portugal'
-      fullPath: '/how-many-days-in-portugal'
-      preLoaderRoute: typeof HowManyDaysInPortugalRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/itinerary': {
-      id: '/itinerary'
-      path: '/itinerary'
-      fullPath: '/itinerary'
-      preLoaderRoute: typeof ItineraryRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/lisbon-private-tours': {
-      id: '/lisbon-private-tours'
-      path: '/lisbon-private-tours'
-      fullPath: '/lisbon-private-tours'
-      preLoaderRoute: typeof LisbonPrivateToursRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/lisbon-wine-tour-pickup-and-wineries': {
-      id: '/lisbon-wine-tour-pickup-and-wineries'
-      path: '/lisbon-wine-tour-pickup-and-wineries'
-      fullPath: '/lisbon-wine-tour-pickup-and-wineries'
-      preLoaderRoute: typeof LisbonWineTourPickupAndWineriesRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/lisbon-wine-tour-prices-and-inclusions': {
-      id: '/lisbon-wine-tour-prices-and-inclusions'
-      path: '/lisbon-wine-tour-prices-and-inclusions'
-      fullPath: '/lisbon-wine-tour-prices-and-inclusions'
-      preLoaderRoute: typeof LisbonWineTourPricesAndInclusionsRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/lisbon-wine-tours': {
-      id: '/lisbon-wine-tours'
-      path: '/lisbon-wine-tours'
-      fullPath: '/lisbon-wine-tours'
-      preLoaderRoute: typeof LisbonWineToursRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/local-stories': {
-      id: '/local-stories'
-      path: '/local-stories'
-      fullPath: '/local-stories'
-      preLoaderRoute: typeof LocalStoriesRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/luxury-tours-portugal': {
-      id: '/luxury-tours-portugal'
-      path: '/luxury-tours-portugal'
-      fullPath: '/luxury-tours-portugal'
-      preLoaderRoute: typeof LuxuryToursPortugalRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/mcp': {
-      id: '/mcp'
-      path: '/mcp'
-      fullPath: '/mcp'
-      preLoaderRoute: typeof McpRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/mcp-signin': {
-      id: '/mcp-signin'
-      path: '/mcp-signin'
-      fullPath: '/mcp-signin'
-      preLoaderRoute: typeof McpSigninRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/moments': {
-      id: '/moments'
-      path: '/moments'
-      fullPath: '/moments'
-      preLoaderRoute: typeof MomentsRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/multi-day': {
-      id: '/multi-day'
-      path: '/multi-day'
-      fullPath: '/multi-day'
-      preLoaderRoute: typeof MultiDayRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/partners': {
-      id: '/partners'
-      path: '/partners'
-      fullPath: '/partners'
-      preLoaderRoute: typeof PartnersRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/portugal-for-american-travelers': {
-      id: '/portugal-for-american-travelers'
-      path: '/portugal-for-american-travelers'
-      fullPath: '/portugal-for-american-travelers'
-      preLoaderRoute: typeof PortugalForAmericanTravelersRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/portugal-itinerary': {
-      id: '/portugal-itinerary'
-      path: '/portugal-itinerary'
-      fullPath: '/portugal-itinerary'
-      preLoaderRoute: typeof PortugalItineraryRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/portugal-tours': {
-      id: '/portugal-tours'
-      path: '/portugal-tours'
-      fullPath: '/portugal-tours'
-      preLoaderRoute: typeof PortugalToursRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/portugal-travel-designer': {
-      id: '/portugal-travel-designer'
-      path: '/portugal-travel-designer'
-      fullPath: '/portugal-travel-designer'
-      preLoaderRoute: typeof PortugalTravelDesignerRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/portugal-wine-tours': {
-      id: '/portugal-wine-tours'
-      path: '/portugal-wine-tours'
-      fullPath: '/portugal-wine-tours'
-      preLoaderRoute: typeof PortugalWineToursRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/press': {
-      id: '/press'
-      path: '/press'
-      fullPath: '/press'
-      preLoaderRoute: typeof PressRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/preview-check': {
-      id: '/preview-check'
-      path: '/preview-check'
-      fullPath: '/preview-check'
-      preLoaderRoute: typeof PreviewCheckRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/privacy': {
-      id: '/privacy'
-      path: '/privacy'
-      fullPath: '/privacy'
-      preLoaderRoute: typeof PrivacyRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/private-tours-alentejo-evora': {
-      id: '/private-tours-alentejo-evora'
-      path: '/private-tours-alentejo-evora'
-      fullPath: '/private-tours-alentejo-evora'
-      preLoaderRoute: typeof PrivateToursAlentejoEvoraRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/private-tours-arrabida-sesimbra': {
-      id: '/private-tours-arrabida-sesimbra'
-      path: '/private-tours-arrabida-sesimbra'
-      fullPath: '/private-tours-arrabida-sesimbra'
-      preLoaderRoute: typeof PrivateToursArrabidaSesimbraRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/private-tours-azeitao': {
-      id: '/private-tours-azeitao'
-      path: '/private-tours-azeitao'
-      fullPath: '/private-tours-azeitao'
-      preLoaderRoute: typeof PrivateToursAzeitaoRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/private-tours-azeitao-setubal': {
-      id: '/private-tours-azeitao-setubal'
-      path: '/private-tours-azeitao-setubal'
-      fullPath: '/private-tours-azeitao-setubal'
-      preLoaderRoute: typeof PrivateToursAzeitaoSetubalRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/private-tours-cascais': {
-      id: '/private-tours-cascais'
-      path: '/private-tours-cascais'
-      fullPath: '/private-tours-cascais'
-      preLoaderRoute: typeof PrivateToursCascaisRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/private-tours-centro-silver-coast': {
-      id: '/private-tours-centro-silver-coast'
-      path: '/private-tours-centro-silver-coast'
-      fullPath: '/private-tours-centro-silver-coast'
-      preLoaderRoute: typeof PrivateToursCentroSilverCoastRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/private-tours-comporta': {
-      id: '/private-tours-comporta'
-      path: '/private-tours-comporta'
-      fullPath: '/private-tours-comporta'
-      preLoaderRoute: typeof PrivateToursComportaRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/private-tours-comporta-troia': {
-      id: '/private-tours-comporta-troia'
-      path: '/private-tours-comporta-troia'
-      fullPath: '/private-tours-comporta-troia'
-      preLoaderRoute: typeof PrivateToursComportaTroiaRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/private-tours-evora': {
-      id: '/private-tours-evora'
-      path: '/private-tours-evora'
-      fullPath: '/private-tours-evora'
-      preLoaderRoute: typeof PrivateToursEvoraRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/private-tours-from-lisbon': {
-      id: '/private-tours-from-lisbon'
-      path: '/private-tours-from-lisbon'
-      fullPath: '/private-tours-from-lisbon'
-      preLoaderRoute: typeof PrivateToursFromLisbonRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/private-tours-lisbon': {
-      id: '/private-tours-lisbon'
-      path: '/private-tours-lisbon'
-      fullPath: '/private-tours-lisbon'
-      preLoaderRoute: typeof PrivateToursLisbonRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/private-tours-portugal': {
-      id: '/private-tours-portugal'
-      path: '/private-tours-portugal'
-      fullPath: '/private-tours-portugal'
-      preLoaderRoute: typeof PrivateToursPortugalRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/private-tours-sesimbra': {
-      id: '/private-tours-sesimbra'
-      path: '/private-tours-sesimbra'
-      fullPath: '/private-tours-sesimbra'
-      preLoaderRoute: typeof PrivateToursSesimbraRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/private-tours-setubal': {
-      id: '/private-tours-setubal'
-      path: '/private-tours-setubal'
-      fullPath: '/private-tours-setubal'
-      preLoaderRoute: typeof PrivateToursSetubalRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/private-tours-sintra': {
-      id: '/private-tours-sintra'
-      path: '/private-tours-sintra'
-      fullPath: '/private-tours-sintra'
-      preLoaderRoute: typeof PrivateToursSintraRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/private-tours-sintra-cascais': {
-      id: '/private-tours-sintra-cascais'
-      path: '/private-tours-sintra-cascais'
-      fullPath: '/private-tours-sintra-cascais'
-      preLoaderRoute: typeof PrivateToursSintraCascaisRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/private-tours-troia': {
-      id: '/private-tours-troia'
-      path: '/private-tours-troia'
-      fullPath: '/private-tours-troia'
-      preLoaderRoute: typeof PrivateToursTroiaRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/private-wine-tour-lisbon': {
-      id: '/private-wine-tour-lisbon'
-      path: '/private-wine-tour-lisbon'
-      fullPath: '/private-wine-tour-lisbon'
-      preLoaderRoute: typeof PrivateWineTourLisbonRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/proposal-in-portugal': {
-      id: '/proposal-in-portugal'
-      path: '/proposal-in-portugal'
-      fullPath: '/proposal-in-portugal'
-      preLoaderRoute: typeof ProposalInPortugalRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/proposals': {
-      id: '/proposals'
-      path: '/proposals'
-      fullPath: '/proposals'
-      preLoaderRoute: typeof ProposalsRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/pt': {
-      id: '/pt'
-      path: '/pt'
-      fullPath: '/pt'
-      preLoaderRoute: typeof PtRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/regions-of-portugal': {
-      id: '/regions-of-portugal'
-      path: '/regions-of-portugal'
-      fullPath: '/regions-of-portugal'
-      preLoaderRoute: typeof RegionsOfPortugalRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/reviews': {
-      id: '/reviews'
-      path: '/reviews'
-      fullPath: '/reviews'
-      preLoaderRoute: typeof ReviewsRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/search': {
-      id: '/search'
-      path: '/search'
-      fullPath: '/search'
-      preLoaderRoute: typeof SearchRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/sintra-day-tour-from-lisbon': {
-      id: '/sintra-day-tour-from-lisbon'
-      path: '/sintra-day-tour-from-lisbon'
-      fullPath: '/sintra-day-tour-from-lisbon'
-      preLoaderRoute: typeof SintraDayTourFromLisbonRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/sitemap-images.xml': {
-      id: '/sitemap-images.xml'
-      path: '/sitemap-images.xml'
-      fullPath: '/sitemap-images.xml'
-      preLoaderRoute: typeof SitemapImagesDotxmlRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/sitemap.xml': {
-      id: '/sitemap.xml'
-      path: '/sitemap.xml'
-      fullPath: '/sitemap.xml'
-      preLoaderRoute: typeof SitemapDotxmlRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/studio': {
-      id: '/studio'
-      path: '/studio'
-      fullPath: '/studio'
-      preLoaderRoute: typeof StudioRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/studio-drift': {
-      id: '/studio-drift'
-      path: '/studio-drift'
-      fullPath: '/studio-drift'
-      preLoaderRoute: typeof StudioDriftRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/studio-living-atlas-preview': {
-      id: '/studio-living-atlas-preview'
-      path: '/studio-living-atlas-preview'
-      fullPath: '/studio-living-atlas-preview'
-      preLoaderRoute: typeof StudioLivingAtlasPreviewRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/studio-v2': {
-      id: '/studio-v2'
-      path: '/studio-v2'
-      fullPath: '/studio-v2'
-      preLoaderRoute: typeof StudioV2RouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/studio-v3': {
-      id: '/studio-v3'
-      path: '/studio-v3'
-      fullPath: '/studio-v3'
-      preLoaderRoute: typeof StudioV3RouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/terms': {
-      id: '/terms'
-      path: '/terms'
-      fullPath: '/terms'
-      preLoaderRoute: typeof TermsRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/trade': {
-      id: '/trade'
-      path: '/trade'
-      fullPath: '/trade'
-      preLoaderRoute: typeof TradeRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/typography-audit': {
-      id: '/typography-audit'
-      path: '/typography-audit'
-      fullPath: '/typography-audit'
-      preLoaderRoute: typeof TypographyAuditRouteImport
+    '/wine-tours-lisbon': {
+      id: '/wine-tours-lisbon'
+      path: '/wine-tours-lisbon'
+      fullPath: '/wine-tours-lisbon'
+      preLoaderRoute: typeof WineToursLisbonRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/unsubscribe': {
@@ -3326,495 +2752,586 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof UnsubscribeRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/wine-tours-lisbon': {
-      id: '/wine-tours-lisbon'
-      path: '/wine-tours-lisbon'
-      fullPath: '/wine-tours-lisbon'
-      preLoaderRoute: typeof WineToursLisbonRouteImport
+    '/typography-audit': {
+      id: '/typography-audit'
+      path: '/typography-audit'
+      fullPath: '/typography-audit'
+      preLoaderRoute: typeof TypographyAuditRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/.mcp/list-tools': {
-      id: '/.mcp/list-tools'
-      path: '/.mcp/list-tools'
-      fullPath: '/.mcp/list-tools'
-      preLoaderRoute: typeof Char91DotmcpChar93ListToolsRouteImport
+    '/trade': {
+      id: '/trade'
+      path: '/trade'
+      fullPath: '/trade'
+      preLoaderRoute: typeof TradeRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/.well-known/oauth-protected-resource': {
-      id: '/.well-known/oauth-protected-resource'
-      path: '/.well-known/oauth-protected-resource'
-      fullPath: '/.well-known/oauth-protected-resource'
-      preLoaderRoute: typeof Char91DotwellKnownChar93OauthProtectedResourceRouteImport
+    '/terms': {
+      id: '/terms'
+      path: '/terms'
+      fullPath: '/terms'
+      preLoaderRoute: typeof TermsRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/admin/': {
-      id: '/admin/'
-      path: '/'
-      fullPath: '/admin/'
-      preLoaderRoute: typeof AdminIndexRouteImport
-      parentRoute: typeof AdminRoute
+    '/studio-v3': {
+      id: '/studio-v3'
+      path: '/studio-v3'
+      fullPath: '/studio-v3'
+      preLoaderRoute: typeof StudioV3RouteImport
+      parentRoute: typeof rootRouteImport
     }
-    '/admin/activity': {
-      id: '/admin/activity'
-      path: '/activity'
-      fullPath: '/admin/activity'
-      preLoaderRoute: typeof AdminActivityRouteImport
-      parentRoute: typeof AdminRoute
+    '/studio-v2': {
+      id: '/studio-v2'
+      path: '/studio-v2'
+      fullPath: '/studio-v2'
+      preLoaderRoute: typeof StudioV2RouteImport
+      parentRoute: typeof rootRouteImport
     }
-    '/admin/ai-audit': {
-      id: '/admin/ai-audit'
-      path: '/ai-audit'
-      fullPath: '/admin/ai-audit'
-      preLoaderRoute: typeof AdminAiAuditRouteImport
-      parentRoute: typeof AdminRoute
+    '/studio-living-atlas-preview': {
+      id: '/studio-living-atlas-preview'
+      path: '/studio-living-atlas-preview'
+      fullPath: '/studio-living-atlas-preview'
+      preLoaderRoute: typeof StudioLivingAtlasPreviewRouteImport
+      parentRoute: typeof rootRouteImport
     }
-    '/admin/analytics-health': {
-      id: '/admin/analytics-health'
-      path: '/analytics-health'
-      fullPath: '/admin/analytics-health'
-      preLoaderRoute: typeof AdminAnalyticsHealthRouteImport
-      parentRoute: typeof AdminRoute
+    '/studio-drift': {
+      id: '/studio-drift'
+      path: '/studio-drift'
+      fullPath: '/studio-drift'
+      preLoaderRoute: typeof StudioDriftRouteImport
+      parentRoute: typeof rootRouteImport
     }
-    '/admin/availability': {
-      id: '/admin/availability'
-      path: '/availability'
-      fullPath: '/admin/availability'
-      preLoaderRoute: typeof AdminAvailabilityRouteImport
-      parentRoute: typeof AdminRoute
+    '/studio': {
+      id: '/studio'
+      path: '/studio'
+      fullPath: '/studio'
+      preLoaderRoute: typeof StudioRouteImport
+      parentRoute: typeof rootRouteImport
     }
-    '/admin/builder-images': {
-      id: '/admin/builder-images'
-      path: '/builder-images'
-      fullPath: '/admin/builder-images'
-      preLoaderRoute: typeof AdminBuilderImagesRouteImport
-      parentRoute: typeof AdminRoute
+    '/sitemap.xml': {
+      id: '/sitemap.xml'
+      path: '/sitemap.xml'
+      fullPath: '/sitemap.xml'
+      preLoaderRoute: typeof SitemapDotxmlRouteImport
+      parentRoute: typeof rootRouteImport
     }
-    '/admin/builder-images-qa': {
-      id: '/admin/builder-images-qa'
-      path: '/builder-images-qa'
-      fullPath: '/admin/builder-images-qa'
-      preLoaderRoute: typeof AdminBuilderImagesQaRouteImport
-      parentRoute: typeof AdminRoute
+    '/sitemap-images.xml': {
+      id: '/sitemap-images.xml'
+      path: '/sitemap-images.xml'
+      fullPath: '/sitemap-images.xml'
+      preLoaderRoute: typeof SitemapImagesDotxmlRouteImport
+      parentRoute: typeof rootRouteImport
     }
-    '/admin/composable-stops': {
-      id: '/admin/composable-stops'
-      path: '/composable-stops'
-      fullPath: '/admin/composable-stops'
-      preLoaderRoute: typeof AdminComposableStopsRouteImport
-      parentRoute: typeof AdminRoute
+    '/sintra-day-tour-from-lisbon': {
+      id: '/sintra-day-tour-from-lisbon'
+      path: '/sintra-day-tour-from-lisbon'
+      fullPath: '/sintra-day-tour-from-lisbon'
+      preLoaderRoute: typeof SintraDayTourFromLisbonRouteImport
+      parentRoute: typeof rootRouteImport
     }
-    '/admin/dns-watch': {
-      id: '/admin/dns-watch'
-      path: '/dns-watch'
-      fullPath: '/admin/dns-watch'
-      preLoaderRoute: typeof AdminDnsWatchRouteImport
-      parentRoute: typeof AdminRoute
+    '/search': {
+      id: '/search'
+      path: '/search'
+      fullPath: '/search'
+      preLoaderRoute: typeof SearchRouteImport
+      parentRoute: typeof rootRouteImport
     }
-    '/admin/domains-health': {
-      id: '/admin/domains-health'
-      path: '/domains-health'
-      fullPath: '/admin/domains-health'
-      preLoaderRoute: typeof AdminDomainsHealthRouteImport
-      parentRoute: typeof AdminRoute
-    }
-    '/admin/drift-behavior': {
-      id: '/admin/drift-behavior'
-      path: '/drift-behavior'
-      fullPath: '/admin/drift-behavior'
-      preLoaderRoute: typeof AdminDriftBehaviorRouteImport
-      parentRoute: typeof AdminRoute
-    }
-    '/admin/drift-bible': {
-      id: '/admin/drift-bible'
-      path: '/drift-bible'
-      fullPath: '/admin/drift-bible'
-      preLoaderRoute: typeof AdminDriftBibleRouteImport
-      parentRoute: typeof AdminRoute
-    }
-    '/admin/e2e-report': {
-      id: '/admin/e2e-report'
-      path: '/e2e-report'
-      fullPath: '/admin/e2e-report'
-      preLoaderRoute: typeof AdminE2eReportRouteImport
-      parentRoute: typeof AdminRoute
-    }
-    '/admin/emails': {
-      id: '/admin/emails'
-      path: '/emails'
-      fullPath: '/admin/emails'
-      preLoaderRoute: typeof AdminEmailsRouteImport
-      parentRoute: typeof AdminRoute
-    }
-    '/admin/enquiries': {
-      id: '/admin/enquiries'
-      path: '/enquiries'
-      fullPath: '/admin/enquiries'
-      preLoaderRoute: typeof AdminEnquiriesRouteImport
-      parentRoute: typeof AdminRoute
-    }
-    '/admin/error-logs': {
-      id: '/admin/error-logs'
-      path: '/error-logs'
-      fullPath: '/admin/error-logs'
-      preLoaderRoute: typeof AdminErrorLogsRouteImport
-      parentRoute: typeof AdminRoute
-    }
-    '/admin/experiences': {
-      id: '/admin/experiences'
-      path: '/experiences'
-      fullPath: '/admin/experiences'
-      preLoaderRoute: typeof AdminExperiencesRouteImport
-      parentRoute: typeof AdminRoute
-    }
-    '/admin/gbp-legacy-removal': {
-      id: '/admin/gbp-legacy-removal'
-      path: '/gbp-legacy-removal'
-      fullPath: '/admin/gbp-legacy-removal'
-      preLoaderRoute: typeof AdminGbpLegacyRemovalRouteImport
-      parentRoute: typeof AdminRoute
-    }
-    '/admin/gsc': {
-      id: '/admin/gsc'
-      path: '/gsc'
-      fullPath: '/admin/gsc'
-      preLoaderRoute: typeof AdminGscRouteImport
-      parentRoute: typeof AdminRoute
-    }
-    '/admin/guide-attribution': {
-      id: '/admin/guide-attribution'
-      path: '/guide-attribution'
-      fullPath: '/admin/guide-attribution'
-      preLoaderRoute: typeof AdminGuideAttributionRouteImport
-      parentRoute: typeof AdminRoute
-    }
-    '/admin/image-swap': {
-      id: '/admin/image-swap'
-      path: '/image-swap'
-      fullPath: '/admin/image-swap'
-      preLoaderRoute: typeof AdminImageSwapRouteImport
-      parentRoute: typeof AdminRoute
-    }
-    '/admin/import-tours': {
-      id: '/admin/import-tours'
-      path: '/import-tours'
-      fullPath: '/admin/import-tours'
-      preLoaderRoute: typeof AdminImportToursRouteImport
-      parentRoute: typeof AdminRoute
-    }
-    '/admin/legacy-domain-unlink': {
-      id: '/admin/legacy-domain-unlink'
-      path: '/legacy-domain-unlink'
-      fullPath: '/admin/legacy-domain-unlink'
-      preLoaderRoute: typeof AdminLegacyDomainUnlinkRouteImport
-      parentRoute: typeof AdminRoute
-    }
-    '/admin/legacy-domains-monitor': {
-      id: '/admin/legacy-domains-monitor'
-      path: '/legacy-domains-monitor'
-      fullPath: '/admin/legacy-domains-monitor'
-      preLoaderRoute: typeof AdminLegacyDomainsMonitorRouteImport
-      parentRoute: typeof AdminRoute
-    }
-    '/admin/legacy-scan': {
-      id: '/admin/legacy-scan'
-      path: '/legacy-scan'
-      fullPath: '/admin/legacy-scan'
-      preLoaderRoute: typeof AdminLegacyScanRouteImport
-      parentRoute: typeof AdminRoute
-    }
-    '/admin/more': {
-      id: '/admin/more'
-      path: '/more'
-      fullPath: '/admin/more'
-      preLoaderRoute: typeof AdminMoreRouteImport
-      parentRoute: typeof AdminRoute
-    }
-    '/admin/operations': {
-      id: '/admin/operations'
-      path: '/operations'
-      fullPath: '/admin/operations'
-      preLoaderRoute: typeof AdminOperationsRouteImport
-      parentRoute: typeof AdminRoute
-    }
-    '/admin/path-photos': {
-      id: '/admin/path-photos'
-      path: '/path-photos'
-      fullPath: '/admin/path-photos'
-      preLoaderRoute: typeof AdminPathPhotosRouteImport
-      parentRoute: typeof AdminRoute
-    }
-    '/admin/payments': {
-      id: '/admin/payments'
-      path: '/payments'
-      fullPath: '/admin/payments'
-      preLoaderRoute: typeof AdminPaymentsRouteImport
-      parentRoute: typeof AdminRoute
-    }
-    '/admin/payments-env': {
-      id: '/admin/payments-env'
-      path: '/payments-env'
-      fullPath: '/admin/payments-env'
-      preLoaderRoute: typeof AdminPaymentsEnvRouteImport
-      parentRoute: typeof AdminRoute
-    }
-    '/admin/photos': {
-      id: '/admin/photos'
-      path: '/photos'
-      fullPath: '/admin/photos'
-      preLoaderRoute: typeof AdminPhotosRouteImport
-      parentRoute: typeof AdminRoute
-    }
-    '/admin/price-map': {
-      id: '/admin/price-map'
-      path: '/price-map'
-      fullPath: '/admin/price-map'
-      preLoaderRoute: typeof AdminPriceMapRouteImport
-      parentRoute: typeof AdminRoute
-    }
-    '/admin/pricing': {
-      id: '/admin/pricing'
-      path: '/pricing'
-      fullPath: '/admin/pricing'
-      preLoaderRoute: typeof AdminPricingRouteImport
-      parentRoute: typeof AdminRoute
-    }
-    '/admin/pricing-tool': {
-      id: '/admin/pricing-tool'
-      path: '/pricing-tool'
-      fullPath: '/admin/pricing-tool'
-      preLoaderRoute: typeof AdminPricingToolRouteImport
-      parentRoute: typeof AdminRoute
-    }
-    '/admin/redirects-monitor': {
-      id: '/admin/redirects-monitor'
-      path: '/redirects-monitor'
-      fullPath: '/admin/redirects-monitor'
-      preLoaderRoute: typeof AdminRedirectsMonitorRouteImport
-      parentRoute: typeof AdminRoute
-    }
-    '/admin/reviews': {
-      id: '/admin/reviews'
+    '/reviews': {
+      id: '/reviews'
       path: '/reviews'
-      fullPath: '/admin/reviews'
-      preLoaderRoute: typeof AdminReviewsRouteImport
-      parentRoute: typeof AdminRoute
-    }
-    '/admin/seo-experiences': {
-      id: '/admin/seo-experiences'
-      path: '/seo-experiences'
-      fullPath: '/admin/seo-experiences'
-      preLoaderRoute: typeof AdminSeoExperiencesRouteImport
-      parentRoute: typeof AdminRoute
-    }
-    '/admin/seo-jsonld': {
-      id: '/admin/seo-jsonld'
-      path: '/seo-jsonld'
-      fullPath: '/admin/seo-jsonld'
-      preLoaderRoute: typeof AdminSeoJsonldRouteImport
-      parentRoute: typeof AdminRoute
-    }
-    '/admin/seo-monitor': {
-      id: '/admin/seo-monitor'
-      path: '/seo-monitor'
-      fullPath: '/admin/seo-monitor'
-      preLoaderRoute: typeof AdminSeoMonitorRouteImport
-      parentRoute: typeof AdminRoute
-    }
-    '/admin/seo-strategy': {
-      id: '/admin/seo-strategy'
-      path: '/seo-strategy'
-      fullPath: '/admin/seo-strategy'
-      preLoaderRoute: typeof AdminSeoStrategyRouteImport
-      parentRoute: typeof AdminRoute
-    }
-    '/admin/settings': {
-      id: '/admin/settings'
-      path: '/settings'
-      fullPath: '/admin/settings'
-      preLoaderRoute: typeof AdminSettingsRouteImport
-      parentRoute: typeof AdminRoute
-    }
-    '/admin/sot-diff': {
-      id: '/admin/sot-diff'
-      path: '/sot-diff'
-      fullPath: '/admin/sot-diff'
-      preLoaderRoute: typeof AdminSotDiffRouteImport
-      parentRoute: typeof AdminRoute
-    }
-    '/admin/sot-refresh': {
-      id: '/admin/sot-refresh'
-      path: '/sot-refresh'
-      fullPath: '/admin/sot-refresh'
-      preLoaderRoute: typeof AdminSotRefreshRouteImport
-      parentRoute: typeof AdminRoute
-    }
-    '/admin/stop-parity': {
-      id: '/admin/stop-parity'
-      path: '/stop-parity'
-      fullPath: '/admin/stop-parity'
-      preLoaderRoute: typeof AdminStopParityRouteImport
-      parentRoute: typeof AdminRoute
-    }
-    '/admin/studio-proposals': {
-      id: '/admin/studio-proposals'
-      path: '/studio-proposals'
-      fullPath: '/admin/studio-proposals'
-      preLoaderRoute: typeof AdminStudioProposalsRouteImport
-      parentRoute: typeof AdminRoute
-    }
-    '/admin/studio-v3-audit': {
-      id: '/admin/studio-v3-audit'
-      path: '/studio-v3-audit'
-      fullPath: '/admin/studio-v3-audit'
-      preLoaderRoute: typeof AdminStudioV3AuditRouteImport
-      parentRoute: typeof AdminRoute
-    }
-    '/admin/studio-v3-funnel': {
-      id: '/admin/studio-v3-funnel'
-      path: '/studio-v3-funnel'
-      fullPath: '/admin/studio-v3-funnel'
-      preLoaderRoute: typeof AdminStudioV3FunnelRouteImport
-      parentRoute: typeof AdminRoute
-    }
-    '/admin/tour-calendar': {
-      id: '/admin/tour-calendar'
-      path: '/tour-calendar'
-      fullPath: '/admin/tour-calendar'
-      preLoaderRoute: typeof AdminTourCalendarRouteImport
-      parentRoute: typeof AdminRoute
-    }
-    '/admin/tour-link-audit': {
-      id: '/admin/tour-link-audit'
-      path: '/tour-link-audit'
-      fullPath: '/admin/tour-link-audit'
-      preLoaderRoute: typeof AdminTourLinkAuditRouteImport
-      parentRoute: typeof AdminRoute
-    }
-    '/admin/viator-validation': {
-      id: '/admin/viator-validation'
-      path: '/viator-validation'
-      fullPath: '/admin/viator-validation'
-      preLoaderRoute: typeof AdminViatorValidationRouteImport
-      parentRoute: typeof AdminRoute
-    }
-    '/admin/webhook-events': {
-      id: '/admin/webhook-events'
-      path: '/webhook-events'
-      fullPath: '/admin/webhook-events'
-      preLoaderRoute: typeof AdminWebhookEventsRouteImport
-      parentRoute: typeof AdminRoute
-    }
-    '/api/health': {
-      id: '/api/health'
-      path: '/api/health'
-      fullPath: '/api/health'
-      preLoaderRoute: typeof ApiHealthRouteImport
+      fullPath: '/reviews'
+      preLoaderRoute: typeof ReviewsRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/api/img': {
-      id: '/api/img'
-      path: '/api/img'
-      fullPath: '/api/img'
-      preLoaderRoute: typeof ApiImgRouteImport
+    '/regions-of-portugal': {
+      id: '/regions-of-portugal'
+      path: '/regions-of-portugal'
+      fullPath: '/regions-of-portugal'
+      preLoaderRoute: typeof RegionsOfPortugalRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/api/verify-hero': {
-      id: '/api/verify-hero'
-      path: '/api/verify-hero'
-      fullPath: '/api/verify-hero'
-      preLoaderRoute: typeof ApiVerifyHeroRouteImport
+    '/pt': {
+      id: '/pt'
+      path: '/pt'
+      fullPath: '/pt'
+      preLoaderRoute: typeof PtRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/checkout/$token': {
-      id: '/checkout/$token'
-      path: '/checkout/$token'
-      fullPath: '/checkout/$token'
-      preLoaderRoute: typeof CheckoutTokenRouteImport
+    '/proposals': {
+      id: '/proposals'
+      path: '/proposals'
+      fullPath: '/proposals'
+      preLoaderRoute: typeof ProposalsRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/e2e/postmessage-probe': {
-      id: '/e2e/postmessage-probe'
-      path: '/e2e/postmessage-probe'
-      fullPath: '/e2e/postmessage-probe'
-      preLoaderRoute: typeof E2ePostmessageProbeRouteImport
+    '/proposal-in-portugal': {
+      id: '/proposal-in-portugal'
+      path: '/proposal-in-portugal'
+      fullPath: '/proposal-in-portugal'
+      preLoaderRoute: typeof ProposalInPortugalRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/email/unsubscribe': {
-      id: '/email/unsubscribe'
-      path: '/email/unsubscribe'
-      fullPath: '/email/unsubscribe'
-      preLoaderRoute: typeof EmailUnsubscribeRouteImport
+    '/private-wine-tour-lisbon': {
+      id: '/private-wine-tour-lisbon'
+      path: '/private-wine-tour-lisbon'
+      fullPath: '/private-wine-tour-lisbon'
+      preLoaderRoute: typeof PrivateWineTourLisbonRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/guide/': {
-      id: '/guide/'
+    '/private-tours-troia': {
+      id: '/private-tours-troia'
+      path: '/private-tours-troia'
+      fullPath: '/private-tours-troia'
+      preLoaderRoute: typeof PrivateToursTroiaRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/private-tours-sintra-cascais': {
+      id: '/private-tours-sintra-cascais'
+      path: '/private-tours-sintra-cascais'
+      fullPath: '/private-tours-sintra-cascais'
+      preLoaderRoute: typeof PrivateToursSintraCascaisRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/private-tours-sintra': {
+      id: '/private-tours-sintra'
+      path: '/private-tours-sintra'
+      fullPath: '/private-tours-sintra'
+      preLoaderRoute: typeof PrivateToursSintraRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/private-tours-setubal': {
+      id: '/private-tours-setubal'
+      path: '/private-tours-setubal'
+      fullPath: '/private-tours-setubal'
+      preLoaderRoute: typeof PrivateToursSetubalRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/private-tours-sesimbra': {
+      id: '/private-tours-sesimbra'
+      path: '/private-tours-sesimbra'
+      fullPath: '/private-tours-sesimbra'
+      preLoaderRoute: typeof PrivateToursSesimbraRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/private-tours-portugal': {
+      id: '/private-tours-portugal'
+      path: '/private-tours-portugal'
+      fullPath: '/private-tours-portugal'
+      preLoaderRoute: typeof PrivateToursPortugalRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/private-tours-lisbon': {
+      id: '/private-tours-lisbon'
+      path: '/private-tours-lisbon'
+      fullPath: '/private-tours-lisbon'
+      preLoaderRoute: typeof PrivateToursLisbonRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/private-tours-from-lisbon': {
+      id: '/private-tours-from-lisbon'
+      path: '/private-tours-from-lisbon'
+      fullPath: '/private-tours-from-lisbon'
+      preLoaderRoute: typeof PrivateToursFromLisbonRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/private-tours-evora': {
+      id: '/private-tours-evora'
+      path: '/private-tours-evora'
+      fullPath: '/private-tours-evora'
+      preLoaderRoute: typeof PrivateToursEvoraRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/private-tours-comporta-troia': {
+      id: '/private-tours-comporta-troia'
+      path: '/private-tours-comporta-troia'
+      fullPath: '/private-tours-comporta-troia'
+      preLoaderRoute: typeof PrivateToursComportaTroiaRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/private-tours-comporta': {
+      id: '/private-tours-comporta'
+      path: '/private-tours-comporta'
+      fullPath: '/private-tours-comporta'
+      preLoaderRoute: typeof PrivateToursComportaRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/private-tours-centro-silver-coast': {
+      id: '/private-tours-centro-silver-coast'
+      path: '/private-tours-centro-silver-coast'
+      fullPath: '/private-tours-centro-silver-coast'
+      preLoaderRoute: typeof PrivateToursCentroSilverCoastRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/private-tours-cascais': {
+      id: '/private-tours-cascais'
+      path: '/private-tours-cascais'
+      fullPath: '/private-tours-cascais'
+      preLoaderRoute: typeof PrivateToursCascaisRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/private-tours-azeitao-setubal': {
+      id: '/private-tours-azeitao-setubal'
+      path: '/private-tours-azeitao-setubal'
+      fullPath: '/private-tours-azeitao-setubal'
+      preLoaderRoute: typeof PrivateToursAzeitaoSetubalRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/private-tours-azeitao': {
+      id: '/private-tours-azeitao'
+      path: '/private-tours-azeitao'
+      fullPath: '/private-tours-azeitao'
+      preLoaderRoute: typeof PrivateToursAzeitaoRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/private-tours-arrabida-sesimbra': {
+      id: '/private-tours-arrabida-sesimbra'
+      path: '/private-tours-arrabida-sesimbra'
+      fullPath: '/private-tours-arrabida-sesimbra'
+      preLoaderRoute: typeof PrivateToursArrabidaSesimbraRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/private-tours-alentejo-evora': {
+      id: '/private-tours-alentejo-evora'
+      path: '/private-tours-alentejo-evora'
+      fullPath: '/private-tours-alentejo-evora'
+      preLoaderRoute: typeof PrivateToursAlentejoEvoraRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/privacy': {
+      id: '/privacy'
+      path: '/privacy'
+      fullPath: '/privacy'
+      preLoaderRoute: typeof PrivacyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/preview-check': {
+      id: '/preview-check'
+      path: '/preview-check'
+      fullPath: '/preview-check'
+      preLoaderRoute: typeof PreviewCheckRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/press': {
+      id: '/press'
+      path: '/press'
+      fullPath: '/press'
+      preLoaderRoute: typeof PressRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/portugal-wine-tours': {
+      id: '/portugal-wine-tours'
+      path: '/portugal-wine-tours'
+      fullPath: '/portugal-wine-tours'
+      preLoaderRoute: typeof PortugalWineToursRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/portugal-travel-designer': {
+      id: '/portugal-travel-designer'
+      path: '/portugal-travel-designer'
+      fullPath: '/portugal-travel-designer'
+      preLoaderRoute: typeof PortugalTravelDesignerRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/portugal-tours': {
+      id: '/portugal-tours'
+      path: '/portugal-tours'
+      fullPath: '/portugal-tours'
+      preLoaderRoute: typeof PortugalToursRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/portugal-itinerary': {
+      id: '/portugal-itinerary'
+      path: '/portugal-itinerary'
+      fullPath: '/portugal-itinerary'
+      preLoaderRoute: typeof PortugalItineraryRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/portugal-for-american-travelers': {
+      id: '/portugal-for-american-travelers'
+      path: '/portugal-for-american-travelers'
+      fullPath: '/portugal-for-american-travelers'
+      preLoaderRoute: typeof PortugalForAmericanTravelersRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/partners': {
+      id: '/partners'
+      path: '/partners'
+      fullPath: '/partners'
+      preLoaderRoute: typeof PartnersRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/multi-day': {
+      id: '/multi-day'
+      path: '/multi-day'
+      fullPath: '/multi-day'
+      preLoaderRoute: typeof MultiDayRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/moments': {
+      id: '/moments'
+      path: '/moments'
+      fullPath: '/moments'
+      preLoaderRoute: typeof MomentsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/mcp-signin': {
+      id: '/mcp-signin'
+      path: '/mcp-signin'
+      fullPath: '/mcp-signin'
+      preLoaderRoute: typeof McpSigninRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/mcp': {
+      id: '/mcp'
+      path: '/mcp'
+      fullPath: '/mcp'
+      preLoaderRoute: typeof McpRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/luxury-tours-portugal': {
+      id: '/luxury-tours-portugal'
+      path: '/luxury-tours-portugal'
+      fullPath: '/luxury-tours-portugal'
+      preLoaderRoute: typeof LuxuryToursPortugalRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/local-stories': {
+      id: '/local-stories'
+      path: '/local-stories'
+      fullPath: '/local-stories'
+      preLoaderRoute: typeof LocalStoriesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/lisbon-wine-tours': {
+      id: '/lisbon-wine-tours'
+      path: '/lisbon-wine-tours'
+      fullPath: '/lisbon-wine-tours'
+      preLoaderRoute: typeof LisbonWineToursRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/lisbon-wine-tour-prices-and-inclusions': {
+      id: '/lisbon-wine-tour-prices-and-inclusions'
+      path: '/lisbon-wine-tour-prices-and-inclusions'
+      fullPath: '/lisbon-wine-tour-prices-and-inclusions'
+      preLoaderRoute: typeof LisbonWineTourPricesAndInclusionsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/lisbon-wine-tour-pickup-and-wineries': {
+      id: '/lisbon-wine-tour-pickup-and-wineries'
+      path: '/lisbon-wine-tour-pickup-and-wineries'
+      fullPath: '/lisbon-wine-tour-pickup-and-wineries'
+      preLoaderRoute: typeof LisbonWineTourPickupAndWineriesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/lisbon-private-tours': {
+      id: '/lisbon-private-tours'
+      path: '/lisbon-private-tours'
+      fullPath: '/lisbon-private-tours'
+      preLoaderRoute: typeof LisbonPrivateToursRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/itinerary': {
+      id: '/itinerary'
+      path: '/itinerary'
+      fullPath: '/itinerary'
+      preLoaderRoute: typeof ItineraryRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/how-many-days-in-portugal': {
+      id: '/how-many-days-in-portugal'
+      path: '/how-many-days-in-portugal'
+      fullPath: '/how-many-days-in-portugal'
+      preLoaderRoute: typeof HowManyDaysInPortugalRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/hero-verify': {
+      id: '/hero-verify'
+      path: '/hero-verify'
+      fullPath: '/hero-verify'
+      preLoaderRoute: typeof HeroVerifyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/guide-reset-password': {
+      id: '/guide-reset-password'
+      path: '/guide-reset-password'
+      fullPath: '/guide-reset-password'
+      preLoaderRoute: typeof GuideResetPasswordRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/guide': {
+      id: '/guide'
+      path: '/guide'
+      fullPath: '/guide'
+      preLoaderRoute: typeof GuideRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/faq': {
+      id: '/faq'
+      path: '/faq'
+      fullPath: '/faq'
+      preLoaderRoute: typeof FaqRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/experiences': {
+      id: '/experiences'
+      path: '/experiences'
+      fullPath: '/experiences'
+      preLoaderRoute: typeof ExperiencesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/experience-studio': {
+      id: '/experience-studio'
+      path: '/experience-studio'
+      fullPath: '/experience-studio'
+      preLoaderRoute: typeof ExperienceStudioRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/evora-private-tour-from-lisbon': {
+      id: '/evora-private-tour-from-lisbon'
+      path: '/evora-private-tour-from-lisbon'
+      fullPath: '/evora-private-tour-from-lisbon'
+      preLoaderRoute: typeof EvoraPrivateTourFromLisbonRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/evora-alentejo-wine-tour': {
+      id: '/evora-alentejo-wine-tour'
+      path: '/evora-alentejo-wine-tour'
+      fullPath: '/evora-alentejo-wine-tour'
+      preLoaderRoute: typeof EvoraAlentejoWineTourRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/day-trips-from-lisbon': {
+      id: '/day-trips-from-lisbon'
+      path: '/day-trips-from-lisbon'
+      fullPath: '/day-trips-from-lisbon'
+      preLoaderRoute: typeof DayTripsFromLisbonRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/day-tours': {
+      id: '/day-tours'
+      path: '/day-tours'
+      fullPath: '/day-tours'
+      preLoaderRoute: typeof DayToursRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/corporate': {
+      id: '/corporate'
+      path: '/corporate'
+      fullPath: '/corporate'
+      preLoaderRoute: typeof CorporateRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/cookies': {
+      id: '/cookies'
+      path: '/cookies'
+      fullPath: '/cookies'
+      preLoaderRoute: typeof CookiesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/contact': {
+      id: '/contact'
+      path: '/contact'
+      fullPath: '/contact'
+      preLoaderRoute: typeof ContactRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/builder': {
+      id: '/builder'
+      path: '/builder'
+      fullPath: '/builder'
+      preLoaderRoute: typeof BuilderRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/brand-qa': {
+      id: '/brand-qa'
+      path: '/brand-qa'
+      fullPath: '/brand-qa'
+      preLoaderRoute: typeof BrandQaRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/booking-receipt': {
+      id: '/booking-receipt'
+      path: '/booking-receipt'
+      fullPath: '/booking-receipt'
+      preLoaderRoute: typeof BookingReceiptRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/booking-confirmed': {
+      id: '/booking-confirmed'
+      path: '/booking-confirmed'
+      fullPath: '/booking-confirmed'
+      preLoaderRoute: typeof BookingConfirmedRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/book': {
+      id: '/book'
+      path: '/book'
+      fullPath: '/book'
+      preLoaderRoute: typeof BookRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/best-wine-tours-lisbon': {
+      id: '/best-wine-tours-lisbon'
+      path: '/best-wine-tours-lisbon'
+      fullPath: '/best-wine-tours-lisbon'
+      preLoaderRoute: typeof BestWineToursLisbonRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/best-wine-tasting-near-lisbon': {
+      id: '/best-wine-tasting-near-lisbon'
+      path: '/best-wine-tasting-near-lisbon'
+      fullPath: '/best-wine-tasting-near-lisbon'
+      preLoaderRoute: typeof BestWineTastingNearLisbonRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/auth': {
+      id: '/auth'
+      path: '/auth'
+      fullPath: '/auth'
+      preLoaderRoute: typeof AuthRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/arrabida-wine-tour': {
+      id: '/arrabida-wine-tour'
+      path: '/arrabida-wine-tour'
+      fullPath: '/arrabida-wine-tour'
+      preLoaderRoute: typeof ArrabidaWineTourRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/arrabida-day-trip-from-lisbon': {
+      id: '/arrabida-day-trip-from-lisbon'
+      path: '/arrabida-day-trip-from-lisbon'
+      fullPath: '/arrabida-day-trip-from-lisbon'
+      preLoaderRoute: typeof ArrabidaDayTripFromLisbonRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/alentejo-wine-tour-from-lisbon': {
+      id: '/alentejo-wine-tour-from-lisbon'
+      path: '/alentejo-wine-tour-from-lisbon'
+      fullPath: '/alentejo-wine-tour-from-lisbon'
+      preLoaderRoute: typeof AlentejoWineTourFromLisbonRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admin': {
+      id: '/admin'
+      path: '/admin'
+      fullPath: '/admin'
+      preLoaderRoute: typeof AdminRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/about': {
+      id: '/about'
+      path: '/about'
+      fullPath: '/about'
+      preLoaderRoute: typeof AboutRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/': {
+      id: '/'
       path: '/'
-      fullPath: '/guide/'
-      preLoaderRoute: typeof GuideIndexRouteImport
-      parentRoute: typeof GuideRoute
-    }
-    '/guide/availability': {
-      id: '/guide/availability'
-      path: '/availability'
-      fullPath: '/guide/availability'
-      preLoaderRoute: typeof GuideAvailabilityRouteImport
-      parentRoute: typeof GuideRoute
-    }
-    '/guide/calendar': {
-      id: '/guide/calendar'
-      path: '/calendar'
-      fullPath: '/guide/calendar'
-      preLoaderRoute: typeof GuideCalendarRouteImport
-      parentRoute: typeof GuideRoute
-    }
-    '/guide/notifications': {
-      id: '/guide/notifications'
-      path: '/notifications'
-      fullPath: '/guide/notifications'
-      preLoaderRoute: typeof GuideNotificationsRouteImport
-      parentRoute: typeof GuideRoute
-    }
-    '/guide/profile': {
-      id: '/guide/profile'
-      path: '/profile'
-      fullPath: '/guide/profile'
-      preLoaderRoute: typeof GuideProfileRouteImport
-      parentRoute: typeof GuideRoute
-    }
-    '/i/$token': {
-      id: '/i/$token'
-      path: '/i/$token'
-      fullPath: '/i/$token'
-      preLoaderRoute: typeof ITokenRouteImport
+      fullPath: '/'
+      preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
-    }
-    '/itineraries/10-day-private-portugal-tour': {
-      id: '/itineraries/10-day-private-portugal-tour'
-      path: '/itineraries/10-day-private-portugal-tour'
-      fullPath: '/itineraries/10-day-private-portugal-tour'
-      preLoaderRoute: typeof Itineraries10DayPrivatePortugalTourRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/local-stories/': {
-      id: '/local-stories/'
-      path: '/'
-      fullPath: '/local-stories/'
-      preLoaderRoute: typeof LocalStoriesIndexRouteImport
-      parentRoute: typeof LocalStoriesRoute
-    }
-    '/local-stories/$slug': {
-      id: '/local-stories/$slug'
-      path: '/$slug'
-      fullPath: '/local-stories/$slug'
-      preLoaderRoute: typeof LocalStoriesSlugRouteImport
-      parentRoute: typeof LocalStoriesRoute
-    }
-    '/partners/$': {
-      id: '/partners/$'
-      path: '/$'
-      fullPath: '/partners/$'
-      preLoaderRoute: typeof PartnersSplatRouteImport
-      parentRoute: typeof PartnersRoute
     }
     '/pt/': {
       id: '/pt/'
@@ -3823,116 +3340,32 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PtIndexRouteImport
       parentRoute: typeof PtRoute
     }
-    '/pt/$': {
-      id: '/pt/$'
-      path: '/$'
-      fullPath: '/pt/$'
-      preLoaderRoute: typeof PtSplatRouteImport
-      parentRoute: typeof PtRoute
+    '/local-stories/': {
+      id: '/local-stories/'
+      path: '/'
+      fullPath: '/local-stories/'
+      preLoaderRoute: typeof LocalStoriesIndexRouteImport
+      parentRoute: typeof LocalStoriesRoute
     }
-    '/pt/about': {
-      id: '/pt/about'
-      path: '/about'
-      fullPath: '/pt/about'
-      preLoaderRoute: typeof PtAboutRouteImport
-      parentRoute: typeof PtRoute
+    '/guide/': {
+      id: '/guide/'
+      path: '/'
+      fullPath: '/guide/'
+      preLoaderRoute: typeof GuideIndexRouteImport
+      parentRoute: typeof GuideRoute
     }
-    '/pt/contact': {
-      id: '/pt/contact'
-      path: '/contact'
-      fullPath: '/pt/contact'
-      preLoaderRoute: typeof PtContactRouteImport
-      parentRoute: typeof PtRoute
+    '/admin/': {
+      id: '/admin/'
+      path: '/'
+      fullPath: '/admin/'
+      preLoaderRoute: typeof AdminIndexRouteImport
+      parentRoute: typeof AdminRoute
     }
-    '/pt/cookies': {
-      id: '/pt/cookies'
-      path: '/cookies'
-      fullPath: '/pt/cookies'
-      preLoaderRoute: typeof PtCookiesRouteImport
-      parentRoute: typeof PtRoute
-    }
-    '/pt/corporate': {
-      id: '/pt/corporate'
-      path: '/corporate'
-      fullPath: '/pt/corporate'
-      preLoaderRoute: typeof PtCorporateRouteImport
-      parentRoute: typeof PtRoute
-    }
-    '/pt/day-tours': {
-      id: '/pt/day-tours'
-      path: '/day-tours'
-      fullPath: '/pt/day-tours'
-      preLoaderRoute: typeof PtDayToursRouteImport
-      parentRoute: typeof PtRoute
-    }
-    '/pt/experiences': {
-      id: '/pt/experiences'
-      path: '/experiences'
-      fullPath: '/pt/experiences'
-      preLoaderRoute: typeof PtExperiencesRouteImport
-      parentRoute: typeof PtRoute
-    }
-    '/pt/faq': {
-      id: '/pt/faq'
-      path: '/faq'
-      fullPath: '/pt/faq'
-      preLoaderRoute: typeof PtFaqRouteImport
-      parentRoute: typeof PtRoute
-    }
-    '/pt/moments': {
-      id: '/pt/moments'
-      path: '/moments'
-      fullPath: '/pt/moments'
-      preLoaderRoute: typeof PtMomentsRouteImport
-      parentRoute: typeof PtRoute
-    }
-    '/pt/privacy': {
-      id: '/pt/privacy'
-      path: '/privacy'
-      fullPath: '/pt/privacy'
-      preLoaderRoute: typeof PtPrivacyRouteImport
-      parentRoute: typeof PtRoute
-    }
-    '/pt/proposals': {
-      id: '/pt/proposals'
-      path: '/proposals'
-      fullPath: '/pt/proposals'
-      preLoaderRoute: typeof PtProposalsRouteImport
-      parentRoute: typeof PtRoute
-    }
-    '/pt/reviews': {
-      id: '/pt/reviews'
-      path: '/reviews'
-      fullPath: '/pt/reviews'
-      preLoaderRoute: typeof PtReviewsRouteImport
-      parentRoute: typeof PtRoute
-    }
-    '/pt/terms': {
-      id: '/pt/terms'
-      path: '/terms'
-      fullPath: '/pt/terms'
-      preLoaderRoute: typeof PtTermsRouteImport
-      parentRoute: typeof PtRoute
-    }
-    '/qa/hero': {
-      id: '/qa/hero'
-      path: '/qa/hero'
-      fullPath: '/qa/hero'
-      preLoaderRoute: typeof QaHeroRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/qa/mobile': {
-      id: '/qa/mobile'
-      path: '/qa/mobile'
-      fullPath: '/qa/mobile'
-      preLoaderRoute: typeof QaMobileRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/review/$token': {
-      id: '/review/$token'
-      path: '/review/$token'
-      fullPath: '/review/$token'
-      preLoaderRoute: typeof ReviewTokenRouteImport
+    '/tours/$tourId': {
+      id: '/tours/$tourId'
+      path: '/tours/$tourId'
+      fullPath: '/tours/$tourId'
+      preLoaderRoute: typeof ToursTourIdRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/s/$token': {
@@ -3942,123 +3375,578 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof STokenRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/tours/$tourId': {
-      id: '/tours/$tourId'
-      path: '/tours/$tourId'
-      fullPath: '/tours/$tourId'
-      preLoaderRoute: typeof ToursTourIdRouteImport
+    '/review/$token': {
+      id: '/review/$token'
+      path: '/review/$token'
+      fullPath: '/review/$token'
+      preLoaderRoute: typeof ReviewTokenRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/.lovable/oauth/consent': {
-      id: '/.lovable/oauth/consent'
-      path: '/.lovable/oauth/consent'
-      fullPath: '/.lovable/oauth/consent'
-      preLoaderRoute: typeof DotlovableOauthConsentRouteImport
+    '/qa/mobile': {
+      id: '/qa/mobile'
+      path: '/qa/mobile'
+      fullPath: '/qa/mobile'
+      preLoaderRoute: typeof QaMobileRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/.mcp/invoke-tool/$tool': {
-      id: '/.mcp/invoke-tool/$tool'
-      path: '/.mcp/invoke-tool/$tool'
-      fullPath: '/.mcp/invoke-tool/$tool'
-      preLoaderRoute: typeof Char91DotmcpChar93InvokeToolToolRouteImport
+    '/qa/hero': {
+      id: '/qa/hero'
+      path: '/qa/hero'
+      fullPath: '/qa/hero'
+      preLoaderRoute: typeof QaHeroRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/admin/bookings/': {
-      id: '/admin/bookings/'
-      path: '/bookings'
-      fullPath: '/admin/bookings/'
-      preLoaderRoute: typeof AdminBookingsIndexRouteImport
+    '/pt/terms': {
+      id: '/pt/terms'
+      path: '/terms'
+      fullPath: '/pt/terms'
+      preLoaderRoute: typeof PtTermsRouteImport
+      parentRoute: typeof PtRoute
+    }
+    '/pt/reviews': {
+      id: '/pt/reviews'
+      path: '/reviews'
+      fullPath: '/pt/reviews'
+      preLoaderRoute: typeof PtReviewsRouteImport
+      parentRoute: typeof PtRoute
+    }
+    '/pt/proposals': {
+      id: '/pt/proposals'
+      path: '/proposals'
+      fullPath: '/pt/proposals'
+      preLoaderRoute: typeof PtProposalsRouteImport
+      parentRoute: typeof PtRoute
+    }
+    '/pt/privacy': {
+      id: '/pt/privacy'
+      path: '/privacy'
+      fullPath: '/pt/privacy'
+      preLoaderRoute: typeof PtPrivacyRouteImport
+      parentRoute: typeof PtRoute
+    }
+    '/pt/moments': {
+      id: '/pt/moments'
+      path: '/moments'
+      fullPath: '/pt/moments'
+      preLoaderRoute: typeof PtMomentsRouteImport
+      parentRoute: typeof PtRoute
+    }
+    '/pt/faq': {
+      id: '/pt/faq'
+      path: '/faq'
+      fullPath: '/pt/faq'
+      preLoaderRoute: typeof PtFaqRouteImport
+      parentRoute: typeof PtRoute
+    }
+    '/pt/experiences': {
+      id: '/pt/experiences'
+      path: '/experiences'
+      fullPath: '/pt/experiences'
+      preLoaderRoute: typeof PtExperiencesRouteImport
+      parentRoute: typeof PtRoute
+    }
+    '/pt/day-tours': {
+      id: '/pt/day-tours'
+      path: '/day-tours'
+      fullPath: '/pt/day-tours'
+      preLoaderRoute: typeof PtDayToursRouteImport
+      parentRoute: typeof PtRoute
+    }
+    '/pt/corporate': {
+      id: '/pt/corporate'
+      path: '/corporate'
+      fullPath: '/pt/corporate'
+      preLoaderRoute: typeof PtCorporateRouteImport
+      parentRoute: typeof PtRoute
+    }
+    '/pt/cookies': {
+      id: '/pt/cookies'
+      path: '/cookies'
+      fullPath: '/pt/cookies'
+      preLoaderRoute: typeof PtCookiesRouteImport
+      parentRoute: typeof PtRoute
+    }
+    '/pt/contact': {
+      id: '/pt/contact'
+      path: '/contact'
+      fullPath: '/pt/contact'
+      preLoaderRoute: typeof PtContactRouteImport
+      parentRoute: typeof PtRoute
+    }
+    '/pt/about': {
+      id: '/pt/about'
+      path: '/about'
+      fullPath: '/pt/about'
+      preLoaderRoute: typeof PtAboutRouteImport
+      parentRoute: typeof PtRoute
+    }
+    '/pt/$': {
+      id: '/pt/$'
+      path: '/$'
+      fullPath: '/pt/$'
+      preLoaderRoute: typeof PtSplatRouteImport
+      parentRoute: typeof PtRoute
+    }
+    '/partners/$': {
+      id: '/partners/$'
+      path: '/$'
+      fullPath: '/partners/$'
+      preLoaderRoute: typeof PartnersSplatRouteImport
+      parentRoute: typeof PartnersRoute
+    }
+    '/local-stories/$slug': {
+      id: '/local-stories/$slug'
+      path: '/$slug'
+      fullPath: '/local-stories/$slug'
+      preLoaderRoute: typeof LocalStoriesSlugRouteImport
+      parentRoute: typeof LocalStoriesRoute
+    }
+    '/itineraries/10-day-private-portugal-tour': {
+      id: '/itineraries/10-day-private-portugal-tour'
+      path: '/itineraries/10-day-private-portugal-tour'
+      fullPath: '/itineraries/10-day-private-portugal-tour'
+      preLoaderRoute: typeof Itineraries10DayPrivatePortugalTourRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/i/$token': {
+      id: '/i/$token'
+      path: '/i/$token'
+      fullPath: '/i/$token'
+      preLoaderRoute: typeof ITokenRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/guide/profile': {
+      id: '/guide/profile'
+      path: '/profile'
+      fullPath: '/guide/profile'
+      preLoaderRoute: typeof GuideProfileRouteImport
+      parentRoute: typeof GuideRoute
+    }
+    '/guide/notifications': {
+      id: '/guide/notifications'
+      path: '/notifications'
+      fullPath: '/guide/notifications'
+      preLoaderRoute: typeof GuideNotificationsRouteImport
+      parentRoute: typeof GuideRoute
+    }
+    '/guide/calendar': {
+      id: '/guide/calendar'
+      path: '/calendar'
+      fullPath: '/guide/calendar'
+      preLoaderRoute: typeof GuideCalendarRouteImport
+      parentRoute: typeof GuideRoute
+    }
+    '/guide/availability': {
+      id: '/guide/availability'
+      path: '/availability'
+      fullPath: '/guide/availability'
+      preLoaderRoute: typeof GuideAvailabilityRouteImport
+      parentRoute: typeof GuideRoute
+    }
+    '/email/unsubscribe': {
+      id: '/email/unsubscribe'
+      path: '/email/unsubscribe'
+      fullPath: '/email/unsubscribe'
+      preLoaderRoute: typeof EmailUnsubscribeRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/e2e/postmessage-probe': {
+      id: '/e2e/postmessage-probe'
+      path: '/e2e/postmessage-probe'
+      fullPath: '/e2e/postmessage-probe'
+      preLoaderRoute: typeof E2ePostmessageProbeRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/checkout/$token': {
+      id: '/checkout/$token'
+      path: '/checkout/$token'
+      fullPath: '/checkout/$token'
+      preLoaderRoute: typeof CheckoutTokenRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/verify-hero': {
+      id: '/api/verify-hero'
+      path: '/api/verify-hero'
+      fullPath: '/api/verify-hero'
+      preLoaderRoute: typeof ApiVerifyHeroRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/img': {
+      id: '/api/img'
+      path: '/api/img'
+      fullPath: '/api/img'
+      preLoaderRoute: typeof ApiImgRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/health': {
+      id: '/api/health'
+      path: '/api/health'
+      fullPath: '/api/health'
+      preLoaderRoute: typeof ApiHealthRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admin/webhook-events': {
+      id: '/admin/webhook-events'
+      path: '/webhook-events'
+      fullPath: '/admin/webhook-events'
+      preLoaderRoute: typeof AdminWebhookEventsRouteImport
       parentRoute: typeof AdminRoute
     }
-    '/admin/bookings/$id': {
-      id: '/admin/bookings/$id'
-      path: '/bookings/$id'
-      fullPath: '/admin/bookings/$id'
-      preLoaderRoute: typeof AdminBookingsIdRouteImport
+    '/admin/viator-validation': {
+      id: '/admin/viator-validation'
+      path: '/viator-validation'
+      fullPath: '/admin/viator-validation'
+      preLoaderRoute: typeof AdminViatorValidationRouteImport
       parentRoute: typeof AdminRoute
     }
-    '/admin/bookings/new': {
-      id: '/admin/bookings/new'
-      path: '/bookings/new'
-      fullPath: '/admin/bookings/new'
-      preLoaderRoute: typeof AdminBookingsNewRouteImport
+    '/admin/tour-link-audit': {
+      id: '/admin/tour-link-audit'
+      path: '/tour-link-audit'
+      fullPath: '/admin/tour-link-audit'
+      preLoaderRoute: typeof AdminTourLinkAuditRouteImport
       parentRoute: typeof AdminRoute
     }
-    '/admin/guides/': {
-      id: '/admin/guides/'
-      path: '/guides'
-      fullPath: '/admin/guides/'
-      preLoaderRoute: typeof AdminGuidesIndexRouteImport
+    '/admin/tour-calendar': {
+      id: '/admin/tour-calendar'
+      path: '/tour-calendar'
+      fullPath: '/admin/tour-calendar'
+      preLoaderRoute: typeof AdminTourCalendarRouteImport
       parentRoute: typeof AdminRoute
     }
-    '/admin/guides/$id': {
-      id: '/admin/guides/$id'
-      path: '/guides/$id'
-      fullPath: '/admin/guides/$id'
-      preLoaderRoute: typeof AdminGuidesIdRouteImport
+    '/admin/studio-v3-funnel': {
+      id: '/admin/studio-v3-funnel'
+      path: '/studio-v3-funnel'
+      fullPath: '/admin/studio-v3-funnel'
+      preLoaderRoute: typeof AdminStudioV3FunnelRouteImport
       parentRoute: typeof AdminRoute
     }
-    '/api/public/booking-calendar': {
-      id: '/api/public/booking-calendar'
-      path: '/api/public/booking-calendar'
-      fullPath: '/api/public/booking-calendar'
-      preLoaderRoute: typeof ApiPublicBookingCalendarRouteImport
+    '/admin/studio-v3-audit': {
+      id: '/admin/studio-v3-audit'
+      path: '/studio-v3-audit'
+      fullPath: '/admin/studio-v3-audit'
+      preLoaderRoute: typeof AdminStudioV3AuditRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/studio-proposals': {
+      id: '/admin/studio-proposals'
+      path: '/studio-proposals'
+      fullPath: '/admin/studio-proposals'
+      preLoaderRoute: typeof AdminStudioProposalsRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/stop-parity': {
+      id: '/admin/stop-parity'
+      path: '/stop-parity'
+      fullPath: '/admin/stop-parity'
+      preLoaderRoute: typeof AdminStopParityRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/sot-refresh': {
+      id: '/admin/sot-refresh'
+      path: '/sot-refresh'
+      fullPath: '/admin/sot-refresh'
+      preLoaderRoute: typeof AdminSotRefreshRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/sot-diff': {
+      id: '/admin/sot-diff'
+      path: '/sot-diff'
+      fullPath: '/admin/sot-diff'
+      preLoaderRoute: typeof AdminSotDiffRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/settings': {
+      id: '/admin/settings'
+      path: '/settings'
+      fullPath: '/admin/settings'
+      preLoaderRoute: typeof AdminSettingsRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/seo-strategy': {
+      id: '/admin/seo-strategy'
+      path: '/seo-strategy'
+      fullPath: '/admin/seo-strategy'
+      preLoaderRoute: typeof AdminSeoStrategyRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/seo-monitor': {
+      id: '/admin/seo-monitor'
+      path: '/seo-monitor'
+      fullPath: '/admin/seo-monitor'
+      preLoaderRoute: typeof AdminSeoMonitorRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/seo-jsonld': {
+      id: '/admin/seo-jsonld'
+      path: '/seo-jsonld'
+      fullPath: '/admin/seo-jsonld'
+      preLoaderRoute: typeof AdminSeoJsonldRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/seo-experiences': {
+      id: '/admin/seo-experiences'
+      path: '/seo-experiences'
+      fullPath: '/admin/seo-experiences'
+      preLoaderRoute: typeof AdminSeoExperiencesRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/reviews': {
+      id: '/admin/reviews'
+      path: '/reviews'
+      fullPath: '/admin/reviews'
+      preLoaderRoute: typeof AdminReviewsRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/redirects-monitor': {
+      id: '/admin/redirects-monitor'
+      path: '/redirects-monitor'
+      fullPath: '/admin/redirects-monitor'
+      preLoaderRoute: typeof AdminRedirectsMonitorRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/pricing-tool': {
+      id: '/admin/pricing-tool'
+      path: '/pricing-tool'
+      fullPath: '/admin/pricing-tool'
+      preLoaderRoute: typeof AdminPricingToolRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/pricing': {
+      id: '/admin/pricing'
+      path: '/pricing'
+      fullPath: '/admin/pricing'
+      preLoaderRoute: typeof AdminPricingRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/price-map': {
+      id: '/admin/price-map'
+      path: '/price-map'
+      fullPath: '/admin/price-map'
+      preLoaderRoute: typeof AdminPriceMapRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/photos': {
+      id: '/admin/photos'
+      path: '/photos'
+      fullPath: '/admin/photos'
+      preLoaderRoute: typeof AdminPhotosRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/payments-env': {
+      id: '/admin/payments-env'
+      path: '/payments-env'
+      fullPath: '/admin/payments-env'
+      preLoaderRoute: typeof AdminPaymentsEnvRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/payments': {
+      id: '/admin/payments'
+      path: '/payments'
+      fullPath: '/admin/payments'
+      preLoaderRoute: typeof AdminPaymentsRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/path-photos': {
+      id: '/admin/path-photos'
+      path: '/path-photos'
+      fullPath: '/admin/path-photos'
+      preLoaderRoute: typeof AdminPathPhotosRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/operations': {
+      id: '/admin/operations'
+      path: '/operations'
+      fullPath: '/admin/operations'
+      preLoaderRoute: typeof AdminOperationsRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/more': {
+      id: '/admin/more'
+      path: '/more'
+      fullPath: '/admin/more'
+      preLoaderRoute: typeof AdminMoreRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/legacy-scan': {
+      id: '/admin/legacy-scan'
+      path: '/legacy-scan'
+      fullPath: '/admin/legacy-scan'
+      preLoaderRoute: typeof AdminLegacyScanRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/legacy-domains-monitor': {
+      id: '/admin/legacy-domains-monitor'
+      path: '/legacy-domains-monitor'
+      fullPath: '/admin/legacy-domains-monitor'
+      preLoaderRoute: typeof AdminLegacyDomainsMonitorRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/legacy-domain-unlink': {
+      id: '/admin/legacy-domain-unlink'
+      path: '/legacy-domain-unlink'
+      fullPath: '/admin/legacy-domain-unlink'
+      preLoaderRoute: typeof AdminLegacyDomainUnlinkRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/import-tours': {
+      id: '/admin/import-tours'
+      path: '/import-tours'
+      fullPath: '/admin/import-tours'
+      preLoaderRoute: typeof AdminImportToursRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/image-swap': {
+      id: '/admin/image-swap'
+      path: '/image-swap'
+      fullPath: '/admin/image-swap'
+      preLoaderRoute: typeof AdminImageSwapRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/guide-attribution': {
+      id: '/admin/guide-attribution'
+      path: '/guide-attribution'
+      fullPath: '/admin/guide-attribution'
+      preLoaderRoute: typeof AdminGuideAttributionRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/gsc': {
+      id: '/admin/gsc'
+      path: '/gsc'
+      fullPath: '/admin/gsc'
+      preLoaderRoute: typeof AdminGscRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/gbp-legacy-removal': {
+      id: '/admin/gbp-legacy-removal'
+      path: '/gbp-legacy-removal'
+      fullPath: '/admin/gbp-legacy-removal'
+      preLoaderRoute: typeof AdminGbpLegacyRemovalRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/experiences': {
+      id: '/admin/experiences'
+      path: '/experiences'
+      fullPath: '/admin/experiences'
+      preLoaderRoute: typeof AdminExperiencesRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/error-logs': {
+      id: '/admin/error-logs'
+      path: '/error-logs'
+      fullPath: '/admin/error-logs'
+      preLoaderRoute: typeof AdminErrorLogsRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/enquiries': {
+      id: '/admin/enquiries'
+      path: '/enquiries'
+      fullPath: '/admin/enquiries'
+      preLoaderRoute: typeof AdminEnquiriesRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/emails': {
+      id: '/admin/emails'
+      path: '/emails'
+      fullPath: '/admin/emails'
+      preLoaderRoute: typeof AdminEmailsRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/e2e-report': {
+      id: '/admin/e2e-report'
+      path: '/e2e-report'
+      fullPath: '/admin/e2e-report'
+      preLoaderRoute: typeof AdminE2eReportRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/drift-bible': {
+      id: '/admin/drift-bible'
+      path: '/drift-bible'
+      fullPath: '/admin/drift-bible'
+      preLoaderRoute: typeof AdminDriftBibleRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/drift-behavior': {
+      id: '/admin/drift-behavior'
+      path: '/drift-behavior'
+      fullPath: '/admin/drift-behavior'
+      preLoaderRoute: typeof AdminDriftBehaviorRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/domains-health': {
+      id: '/admin/domains-health'
+      path: '/domains-health'
+      fullPath: '/admin/domains-health'
+      preLoaderRoute: typeof AdminDomainsHealthRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/dns-watch': {
+      id: '/admin/dns-watch'
+      path: '/dns-watch'
+      fullPath: '/admin/dns-watch'
+      preLoaderRoute: typeof AdminDnsWatchRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/composable-stops': {
+      id: '/admin/composable-stops'
+      path: '/composable-stops'
+      fullPath: '/admin/composable-stops'
+      preLoaderRoute: typeof AdminComposableStopsRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/builder-images-qa': {
+      id: '/admin/builder-images-qa'
+      path: '/builder-images-qa'
+      fullPath: '/admin/builder-images-qa'
+      preLoaderRoute: typeof AdminBuilderImagesQaRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/builder-images': {
+      id: '/admin/builder-images'
+      path: '/builder-images'
+      fullPath: '/admin/builder-images'
+      preLoaderRoute: typeof AdminBuilderImagesRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/availability': {
+      id: '/admin/availability'
+      path: '/availability'
+      fullPath: '/admin/availability'
+      preLoaderRoute: typeof AdminAvailabilityRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/analytics-health': {
+      id: '/admin/analytics-health'
+      path: '/analytics-health'
+      fullPath: '/admin/analytics-health'
+      preLoaderRoute: typeof AdminAnalyticsHealthRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/ai-audit': {
+      id: '/admin/ai-audit'
+      path: '/ai-audit'
+      fullPath: '/admin/ai-audit'
+      preLoaderRoute: typeof AdminAiAuditRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/activity': {
+      id: '/admin/activity'
+      path: '/activity'
+      fullPath: '/admin/activity'
+      preLoaderRoute: typeof AdminActivityRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/.well-known/oauth-protected-resource': {
+      id: '/.well-known/oauth-protected-resource'
+      path: '/.well-known/oauth-protected-resource'
+      fullPath: '/.well-known/oauth-protected-resource'
+      preLoaderRoute: typeof Char91DotwellKnownChar93OauthProtectedResourceRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/api/public/booking-itinerary': {
-      id: '/api/public/booking-itinerary'
-      path: '/api/public/booking-itinerary'
-      fullPath: '/api/public/booking-itinerary'
-      preLoaderRoute: typeof ApiPublicBookingItineraryRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/api/public/booking-itinerary-data': {
-      id: '/api/public/booking-itinerary-data'
-      path: '/api/public/booking-itinerary-data'
-      fullPath: '/api/public/booking-itinerary-data'
-      preLoaderRoute: typeof ApiPublicBookingItineraryDataRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/api/public/booking-request': {
-      id: '/api/public/booking-request'
-      path: '/api/public/booking-request'
-      fullPath: '/api/public/booking-request'
-      preLoaderRoute: typeof ApiPublicBookingRequestRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/api/public/contact': {
-      id: '/api/public/contact'
-      path: '/api/public/contact'
-      fullPath: '/api/public/contact'
-      preLoaderRoute: typeof ApiPublicContactRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/api/public/editorial-photo': {
-      id: '/api/public/editorial-photo'
-      path: '/api/public/editorial-photo'
-      fullPath: '/api/public/editorial-photo'
-      preLoaderRoute: typeof ApiPublicEditorialPhotoRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/api/public/pricing-ssot': {
-      id: '/api/public/pricing-ssot'
-      path: '/api/public/pricing-ssot'
-      fullPath: '/api/public/pricing-ssot'
-      preLoaderRoute: typeof ApiPublicPricingSsotRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/api/public/proposal-request': {
-      id: '/api/public/proposal-request'
-      path: '/api/public/proposal-request'
-      fullPath: '/api/public/proposal-request'
-      preLoaderRoute: typeof ApiPublicProposalRequestRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/functions/v1/stripe-webhook': {
-      id: '/functions/v1/stripe-webhook'
-      path: '/functions/v1/stripe-webhook'
-      fullPath: '/functions/v1/stripe-webhook'
-      preLoaderRoute: typeof FunctionsV1StripeWebhookRouteImport
+    '/.mcp/list-tools': {
+      id: '/.mcp/list-tools'
+      path: '/.mcp/list-tools'
+      fullPath: '/.mcp/list-tools'
+      preLoaderRoute: typeof Char91DotmcpChar93ListToolsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/guide/tours/': {
@@ -4068,18 +3956,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof GuideToursIndexRouteImport
       parentRoute: typeof GuideRoute
     }
-    '/guide/tours/$assignmentId': {
-      id: '/guide/tours/$assignmentId'
-      path: '/tours/$assignmentId'
-      fullPath: '/guide/tours/$assignmentId'
-      preLoaderRoute: typeof GuideToursAssignmentIdRouteImport
-      parentRoute: typeof GuideRoute
+    '/admin/guides/': {
+      id: '/admin/guides/'
+      path: '/guides'
+      fullPath: '/admin/guides/'
+      preLoaderRoute: typeof AdminGuidesIndexRouteImport
+      parentRoute: typeof AdminRoute
     }
-    '/lovable/email/suppression': {
-      id: '/lovable/email/suppression'
-      path: '/lovable/email/suppression'
-      fullPath: '/lovable/email/suppression'
-      preLoaderRoute: typeof LovableEmailSuppressionRouteImport
+    '/admin/bookings/': {
+      id: '/admin/bookings/'
+      path: '/bookings'
+      fullPath: '/admin/bookings/'
+      preLoaderRoute: typeof AdminBookingsIndexRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/tours_/$tourId/tailor': {
+      id: '/tours_/$tourId/tailor'
+      path: '/tours/$tourId/tailor'
+      fullPath: '/tours/$tourId/tailor'
+      preLoaderRoute: typeof ToursTourIdTailorRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/studio-v2/i/$token': {
@@ -4089,123 +3984,123 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof StudioV2ITokenRouteImport
       parentRoute: typeof StudioV2Route
     }
-    '/tours_/$tourId/tailor': {
-      id: '/tours_/$tourId/tailor'
-      path: '/tours/$tourId/tailor'
-      fullPath: '/tours/$tourId/tailor'
-      preLoaderRoute: typeof ToursTourIdTailorRouteImport
+    '/lovable/email/suppression': {
+      id: '/lovable/email/suppression'
+      path: '/lovable/email/suppression'
+      fullPath: '/lovable/email/suppression'
+      preLoaderRoute: typeof LovableEmailSuppressionRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/api/public/feeds/things-to-do.json': {
-      id: '/api/public/feeds/things-to-do.json'
-      path: '/api/public/feeds/things-to-do.json'
-      fullPath: '/api/public/feeds/things-to-do.json'
-      preLoaderRoute: typeof ApiPublicFeedsThingsToDoDotjsonRouteImport
+    '/guide/tours/$assignmentId': {
+      id: '/guide/tours/$assignmentId'
+      path: '/tours/$assignmentId'
+      fullPath: '/guide/tours/$assignmentId'
+      preLoaderRoute: typeof GuideToursAssignmentIdRouteImport
+      parentRoute: typeof GuideRoute
+    }
+    '/functions/v1/stripe-webhook': {
+      id: '/functions/v1/stripe-webhook'
+      path: '/functions/v1/stripe-webhook'
+      fullPath: '/functions/v1/stripe-webhook'
+      preLoaderRoute: typeof FunctionsV1StripeWebhookRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/api/public/feeds/things-to-do.xml': {
-      id: '/api/public/feeds/things-to-do.xml'
-      path: '/api/public/feeds/things-to-do.xml'
-      fullPath: '/api/public/feeds/things-to-do.xml'
-      preLoaderRoute: typeof ApiPublicFeedsThingsToDoDotxmlRouteImport
+    '/api/public/proposal-request': {
+      id: '/api/public/proposal-request'
+      path: '/api/public/proposal-request'
+      fullPath: '/api/public/proposal-request'
+      preLoaderRoute: typeof ApiPublicProposalRequestRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/api/public/hooks/bokun-booking': {
-      id: '/api/public/hooks/bokun-booking'
-      path: '/api/public/hooks/bokun-booking'
-      fullPath: '/api/public/hooks/bokun-booking'
-      preLoaderRoute: typeof ApiPublicHooksBokunBookingRouteImport
+    '/api/public/pricing-ssot': {
+      id: '/api/public/pricing-ssot'
+      path: '/api/public/pricing-ssot'
+      fullPath: '/api/public/pricing-ssot'
+      preLoaderRoute: typeof ApiPublicPricingSsotRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/api/public/hooks/booking-cancelled-email': {
-      id: '/api/public/hooks/booking-cancelled-email'
-      path: '/api/public/hooks/booking-cancelled-email'
-      fullPath: '/api/public/hooks/booking-cancelled-email'
-      preLoaderRoute: typeof ApiPublicHooksBookingCancelledEmailRouteImport
+    '/api/public/editorial-photo': {
+      id: '/api/public/editorial-photo'
+      path: '/api/public/editorial-photo'
+      fullPath: '/api/public/editorial-photo'
+      preLoaderRoute: typeof ApiPublicEditorialPhotoRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/api/public/hooks/checkout-email': {
-      id: '/api/public/hooks/checkout-email'
-      path: '/api/public/hooks/checkout-email'
-      fullPath: '/api/public/hooks/checkout-email'
-      preLoaderRoute: typeof ApiPublicHooksCheckoutEmailRouteImport
+    '/api/public/contact': {
+      id: '/api/public/contact'
+      path: '/api/public/contact'
+      fullPath: '/api/public/contact'
+      preLoaderRoute: typeof ApiPublicContactRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/api/public/hooks/dns-watch': {
-      id: '/api/public/hooks/dns-watch'
-      path: '/api/public/hooks/dns-watch'
-      fullPath: '/api/public/hooks/dns-watch'
-      preLoaderRoute: typeof ApiPublicHooksDnsWatchRouteImport
+    '/api/public/booking-request': {
+      id: '/api/public/booking-request'
+      path: '/api/public/booking-request'
+      fullPath: '/api/public/booking-request'
+      preLoaderRoute: typeof ApiPublicBookingRequestRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/api/public/hooks/email-flush': {
-      id: '/api/public/hooks/email-flush'
-      path: '/api/public/hooks/email-flush'
-      fullPath: '/api/public/hooks/email-flush'
-      preLoaderRoute: typeof ApiPublicHooksEmailFlushRouteImport
+    '/api/public/booking-itinerary-data': {
+      id: '/api/public/booking-itinerary-data'
+      path: '/api/public/booking-itinerary-data'
+      fullPath: '/api/public/booking-itinerary-data'
+      preLoaderRoute: typeof ApiPublicBookingItineraryDataRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/api/public/hooks/enquiry-followup': {
-      id: '/api/public/hooks/enquiry-followup'
-      path: '/api/public/hooks/enquiry-followup'
-      fullPath: '/api/public/hooks/enquiry-followup'
-      preLoaderRoute: typeof ApiPublicHooksEnquiryFollowupRouteImport
+    '/api/public/booking-itinerary': {
+      id: '/api/public/booking-itinerary'
+      path: '/api/public/booking-itinerary'
+      fullPath: '/api/public/booking-itinerary'
+      preLoaderRoute: typeof ApiPublicBookingItineraryRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/api/public/hooks/gmail-booking-scan': {
-      id: '/api/public/hooks/gmail-booking-scan'
-      path: '/api/public/hooks/gmail-booking-scan'
-      fullPath: '/api/public/hooks/gmail-booking-scan'
-      preLoaderRoute: typeof ApiPublicHooksGmailBookingScanRouteImport
+    '/api/public/booking-calendar': {
+      id: '/api/public/booking-calendar'
+      path: '/api/public/booking-calendar'
+      fullPath: '/api/public/booking-calendar'
+      preLoaderRoute: typeof ApiPublicBookingCalendarRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/api/public/hooks/import-tripadvisor-reviews': {
-      id: '/api/public/hooks/import-tripadvisor-reviews'
-      path: '/api/public/hooks/import-tripadvisor-reviews'
-      fullPath: '/api/public/hooks/import-tripadvisor-reviews'
-      preLoaderRoute: typeof ApiPublicHooksImportTripadvisorReviewsRouteImport
+    '/admin/guides/$id': {
+      id: '/admin/guides/$id'
+      path: '/guides/$id'
+      fullPath: '/admin/guides/$id'
+      preLoaderRoute: typeof AdminGuidesIdRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/bookings/new': {
+      id: '/admin/bookings/new'
+      path: '/bookings/new'
+      fullPath: '/admin/bookings/new'
+      preLoaderRoute: typeof AdminBookingsNewRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/bookings/$id': {
+      id: '/admin/bookings/$id'
+      path: '/bookings/$id'
+      fullPath: '/admin/bookings/$id'
+      preLoaderRoute: typeof AdminBookingsIdRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/.mcp/invoke-tool/$tool': {
+      id: '/.mcp/invoke-tool/$tool'
+      path: '/.mcp/invoke-tool/$tool'
+      fullPath: '/.mcp/invoke-tool/$tool'
+      preLoaderRoute: typeof Char91DotmcpChar93InvokeToolToolRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/api/public/hooks/stripe-webhook-health': {
-      id: '/api/public/hooks/stripe-webhook-health'
-      path: '/api/public/hooks/stripe-webhook-health'
-      fullPath: '/api/public/hooks/stripe-webhook-health'
-      preLoaderRoute: typeof ApiPublicHooksStripeWebhookHealthRouteImport
+    '/.lovable/oauth/consent': {
+      id: '/.lovable/oauth/consent'
+      path: '/.lovable/oauth/consent'
+      fullPath: '/.lovable/oauth/consent'
+      preLoaderRoute: typeof DotlovableOauthConsentRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/api/public/hooks/viator-drift-check': {
-      id: '/api/public/hooks/viator-drift-check'
-      path: '/api/public/hooks/viator-drift-check'
-      fullPath: '/api/public/hooks/viator-drift-check'
-      preLoaderRoute: typeof ApiPublicHooksViatorDriftCheckRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/api/public/whatsapp/webhook': {
-      id: '/api/public/whatsapp/webhook'
-      path: '/api/public/whatsapp/webhook'
-      fullPath: '/api/public/whatsapp/webhook'
-      preLoaderRoute: typeof ApiPublicWhatsappWebhookRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/lovable/email/auth/preview': {
-      id: '/lovable/email/auth/preview'
-      path: '/lovable/email/auth/preview'
-      fullPath: '/lovable/email/auth/preview'
-      preLoaderRoute: typeof LovableEmailAuthPreviewRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/lovable/email/auth/webhook': {
-      id: '/lovable/email/auth/webhook'
-      path: '/lovable/email/auth/webhook'
-      fullPath: '/lovable/email/auth/webhook'
-      preLoaderRoute: typeof LovableEmailAuthWebhookRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/lovable/email/queue/process': {
-      id: '/lovable/email/queue/process'
-      path: '/lovable/email/queue/process'
-      fullPath: '/lovable/email/queue/process'
-      preLoaderRoute: typeof LovableEmailQueueProcessRouteImport
+    '/lovable/email/transactional/send': {
+      id: '/lovable/email/transactional/send'
+      path: '/lovable/email/transactional/send'
+      fullPath: '/lovable/email/transactional/send'
+      preLoaderRoute: typeof LovableEmailTransactionalSendRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/lovable/email/transactional/preview': {
@@ -4215,11 +4110,116 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LovableEmailTransactionalPreviewRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/lovable/email/transactional/send': {
-      id: '/lovable/email/transactional/send'
-      path: '/lovable/email/transactional/send'
-      fullPath: '/lovable/email/transactional/send'
-      preLoaderRoute: typeof LovableEmailTransactionalSendRouteImport
+    '/lovable/email/queue/process': {
+      id: '/lovable/email/queue/process'
+      path: '/lovable/email/queue/process'
+      fullPath: '/lovable/email/queue/process'
+      preLoaderRoute: typeof LovableEmailQueueProcessRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/lovable/email/auth/webhook': {
+      id: '/lovable/email/auth/webhook'
+      path: '/lovable/email/auth/webhook'
+      fullPath: '/lovable/email/auth/webhook'
+      preLoaderRoute: typeof LovableEmailAuthWebhookRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/lovable/email/auth/preview': {
+      id: '/lovable/email/auth/preview'
+      path: '/lovable/email/auth/preview'
+      fullPath: '/lovable/email/auth/preview'
+      preLoaderRoute: typeof LovableEmailAuthPreviewRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/whatsapp/webhook': {
+      id: '/api/public/whatsapp/webhook'
+      path: '/api/public/whatsapp/webhook'
+      fullPath: '/api/public/whatsapp/webhook'
+      preLoaderRoute: typeof ApiPublicWhatsappWebhookRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/hooks/viator-drift-check': {
+      id: '/api/public/hooks/viator-drift-check'
+      path: '/api/public/hooks/viator-drift-check'
+      fullPath: '/api/public/hooks/viator-drift-check'
+      preLoaderRoute: typeof ApiPublicHooksViatorDriftCheckRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/hooks/stripe-webhook-health': {
+      id: '/api/public/hooks/stripe-webhook-health'
+      path: '/api/public/hooks/stripe-webhook-health'
+      fullPath: '/api/public/hooks/stripe-webhook-health'
+      preLoaderRoute: typeof ApiPublicHooksStripeWebhookHealthRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/hooks/import-tripadvisor-reviews': {
+      id: '/api/public/hooks/import-tripadvisor-reviews'
+      path: '/api/public/hooks/import-tripadvisor-reviews'
+      fullPath: '/api/public/hooks/import-tripadvisor-reviews'
+      preLoaderRoute: typeof ApiPublicHooksImportTripadvisorReviewsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/hooks/gmail-booking-scan': {
+      id: '/api/public/hooks/gmail-booking-scan'
+      path: '/api/public/hooks/gmail-booking-scan'
+      fullPath: '/api/public/hooks/gmail-booking-scan'
+      preLoaderRoute: typeof ApiPublicHooksGmailBookingScanRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/hooks/enquiry-followup': {
+      id: '/api/public/hooks/enquiry-followup'
+      path: '/api/public/hooks/enquiry-followup'
+      fullPath: '/api/public/hooks/enquiry-followup'
+      preLoaderRoute: typeof ApiPublicHooksEnquiryFollowupRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/hooks/email-flush': {
+      id: '/api/public/hooks/email-flush'
+      path: '/api/public/hooks/email-flush'
+      fullPath: '/api/public/hooks/email-flush'
+      preLoaderRoute: typeof ApiPublicHooksEmailFlushRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/hooks/dns-watch': {
+      id: '/api/public/hooks/dns-watch'
+      path: '/api/public/hooks/dns-watch'
+      fullPath: '/api/public/hooks/dns-watch'
+      preLoaderRoute: typeof ApiPublicHooksDnsWatchRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/hooks/checkout-email': {
+      id: '/api/public/hooks/checkout-email'
+      path: '/api/public/hooks/checkout-email'
+      fullPath: '/api/public/hooks/checkout-email'
+      preLoaderRoute: typeof ApiPublicHooksCheckoutEmailRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/hooks/booking-cancelled-email': {
+      id: '/api/public/hooks/booking-cancelled-email'
+      path: '/api/public/hooks/booking-cancelled-email'
+      fullPath: '/api/public/hooks/booking-cancelled-email'
+      preLoaderRoute: typeof ApiPublicHooksBookingCancelledEmailRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/hooks/bokun-booking': {
+      id: '/api/public/hooks/bokun-booking'
+      path: '/api/public/hooks/bokun-booking'
+      fullPath: '/api/public/hooks/bokun-booking'
+      preLoaderRoute: typeof ApiPublicHooksBokunBookingRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/feeds/things-to-do.xml': {
+      id: '/api/public/feeds/things-to-do.xml'
+      path: '/api/public/feeds/things-to-do.xml'
+      fullPath: '/api/public/feeds/things-to-do.xml'
+      preLoaderRoute: typeof ApiPublicFeedsThingsToDoDotxmlRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/feeds/things-to-do.json': {
+      id: '/api/public/feeds/things-to-do.json'
+      path: '/api/public/feeds/things-to-do.json'
+      fullPath: '/api/public/feeds/things-to-do.json'
+      preLoaderRoute: typeof ApiPublicFeedsThingsToDoDotjsonRouteImport
       parentRoute: typeof rootRouteImport
     }
   }
