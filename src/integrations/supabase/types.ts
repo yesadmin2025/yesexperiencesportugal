@@ -346,6 +346,45 @@ export type Database = {
         }
         Relationships: []
       }
+      booking_repair_log: {
+        Row: {
+          booking_id: string
+          created_at: string
+          field: string
+          id: string
+          new_value: string | null
+          note: string | null
+          old_value: string | null
+          outcome: string
+          repair_batch: string
+          source: string
+        }
+        Insert: {
+          booking_id: string
+          created_at?: string
+          field: string
+          id?: string
+          new_value?: string | null
+          note?: string | null
+          old_value?: string | null
+          outcome?: string
+          repair_batch: string
+          source: string
+        }
+        Update: {
+          booking_id?: string
+          created_at?: string
+          field?: string
+          id?: string
+          new_value?: string | null
+          note?: string | null
+          old_value?: string | null
+          outcome?: string
+          repair_batch?: string
+          source?: string
+        }
+        Relationships: []
+      }
       booking_requests: {
         Row: {
           adults: number
