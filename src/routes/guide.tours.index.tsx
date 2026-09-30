@@ -1,9 +1,10 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, redirect } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { fetchMyTours, fmtDate, todayIso, type GuideTour } from "@/components/guide/guide-data";
 import { TourCard } from "@/components/guide/TourCard";
 
 export const Route = createFileRoute("/guide/tours/")({
+  beforeLoad: () => { throw redirect({ to: "/guide" }); },
   head: () => ({ meta: [{ title: "My tours · YES Guide" }] }),
   component: MyTours,
 });

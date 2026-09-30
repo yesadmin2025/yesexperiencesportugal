@@ -1,8 +1,9 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link, redirect } from "@tanstack/react-router";
 import { useCallback, useEffect, useState } from "react";
 import { db } from "@/components/guide/guide-data";
 
 export const Route = createFileRoute("/guide/notifications")({
+  beforeLoad: () => { throw redirect({ to: "/guide" }); },
   head: () => ({ meta: [{ title: "Notifications · YES Guide" }] }),
   component: GuideNotifications,
 });

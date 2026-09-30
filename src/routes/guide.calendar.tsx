@@ -1,10 +1,11 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link, redirect } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
 import { db, fetchMyTours, todayIso, type GuideTour } from "@/components/guide/guide-data";
 import { MonthCalendar, type CalendarDayTone } from "@/components/calendar/MonthCalendar";
 import { Button } from "@/components/ui/button";
 
 export const Route = createFileRoute("/guide/calendar")({
+  beforeLoad: () => { throw redirect({ to: "/guide" }); },
   head: () => ({ meta: [
     { title: "My tour calendar · YES Guide" },
     { name: "description", content: "Private calendar for a YES Experiences guide's assigned tours and availability." },
