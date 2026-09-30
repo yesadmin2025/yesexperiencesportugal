@@ -103,7 +103,7 @@ function GuideCalendar() {
             {selectedTours.map((tour) => (
               <Button key={tour.assignment_id} asChild variant="outline" className="h-auto min-h-14 w-full justify-between whitespace-normal px-3 py-3 text-left">
                 <Link to="/guide/tours/$assignmentId" params={{ assignmentId: tour.assignment_id }}>
-                  <span><strong className="block">{tour.tour_title}</strong><span className="text-xs text-muted-foreground">{tour.start_time?.slice(0, 5) ?? "Time not set"}</span></span>
+                  <span><strong className="block">{tour.tour_title}</strong><span className="text-xs text-muted-foreground">{tour.start_time?.slice(0, 5) ?? "Time not set"}{tour.guests ? ` · ${tour.guests} guest${tour.guests === 1 ? "" : "s"}` : ""}{fmtPax(tour.pax_breakdown) ? ` (${fmtPax(tour.pax_breakdown)})` : ""}{tour.guest_first_name ? ` · ${tour.guest_first_name}` : ""}</span></span>
                   <span aria-hidden>→</span>
                 </Link>
               </Button>
