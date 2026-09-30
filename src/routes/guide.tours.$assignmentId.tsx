@@ -1,5 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
+import { useGuideRefresh } from "@/components/guide/guide-refresh";
 import { toast } from "sonner";
 import { db, errMsg, fetchMyTours, type GuideTour } from "@/components/guide/guide-data";
 import { GuestActions, TourEssentials, tourBadge } from "@/components/guide/TourCard";
