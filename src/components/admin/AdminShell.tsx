@@ -10,20 +10,25 @@
  */
 import { Link, useNavigate } from "@tanstack/react-router";
 import { createContext, useContext, useEffect, useState, type ReactNode } from "react";
-import { CalendarDays, CalendarRange, Compass, FileText, Home, Menu, Settings, Smartphone, Wallet, Users, X } from "lucide-react";
+import { CalendarDays, CalendarRange, Compass, FileText, Home, Menu, Smartphone, Wallet, Users, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 
 const NAV = [
   { to: "/admin", label: "Operations", icon: Home, exact: true },
   { to: "/admin/bookings", label: "Bookings", icon: CalendarDays, exact: false },
-  { to: "/admin/payments", label: "Vouchers & Payments", icon: Wallet, exact: false },
-  { to: "/admin/operations", label: "Planning board", icon: Compass, exact: false },
-  { to: "/admin/tour-calendar", label: "Tour Calendar", icon: CalendarRange, exact: false },
-  { to: "/admin/experiences", label: "Tour Details", icon: FileText, exact: false },
+  { to: "/admin/payments", label: "Payments", icon: Wallet, exact: false },
   { to: "/admin/guides", label: "Guides", icon: Users, exact: false },
+  { to: "/admin/settings", label: "More", icon: Menu, exact: false },
+] as const;
+
+/** Rare tools: reachable, never competing with the four primary screens. */
+const MORE = [
+  { to: "/admin/operations", label: "Planning board", icon: Compass, exact: false },
+  { to: "/admin/tour-calendar", label: "Tour calendar", icon: CalendarRange, exact: false },
+  { to: "/admin/experiences", label: "Tour details", icon: FileText, exact: false },
   { to: "/guide", label: "Guide App", icon: Smartphone, exact: false },
-  { to: "/admin/settings", label: "Settings", icon: Settings, exact: false },
+  { to: "/admin/settings", label: "Settings & tools", icon: Menu, exact: false },
 ] as const;
 
 type Gate = "checking" | "ok" | "denied";
@@ -63,8 +68,8 @@ function useAdminGate(): Gate {
 export function AdminFrame({ children }: { children: ReactNode }) {
   const gate = useAdminGate();
   const [moreOpen, setMoreOpen] = useState(false);
-  const mobilePrimary = NAV.filter(({ to }) => ["/admin", "/admin/bookings", "/admin/payments"].includes(to));
-  const mobileMore = NAV.filter(({ to }) => !["/admin", "/admin/bookings", "/admin/payments"].includes(to));
+  const mobilePrimary = NAV.filter(({ to }) => to !== "/admin/settings");
+  const mobileMore = MORE;
   return (
     <FrameContext.Provider value={true}>
       <div className="min-h-[100dvh] bg-[color:var(--ivory)] text-[color:var(--charcoal)]">
@@ -117,7 +122,7 @@ export function AdminFrame({ children }: { children: ReactNode }) {
         ) : null}
         <nav
           aria-label="Admin"
-          className="fixed inset-x-0 bottom-0 z-40 grid grid-cols-4 border-t border-[color:var(--charcoal)]/[0.08] bg-[color:var(--ivory)]/95 pb-[env(safe-area-inset-bottom)] backdrop-blur md:hidden"
+          className="fixed inset-x-0 bottom-0 z-40 grid grid-cols-5 border-t border-[color:var(--charcoal)]/[0.08] bg-[color:var(--ivory)]/95 pb-[env(safe-area-inset-bottom)] backdrop-blur md:hidden"
         >
           {mobilePrimary.map(({ to, label, icon: Icon, exact }) => (
             <Link
