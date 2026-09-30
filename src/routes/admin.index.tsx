@@ -97,6 +97,7 @@ type Row = {
   status: string;
   payment_status: string | null;
   assigned_guide_id: string | null;
+  legacy_guide_id?: string | null;
   review_required: boolean;
   review_reason: string | null;
 };
@@ -216,11 +217,11 @@ function TodayPage() {
         out.push({ key: `m-${row.id}`, text: `${who} · ${when}`, detail: `Missing ${missing.join(" and ")}`, action: "Complete", bookingId: row.id });
       }
       if (!row.assigned_guide_id) {
-        out.push({ key: `g-${row.id}`, text: `${tourOf(row) ?? who} · ${when}`, detail: "No guide yet", action: "Assign", bookingId: row.id });
+        out.push({ key: `g-${row.id}`, text: `${tourOf(row) ?? who} · ${when}`, detail: row.legacy_guide_id ? "Guide on record isn\u2019t scheduled — reassign" : "No guide yet", action: "Assign", bookingId: row.id });
       }
     }
     for (const row of undated.slice(0, 5)) {
-      out.push({ key: `d-${row.id}`, text: guestOf(row), detail: "Paid, but no trip date", action: "Complete", bookingId: row.id });
+      out.push({ key: `d-${row.id}`, text: guestOf(row), detail: "No trip date on the booking", action: "Complete", bookingId: row.id });
     }
     if (automationProblem) {
       out.push({ key: "auto", text: automationProblem, detail: "Bookings may arrive late", action: "Open", to: "settings" });
