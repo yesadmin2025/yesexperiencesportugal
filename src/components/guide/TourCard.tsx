@@ -64,11 +64,10 @@ export function TourEssentials({ t }: { t: GuideTour }) {
 }
 
 function compactDate(date: string) {
-  return new Date(`${date}T12:00:00Z`).toLocaleDateString("en-GB", {
-    weekday: "short",
-    day: "numeric",
-    month: "short",
-  });
+  const value = new Date(`${date}T12:00:00Z`);
+  const weekday = value.toLocaleDateString("en-GB", { weekday: "short" });
+  const dayMonth = value.toLocaleDateString("en-GB", { day: "numeric", month: "short" });
+  return `${weekday}, ${dayMonth}`;
 }
 
 /** A calm work-list row. Contact and map actions intentionally live on Tour Details. */
