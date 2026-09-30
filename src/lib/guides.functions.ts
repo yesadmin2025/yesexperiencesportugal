@@ -106,12 +106,12 @@ export const reviewGuideRequest = createServerFn({ method: "POST" })
     if (error) throw new Error(error.message);
     if (!guide) throw new Error("This request was already reviewed.");
     let notified = false;
-    if (approve && guide.email) {
+    if (guide.email) {
       const { sendTransactionalInternal } = await import("@/lib/email/send-internal.server");
       const result = await sendTransactionalInternal({
-        templateName: "guide-app-invite",
+        templateName: approve ? "guide-app-invite" : "guide-app-declined",
         recipientEmail: guide.email,
-        idempotencyKey: `guide-approved-${guide.id}`,
+        idempotencyKey: `guide-${approve ? "approved" : "declined"}-${guide.id}`,
         templateData: { guideName: guide.name, guideEmail: guide.email },
       });
       notified = result.ok;
