@@ -37,11 +37,13 @@ function AdminGuidesPage() {
   const save = useServerFn(saveGuide);
   const remove = useServerFn(deleteGuide);
   const invite = useServerFn(sendGuideAppInvite);
+  const review = useServerFn(reviewGuideRequest);
 
   const [guides, setGuides] = useState<Guide[]>([]);
   const [draft, setDraft] = useState({ ...EMPTY });
   const [busy, setBusy] = useState(false);
   const [inviting, setInviting] = useState<string | null>(null);
+  const [reviewing, setReviewing] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
 
   const refresh = () =>
@@ -65,6 +67,64 @@ function AdminGuidesPage() {
       </p>
 
       {error ? <p className="mt-4 text-sm text-red-700">{error}</p> : null}
+
+      {guides.some((g) => g.approval_status === "pending") ? (
+        <section className="mt-6 border border-[color:var(--gold)] bg-white p-4" aria-label="Sign-ups to review">
+          <h2 className="font-[family-name:var(--font-editorial)] text-xl text-[color:var(--charcoal)]">
+            Sign-ups to review
+          </h2>
+          <p className="mt-1 text-sm text-[color:var(--charcoal-soft)]">
+            Approving gives access to the Guide App and emails the guide straight away.
+          </p>
+          <ul className="mt-3 divide-y divide-[color:var(--sand)]">
+            {guides
+              .filter((g) => g.approval_status === "pending")
+              .map((g) => (
+                <li key={g.id} className="flex flex-col gap-3 py-3 sm:flex-row sm:items-center sm:justify-between">
+                  <div className="text-sm text-[color:var(--charcoal)]">
+                    <p className="font-medium">{g.name}</p>
+                    <p className="text-[color:var(--charcoal-soft)]">{[g.email, g.phone].filter(Boolean).join(" · ")}</p>
+                  </div>
+                  <div className="flex gap-2">
+                    {(["approve", "reject"] as const).map((decision) => (
+                      <button
+                        key={decision}
+                        type="button"
+                        disabled={reviewing === g.id}
+                        onClick={async () => {
+                          if (decision === "reject" && !window.confirm(`Reject ${g.name}?`)) return;
+                          setReviewing(g.id);
+                          try {
+                            const res = await review({ data: { guideId: g.id, decision } });
+                            toast.success(
+                              decision === "reject"
+                                ? `${g.name} rejected.`
+                                : res.notified
+                                  ? `${g.name} approved and emailed.`
+                                  : `${g.name} approved. No email could be sent.`,
+                            );
+                            await refresh();
+                          } catch (e) {
+                            toast.error(e instanceof Error ? e.message : "Could not save.");
+                          } finally {
+                            setReviewing(null);
+                          }
+                        }}
+                        className={
+                          decision === "approve"
+                            ? "min-h-11 rounded-full bg-[color:var(--teal)] px-5 text-[12px] uppercase tracking-[0.14em] text-[color:var(--ivory)]"
+                            : "min-h-11 rounded-full border border-[color:var(--sand)] px-5 text-[12px] uppercase tracking-[0.14em] text-[color:var(--charcoal)]"
+                        }
+                      >
+                        {decision === "approve" ? "Approve" : "Reject"}
+                      </button>
+                    ))}
+                  </div>
+                </li>
+              ))}
+          </ul>
+        </section>
+      ) : null}
 
       <section className="mt-6 border border-[color:var(--sand)] bg-white p-4">
         <h2 className="font-[family-name:var(--font-editorial)] text-xl text-[color:var(--charcoal)]">
