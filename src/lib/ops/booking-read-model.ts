@@ -40,6 +40,8 @@ export type RawBooking = {
   preferred_date: string | null;
   pickup_location: string | null;
   assigned_guide_id?: string | null;
+  review_required?: boolean | null;
+  review_reason?: string | null;
   metadata?: Json | null;
   booking_details?: Json | null;
 };

@@ -28,7 +28,7 @@ function OperationsPage() {
   useEffect(() => {
     let live = true;
     Promise.all([load({ data: { status: "all", limit: 500 } }), loadBoard({ data: { from: today, to: day(14) } }), loadPayments()])
-      .then(([l, b, p]) => { if (!live) return; setList(l); setBoard(b); setPaymentIssues(new Set(p.payments.filter((x) => x.match_status === "unmatched" || x.match_status === "needs_review").map((x) => x.booking_id).filter((id): id is string => Boolean(id)))); setError(null); })
+      .then(([l, b, p]) => { if (!live) return; setList(l); setBoard(b); setPaymentIssues(new Set((p.payments as Array<{ match_status: string; booking_id: string | null }>).filter((x) => x.match_status === "unmatched" || x.match_status === "needs_review").map((x) => x.booking_id).filter((id): id is string => Boolean(id)))); setError(null); })
       .catch((e) => { if (live) setError(e instanceof Error ? e.message : "Could not load operations."); });
     return () => { live = false; };
   }, [load, loadBoard, loadPayments, today]);
