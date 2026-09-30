@@ -78,3 +78,5 @@
 - [ ] Verify signed-in mobile and desktop flows, focused tests and preview build
 
 - [ ] Investigate checkout payment-step concern: live Stripe checkout already exists (cs_live_ sessions); verify what guest sees before paying and confirm end-to-end
+
+- [x] Publish checkout inclusions fix + Guide calendar; confirmed live (home + /guide 200, guide.webmanifest 200)
