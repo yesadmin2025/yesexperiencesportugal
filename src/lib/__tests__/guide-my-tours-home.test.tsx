@@ -5,7 +5,7 @@ import type { GuideTour } from "@/components/guide/guide-data";
 
 vi.mock("@tanstack/react-router", async () => {
   const actual = await vi.importActual<typeof import("@tanstack/react-router")>("@tanstack/react-router");
-  return { ...actual, Link: ({ children }: { children: React.ReactNode }) => <a>{children}</a> };
+  return { ...actual, Link: ({ children }: { children: React.ReactNode }) => <a href="#guide-test">{children}</a> };
 });
 
 function tour(id: string, date: string, title: string, itinerary: GuideTour["itinerary"] = []) : GuideTour {
