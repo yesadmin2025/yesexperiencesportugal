@@ -31,7 +31,7 @@ export const Route = createFileRoute("/admin/payments")({
     ],
   }),
   component: PaymentsPage,
-  errorComponent: ({ error }) => <div className="p-8 text-sm">Could not load payments: {error.message}</div>,
+  errorComponent: ({ error }) => <div className="p-8 text-sm">Could not load payments: {(error as Error).message}</div>,
   notFoundComponent: () => <div className="p-8">Not found</div>,
 });
 

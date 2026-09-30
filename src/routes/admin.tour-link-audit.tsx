@@ -24,7 +24,8 @@ import {
   RotateCcw,
 } from "lucide-react";
 
-function TourLinkAuditErrorComponent({ error, reset }: { error: Error; reset: () => void }) {
+function TourLinkAuditErrorComponent({ error: rawError, reset }: { error: unknown; reset: () => void }) {
+  const error = (rawError instanceof Error ? rawError : new Error(String(rawError)));
   const router = useRouter();
   return (
     <SiteLayout>

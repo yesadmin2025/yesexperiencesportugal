@@ -19,7 +19,7 @@ export const Route = createFileRoute("/admin/settings")({
     meta: [{ title: "Settings · YES Operations" }, { name: "robots", content: "noindex, nofollow" }],
   }),
   component: SettingsPage,
-  errorComponent: ({ error }) => <div className="p-8 text-sm">Could not load Settings: {error.message}</div>,
+  errorComponent: ({ error }) => <div className="p-8 text-sm">Could not load Settings: {(error as Error).message}</div>,
   notFoundComponent: () => <div className="p-8">Not found</div>,
 });
 
