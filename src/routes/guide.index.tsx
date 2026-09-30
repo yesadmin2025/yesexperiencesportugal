@@ -19,7 +19,6 @@ function localIso(d = new Date()) {
 function GuideToursHome() {
   const [tours, setTours] = useState<GuideTour[] | null>(null);
   const [alerts, setAlerts] = useState<GuideAlert[]>([]);
-  const [showAll, setShowAll] = useState(false);
   const [err, setErr] = useState<string | null>(null);
   useEffect(() => {
     fetchMyTours().then(setTours).catch((e) => setErr(e.message));
