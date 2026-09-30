@@ -4,7 +4,7 @@
  */
 import { createFileRoute, Link, Outlet } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { Bell, ClipboardList, User, CalendarCheck } from "lucide-react";
+import { Bell, ClipboardList, User, CalendarCheck, CalendarDays } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { lovable } from "@/integrations/lovable";
@@ -33,6 +33,7 @@ type Gate = "checking" | "signed-out" | "not-guide" | "ok";
 
 const TABS = [
   { to: "/guide", label: "Tours", icon: ClipboardList, exact: true },
+  { to: "/guide/calendar", label: "Calendar", icon: CalendarDays, exact: false },
   { to: "/guide/availability", label: "Availability", icon: CalendarCheck, exact: false },
   { to: "/guide/profile", label: "Profile", icon: User, exact: false },
 ] as const;
@@ -133,7 +134,7 @@ function GuideLayout() {
       <main className="px-4 py-5 max-w-xl mx-auto">
         <GuideRefreshContext.Provider value={version}><Outlet /></GuideRefreshContext.Provider>
       </main>
-      <nav aria-label="Guide" className="fixed bottom-0 inset-x-0 z-10 bg-background border-t border-border grid grid-cols-3 pb-[env(safe-area-inset-bottom)]">
+      <nav aria-label="Guide" className="fixed bottom-0 inset-x-0 z-10 bg-background border-t border-border grid grid-cols-4 pb-[env(safe-area-inset-bottom)]">
         {TABS.map(({ to, label, icon: Icon, exact }) => (
           <Link
             key={to}
