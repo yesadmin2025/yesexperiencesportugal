@@ -16,6 +16,7 @@ import {
   type PaymentState,
   type Completeness,
 } from "./booking-state";
+import type { Json } from "@/integrations/supabase/types";
 
 export type ActiveAssignment = {
   booking_id: string;
@@ -39,8 +40,8 @@ export type RawBooking = {
   preferred_date: string | null;
   pickup_location: string | null;
   assigned_guide_id?: string | null;
-  metadata?: unknown;
-  booking_details?: unknown;
+  metadata?: Json | null;
+  booking_details?: Json | null;
 };
 
 export type CanonicalFields = {
