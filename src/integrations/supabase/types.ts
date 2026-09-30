@@ -3915,6 +3915,10 @@ export type Database = {
       }
     }
     Functions: {
+      booking_pick_single: {
+        Args: { _vals: string[] }
+        Returns: Record<string, unknown>
+      }
       cleanup_expired_builder_references: { Args: never; Returns: number }
       current_guide_id: { Args: never; Returns: string }
       delete_email: {
