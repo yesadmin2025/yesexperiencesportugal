@@ -196,6 +196,7 @@ import { Route as ApiPublicBookingRequestRouteImport } from './routes/api/public
 import { Route as ApiPublicBookingItineraryDataRouteImport } from './routes/api/public/booking-itinerary-data'
 import { Route as ApiPublicBookingItineraryRouteImport } from './routes/api/public/booking-itinerary'
 import { Route as ApiPublicBookingCalendarRouteImport } from './routes/api/public/booking-calendar'
+import { Route as AdminGuidesIdRouteImport } from './routes/admin.guides.$id'
 import { Route as AdminBookingsNewRouteImport } from './routes/admin.bookings.new'
 import { Route as AdminBookingsIdRouteImport } from './routes/admin.bookings.$id'
 import { Route as Char91DotmcpChar93InvokeToolToolRouteImport } from './routes/[.mcp]/invoke-tool/$tool'
@@ -1177,6 +1178,11 @@ const ApiPublicBookingCalendarRoute =
     path: '/api/public/booking-calendar',
     getParentRoute: () => rootRouteImport,
   } as any)
+const AdminGuidesIdRoute = AdminGuidesIdRouteImport.update({
+  id: '/$id',
+  path: '/$id',
+  getParentRoute: () => AdminGuidesRoute,
+} as any)
 const AdminBookingsNewRoute = AdminBookingsNewRouteImport.update({
   id: '/bookings/new',
   path: '/bookings/new',
@@ -1410,7 +1416,7 @@ export interface FileRoutesByFullPath {
   '/admin/gbp-legacy-removal': typeof AdminGbpLegacyRemovalRoute
   '/admin/gsc': typeof AdminGscRoute
   '/admin/guide-attribution': typeof AdminGuideAttributionRoute
-  '/admin/guides': typeof AdminGuidesRoute
+  '/admin/guides': typeof AdminGuidesRouteWithChildren
   '/admin/image-swap': typeof AdminImageSwapRoute
   '/admin/import-tours': typeof AdminImportToursRoute
   '/admin/legacy-domain-unlink': typeof AdminLegacyDomainUnlinkRoute
@@ -1481,6 +1487,7 @@ export interface FileRoutesByFullPath {
   '/.mcp/invoke-tool/$tool': typeof Char91DotmcpChar93InvokeToolToolRoute
   '/admin/bookings/$id': typeof AdminBookingsIdRoute
   '/admin/bookings/new': typeof AdminBookingsNewRoute
+  '/admin/guides/$id': typeof AdminGuidesIdRoute
   '/api/public/booking-calendar': typeof ApiPublicBookingCalendarRoute
   '/api/public/booking-itinerary': typeof ApiPublicBookingItineraryRoute
   '/api/public/booking-itinerary-data': typeof ApiPublicBookingItineraryDataRoute
@@ -1617,7 +1624,7 @@ export interface FileRoutesByTo {
   '/admin/gbp-legacy-removal': typeof AdminGbpLegacyRemovalRoute
   '/admin/gsc': typeof AdminGscRoute
   '/admin/guide-attribution': typeof AdminGuideAttributionRoute
-  '/admin/guides': typeof AdminGuidesRoute
+  '/admin/guides': typeof AdminGuidesRouteWithChildren
   '/admin/image-swap': typeof AdminImageSwapRoute
   '/admin/import-tours': typeof AdminImportToursRoute
   '/admin/legacy-domain-unlink': typeof AdminLegacyDomainUnlinkRoute
@@ -1688,6 +1695,7 @@ export interface FileRoutesByTo {
   '/.mcp/invoke-tool/$tool': typeof Char91DotmcpChar93InvokeToolToolRoute
   '/admin/bookings/$id': typeof AdminBookingsIdRoute
   '/admin/bookings/new': typeof AdminBookingsNewRoute
+  '/admin/guides/$id': typeof AdminGuidesIdRoute
   '/api/public/booking-calendar': typeof ApiPublicBookingCalendarRoute
   '/api/public/booking-itinerary': typeof ApiPublicBookingItineraryRoute
   '/api/public/booking-itinerary-data': typeof ApiPublicBookingItineraryDataRoute
@@ -1829,7 +1837,7 @@ export interface FileRoutesById {
   '/admin/gbp-legacy-removal': typeof AdminGbpLegacyRemovalRoute
   '/admin/gsc': typeof AdminGscRoute
   '/admin/guide-attribution': typeof AdminGuideAttributionRoute
-  '/admin/guides': typeof AdminGuidesRoute
+  '/admin/guides': typeof AdminGuidesRouteWithChildren
   '/admin/image-swap': typeof AdminImageSwapRoute
   '/admin/import-tours': typeof AdminImportToursRoute
   '/admin/legacy-domain-unlink': typeof AdminLegacyDomainUnlinkRoute
@@ -1900,6 +1908,7 @@ export interface FileRoutesById {
   '/.mcp/invoke-tool/$tool': typeof Char91DotmcpChar93InvokeToolToolRoute
   '/admin/bookings/$id': typeof AdminBookingsIdRoute
   '/admin/bookings/new': typeof AdminBookingsNewRoute
+  '/admin/guides/$id': typeof AdminGuidesIdRoute
   '/api/public/booking-calendar': typeof ApiPublicBookingCalendarRoute
   '/api/public/booking-itinerary': typeof ApiPublicBookingItineraryRoute
   '/api/public/booking-itinerary-data': typeof ApiPublicBookingItineraryDataRoute
@@ -2113,6 +2122,7 @@ export interface FileRouteTypes {
     | '/.mcp/invoke-tool/$tool'
     | '/admin/bookings/$id'
     | '/admin/bookings/new'
+    | '/admin/guides/$id'
     | '/api/public/booking-calendar'
     | '/api/public/booking-itinerary'
     | '/api/public/booking-itinerary-data'
@@ -2320,6 +2330,7 @@ export interface FileRouteTypes {
     | '/.mcp/invoke-tool/$tool'
     | '/admin/bookings/$id'
     | '/admin/bookings/new'
+    | '/admin/guides/$id'
     | '/api/public/booking-calendar'
     | '/api/public/booking-itinerary'
     | '/api/public/booking-itinerary-data'
@@ -2531,6 +2542,7 @@ export interface FileRouteTypes {
     | '/.mcp/invoke-tool/$tool'
     | '/admin/bookings/$id'
     | '/admin/bookings/new'
+    | '/admin/guides/$id'
     | '/api/public/booking-calendar'
     | '/api/public/booking-itinerary'
     | '/api/public/booking-itinerary-data'
@@ -4010,6 +4022,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicBookingCalendarRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/admin/guides/$id': {
+      id: '/admin/guides/$id'
+      path: '/$id'
+      fullPath: '/admin/guides/$id'
+      preLoaderRoute: typeof AdminGuidesIdRouteImport
+      parentRoute: typeof AdminGuidesRoute
+    }
     '/admin/bookings/new': {
       id: '/admin/bookings/new'
       path: '/bookings/new'
@@ -4167,6 +4186,18 @@ declare module '@tanstack/react-router' {
   }
 }
 
+interface AdminGuidesRouteChildren {
+  AdminGuidesIdRoute: typeof AdminGuidesIdRoute
+}
+
+const AdminGuidesRouteChildren: AdminGuidesRouteChildren = {
+  AdminGuidesIdRoute: AdminGuidesIdRoute,
+}
+
+const AdminGuidesRouteWithChildren = AdminGuidesRoute._addFileChildren(
+  AdminGuidesRouteChildren,
+)
+
 interface AdminRouteChildren {
   AdminActivityRoute: typeof AdminActivityRoute
   AdminAiAuditRoute: typeof AdminAiAuditRoute
@@ -4187,7 +4218,7 @@ interface AdminRouteChildren {
   AdminGbpLegacyRemovalRoute: typeof AdminGbpLegacyRemovalRoute
   AdminGscRoute: typeof AdminGscRoute
   AdminGuideAttributionRoute: typeof AdminGuideAttributionRoute
-  AdminGuidesRoute: typeof AdminGuidesRoute
+  AdminGuidesRoute: typeof AdminGuidesRouteWithChildren
   AdminImageSwapRoute: typeof AdminImageSwapRoute
   AdminImportToursRoute: typeof AdminImportToursRoute
   AdminLegacyDomainUnlinkRoute: typeof AdminLegacyDomainUnlinkRoute
@@ -4244,7 +4275,7 @@ const AdminRouteChildren: AdminRouteChildren = {
   AdminGbpLegacyRemovalRoute: AdminGbpLegacyRemovalRoute,
   AdminGscRoute: AdminGscRoute,
   AdminGuideAttributionRoute: AdminGuideAttributionRoute,
-  AdminGuidesRoute: AdminGuidesRoute,
+  AdminGuidesRoute: AdminGuidesRouteWithChildren,
   AdminImageSwapRoute: AdminImageSwapRoute,
   AdminImportToursRoute: AdminImportToursRoute,
   AdminLegacyDomainUnlinkRoute: AdminLegacyDomainUnlinkRoute,
