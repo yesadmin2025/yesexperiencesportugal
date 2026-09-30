@@ -2623,6 +2623,8 @@ export type Database = {
           channel: string
           created_at: string
           delivered_at: string | null
+          email_status: string | null
+          emailed_at: string | null
           guide_id: string
           id: string
           message: string | null
@@ -2637,6 +2639,8 @@ export type Database = {
           channel?: string
           created_at?: string
           delivered_at?: string | null
+          email_status?: string | null
+          emailed_at?: string | null
           guide_id: string
           id?: string
           message?: string | null
@@ -2651,6 +2655,8 @@ export type Database = {
           channel?: string
           created_at?: string
           delivered_at?: string | null
+          email_status?: string | null
+          emailed_at?: string | null
           guide_id?: string
           id?: string
           message?: string | null
