@@ -17,6 +17,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { GuideBriefPanel } from "@/components/admin/GuideBriefPanel";
 import { OpsBookingDetail } from "@/components/admin/ops/OpsBookingDetail";
+import { BookingPaymentsPanel } from "@/components/admin/BookingPaymentsPanel";
 import {
   buildSnapshotEmailPreview,
   validateBookingSnapshot,
@@ -162,6 +163,9 @@ function AdminBookingDetailPage() {
       <p className="mt-2 text-sm text-[color:var(--charcoal-soft)]">
         {booking.status} · {booking.booking_type} · {new Date(booking.created_at).toLocaleString()}
       </p>
+
+      <BookingPaymentsPanel bookingId={id} />
+
 
 
       {booking.status === "paid" ? (
