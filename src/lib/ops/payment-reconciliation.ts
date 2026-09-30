@@ -63,6 +63,8 @@ export function groupBookings<T extends ReconRow>(rows: T[]): Record<ReconBucket
   const out: Record<ReconBucket, T[]> = { matched: [], missing_details: [], no_payment: [], review: [], refunded: [] };
   for (const row of rows) {
     if (row.status === "failed") continue;
+    // Unfinished website checkouts are not bookings yet.
+    if (row.status === "pending" && (!row.source_channel || row.source_channel === "WEBSITE") && !row.external_booking_ref) continue;
     out[classifyBooking(row)].push(row);
   }
   return out;
