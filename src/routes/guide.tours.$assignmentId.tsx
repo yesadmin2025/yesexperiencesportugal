@@ -18,6 +18,8 @@ function TourDetails() {
   const [notes, setNotes] = useState<Note[]>([]);
   const [issue, setIssue] = useState("");
   const [showIssue, setShowIssue] = useState(false);
+  const [showDecline, setShowDecline] = useState(false);
+  const [declineReason, setDeclineReason] = useState("");
   const [busy, setBusy] = useState(false);
 
   const load = useCallback(async () => {
