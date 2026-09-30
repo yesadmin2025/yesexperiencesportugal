@@ -277,7 +277,7 @@ function PaymentCard({ payment: p, bookings, onChanged }: { payment: Payment; bo
           <p className="text-[11px] uppercase tracking-[0.16em] text-[color:var(--charcoal-soft)]">Possible bookings</p>
           <ul className="mt-1 space-y-2">
             {candidates.map((c) => (
-              <li key={c.booking_id} className="flex items-start justify-between gap-3">
+              <li key={c.booking_id} className="flex flex-col items-start gap-1 sm:flex-row sm:justify-between sm:gap-3">
                 <BookingLine b={bookings[c.booking_id]!} extra={c.label} />
                 <button type="button" disabled={busy} onClick={() => doMatch(c.booking_id, `Chosen from candidates: ${c.reasons.join(", ")}`)} className="min-h-11 shrink-0 rounded-md border border-[color:var(--teal)] px-3 text-[12px] text-[color:var(--teal)]">
                   Link
@@ -330,7 +330,7 @@ function PaymentCard({ payment: p, bookings, onChanged }: { payment: Payment; bo
           {results && results.length === 0 ? <p className="mt-2 text-[12.5px] text-[color:var(--charcoal-soft)]">No bookings found.</p> : null}
           <ul className="mt-2 space-y-2">
             {(results ?? []).map((b) => (
-              <li key={b.id} className="flex items-start justify-between gap-3">
+              <li key={b.id} className="flex flex-col items-start gap-1 sm:flex-row sm:justify-between sm:gap-3">
                 <BookingLine b={b} />
                 <button type="button" disabled={busy || b.id === p.booking_id} onClick={() => doMatch(b.id, "Chosen by admin from search")} className="min-h-11 shrink-0 rounded-md border border-[color:var(--teal)] px-3 text-[12px] text-[color:var(--teal)] disabled:opacity-40">
                   Link
