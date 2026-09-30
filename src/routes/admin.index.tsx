@@ -65,6 +65,7 @@ function TodayPage() {
   const loadIntegrations = useServerFn(getOpsIntegrationStatus);
   const loadBoard = useServerFn(getOperationsBoard);
   const [avail, setAvail] = useState<Avail[]>([]);
+  const [weekly, setWeekly] = useState<Array<{ id: string; guide_id: string; weekday: number; status: string }>>([]);
 
   const [week, setWeek] = useState<Row[]>([]);
   const [undated, setUndated] = useState<Row[]>([]);
@@ -101,8 +102,10 @@ function TodayPage() {
     try {
       const board = await loadBoard({ data: { from: today, to: weekEnd } });
       setAvail(((board.availability ?? []) as Avail[]).sort((a, b) => a.start_at.localeCompare(b.start_at)));
+      setWeekly(((board.recurring ?? []) as Array<{ id: string; guide_id: string; weekday: number; status: string }>).sort((a, b) => a.weekday - b.weekday));
     } catch {
       setAvail([]);
+      setWeekly([]);
     }
 
     try {
@@ -218,6 +221,23 @@ function TodayPage() {
               ))}
             </ul>
           )}
+          {weekly.length > 0 ? (
+            <>
+              <p className="mt-5 text-[11px] uppercase tracking-[0.22em] text-[color:var(--charcoal-soft)]">Every week</p>
+              <ul className="mt-2 divide-y divide-[color:var(--charcoal)]/[0.07] border-y border-[color:var(--charcoal)]/[0.07]">
+                {weekly.map((w) => (
+                  <li key={w.id} className="flex flex-wrap items-baseline justify-between gap-x-3 py-3 text-[14px]">
+                    <span className="text-[color:var(--charcoal)]">
+                      <strong className="font-medium">{guideName(w.guide_id) ?? "Guide"}</strong> · {AVAIL_LABEL[w.status] ?? w.status}
+                    </span>
+                    <span className="text-[13px] text-[color:var(--charcoal-soft)]">
+                      Every {["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"][w.weekday] ?? "week"}
+                    </span>
+                  </li>
+                ))}
+              </ul>
+            </>
+          ) : null}
         </section>
       </div>
 
