@@ -6,7 +6,7 @@
  * now live under Settings → Connections & automation. The per-day brief
  * calendar and calendar subscription stay available under "More".
  */
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { AdminShell } from "@/components/admin/AdminShell";
 import { OpsBookingsHub, type QuickRange } from "@/components/admin/ops/OpsBookingsHub";
 import { BookingsAvailabilityCalendar } from "@/components/admin/BookingsAvailabilityCalendar";
@@ -34,6 +34,12 @@ function AdminBookingsPage() {
   const { focus, open } = Route.useSearch();
   return (
     <AdminShell eyebrow="All channels" title="Bookings">
+      <Link
+        to="/admin/bookings/new"
+        className="mb-6 inline-flex min-h-11 items-center rounded-full bg-[color:var(--teal)] px-5 text-[12px] uppercase tracking-[0.16em] text-[color:var(--ivory)]"
+      >
+        + New booking
+      </Link>
       <OpsBookingsHub initialRange={focus ?? (open ? "future" : "week")} initialOpen={open ?? null} />
       <OperationsOverview />
 
