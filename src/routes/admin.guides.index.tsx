@@ -10,7 +10,7 @@ import { getOperationsBoard } from "@/lib/operations.functions";
 type Guides = Awaited<ReturnType<typeof listGuides>>;
 type Board = Awaited<ReturnType<typeof getOperationsBoard>>;
 const date = (n: number) => new Date(Date.now() + n * 86400000).toISOString().slice(0, 10);
-export const Route = createFileRoute("/admin/guides")({
+export const Route = createFileRoute("/admin/guides/")({
   component: GuidesPage,
   head: () => ({ meta: [{ title: "Guides · YES Admin" }, { name: "description", content: "Guide contacts, availability and upcoming tours." }, { property: "og:title", content: "Guides · YES Admin" }, { property: "og:description", content: "Guide contacts, availability and upcoming tours." }, { property: "og:type", content: "website" }, { name: "twitter:card", content: "summary" }, { name: "robots", content: "noindex, nofollow" }] }),
 });

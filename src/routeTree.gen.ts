@@ -116,7 +116,6 @@ import { Route as AdminExperiencesRouteImport } from './routes/admin.experiences
 import { Route as AdminGbpLegacyRemovalRouteImport } from './routes/admin.gbp-legacy-removal'
 import { Route as AdminGscRouteImport } from './routes/admin.gsc'
 import { Route as AdminGuideAttributionRouteImport } from './routes/admin.guide-attribution'
-import { Route as AdminGuidesRouteImport } from './routes/admin.guides'
 import { Route as AdminImageSwapRouteImport } from './routes/admin.image-swap'
 import { Route as AdminImportToursRouteImport } from './routes/admin.import-tours'
 import { Route as AdminLegacyDomainUnlinkRouteImport } from './routes/admin.legacy-domain-unlink'
@@ -188,6 +187,7 @@ import { Route as Char91DotmcpChar93InvokeToolToolRouteImport } from './routes/[
 import { Route as AdminBookingsIndexRouteImport } from './routes/admin.bookings.index'
 import { Route as AdminBookingsIdRouteImport } from './routes/admin.bookings.$id'
 import { Route as AdminBookingsNewRouteImport } from './routes/admin.bookings.new'
+import { Route as AdminGuidesIndexRouteImport } from './routes/admin.guides.index'
 import { Route as AdminGuidesIdRouteImport } from './routes/admin.guides.$id'
 import { Route as ApiPublicBookingCalendarRouteImport } from './routes/api/public/booking-calendar'
 import { Route as ApiPublicBookingItineraryRouteImport } from './routes/api/public/booking-itinerary'
@@ -773,11 +773,6 @@ const AdminGuideAttributionRoute = AdminGuideAttributionRouteImport.update({
   path: '/guide-attribution',
   getParentRoute: () => AdminRoute,
 } as any)
-const AdminGuidesRoute = AdminGuidesRouteImport.update({
-  id: '/guides',
-  path: '/guides',
-  getParentRoute: () => AdminRoute,
-} as any)
 const AdminImageSwapRoute = AdminImageSwapRouteImport.update({
   id: '/image-swap',
   path: '/image-swap',
@@ -1136,10 +1131,15 @@ const AdminBookingsNewRoute = AdminBookingsNewRouteImport.update({
   path: '/bookings/new',
   getParentRoute: () => AdminRoute,
 } as any)
+const AdminGuidesIndexRoute = AdminGuidesIndexRouteImport.update({
+  id: '/guides/',
+  path: '/guides/',
+  getParentRoute: () => AdminRoute,
+} as any)
 const AdminGuidesIdRoute = AdminGuidesIdRouteImport.update({
-  id: '/$id',
-  path: '/$id',
-  getParentRoute: () => AdminGuidesRoute,
+  id: '/guides/$id',
+  path: '/guides/$id',
+  getParentRoute: () => AdminRoute,
 } as any)
 const ApiPublicBookingCalendarRoute =
   ApiPublicBookingCalendarRouteImport.update({
@@ -1429,7 +1429,6 @@ export interface FileRoutesByFullPath {
   '/admin/gbp-legacy-removal': typeof AdminGbpLegacyRemovalRoute
   '/admin/gsc': typeof AdminGscRoute
   '/admin/guide-attribution': typeof AdminGuideAttributionRoute
-  '/admin/guides': typeof AdminGuidesRouteWithChildren
   '/admin/image-swap': typeof AdminImageSwapRoute
   '/admin/import-tours': typeof AdminImportToursRoute
   '/admin/legacy-domain-unlink': typeof AdminLegacyDomainUnlinkRoute
@@ -1516,6 +1515,7 @@ export interface FileRoutesByFullPath {
   '/studio-v2/i/$token': typeof StudioV2ITokenRoute
   '/tours/$tourId/tailor': typeof ToursTourIdTailorRoute
   '/admin/bookings/': typeof AdminBookingsIndexRoute
+  '/admin/guides/': typeof AdminGuidesIndexRoute
   '/guide/tours/': typeof GuideToursIndexRoute
   '/api/public/feeds/things-to-do.json': typeof ApiPublicFeedsThingsToDoDotjsonRoute
   '/api/public/feeds/things-to-do.xml': typeof ApiPublicFeedsThingsToDoDotxmlRoute
@@ -1639,7 +1639,6 @@ export interface FileRoutesByTo {
   '/admin/gbp-legacy-removal': typeof AdminGbpLegacyRemovalRoute
   '/admin/gsc': typeof AdminGscRoute
   '/admin/guide-attribution': typeof AdminGuideAttributionRoute
-  '/admin/guides': typeof AdminGuidesRouteWithChildren
   '/admin/image-swap': typeof AdminImageSwapRoute
   '/admin/import-tours': typeof AdminImportToursRoute
   '/admin/legacy-domain-unlink': typeof AdminLegacyDomainUnlinkRoute
@@ -1726,6 +1725,7 @@ export interface FileRoutesByTo {
   '/studio-v2/i/$token': typeof StudioV2ITokenRoute
   '/tours/$tourId/tailor': typeof ToursTourIdTailorRoute
   '/admin/bookings': typeof AdminBookingsIndexRoute
+  '/admin/guides': typeof AdminGuidesIndexRoute
   '/guide/tours': typeof GuideToursIndexRoute
   '/api/public/feeds/things-to-do.json': typeof ApiPublicFeedsThingsToDoDotjsonRoute
   '/api/public/feeds/things-to-do.xml': typeof ApiPublicFeedsThingsToDoDotxmlRoute
@@ -1854,7 +1854,6 @@ export interface FileRoutesById {
   '/admin/gbp-legacy-removal': typeof AdminGbpLegacyRemovalRoute
   '/admin/gsc': typeof AdminGscRoute
   '/admin/guide-attribution': typeof AdminGuideAttributionRoute
-  '/admin/guides': typeof AdminGuidesRouteWithChildren
   '/admin/image-swap': typeof AdminImageSwapRoute
   '/admin/import-tours': typeof AdminImportToursRoute
   '/admin/legacy-domain-unlink': typeof AdminLegacyDomainUnlinkRoute
@@ -1941,6 +1940,7 @@ export interface FileRoutesById {
   '/studio-v2/i/$token': typeof StudioV2ITokenRoute
   '/tours_/$tourId/tailor': typeof ToursTourIdTailorRoute
   '/admin/bookings/': typeof AdminBookingsIndexRoute
+  '/admin/guides/': typeof AdminGuidesIndexRoute
   '/guide/tours/': typeof GuideToursIndexRoute
   '/api/public/feeds/things-to-do.json': typeof ApiPublicFeedsThingsToDoDotjsonRoute
   '/api/public/feeds/things-to-do.xml': typeof ApiPublicFeedsThingsToDoDotxmlRoute
@@ -2070,7 +2070,6 @@ export interface FileRouteTypes {
     | '/admin/gbp-legacy-removal'
     | '/admin/gsc'
     | '/admin/guide-attribution'
-    | '/admin/guides'
     | '/admin/image-swap'
     | '/admin/import-tours'
     | '/admin/legacy-domain-unlink'
@@ -2157,6 +2156,7 @@ export interface FileRouteTypes {
     | '/studio-v2/i/$token'
     | '/tours/$tourId/tailor'
     | '/admin/bookings/'
+    | '/admin/guides/'
     | '/guide/tours/'
     | '/api/public/feeds/things-to-do.json'
     | '/api/public/feeds/things-to-do.xml'
@@ -2280,7 +2280,6 @@ export interface FileRouteTypes {
     | '/admin/gbp-legacy-removal'
     | '/admin/gsc'
     | '/admin/guide-attribution'
-    | '/admin/guides'
     | '/admin/image-swap'
     | '/admin/import-tours'
     | '/admin/legacy-domain-unlink'
@@ -2367,6 +2366,7 @@ export interface FileRouteTypes {
     | '/studio-v2/i/$token'
     | '/tours/$tourId/tailor'
     | '/admin/bookings'
+    | '/admin/guides'
     | '/guide/tours'
     | '/api/public/feeds/things-to-do.json'
     | '/api/public/feeds/things-to-do.xml'
@@ -2494,7 +2494,6 @@ export interface FileRouteTypes {
     | '/admin/gbp-legacy-removal'
     | '/admin/gsc'
     | '/admin/guide-attribution'
-    | '/admin/guides'
     | '/admin/image-swap'
     | '/admin/import-tours'
     | '/admin/legacy-domain-unlink'
@@ -2581,6 +2580,7 @@ export interface FileRouteTypes {
     | '/studio-v2/i/$token'
     | '/tours_/$tourId/tailor'
     | '/admin/bookings/'
+    | '/admin/guides/'
     | '/guide/tours/'
     | '/api/public/feeds/things-to-do.json'
     | '/api/public/feeds/things-to-do.xml'
@@ -3487,13 +3487,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminGuideAttributionRouteImport
       parentRoute: typeof AdminRoute
     }
-    '/admin/guides': {
-      id: '/admin/guides'
-      path: '/guides'
-      fullPath: '/admin/guides'
-      preLoaderRoute: typeof AdminGuidesRouteImport
-      parentRoute: typeof AdminRoute
-    }
     '/admin/image-swap': {
       id: '/admin/image-swap'
       path: '/image-swap'
@@ -3991,12 +3984,19 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminBookingsNewRouteImport
       parentRoute: typeof AdminRoute
     }
+    '/admin/guides/': {
+      id: '/admin/guides/'
+      path: '/guides'
+      fullPath: '/admin/guides/'
+      preLoaderRoute: typeof AdminGuidesIndexRouteImport
+      parentRoute: typeof AdminRoute
+    }
     '/admin/guides/$id': {
       id: '/admin/guides/$id'
-      path: '/$id'
+      path: '/guides/$id'
       fullPath: '/admin/guides/$id'
       preLoaderRoute: typeof AdminGuidesIdRouteImport
-      parentRoute: typeof AdminGuidesRoute
+      parentRoute: typeof AdminRoute
     }
     '/api/public/booking-calendar': {
       id: '/api/public/booking-calendar'
@@ -4225,18 +4225,6 @@ declare module '@tanstack/react-router' {
   }
 }
 
-interface AdminGuidesRouteChildren {
-  AdminGuidesIdRoute: typeof AdminGuidesIdRoute
-}
-
-const AdminGuidesRouteChildren: AdminGuidesRouteChildren = {
-  AdminGuidesIdRoute: AdminGuidesIdRoute,
-}
-
-const AdminGuidesRouteWithChildren = AdminGuidesRoute._addFileChildren(
-  AdminGuidesRouteChildren,
-)
-
 interface AdminRouteChildren {
   AdminActivityRoute: typeof AdminActivityRoute
   AdminAiAuditRoute: typeof AdminAiAuditRoute
@@ -4257,7 +4245,6 @@ interface AdminRouteChildren {
   AdminGbpLegacyRemovalRoute: typeof AdminGbpLegacyRemovalRoute
   AdminGscRoute: typeof AdminGscRoute
   AdminGuideAttributionRoute: typeof AdminGuideAttributionRoute
-  AdminGuidesRoute: typeof AdminGuidesRouteWithChildren
   AdminImageSwapRoute: typeof AdminImageSwapRoute
   AdminImportToursRoute: typeof AdminImportToursRoute
   AdminLegacyDomainUnlinkRoute: typeof AdminLegacyDomainUnlinkRoute
@@ -4292,7 +4279,9 @@ interface AdminRouteChildren {
   AdminIndexRoute: typeof AdminIndexRoute
   AdminBookingsIdRoute: typeof AdminBookingsIdRoute
   AdminBookingsNewRoute: typeof AdminBookingsNewRoute
+  AdminGuidesIdRoute: typeof AdminGuidesIdRoute
   AdminBookingsIndexRoute: typeof AdminBookingsIndexRoute
+  AdminGuidesIndexRoute: typeof AdminGuidesIndexRoute
 }
 
 const AdminRouteChildren: AdminRouteChildren = {
@@ -4315,7 +4304,6 @@ const AdminRouteChildren: AdminRouteChildren = {
   AdminGbpLegacyRemovalRoute: AdminGbpLegacyRemovalRoute,
   AdminGscRoute: AdminGscRoute,
   AdminGuideAttributionRoute: AdminGuideAttributionRoute,
-  AdminGuidesRoute: AdminGuidesRouteWithChildren,
   AdminImageSwapRoute: AdminImageSwapRoute,
   AdminImportToursRoute: AdminImportToursRoute,
   AdminLegacyDomainUnlinkRoute: AdminLegacyDomainUnlinkRoute,
@@ -4350,7 +4338,9 @@ const AdminRouteChildren: AdminRouteChildren = {
   AdminIndexRoute: AdminIndexRoute,
   AdminBookingsIdRoute: AdminBookingsIdRoute,
   AdminBookingsNewRoute: AdminBookingsNewRoute,
+  AdminGuidesIdRoute: AdminGuidesIdRoute,
   AdminBookingsIndexRoute: AdminBookingsIndexRoute,
+  AdminGuidesIndexRoute: AdminGuidesIndexRoute,
 }
 
 const AdminRouteWithChildren = AdminRoute._addFileChildren(AdminRouteChildren)
