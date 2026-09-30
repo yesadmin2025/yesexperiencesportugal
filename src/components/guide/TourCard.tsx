@@ -1,6 +1,7 @@
 import { Link } from "@tanstack/react-router";
 import { MapPin, MessageCircle, Phone } from "lucide-react";
 import { fmtDate, fmtPax, type GuideTour } from "./guide-data";
+import { Button } from "@/components/ui/button";
 
 export function tourBadge(t: GuideTour) {
   if (t.booking_cancelled) return { label: "Cancelled", cls: "bg-muted text-muted-foreground" };
@@ -62,24 +63,32 @@ export function TourEssentials({ t }: { t: GuideTour }) {
   );
 }
 
-export function TourCard({ t }: { t: GuideTour; big?: boolean }) {
+function compactDate(date: string) {
+  const value = new Date(`${date}T12:00:00Z`);
+  const weekday = value.toLocaleDateString("en-GB", { weekday: "short" });
+  const dayMonth = value.toLocaleDateString("en-GB", { day: "numeric", month: "short" });
+  return `${weekday}, ${dayMonth}`;
+}
+
+/** A calm work-list row. Contact and map actions intentionally live on Tour Details. */
+export function TourCard({ t }: { t: GuideTour }) {
   const b = tourBadge(t);
+  const guest = t.guest_full_name || t.guest_first_name || "Guest name not added";
+  const pax = t.guests != null ? `${t.guests} ${t.guests === 1 ? "guest" : "guests"}` : "Guest count not added";
   return (
-    <article className="border border-border p-4 space-y-3">
-      <div className="flex justify-between gap-3 items-start">
-        <h3 className="min-w-0 font-[family-name:var(--font-editorial)] text-[22px] leading-tight">{t.tour_title ?? "Tour"}</h3>
+    <article className="space-y-2.5 border-b border-border py-5 first:pt-0">
+      <div className="grid grid-cols-[minmax(0,1fr)_auto] items-start gap-3">
+        <p className="min-w-0 font-[family-name:var(--font-editorial)] text-[22px] font-medium leading-tight text-foreground">
+          {compactDate(t.tour_date)} · {t.start_time?.slice(0, 5) ?? "Time not set"}
+        </p>
         <span className={`shrink-0 text-[11px] px-2 py-0.5 ${b.cls}`}>{b.label}</span>
       </div>
-      <TourEssentials t={t} />
-      {t.client_notes && <p className="text-sm border-l-2 border-[color:var(--gold)] pl-2">Has special requests — see Tour Details</p>}
-      <GuestActions t={t} />
-      <Link
-        to="/guide/tours/$assignmentId"
-        params={{ assignmentId: t.assignment_id }}
-        className="flex min-h-12 items-center justify-center border border-[color:var(--charcoal)] text-[12px] uppercase tracking-[0.18em]"
-      >
-        Open Tour Details →
-      </Link>
+      <h3 className="text-[17px] font-semibold leading-snug">{t.tour_title ?? "Tour name not added"}</h3>
+      <p className="text-sm text-foreground">{guest} · {pax}</p>
+      <p className="break-words text-sm text-muted-foreground">{t.pickup_location?.trim() || "Pickup location not added"}</p>
+      <Button asChild variant="outline" className="mt-1 min-h-11 w-full rounded-none text-[12px] uppercase tracking-[0.14em]">
+        <Link to="/guide/tours/$assignmentId" params={{ assignmentId: t.assignment_id }}>View details</Link>
+      </Button>
     </article>
   );
 }

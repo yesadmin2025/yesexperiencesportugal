@@ -40,7 +40,7 @@ function TourDetails() {
     return (
       <div className="space-y-3">
         <p className="text-sm">Tour not found.</p>
-        <Link to="/guide/tours" className="text-sm text-[color:var(--teal)]">Back to my tours</Link>
+        <Link to="/guide" className="text-sm text-[color:var(--teal)]">Back to My Tours</Link>
       </div>
     );
 
@@ -71,9 +71,10 @@ function TourDetails() {
   return (
     <div className="space-y-6">
       <div>
-        <Link to="/guide" className="text-sm text-[color:var(--teal)]">← Today</Link>
+        <Link to="/guide" className="text-sm text-[color:var(--teal)]">← My Tours</Link>
         <p className="mt-3 text-[11px] uppercase tracking-[0.22em] text-muted-foreground">Tour Details</p>
-        <h1 className="font-[family-name:var(--font-editorial)] text-[28px] leading-tight mt-1">{tour.tour_title ?? "Tour"}</h1>
+        <p className="mt-1 font-[family-name:var(--font-editorial)] text-[26px] font-medium leading-tight">{new Date(`${tour.tour_date}T12:00:00Z`).toLocaleDateString("en-GB", { weekday: "long", day: "numeric", month: "long" })} · {tour.start_time?.slice(0, 5) ?? "Time not set"}</p>
+        <h1 className="mt-2 text-[20px] font-semibold leading-tight">{tour.tour_title ?? "Tour name not added"}</h1>
         <span className={`inline-block mt-2 text-[11px] px-2 py-0.5 ${b.cls}`}>{b.label}</span>
       </div>
       <TourEssentials t={tour} />

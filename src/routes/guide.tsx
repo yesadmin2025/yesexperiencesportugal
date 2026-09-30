@@ -4,7 +4,7 @@
  */
 import { createFileRoute, Link, Outlet } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { Bell, CalendarDays, ClipboardList, Home, Menu, User, CalendarCheck, X } from "lucide-react";
+import { Bell, ClipboardList, User, CalendarCheck } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { lovable } from "@/integrations/lovable";
@@ -31,22 +31,13 @@ export const Route = createFileRoute("/guide")({
 type Gate = "checking" | "signed-out" | "not-guide" | "ok";
 
 const TABS = [
-  { to: "/guide", label: "Today", icon: Home, exact: true },
-  { to: "/guide/calendar", label: "Calendar", icon: CalendarDays, exact: false },
+  { to: "/guide", label: "Tours", icon: ClipboardList, exact: true },
   { to: "/guide/availability", label: "Availability", icon: CalendarCheck, exact: false },
-  { to: "/guide/tours", label: "All my tours", icon: ClipboardList, exact: false },
-  { to: "/guide/notifications", label: "Alerts", icon: Bell, exact: false },
   { to: "/guide/profile", label: "Profile", icon: User, exact: false },
 ] as const;
 
-const PRIMARY = ["/guide", "/guide/calendar", "/guide/availability"];
-
 function GuideLayout() {
   const [gate, setGate] = useState<Gate>("checking");
-  const [unread, setUnread] = useState(0);
-  const [moreOpen, setMoreOpen] = useState(false);
-  const primaryTabs = TABS.filter(({ to }) => PRIMARY.includes(to));
-  const moreTabs = TABS.filter(({ to }) => !PRIMARY.includes(to));
 
   const check = async () => {
     const { data } = await supabase.auth.getUser();
@@ -54,8 +45,6 @@ function GuideLayout() {
     const { data: gid } = await db.rpc("guide_claim_account");
     if (!gid) return setGate("not-guide");
     setGate("ok");
-    const { count } = await db.from("ops_notifications").select("id", { count: "exact", head: true }).is("read_at", null);
-    setUnread(count ?? 0);
   };
 
   useEffect(() => {
@@ -78,8 +67,6 @@ function GuideLayout() {
       clearTimeout(t);
       t = setTimeout(() => {
         setVersion((v) => v + 1);
-        void db.from("ops_notifications").select("id", { count: "exact", head: true }).is("read_at", null)
-          .then(({ count }: { count: number | null }) => setUnread(count ?? 0));
       }, 400);
     };
     // Device notification for a brand-new alert while the app is open (foreground only).
@@ -144,21 +131,8 @@ function GuideLayout() {
       <main className="px-4 py-5 max-w-xl mx-auto">
         <div key={version}><Outlet /></div>
       </main>
-      {moreOpen ? (
-        <div className="fixed inset-x-3 bottom-20 z-20 border border-border bg-background p-2 shadow-lg">
-          <div className="flex items-center justify-between px-2 pb-2"><p className="text-[11px] uppercase text-muted-foreground">More</p><Button variant="ghost" size="icon" className="h-11 w-11" onClick={() => setMoreOpen(false)} aria-label="Close menu"><X aria-hidden /></Button></div>
-          <nav aria-label="More guide pages" className="space-y-1">
-            {moreTabs.map(({ to, label, icon: Icon, exact }) => (
-              <Link key={to} to={to} activeOptions={{ exact }} onClick={() => setMoreOpen(false)} className="relative flex min-h-12 items-center gap-3 px-3 text-sm text-muted-foreground data-[status=active]:bg-muted data-[status=active]:text-primary">
-                <Icon className="h-5 w-5" aria-hidden />{label}
-                {to === "/guide/notifications" && unread > 0 ? <span className="ml-auto rounded-full bg-destructive px-2 py-0.5 text-xs text-destructive-foreground">{unread}</span> : null}
-              </Link>
-            ))}
-          </nav>
-        </div>
-      ) : null}
-      <nav aria-label="Guide" className="fixed bottom-0 inset-x-0 z-10 bg-background border-t border-border grid grid-cols-4 pb-[env(safe-area-inset-bottom)]">
-        {primaryTabs.map(({ to, label, icon: Icon, exact }) => (
+      <nav aria-label="Guide" className="fixed bottom-0 inset-x-0 z-10 bg-background border-t border-border grid grid-cols-3 pb-[env(safe-area-inset-bottom)]">
+        {TABS.map(({ to, label, icon: Icon, exact }) => (
           <Link
             key={to}
             to={to}
@@ -170,10 +144,6 @@ function GuideLayout() {
             {label}
           </Link>
         ))}
-        <Button variant="ghost" className="relative h-auto min-h-14 rounded-none flex-col gap-0.5 px-1 text-[11px] text-muted-foreground" onClick={() => setMoreOpen((open) => !open)} aria-expanded={moreOpen} aria-label="More guide pages">
-          <Menu className="h-5 w-5" aria-hidden />More
-          {unread > 0 ? <span className="absolute right-[25%] top-1 min-w-4 rounded-full bg-destructive px-1 text-[11px] text-destructive-foreground">{unread}</span> : null}
-        </Button>
       </nav>
     </div>
   );
