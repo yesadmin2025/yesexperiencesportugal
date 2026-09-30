@@ -3209,8 +3209,10 @@ export type Database = {
           booking_id: string
           changed_at: string | null
           created_at: string
+          decline_reason: string | null
           end_at: string
           guide_confirmed_at: string | null
+          guide_declined_at: string | null
           guide_id: string
           guide_viewed_at: string | null
           id: string
@@ -3225,8 +3227,10 @@ export type Database = {
           booking_id: string
           changed_at?: string | null
           created_at?: string
+          decline_reason?: string | null
           end_at: string
           guide_confirmed_at?: string | null
+          guide_declined_at?: string | null
           guide_id: string
           guide_viewed_at?: string | null
           id?: string
@@ -3241,8 +3245,10 @@ export type Database = {
           booking_id?: string
           changed_at?: string | null
           created_at?: string
+          decline_reason?: string | null
           end_at?: string
           guide_confirmed_at?: string | null
+          guide_declined_at?: string | null
           guide_id?: string
           guide_viewed_at?: string | null
           id?: string
@@ -3885,6 +3891,10 @@ export type Database = {
       guide_claim_account: { Args: never; Returns: string }
       guide_confirm_assignment: {
         Args: { _assignment_id: string }
+        Returns: undefined
+      }
+      guide_decline_assignment: {
+        Args: { _assignment_id: string; _reason: string }
         Returns: undefined
       }
       guide_mark_notification_read: {
