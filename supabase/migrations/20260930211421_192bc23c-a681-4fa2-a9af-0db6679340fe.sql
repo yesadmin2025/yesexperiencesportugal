@@ -1,0 +1,1 @@
+REVOKE EXECUTE ON FUNCTION public.notify_assignment_schedule_change() FROM PUBLIC, anon, authenticated;

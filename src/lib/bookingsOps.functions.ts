@@ -39,6 +39,8 @@ async function loadActiveAssignments(admin: any, bookingIds: string[]): Promise<
   return out;
 }
 
+const notifyGuides = async (id: string) => { try { const { dispatchGuideAssignmentEmails } = await import("@/lib/guide-notify.server"); await dispatchGuideAssignmentEmails(id); } catch (e) { console.error("guide notify failed", e); } };
+
 export const OPS_CHANNELS = ["WEBSITE", "DIRECT", "VIATOR", "GETYOURGUIDE", "BOKUN", "OTHER"] as const;
 
 const LIST_COLUMNS = [
@@ -148,7 +150,7 @@ export const listOpsBookings = createServerFn({ method: "POST" })
 
     const { data: guides } = await supabaseAdmin
       .from("guides")
-      .select("id, name, active")
+      .select("id, name, active, email")
       .order("name", { ascending: true });
 
     const { count: reviewCount } = await supabaseAdmin
@@ -280,7 +282,7 @@ export const updateOpsBooking = createServerFn({ method: "POST" })
       set("operational_notes", next);
     }
 
-    if (Object.keys(patch).length === 0) return { ok: true, changed: guideChanged };
+    if (Object.keys(patch).length === 0) { if (guideChanged) await notifyGuides(data.id); return { ok: true, changed: guideChanged }; }
 
     const previousMetadata =
       booking.metadata && typeof booking.metadata === "object" && !Array.isArray(booking.metadata)
@@ -297,6 +299,7 @@ export const updateOpsBooking = createServerFn({ method: "POST" })
       .update(patch as never)
       .eq("id", booking.id);
     if (updateError) throw new Error(updateError.message);
+    await notifyGuides(booking.id);
     return { ok: true, changed: true, changes };
   });
 
@@ -493,6 +496,7 @@ export const resolveOpsReviewCandidate = createServerFn({ method: "POST" })
       const { data: gid, error: autoErr } = await context.supabase.rpc("ops_auto_assign_guide", { _booking_id: inserted.id });
       if (autoErr) console.error("auto-assign failed", autoErr.message);
       assignedGuideId = (gid as string | null) ?? null;
+      if (assignedGuideId) await notifyGuides(inserted.id);
     }
 
     return { ok: true, action: "created", bookingId: inserted?.id ?? null, assignedGuideId };

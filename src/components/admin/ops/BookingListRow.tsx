@@ -10,7 +10,7 @@ export type BookingListGuide = { id: string; name: string };
 export const bookingDate = (date: string | null) => date ? new Date(`${date}T12:00:00Z`).toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" }) : "Date to confirm";
 export function BookingListRow({ row, guides, reason }: { row: Row; guides: BookingListGuide[]; reason?: string }) {
   const guide = guides.find((g) => g.id === row.guide_id)?.name ?? (row.legacy_guide_id ? "Guide not scheduled — reassign" : "No guide");
-  const confirmation = row.assignment_status === "confirmed" ? "Confirmed" : row.assignment_status === "declined" ? "Declined" : row.assignment_status === "changed" ? "To reconfirm" : row.guide_id ? "Not confirmed" : "Unassigned";
+  const confirmation = row.guide_id ? "Scheduled" : "Unassigned";
   return <li className="border-b border-border py-4 last:border-b-0">
     <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
       <div className="min-w-0 space-y-1 text-[13px] leading-relaxed">

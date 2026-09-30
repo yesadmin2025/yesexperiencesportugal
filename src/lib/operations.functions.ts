@@ -94,51 +94,29 @@ export const assignGuide = createServerFn({ method: "POST" })
     });
     fail(error);
 
-    // Automatic briefing: email (if the guide has an address) + WhatsApp link.
-    // The brief is built from the stored booking and never contains prices.
+    // Notify the guide once per new assignment (email if an address exists;
+    // the in-app notification is written by the database). Operational only.
     let emailed = false;
     let whatsappUrl: string | null = null;
     try {
+      const { dispatchGuideAssignmentEmails } = await import("@/lib/guide-notify.server");
+      emailed = (await dispatchGuideAssignmentEmails(data.bookingId)) > 0;
       const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-      const { buildGuideBrief, guideBriefHtml, guideBriefText } = await import("@/lib/guide-brief");
-      const { signatureTours } = await import("@/data/signatureTours");
+      const { guideNotifyMessage } = await import("@/lib/guide-notify");
       const [{ data: guide }, { data: row }] = await Promise.all([
-        supabaseAdmin.from("guides").select("name, email, phone, whatsapp").eq("id", data.guideId).maybeSingle(),
-        supabaseAdmin
-          .from("bookings")
-          .select("id, source_tour_id, customer_name, customer_email, customer_phone, guests, preferred_date, notes, status, stripe_session_id, booking_details")
-          .eq("id", data.bookingId)
-          .maybeSingle(),
+        supabaseAdmin.from("guides").select("phone, whatsapp").eq("id", data.guideId).maybeSingle(),
+        supabaseAdmin.from("bookings").select("preferred_date, start_time, tour_title, source_tour_id, customer_name, guests, pickup_location").eq("id", data.bookingId).maybeSingle(),
       ]);
-      if (guide && row) {
-        const title = signatureTours.find((t) => t.id === row.source_tour_id)?.title ?? null;
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        const brief = buildGuideBrief(row as any, title);
-        const text = `New tour assigned to you.\n\n${guideBriefText(brief)}\n\nOpen the YES Guide app to confirm.`;
-        const subject = `New tour · ${brief.experience} · ${brief.date}`;
-        const g = guide as { email?: string | null; phone?: string | null; whatsapp?: string | null };
-        if (g.email) {
-          const { sendTransactionalInternal } = await import("@/lib/email/send-internal.server");
-          const res = await sendTransactionalInternal({
-            templateName: "guide-brief",
-            recipientEmail: g.email,
-            idempotencyKey: `guide-assign-${assignmentId ?? data.bookingId}`,
-            rendered: { subject, html: guideBriefHtml(subject, text), text },
-          });
-          emailed = !!res.ok;
-        }
-        const digits = (g.whatsapp || g.phone || "").replace(/\D/g, "");
-        if (digits) whatsappUrl = `https://wa.me/${digits}?text=${encodeURIComponent(text)}`;
-        await context.supabase.from("operational_activity_log").insert({
-          booking_id: data.bookingId,
-          guide_id: data.guideId,
-          user_id: context.userId,
-          action: emailed ? "brief_emailed" : "brief_not_emailed",
-          new_value: { email: g.email ?? null },
+      const digits = (guide?.whatsapp || guide?.phone || "").replace(/\D/g, "");
+      if (digits && row) {
+        const { text } = guideNotifyMessage("assignment_new", {
+          assignmentId: (assignmentId as string | null) ?? null, preferredDate: row.preferred_date, startTime: row.start_time,
+          tourTitle: row.tour_title ?? row.source_tour_id, guestName: row.customer_name, guests: row.guests, pickup: row.pickup_location,
         });
+        whatsappUrl = `https://wa.me/${digits}?text=${encodeURIComponent(text)}`;
       }
     } catch (e) {
-      console.error("assignment brief failed", e);
+      console.error("assignment notification failed", e);
     }
     return { ok: true, emailed, whatsappUrl };
   });
@@ -150,6 +128,7 @@ export const removeAssignment = createServerFn({ method: "POST" })
     await assertAdmin(context);
     const { error } = await context.supabase.rpc("ops_remove_assignment", { _booking_id: data.bookingId });
     fail(error);
+    try { const { dispatchGuideAssignmentEmails } = await import("@/lib/guide-notify.server"); await dispatchGuideAssignmentEmails(data.bookingId); } catch (e) { console.error("guide notify failed", e); }
     return { ok: true };
   });
 

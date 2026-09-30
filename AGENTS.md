@@ -9,7 +9,6 @@
 - Route glance uses OSRM leg minutes (`useRouteLegMinutes`), never a summed driving total; stop order is narrative.
 - Signature day recap before guest details reuses the tour page's verified itinerary/inclusions.
 - External proof uses optional claim-adjacent EditorialSources; YES links stay primary.
-- Guide scheduling uses DB conflict guards and RLS-safe RPCs; `/guide` is the only work list (3 tabs, scoped PWA manifest).
+- Guide scheduling uses DB conflict guards and RLS-safe RPCs; `/guide` is the only work list (3 tabs, scoped PWA manifest); access/assignment rules: see `src/components/guide/AGENTS.md`.
 - Ops booking data rules: see `src/lib/ops/AGENTS.md`.
 - Admin daily navigation is Operations, Bookings, Payments, Guides, More; legacy planning and tour-calendar URLs redirect to Operations because each booking has one full detail page and one shared canonical list.
-- Guide App access labels come only from `src/lib/guide-access.ts`, and linking uses `guide_claim_account` (one active profile per confirmed email, unique email/user indexes); Admin and the Guide App describe access identically and no one can claim another profile.
