@@ -41,7 +41,7 @@ export async function dispatchGuideAssignmentEmails(bookingId: string): Promise<
           templateName: "guide-brief", recipientEmail: g.email, idempotencyKey: `guide-notif-${n.id}`,
           rendered: { subject: msg.subject, html: guideBriefHtml(msg.subject, msg.text), text: msg.text },
         });
-        status = res.ok ? "sent" : `failed:${"reason" in res ? String(res.reason) : "unknown"}`;
+        status = res.ok ? "sent" : `failed:${res.reason ?? "unknown"}`;
         if (res.ok) sent++;
       } catch (e) {
         status = "failed:error";

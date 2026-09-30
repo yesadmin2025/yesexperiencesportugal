@@ -71,5 +71,6 @@ export const createManualBooking = createServerFn({ method: "POST" })
 
     const { data: gid, error: autoErr } = await context.supabase.rpc("ops_auto_assign_guide", { _booking_id: row.id });
     if (autoErr) console.error("auto-assign failed", autoErr.message);
+    if (gid) { try { const { dispatchGuideAssignmentEmails } = await import("@/lib/guide-notify.server"); await dispatchGuideAssignmentEmails(row.id); } catch (e) { console.error("guide notify failed", e); } }
     return { id: row.id as string, assignedGuideId: (gid as string | null) ?? null };
   });
