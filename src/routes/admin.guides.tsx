@@ -6,7 +6,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { useServerFn } from "@tanstack/react-start";
 import { toast } from "sonner";
-import { deleteGuide, listGuides, saveGuide, sendGuideAppInvite } from "@/lib/guides.functions";
+import { deleteGuide, listGuides, reviewGuideRequest, saveGuide, sendGuideAppInvite } from "@/lib/guides.functions";
 import { Button } from "@/components/ui/button";
 import { AdminShell } from "@/components/admin/AdminShell";
 
