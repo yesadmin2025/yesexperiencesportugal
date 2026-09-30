@@ -96,6 +96,9 @@ export interface BookingProductRecap {
   duration?: string | number | null;
   region?: string | null;
   beats?: readonly string[];
+  /** Full verified inclusions shown before guest details (never shortened). */
+  included?: readonly string[];
+  notIncluded?: readonly string[];
   /** Verified public itinerary, in the same order shown on the tour page. */
   itinerary?: ReadonlyArray<{
     label: string;
@@ -571,7 +574,9 @@ function ProductRecap({
     recap.duration != null ? formatDuration(recap.duration) : null,
     recap.region || null,
   ].filter(Boolean);
-  const beats = (recap.beats ?? []).filter(Boolean).slice(0, 4);
+  const verifiedIncluded = (recap.included ?? []).filter(Boolean);
+  const beats = verifiedIncluded.length > 0 ? verifiedIncluded : (recap.beats ?? []).filter(Boolean).slice(0, 4);
+  const notIncluded = (recap.notIncluded ?? []).filter(Boolean);
   const itinerary = (recap.itinerary ?? []).filter((stop) => Boolean(stop.label));
 
   return (
@@ -638,6 +643,19 @@ function ProductRecap({
               </li>
             ))}
           </ul>
+          {notIncluded.length > 0 ? (
+            <>
+              <p className="pt-2 text-[12px] uppercase tracking-[0.22em] text-[color:var(--charcoal-soft)]">Not included</p>
+              <ul className="space-y-1 pb-1 pt-1">
+                {notIncluded.map((item) => (
+                  <li key={item} className="flex gap-2 text-[12.5px] leading-snug text-[color:var(--charcoal-soft)]">
+                    <span aria-hidden>–</span>
+                    <span>{item}</span>
+                  </li>
+                ))}
+              </ul>
+            </>
+          ) : null}
         </Disclosure>
       ) : null}
     </section>

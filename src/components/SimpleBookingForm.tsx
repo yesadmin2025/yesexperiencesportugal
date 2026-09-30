@@ -33,7 +33,7 @@ import { invokeSignatureCheckout } from "@/lib/checkout/session-request";
 import { getViatorMeta } from "@/data/signatureToursViator";
 import { useTourPriceTiers } from "@/hooks/use-tour-price-tiers";
 import { resolvePerPaxEur, resolveJourneyPricing } from "@/data/signatureTourPricing";
-import { resolveClientIncludedItems } from "@/lib/checkout/inclusions";
+import { resolveClientIncludedItems, resolveCheckoutInclusions } from "@/lib/checkout/inclusions";
 import { getTourContent } from "@/lib/tourContent";
 import { projectPublicSotItinerary } from "@/lib/publicItineraryProjection";
 import { getSot } from "@/data/signatureToursSourceOfTruth";
@@ -345,6 +345,7 @@ export function SimpleBookingForm({ tour }: { tour: SignatureTour }) {
       heroSrc: meta?.localGallery?.[0]?.src ?? meta?.gallery?.[0] ?? tour.img,
       beats: signatureBeats,
       itinerary,
+      ...resolveCheckoutInclusions(meta, tour),
       flowLabel: "Signature",
     });
 
@@ -779,6 +780,7 @@ export function SimpleBookingForm({ tour }: { tour: SignatureTour }) {
           region: tour.region,
           beats: signatureBeats,
           itinerary,
+          ...resolveCheckoutInclusions(getViatorMeta(tour.id), tour),
         }}
         initial={{
           tourDate: date,
@@ -817,6 +819,7 @@ export function SimpleBookingForm({ tour }: { tour: SignatureTour }) {
              pickupLabel: pickup,
               beats: signatureBeats,
               itinerary,
+              ...resolveCheckoutInclusions(getViatorMeta(tour.id), tour),
             guests,
             adults: composition.adults,
             minorAges: [...composition.minorAges],

@@ -231,8 +231,7 @@ export function CheckoutSummary({
   // Real inclusions from the resolved Signature source of truth only.
   const inclusions: string[] = (tour ? getTourContent(tour.id).included : [])
     .map((i: string) => i.trim())
-    .filter(Boolean)
-    .slice(0, 5);
+    .filter(Boolean);
 
   // Same priority chain as FinalRevealStory — labels only, no stories.
   // Canonical labels are resolved first (order/count are authoritative), then

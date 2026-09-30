@@ -65,6 +65,9 @@ export interface CheckoutSummary {
   heroSrc?: string | null;
   /** Short list (max 4) of inclusions / signature beats. */
   beats?: string[];
+  /** Full verified inclusions (never shortened). */
+  included?: string[];
+  notIncluded?: string[];
   /** Verified itinerary in public display order; optional stops are never guaranteed. */
   itinerary?: ReadonlyArray<{ label: string; optional?: boolean }>;
   flowLabel?: "Signature" | "Tailored" | "Tailored Signature" | "Studio";
@@ -296,8 +299,10 @@ function ExperienceSummaryCard({
   const hasBands = hasCompleteJourneyPricing(summary.journeyLines);
   const hasAddOns = !!summary.addOns && summary.addOns.length > 0;
   const hasBeats = !!summary.beats && summary.beats.length > 0;
+  const includedList = summary.included && summary.included.length > 0 ? summary.included : null;
+  const notIncludedList = summary.notIncluded ?? [];
   const hasItinerary = !!summary.itinerary && summary.itinerary.length > 0;
-  const hasDetails = hasBands || hasAddOns || hasBeats || hasItinerary;
+  const hasDetails = hasBands || hasAddOns || hasBeats || hasItinerary || !!includedList;
   const productLine = [
     summary.durationHours != null ? formatDuration(summary.durationHours) : null,
     summary.region || null,
@@ -441,22 +446,32 @@ function ExperienceSummaryCard({
                  </div>
                ) : null}
 
-               {hasBeats && !isTailored ? (
-                <div className="mt-3 border-t border-[color:var(--border)] pt-2">
+               {includedList || (hasBeats && !isTailored) ? (
+                <div className="mt-3 border-t border-[color:var(--border)] pt-2" data-testid="checkout-included">
                   <p className="text-[12px] uppercase tracking-[0.26em] text-[color:var(--charcoal)]">
                      What's included
                   </p>
                   <ul className="mt-1.5 space-y-1">
-                     {summary.beats!.slice(0, 4).map((b) => (
-                    <li
-                      key={b}
-                      className="flex gap-2 text-[12px] leading-snug text-[color:var(--charcoal)]"
-                    >
+                     {(includedList ?? summary.beats!.slice(0, 4)).map((b) => (
+                    <li key={b} className="flex gap-2 text-[12px] leading-snug text-[color:var(--charcoal)]">
                       <span className="mt-1.5 w-1 h-1 rounded-full bg-[color:var(--gold)] shrink-0" />
                       <span>{b}</span>
                     </li>
                     ))}
                   </ul>
+                  {notIncludedList.length > 0 ? (
+                    <>
+                      <p className="mt-3 text-[12px] uppercase tracking-[0.26em] text-[color:var(--charcoal)]">Not included</p>
+                      <ul className="mt-1.5 space-y-1">
+                        {notIncludedList.map((b) => (
+                          <li key={b} className="flex gap-2 text-[12px] leading-snug text-[color:var(--charcoal-soft)]">
+                            <span aria-hidden>–</span>
+                            <span>{b}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    </>
+                  ) : null}
                 </div>
               ) : null}
             </div>
