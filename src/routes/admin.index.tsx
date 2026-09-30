@@ -5,11 +5,9 @@ import { AdminSectionTitle, AdminShell } from "@/components/admin/AdminShell";
 import { BookingListRow } from "@/components/admin/ops/BookingListRow";
 import { Button } from "@/components/ui/button";
 import { listOpsBookings } from "@/lib/bookingsOps.functions";
-import { getOperationsBoard } from "@/lib/operations.functions";
 import { listPaymentRecords } from "@/lib/payments.functions";
 
 type List = Awaited<ReturnType<typeof listOpsBookings>>;
-type Board = Awaited<ReturnType<typeof getOperationsBoard>>;
 const day = (n = 0) => new Intl.DateTimeFormat("en-CA", { timeZone: "Europe/Lisbon" }).format(new Date(Date.now() + n * 86400000));
 export const Route = createFileRoute("/admin/")({
   head: () => ({ meta: [{ title: "Operations · YES Admin" }, { name: "description", content: "Today's tours and reservations needing attention." }, { property: "og:title", content: "Operations · YES Admin" }, { property: "og:description", content: "Today's tours and reservations needing attention." }, { property: "og:type", content: "website" }, { name: "twitter:card", content: "summary" }, { name: "robots", content: "noindex, nofollow" }] }),
@@ -17,11 +15,9 @@ export const Route = createFileRoute("/admin/")({
 });
 function OperationsPage() {
   const load = useServerFn(listOpsBookings);
-  const loadBoard = useServerFn(getOperationsBoard);
   const loadPayments = useServerFn(listPaymentRecords);
   const [list, setList] = useState<List | null>(null);
   const [undated, setUndated] = useState<List["bookings"]>([]);
-  const [board, setBoard] = useState<Board | null>(null);
   const [paymentIssues, setPaymentIssues] = useState<Set<string>>(new Set());
   const [openPayments, setOpenPayments] = useState(0);
   const [error, setError] = useState<string | null>(null);
@@ -29,11 +25,11 @@ function OperationsPage() {
   const today = day();
   useEffect(() => {
     let live = true;
-    Promise.all([load({ data: { status: "all", dateFrom: today, dateTo: day(14), limit: 500 } }), load({ data: { status: "paid", limit: 500 } }), loadBoard({ data: { from: today, to: day(14) } }), loadPayments()])
-      .then(([l, missing, b, p]) => { if (!live) return; setList(l); setUndated(missing.bookings.filter((x) => !x.preferred_date)); setBoard(b); const unresolved = (p.payments as Array<{ match_status: string; booking_id: string | null }>).filter((x) => x.match_status === "unmatched" || x.match_status === "needs_review"); setPaymentIssues(new Set(unresolved.map((x) => x.booking_id).filter((id): id is string => Boolean(id)))); setOpenPayments(unresolved.length); setError(null); })
+    Promise.all([load({ data: { status: "all", dateFrom: today, dateTo: day(14), limit: 500 } }), load({ data: { status: "paid", limit: 500 } }), loadPayments()])
+      .then(([l, missing, p]) => { if (!live) return; setList(l); setUndated(missing.bookings.filter((x) => !x.preferred_date)); const unresolved = (p.payments as Array<{ match_status: string; booking_id: string | null }>).filter((x) => x.match_status === "unmatched" || x.match_status === "needs_review"); setPaymentIssues(new Set(unresolved.map((x) => x.booking_id).filter((id): id is string => Boolean(id)))); setOpenPayments(unresolved.length); setError(null); })
       .catch((e) => { if (live) setError(e instanceof Error ? e.message : "Could not load operations."); });
     return () => { live = false; };
-  }, [load, loadBoard, loadPayments, today]);
+  }, [load, loadPayments, today]);
   const all = list?.bookings ?? [];
   const scheduled = all.filter((b) => b.status !== "cancelled" && b.status !== "refunded" && b.status !== "failed" && b.completeness.state !== "package_payment");
   const todayRows = scheduled.filter((b) => b.preferred_date === today);
