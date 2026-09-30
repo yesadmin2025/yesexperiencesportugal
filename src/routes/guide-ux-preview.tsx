@@ -2,7 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { MyToursContent, type GuideAlert } from "@/routes/guide.index";
 import type { GuideTour } from "@/components/guide/guide-data";
 
-export const Route = createFileRoute("/__guide-ux-preview")({ component: GuideUxPreview });
+export const Route = createFileRoute("/guide-ux-preview")({ component: GuideUxPreview });
 
 const makeTour = (id: string, date: string, title: string, itinerary: GuideTour["itinerary"] = []) : GuideTour => ({
   source_tour_id: null, assignment_id: id, booking_id: `mock-${id}`, tour_title: title,

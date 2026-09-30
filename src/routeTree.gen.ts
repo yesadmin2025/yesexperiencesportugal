@@ -68,6 +68,7 @@ import { Route as LisbonPrivateToursRouteImport } from './routes/lisbon-private-
 import { Route as ItineraryRouteImport } from './routes/itinerary'
 import { Route as HowManyDaysInPortugalRouteImport } from './routes/how-many-days-in-portugal'
 import { Route as HeroVerifyRouteImport } from './routes/hero-verify'
+import { Route as GuideUxPreviewRouteImport } from './routes/guide-ux-preview'
 import { Route as GuideRouteImport } from './routes/guide'
 import { Route as FaqRouteImport } from './routes/faq'
 import { Route as ExperiencesRouteImport } from './routes/experiences'
@@ -520,6 +521,11 @@ const HowManyDaysInPortugalRoute = HowManyDaysInPortugalRouteImport.update({
 const HeroVerifyRoute = HeroVerifyRouteImport.update({
   id: '/hero-verify',
   path: '/hero-verify',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const GuideUxPreviewRoute = GuideUxPreviewRouteImport.update({
+  id: '/guide-ux-preview',
+  path: '/guide-ux-preview',
   getParentRoute: () => rootRouteImport,
 } as any)
 const GuideRoute = GuideRouteImport.update({
@@ -1318,6 +1324,7 @@ export interface FileRoutesByFullPath {
   '/experiences': typeof ExperiencesRoute
   '/faq': typeof FaqRoute
   '/guide': typeof GuideRouteWithChildren
+  '/guide-ux-preview': typeof GuideUxPreviewRoute
   '/hero-verify': typeof HeroVerifyRoute
   '/how-many-days-in-portugal': typeof HowManyDaysInPortugalRoute
   '/itinerary': typeof ItineraryRoute
@@ -1525,6 +1532,7 @@ export interface FileRoutesByTo {
   '/experience-studio': typeof ExperienceStudioRoute
   '/experiences': typeof ExperiencesRoute
   '/faq': typeof FaqRoute
+  '/guide-ux-preview': typeof GuideUxPreviewRoute
   '/hero-verify': typeof HeroVerifyRoute
   '/how-many-days-in-portugal': typeof HowManyDaysInPortugalRoute
   '/itinerary': typeof ItineraryRoute
@@ -1733,6 +1741,7 @@ export interface FileRoutesById {
   '/experiences': typeof ExperiencesRoute
   '/faq': typeof FaqRoute
   '/guide': typeof GuideRouteWithChildren
+  '/guide-ux-preview': typeof GuideUxPreviewRoute
   '/hero-verify': typeof HeroVerifyRoute
   '/how-many-days-in-portugal': typeof HowManyDaysInPortugalRoute
   '/itinerary': typeof ItineraryRoute
@@ -1944,6 +1953,7 @@ export interface FileRouteTypes {
     | '/experiences'
     | '/faq'
     | '/guide'
+    | '/guide-ux-preview'
     | '/hero-verify'
     | '/how-many-days-in-portugal'
     | '/itinerary'
@@ -2151,6 +2161,7 @@ export interface FileRouteTypes {
     | '/experience-studio'
     | '/experiences'
     | '/faq'
+    | '/guide-ux-preview'
     | '/hero-verify'
     | '/how-many-days-in-portugal'
     | '/itinerary'
@@ -2358,6 +2369,7 @@ export interface FileRouteTypes {
     | '/experiences'
     | '/faq'
     | '/guide'
+    | '/guide-ux-preview'
     | '/hero-verify'
     | '/how-many-days-in-portugal'
     | '/itinerary'
@@ -2568,6 +2580,7 @@ export interface RootRouteChildren {
   ExperiencesRoute: typeof ExperiencesRoute
   FaqRoute: typeof FaqRoute
   GuideRoute: typeof GuideRouteWithChildren
+  GuideUxPreviewRoute: typeof GuideUxPreviewRoute
   HeroVerifyRoute: typeof HeroVerifyRoute
   HowManyDaysInPortugalRoute: typeof HowManyDaysInPortugalRoute
   ItineraryRoute: typeof ItineraryRoute
@@ -3088,6 +3101,13 @@ declare module '@tanstack/react-router' {
       path: '/hero-verify'
       fullPath: '/hero-verify'
       preLoaderRoute: typeof HeroVerifyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/guide-ux-preview': {
+      id: '/guide-ux-preview'
+      path: '/guide-ux-preview'
+      fullPath: '/guide-ux-preview'
+      preLoaderRoute: typeof GuideUxPreviewRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/guide': {
@@ -4363,6 +4383,7 @@ const rootRouteChildren: RootRouteChildren = {
   ExperiencesRoute: ExperiencesRoute,
   FaqRoute: FaqRoute,
   GuideRoute: GuideRouteWithChildren,
+  GuideUxPreviewRoute: GuideUxPreviewRoute,
   HeroVerifyRoute: HeroVerifyRoute,
   HowManyDaysInPortugalRoute: HowManyDaysInPortugalRoute,
   ItineraryRoute: ItineraryRoute,
