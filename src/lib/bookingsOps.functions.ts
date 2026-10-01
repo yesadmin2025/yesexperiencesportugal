@@ -211,6 +211,7 @@ const editInput = z.object({
   dropoffLocation: z.string().trim().max(300).nullable().optional(),
   preferredDate: z.string().regex(/^\d{4}-\d{2}-\d{2}$/).nullable().optional(),
   startTime: z.string().trim().max(20).nullable().optional(),
+  guests: z.number().int().min(1).max(200).optional(),
   language: z.string().trim().max(80).nullable().optional(),
   tourTitle: z.string().trim().max(200).nullable().optional(),
   paymentStatus: z.enum(["PAID", "PENDING_PAYMENT", "REFUNDED", "UNKNOWN"]).optional(),
@@ -235,7 +236,7 @@ export const updateOpsBooking = createServerFn({ method: "POST" })
 
     const { data: booking, error: readError } = await supabaseAdmin
       .from("bookings")
-      .select("id, status, payment_status, assigned_guide_id, pickup_location, dropoff_location, preferred_date, start_time, language, tour_title, operational_notes, client_notes, review_required, review_reason, metadata")
+      .select("id, status, payment_status, assigned_guide_id, guests, pickup_location, dropoff_location, preferred_date, start_time, language, tour_title, operational_notes, client_notes, review_required, review_reason, metadata")
       .eq("id", data.id)
       .maybeSingle();
     if (readError) throw new Error(readError.message);
@@ -264,6 +265,7 @@ export const updateOpsBooking = createServerFn({ method: "POST" })
     if (data.dropoffLocation !== undefined) set("dropoff_location", data.dropoffLocation || null);
     if (data.preferredDate !== undefined) set("preferred_date", data.preferredDate);
     if (data.startTime !== undefined) set("start_time", data.startTime || null);
+    if (data.guests !== undefined) set("guests", data.guests);
     if (data.language !== undefined) set("language", data.language || null);
     if (data.tourTitle !== undefined) set("tour_title", data.tourTitle || null);
     if (data.paymentStatus !== undefined) set("payment_status", data.paymentStatus);

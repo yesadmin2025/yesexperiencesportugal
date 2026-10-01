@@ -48,7 +48,7 @@ export function fmtPax(pax: unknown): string | null {
 }
 
 export async function fetchMyTours(): Promise<GuideTour[]> {
-  const { data, error } = await db.rpc("guide_my_tours", {});
+  const { data, error } = await db.rpc("guide_my_tours", { _from: "2000-01-01", _to: "2100-12-31" });
   if (error) throw new Error(error.message);
   return data ?? [];
 }
