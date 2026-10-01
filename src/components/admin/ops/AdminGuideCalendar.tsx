@@ -14,7 +14,7 @@ import { Input } from "@/components/ui/input";
 import { listOpsBookings, updateOpsBooking } from "@/lib/bookingsOps.functions";
 
 type List = Awaited<ReturnType<typeof listOpsBookings>>;
-type Row = List["bookings"][number];
+type Row = List["bookings"][number] & { guests?: number | null };
 type Guide = { id: string; name: string | null; active?: boolean | null };
 
 const lisbonToday = () => new Intl.DateTimeFormat("en-CA", { timeZone: "Europe/Lisbon" }).format(new Date());
@@ -38,7 +38,7 @@ export function AdminGuideCalendar() {
   useEffect(refresh, [refresh]);
 
   const guides = (list?.guides ?? []) as Guide[];
-  const rows = (list?.bookings ?? []).filter((b) => !inactive(b) && (guideFilter === "all" || (guideFilter === "none" ? !b.guide_id : b.guide_id === guideFilter)));
+  const rows = ((list?.bookings ?? []) as Row[]).filter((b) => !inactive(b) && (guideFilter === "all" || (guideFilter === "none" ? !b.guide_id : b.guide_id === guideFilter)));
 
   const days = useMemo(() => {
     const first = new Date(`${month}-01T12:00:00Z`);
@@ -140,7 +140,7 @@ function ScheduleRow({ row, guides, onSaved }: { row: Row; guides: Guide[]; onSa
           <p className="font-medium">{row.tour_title ?? "Tour"}</p>
           <p className="text-xs text-muted-foreground">{row.customer_name ?? "Guest"} · {row.guests ?? "?"} guest{row.guests === 1 ? "" : "s"}</p>
         </div>
-        <Link to="/admin/bookings/$bookingId" params={{ bookingId: row.id }} className="shrink-0 text-xs text-primary underline underline-offset-4">Details</Link>
+        <Link to="/admin/bookings/$id" params={{ id: row.id }} className="shrink-0 text-xs text-primary underline underline-offset-4">Details</Link>
       </div>
       <div className="mt-3 grid grid-cols-2 gap-2 sm:grid-cols-4">
         <label className="text-xs text-muted-foreground">Date<Input type="date" value={date} onChange={(e) => setDate(e.target.value)} className="mt-1 h-11" /></label>
