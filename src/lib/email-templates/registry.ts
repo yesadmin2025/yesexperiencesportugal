@@ -14,6 +14,7 @@ import { template as signatureStory } from "./signature-story";
 import { template as viatorDriftAlert } from "./viator-drift-alert";
 import { template as guideAppInvite } from "./guide-app-invite";
 import { template as guideAppDeclined } from "./guide-app-declined";
+import { template as tourDayBefore } from "./tour-day-before";
 
 export interface TemplateEntry {
   component: ComponentType<any>;
@@ -43,4 +44,5 @@ export const TEMPLATES: Record<string, TemplateEntry> = {
   "viator-drift-alert": viatorDriftAlert,
   "guide-app-invite": guideAppInvite,
   "guide-app-declined": guideAppDeclined,
+  "tour-day-before": tourDayBefore,
 };
