@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import type {} from "@tanstack/react-start";
 import { signatureTours, publicSignatureTours } from "@/data/signatureTours";
+import { WINERIES } from "@/content/wineries";
 import {
   LOCAL_STORIES_ARTICLES,
   PUBLISHED_LOCAL_STORIES_ARTICLES,
@@ -114,6 +115,7 @@ export const Route = createFileRoute("/sitemap.xml")({
           ...staticEntries,
           ...tourEntries,
           ...staticArticleEntries,
+          ...WINERIES.map((w) => ({ path: `/wineries/${w.slug}`, changefreq: "monthly" as const, priority: "0.6" })),
           ...dedupedDbPosts,
           ...ptEntries,
         ];
