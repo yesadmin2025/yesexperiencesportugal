@@ -1000,7 +1000,7 @@ function TailorPage() {
           minorAges: details.minorAges,
           stopLabels: stopLabels.slice(0, 8),
           includedItems: applyTailorInclusionAdjustments(
-            { included: resolveClientIncludedItems(metaForSummary, tour), notIncluded: [] },
+            { included: resolveClientIncludedItems(metaForSummary, tour) ?? [], notIncluded: [] },
             { lunchRemoved: rules.allowRemoveLunch === true && lunchRemoved, wineryCount: rules.wineries ? wineriesSelected : undefined },
           ).included,
           // Display-only: what the guest actually booked / opted out of.
