@@ -182,6 +182,8 @@ import { Route as QaMobileRouteImport } from './routes/qa.mobile'
 import { Route as ReviewTokenRouteImport } from './routes/review.$token'
 import { Route as STokenRouteImport } from './routes/s.$token'
 import { Route as ToursTourIdRouteImport } from './routes/tours.$tourId'
+import { Route as WineriesIndexRouteImport } from './routes/wineries.index'
+import { Route as WineriesSlugRouteImport } from './routes/wineries.$slug'
 import { Route as DotlovableOauthConsentRouteImport } from './routes/[.]lovable.oauth.consent'
 import { Route as Char91DotmcpChar93InvokeToolToolRouteImport } from './routes/[.mcp]/invoke-tool/$tool'
 import { Route as AdminBookingsIndexRouteImport } from './routes/admin.bookings.index'
@@ -1106,6 +1108,16 @@ const ToursTourIdRoute = ToursTourIdRouteImport.update({
   path: '/tours/$tourId',
   getParentRoute: () => rootRouteImport,
 } as any)
+const WineriesIndexRoute = WineriesIndexRouteImport.update({
+  id: '/wineries/',
+  path: '/wineries/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const WineriesSlugRoute = WineriesSlugRouteImport.update({
+  id: '/wineries/$slug',
+  path: '/wineries/$slug',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const DotlovableOauthConsentRoute = DotlovableOauthConsentRouteImport.update({
   id: '/.lovable/oauth/consent',
   path: '/.lovable/oauth/consent',
@@ -1499,10 +1511,12 @@ export interface FileRoutesByFullPath {
   '/review/$token': typeof ReviewTokenRoute
   '/s/$token': typeof STokenRoute
   '/tours/$tourId': typeof ToursTourIdRoute
+  '/wineries/$slug': typeof WineriesSlugRoute
   '/admin/': typeof AdminIndexRoute
   '/guide/': typeof GuideIndexRoute
   '/local-stories/': typeof LocalStoriesIndexRoute
   '/pt/': typeof PtIndexRoute
+  '/wineries/': typeof WineriesIndexRoute
   '/.lovable/oauth/consent': typeof DotlovableOauthConsentRoute
   '/.mcp/invoke-tool/$tool': typeof Char91DotmcpChar93InvokeToolToolRoute
   '/admin/bookings/$id': typeof AdminBookingsIdRoute
@@ -1710,10 +1724,12 @@ export interface FileRoutesByTo {
   '/review/$token': typeof ReviewTokenRoute
   '/s/$token': typeof STokenRoute
   '/tours/$tourId': typeof ToursTourIdRoute
+  '/wineries/$slug': typeof WineriesSlugRoute
   '/admin': typeof AdminIndexRoute
   '/guide': typeof GuideIndexRoute
   '/local-stories': typeof LocalStoriesIndexRoute
   '/pt': typeof PtIndexRoute
+  '/wineries': typeof WineriesIndexRoute
   '/.lovable/oauth/consent': typeof DotlovableOauthConsentRoute
   '/.mcp/invoke-tool/$tool': typeof Char91DotmcpChar93InvokeToolToolRoute
   '/admin/bookings/$id': typeof AdminBookingsIdRoute
@@ -1926,10 +1942,12 @@ export interface FileRoutesById {
   '/review/$token': typeof ReviewTokenRoute
   '/s/$token': typeof STokenRoute
   '/tours/$tourId': typeof ToursTourIdRoute
+  '/wineries/$slug': typeof WineriesSlugRoute
   '/admin/': typeof AdminIndexRoute
   '/guide/': typeof GuideIndexRoute
   '/local-stories/': typeof LocalStoriesIndexRoute
   '/pt/': typeof PtIndexRoute
+  '/wineries/': typeof WineriesIndexRoute
   '/.lovable/oauth/consent': typeof DotlovableOauthConsentRoute
   '/.mcp/invoke-tool/$tool': typeof Char91DotmcpChar93InvokeToolToolRoute
   '/admin/bookings/$id': typeof AdminBookingsIdRoute
@@ -2143,10 +2161,12 @@ export interface FileRouteTypes {
     | '/review/$token'
     | '/s/$token'
     | '/tours/$tourId'
+    | '/wineries/$slug'
     | '/admin/'
     | '/guide/'
     | '/local-stories/'
     | '/pt/'
+    | '/wineries/'
     | '/.lovable/oauth/consent'
     | '/.mcp/invoke-tool/$tool'
     | '/admin/bookings/$id'
@@ -2354,10 +2374,12 @@ export interface FileRouteTypes {
     | '/review/$token'
     | '/s/$token'
     | '/tours/$tourId'
+    | '/wineries/$slug'
     | '/admin'
     | '/guide'
     | '/local-stories'
     | '/pt'
+    | '/wineries'
     | '/.lovable/oauth/consent'
     | '/.mcp/invoke-tool/$tool'
     | '/admin/bookings/$id'
@@ -2569,10 +2591,12 @@ export interface FileRouteTypes {
     | '/review/$token'
     | '/s/$token'
     | '/tours/$tourId'
+    | '/wineries/$slug'
     | '/admin/'
     | '/guide/'
     | '/local-stories/'
     | '/pt/'
+    | '/wineries/'
     | '/.lovable/oauth/consent'
     | '/.mcp/invoke-tool/$tool'
     | '/admin/bookings/$id'
@@ -2716,6 +2740,8 @@ export interface RootRouteChildren {
   ReviewTokenRoute: typeof ReviewTokenRoute
   STokenRoute: typeof STokenRoute
   ToursTourIdRoute: typeof ToursTourIdRoute
+  WineriesSlugRoute: typeof WineriesSlugRoute
+  WineriesIndexRoute: typeof WineriesIndexRoute
   DotlovableOauthConsentRoute: typeof DotlovableOauthConsentRoute
   Char91DotmcpChar93InvokeToolToolRoute: typeof Char91DotmcpChar93InvokeToolToolRoute
   ApiPublicBookingCalendarRoute: typeof ApiPublicBookingCalendarRoute
@@ -3963,6 +3989,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ToursTourIdRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/wineries/': {
+      id: '/wineries/'
+      path: '/wineries'
+      fullPath: '/wineries/'
+      preLoaderRoute: typeof WineriesIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/wineries/$slug': {
+      id: '/wineries/$slug'
+      path: '/wineries/$slug'
+      fullPath: '/wineries/$slug'
+      preLoaderRoute: typeof WineriesSlugRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/.lovable/oauth/consent': {
       id: '/.lovable/oauth/consent'
       path: '/.lovable/oauth/consent'
@@ -4566,6 +4606,8 @@ const rootRouteChildren: RootRouteChildren = {
   ReviewTokenRoute: ReviewTokenRoute,
   STokenRoute: STokenRoute,
   ToursTourIdRoute: ToursTourIdRoute,
+  WineriesSlugRoute: WineriesSlugRoute,
+  WineriesIndexRoute: WineriesIndexRoute,
   DotlovableOauthConsentRoute: DotlovableOauthConsentRoute,
   Char91DotmcpChar93InvokeToolToolRoute: Char91DotmcpChar93InvokeToolToolRoute,
   ApiPublicBookingCalendarRoute: ApiPublicBookingCalendarRoute,
