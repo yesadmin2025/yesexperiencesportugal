@@ -80,3 +80,9 @@
 - [ ] Investigate checkout payment-step concern: live Stripe checkout already exists (cs_live_ sessions); verify what guest sees before paying and confirm end-to-end
 
 - [x] Publish checkout inclusions fix + Guide calendar; confirmed live (home + /guide 200, guide.webmanifest 200)
+
+# Local-search copy (preview only)
+
+- [x] Refine homepage metadata and existing editorial sections for private Lisbon tours and Portugal travel designer intent
+- [x] Refine the Lisbon wine guide using verified tour facts and add centrally sourced operator details
+- [x] Verify focused SEO tests, mobile rendering and metadata

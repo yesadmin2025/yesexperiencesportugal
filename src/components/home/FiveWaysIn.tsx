@@ -55,7 +55,7 @@ const PATHS: ReadonlyArray<Path> = [
   {
     id: "designer",
     Icon: Compass,
-    eyebrow: "Travel designer",
+    eyebrow: "Portugal travel designer",
     title: "Full Portugal journeys, designed for you.",
     titleLead: "Full Portugal journeys,",
     titleEmphasis: "designed for you.",
@@ -168,8 +168,8 @@ export function FiveWaysIn() {
             Five ways to <SectionTitle.Em>shape your Portugal.</SectionTitle.Em>
           </SectionTitle>
           <p className="scene-body mx-auto mt-5 max-w-xl text-[14.5px] leading-[1.65] text-[color:var(--charcoal-soft)] md:text-[16px]">
-            Begin with a ready-made private day, design one live in the Studio, or plan a complete
-            Portugal journey with a local Travel Designer.
+            Begin with a private Lisbon tour, design your own day live in the Studio, or plan a
+            complete journey with a local Portugal travel designer.
           </p>
         </Scene>
 

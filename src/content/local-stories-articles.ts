@@ -1231,14 +1231,14 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
   },
   {
     slug: "best-wine-tours-from-lisbon",
-    title: "Best Wine Tours from Lisbon: A Local Guide to Arrábida & Alentejo",
+    title: "Best Wine Tours from Lisbon | Private Guide (2026)",
     metaDescription:
-      "Private wine days from Lisbon, chosen by locals: Arrábida's family wineries and coast 40 min away, or a longer Alentejo day. Compare inclusions and prices.",
-    h1: "The Best Wine Tours from Lisbon",
+      "Compare private Lisbon wine tours to Arrábida, Azeitão and Alentejo: wineries, drive times, verified inclusions and prices from a licensed local operator.",
+    h1: "The Best Private Wine Tours from Lisbon",
     eyebrow: "Lisbon · Wine",
     standfirst:
       "Arrábida's wineries and coast, or a longer Alentejo day? Compare the private wine days we run, what each includes and where to spend your time.",
-    directAnswer: "For a private wine tour from Lisbon, Arrábida and Azeitão offer wineries, Setúbal Moscatel and the coast within one day. The Alentejo is a longer inland day for Évora or traditional Vinho de Talha. Compare the tour pages for current dates, inclusions and per-person prices before choosing.",
+    directAnswer: "For a private Lisbon tour focused on wine, Arrábida and Azeitão combine wineries, Setúbal Moscatel and the coast within one day. The Alentejo is a longer inland day for Évora or traditional Vinho de Talha. Compare current dates, verified inclusions and per-person prices before choosing.",
     sections: [
       {
         heading: "The short answer: which wine tour from Lisbon is best?",
@@ -1250,7 +1250,7 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
       },
       {
         heading: "Arrábida All-Inclusive Day — the complete wine-and-coast day.",
-        body: "Our most-booked [private wine tour from Lisbon](/tours/arrabida-wine-allinclusive), and the one most guests describe afterwards as the day the trip turned. Family wineries in Azeitão, the Livramento market in Setúbal, a long Portuguese lunch, and the Arrábida Natural Park where the mountains fall into the Atlantic. Door-to-door from Lisbon, everything included, paced around you rather than a coach timetable.",
+        body: "Our most-booked [private Lisbon tour](/tours/arrabida-wine-allinclusive) for wine travelers combines family wineries in Azeitão, the Livramento market in Setúbal, a long Portuguese lunch, and the Arrábida Natural Park where the mountains fall into the Atlantic. It runs door to door from Lisbon, with the published inclusions and a pace shaped around your party rather than a coach timetable.",
       },
       {
         heading: "Azeitão Cheese & Wine Day — the hands-on local craft day.",
@@ -1274,7 +1274,7 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
       },
       {
         heading: "How to choose.",
-        body: "If it is your first wine day from Lisbon, choose [Arrábida](/tours/arrabida-wine-allinclusive) — coast, food and wine in the same afternoon. If you want to make cheese with your own hands and pair it with one local winery tasting, choose [Azeitão](/tours/azeitao-cheese) for the craft and food focus. If Alentejo is on your list, choose [Évora](/tours/evora-alentejo) for the heritage plus wine, or [Roman Heritage](/tours/roman-heritage-alentejo) for the deeper wine story. All four are private, licensed, and shaped around your pace — never a fixed coach itinerary.\n\nIf you already know you want a private wine day and only need live dates, current prices and inclusions, see our [Lisbon wine tours](/lisbon-wine-tours) page.",
+        body: "If it is your first wine day from Lisbon, choose [Arrábida](/tours/arrabida-wine-allinclusive) — coast, food and wine in the same afternoon. If you want to make cheese with your own hands and pair it with one local winery tasting, choose [Azeitão](/tours/azeitao-cheese) for the craft and food focus. If Alentejo is on your list, choose [Évora](/tours/evora-alentejo) for the heritage plus wine, or [Roman Heritage](/tours/roman-heritage-alentejo) for the deeper wine story. All four are private, licensed, and shaped around your pace — never a fixed coach itinerary.\n\nIf you only need live dates, current prices and inclusions, see our [Lisbon wine tours](/lisbon-wine-tours) page. For a longer route connecting wine country with the rest of Portugal, work with our [Portugal travel designer](/portugal-travel-designer).",
       },
       {
         heading: "The wine regions themselves, compared.",
@@ -1286,7 +1286,7 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
       },
       {
         heading: "What a private wine day from Lisbon includes.",
-        body: "Every day on this page is private to your party and runs door to door: pickup and drop-off within the areas listed on each tour page, a licensed driver-guide, a comfortable private vehicle, and winery visits and tastings arranged in advance. Lunch is included only where the individual route says so; the Azeitão Cheese Signature lasts about eight and a half hours and does not include lunch. You choose how long to linger at each table and whether the day ends on a viewpoint or back in the city for dinner.\n\nEach Signature page shows the exact duration, the from-price and what is included, and can be reserved for a chosen date — or tailored around your pace, interests and group size before you book.",
+        body: "Every day on this page is private to your party and runs door to door: pickup and drop-off within the areas listed on each tour page, a licensed driver-guide, a comfortable private vehicle, and winery visits and tastings arranged in advance. Lunch is included only where the individual route says so; the Azeitão Cheese Signature lasts about eight and a half hours and does not include lunch. You choose how long to linger at each table and whether the day ends on a viewpoint or back in the city for dinner.\n\nEach Signature page shows the exact duration, the from-price and what is included, and can be reserved for a chosen date — or tailored around your pace, interests and group size before you book. For multi-day planning, a [Portugal travel designer](/portugal-travel-designer) can shape the wider journey and its logistics.",
       },
     ],
     comparison: {
@@ -1366,7 +1366,7 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
       { path: "/portugal-travel-designer", label: "Design your own Portugal journey" },
     ],
     datePublished: "2026-07-24",
-    dateModified: "2026-09-25",
+    dateModified: "2026-10-01",
   },
   {
     slug: "portugal-coastal-drives-from-lisbon",
