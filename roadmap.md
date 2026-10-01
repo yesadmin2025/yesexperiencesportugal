@@ -85,4 +85,4 @@
 
 - [x] Refine homepage metadata and existing editorial sections for private Lisbon tours and Portugal travel designer intent
 - [x] Refine the Lisbon wine guide using verified tour facts and add centrally sourced operator details
-- [ ] Verify focused SEO tests, mobile rendering and metadata
+- [x] Verify focused SEO tests, mobile rendering and metadata
