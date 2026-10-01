@@ -214,6 +214,7 @@ import { Route as ApiPublicHooksEnquiryFollowupRouteImport } from './routes/api/
 import { Route as ApiPublicHooksGmailBookingScanRouteImport } from './routes/api/public/hooks/gmail-booking-scan'
 import { Route as ApiPublicHooksImportTripadvisorReviewsRouteImport } from './routes/api/public/hooks/import-tripadvisor-reviews'
 import { Route as ApiPublicHooksStripeWebhookHealthRouteImport } from './routes/api/public/hooks/stripe-webhook-health'
+import { Route as ApiPublicHooksTourDayBeforeRouteImport } from './routes/api/public/hooks/tour-day-before'
 import { Route as ApiPublicHooksViatorDriftCheckRouteImport } from './routes/api/public/hooks/viator-drift-check'
 import { Route as ApiPublicWhatsappWebhookRouteImport } from './routes/api/public/whatsapp/webhook'
 import { Route as LovableEmailAuthPreviewRouteImport } from './routes/lovable/email/auth/preview'
@@ -1281,6 +1282,12 @@ const ApiPublicHooksStripeWebhookHealthRoute =
     path: '/api/public/hooks/stripe-webhook-health',
     getParentRoute: () => rootRouteImport,
   } as any)
+const ApiPublicHooksTourDayBeforeRoute =
+  ApiPublicHooksTourDayBeforeRouteImport.update({
+    id: '/api/public/hooks/tour-day-before',
+    path: '/api/public/hooks/tour-day-before',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const ApiPublicHooksViatorDriftCheckRoute =
   ApiPublicHooksViatorDriftCheckRouteImport.update({
     id: '/api/public/hooks/viator-drift-check',
@@ -1528,6 +1535,7 @@ export interface FileRoutesByFullPath {
   '/api/public/hooks/gmail-booking-scan': typeof ApiPublicHooksGmailBookingScanRoute
   '/api/public/hooks/import-tripadvisor-reviews': typeof ApiPublicHooksImportTripadvisorReviewsRoute
   '/api/public/hooks/stripe-webhook-health': typeof ApiPublicHooksStripeWebhookHealthRoute
+  '/api/public/hooks/tour-day-before': typeof ApiPublicHooksTourDayBeforeRoute
   '/api/public/hooks/viator-drift-check': typeof ApiPublicHooksViatorDriftCheckRoute
   '/api/public/whatsapp/webhook': typeof ApiPublicWhatsappWebhookRoute
   '/lovable/email/auth/preview': typeof LovableEmailAuthPreviewRoute
@@ -1738,6 +1746,7 @@ export interface FileRoutesByTo {
   '/api/public/hooks/gmail-booking-scan': typeof ApiPublicHooksGmailBookingScanRoute
   '/api/public/hooks/import-tripadvisor-reviews': typeof ApiPublicHooksImportTripadvisorReviewsRoute
   '/api/public/hooks/stripe-webhook-health': typeof ApiPublicHooksStripeWebhookHealthRoute
+  '/api/public/hooks/tour-day-before': typeof ApiPublicHooksTourDayBeforeRoute
   '/api/public/hooks/viator-drift-check': typeof ApiPublicHooksViatorDriftCheckRoute
   '/api/public/whatsapp/webhook': typeof ApiPublicWhatsappWebhookRoute
   '/lovable/email/auth/preview': typeof LovableEmailAuthPreviewRoute
@@ -1953,6 +1962,7 @@ export interface FileRoutesById {
   '/api/public/hooks/gmail-booking-scan': typeof ApiPublicHooksGmailBookingScanRoute
   '/api/public/hooks/import-tripadvisor-reviews': typeof ApiPublicHooksImportTripadvisorReviewsRoute
   '/api/public/hooks/stripe-webhook-health': typeof ApiPublicHooksStripeWebhookHealthRoute
+  '/api/public/hooks/tour-day-before': typeof ApiPublicHooksTourDayBeforeRoute
   '/api/public/hooks/viator-drift-check': typeof ApiPublicHooksViatorDriftCheckRoute
   '/api/public/whatsapp/webhook': typeof ApiPublicWhatsappWebhookRoute
   '/lovable/email/auth/preview': typeof LovableEmailAuthPreviewRoute
@@ -2169,6 +2179,7 @@ export interface FileRouteTypes {
     | '/api/public/hooks/gmail-booking-scan'
     | '/api/public/hooks/import-tripadvisor-reviews'
     | '/api/public/hooks/stripe-webhook-health'
+    | '/api/public/hooks/tour-day-before'
     | '/api/public/hooks/viator-drift-check'
     | '/api/public/whatsapp/webhook'
     | '/lovable/email/auth/preview'
@@ -2379,6 +2390,7 @@ export interface FileRouteTypes {
     | '/api/public/hooks/gmail-booking-scan'
     | '/api/public/hooks/import-tripadvisor-reviews'
     | '/api/public/hooks/stripe-webhook-health'
+    | '/api/public/hooks/tour-day-before'
     | '/api/public/hooks/viator-drift-check'
     | '/api/public/whatsapp/webhook'
     | '/lovable/email/auth/preview'
@@ -2593,6 +2605,7 @@ export interface FileRouteTypes {
     | '/api/public/hooks/gmail-booking-scan'
     | '/api/public/hooks/import-tripadvisor-reviews'
     | '/api/public/hooks/stripe-webhook-health'
+    | '/api/public/hooks/tour-day-before'
     | '/api/public/hooks/viator-drift-check'
     | '/api/public/whatsapp/webhook'
     | '/lovable/email/auth/preview'
@@ -2727,6 +2740,7 @@ export interface RootRouteChildren {
   ApiPublicHooksGmailBookingScanRoute: typeof ApiPublicHooksGmailBookingScanRoute
   ApiPublicHooksImportTripadvisorReviewsRoute: typeof ApiPublicHooksImportTripadvisorReviewsRoute
   ApiPublicHooksStripeWebhookHealthRoute: typeof ApiPublicHooksStripeWebhookHealthRoute
+  ApiPublicHooksTourDayBeforeRoute: typeof ApiPublicHooksTourDayBeforeRoute
   ApiPublicHooksViatorDriftCheckRoute: typeof ApiPublicHooksViatorDriftCheckRoute
   ApiPublicWhatsappWebhookRoute: typeof ApiPublicWhatsappWebhookRoute
   LovableEmailAuthPreviewRoute: typeof LovableEmailAuthPreviewRoute
@@ -4173,6 +4187,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicHooksStripeWebhookHealthRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/hooks/tour-day-before': {
+      id: '/api/public/hooks/tour-day-before'
+      path: '/api/public/hooks/tour-day-before'
+      fullPath: '/api/public/hooks/tour-day-before'
+      preLoaderRoute: typeof ApiPublicHooksTourDayBeforeRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/public/hooks/viator-drift-check': {
       id: '/api/public/hooks/viator-drift-check'
       path: '/api/public/hooks/viator-drift-check'
@@ -4572,6 +4593,7 @@ const rootRouteChildren: RootRouteChildren = {
     ApiPublicHooksImportTripadvisorReviewsRoute,
   ApiPublicHooksStripeWebhookHealthRoute:
     ApiPublicHooksStripeWebhookHealthRoute,
+  ApiPublicHooksTourDayBeforeRoute: ApiPublicHooksTourDayBeforeRoute,
   ApiPublicHooksViatorDriftCheckRoute: ApiPublicHooksViatorDriftCheckRoute,
   ApiPublicWhatsappWebhookRoute: ApiPublicWhatsappWebhookRoute,
   LovableEmailAuthPreviewRoute: LovableEmailAuthPreviewRoute,
