@@ -6,6 +6,7 @@ import { BookingPaymentsPanel } from "@/components/admin/BookingPaymentsPanel";
 import { Button } from "@/components/ui/button";
 import { getOpsBooking, updateOpsBooking } from "@/lib/bookingsOps.functions";
 import { getAdminBooking, cancelAndRefundBooking } from "@/lib/bookingsAdmin.functions";
+import { AdminGuideTourNotes } from "@/components/guide/GuideTourNotes";
 import { buildSnapshotEmailPreview } from "@/lib/booking-snapshot-contract";
 
 type Data = Awaited<ReturnType<typeof getOpsBooking>>;
@@ -72,6 +73,7 @@ function BookingDetail() {
         </div></details>
       </Section>
       <BookingPaymentsPanel bookingId={id} paymentLabel={b.payment_label} />
+      <Section title="Guide notes"><AdminGuideTourNotes bookingId={id} /></Section>
       <Section title="History"><dl><Line label="Created" value={new Date(b.created_at).toLocaleString("en-GB")} /><Line label="Booking status" value={text(b.status)} /></dl>{history.length ? <ul className="mt-3 divide-y divide-border text-sm">{history.slice().reverse().map((h, i) => <li key={i} className="py-2">{typeof h.at === "string" ? new Date(h.at).toLocaleString("en-GB") : "Change recorded"} · {h.changes && typeof h.changes === "object" ? Object.keys(h.changes).map((k) => k.replaceAll("_", " ")).join(", ") : "Operations updated"}</li>)}</ul> : <p className="mt-2 text-sm text-muted-foreground">No changes recorded.</p>}{b.status === "paid" ? <div className="mt-5 border-t border-border pt-4"><p className="text-sm text-muted-foreground">Cancellation submits a full refund and emails the guest.</p><Button className="mt-3" variant="destructive" disabled={busy} onClick={() => { if (window.confirm("Cancel this booking and submit a full refund? This cannot be undone.")) void run(() => refund({ data: { id } }), "Cancellation and refund submitted."); }}>Cancel and refund booking</Button></div> : null}</Section>
       {notice ? <p role="status" className="text-sm text-primary">{notice}</p> : null}
     </div> : null}

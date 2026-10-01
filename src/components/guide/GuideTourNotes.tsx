@@ -7,7 +7,7 @@ const eur = (n: number) => new Intl.NumberFormat("en-GB", { style: "currency", c
 const when = (s: string) => new Date(s).toLocaleString("en-GB", { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" });
 
 /** Guide's private notes for one tour (expenses, info for the office). Admin reads them on the booking page. */
-export function GuideTourNotes({ bookingId, guideId }: { bookingId: string; guideId: string | null }) {
+export function GuideTourNotes({ bookingId }: { bookingId: string }) {
   const [notes, setNotes] = useState<Note[]>([]);
   const [text, setText] = useState("");
   const [amount, setAmount] = useState("");
@@ -19,11 +19,12 @@ export function GuideTourNotes({ bookingId, guideId }: { bookingId: string; guid
   useEffect(() => { void load(); }, [load]);
 
   const save = async () => {
-    if (!guideId) return toast.error("Your guide profile isn't linked yet.");
     const value = amount.trim() ? Number(amount.replace(",", ".")) : null;
     if (value !== null && (!Number.isFinite(value) || value < 0)) return toast.error("Enter a valid amount.");
     setBusy(true);
     try {
+      const { data: guideId } = await db.rpc("current_guide_id");
+      if (!guideId) throw new Error("Your guide profile isn't linked yet.");
       const { error } = await db.from("guide_tour_notes").insert({ booking_id: bookingId, guide_id: guideId, note: text.trim(), expense_amount: value });
       if (error) throw new Error(error.message);
       setText(""); setAmount(""); toast.success("Note saved for the office"); await load();

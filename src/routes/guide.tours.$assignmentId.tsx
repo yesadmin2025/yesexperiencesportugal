@@ -4,6 +4,7 @@ import { useGuideRefresh } from "@/components/guide/guide-refresh";
 import { toast } from "sonner";
 import { db, errMsg, fetchMyTours, type GuideTour } from "@/components/guide/guide-data";
 import { GuestActions, TourEssentials, tourBadge } from "@/components/guide/TourCard";
+import { GuideTourNotes } from "@/components/guide/GuideTourNotes";
 import { findTour } from "@/data/signatureTours";
 
 export const Route = createFileRoute("/guide/tours/$assignmentId")({
@@ -135,6 +136,8 @@ function TourDetails() {
           </div>
         )}
       </Section>
+
+      <GuideTourNotes bookingId={tour.booking_id} />
 
       {!tour.booking_cancelled && (
         <div className="space-y-3">
