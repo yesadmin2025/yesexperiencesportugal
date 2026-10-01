@@ -275,8 +275,8 @@ function attributionParams(): Record<string, unknown> {
   try {
     const out: Record<string, unknown> = {};
     const raw =
-      (typeof sessionStorage !== "undefined" && sessionStorage.getItem("yes_utm")) ||
-      (typeof localStorage !== "undefined" && localStorage.getItem("yes_utm"));
+      (typeof sessionStorage !== "undefined" && sessionStorage.getItem("yes.utm.v1")) ||
+      (typeof localStorage !== "undefined" && localStorage.getItem("yes.utm.v1"));
     if (raw) Object.assign(out, JSON.parse(raw));
     if (typeof document !== "undefined" && document.referrer) {
       try {
