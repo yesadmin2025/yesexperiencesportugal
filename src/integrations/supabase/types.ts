@@ -2031,6 +2031,51 @@ export type Database = {
           },
         ]
       }
+      guide_tour_notes: {
+        Row: {
+          booking_id: string
+          created_at: string
+          expense_amount: number | null
+          guide_id: string
+          id: string
+          note: string
+          updated_at: string
+        }
+        Insert: {
+          booking_id: string
+          created_at?: string
+          expense_amount?: number | null
+          guide_id: string
+          id?: string
+          note: string
+          updated_at?: string
+        }
+        Update: {
+          booking_id?: string
+          created_at?: string
+          expense_amount?: number | null
+          guide_id?: string
+          id?: string
+          note?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "guide_tour_notes_booking_id_fkey"
+            columns: ["booking_id"]
+            isOneToOne: false
+            referencedRelation: "bookings"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "guide_tour_notes_guide_id_fkey"
+            columns: ["guide_id"]
+            isOneToOne: false
+            referencedRelation: "guides"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       guides: {
         Row: {
           active: boolean
