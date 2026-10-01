@@ -14,7 +14,7 @@ import { Input } from "@/components/ui/input";
 import { listOpsBookings, updateOpsBooking } from "@/lib/bookingsOps.functions";
 
 type List = Awaited<ReturnType<typeof listOpsBookings>>;
-type Row = List["bookings"][number] & { guests?: number | null };
+type Row = List["bookings"][number] & { guests?: number | null; start_time?: string | null };
 type Guide = { id: string; name: string | null; active?: boolean | null };
 
 const lisbonToday = () => new Intl.DateTimeFormat("en-CA", { timeZone: "Europe/Lisbon" }).format(new Date());
