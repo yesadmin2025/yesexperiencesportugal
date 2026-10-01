@@ -57,10 +57,10 @@ const LIVE_REVIEW_FALLBACK_TOURS = [
  * dedicated landing pages own Lisbon and day-trip search intent.
  */
 const HOME_SEO_TITLE =
-  "YES Experiences Portugal | Private Tours & Tailor-Made Journeys";
+  "Private Lisbon Tours & Portugal Travel Designer | YES Experiences";
 const HOME_SEO_SOCIAL_TITLE = HOME_SEO_TITLE;
 const HOME_SEO_DESCRIPTION =
-  "Design a private day in real time, reserve a Signature experience, or shape a multi-day Portugal journey with a local expert. Wine, coast, food, culture.";
+  "Private Lisbon tours, Signature days and multi-day journeys shaped by a local Portugal travel designer. Explore wine, coast, food and culture.";
 
 
 /** Homepage Journal row — three evergreen Local Stories guides.
@@ -344,9 +344,9 @@ export const Route = createFileRoute("/")({
       jsonLdScript(
         studioServiceLd({
           path: "/",
-          name: "YES Experiences Portugal — private Portugal tours, day trips from Lisbon & tailor-made journeys",
+          name: "YES Experiences Portugal — private Lisbon tours and Portugal travel designer journeys",
           description:
-            "Private Portugal experiences with local guides — Signature day tours from Lisbon, a real-time Studio to design your own day, and a human Travel Designer for journeys of any length across Portugal, beginning where your plans take you.",
+            "Private Lisbon tours with local guides, a real-time Studio to design your own day, and a Portugal travel designer for multi-day journeys across the country.",
         }),
       ),
     ],

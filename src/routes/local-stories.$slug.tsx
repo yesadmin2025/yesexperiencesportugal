@@ -1,4 +1,13 @@
-import { LICENSE_LABEL } from "@/config/business-nap";
+import {
+  ADDRESS_LINE,
+  BUSINESS_NAME,
+  EMAIL,
+  EMAIL_HREF,
+  LICENSE_LABEL,
+  PHONE_DISPLAY,
+  PHONE_HREF,
+  SERVICE_AREAS_LABEL,
+} from "@/config/business-nap";
 import type React from "react";
 import { createFileRoute, Link, notFound, redirect, useRouter } from "@tanstack/react-router";
 
@@ -421,6 +430,43 @@ function StaticArticleView({ article }: { article: LocalStoryArticle }) {
                   </table>
                 </div>
               </section>
+            )}
+
+            {article.slug === "best-wine-tours-from-lisbon" && (
+              <aside
+                aria-labelledby="wine-guide-operator-title"
+                className="my-12 border-y border-[color:var(--gold-soft)]/50 py-8 text-center"
+                data-testid="wine-guide-operator-details"
+              >
+                <span className="font-sans text-[11px] font-semibold uppercase tracking-[0.22em] text-[color:var(--gold-ink)]">
+                  Licensed local operator
+                </span>
+                <h2
+                  id="wine-guide-operator-title"
+                  className="mt-3 font-serif text-[24px] font-medium leading-[1.2] text-[color:var(--charcoal)] md:text-[30px]"
+                >
+                  {BUSINESS_NAME}
+                </h2>
+                <p className="mx-auto mt-4 max-w-xl font-sans text-[14px] leading-[1.75] text-[color:var(--charcoal-soft)] md:text-[15px]">
+                  {ADDRESS_LINE} · {LICENSE_LABEL}
+                  <br />
+                  Service areas: {SERVICE_AREAS_LABEL}
+                  <br />
+                  <a
+                    href={PHONE_HREF}
+                    className="underline decoration-[color:var(--gold)]/60 underline-offset-4 hover:text-[color:var(--teal)]"
+                  >
+                    {PHONE_DISPLAY}
+                  </a>{" "}
+                  ·{" "}
+                  <a
+                    href={EMAIL_HREF}
+                    className="underline decoration-[color:var(--gold)]/60 underline-offset-4 hover:text-[color:var(--teal)]"
+                  >
+                    {EMAIL}
+                  </a>
+                </p>
+              </aside>
             )}
 
             {article.faq && article.faq.length > 0 && (

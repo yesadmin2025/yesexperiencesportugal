@@ -558,7 +558,7 @@ export function RecentJourney() {
             keep one headline + one supporting line and let the object
             below do the talking. */}
         <Scene className="home-major-intro home-story-intro text-center max-w-2xl mx-auto mb-6 md:mb-8">
-          <div className="scene-atmosphere"><Eyebrow className="mb-4">Travel Designer</Eyebrow></div>
+          <div className="scene-atmosphere"><Eyebrow className="mb-4">Portugal Travel Designer</Eyebrow></div>
           <SplitLines
             as="h2"
             id="bespoke-designer-title"
@@ -574,7 +574,7 @@ export function RecentJourney() {
           {/* One semantic sentence, revealed in two visual beats. */}
           <p className="mt-4 font-[family-name:var(--font-sans)] text-[14.5px] md:text-[16px] text-[color:var(--charcoal-soft)] leading-[1.65] max-w-md mx-auto">
             <span className="scene-body story-beat block">
-              Multi-day Portugal, composed by a local —
+              Multi-day Portugal, composed by your local travel designer —
             </span>{" "}
             <span className="scene-body story-beat block">
               delivered as a book, not a booking.
