@@ -259,6 +259,36 @@ export function gaPurchase(args: {
     value: args.valueEur,
     items: args.items,
   });
+  // Unified conversion name for GA4 key events + search-term attribution.
+  pushEvent("booking_confirmed", {
+    transaction_id: args.transactionId,
+    value: args.valueEur,
+    currency: args.currency ?? "EUR",
+    item_id: args.items[0]?.item_id,
+    item_name: args.items[0]?.item_name,
+    ...attributionParams(),
+  });
+}
+
+/** Persisted first-touch attribution (utm_*, gclid) — never PII. */
+function attributionParams(): Record<string, unknown> {
+  try {
+    const out: Record<string, unknown> = {};
+    const raw =
+      (typeof sessionStorage !== "undefined" && sessionStorage.getItem("yes_utm")) ||
+      (typeof localStorage !== "undefined" && localStorage.getItem("yes_utm"));
+    if (raw) Object.assign(out, JSON.parse(raw));
+    if (typeof document !== "undefined" && document.referrer) {
+      try {
+        out.referrer_host = new URL(document.referrer).hostname;
+      } catch {
+        /* ignore */
+      }
+    }
+    return out;
+  } catch {
+    return {};
+  }
 }
 
 /** GA4: generate_lead — contact / WhatsApp / tailor "Talk to a local". */
@@ -274,6 +304,15 @@ export function gaGenerateLead(args: {
     ...(args.formType ? { form_type: args.formType } : {}),
     ...(args.requestType ? { request_type: args.requestType } : {}),
   });
+  // Only real form submissions count as an inquiry (not WhatsApp taps).
+  if (args.method === "email" || args.method === "form") {
+    pushEvent("inquiry_submitted", {
+      lead_source: args.leadSource,
+      ...(args.formType ? { form_type: args.formType } : {}),
+      ...(args.requestType ? { request_type: args.requestType } : {}),
+      ...attributionParams(),
+    });
+  }
 }
 
 /* ────────────────────────────────────────────────────────────────
