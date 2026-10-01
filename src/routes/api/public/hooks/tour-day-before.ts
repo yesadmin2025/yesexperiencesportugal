@@ -41,7 +41,8 @@ export const Route = createFileRoute("/api/public/hooks/tour-day-before")({
 
         const { data: rows, error } = await supabaseAdmin
           .from("bookings")
-          .select("id, customer_email, customer_name, stripe_session_id, booking_details, preferred_date")
+          .select("id, customer_email, customer_name, stripe_session_id, booking_details, preferred_date, start_time, pickup_location, guests")
+          .is("cancelled_at", null)
           .eq("status", "paid")
           .eq("preferred_date", tomorrow)
           .limit(200);
@@ -55,7 +56,7 @@ export const Route = createFileRoute("/api/public/hooks/tour-day-before")({
           const email = str(row.customer_email, 320);
           if (!email) { skipped += 1; continue; }
           const snap = (((row.booking_details as AnyRec | null)?.snapshot ?? {}) as AnyRec);
-          const guests = Number((snap.composition as AnyRec | undefined)?.guests) || null;
+          const guests = Number((snap.composition as AnyRec | undefined)?.guests) || row.guests || null;
           const name = str(snap.customerName, 160) ?? str(row.customer_name, 160);
           const sessionId = str(row.stripe_session_id, 300);
           try {
@@ -67,8 +68,8 @@ export const Route = createFileRoute("/api/public/hooks/tour-day-before")({
                 firstName: name ? name.split(" ")[0] : null,
                 experienceName: str(snap.experienceName) ?? str(snap.tourTitle),
                 dateLabel: str(snap.dateExact, 32) ?? tomorrow,
-                startTime: str(snap.startTime, 40),
-                pickup: str(snap.pickup),
+                startTime: str(snap.startTime, 40) ?? str(row.start_time, 40),
+                pickup: str(snap.pickup) ?? str(row.pickup_location),
                 durationLabel: str(snap.durationLabel, 120),
                 guestsLabel: guests ? `${guests} guest${guests === 1 ? "" : "s"}` : null,
                 itinerary: normalizeSnapshotItinerary(snap.itinerary),
