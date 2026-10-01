@@ -55,7 +55,7 @@ import { TAILOR_LUNCH_REMOVAL_DISCOUNT_EUR, TAILOR_LUNCH_SUPPLEMENT_EUR } from "
 
 import { jsonLdScript, breadcrumbLd, tourTailorProductLd } from "@/lib/jsonld";
 import { CANCELLATION } from "@/config/business-nap";
-import { resolveClientIncludedItems, resolveCheckoutInclusions } from "@/lib/checkout/inclusions";
+import { resolveClientIncludedItems, resolveCheckoutInclusions, applyTailorInclusionAdjustments } from "@/lib/checkout/inclusions";
 import { PriceBreakdownRows } from "@/components/checkout/PriceBreakdownRows";
 import { hasCompleteJourneyPricing } from "@/lib/checkout/journeyDisplay";
 import { CompositionField } from "@/components/booking/CompositionField";
@@ -963,7 +963,7 @@ function TailorPage() {
       heroSrc: metaForSummary?.localGallery?.[0]?.src ?? metaForSummary?.gallery?.[0] ?? tour.img,
       beats: stopLabels,
       itinerary: stopLabels.map((label) => ({ label })),
-      ...resolveCheckoutInclusions(metaForSummary, tour),
+      ...applyTailorInclusionAdjustments(resolveCheckoutInclusions(metaForSummary, tour), { lunchRemoved: rules.allowRemoveLunch === true && lunchRemoved, wineryCount: rules.wineries ? wineriesSelected : undefined }),
       flowLabel: "Tailored Signature",
     });
 
@@ -1761,7 +1761,7 @@ function TailorPage() {
           region: tour.region,
           beats: publicSelectionLabels,
           itinerary: publicSelectionLabels.map((label) => ({ label })),
-          ...resolveCheckoutInclusions(meta, tour),
+          ...applyTailorInclusionAdjustments(resolveCheckoutInclusions(meta, tour), { lunchRemoved: rules.allowRemoveLunch === true && lunchRemoved, wineryCount: rules.wineries ? wineriesSelected : undefined }),
         }}
         initial={{
           tourDate: date,
@@ -1800,7 +1800,7 @@ function TailorPage() {
              startTime: pickup,
              beats: publicSelectionLabels,
              itinerary: publicSelectionLabels.map((label) => ({ label })),
-             ...resolveCheckoutInclusions(meta, tour),
+             ...applyTailorInclusionAdjustments(resolveCheckoutInclusions(meta, tour), { lunchRemoved: rules.allowRemoveLunch === true && lunchRemoved, wineryCount: rules.wineries ? wineriesSelected : undefined }),
             guests,
             adults: composition.adults,
             minorAges: [...composition.minorAges],

@@ -59,3 +59,35 @@ export function resolveCheckoutInclusions(
   const notIncluded = (content?.notIncluded ?? []).map((s) => s.trim()).filter(Boolean);
   return { included, notIncluded };
 }
+
+export interface TailorInclusionAdjustments {
+  /** Guest removed the included lunch (credit applied). */
+  lunchRemoved?: boolean;
+  /** Winery visits actually in the tailored day, when the tour lets guests change the count. */
+  wineryCount?: number;
+}
+
+/** Tailor flow: the verified lists, adjusted to match what the guest actually kept. */
+export function applyTailorInclusionAdjustments(
+  base: CheckoutInclusions,
+  adj: TailorInclusionAdjustments,
+): CheckoutInclusions {
+  let included = [...base.included];
+  const notIncluded = [...base.notIncluded];
+  if (adj.lunchRemoved) {
+    const removed = included.filter((s) => /\blunch\b/i.test(s));
+    included = included.filter((s) => !/\blunch\b/i.test(s));
+    if (removed.length > 0 && !notIncluded.some((s) => /\blunch\b/i.test(s))) notIncluded.unshift("Lunch (removed from this day)");
+  }
+  if (typeof adj.wineryCount === "number" && adj.wineryCount > 0) {
+    const label = `${adj.wineryCount} winery visit${adj.wineryCount === 1 ? "" : "s"}`;
+    let replaced = false;
+    included = included.flatMap((s) => {
+      if (!/winer(y|ies)/i.test(s)) return [s];
+      if (replaced) return [];
+      replaced = true;
+      return [label];
+    });
+  }
+  return { included, notIncluded };
+}
