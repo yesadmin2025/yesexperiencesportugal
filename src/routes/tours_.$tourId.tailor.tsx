@@ -999,7 +999,10 @@ function TailorPage() {
           adults: details.adults,
           minorAges: details.minorAges,
           stopLabels: stopLabels.slice(0, 8),
-          includedItems: resolveClientIncludedItems(metaForSummary, tour),
+          includedItems: applyTailorInclusionAdjustments(
+            { included: resolveClientIncludedItems(metaForSummary, tour) ?? [], notIncluded: [] },
+            { lunchRemoved: rules.allowRemoveLunch === true && lunchRemoved, wineryCount: rules.wineries ? wineriesSelected : undefined },
+          ).included,
           // Display-only: what the guest actually booked / opted out of.
           // Never priced — the server re-derives every euro itself.
           itinerary: stopLabels.slice(0, 20).map((label: string) => ({ label })),
