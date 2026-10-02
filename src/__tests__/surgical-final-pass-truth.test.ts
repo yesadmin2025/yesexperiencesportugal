@@ -11,7 +11,7 @@ describe("surgical final-pass truth locks", () => {
       (article) => article.slug === "best-wine-tours-from-lisbon",
     );
     expect(guide?.title).toBe("Best Wine Tours from Lisbon | Private Guide (2026)");
-    expect(guide?.h1).toBe("The Best Wine Tours from Lisbon");
+    expect(guide?.h1).toBe("The Best Private Wine Tours from Lisbon");
     const body = guide?.sections.map((section) => section.body).join("\n") ?? "";
     expect(body).toContain("hands-on local craft and food day");
     expect(body).toContain("private cheese workshop, one winery, Azeitão and Sesimbra");
