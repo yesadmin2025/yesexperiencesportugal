@@ -351,7 +351,7 @@ function TailorPage() {
     if (isSkipping) {
       next.add(id);
       const proj = projectFeasibility(next, choiceSelected, optionalSelected);
-      if (proj && proj.stops.length === 0) {
+      if (proj && proj.experienceMinutes === 0) {
         toast.error("Keep at least one moment in the day.");
         return;
       }
@@ -389,7 +389,7 @@ function TailorPage() {
       }
       next.delete(id);
       const projAfterRemoval = projectFeasibility(skippedCore, next, optionalSelected);
-      if (projAfterRemoval && projAfterRemoval.stops.length === 0) {
+      if (projAfterRemoval && projAfterRemoval.experienceMinutes === 0) {
         toast.error("Keep at least one moment in the day.");
         return;
       }
