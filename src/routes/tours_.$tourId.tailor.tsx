@@ -59,7 +59,6 @@ import {
 } from "@/data/tailorRules";
 
 
-import { TAILOR_LUNCH_REMOVAL_DISCOUNT_EUR, TAILOR_LUNCH_SUPPLEMENT_EUR } from "@/config/pricing";
 
 import { jsonLdScript, breadcrumbLd, tourTailorProductLd } from "@/lib/jsonld";
 import { CANCELLATION } from "@/config/business-nap";
@@ -887,6 +886,15 @@ function TailorPage() {
     [blueprint, priceMap.byKey, guests],
   );
   const lunchAddOffered = rules.allowAddLunch && priceMap.bookable(LUNCH_ACTION_ID, "add");
+  /** Owner-set € amount for a fixed rule (display only). */
+  const ruleEur = (actionId: string, direction: "add" | "remove") => {
+    const r = priceMap.byKey.get(`${actionId}::${direction}`);
+    return r && r.adjustment_type === "fixed_eur" && r.adjustment_value != null ? Number(r.adjustment_value) : null;
+  };
+  const extraWineryEur = ruleEur(choiceSlotId((blueprint?.choice?.pickMin ?? 0) + 1), "add");
+  const lunchAddEur = ruleEur(LUNCH_ACTION_ID, "add");
+  const lunchStop = dedicatedLunchStopId(tour.id);
+  const lunchRemoveEur = lunchStop ? ruleEur(stopActionId(lunchStop), "remove") : null;
 
   const canAdjustWineryCount = Boolean(rules.wineries) && wineryOptions.length > 0;
   /** Real bounds — the control is disabled, never a toast at the edges. */
@@ -952,7 +960,10 @@ function TailorPage() {
       return {
         id: s.id,
         label: isWinery ? wineryLabel(wineryIndex) : s.label,
-        locked: tailorLocked(s),
+        // Not removable online until the owner prices that removal.
+        locked:
+          tailorLocked(s) ||
+          (!skippedCore.has(s.id) && !priceMap.bookable(stopActionId(s.id), "remove")),
         lockReason: tailorLocked(s) ? (s.lock?.customerFacingReason ?? null) : null,
         removed: skippedCore.has(s.id),
         earnsReduction: principalEligible.has(s.id),
@@ -973,7 +984,7 @@ function TailorPage() {
         };
       });
     return [...core, ...chosen];
-  }, [blueprint, skippedCore, choiceSelected, principalEligible]);
+  }, [blueprint, skippedCore, choiceSelected, principalEligible, priceMap.byKey, guests]);
 
 
   // ─── Helpers ────────────────────────────────────────────────
@@ -1579,12 +1590,14 @@ function TailorPage() {
                           </span>
                           <span className="mt-0.5 block text-[12px] text-[color:var(--charcoal-soft)]">
                             Starts with {rules.wineries!.included} included · choose {rules.wineries!.min}–{rules.wineries!.max}
-                            <span className="block">Each visit above {rules.wineries!.included} +
-                            <PriceEur
-                              amountEur={rules.wineries!.supplementEur}
-                              role="per-person"
-                            />{" "}
-                            pp</span>
+                            {extraWineryEur != null && (
+                              <span className="block">Each visit above {rules.wineries!.included} +
+                              <PriceEur
+                                amountEur={extraWineryEur}
+                                role="per-person"
+                              />{" "}
+                              pp</span>
+                            )}
                           </span>
                         </span>
                         <span className="flex shrink-0 items-center gap-1">
@@ -1639,7 +1652,7 @@ function TailorPage() {
                           <span className="mt-0.5 block text-[12px] text-[color:var(--charcoal-soft)]">
                             +
                             <PriceEur
-                              amountEur={TAILOR_LUNCH_SUPPLEMENT_EUR}
+                              amountEur={lunchAddEur ?? 0}
                               role="per-person"
                             />{" "}
                             pp
@@ -1651,7 +1664,7 @@ function TailorPage() {
                       </button>
                     )}
 
-                    {rules.allowRemoveLunch && (
+                    {rules.allowRemoveLunch && (lunchRemoved || lunchRemoveEur != null) && (
                       <button
                         type="button"
                         onClick={() => toggleIncludedLunch()}
@@ -1671,7 +1684,7 @@ function TailorPage() {
                           <span className="mt-0.5 block text-[12px] text-[color:var(--charcoal-soft)]">
                             −
                             <PriceEur
-                              amountEur={TAILOR_LUNCH_REMOVAL_DISCOUNT_EUR}
+                              amountEur={lunchRemoveEur ?? 0}
                               role="per-person"
                             />{" "}
                             pp if removed
