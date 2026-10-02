@@ -235,6 +235,7 @@ function Page() {
                     if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
                     setStatus("success");
                     setSent(true);
+                    clearTailorHandoff();
                     void import("@/lib/analytics-ga4").then((m) =>
                       m.gaGenerateLead({
                         leadSource: "contact_form",
