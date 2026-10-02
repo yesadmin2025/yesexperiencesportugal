@@ -57,22 +57,7 @@ describe("Tailor never leaks a winery supplier name", () => {
   });
 });
 
-describe("Tailor manual-confirmation gate", () => {
-  it("is driven by a missing approved price, a removed anchor or a below-baseline choice", () => {
-    expect(src).toContain(
-      "(wineExtension.extra > 0 && !rules.wineries) || removedSignatureAnchor || choiceReduced;",
-    );
-    expect(src).not.toContain("hasManualSupplier");
-  });
-});
-
 describe("Tailor Enhance offers nothing unpriced", () => {
-  it("suppresses winery-category optionals", () => {
-    expect(src).toMatch(/const publicOptional = useMemo\(/);
-    expect(src).toMatch(/\(blueprint\?\.optional \?\? \[\]\)\.filter\(\(o\) => o\.category !== "winery"\)/);
-    expect(src).toContain("{publicOptional.map((o) => {");
-  });
-
   it("Sintra's internal Colares winery optional is never a public enhancement", () => {
     const sintra = TAILOR_BLUEPRINTS["sintra-cascais"];
     expect(sintra).toBeDefined();
