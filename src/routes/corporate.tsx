@@ -210,7 +210,7 @@ function CorporatePage() {
             fixed packages — each day is built around the group, and every brief is answered
             personally.
           </DirectAnswer>
-          <div className="mt-9 flex flex-col sm:flex-row gap-3 justify-center">
+          <div className="mt-9 flex flex-col sm:flex-row gap-3 justify-center max-sm:pr-[72px]">
             <CtaButton
               to="/contact"
               search={{ type: "corporate" }}
@@ -448,7 +448,7 @@ function CorporatePage() {
             <div className="mt-6 pl-4 border-l-2 border-[color:var(--gold)] text-[13.5px] md:text-sm text-[color:var(--charcoal-soft)] leading-relaxed">
               Real driving times, real venues, real partners.
             </div>
-            <div className="mt-8 flex flex-col sm:flex-row gap-3">
+            <div className="mt-8 flex flex-col sm:flex-row gap-3 max-sm:pr-[72px]">
               <CtaButton
                 to="/contact"
                 search={{ type: "corporate" }}
