@@ -472,3 +472,33 @@ export function serverPrincipalRemovalCount(
   }
   return seen.size;
 }
+
+/**
+ * Tailor choice-pool baselines (server mirror of `choiceBaselineCount` in
+ * src/data/tailorChoiceBaseline.ts). `ids` are the stable choice-pool ids
+ * that count toward the baseline; `baseline` is how many the base price
+ * includes. No reduction credit exists, so fewer than `baseline` must be
+ * confirmed by the team — never charged at the old base price.
+ */
+export const TAILOR_CHOICE_BASELINE: Record<string, { ids: string[]; baseline: number }> = {
+  "arrabida-wine-allinclusive": { ids: ["jmf", "bacalhoa", "catralvos", "piloto", "palmela"], baseline: 2 },
+  "tiles-workshop": { ids: ["jmf", "bacalhoa", "catralvos"], baseline: 1 },
+  "sintra-cascais": { ids: ["pena", "regaleira", "sintra-palace"], baseline: 1 },
+  "evora-alentejo": { ids: ["ramos", "cartuxa", "peramanca", "ervideira", "esporao"], baseline: 2 },
+};
+
+/**
+ * FAIL-CLOSED: true when a Tailor checkout for a Signature with a choice
+ * baseline does not prove (with unique whitelisted ids) that the baseline
+ * is still met. Missing ids count as zero.
+ */
+export function serverChoiceBelowBaseline(tourId: string, choiceIds: unknown): boolean {
+  const entry = TAILOR_CHOICE_BASELINE[tourId];
+  if (!entry) return false;
+  const allowed = new Set(entry.ids);
+  const seen = new Set<string>();
+  if (Array.isArray(choiceIds)) {
+    for (const id of choiceIds) if (typeof id === "string" && allowed.has(id)) seen.add(id);
+  }
+  return seen.size < entry.baseline;
+}
