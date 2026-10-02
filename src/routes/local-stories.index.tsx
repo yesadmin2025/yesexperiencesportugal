@@ -167,6 +167,26 @@ function Page() {
 
       <section className="py-16 md:py-24 bg-[color:var(--ivory)]">
         <div className="container-x">
+          <article className="mb-14 rounded-[8px] border border-[color:var(--gold-soft)]/70 bg-[color:var(--sand)]/55 p-6 md:mb-16 md:p-8">
+            <Eyebrow>Featured coast story</Eyebrow>
+            <div className="mt-4 grid gap-6 md:grid-cols-[minmax(0,1fr)_auto] md:items-end">
+              <div>
+                <h2 className="font-serif text-[29px] leading-[1.18] text-[color:var(--charcoal)] md:text-[36px]">
+                  Comporta & Tróia — the quieter side of the Sado
+                </h2>
+                <p className="mt-4 max-w-2xl text-[15.5px] leading-[1.75] text-[color:var(--charcoal-soft)]">
+                  Rice fields, dunes, Tróia’s Roman coast, Carrasqueira’s working pier and the design culture that grew around the landscape.
+                </p>
+              </div>
+              <Link
+                to="/local-stories/$slug"
+                params={{ slug: "troia-comporta-guide" }}
+                className="inline-flex min-h-[44px] items-center text-[12px] uppercase tracking-[0.17em] text-[color:var(--teal)] underline decoration-[color:var(--gold)]/60 underline-offset-4"
+              >
+                Read the Comporta guide →
+              </Link>
+            </div>
+          </article>
           <div className="mb-10 max-w-2xl md:mb-14">
             <Eyebrow>Across Portugal</Eyebrow>
             <h2 className="mt-5 font-serif text-[29px] leading-[1.2] text-[color:var(--charcoal)] md:text-[36px]">Places worth knowing</h2>
