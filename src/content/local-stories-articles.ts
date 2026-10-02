@@ -1231,9 +1231,9 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
   },
   {
     slug: "best-wine-tours-from-lisbon",
-    title: "Best Wine Tours from Lisbon | Private Guide (2026)",
+    title: "Best Wine Tours in Lisbon: Private Day Trips (2026)",
     metaDescription:
-      "Compare private Lisbon wine tours to Arrábida, Azeitão and Alentejo: wineries, drive times, verified inclusions and prices from a licensed local operator.",
+      "Compare the best private wine tours from Lisbon: Setúbal Peninsula (Arrábida, Azeitão) and Alentejo wineries, drive times, verified inclusions and prices.",
     h1: "The Best Private Wine Tours from Lisbon",
     eyebrow: "Lisbon · Wine",
     standfirst:
