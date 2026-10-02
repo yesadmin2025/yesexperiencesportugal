@@ -139,21 +139,11 @@ export function CompositionField({ value, onChange, maxParty, compact }: Props) 
         </div>
 
         {minorAges.length === 0 ? (
-          <div className="mt-3 bg-[color:var(--sand)] px-4 py-3.5">
-            <p className="text-[12px] font-semibold uppercase tracking-[0.1em] text-[color:var(--charcoal)]">
-              Price per traveler
-            </p>
-            <dl className="mt-2.5 grid grid-cols-[1fr_auto] gap-x-4 gap-y-2 text-[14px] text-[color:var(--charcoal)]">
-              <dt>Adult · 18+</dt>
-              <dd className="font-semibold">100%</dd>
-              <dt>Youth · 11–17</dt>
-              <dd className="font-semibold">75%</dd>
-              <dt>Child · 3–10</dt>
-              <dd className="font-semibold">50%</dd>
-              <dt>Infant · 0–2</dt>
-              <dd className="font-semibold">Free</dd>
-            </dl>
-          </div>
+          /* Adults-only parties see one quiet line; the age-band rates appear
+             per child once a child is added (rates themselves unchanged). */
+          <p className="mt-2 text-[12.5px] leading-snug text-[color:var(--charcoal-soft)]">
+            Reduced rates for under-18s · infants free.
+          </p>
         ) : (
           <ul className="mt-3 space-y-2" aria-label="Minor travelers">
             {minorAges.map((age, i) => {
@@ -279,15 +269,17 @@ export function CompositionField({ value, onChange, maxParty, compact }: Props) 
         ) : null}
       </div>
 
-      <p
-        className="mt-4 text-[13px] leading-[1.55]"
-        style={{
-          fontFamily: "var(--font-sans)",
-          color: "var(--charcoal-soft)",
-        }}
-      >
-        Ages let us price fairly by band — no adult fallback for minors.
-      </p>
+      {minorAges.length > 0 ? (
+        <p
+          className="mt-4 text-[13px] leading-[1.55]"
+          style={{
+            fontFamily: "var(--font-sans)",
+            color: "var(--charcoal-soft)",
+          }}
+        >
+          Youth 11–17 pay 75%, children 3–10 pay 50%, infants 0–2 are free.
+        </p>
+      ) : null}
     </div>
   );
 }
