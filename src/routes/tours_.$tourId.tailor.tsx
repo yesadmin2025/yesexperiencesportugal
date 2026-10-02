@@ -1752,7 +1752,7 @@ function TailorPage() {
                         title: tailoredTitle,
                         date,
                         guests: describeGuests(composition.adults, composition.minorAges.length),
-                        stops: summaryStops,
+                        stops: summaryStops.map((st) => st.label),
                         removed: [
                           ...skippedPublicLabels,
                           ...(rules.allowRemoveLunch === true && lunchRemoved ? ["Included lunch"] : []),
