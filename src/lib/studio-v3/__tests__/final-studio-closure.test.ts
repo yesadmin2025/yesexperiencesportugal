@@ -150,18 +150,15 @@ describe("protected generated files match their baseline", () => {
    * `brand-audit.json` must stay. `prebuild`/`predev` no longer write that
    * file (see scripts/brand-audit.mjs), so a normal build cannot dirty it.
    */
-  const DEFAULT_BASELINE = "8621756aaae44fd5d21f73a816dc59d30450cb08";
-  const BASELINE_BY_FILE: Record<string, string> = {
-    "src/generated/brand-audit.json": "6e31d58d6c858d6ab21c2b66cf7a2202bcf6a7e8",
+  const PROTECTED_BLOB_SHAS: Record<string, string> = {
+    "src/generated/brand-audit.json": "f4fd73f4dadc7b1cd300e3df220fc1eaf6597562",
+    ".lovable/mcp/manifest.json": "b688aae8fb53a66461c451792e60522a04918277",
   };
-  const gitShow = (path: string) =>
-    execFileSync("git", ["show", `${BASELINE_BY_FILE[path] ?? DEFAULT_BASELINE}:${path}`], {
-      maxBuffer: 64 * 1024 * 1024,
-    }).toString();
 
-  for (const file of ["src/generated/brand-audit.json", ".lovable/mcp/manifest.json"]) {
-    it(`${file} is byte-identical to the baseline`, () => {
-      expect(readFileSync(file, "utf8")).toBe(gitShow(file));
+  for (const [file, expectedBlobSha] of Object.entries(PROTECTED_BLOB_SHAS)) {
+    it(`${file} is byte-identical to the protected content`, () => {
+      const actualBlobSha = execFileSync("git", ["hash-object", file], { encoding: "utf8" }).trim();
+      expect(actualBlobSha).toBe(expectedBlobSha);
     });
   }
 
