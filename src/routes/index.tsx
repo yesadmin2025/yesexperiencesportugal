@@ -629,10 +629,8 @@ function HomePage() {
 
                 <p className="reveal-stagger mt-4 text-[14.5px] md:text-[16px] text-[color:var(--charcoal-soft)] leading-[1.7] max-w-md">
                   The Studio draws the day as you shape it: a{" "}
-                  <strong className="font-medium text-[color:var(--charcoal)]">real route</strong> on
-                  the map, honest driving times, and the price updating as it goes. The final price is
-                  on screen before you pay, confirmation is instant, and a local stays reachable
-                  after that.
+                  <strong className="font-medium text-[color:var(--charcoal)]">real route</strong>,
+                  honest driving times and a live price. See the finished total before you reserve.
                 </p>
 
                 {/* Three differentiators — tied to the product, not a floating manifesto. */}
@@ -704,7 +702,7 @@ function HomePage() {
                 ]}
               />
               <p className="scene-body mt-5 text-[15px] md:text-[16px] leading-[1.65] text-[color:var(--charcoal-soft)]">
-                Every Signature can be reserved as designed, or tailored around your pace, interests and group.
+                A few of the private days guests choose most often.
               </p>
             </Scene>
 
