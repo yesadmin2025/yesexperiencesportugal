@@ -15,7 +15,6 @@
 
 import { useEffect, useRef } from "react";
 import { useRouterState } from "@tanstack/react-router";
-import { trackEvent } from "@/lib/analytics-events";
 import { sanitizeLocation } from "@/lib/url-sanitize";
 
 /**
@@ -47,11 +46,13 @@ export function usePageViewTracking(): void {
     // query only; `page_location` is rebuilt from the origin + clean path.
     const { path, query } = sanitizeLocation(href);
     const qs = new URLSearchParams(query).toString();
-    trackEvent("page_view", {
-      page_path: qs ? `${path}?${qs}` : path,
-      page_location:
-        typeof window !== "undefined" ? `${window.location.origin}${path}` : undefined,
-      page_title: typeof document !== "undefined" ? document.title : undefined,
+    void import("@/lib/analytics-events").then(({ trackEvent }) => {
+      trackEvent("page_view", {
+        page_path: qs ? `${path}?${qs}` : path,
+        page_location:
+          typeof window !== "undefined" ? `${window.location.origin}${path}` : undefined,
+        page_title: typeof document !== "undefined" ? document.title : undefined,
+      });
     });
   }, [href]);
 }
