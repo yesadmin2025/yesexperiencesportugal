@@ -1054,6 +1054,13 @@ function TailorPage() {
       tailorPrice && tailorPrice.ok
         ? tailorPrice.totalEur
         : (summaryJourney?.totalEur ?? Math.round(estimatedPrice * details.guests));
+    const adjustedCheckoutInclusions = applyTailorInclusionAdjustments(
+      resolveCheckoutInclusions(metaForSummary, tour),
+      {
+        lunchRemoved: lunchMomentRemoved,
+        wineryCount: hasWineryMoments ? wineriesSelected : undefined,
+      },
+    );
     setCheckoutSummary({
       tourTitle: tailoredTitle,
       region: tour.region,
@@ -1069,10 +1076,7 @@ function TailorPage() {
       heroSrc: metaForSummary?.localGallery?.[0]?.src ?? metaForSummary?.gallery?.[0] ?? tour.img,
       beats: stopLabels,
       itinerary: stopLabels.map((label) => ({ label })),
-      ...applyTailorInclusionAdjustments(resolveCheckoutInclusions(metaForSummary, tour), {
-        lunchRemoved: lunchMomentRemoved,
-        wineryCount: hasWineryMoments ? wineriesSelected : undefined,
-      }),
+      ...adjustedCheckoutInclusions,
       flowLabel: "Tailored Signature",
     });
 
@@ -1108,13 +1112,7 @@ function TailorPage() {
         adults: details.adults,
         minorAges: details.minorAges,
         stopLabels: stopLabels.slice(0, 8),
-        includedItems: applyTailorInclusionAdjustments(
-          { included: resolveClientIncludedItems(metaForSummary, tour) ?? [], notIncluded: [] },
-          {
-            lunchRemoved: lunchMomentRemoved,
-            wineryCount: hasWineryMoments ? wineriesSelected : undefined,
-          },
-        ).included,
+        includedItems: adjustedCheckoutInclusions.included,
         // Display-only: what the guest actually booked / opted out of.
         // Never priced — the server re-derives every euro itself.
         itinerary: stopLabels.slice(0, 20).map((label: string) => ({ label })),
