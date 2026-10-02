@@ -1,0 +1,63 @@
+name: Final performance audit
+
+on:
+  push:
+    branches:
+      - fix/final-seo-performance-20261002
+
+jobs:
+  lighthouse:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+      - run: bun install --frozen-lockfile
+      - run: bun run build
+      - name: Start preview
+        run: |
+          bun run preview --port 4175 > /tmp/preview.log 2>&1 &
+          for i in {1..30}; do
+            if curl -fsS http://localhost:4175/ >/dev/null; then exit 0; fi
+            sleep 1
+          done
+          cat /tmp/preview.log
+          exit 1
+      - name: Lighthouse representative slow pages
+        run: |
+          mkdir -p /tmp/lh
+          for path in experiences about contact portugal-travel-designer proposal-in-portugal studio regions-of-portugal; do
+            echo "=== /$path ==="
+            bunx lighthouse "http://localhost:4175/$path" \
+              --quiet \
+              --chrome-flags="--headless=new --no-sandbox" \
+              --form-factor=mobile \
+              --screenEmulation.mobile=true \
+              --screenEmulation.width=393 \
+              --screenEmulation.height=851 \
+              --screenEmulation.deviceScaleFactor=2.75 \
+              --throttling-method=simulate \
+              --only-categories=performance,accessibility,best-practices,seo \
+              --output=json \
+              --output-path="/tmp/lh/$path.json"
+            node -e '
+              const f=JSON.parse(require("fs").readFileSync(process.argv[1],"utf8"));
+              const a=f.audits,c=f.categories;
+              const score=k=>Math.round((c[k]?.score||0)*100);
+              const v=id=>a[id]?.displayValue||null;
+              console.log(JSON.stringify({
+                performance:score("performance"),
+                accessibility:score("accessibility"),
+                bestPractices:score("best-practices"),
+                seo:score("seo"),
+                LCP:v("largest-contentful-paint"),
+                FCP:v("first-contentful-paint"),
+                TBT:v("total-blocking-time"),
+                CLS:v("cumulative-layout-shift"),
+                unusedJS:v("unused-javascript"),
+                renderBlocking:v("render-blocking-resources"),
+                mainThread:v("mainthread-work-breakdown")
+              }));' "/tmp/lh/$path.json"
+          done
