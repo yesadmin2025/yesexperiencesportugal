@@ -86,7 +86,12 @@ function RegionsPage() {
                     </Link>
                   ))}
                   {chapter.name === "Lisbon & the coast" && <Link to="/private-tours-sintra-cascais" className="flex min-h-16 items-center justify-between gap-5 py-3 text-sm text-[color:var(--teal)] hover:text-[color:var(--charcoal)]">Sintra & Cascais <span aria-hidden="true">↗</span></Link>}
-                  {chapter.name === "Alentejo" && <Link to="/private-tours-alentejo-evora" className="flex min-h-16 items-center justify-between gap-5 py-3 text-sm text-[color:var(--teal)] hover:text-[color:var(--charcoal)]">Évora & Alentejo <span aria-hidden="true">↗</span></Link>}
+                  {chapter.name === "Alentejo" && (
+                    <>
+                      <Link to="/private-tours-alentejo-evora" className="flex min-h-16 items-center justify-between gap-5 py-3 text-sm text-[color:var(--teal)] hover:text-[color:var(--charcoal)]">Évora & Alentejo <span aria-hidden="true">↗</span></Link>
+                      <Link to="/local-stories/$slug" params={{ slug: "troia-comporta-guide" }} className="flex min-h-16 items-center justify-between gap-5 py-3 text-sm text-[color:var(--teal)] hover:text-[color:var(--charcoal)]">Comporta & Tróia — local guide <span aria-hidden="true">↗</span></Link>
+                    </>
+                  )}
                 </div>
               </section>
             );
