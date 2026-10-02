@@ -1,6 +1,6 @@
 /**
- * ProposalRequestForm — dedicated request form for proposals, celebrations,
- * corporate days and private groups.
+ * ProposalRequestForm — dedicated request form for proposals, celebrations
+ * and private family/friends moments.
  *
  * Posts to `/api/public/proposal-request`, which stores the request in the
  * enquiries inbox and sends a confirmation to the sender plus a notification
@@ -16,8 +16,7 @@ import { CtaButton } from "@/components/ui/CtaButton";
 const OCCASIONS = [
   { value: "proposal", label: "Marriage proposal" },
   { value: "celebration", label: "Celebration or honeymoon" },
-  { value: "corporate", label: "Corporate day or off-site" },
-  { value: "private_group", label: "Private group" },
+  { value: "family_friends", label: "Family or friends celebration" },
 ] as const;
 
 const fieldClass =
@@ -97,7 +96,7 @@ export function ProposalRequestForm({ id = "proposal-request" }: { id?: string }
         </h3>
         <p className="mt-3 text-[15px] leading-[1.75] text-[color:var(--charcoal-soft)]">
           A confirmation is on its way to your inbox, and a local designer replies personally —
-          usually within one working day. If it is time-sensitive, call us on {PHONE_DISPLAY}.
+          within one working day. If it is time-sensitive, call us on {PHONE_DISPLAY}.
         </p>
       </div>
     );
