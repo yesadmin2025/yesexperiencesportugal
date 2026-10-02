@@ -9,8 +9,8 @@ describe("checkout loading and contact delivery", () => {
     const studio = read("src/components/studio-v3/StudioV3.tsx");
     expect(tailor).toContain('const FinalDetailsDialog = lazy(');
     expect(tailor).toContain('const BrandedCheckoutDrawer = lazy(');
-    expect(tailor).toContain("{detailsOpen ? <Suspense");
-    expect(tailor).toContain("{checkoutOpen ? <Suspense");
+    expect(tailor).toMatch(/\{detailsOpen\s*\?\s*\(\s*<Suspense/);
+    expect(tailor).toMatch(/\{checkoutOpen\s*\?\s*\(\s*<Suspense/);
     expect(studio).toContain('const CheckoutSummaryStep = lazy(');
     expect(studio).not.toContain('from "@/components/checkout/BrandedCheckoutDrawer"');
   });
