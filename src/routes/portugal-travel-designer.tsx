@@ -270,7 +270,7 @@ function PortugalTravelDesignerPage() {
             to: "/studio",
             label: "Design a private day in the Experience Studio",
             description:
-              "Build your own Portugal day online: choose the region, stops and rhythm and watch the route and pricing evolve, then reserve directly or ask for a local review.",
+              "Build your own Portugal day online: choose the region, stops and rhythm, watch the route and price evolve, then confirm the finished day instantly.",
           },
           {
             to: "/itineraries/10-day-private-portugal-tour",
