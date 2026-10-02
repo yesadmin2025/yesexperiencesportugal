@@ -347,7 +347,7 @@ function ExperienceCardMeta({
       {hasReviews ? (
         <span
           className="inline-flex items-center gap-1 text-[color:var(--charcoal)]"
-          aria-label={`${rating?.toFixed(1)} out of 5, ${reviewCount} reviews`}
+          aria-label={`${rating?.toFixed(1)} out of 5, ${reviewCount} ${reviewCount === 1 ? "review" : "reviews"}`}
         >
           <Star
             size={12}
