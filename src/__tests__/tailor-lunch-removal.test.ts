@@ -54,9 +54,10 @@ describe("Arrábida Wine lunch removal", () => {
     expect(tailorFinalPerPax(DIRECT, 0, 0, 15)).not.toBe(tailorAdjustedPerPax(DIRECT, 1));
   });
 
-  it("does not change the independent winery capacity", () => {
-    expect(canSelectWineries(ARRABIDA, 4, 0).allowed).toBe(true);
-    expect(canSelectWineries(ARRABIDA, 5, 0).allowed).toBe(false);
+  it("keeps lunch pricing independent while preserving the fourth-winery space rule", () => {
+    expect(canSelectWineries(ARRABIDA, 4, 0).allowed).toBe(false);
+    expect(canSelectWineries(ARRABIDA, 4, 1).allowed).toBe(true);
+    expect(canSelectWineries(ARRABIDA, 5, 1).allowed).toBe(false);
   });
 
   it("is ignored by the removal cap and the operational floor", () => {
