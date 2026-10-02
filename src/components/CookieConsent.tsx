@@ -12,7 +12,6 @@
 
 import * as React from "react";
 import { useHydrated } from "@/hooks/use-hydrated";
-import { trackEvent, setAnalyticsConsent } from "@/lib/analytics-events";
 import { Button } from "@/components/ui/button";
 
 const STORAGE_KEY = "yes.cookieConsent.v1";
@@ -134,19 +133,23 @@ export function CookieConsent() {
     if (!existing) {
       // No decision yet — hold custom events in the queue until the guest
       // chooses (they flush automatically on "granted").
-      setAnalyticsConsent("denied");
+      void import("@/lib/analytics-events").then(({ setAnalyticsConsent }) => {
+        setAnalyticsConsent("denied");
+      });
       setOpen(true);
     } else {
       // Re-apply on every mount so late-loading GTM sees the correct signals.
       applyConsent(existing);
-      setAnalyticsConsent(existing.analytics);
-      if (existing.analytics === "granted") {
-        trackEvent("page_view", {
-          page_path: window.location.pathname,
-          page_location: `${window.location.origin}${window.location.pathname}`,
-          page_title: document.title,
-        });
-      }
+      void import("@/lib/analytics-events").then(({ setAnalyticsConsent, trackEvent }) => {
+        setAnalyticsConsent(existing.analytics);
+        if (existing.analytics === "granted") {
+          trackEvent("page_view", {
+            page_path: window.location.pathname,
+            page_location: `${window.location.origin}${window.location.pathname}`,
+            page_title: document.title,
+          });
+        }
+      });
     }
     const onOpen = () => {
       const cur = readStored();
@@ -166,22 +169,24 @@ export function CookieConsent() {
       const full: ConsentChoice = { ...choice, decidedAt: new Date().toISOString(), version: 1 };
       persist(full);
       applyConsent(full);
-      setAnalyticsConsent(full.analytics);
-      // GTM starts while Consent Mode is denied, so its automatic initial
-      // page view cannot be collected. Emit that one page view immediately
-      // after a first-time grant; later SPA navigations are handled by
-      // usePageViewTracking.
-      if (full.analytics === "granted") {
-        trackEvent("page_view", {
-          page_path: window.location.pathname,
-          page_location: `${window.location.origin}${window.location.pathname}`,
-          page_title: document.title,
+      void import("@/lib/analytics-events").then(({ setAnalyticsConsent, trackEvent }) => {
+        setAnalyticsConsent(full.analytics);
+        // GTM starts while Consent Mode is denied, so its automatic initial
+        // page view cannot be collected. Emit that one page view immediately
+        // after a first-time grant; later SPA navigations are handled by
+        // usePageViewTracking.
+        if (full.analytics === "granted") {
+          trackEvent("page_view", {
+            page_path: window.location.pathname,
+            page_location: `${window.location.origin}${window.location.pathname}`,
+            page_title: document.title,
+          });
+        }
+        trackEvent("consent_choice", {
+          source,
+          analytics: full.analytics,
+          ads: full.ads,
         });
-      }
-      trackEvent("consent_choice", {
-        source,
-        analytics: full.analytics,
-        ads: full.ads,
       });
       setOpen(false);
       setCustomize(false);
