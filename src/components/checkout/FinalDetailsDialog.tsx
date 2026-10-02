@@ -569,7 +569,9 @@ function ProductRecap({
   composition: TravellerComposition;
   compositionComplete: boolean;
 }) {
-  const [includedOpen, setIncludedOpen] = useState(true);
+  // Progressive disclosure: a compact summary first so the guest form is
+  // immediately visible; the full day lives behind ONE closed disclosure.
+  const [detailOpen, setDetailOpen] = useState(false);
   const context = [
     recap.duration != null ? formatDuration(recap.duration) : null,
     recap.region || null,
@@ -578,85 +580,89 @@ function ProductRecap({
   const beats = verifiedIncluded.length > 0 ? verifiedIncluded : (recap.beats ?? []).filter(Boolean).slice(0, 4);
   const notIncluded = (recap.notIncluded ?? []).filter(Boolean);
   const itinerary = (recap.itinerary ?? []).filter((stop) => Boolean(stop.label));
+  const hasDetail = itinerary.length > 0 || beats.length > 0 || notIncluded.length > 0;
+  const detailLabel =
+    recap.flowLabel === "Tailored Signature" ? "Your tailored day in detail" : "Your day in detail";
+  void date;
+  void composition;
+  void compositionComplete;
 
   return (
     <section
-      aria-label="What your day includes"
+      aria-label="Your booking"
       data-testid="final-details-product-recap"
-      className="border border-[color:var(--border)] bg-[color:var(--sand)]/30 px-4 py-4"
+      className="border border-[color:var(--border)] bg-[color:var(--sand)]/30 px-4 py-3"
     >
-      <p className="text-[12px] uppercase tracking-[0.22em] text-[color:var(--charcoal-soft)]">
-        What your day includes
-      </p>
-      <h3 className="mt-1.5 font-serif text-[18px] font-medium leading-snug text-[color:var(--charcoal)]">
+      <h3 className="font-serif text-[17px] font-medium leading-snug text-[color:var(--charcoal)]">
         {recap.title}
       </h3>
       {context.length > 0 ? (
-        <p className="mt-1 text-[12.5px] leading-snug text-[color:var(--charcoal-soft)]">
-          {context.join(" · ")}
+        <p className="mt-0.5 text-[12.5px] leading-snug text-[color:var(--charcoal-soft)]">
+          Private day · {context.join(" · ")}
         </p>
       ) : null}
-      <p className="mt-1 text-[12.5px] leading-snug text-[color:var(--charcoal)]">
-        {date ? formatKnownDate(date) : "Date not set"}
-        <span className="mx-1.5 text-[color:var(--charcoal-soft)]">·</span>
-        {compositionComplete ? formatCompositionSummary(composition) : "Party details incomplete"}
-      </p>
-      {itinerary.length > 0 ? (
-        <ol className="mt-4 space-y-3" data-testid="final-details-day-itinerary">
-          {itinerary.map((stop, index) => (
-            <li key={`${stop.label}-${index}`} className="flex gap-3">
-              <span className="mt-0.5 shrink-0 text-[12px] font-semibold tabular-nums text-[color:var(--gold)]">
-                {String(index + 1).padStart(2, "0")}
-              </span>
-              <div className="min-w-0">
-                <p className="text-[13.5px] font-medium leading-snug text-[color:var(--charcoal)]">
-                  {stop.label}
-                  {stop.optional ? " " : null}
-                  {stop.optional ? (
-                    <span className="ml-1 text-[12px] uppercase tracking-[0.16em] text-[color:var(--charcoal-soft)]">
-                      Optional
+      {hasDetail ? (
+        <div className="mt-2">
+          <Disclosure
+            label={detailLabel}
+            open={detailOpen}
+            onToggle={() => setDetailOpen((value) => !value)}
+            testId="final-details-day-detail"
+          >
+            {itinerary.length > 0 ? (
+              <ol className="mt-2 space-y-3" data-testid="final-details-day-itinerary">
+                {itinerary.map((stop, index) => (
+                  <li key={`${stop.label}-${index}`} className="flex gap-3">
+                    <span className="mt-0.5 shrink-0 text-[12px] font-semibold tabular-nums text-[color:var(--gold)]">
+                      {String(index + 1).padStart(2, "0")}
                     </span>
-                  ) : null}
-                </p>
-                {stop.story ? (
-                  <p className="mt-0.5 text-[12.5px] leading-relaxed text-[color:var(--charcoal-soft)]">
-                    {stop.story}
-                  </p>
-                ) : null}
-              </div>
-            </li>
-          ))}
-        </ol>
-      ) : null}
-      {beats.length > 0 ? (
-        <Disclosure
-          label={`${includedOpen ? "Hide" : "See"} what's included`}
-          open={includedOpen}
-          onToggle={() => setIncludedOpen((value) => !value)}
-          testId="final-details-product-inclusions"
-        >
-          <ul className="space-y-1 pb-1 pt-2">
-            {beats.map((beat) => (
-              <li key={beat} className="flex gap-2 text-[12.5px] leading-snug text-[color:var(--charcoal)]">
-                <span aria-hidden className="mt-1.5 h-1 w-1 shrink-0 rounded-full bg-[color:var(--gold)]" />
-                <span>{beat}</span>
-              </li>
-            ))}
-          </ul>
-          {notIncluded.length > 0 ? (
-            <>
-              <p className="pt-2 text-[12px] uppercase tracking-[0.22em] text-[color:var(--charcoal-soft)]">Not included</p>
-              <ul className="space-y-1 pb-1 pt-1">
-                {notIncluded.map((item) => (
-                  <li key={item} className="flex gap-2 text-[12.5px] leading-snug text-[color:var(--charcoal-soft)]">
-                    <span aria-hidden>–</span>
-                    <span>{item}</span>
+                    <div className="min-w-0">
+                      <p className="text-[13.5px] font-medium leading-snug text-[color:var(--charcoal)]">
+                        {stop.label}
+                        {stop.optional ? (
+                          <span className="ml-1 text-[12px] uppercase tracking-[0.16em] text-[color:var(--charcoal-soft)]">
+                            Optional
+                          </span>
+                        ) : null}
+                      </p>
+                      {stop.story ? (
+                        <p className="mt-0.5 text-[12.5px] leading-relaxed text-[color:var(--charcoal-soft)]">
+                          {stop.story}
+                        </p>
+                      ) : null}
+                    </div>
                   </li>
                 ))}
-              </ul>
-            </>
-          ) : null}
-        </Disclosure>
+              </ol>
+            ) : null}
+            {beats.length > 0 ? (
+              <div data-testid="final-details-product-inclusions">
+                <p className="pt-3 text-[12px] uppercase tracking-[0.22em] text-[color:var(--charcoal-soft)]">Included</p>
+                <ul className="space-y-1 pb-1 pt-1">
+                  {beats.map((beat) => (
+                    <li key={beat} className="flex gap-2 text-[12.5px] leading-snug text-[color:var(--charcoal)]">
+                      <span aria-hidden className="mt-1.5 h-1 w-1 shrink-0 rounded-full bg-[color:var(--gold)]" />
+                      <span>{beat}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ) : null}
+            {notIncluded.length > 0 ? (
+              <>
+                <p className="pt-2 text-[12px] uppercase tracking-[0.22em] text-[color:var(--charcoal-soft)]">Not included</p>
+                <ul className="space-y-1 pb-1 pt-1">
+                  {notIncluded.map((item) => (
+                    <li key={item} className="flex gap-2 text-[12.5px] leading-snug text-[color:var(--charcoal-soft)]">
+                      <span aria-hidden>–</span>
+                      <span>{item}</span>
+                    </li>
+                  ))}
+                </ul>
+              </>
+            ) : null}
+          </Disclosure>
+        </div>
       ) : null}
     </section>
   );
