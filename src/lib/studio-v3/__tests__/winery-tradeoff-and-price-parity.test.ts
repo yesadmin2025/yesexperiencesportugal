@@ -1,8 +1,8 @@
 /**
  * P0-1 / P0-2 — winery capacity and one composed-supplement authority.
  *
- * P0-1: the server sells up to four wineries without forcing removal of an
- * included Signature moment. Counts are still clamped server-side.
+ * P0-1: the server sells the approved winery ladder and enforces its
+ * structural trade-off threshold server-side.
  *
  * P0-2: the composed supplement is counted from STRUCTURAL identity, never
  * from the generic public labels, and one value feeds Your Day, the Guest
@@ -55,13 +55,13 @@ describe("P0-1 server-enforced winery capacity", () => {
     expect(serverExtraWineriesAllowed(TOUR, 1, undefined)).toBe(1);
   });
 
-  it("allows the 4th winery without forcing removal of included moments", () => {
-    expect(serverExtraWineriesAllowed(TOUR, 2, undefined)).toBe(2);
-    expect(serverExtraWineriesAllowed(TOUR, 2, [])).toBe(2);
+  it("refuses the 4th winery until one tradeable moment is removed", () => {
+    expect(serverExtraWineriesAllowed(TOUR, 2, undefined)).toBeNull();
+    expect(serverExtraWineriesAllowed(TOUR, 2, [])).toBeNull();
   });
 
-  it("ignores irrelevant trade ids while retaining structural counting", () => {
-    expect(serverExtraWineriesAllowed(TOUR, 2, ["made-up-stop"])).toBe(2);
+  it("ignores irrelevant trade ids and fails closed", () => {
+    expect(serverExtraWineriesAllowed(TOUR, 2, ["made-up-stop"])).toBeNull();
     expect(serverWineryTradeOffCount(TOUR, ["livramento", "livramento"])).toBe(1);
     expect(serverWineryTradeOffCount(TOUR, ["nope", "also-nope"])).toBe(0);
   });
