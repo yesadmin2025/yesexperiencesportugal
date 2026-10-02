@@ -63,25 +63,25 @@ export const TAILOR_CORE_STOP_PRICING: Readonly<
     "lunch-azeitao": P("Included lunch — priced by the dedicated −€15 pp credit, not the ladder."),
   },
   "wild-beaches-picnic": {
-    "hidden-cove": R("Picnic made removable 2026-10-02; no approved credit — removal routes to confirmation."),
+    "hidden-cove": R("Picnic made removable 2026-10-02; priced by the owner in the Admin Tailor price map."),
     livramento: P("Guided market visit where the picnic is bought — paid component."),
     "arrabida-drive": D("Coastal drive viewpoints — free access, no supplier cost."),
     "sesimbra-village": R("Free village walk but guide-time significant; owner to confirm class."),
   },
   "arrabida-boat": {
-    "boat-arrabida": R("Boat made removable 2026-10-02; no approved credit — removal routes to confirmation."),
+    "boat-arrabida": R("Boat made removable 2026-10-02; priced by the owner in the Admin Tailor price map."),
     livramento: P("Guided market visit — paid component."),
     "arrabida-drive": D("Coastal drive viewpoints — free access, no supplier cost."),
     "sesimbra-village": R("Free village walk but guide-time significant; owner to confirm class."),
   },
   "tiles-workshop": {
-    "azulejos-workshop": R("Workshop made removable 2026-10-02; no approved credit — removal routes to confirmation."),
+    "azulejos-workshop": R("Workshop made removable 2026-10-02; priced by the owner in the Admin Tailor price map."),
     livramento: P("Guided market visit — paid component."),
     "lunch-azeitao": P("Included lunch, no dedicated removal credit on this Signature."),
   },
   "azeitao-cheese": {
-    "quinta-velha": R("Cheese workshop made removable 2026-10-02; no approved credit — removal routes to confirmation."),
-    catralvos: R("Winery made removable 2026-10-02; no approved credit — removal routes to confirmation."),
+    "quinta-velha": R("Cheese workshop made removable 2026-10-02; priced by the owner in the Admin Tailor price map."),
+    catralvos: R("Winery made removable 2026-10-02; priced by the owner in the Admin Tailor price map."),
     livramento: P("Guided market visit — paid component."),
     "lunch-azeitao": P("Included lunch, no dedicated removal credit on this Signature."),
   },
@@ -180,23 +180,4 @@ export function maxRemovalsForMinViable(tourId: string): number {
   if (min === undefined) return Number.POSITIVE_INFINITY;
   const coreCount = TAILOR_BLUEPRINTS[tourId]?.core.length ?? 0;
   return Math.max(0, coreCount - min);
-}
-
-/**
- * Formerly product-defining / transfer stops. They are removable, but no
- * owner-approved price consequence exists, so removing one sends the
- * tailored day to "Request confirmation" instead of instant checkout.
- */
-export const TAILOR_CONFIRM_ON_REMOVE: Readonly<Record<string, readonly string[]>> = {
-  "wild-beaches-picnic": ["hidden-cove"],
-  "arrabida-boat": ["boat-arrabida"],
-  "tiles-workshop": ["azulejos-workshop"],
-  "azeitao-cheese": ["quinta-velha", "catralvos"],
-  "troia-comporta": ["sado-ferry"],
-};
-
-export function removalNeedsConfirmation(tourId: string, skippedStopIds: Iterable<string>): boolean {
-  const ids = TAILOR_CONFIRM_ON_REMOVE[tourId] ?? [];
-  for (const id of skippedStopIds) if (ids.includes(id)) return true;
-  return false;
 }
