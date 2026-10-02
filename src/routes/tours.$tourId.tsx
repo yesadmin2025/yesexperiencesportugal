@@ -498,7 +498,9 @@ function TourHero({
               )}
             </div>
 
-             <ul className="mt-4 flex flex-wrap gap-x-4 gap-y-1.5 text-[12px] leading-snug text-[color:var(--charcoal)]" aria-label="Highlights of this day">
+             {/* On phones the highlights + cancellation line follow the price
+                 and Reserve action so booking is reachable in the first screen. */}
+             <ul className="max-sm:order-2 mt-4 flex flex-wrap gap-x-4 gap-y-1.5 text-[12px] leading-snug text-[color:var(--charcoal)]" aria-label="Highlights of this day">
                {getSignatureCardHighlights(tour.id).map((highlight) => (
                  <li key={highlight} className="flex max-w-full items-start gap-1.5">
                    <Check size={12} className="mt-0.5 shrink-0 text-[color:var(--teal)]" aria-hidden="true" />
@@ -506,13 +508,11 @@ function TourHero({
                  </li>
                ))}
              </ul>
-              <p className="mt-4 text-[12px] leading-snug text-[color:var(--charcoal-soft)]">
+              <p className="max-sm:order-3 mt-4 text-[12px] leading-snug text-[color:var(--charcoal-soft)]">
                 {CANCELLATION.signature.en} · Secure payment
               </p>
-          </div>
 
-
-          <div className="mt-6 flex flex-col items-start gap-3">
+          <div className="max-sm:order-1 mt-6 flex flex-col items-start gap-3">
             {typeof (tour as { priceFrom?: number }).priceFrom === "number" ? (
               <div className="flex flex-wrap items-baseline gap-x-2.5 gap-y-1">
                 <span className="text-[12px] uppercase tracking-[0.12em] text-[color:var(--charcoal-soft)]">
