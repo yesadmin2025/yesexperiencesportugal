@@ -1,59 +1,42 @@
-# Conversion / UX audit — current preview (read-only)
+# Tailor instant pricing — always bookable, owner-priced
 
-What I checked: the homepage, /experiences, the Arrábida Wine tour, the /studio landing page and /portugal-travel-designer. I loaded each page at 390px (phone) and 1280px (desktop), recorded which buttons show in the first screen and what stays fixed on screen, measured how far down the booking box sits, and went through the Arrábida booking box up to the Reserve button.
-What I did not check: payment, the full Studio flow past its landing page, and sending the Travel Designer form. Those items below are marked "unverified" and should be tested next. I haven't invented any funnel percentages.
+## Goal
+Every Tailor change (add, remove, swap) has a price the owner set in Admin, so every valid day can be reserved immediately. No more "Request this day". Contact and WhatsApp stay as optional help only.
 
-## A) Top 5 friction points (ranked by likely commercial impact)
+## What changes for the traveler
+- "Reserve this day" always opens guest details, then payment, when the day is not empty and fits in the time available.
+- The total updates live. A short "Price details" list (closed by default) shows the base price for the group, then each addition or removal with its amount.
+- "Your day in detail" in the booking form stays as it is.
+- A quiet "Prefer to talk it through? WhatsApp us" link stays available, but nobody is sent there automatically.
+- Empty days and days that don't fit stay blocked, with the existing messages.
 
-1. **Couples see a lower "from" price than they will pay.** The phone booking bar and the price cards say "From €135", but that is the price per person for 7–8 travellers. A couple (your main buyer) pays €183 per person, €366 in total, and only finds out inside the booking box. This is the most likely cause of drop-off at checkout and of lost trust.
-   - Files: `src/components/booking/MobileReserveBar.tsx`, the `priceFrom` value on tour cards in `/experiences`, the tour page hero price, and `PriceQualifier`.
-2. **On phones the booking box is about 8 screens down.** On the Arrábida page it starts around 6,900px into a 17,100px page. There is no Reserve button in the first phone screen (desktop has one). The phone booking bar fills this gap, but only after the cookie notice is answered (see 3).
-   - Files: `src/routes/tours.$tourId.tsx` (section order), `#book` in `SimpleBookingForm.tsx`.
-3. **On a first visit, the cookie notice hides the booking bar.** `MobileReserveBar` stays hidden while `.cookie-consent-card` is on screen. That was a deliberate choice so two bars don't stack. Until the visitor answers, the first phone screen shows Cookie / Customise / Essential only / Accept all and WhatsApp, but no booking action. That affects the 64% who bounce, and phones are your biggest group of visitors.
-   - Files: `MobileReserveBar.tsx` (cookie check), the cookie consent component.
-4. **The Reserve button is greyed out with no explanation.** In the booking box, "Reserve this day" stays disabled until a date is picked, and "Tailor this day" sits right next to it. A visitor who taps Reserve straight away gets no response. The visible label also says "Book the Signature, as designed", which is your internal wording.
-   - Files: `SimpleBookingForm.tsx` (around line 699, `signature-reserve-cta`), `CtaButton` disabled state.
-5. **The booking box asks for too much before the date.** In order, it shows: reviews, trust lines, a 3-row price table, availability, date, adults, a children question, a 4-row price-by-age table, Add a child, an explanation line, trip preferences, and the total. For the simplest booking (2 adults, one date) that is a lot of reading before the one decision that matters. The age table could stay folded away until a child is added (unverified whether it already does this on smaller screens).
-   - Files: `SimpleBookingForm.tsx`, `PerPersonBands.tsx`.
+## What changes for Nídia (Admin)
+New page: Admin → Tailor prices.
+- Filter by Signature. One row per change the traveler can make: stop removal, winery fewer/extra, lunch add/remove, palace swap.
+- Columns: Change | In the day by default | Add € | Remove € | Unit (per person / per group / per vehicle / flat) | Active | Status.
+- Status shows **Missing price** in red when a change is offered to travelers but has no amount. Entering 0 is allowed and means "no price change" on purpose.
+- A summary at the top: each Signature marked **Complete** or **Incomplete (n missing)**.
 
-Also seen, lower priority:
-- On the homepage at 390px, the first screen has only two main buttons ("Design your day", "Explore experiences") plus a quiet Travel Designer link. That's good. But a visitor has to infer what "Design your day" means compared with "Experiences".
-- The /studio landing page is one screen with a single "Design your day" button and no price hint. Someone who doesn't yet know what Studio is gets no answer before committing (unverified past the landing page).
-- The Travel Designer page has a clear "Design my journey" button. The form length and the reply-time promise are still to be checked.
+## Rule for missing prices (assumption — please correct if wrong)
+Until a price is entered, that change is not offered to travelers (the stop simply stays in the day, the winery count can't go lower). As soon as Nídia enters a price, it appears in Tailor straight away. This keeps checkout instant and never invents a price. Before publishing, the Admin summary must show every Signature as Complete.
 
-## B) Quick wins (no redesign)
+## Starting values (only already-approved rules)
+- Extra winery: Arrábida Wine and Setúbal per the existing approved amounts; 4th winery still needs a stop removed.
+- Add lunch +€35 pp where lunch is excluded; remove included lunch −€15 pp (Arrábida Wine).
+- Existing approved −5% per principal stop removal (with its existing cap/floor) is kept as the entry for those stops.
+- Everything else (fewer wineries, palace, picnic, boat, tile and cheese workshops, ferry, Fátima, Nazaré, Óbidos, Tomar, Coimbra and other "owner review" stops) starts as **Missing price**.
 
-1. Make the "from" price honest for couples: show the 2-guest price in the phone bar and on cards, or label the current one "from €135 pp for groups of 7–8". Presentation only; prices stay the same.
-2. Let the phone booking bar show above the cookie notice, or turn the cookie notice into a slim top or inline strip on tour pages, so a booking action is always visible.
-3. When Reserve is tapped with no date, scroll to and highlight the date picker with a short line ("Choose a date to reserve"). Keep the button visually active. Replace "Book the Signature, as designed" with plain wording.
-4. Keep the price-by-age table and the explanation line folded under "Travelling with children?" until a child is added.
-5. Make "Tailor this day" a lighter text link under Reserve inside the booking box, so it doesn't look like an equal second choice.
-6. On phones, add a short summary line at the top of the tour page (price for 2 · duration · pickup · free cancellation) that jumps to `#book`.
+## Cleanup of the previous step
+Remove the below-baseline confirmation gate, the server's 409 refusal, the Tailor → Contact automatic handoff and its tests. Contact page returns to its previous behaviour (editorial guide prefill kept).
 
-## C) Looks fine — do not change
+## Technical details
+- New table `tailor_price_rules`: tour_id, action_id (stable stop/action id), action_kind (remove_stop, add_stop, winery_extra, winery_fewer, lunch_add, lunch_remove), default_in_day, add_eur, remove_eur (nullable = missing), unit, active, min_party, max_party, note, updated_at/by. Unique (tour_id, action_id, action_kind). GRANTs + RLS: public read of active rows; admin-only write via `has_role`. Seed migration inserts approved rules and Missing rows for every blueprint action.
+- Shared pure pricing module (client and edge function import the same logic file pattern already used by `_shared/pricing.ts`): `total = baseTierPrice(party, age bands) + Σ deltas` by unit; the existing −5% ladder stays expressed as a percentage rule for principal rows.
+- Client: Tailor loads rules via query; only actions with a valid price are interactive; ledger built from the same function.
+- Server (create-signature-checkout): loads rules from the table, receives only stable action ids, rejects unknown ids, inactive or missing-price actions (400), recomputes every euro, Stripe line amount = server total.
+- Tests: pricing module unit tests for each listed scenario; parity test client total == server total == Stripe unit amount × qty; empty/infeasible day still blocked; no `/contact` navigation from Tailor reserve.
+- Admin page `/admin/tailor-prices` reusing the price-map table style; linked from More.
+- Nothing published. Full suite counts reported exactly.
 
-- The homepage first screen (two-line statement, two buttons, quiet Travel Designer link) has no clutter at 390px and no sideways scrolling.
-- The booking box's trust block: 4.9/5 with 1,000 reviews, instant confirmation, secure payment, free cancellation 24h, WhatsApp help.
-- The phone booking bar hides itself once the booking box is on screen, and moves the WhatsApp button up so they don't overlap.
-- No page had sideways scrolling at 390px.
-- The Travel Designer page's main action and its WhatsApp alternative.
-- The verified inclusions shown before payment (fixed earlier) and the clear total ("€366 · €183 / adult for a group of 2").
-
-## D) Publish the SEO-only change first?
-
-Yes. It only touches the reviews-page link, winery titles and descriptions, and the Évora link. It's low risk and doesn't affect any of the issues above. Publish it now; the UX changes can follow separately.
-
-## E) Routes and files per issue
-
-| Issue | Route | Files |
-|---|---|---|
-| 1 Misleading "from" price | /tours/*, /experiences | MobileReserveBar.tsx, tour card component, PriceQualifier, PriceEur |
-| 2 Booking box too far down | /tours/$tourId | routes/tours.$tourId.tsx, SimpleBookingForm.tsx |
-| 3 Cookie notice hides booking bar | /tours/* (phone) | MobileReserveBar.tsx, cookie consent component |
-| 4 Reserve greyed out with no reason | /tours/* | SimpleBookingForm.tsx, ui/CtaButton.tsx |
-| 5 Too much before the date | /tours/* | SimpleBookingForm.tsx, checkout/PerPersonBands.tsx |
-| Studio landing gives no context | /studio | studio-v3/LivingAtlasStudioPage |
-
-## Next step if approved
-
-Run the checks marked unverified: Studio through to the price reveal, the Travel Designer form, and the checkout fields and going back (stopping before payment). Then apply quick wins 1–5, which only change presentation, not prices, payments or booking rules.
+## Values Nídia will need to enter
+Listed per Signature in the Admin completeness view and in the final report.
