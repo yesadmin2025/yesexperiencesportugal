@@ -845,14 +845,14 @@ function TailorPage() {
     [blueprint],
   );
   /**
-   * Optional additions we may sell. Winery-category optionals are
-   * suppressed unless an owner-approved commercial ladder exists — an
-   * extra winery visit is never given away for free.
+   * Optional additions are public only when the Admin price map makes them
+   * bookable. Winery suppliers remain operational data: the UI renders them
+   * generically even though the stable internal option id is preserved.
    */
   const publicOptional = useMemo(
     () =>
-      (blueprint?.optional ?? []).filter(
-        (o) => o.category !== "winery" && priceMap.bookable(optionalActionId(o.id), "add"),
+      (blueprint?.optional ?? []).filter((o) =>
+        priceMap.bookable(optionalActionId(o.id), "add"),
       ),
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [blueprint, priceMap.byKey, guests],
@@ -868,10 +868,16 @@ function TailorPage() {
   const lunchStop = dedicatedLunchStopId(tour.id);
   const lunchRemoveEur = lunchStop ? ruleEur(stopActionId(lunchStop), "remove") : null;
 
-  const canAdjustWineryCount = Boolean(rules.wineries) && wineryOptions.length > 0;
-  /** Real bounds — the control is disabled, never a toast at the edges. */
-  const wineryMin = rules.wineries?.min ?? rules.wineries?.included ?? 0;
-  const wineryMax = rules.wineries?.max ?? 0;
+  const wineryChoicePool =
+    Boolean(blueprint?.choice) &&
+    wineryOptions.length > 0 &&
+    wineryOptions.length === (blueprint?.choice?.options.length ?? 0);
+  const canAdjustWineryCount = wineryChoicePool;
+  /** Real bounds — special ladders may extend the blueprint; otherwise a
+   * winery choice pool can still be reduced to zero and restored to baseline. */
+  const wineryIncluded = rules.wineries?.included ?? blueprint?.choice?.pickMin ?? 0;
+  const wineryMin = rules.wineries?.min ?? 0;
+  const wineryMax = rules.wineries?.max ?? blueprint?.choice?.pickMax ?? 0;
   const pickMin = blueprint?.choice?.pickMin ?? 0;
   const canRemoveWineryVisit =
     canAdjustWineryCount &&
@@ -1506,7 +1512,7 @@ function TailorPage() {
                                   ].join(" ")}
                                 >
                                   <span className="min-w-0 text-[13.5px] leading-snug text-[color:var(--charcoal)]">
-                                    {o.label}
+                                    {o.category === "winery" ? "Add a winery visit" : o.label}
                                   </span>
                                   <span className="shrink-0 text-[11px] uppercase tracking-[0.14em] text-[color:var(--charcoal-soft)]">
                                     {on ? "Chosen" : "Swap"}
@@ -1563,9 +1569,9 @@ function TailorPage() {
                             Winery visits
                           </span>
                           <span className="mt-0.5 block text-[12px] text-[color:var(--charcoal-soft)]">
-                            Starts with {rules.wineries!.included} included · choose {rules.wineries!.min}–{rules.wineries!.max}
+                            Starts with {wineryIncluded} included · choose {wineryMin}–{wineryMax}
                             {extraWineryEur != null && (
-                              <span className="block">Each visit above {rules.wineries!.included} +
+                              <span className="block">Each visit above {wineryIncluded} +
                               <PriceEur
                                 amountEur={extraWineryEur}
                                 role="per-person"
