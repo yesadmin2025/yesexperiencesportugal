@@ -168,8 +168,8 @@ export function FiveWaysIn() {
             Five ways to <SectionTitle.Em>shape your Portugal.</SectionTitle.Em>
           </SectionTitle>
           <p className="scene-body mx-auto mt-5 max-w-xl text-[14.5px] leading-[1.65] text-[color:var(--charcoal-soft)] md:text-[16px]">
-            Begin with a private Lisbon tour, design your own day live in the Studio, or plan a
-            complete journey with a local Portugal travel designer.
+            Begin with a ready-designed private day, shape your own day live in the Studio, or plan
+            a complete journey with a local Portugal travel designer.
           </p>
         </Scene>
 

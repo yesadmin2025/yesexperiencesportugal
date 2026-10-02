@@ -1,7 +1,7 @@
 /**
  * Enquiry follow-up hook — sends the review request once per enquiry.
  *
- * Picks up proposals / celebrations / corporate / private-group requests that
+ * Picks up proposals / celebrations / family-and-friends requests that
  * are older than `afterDays` (default 7) and have never been followed up, then
  * sends the `review-request` template through the same internal transactional
  * pipeline as every other guest email. `followup_sent_at` is stamped on the row
@@ -17,8 +17,7 @@ import { z } from "zod";
 const OCCASION_LABEL: Record<string, string> = {
   proposal: "a marriage proposal",
   celebration: "a celebration",
-  corporate: "a corporate day",
-  private_group: "a private group day",
+  family_friends: "a family or friends celebration",
 };
 
 const bodySchema = z

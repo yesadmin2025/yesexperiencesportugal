@@ -193,9 +193,8 @@ function PortugalTravelDesignerPage() {
           sense.
         </p>
         <p>
-          Driving time, meal times, local opening hours and the energy of the travelers all
-          influence the final design. A good itinerary leaves room for discovery rather than
-          treating Portugal as a collection of boxes to be completed.
+          We balance driving time, meals, local opening hours and your energy so the route has room
+          for discovery rather than treating Portugal as a collection of boxes to be completed.
         </p>
       </Section>
 
@@ -270,7 +269,7 @@ function PortugalTravelDesignerPage() {
             to: "/studio",
             label: "Design a private day in the Experience Studio",
             description:
-              "Build your own Portugal day online: choose the region, stops and rhythm and watch the route and pricing evolve, then reserve directly or ask for a local review.",
+              "Build your own Portugal day online: choose the region, stops and rhythm, watch the route and price evolve, then confirm the finished day instantly.",
           },
           {
             to: "/itineraries/10-day-private-portugal-tour",

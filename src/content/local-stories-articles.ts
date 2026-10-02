@@ -1237,7 +1237,7 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
     h1: "The Best Private Wine Tours from Lisbon",
     eyebrow: "Lisbon · Wine",
     standfirst:
-      "Arrábida's wineries and coast, or a longer Alentejo day? Compare the private wine days we run, what each includes and where to spend your time.",
+      "Compare Arrábida, Azeitão and Alentejo by drive time, wine focus, inclusions and pace.",
     directAnswer: "For a private Lisbon tour focused on wine, Arrábida and Azeitão combine wineries, Setúbal Moscatel and the coast within one day. The Alentejo is a longer inland day for Évora or traditional Vinho de Talha. Compare current dates, verified inclusions and per-person prices before choosing.",
     sections: [
       {
@@ -1266,7 +1266,7 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
       },
       {
         heading: "The wineries on each day, by name.",
-        body: "Wineries are chosen from a published shortlist according to the date, availability and what you like to drink, so the exact pair changes from day to day.\n\nOn the [Arrábida wine day](/tours/arrabida-wine-allinclusive), the options are José Maria da Fonseca's historic house and museum, Quinta de Catralvos, Quinta do Piloto and Quinta da Bacalhôa, where wine sits alongside art; Adega de Palmela is an optional stop. On the [Azeitão cheese day](/tours/azeitao-cheese), the tasting is at Quinta de Catralvos, with five glasses of wine.\n\nOn the [Évora & Alentejo day](/tours/evora-alentejo), the two tastings come from João Portugal Ramos, Adega Cartuxa beside the 16th-century Cartuxa monastery, Pêra-Grave at Quinta de São José de Peramanca, Ervideira or Herdade do Esporão. The [Roman Heritage day](/tours/roman-heritage-alentejo) visits Adega do Mestre Daniel – XXVI Talhas, a small family winery still making wine in clay talhas.\n\nRead about each one on our [wineries page](/wineries).",
+        body: "Wineries are chosen from a published shortlist according to the date, availability and what you like to drink, so the exact pair changes from day to day.\n\nOn the [Arrábida wine day](/tours/arrabida-wine-allinclusive), the options are José Maria da Fonseca's historic house and museum, Quinta de Catralvos, Quinta do Piloto and Quinta da Bacalhôa, where wine sits alongside art; Adega de Palmela is an optional stop. On the [Azeitão cheese day](/tours/azeitao-cheese), the tasting is at Quinta de Catralvos, with five glasses of wine.\n\nOn the [Évora & Alentejo day](/tours/evora-alentejo), the two tastings come from João Portugal Ramos, Adega Cartuxa beside the 16th-century Cartuxa monastery, Pêra-Grave at Quinta de São José de Peramanca, Ervideira or Herdade do Esporão. The [Roman Heritage day](/tours/roman-heritage-alentejo) visits Adega do Mestre Daniel – XXVI Talhas, a small family winery still making wine in clay talhas.\n\nRead about each one on our [wineries page](/wineries/).",
       },
       {
         heading: "How we compare the best wine tours from Lisbon.",

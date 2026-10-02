@@ -7,7 +7,6 @@ import { Clock, MapPin, Star } from "lucide-react";
 import { signatureTours, publicSignatureTours } from "@/data/signatureTours";
 import { getViatorMeta } from "@/data/signatureToursViator";
 import { useImportedTourImages } from "@/hooks/use-imported-tour-images";
-import { ImageQualityToggle } from "@/components/ImageQualityToggle";
 import { Eyebrow } from "@/components/ui/Eyebrow";
 import { SectionTitle } from "@/components/ui/SectionTitle";
 import { CtaButton } from "@/components/ui/CtaButton";
@@ -111,7 +110,6 @@ function DayToursPage() {
           <h2 className="sr-only">Available Day Tours</h2>
           <div className="flex flex-wrap items-center justify-end gap-4 mb-6">
             <PriceCurrencyChip />
-            <ImageQualityToggle />
           </div>
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-8">
             {dayTours.map((t) => {
@@ -132,7 +130,7 @@ function DayToursPage() {
                       imgClassName="group-hover:scale-105 transition-transform duration-700"
                     >
                       <span className="absolute top-4 right-4 text-[11px] uppercase tracking-[0.22em] bg-[color:var(--gold)]/95 text-[color:var(--charcoal)] px-3 py-1.5">
-                        Tailored Signature
+                        Signature day
                       </span>
                     </TourImage>
                   </Link>
@@ -158,7 +156,7 @@ function DayToursPage() {
                       <MapPin size={12} /> {t.theme}
                     </span>
                     <span className="text-[color:var(--teal)]">
-                      From <PriceEur amountEur={t.priceFrom} role="from" />
+                      From <PriceEur amountEur={t.priceFrom} role="from" />{" "}
                       <span className="ml-1 text-[11px] tracking-[0.18em] text-[color:var(--charcoal-soft)]">
                         per person
                       </span>
@@ -177,7 +175,7 @@ function DayToursPage() {
                           {meta.rating.toFixed(1)}
                         </span>
                         {" · "}
-                        {meta.reviewCount} reviews
+                        {meta.reviewCount} {meta.reviewCount === 1 ? "review" : "reviews"}
                         <span className="text-[color:var(--charcoal-soft)]">
                           {" "}
                           · Tripadvisor &amp; Viator

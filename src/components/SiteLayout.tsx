@@ -1,4 +1,4 @@
-import { ReactNode, useEffect } from "react";
+import { ReactNode, Suspense, lazy, useEffect, useState } from "react";
 import { Navbar } from "./Navbar";
 import { Footer } from "./Footer";
 import { FloatingActions } from "./FloatingActions";
@@ -6,9 +6,20 @@ import { FloatingActions } from "./FloatingActions";
 import { CookieConsent } from "./CookieConsent";
 import { CurrencyProvider } from "@/lib/currency";
 
-import { QaPanel } from "./dev/QaPanel";
-import { MotionQaPanel } from "./dev/MotionQaPanel";
+import {
+  installQaModeActivators,
+  isQaModeEnabled,
+  subscribeQaMode,
+} from "@/lib/qa-mode";
 import { installSmoothAnchorScroll } from "@/lib/smooth-anchor-scroll";
+
+const LazyQaPanel = lazy(() =>
+  import("./dev/QaPanel").then((m) => ({ default: m.QaPanel })),
+);
+const LazyMotionQaPanel = lazy(() =>
+  import("./dev/MotionQaPanel").then((m) => ({ default: m.MotionQaPanel })),
+);
+
 
 import {
   applyScrollDebugClasses,
@@ -381,6 +392,23 @@ function flashDebug(el: HTMLElement, label: string) {
 }
 
 export function SiteLayout({ children }: { children: ReactNode }) {
+  const [qaEnabled, setQaEnabled] = useState(false);
+  const [motionQaRequested, setMotionQaRequested] = useState(false);
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const teardownActivators = installQaModeActivators();
+    setQaEnabled(isQaModeEnabled());
+    const unsubscribe = subscribeQaMode(setQaEnabled);
+    setMotionQaRequested(
+      new URLSearchParams(window.location.search).get("motion-qa") === "1",
+    );
+    return () => {
+      unsubscribe();
+      teardownActivators();
+    };
+  }, []);
+
 
   useEffect(() => {
     if (typeof window === "undefined") return;
@@ -852,8 +880,16 @@ export function SiteLayout({ children }: { children: ReactNode }) {
         <FloatingActions />
         {/* WhatsAppFab intentionally not rendered — WhatsAppSupportButton (in __root.tsx)
             is the single source of truth for the floating support affordance. */}
-        <QaPanel />
-        <MotionQaPanel />
+        {qaEnabled ? (
+          <Suspense fallback={null}>
+            <LazyQaPanel />
+          </Suspense>
+        ) : null}
+        {motionQaRequested ? (
+          <Suspense fallback={null}>
+            <LazyMotionQaPanel />
+          </Suspense>
+        ) : null}
         <CookieConsent />
       </div>
     </CurrencyProvider>

@@ -124,8 +124,8 @@ export function ProposalInPortugalPage() {
           <DirectAnswer>
             YES Experiences Portugal plans private marriage proposals anywhere in Portugal —
             coastline, vineyard, palace garden or city terrace. A local team handles the setting,
-            timing and discreet coordination, and every enquiry is answered personally within 24
-            hours.
+            timing and discreet coordination, and every enquiry is answered personally within one working
+            day.
           </DirectAnswer>
           <div className="mt-8 flex justify-center">
             <CtaButton href="#proposal-request" variant="primary">

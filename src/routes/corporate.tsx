@@ -210,7 +210,7 @@ function CorporatePage() {
             fixed packages — each day is built around the group, and every brief is answered
             personally.
           </DirectAnswer>
-          <div className="mt-9 flex flex-col sm:flex-row gap-3 justify-center">
+          <div className="mt-9 flex flex-col sm:flex-row gap-3 justify-center max-sm:pr-[72px]">
             <CtaButton
               to="/contact"
               search={{ type: "corporate" }}
@@ -263,7 +263,7 @@ function CorporatePage() {
             </SectionTitle>
             <p className="mt-5 font-serif italic text-[1.1rem] md:text-[1.2rem] text-[color:var(--teal)] leading-snug">
               An executive off-site and a 100-person incentive should never feel like the same
-              programme enlarged or reduced.
+              program enlarged or reduced.
             </p>
             <p className="mt-5 text-[15px] md:text-[16px] leading-[1.8] text-[color:var(--charcoal-soft)]">
               We design each corporate experience around the people, objective and pace of the
@@ -300,7 +300,7 @@ function CorporatePage() {
             <p className="mt-5 text-[15px] md:text-[16px] leading-[1.8] text-[color:var(--charcoal-soft)]">
               We operate across Portugal, combining the places a group may already know with the
               producers, landscapes, traditions and settings that give each region its character. A
-              programme can include Portugal's recognized highlights, quieter local encounters or a
+              program can include Portugal's recognized highlights, quieter local encounters or a
               considered balance of both.
             </p>
             <p className="mt-5 text-[15px] md:text-[16px] leading-[1.8] text-[color:var(--charcoal-soft)]">
@@ -379,7 +379,7 @@ function CorporatePage() {
         <div className="container-x max-w-3xl">
           <Eyebrow>Corporate FAQ</Eyebrow>
           <SectionTitle as="h2" size="compact" spacing="loose">
-            Practical answers <SectionTitle.Em>before the proposal.</SectionTitle.Em>
+            Practical answers <SectionTitle.Em>before we plan.</SectionTitle.Em>
           </SectionTitle>
 
           <div className="mt-8 md:mt-12">
@@ -448,7 +448,7 @@ function CorporatePage() {
             <div className="mt-6 pl-4 border-l-2 border-[color:var(--gold)] text-[13.5px] md:text-sm text-[color:var(--charcoal-soft)] leading-relaxed">
               Real driving times, real venues, real partners.
             </div>
-            <div className="mt-8 flex flex-col sm:flex-row gap-3">
+            <div className="mt-8 flex flex-col sm:flex-row gap-3 max-sm:pr-[72px]">
               <CtaButton
                 to="/contact"
                 search={{ type: "corporate" }}

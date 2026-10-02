@@ -163,7 +163,7 @@ function totalsOf(rows: RawRow[]) {
 
 export const getSearchPerformance = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((input: { days?: number; rowLimit?: number }) => ({
+  .validator((input: { days?: number; rowLimit?: number }) => ({
     days: Math.min(Math.max(Number(input?.days ?? 28), 7), 90),
     rowLimit: Math.min(Math.max(Number(input?.rowLimit ?? 25), 5), 100),
   }))
@@ -272,7 +272,7 @@ export type BookingConversionRow = {
 
 export const getBookingConversions = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((input: { days?: number }) => ({
+  .validator((input: { days?: number }) => ({
     days: Math.min(Math.max(Number(input?.days ?? 28), 7), 180),
   }))
   .handler(
@@ -336,7 +336,7 @@ export type AcquisitionConversionRow = {
  */
 export const getAcquisitionConversions = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((input: { days?: number }) => ({
+  .validator((input: { days?: number }) => ({
     days: Math.min(Math.max(Number(input?.days ?? 28), 7), 180),
   }))
   .handler(
@@ -444,7 +444,7 @@ export type ExperienceSeoPerformance = {
  */
 export const getExperienceSeoPerformance = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((input: { days?: number }) => ({
+  .validator((input: { days?: number }) => ({
     days: Math.min(Math.max(Number(input?.days ?? 28), 7), 90),
   }))
   .handler(async ({ data, context }): Promise<ExperienceSeoPerformance> => {
