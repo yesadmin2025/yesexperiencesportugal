@@ -379,7 +379,7 @@ function CorporatePage() {
         <div className="container-x max-w-3xl">
           <Eyebrow>Corporate FAQ</Eyebrow>
           <SectionTitle as="h2" size="compact" spacing="loose">
-            Practical answers <SectionTitle.Em>before the proposal.</SectionTitle.Em>
+            Practical answers <SectionTitle.Em>before we plan.</SectionTitle.Em>
           </SectionTitle>
 
           <div className="mt-8 md:mt-12">
