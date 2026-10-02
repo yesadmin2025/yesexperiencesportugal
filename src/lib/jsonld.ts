@@ -506,8 +506,9 @@ export function tourProductLd(args: {
           },
         }
       : {}),
-    // No aggregateRating or Review schema. Guest proof stays visible on-page
-    // without self-serving review markup.
+    // Product-specific first-party ratings and reviews are attached by the
+    // tour route after its verified review bundle has loaded. Site-wide and
+    // third-party platform totals must never be substituted here.
     potentialAction: {
       "@type": "ReserveAction",
       target: {

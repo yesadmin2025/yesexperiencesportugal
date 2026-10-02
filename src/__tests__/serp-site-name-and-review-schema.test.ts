@@ -119,7 +119,7 @@ describe("review structured data is first-party only", () => {
     const route = read("src/routes/tours.$tourId.tsx");
     expect(route).not.toContain("withAggregateAndReviews");
     expect(route).toContain("getFirstPartyReviewBundle");
-    expect(route).not.toContain("aggregateRating");
+    expect(route).toContain("withFirstPartyReviews(product, loaderData?.firstPartyReviews)");
   });
 
   it("tourProductLd emits no aggregateRating of its own", () => {
@@ -160,6 +160,13 @@ describe("review structured data is first-party only", () => {
     const route = read("src/routes/tours.$tourId.tsx");
     expect(route).not.toMatch(/rating:\s*getViatorMeta/);
     expect(route).not.toMatch(/reviewCount:\s*getViatorMeta/);
+  });
+
+  it("connects the verified first-party bundle to each Signature Product", () => {
+    const route = read("src/routes/tours.$tourId.tsx");
+    expect(route).toContain('import { withFirstPartyReviews } from "@/lib/first-party-review-schema"');
+    expect(route).toContain("const product = tourProductLd({");
+    expect(route).toContain("withFirstPartyReviews(product, loaderData?.firstPartyReviews)");
   });
 
   it("omits rating and review when no first-party data exists", () => {

@@ -68,6 +68,7 @@ import { resolveLegacyTourId } from "@/lib/legacy-tour-redirects";
 import { TourEditorialNote } from "@/components/tours/TourEditorialNote";
 import { getPublishedExperienceContent } from "@/lib/experienceContent.functions";
 import { getSignatureSeo } from "@/content/signature-seo";
+import { withFirstPartyReviews } from "@/lib/first-party-review-schema";
 
 
 export const Route = createFileRoute("/tours/$tourId")({
@@ -231,7 +232,7 @@ export const Route = createFileRoute("/tours/$tourId")({
                 sotStops.length > 0
                   ? sotStops
                   : (t.stops ?? []).map((s) => ({ label: s.label, story: s.story }));
-              return tourProductLd({
+              const product = tourProductLd({
                 id: params.tourId,
                 title: seo?.h1 ?? t.title,
                 blurb: seo?.opening ?? t.blurb,
@@ -245,6 +246,7 @@ export const Route = createFileRoute("/tours/$tourId")({
                 ),
                 stops,
               });
+              return withFirstPartyReviews(product, loaderData?.firstPartyReviews);
             })(),
         ),
         jsonLdScript(faqPageLd(getFaqForTour(params.tourId))),
