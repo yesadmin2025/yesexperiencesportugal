@@ -14,6 +14,7 @@ function usePrimaryLinks() {
   return [
     { to: "/experiences", label: `Signature ${t("nav.experiences")}` },
     { to: "/portugal-travel-designer", label: t("nav.travel_designer") },
+    { to: "/contact", label: t("nav.contact") },
   ];
 }
 
@@ -24,7 +25,6 @@ function useSecondaryLinks() {
     { to: "/corporate", label: t("nav.corporate") },
     { to: "/about", label: t("nav.about") },
     { to: "/local-stories", label: t("nav.local_stories") },
-    { to: "/contact", label: t("nav.contact") },
   ];
 }
 
