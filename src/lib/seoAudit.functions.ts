@@ -152,7 +152,7 @@ async function auditOne(url: string): Promise<SeoAuditResult> {
 
 export const auditSeoUrls = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((input: { urls: string[] }) => {
+  .validator((input: { urls: string[] }) => {
     if (!input || !Array.isArray(input.urls)) throw new Error("urls must be an array");
     const urls = input.urls
       .map((u) => (typeof u === "string" ? normalizeAuditUrl(u) : null))

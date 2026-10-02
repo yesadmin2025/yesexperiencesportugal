@@ -28,7 +28,7 @@ export const listExperienceSeoDrafts = createServerFn({ method: "POST" })
 
 export const saveExperienceSeoDraft = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((value: unknown) => input.parse(value))
+  .validator((value: unknown) => input.parse(value))
   .handler(async ({ context, data }) => {
     await assertAdmin(context);
     const { error } = await context.supabase.from("experience_seo_drafts").upsert({

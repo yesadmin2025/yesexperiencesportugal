@@ -20,9 +20,8 @@ export const Route = createFileRoute("/wineries/$slug")({
     const w = loaderData.winery;
     const url = `${WEBSITE_URL}/wineries/${params.slug}`;
     const shortName = w.name.replace(/\s*\(.*\)\s*$/, "");
-    const title = `${shortName} · Private Wine Tour from Lisbon`;
-    const fullDesc = `${w.summary} Visit on a private wine day from Lisbon with YES Experiences.`;
-    const desc = fullDesc.length <= 160 ? fullDesc : w.summary.slice(0, 157).replace(/\s+\S*$/, "") + "…";
+    const title = w.seoTitle ?? `${shortName} · Private Wine Tour from Lisbon`;
+    const desc = w.seoDescription;
     return {
       meta: [
         { title },
