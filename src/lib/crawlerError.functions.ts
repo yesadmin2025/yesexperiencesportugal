@@ -49,7 +49,7 @@ export type CrawlerErrorStrategy = "root-cause" | "last-error";
 
 export const getLastCrawlerError = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((data: { strategy?: CrawlerErrorStrategy; _ts?: number } | undefined) => ({
+  .validator((data: { strategy?: CrawlerErrorStrategy; _ts?: number } | undefined) => ({
     strategy: (data?.strategy ?? "root-cause") as CrawlerErrorStrategy,
   }))
   .handler(async ({ data, context }): Promise<CrawlerErrorInfo> => {
