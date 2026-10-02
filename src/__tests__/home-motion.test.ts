@@ -200,8 +200,8 @@ describe("home-motion controller", () => {
     document.documentElement.dataset.motionScope = "marketing";
     document.body.innerHTML = `
       <main><section><ul>
-        <li><h3>Arrábida</h3></li>
-        <li><h3>Sintra</h3></li>
+        <li><h3>Arrábida</h3><a href="/tours/arrabida">Reserve</a></li>
+        <li><h3>Sintra</h3><a href="/tours/sintra">Reserve</a></li>
       </ul></section></main>
     `;
     document.querySelectorAll<HTMLElement>("li, h3").forEach((el) => {
