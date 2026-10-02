@@ -94,9 +94,9 @@ function AboutPage() {
       <section className="page-hero public-page-header text-left" data-section="hero">
         <div className="container-x max-w-4xl">
           <div>
-            <div className="scene-atmosphere"><Eyebrow>About YES! Experiences Portugal</Eyebrow></div>
+            <div className="scene-atmosphere"><h1 className="m-0"><Eyebrow>About YES! Experiences Portugal · Private tours &amp; travel design</Eyebrow></h1></div>
             <div className="scene-title">
-              <SectionTitle as="h1" size="anchor" spacing="loose">
+              <SectionTitle as="h2" size="anchor" spacing="loose">
                 Portugal is the stage. <SectionTitle.Em>You write the story.</SectionTitle.Em>
               </SectionTitle>
             </div>
