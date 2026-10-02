@@ -864,7 +864,7 @@ Deno.serve(async (req) => {
         // Marketing attribution: which Journal guide (and which acquisition
         // source) produced this booking. Short, non-personal values only.
         ...((): Record<string, string> => {
-          const raw = (body as Record<string, unknown>).attribution;
+          const raw = (body as unknown as Record<string, unknown>).attribution;
           if (!raw || typeof raw !== "object") return {};
           const allowed = [
             "guide_slug",
