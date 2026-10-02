@@ -16,7 +16,6 @@ import * as React from "react";
 import { useCurrency } from "@/lib/currency";
 import { useT } from "@/i18n/locale-context";
 import { cn } from "@/lib/utils";
-import { trackEvent } from "@/lib/analytics-events";
 
 interface Props {
   variant?: "header" | "footer";
@@ -62,8 +61,10 @@ export function CurrencyToggle({ variant = "header", surface = "light", classNam
               onClick={() => {
                 if (c === currency) return;
                 setCurrency(c);
-                trackEvent("currency_changed", { from: currency, to: c });
-                trackEvent("currency_switch", { from: currency, to: c });
+                void import("@/lib/analytics-events").then(({ trackEvent }) => {
+                  trackEvent("currency_changed", { from: currency, to: c });
+                  trackEvent("currency_switch", { from: currency, to: c });
+                });
                 announce(t("currency.announce_change", { currency: fullName }));
               }}
               aria-pressed={active}
