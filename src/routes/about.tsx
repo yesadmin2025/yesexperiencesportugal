@@ -105,8 +105,7 @@ function AboutPage() {
               <p className="font-medium text-[color:var(--charcoal)]">Travel should feel personal.</p>
               <p>Not like following somebody else's itinerary. Not like ticking places off a list. And certainly not like having to adapt yourself to a tour that was designed for everyone.</p>
               <p className="font-medium text-[color:var(--charcoal)]">We believe the experience should adapt to you.</p>
-              <p>But that idea didn't begin in a meeting room or with a business plan.</p>
-              <p>It began much earlier.</p>
+              <p>But that idea didn't begin in a meeting room or with a business plan. It began much earlier.</p>
             </div>
           </div>
         </div>
