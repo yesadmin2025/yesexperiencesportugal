@@ -13,6 +13,7 @@ import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 import type { Json } from "@/integrations/supabase/types";
 import { canonicalize, canonicalizeAll, type ActiveAssignment, type RawBooking } from "@/lib/ops/booking-read-model";
 import { buildBookingBriefSections, briefSectionsToText, type BriefBookingRow } from "@/lib/ops/booking-brief";
+import { normalizeSnapshotItinerary } from "@/lib/booking-snapshot-contract";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 async function assertAdmin(context: { supabase: any; userId: string }) {
@@ -160,7 +161,7 @@ export const listOpsBookings = createServerFn({ method: "POST" })
     }
     // Guide truth = active tour_assignments (never the mirror column).
     const assignments = await loadActiveAssignments(supabaseAdmin, list.map((r) => r.id));
-    let rows = canonicalizeAll(list, assignments);
+    let rows = canonicalizeAll(list, assignments).map((r) => ({ ...r, ...listRowExtras(r.booking_details) }));
     if (data.guide && data.guide !== "all") {
       rows = rows.filter((r) => (data.guide === "unassigned" ? r.guide_id === null : r.guide_id === data.guide));
     }
