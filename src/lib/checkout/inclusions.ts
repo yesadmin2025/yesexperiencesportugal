@@ -79,15 +79,26 @@ export function applyTailorInclusionAdjustments(
     included = included.filter((s) => !/\blunch\b/i.test(s));
     if (removed.length > 0 && !notIncluded.some((s) => /\blunch\b/i.test(s))) notIncluded.unshift("Lunch (removed from this day)");
   }
-  if (typeof adj.wineryCount === "number" && adj.wineryCount > 0) {
-    const label = `${adj.wineryCount} winery visit${adj.wineryCount === 1 ? "" : "s"}`;
-    let replaced = false;
-    included = included.flatMap((s) => {
-      if (!/winer(y|ies)/i.test(s)) return [s];
-      if (replaced) return [];
-      replaced = true;
-      return [label];
-    });
+  if (typeof adj.wineryCount === "number") {
+    const wineryLines = included.filter((s) => /winer(y|ies)/i.test(s));
+    if (adj.wineryCount <= 0) {
+      included = included.filter((s) => !/winer(y|ies)/i.test(s));
+      if (
+        wineryLines.length > 0 &&
+        !notIncluded.some((s) => /winer(y|ies)/i.test(s))
+      ) {
+        notIncluded.unshift("Winery visit (removed from this day)");
+      }
+    } else {
+      const label = `${adj.wineryCount} winery visit${adj.wineryCount === 1 ? "" : "s"}`;
+      let replaced = false;
+      included = included.flatMap((s) => {
+        if (!/winer(y|ies)/i.test(s)) return [s];
+        if (replaced) return [];
+        replaced = true;
+        return [label];
+      });
+    }
   }
   return { included, notIncluded };
 }
