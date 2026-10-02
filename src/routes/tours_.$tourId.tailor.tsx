@@ -442,8 +442,22 @@ function TailorPage() {
       }
       const proj = projectFeasibility(skippedCore, next, optionalSelected);
       if (proj && !proj.feasible) {
-        toast.error(proj.warnings[0] ?? "Adding that stop overloads the day.");
-        return;
+        // Owner-approved winery ladders (e.g. Arrábida 2→3 at +€20 pp) may
+        // exceed the generic 6-stop comfort cap by one. Allow the add when
+        // the stop count is the ONLY blocker and the ladder itself permits
+        // it (below `requiresRemovalFrom`, where a removal is demanded).
+        const w = rules.wineries;
+        const onlyStopCap =
+          proj.warnings.length > 0 && proj.warnings.every((m) => m.includes("top out at"));
+        const ladderAllows =
+          option0?.category === "winery" &&
+          w &&
+          next.size <= w.max &&
+          next.size < (w.requiresRemovalFrom ?? Number.POSITIVE_INFINITY);
+        if (!(onlyStopCap && ladderAllows)) {
+          toast.error(proj.warnings[0] ?? "Adding that stop overloads the day.");
+          return;
+        }
       }
       // Consequence preview — surface the estimated time cost so the
       // traveller sees WHY the day just changed. Winery estates are
