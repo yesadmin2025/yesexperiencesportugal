@@ -63,12 +63,13 @@ describe("Premium System Lock", () => {
     expect(studioShell).not.toContain("studioV3Breathe");
   });
 
-  it("uses fixed-position ink reveals for selected storytelling phrases", () => {
+  it("keeps About on the approved stable editorial heading system", () => {
     const splitLines = read("src/components/motion/SplitLines.tsx");
     const about = read("src/routes/about.tsx");
 
     expect(splitLines).toContain("ReactNode[]");
-    expect(about).toContain("<SplitLines");
+    expect(about).toContain("<SectionTitle");
+    expect(about).not.toContain("<SplitLines");
     expect(about).not.toContain("<ParallaxLayer");
     expect(css).toContain("clip-path: inset(0 100% 0 0)");
     expect(css).not.toMatch(/\.motion-split-line\s*\{[^}]*translateY/s);
