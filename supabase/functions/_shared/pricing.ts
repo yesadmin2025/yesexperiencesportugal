@@ -129,8 +129,8 @@ export const TAILOR_EXTRA_WINERY_SUPPLEMENT_BY_TOUR: Readonly<Record<string, num
 export const TAILOR_WINERY_ENTITLEMENT: Readonly<
   Record<string, { included: number; max: number; requiresRemovalFrom?: number }>
 > = {
-  "arrabida-wine-allinclusive": { included: 2, max: 4 },
-  "evora-alentejo": { included: 2, max: 3 },
+  "arrabida-wine-allinclusive": { included: 2, max: 4, requiresRemovalFrom: 4 },
+  "evora-alentejo": { included: 2, max: 3, requiresRemovalFrom: 3 },
 };
 
 /**
@@ -142,6 +142,7 @@ export const TAILOR_WINERY_ENTITLEMENT: Readonly<
  */
 export const TAILOR_TRADEABLE_STOP_IDS: Readonly<Record<string, readonly string[]>> = {
   "arrabida-wine-allinclusive": ["livramento", "arrabida-park", "azeitao-tiles", "lunch-azeitao"],
+  "evora-alentejo": ["evora-old-town", "templo-romano", "chapel-of-bones", "evora-lunch"],
 };
 
 /**
@@ -166,8 +167,8 @@ export function serverWineryTradeOffCount(
 
 /**
  * FAIL-CLOSED entitlement gate for extra wineries. Counts are clamped to the
- * approved ceiling; structural trade-off ids are accepted for compatibility
- * but never used to remove or require an included moment.
+ * approved ceiling. If the approved ladder requires freeing room from a given
+ * winery count onward, stable traded stop ids must prove that space was made.
  */
 export function serverExtraWineriesAllowed(
   tourId: string,
@@ -179,7 +180,12 @@ export function serverExtraWineriesAllowed(
   if (extra === 0) return 0;
   const entitlement = TAILOR_WINERY_ENTITLEMENT[tourId];
   if (!entitlement) return extra;
-  void tradedStopIds;
+  const totalWineries = entitlement.included + extra;
+  const threshold = entitlement.requiresRemovalFrom;
+  if (threshold && totalWineries >= threshold) {
+    const requiredTrades = totalWineries - threshold + 1;
+    if (serverWineryTradeOffCount(tourId, tradedStopIds) < requiredTrades) return null;
+  }
   return extra;
 }
 
