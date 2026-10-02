@@ -25,12 +25,19 @@ export async function fetchTailorPriceMap(tourId?: string): Promise<TailorPriceM
       } & Promise<{ data: unknown[] | null; error: Error | null }>;
     };
   };
-  const cols =
+  const publicRuleCols =
+    "tour_id, action_id, action_kind, direction, label, default_in_day, adjustment_type, adjustment_value, unit, policy_group, active, min_party, max_party";
+  const adminRuleCols =
     "id, tour_id, action_id, action_kind, direction, label, default_in_day, adjustment_type, adjustment_value, unit, policy_group, active, min_party, max_party, note, updated_at";
-  const rulesQuery = tourId ? db.from("tailor_price_rules").select(cols).eq("tour_id", tourId) : db.from("tailor_price_rules").select(cols);
+  const rulesQuery = tourId
+    ? db.from("tailor_price_rules").select(publicRuleCols).eq("tour_id", tourId)
+    : db.from("tailor_price_rules").select(adminRuleCols);
+  const policyCols = tourId
+    ? "policy_group, max_total_pct, floor_pct_of_base"
+    : "policy_group, max_total_pct, floor_pct_of_base, note";
   const [r, p] = await Promise.all([
     rulesQuery,
-    db.from("tailor_price_policies").select("policy_group, max_total_pct, floor_pct_of_base, note"),
+    db.from("tailor_price_policies").select(policyCols),
   ]);
   if (r.error) throw r.error;
   if (p.error) throw p.error;
