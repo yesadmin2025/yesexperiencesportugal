@@ -26,7 +26,8 @@ export function BookingListRow({ row, guides, reason }: { row: Row; guides: Book
       <div className="min-w-0 space-y-1 text-[13px] leading-relaxed">
         <p className="text-xs text-muted-foreground">{bookingDate(row.preferred_date)} · {row.start_time?.slice(0, 5) || "Time to confirm"}</p>
         <p className="font-[family-name:var(--font-editorial)] text-[18px] leading-snug text-foreground break-words">{row.tour_title ?? row.source_tour_id ?? "Tour to confirm"}</p>
-        <p className="break-words">{row.customer_name ?? row.customer_email ?? "Guest to confirm"} · {row.guests ?? "—"} guests</p>
+        <p className="break-words">{row.customer_name ?? row.customer_email ?? "Guest to confirm"} · {party}{paid ? ` · Paid: ${paid}` : ""}</p>
+        {row.stops && row.stops.length > 0 ? <p className="break-words text-muted-foreground">Stops: {row.stops.join(" → ")}</p> : null}
         <p className="break-words text-muted-foreground">Pickup: {row.pickup_location || "To confirm"} · {row.source_channel || "Source not recorded"}</p>
         <p className="break-words">Guide: {guide} · {confirmation}</p>
         <p className="break-words">Payment: {row.payment_label} · Details: {row.completeness_label}</p>
