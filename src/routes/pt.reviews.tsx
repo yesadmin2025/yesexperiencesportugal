@@ -143,8 +143,9 @@ function ReviewsPage() {
                   <article key={id}>
                     <header className="flex flex-wrap items-baseline justify-between gap-3 border-b border-[color:var(--gold-soft)]/40 pb-4">
                       <Link
-                        to="/tours/$tourId"
-                        params={{ tourId: id }}
+                        {...(id === "p23-artisan-pottery-cork"
+                          ? { to: "/pt/experiences" as const }
+                          : { to: "/tours/$tourId" as const, params: { tourId: id } })}
                         className="font-display font-semibold text-[1.4rem] md:text-[1.7rem] leading-[1.25] text-[color:var(--charcoal)] hover:text-[color:var(--teal)] transition-colors"
                       >
                         {b.title}
