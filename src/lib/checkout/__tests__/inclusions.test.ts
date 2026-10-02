@@ -18,7 +18,10 @@
  */
 
 import { describe, expect, it } from "vitest";
-import { resolveClientIncludedItems } from "@/lib/checkout/inclusions";
+import {
+  applyTailorInclusionAdjustments,
+  resolveClientIncludedItems,
+} from "@/lib/checkout/inclusions";
 import { signatureTours } from "@/data/signatureTours";
 import { getViatorMeta } from "@/data/signatureToursViator";
 
@@ -81,5 +84,48 @@ describe("Checkout inclusions — client resolution contract", () => {
     const forOne = resolveClientIncludedItems(meta ?? null, tour);
     const forEight = resolveClientIncludedItems(meta ?? null, tour);
     expect(forOne).toEqual(forEight);
+  });
+});
+
+
+describe("Tailor inclusion truth", () => {
+  it("removes winery inclusions when the tailored day has zero winery visits", () => {
+    const out = applyTailorInclusionAdjustments(
+      {
+        included: ["Private guide", "2 wineries with tastings", "Hotel pickup"],
+        notIncluded: [],
+      },
+      { wineryCount: 0 },
+    );
+
+    expect(out.included).toEqual(["Private guide", "Hotel pickup"]);
+    expect(out.notIncluded).toContain("Winery visit (removed from this day)");
+  });
+
+  it("relabels winery inclusions to the exact tailored count", () => {
+    const out = applyTailorInclusionAdjustments(
+      {
+        included: ["Private guide", "Wine at two wineries", "Second winery tasting"],
+        notIncluded: [],
+      },
+      { wineryCount: 1 },
+    );
+
+    expect(out.included.filter((item) => /winer(y|ies)/i.test(item))).toEqual([
+      "1 winery visit",
+    ]);
+  });
+
+  it("removes lunch from Included when the tailored composition removes it", () => {
+    const out = applyTailorInclusionAdjustments(
+      {
+        included: ["Private guide", "Traditional lunch", "Admissions"],
+        notIncluded: [],
+      },
+      { lunchRemoved: true },
+    );
+
+    expect(out.included).toEqual(["Private guide", "Admissions"]);
+    expect(out.notIncluded).toContain("Lunch (removed from this day)");
   });
 });
