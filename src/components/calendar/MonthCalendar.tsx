@@ -82,7 +82,7 @@ export function MonthCalendar({
             >
               <span>{date.day}</span>
               {typeof date.count === "number" && date.count > 0 ? (
-                <span className="absolute bottom-0.5 right-1 text-[10px] font-semibold leading-none">{date.count}</span>
+                <span className="absolute bottom-0.5 right-1 text-[11px] font-semibold leading-none">{date.count}</span>
               ) : null}
               {date.iso === today ? <span className="absolute bottom-1 left-1 h-1 w-1 rounded-full bg-current" aria-hidden /> : null}
             </Button>
