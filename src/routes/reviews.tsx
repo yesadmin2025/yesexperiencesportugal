@@ -199,7 +199,8 @@ function ReviewsPage() {
                             ★ ·{" "}
                           </>
                         )}
-                        <span className="tabular-nums">{b.stats.total_reviews}</span> reviews
+                        <span className="tabular-nums">{b.stats.total_reviews}</span>{" "}
+                        {b.stats.total_reviews === 1 ? "review" : "reviews"}
                       </div>
                     </header>
 
