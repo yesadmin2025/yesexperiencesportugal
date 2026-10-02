@@ -135,8 +135,8 @@ function AboutPage() {
               src={`${founderAsset.url}?w=900&q=78`}
               srcSet={founderSrcSet}
               alt="Nídia Almeida hosting a private wine experience with YES Experiences Portugal guests."
-              loading="eager"
-              fetchPriority="high"
+              loading="lazy"
+              fetchPriority="low"
               decoding="async"
               sizes="(min-width: 1024px) 38vw, 100vw"
               className="aspect-[4/5] w-full object-cover"
