@@ -169,7 +169,7 @@ function Page() {
           </div>
           <p className="page-header-support scene-body mt-6 max-w-xl mx-auto text-[color:var(--charcoal-soft)]">
             Tell us a little about who you are and what you'd love to experience. A local replies
-            personally, usually within one working day.
+            personally within 24 hours.
           </p>
         </Scene>
       </section>

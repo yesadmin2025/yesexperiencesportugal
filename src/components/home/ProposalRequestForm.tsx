@@ -96,7 +96,7 @@ export function ProposalRequestForm({ id = "proposal-request" }: { id?: string }
         </h3>
         <p className="mt-3 text-[15px] leading-[1.75] text-[color:var(--charcoal-soft)]">
           A confirmation is on its way to your inbox, and a local designer replies personally —
-          within one working day. If it is time-sensitive, call us on {PHONE_DISPLAY}.
+          within 24 hours. If it is time-sensitive, call us on {PHONE_DISPLAY}.
         </p>
       </div>
     );
@@ -222,7 +222,7 @@ export function ProposalRequestForm({ id = "proposal-request" }: { id?: string }
         Send my request
       </CtaButton>
       <p className="mt-4 font-sans text-[11.5px] leading-[1.6] uppercase tracking-[0.16em] text-[color:var(--charcoal-soft)]">
-        One local team · reply within a working day · no obligation
+        One local team · reply within 24 hours · no obligation
       </p>
     </form>
   );
