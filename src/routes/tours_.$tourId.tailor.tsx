@@ -107,6 +107,12 @@ import { guideAttributionMetadata } from "@/lib/guide-attribution";
  * local guide stay locked. Live summary updates as the user adjusts.
  * ════════════════════════════════════════════════════════════ */
 
+/** Tailor freedom: a transfer lock (e.g. the Sado ferry) only informs route
+ *  timing; guests may still remove it. Other locks stay fixed. */
+function tailorLocked(s: { lock?: { reasonCode: string } | null }): boolean {
+  return Boolean(s.lock) && s.lock?.reasonCode !== "mandatory_transfer";
+}
+
 export const Route = createFileRoute("/tours_/$tourId/tailor")({
   loader: ({ params }) => {
     const tour = findTour(params.tourId);
@@ -777,7 +783,7 @@ function TailorPage() {
   // as advice only. Never auto-removed; the traveler decides.
   const removableCoreLabels = useMemo(() => {
     if (!blueprint) return [] as string[];
-    return blueprint.core.filter((s) => !s.lock && !skippedCore.has(s.id)).map((s) => s.label);
+    return blueprint.core.filter((s) => !tailorLocked(s) && !skippedCore.has(s.id)).map((s) => s.label);
   }, [blueprint, skippedCore]);
 
   /* ── Presentation truth (no pricing or eligibility changes) ──
@@ -868,8 +874,8 @@ function TailorPage() {
       return {
         id: s.id,
         label: isWinery ? wineryLabel(wineryIndex) : s.label,
-        locked: Boolean(s.lock),
-        lockReason: s.lock?.customerFacingReason ?? null,
+        locked: tailorLocked(s),
+        lockReason: tailorLocked(s) ? (s.lock?.customerFacingReason ?? null) : null,
         removed: skippedCore.has(s.id),
         earnsReduction: principalEligible.has(s.id),
       };

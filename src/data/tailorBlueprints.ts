@@ -580,6 +580,13 @@ const troiaComporta: TailorBlueprint = {
       blurb: "Short ferry over the Sado estuary — dolphins are sometimes seen.",
       category: "drive-by",
       dwellMinutesOverride: 30,
+      // Kept for Studio route timing (internal transit). Tailor treats a
+      // mandatory_transfer lock as removable — the guest may skip Tróia.
+      lock: {
+        reasonCode: "mandatory_transfer",
+        customerFacingReason: "The ferry is how the day reaches the Tróia peninsula.",
+        source: "Viator PDP · Tróia & Comporta itinerary (Setúbal–Tróia ferry crossing)",
+      },
     },
     {
       id: "troia-ruins",
