@@ -90,11 +90,11 @@
 # Conversion surgery (Oct 2026, no publish)
 
 - [ ] Verify Studio, Travel Designer, Arrábida booking walkthroughs (stop before charge)
-- [ ] Check visibility of the group-size price note (keep €135)
-- [ ] Booking action easy to reach on the first phone screen (no stacked bars)
-- [ ] Reserve with no date → focus date + inline message
-- [ ] Tailor shown as a quieter secondary action
-- [ ] Children age info hidden until a child is added (check current state)
-- [ ] Mobile checkout drawer density
-- [ ] Plain-English pairing for "Signature" at booking points
-- [ ] Re-test at mobile + desktop
+- [x] Check visibility of the group-size price note (keep €135)
+- [x] Booking action easy to reach on the first phone screen (no stacked bars)
+- [x] Reserve with no date → focus date + inline message
+- [x] Tailor shown as a quieter secondary action
+- [x] Children age info hidden until a child is added (check current state)
+- [x] Mobile checkout drawer density
+- [x] Plain-English pairing for "Signature" at booking points
+- [x] Re-test at mobile + desktop
