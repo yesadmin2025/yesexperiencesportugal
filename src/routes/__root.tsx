@@ -27,7 +27,6 @@ import { pauseOffscreenLoops } from "@/lib/motion/pauseOffscreenLoops";
 import { Scene } from "@/components/motion/Scene";
 import { usePageViewTracking } from "@/lib/analytics-page-view";
 import { installAnalyticsAttrs } from "@/lib/analytics";
-import { setAnalyticsLocale } from "@/lib/analytics-events";
 import { captureAcquisitionFromLocation, captureUtmsFromLocation } from "@/lib/utm";
 import { captureGuideRefFromLocation } from "@/lib/guide-attribution";
 import { LocaleProvider } from "@/i18n/locale-context";
@@ -324,7 +323,9 @@ function RootComponent() {
   usePublicEditorialMotion(pathname);
   const { locale } = parseLocaleFromPath(pathname);
   useEffect(() => {
-    setAnalyticsLocale(locale);
+    void import("@/lib/analytics-events").then(({ setAnalyticsLocale }) => {
+      setAnalyticsLocale(locale);
+    });
     // Re-check UTMs on client-side navigation (SPA route changes).
     captureUtmsFromLocation();
     captureAcquisitionFromLocation();
