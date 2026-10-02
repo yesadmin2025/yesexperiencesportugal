@@ -1512,7 +1512,7 @@ function TailorPage() {
                                   ].join(" ")}
                                 >
                                   <span className="min-w-0 text-[13.5px] leading-snug text-[color:var(--charcoal)]">
-                                    {o.category === "winery" ? "Add a winery visit" : o.label}
+                                    {o.label}
                                   </span>
                                   <span className="shrink-0 text-[11px] uppercase tracking-[0.14em] text-[color:var(--charcoal-soft)]">
                                     {on ? "Chosen" : "Swap"}
@@ -1694,11 +1694,13 @@ function TailorPage() {
                         >
                           <span className="min-w-0">
                             <span className="block text-[13.5px] leading-snug text-[color:var(--charcoal)]">
-                              {o.label}
+                              {o.category === "winery" ? "Add a winery visit" : o.label}
                             </span>
-                            {o.blurb && (
+                            {(o.category === "winery" || o.blurb) && (
                               <span className="mt-0.5 block text-[12px] text-[color:var(--charcoal-soft)]">
-                                {o.blurb}
+                                {o.category === "winery"
+                                  ? "An additional winery visit, subject to the day fitting comfortably."
+                                  : o.blurb}
                               </span>
                             )}
                           </span>
