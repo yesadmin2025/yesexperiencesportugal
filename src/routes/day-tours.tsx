@@ -175,7 +175,7 @@ function DayToursPage() {
                           {meta.rating.toFixed(1)}
                         </span>
                         {" · "}
-                        {meta.reviewCount} reviews
+                        {meta.reviewCount} {meta.reviewCount === 1 ? "review" : "reviews"}
                         <span className="text-[color:var(--charcoal-soft)]">
                           {" "}
                           · Tripadvisor &amp; Viator
