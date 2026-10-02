@@ -90,13 +90,13 @@ const homepageJournalLinks: {
     imgFrom: 1,
   },
   {
-    slug: "portugal-coastal-drives-from-lisbon",
-    eyebrow: "Coast",
-    title: "Portugal coastal drives from Lisbon",
+    slug: "troia-comporta-guide",
+    eyebrow: "Comporta · Tróia",
+    title: "Comporta & Tróia: Portugal’s quieter coast",
     blurb:
-      "The Arrábida ridge road, Cabo da Roca to Cascais, Tróia to Comporta and the wild Vicentine Coast.",
-    imgTourId: "southwest-vicentine-coast",
-    imgFrom: 1,
+      "Rice fields, Roman Tróia, Carrasqueira’s working pier and wide Atlantic beaches — a slower coast south of Lisbon.",
+    imgTourId: "troia-comporta",
+    imgFrom: 2,
   },
   {
     slug: "portugal-heritage-sites-near-lisbon",
