@@ -73,6 +73,7 @@ export const Route = createFileRoute("/local-stories/")({
 
 function Page() {
   useMarketingMotion();
+  const featuredComporta = LOCAL_STORIES_ARTICLES.find((article) => article.slug === "troia-comporta-guide");
   const staticSlugs = LOCAL_STORIES_ARTICLES.map((article) => article.slug);
   // Only cluster closely related readings. A shared tour reference alone does
   // not mean two articles have the same editorial subject.
@@ -81,7 +82,7 @@ function Page() {
     "arrabida-day-trip-from-lisbon": "arrabida-wine-tour-from-lisbon",
   };
   const storyGroups = Array.from(
-    LOCAL_STORIES_ARTICLES.reduce((groups, article) => {
+    LOCAL_STORIES_ARTICLES.filter((article) => article.slug !== "troia-comporta-guide").reduce((groups, article) => {
       const key = relatedReading[article.slug] ?? article.slug;
       const group = groups.get(key) ?? [];
       group.push(article);
@@ -167,6 +168,34 @@ function Page() {
 
       <section className="py-16 md:py-24 bg-[color:var(--ivory)]">
         <div className="container-x">
+          {featuredComporta ? (
+            <article className="mb-16 rounded-[8px] border border-[color:var(--gold-soft)]/70 bg-[color:var(--sand)] p-7 md:mb-20 md:p-10">
+              <Eyebrow>Featured guide · Comporta & Tróia</Eyebrow>
+              <div className="mt-5 grid gap-7 md:grid-cols-[minmax(0,1.3fr)_auto] md:items-end">
+                <div>
+                  <h2 className="font-serif text-[30px] leading-[1.18] text-[color:var(--charcoal)] md:text-[38px]">
+                    {featuredComporta.h1}
+                  </h2>
+                  <p className="mt-4 max-w-2xl text-[16px] leading-[1.75] text-[color:var(--charcoal-soft)]">
+                    {featuredComporta.standfirst}
+                  </p>
+                </div>
+                <div className="flex flex-col gap-3 sm:flex-row md:flex-col">
+                  <CtaButton
+                    to="/local-stories/$slug"
+                    params={{ slug: featuredComporta.slug }}
+                    variant="primary"
+                  >
+                    Read the Comporta guide
+                  </CtaButton>
+                  <CtaButton to="/tours/$tourId" params={{ tourId: "troia-comporta" }} variant="ghost">
+                    See the private day
+                  </CtaButton>
+                </div>
+              </div>
+            </article>
+          ) : null}
+
           <div className="mb-10 max-w-2xl md:mb-14">
             <Eyebrow>Across Portugal</Eyebrow>
             <h2 className="mt-5 font-serif text-[29px] leading-[1.2] text-[color:var(--charcoal)] md:text-[36px]">Places worth knowing</h2>
