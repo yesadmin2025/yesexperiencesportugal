@@ -22,7 +22,6 @@ import {
 import { useLocale, useT } from "@/i18n/locale-context";
 import { isPtReady, resolveLocalePath } from "@/i18n/pt-ready";
 import { cn } from "@/lib/utils";
-import { trackEvent } from "@/lib/analytics-events";
 
 const LOCALE_STORAGE_KEY = "yes.locale.v1";
 
@@ -125,8 +124,10 @@ export function LanguageSwitcher({ variant = "header", className }: LanguageSwit
               onClick={() => {
                 persistLocale(loc);
                 if (loc !== active) {
-                  trackEvent("language_changed", { from: active, to: loc });
-                  trackEvent("language_switch", { from: active, to: loc });
+                  void import("@/lib/analytics-events").then(({ trackEvent }) => {
+                    trackEvent("language_changed", { from: active, to: loc });
+                    trackEvent("language_switch", { from: active, to: loc });
+                  });
                 }
               }}
               aria-current={isActive ? "page" : undefined}
