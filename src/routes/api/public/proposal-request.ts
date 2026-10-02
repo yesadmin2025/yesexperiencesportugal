@@ -1,5 +1,5 @@
 /**
- * Public proposals / celebrations / private-group request endpoint.
+ * Public proposals / celebrations / family-and-friends request endpoint.
  *
  * Anonymous (no JWT) — safe because it:
  *   1. Validates every field server-side with Zod
@@ -18,15 +18,13 @@ import { TEAM_NOTIFICATION_RECIPIENTS } from "@/lib/email/team-recipients";
 export const OCCASIONS = [
   "proposal",
   "celebration",
-  "corporate",
-  "private_group",
+  "family_friends",
 ] as const;
 
 const OCCASION_LABEL: Record<(typeof OCCASIONS)[number], string> = {
   proposal: "Marriage proposal",
   celebration: "Celebration (anniversary, birthday, honeymoon)",
-  corporate: "Corporate day or off-site",
-  private_group: "Private group",
+  family_friends: "Family or friends celebration",
 };
 
 const schema = z.object({
