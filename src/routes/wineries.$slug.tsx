@@ -38,7 +38,7 @@ export const Route = createFileRoute("/wineries/$slug")({
         jsonLdScript(
           breadcrumbLd([
             { name: "Home", path: "/" },
-            { name: "Wineries", path: "/wineries" },
+            { name: "Wineries", path: "/wineries/" },
             { name: w.name, path: `/wineries/${w.slug}` },
           ]),
         ),
@@ -96,7 +96,7 @@ function WineryPage() {
           </p>
           <div className="flex flex-wrap gap-3 pt-4">
             <CtaButton to="/tours/$tourId" params={{ tourId: w.tours[0].id }}>Reserve this day</CtaButton>
-            <CtaButton to="/wineries" variant="ghost">All wineries</CtaButton>
+            <CtaButton to="/wineries/" variant="ghost">All wineries</CtaButton>
           </div>
           {others.length > 0 && (
             <div className="pt-10">
