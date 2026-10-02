@@ -134,7 +134,7 @@ const CARDS: TripTypeCard[] = [
     preset: { who: "corporate" },
     concierge: {
       headline: "Corporate days are quoted by our team",
-      body: "Group logistics, invoicing, dietary, vehicles — confirmed in writing. We'll come back within a working day.",
+      body: "Group logistics, invoicing, dietary, vehicles — confirmed in writing. We reply within 24 hours.",
       waMessage: "Hi YES — I'd like a quote for a private corporate experience in Portugal.",
     },
   },

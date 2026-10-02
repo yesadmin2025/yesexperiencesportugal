@@ -453,7 +453,7 @@ function TradePage() {
           </SectionTitle>
           <p className="mt-5 max-w-[60ch] text-[15px] leading-[1.7] text-[color:var(--charcoal-soft)]">
             Share your agency profile, typical client and the kind of support you are looking for in
-            Portugal. A named local designer will reply within one business day.
+            Portugal. A named local designer will reply within 24 hours.
           </p>
           {sent ? (
             <div
