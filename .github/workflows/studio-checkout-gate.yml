@@ -37,4 +37,9 @@ jobs:
             src/components/studio-v3/__tests__/itinerary-edit-stability.test.ts \
             src/__tests__/signature-section-contract.test.ts \
             src/components/studio-v3/__tests__/reveal-section-order.test.ts \
-            src/lib/checkout/__tests__/inclusions.test.ts
+            src/lib/checkout/__tests__/inclusions.test.ts \
+            src/lib/tailor/__tests__/tailor-price-engine.test.ts \
+            src/lib/studio-v3/__tests__/winery-tradeoff-and-price-parity.test.ts \
+            src/__tests__/tailor-pass1b-correction.test.ts \
+            src/__tests__/tailor-rules.test.ts \
+            src/data/__tests__/exact-tier-parity.test.ts
