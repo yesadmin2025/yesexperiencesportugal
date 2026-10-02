@@ -5,9 +5,14 @@ import {
   type TailorPricePolicy,
   type TailorPriceRule,
 } from "../tailor-price-engine";
-import { allTailorOfferedActions, tailorOfferedActions } from "../tailor-price-catalog";
+import {
+  allTailorOfferedActions,
+  catalogStopRemovable,
+  tailorOfferedActions,
+} from "../tailor-price-catalog";
 import { tailorRowStatus } from "@/components/admin/TailorPriceMap";
 import { ageBand } from "@/data/signatureTourPricing";
+import { TAILOR_BLUEPRINTS } from "@/data/tailorBlueprints";
 import { readFileSync } from "node:fs";
 
 const rule = (
@@ -225,9 +230,21 @@ describe("Tailor catalog + admin completeness", () => {
       true,
     );
   });
-  it("current Tailor blueprints expose no customer-facing content locks", () => {
-    const blueprints = readFileSync("src/data/tailorBlueprints.ts", "utf8");
-    expect(blueprints).not.toMatch(/\n\s+lock\s*:\s*\{/);
+  it("current Tailor blueprints expose no effective customer-facing content locks", () => {
+    const stops = Object.values(TAILOR_BLUEPRINTS).flatMap((bp) => [
+      ...bp.core,
+      ...(bp.choice?.options ?? []),
+      ...bp.optional,
+    ]);
+    const effectivelyLocked = stops.filter((stop) => !catalogStopRemovable(stop));
+    expect(effectivelyLocked).toEqual([]);
+
+    // Sado's transfer marker is internal Studio timing truth, not a Tailor lock.
+    const ferry = TAILOR_BLUEPRINTS["troia-comporta"]?.core.find(
+      (stop) => stop.id === "sado-ferry",
+    );
+    expect(ferry?.lock?.reasonCode).toBe("mandatory_transfer");
+    expect(ferry && catalogStopRemovable(ferry)).toBe(true);
   });
 
   it("row status: empty = Missing price, 0 = priced, inactive is not missing", () => {
