@@ -1070,8 +1070,8 @@ function TailorPage() {
       beats: stopLabels,
       itinerary: stopLabels.map((label) => ({ label })),
       ...applyTailorInclusionAdjustments(resolveCheckoutInclusions(metaForSummary, tour), {
-        lunchRemoved: rules.allowRemoveLunch === true && lunchRemoved,
-        wineryCount: rules.wineries ? wineriesSelected : undefined,
+        lunchRemoved: lunchMomentRemoved,
+        wineryCount: hasWineryMoments ? wineriesSelected : undefined,
       }),
       flowLabel: "Tailored Signature",
     });
