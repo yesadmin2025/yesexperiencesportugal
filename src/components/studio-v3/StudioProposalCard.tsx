@@ -47,12 +47,12 @@ export function StudioProposalCard({
           <div>
             <dt className={labelCls} style={labelStyle}>Price</dt>
             <dd className="mt-1 text-[15px]" style={valueStyle}>
-              from {eur(proposal.perPaxEur)} per person
+              {eur(proposal.perPaxEur)} per adult
               <span
                 className="mt-0.5 block text-[11px]"
                 style={{ color: "color-mix(in oklab, var(--charcoal) 60%, transparent)" }}
               >
-                Price per person varies with group size.
+                Exact price for your party · full total and price details below.
               </span>
             </dd>
           </div>
