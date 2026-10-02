@@ -15,7 +15,7 @@ const PLACE_CONTEXT: Partial<Record<SignatureTour["id"], { story: string; source
   "evora-alentejo": {
     story: "Évora's UNESCO-listed center holds Roman remains alongside later streets, chapels and whitewashed houses. The cork stop and wineries bring that historic city into the working landscape of the Alentejo; lunch is at your own expense.",
     source: { label: "UNESCO: Historic Centre of Évora", url: "https://whc.unesco.org/en/list/361/" },
-    guide: { label: "Read the Évora guide", url: "/local-stories/evora-private-tour-from-lisbon" },
+    guide: { label: "Read the Évora guide", url: "/local-stories/alentejo-wine-tour-from-lisbon" },
   },
   "tomar-coimbra": {
     story: "Tomar's UNESCO-listed Convent of Christ preserves the transition from the Knights Templar to the Order of Christ. Coimbra carries the story into Portugal's university tradition; the Joanina Library visit depends on timed entry.",
