@@ -31,8 +31,11 @@ import imgFatimaNazareObidosHero from "@/assets/tours/fatima-nazare-obidos/hero.
 import imgEvoraAlentejo from "@/assets/tours/evora-alentejo.jpg";
 import imgTilesWorkshop from "@/assets/tours/tiles-workshop.jpg";
 import imgWildBeachesPicnic from "@/assets/tours/wild-beaches-picnic.jpg";
-import imgArtisanPotteryCorkAsset from "@/assets/tours/p23-artisan-pottery-cork/hero.jpg.asset.json";
-const imgArtisanPotteryCork = imgArtisanPotteryCorkAsset.url;
+// Keep the Lovable R2 asset URL as a plain string here. This catalog is also
+// imported directly by Node-based Playwright helpers, where ESM JSON imports
+// require import attributes that Vite normally supplies for the browser build.
+const imgArtisanPotteryCork =
+  "/__l5e/assets-v1/cd41c74c-76cf-4288-9d5f-047e2c46b41b/p23-artisan-pottery-cork-cover.jpg";
 
 // ── Per-stop / gallery photos for the 7 tours with full Viator galleries ──
 import imgArrabidaWineViewpoint from "@/assets/tours/arrabida-wine-allinclusive/viewpoint.jpg";
