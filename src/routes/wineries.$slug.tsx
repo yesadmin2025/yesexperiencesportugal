@@ -19,8 +19,10 @@ export const Route = createFileRoute("/wineries/$slug")({
     if (!loaderData) return { meta: [{ title: "Winery not found" }, { name: "robots", content: "noindex" }] };
     const w = loaderData.winery;
     const url = `${WEBSITE_URL}/wineries/${params.slug}`;
-    const title = `${w.name} · Private Wine Tour from Lisbon`;
-    const desc = `${w.summary} Visit ${w.name} on a private ${w.region} wine day from Lisbon with YES Experiences Portugal.`;
+    const shortName = w.name.replace(/\s*\(.*\)\s*$/, "");
+    const title = `${shortName} · Private Wine Tour from Lisbon`;
+    const fullDesc = `${w.summary} Visit on a private wine day from Lisbon with YES Experiences.`;
+    const desc = fullDesc.length <= 160 ? fullDesc : w.summary.slice(0, 157).replace(/\s+\S*$/, "") + "…";
     return {
       meta: [
         { title },
