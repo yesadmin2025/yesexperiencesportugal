@@ -47,15 +47,12 @@ import { getTailorBlueprint, type BlueprintStop } from "@/data/tailorBlueprints"
 import { DWELL_MINIMUM_MIN, evaluateDay, type FeasibilityStop } from "@/lib/feasibility";
 import { useTourPriceTiers } from "@/hooks/use-tour-price-tiers";
 import { resolvePerPaxEur, resolveJourneyPricing } from "@/data/signatureTourPricing";
-import { tailorAdjustedPerPax, tailorFinalPerPax } from "@/config/pricing";
 import {
   canSelectWineries,
   dedicatedLunchStopId,
-  lunchRemovalEur,
   principalEligibleStopIds,
   principalRemovalCount,
   tailorRules,
-  tailorSupplementsEur,
 } from "@/data/tailorRules";
 
 
@@ -651,25 +648,6 @@ function TailorPage() {
     return core + chosen;
   }, [blueprint, skippedCore, choiceSelected]);
 
-  const supplementsPerPax = useMemo(
-    () =>
-      tailorSupplementsEur(tour.id, {
-        lunchAdded,
-        wineriesSelected: rules.wineries ? wineriesSelected : undefined,
-      }),
-    [tour.id, lunchAdded, rules.wineries, wineriesSelected],
-  );
-
-  const reducedPerPax = useMemo(
-    () => tailorAdjustedPerPax(basePerPax, principalsRemoved),
-    [basePerPax, principalsRemoved],
-  );
-
-  /** Flat lunch-removal credit (Arrábida Wine only). Outside cap + floor. */
-  const lunchRemovalPerPax = useMemo(
-    () => lunchRemovalEur(tour.id, lunchRemoved),
-    [tour.id, lunchRemoved],
-  );
 
   /** Stable price-map actions for the current composition (sent to the
    *  server as selectors only — it recomputes every euro). */
@@ -708,15 +686,9 @@ function TailorPage() {
   }, [priceMap.data, basePerPax, composition.adults, composition.minorAges, tailorActions]);
   const tailorPriceReady = tailorPrice?.ok === true;
 
-  const estimatedPrice = useMemo(
-    () =>
-      tailorPrice && tailorPrice.ok
-        ? tailorPrice.adultUnitEur
-        : tailorFinalPerPax(basePerPax, principalsRemoved, supplementsPerPax, lunchRemovalPerPax),
-    [tailorPrice, basePerPax, principalsRemoved, supplementsPerPax, lunchRemovalPerPax],
-  );
-
-  const savingsEur = Math.max(0, basePerPax - reducedPerPax);
+  // Tailor price display has one authority: the Admin-backed price map.
+  // Before it loads, show only the published base anchor; checkout stays gated.
+  const estimatedPrice = tailorPrice && tailorPrice.ok ? tailorPrice.adultUnitEur : basePerPax;
 
   // The journey resolver prefers real Viator tier data over `priceFrom`,
   // so passing the Tailor-adjusted per-pax as an anchor alone would be
@@ -1069,7 +1041,9 @@ function TailorPage() {
       // fall back to full Viator tier pricing.
       tailorTierOverride,
     );
-    const totalForSummary = summaryJourney?.totalEur ?? Math.round(estimatedPrice * details.guests);
+    const totalForSummary = tailorPrice && tailorPrice.ok
+      ? tailorPrice.totalEur
+      : (summaryJourney?.totalEur ?? Math.round(estimatedPrice * details.guests));
     setCheckoutSummary({
       tourTitle: tailoredTitle,
       region: tour.region,
@@ -1100,12 +1074,12 @@ function TailorPage() {
         itemCategory: "Signature",
       });
       item.price = estimatedPrice;
-      gaBeginCheckout({ items: [item], valueEur: Math.round(estimatedPrice * details.guests), productLine: "signature" });
+      gaBeginCheckout({ items: [item], valueEur: totalForSummary, productLine: "signature" });
       trackEvent("checkout_started", {
         experience_id: tour.id,
         experience_type: "tailor",
         group_size: details.guests,
-        value: Math.round(estimatedPrice * details.guests),
+        value: totalForSummary,
         currency: "EUR",
       });
     } catch {
@@ -1178,7 +1152,7 @@ function TailorPage() {
         experience_id: tour.id,
         experience_type: "tailor",
         group_size: details.guests,
-        value: Math.round(estimatedPrice * details.guests),
+        value: totalForSummary,
         currency: "EUR",
       });
       // GA4 add_payment_info — payment surface ready.
@@ -1192,7 +1166,7 @@ function TailorPage() {
         gaAddPaymentInfo({
           paymentType: "stripe",
           items: [item],
-          valueEur: Math.round(estimatedPrice * details.guests),
+          valueEur: totalForSummary,
         });
       } catch {
         /* silent */
@@ -1934,7 +1908,7 @@ function TailorPage() {
             adults: composition.adults,
             minorAges: [...composition.minorAges],
             pricePerPaxEur: estimatedPrice,
-            totalEur: Math.round(estimatedPrice * guests),
+            totalEur: displayTotalEur,
             flowLabel: "Tailored Signature",
           }
         }
