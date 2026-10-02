@@ -248,11 +248,6 @@ const wildBeachesPicnic: TailorBlueprint = {
       blurb: "Galapinhos, Portinho or a quieter alternative — your guide reads the day.",
       category: "picnic",
       dwellMinutesOverride: 120,
-      lock: {
-        reasonCode: "product_defining",
-        customerFacingReason: "The cove picnic is the Signature itself.",
-        source: 'Viator PDP · product title "Arrábida, Sesimbra & Beach Picnic"',
-      },
     },
     {
       id: "sesimbra-village",
@@ -314,11 +309,6 @@ const arrabidaBoat: TailorBlueprint = {
         "Into the protected coves, including Lapa de Santa Margarida sea cave. Swim stop weather-permitting.",
       category: "boat",
       dwellMinutesOverride: 150,
-      lock: {
-        reasonCode: "product_defining",
-        customerFacingReason: "The coastal boat ride is the Signature itself.",
-        source: 'Viator PDP · product title "Private Tour with Coastal Boat Ride"',
-      },
     },
     {
       id: "sesimbra-village",
@@ -374,12 +364,6 @@ const tilesWorkshop: TailorBlueprint = {
       blurb: "Hands-on azulejo class at a 19th-century tile factory — take your tile home.",
       category: "workshop",
       dwellMinutesOverride: 90,
-      lock: {
-        reasonCode: "product_defining",
-        customerFacingReason:
-          "The tile-painting workshop is the heart of this tour — removing it would leave nothing to tailor.",
-        source: "Viator PDP · signature inclusion",
-      },
     },
     {
       id: "lunch-azeitao",
@@ -467,12 +451,6 @@ const azeitaoCheese: TailorBlueprint = {
       blurb: "Private workshop at a small family producer — see the Azeitão DOP cheese being made.",
       category: "workshop",
       dwellMinutesOverride: 75,
-      lock: {
-        reasonCode: "product_defining",
-        customerFacingReason:
-          "The cheese-making workshop is the heart of this tour — removing it would leave nothing to tailor.",
-        source: "Viator PDP · signature inclusion",
-      },
     },
     {
       id: "lunch-azeitao",
@@ -485,12 +463,6 @@ const azeitaoCheese: TailorBlueprint = {
       label: "Quinta de Catralvos winery",
       blurb: "Five-wine tasting at the family cellar door.",
       category: "winery",
-      lock: {
-        reasonCode: "product_defining",
-        customerFacingReason:
-          "This is the tour's only winery — removing it drops the 'wine' half of Cheese & Wine.",
-        source: "Viator PDP · signature inclusion",
-      },
     },
   ],
   optional: [
@@ -608,11 +580,6 @@ const troiaComporta: TailorBlueprint = {
       blurb: "Short ferry over the Sado estuary — dolphins are sometimes seen.",
       category: "drive-by",
       dwellMinutesOverride: 30,
-      lock: {
-        reasonCode: "mandatory_transfer",
-        customerFacingReason: "The ferry is how the day reaches the Tróia peninsula.",
-        source: "Viator PDP · Tróia & Comporta itinerary (Setúbal–Tróia ferry crossing)",
-      },
     },
     {
       id: "troia-ruins",
