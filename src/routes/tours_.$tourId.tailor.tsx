@@ -1274,7 +1274,7 @@ function TailorPage() {
       {/* ── 2 · EDITOR (Moments · Rhythm · Enhance) + YOUR VERSION ── */}
       <section className="py-8 md:py-12 reveal">
         <div className="container-x max-w-6xl">
-          <div className="grid min-w-0 items-start gap-8 lg:grid-cols-[minmax(0,1fr)_22rem] lg:gap-12">
+          <div className="grid min-w-0 grid-cols-1 items-start gap-8 lg:grid-cols-[minmax(0,1fr)_22rem] lg:gap-12">
             {/* ─── Editor column ─────────────────────────── */}
             <div className="min-w-0 space-y-10">
               {/* Booking context — compact, not a form wall */}
