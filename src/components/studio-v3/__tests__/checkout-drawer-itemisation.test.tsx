@@ -68,7 +68,9 @@ describe("BrandedCheckoutDrawer summary", () => {
         summary={summary}
       />,
     );
-    // Compact drawer (Pass 1B): per-band rows live inside the "Details" disclosure.
+    // Compact drawer: details are collapsed by default so payment stays visible.
+    expect(screen.queryByTestId("checkout-drawer-journey-lines")).not.toBeInTheDocument();
+    fireEvent.click(screen.getByTestId("checkout-drawer-details-toggle"));
     const lines = screen.getByTestId("checkout-drawer-journey-lines");
     expect(within(lines).getByText(/Adults/)).toBeInTheDocument();
     expect(within(lines).getByText(/Child \(age 8\)/)).toBeInTheDocument();

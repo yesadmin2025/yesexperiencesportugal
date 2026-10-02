@@ -55,7 +55,18 @@ export type TailorPriceResult =
       totalEur: number;
       lines: TailorLedgerLine[];
     }
-  | { ok: false; code: "unknown_action" | "duplicate_action" | "unpriced_action" | "inactive_action" | "party_out_of_range" | "invalid_sequence" | "invalid_base"; actionId?: string };
+  | {
+      ok: false;
+      code:
+        | "unknown_action"
+        | "duplicate_action"
+        | "unpriced_action"
+        | "inactive_action"
+        | "party_out_of_range"
+        | "invalid_sequence"
+        | "invalid_base";
+      actionId?: string;
+    };
 
 export const TAILOR_AGE_BAND_PCT: Record<TailorAgeBand, number> = {
   adult: 1,
@@ -120,7 +131,8 @@ export function computeTailorPrice(input: {
   const picked: TailorPriceRule[] = [];
   for (const a of selected) {
     const key = tailorRuleKey(a.actionId, a.direction);
-    if (seen.has(key) || seen.has(a.actionId)) return { ok: false, code: "duplicate_action", actionId: a.actionId };
+    if (seen.has(key) || seen.has(a.actionId))
+      return { ok: false, code: "duplicate_action", actionId: a.actionId };
     seen.add(key);
     seen.add(a.actionId);
     const rule = byKey.get(key);
@@ -129,14 +141,19 @@ export function computeTailorPrice(input: {
     if (rule.adjustment_value === null || !Number.isFinite(Number(rule.adjustment_value))) {
       return { ok: false, code: "unpriced_action", actionId: a.actionId };
     }
-    if (!tailorRuleBookable(rule, headcount)) return { ok: false, code: "party_out_of_range", actionId: a.actionId };
+    if (!tailorRuleBookable(rule, headcount))
+      return { ok: false, code: "party_out_of_range", actionId: a.actionId };
     picked.push(rule);
   }
 
   // Choice slots must be contiguous: removals peel off from the top of the
   // included count, additions stack from just above it, never both.
-  const choiceRemovals = picked.filter((r) => r.direction === "remove" && choiceIndex(r.action_id) !== null);
-  const choiceAdds = picked.filter((r) => r.direction === "add" && choiceIndex(r.action_id) !== null);
+  const choiceRemovals = picked.filter(
+    (r) => r.direction === "remove" && choiceIndex(r.action_id) !== null,
+  );
+  const choiceAdds = picked.filter(
+    (r) => r.direction === "add" && choiceIndex(r.action_id) !== null,
+  );
   if (choiceRemovals.length && choiceAdds.length) return { ok: false, code: "invalid_sequence" };
   const allRemoveSlots = rules
     .filter((r) => r.direction === "remove" && choiceIndex(r.action_id) !== null)
@@ -148,8 +165,10 @@ export function computeTailorPrice(input: {
     .sort((a, b) => a - b);
   const pickedRemove = new Set(choiceRemovals.map((r) => choiceIndex(r.action_id)!));
   const pickedAdd = new Set(choiceAdds.map((r) => choiceIndex(r.action_id)!));
-  for (let i = 0; i < pickedRemove.size; i++) if (!pickedRemove.has(allRemoveSlots[i])) return { ok: false, code: "invalid_sequence" };
-  for (let i = 0; i < pickedAdd.size; i++) if (!pickedAdd.has(allAddSlots[i])) return { ok: false, code: "invalid_sequence" };
+  for (let i = 0; i < pickedRemove.size; i++)
+    if (!pickedRemove.has(allRemoveSlots[i])) return { ok: false, code: "invalid_sequence" };
+  for (let i = 0; i < pickedAdd.size; i++)
+    if (!pickedAdd.has(allAddSlots[i])) return { ok: false, code: "invalid_sequence" };
 
   // Percent changes, grouped by policy (cap + floor are data, not code).
   const policyByGroup = new Map(policies.map((p) => [p.policy_group, p]));
@@ -168,7 +187,8 @@ export function computeTailorPrice(input: {
     if (pol) floorPct = Math.max(floorPct, Number(pol.floor_pct_of_base));
   }
   let reducedPerPax = Math.round(basePerPaxEur * (1 + pctTotal));
-  if (pctByGroup.size > 0) reducedPerPax = Math.max(reducedPerPax, Math.round(basePerPaxEur * floorPct));
+  if (pctByGroup.size > 0)
+    reducedPerPax = Math.max(reducedPerPax, Math.round(basePerPaxEur * floorPct));
   else reducedPerPax = basePerPaxEur;
 
   let perPersonFixed = 0;
@@ -198,26 +218,33 @@ export function computeTailorPrice(input: {
 
   // Ledger: only price-changing lines; rounding residue folds into the
   // largest line so the lines always sum to the exact total.
-  const weight = adults + minorAges.reduce((s, a) => s + TAILOR_AGE_BAND_PCT[input.ageBand(a) ?? "adult"], 0);
+  const weight =
+    adults + minorAges.reduce((s, a) => s + TAILOR_AGE_BAND_PCT[input.ageBand(a) ?? "adult"], 0);
   const lines: TailorLedgerLine[] = [];
   for (const r of picked) {
     let amount = 0;
     if (r.adjustment_type === "percent") {
       const g = r.policy_group ?? "__default__";
       const groupRaw = pctByGroup.get(g) ?? 0;
-      const share = groupRaw === 0 ? 0 : (signed(r) / 100) / groupRaw;
+      const share = groupRaw === 0 ? 0 : signed(r) / 100 / groupRaw;
       amount = Math.round((reducedPerPax - basePerPaxEur) * weight * share);
     } else if (r.unit === "per_person") amount = Math.round(signed(r) * weight);
     else if (r.unit === "per_vehicle") amount = Math.round(signed(r)) * vehicles;
     else amount = Math.round(signed(r));
     if (amount === 0) continue;
-    lines.push({ actionId: r.action_id, direction: r.direction, label: r.label ?? r.action_id, amountEur: amount });
+    lines.push({
+      actionId: r.action_id,
+      direction: r.direction,
+      label: r.label ?? r.action_id,
+      amountEur: amount,
+    });
   }
   const residue = totalEur - baseTotalEur - lines.reduce((s, l) => s + l.amountEur, 0);
   if (residue !== 0) {
     if (lines.length) {
       let idx = 0;
-      for (let i = 1; i < lines.length; i++) if (Math.abs(lines[i].amountEur) > Math.abs(lines[idx].amountEur)) idx = i;
+      for (let i = 1; i < lines.length; i++)
+        if (Math.abs(lines[i].amountEur) > Math.abs(lines[idx].amountEur)) idx = i;
       lines[idx] = { ...lines[idx], amountEur: lines[idx].amountEur + residue };
     } else baseTotalEur += residue;
   }

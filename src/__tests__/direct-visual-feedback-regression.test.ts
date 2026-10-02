@@ -22,13 +22,13 @@ describe("latest direct visual feedback", () => {
     }
   });
 
-  it("makes human contact the final About decision", () => {
+  it("keeps direct human contact prominent in the About close", () => {
     const about = read("src/routes/about.tsx");
-    expect(about.indexOf("<ServiceCrossLinks")).toBeLessThan(about.indexOf("{/* Final CTA */}"));
-    expect(about).toContain('<CtaButton to="/contact" variant="primary">');
+    expect(about).toContain("Talk to us directly");
     expect(about).toContain("Talk to a local");
-    expect(about).toContain("CTA_LABELS.signatureDiscovery");
-    expect(about.slice(about.indexOf("{/* Final CTA */}"))).not.toContain('to="/studio"');
+    expect(about).toContain('<CtaButton href={whatsappUrl()}');
+    expect(about).toContain('<Link to="/contact"');
+    expect(about).toContain('<Link to="/studio"');
   });
 
   it("uses the requested chapter rhythm and existing Scene sequence", () => {

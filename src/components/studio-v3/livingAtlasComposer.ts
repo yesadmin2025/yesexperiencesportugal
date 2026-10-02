@@ -848,13 +848,15 @@ export function composeLivingAtlasDay(
         ? "partial"
         : "complete";
 
-  // FINAL DOOR-TO-DOOR TRUTH. With no planning origin this is `not-evaluable`
-  // and the day is explicitly sent to curator review rather than presented as
-  // a certified bookable composition.
+  // FINAL DOOR-TO-DOOR TRUTH. With no planning origin this is `not-evaluable`.
+  // The final booking gate consumes this certification directly, so an
+  // unevaluable or over-budget day never becomes checkout-bookable.
   const doorToDoor = certifyDoorToDoor(doorToDoorInputFor(selected));
   const requiresCuratorReview =
     status === "impossible" ||
-    selected.length === 0;
+    selected.length === 0 ||
+    !doorToDoor.evaluable ||
+    !doorToDoor.fitsHardMax;
 
   const moments = [...selected]
     .sort((a, b) => a.poolIndex - b.poolIndex)

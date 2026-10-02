@@ -6,6 +6,7 @@ import { db, errMsg, fetchMyTours, type GuideTour } from "@/components/guide/gui
 import { GuestActions, TourEssentials, tourBadge } from "@/components/guide/TourCard";
 import { GuideTourNotes } from "@/components/guide/GuideTourNotes";
 import { findTour } from "@/data/signatureTours";
+import { getTourContent } from "@/lib/tourContent";
 
 export const Route = createFileRoute("/guide/tours/$assignmentId")({
   head: () => ({ meta: [{ title: "Tour details · YES Guide" }] }),
@@ -67,16 +68,32 @@ function TourDetails() {
     }
   };
 
-  const bookingItinerary = Array.isArray(tour.itinerary) ? tour.itinerary : [];
-  const bookingIncluded = Array.isArray(tour.included_items) ? tour.included_items.filter((x) => typeof x === "string" && x.trim()) : [];
-  // Last-resort fallback: the public Signature catalogue (labels, stories, inclusions only — never prices).
-  // Only when the booking IS that Signature tour (same title or no title of its own) — a custom day never borrows it.
-  const found = tour.source_tour_id ? findTour(tour.source_tour_id) : undefined;
-  const catalogue = found && (!tour.tour_title || tour.tour_title.trim().toLowerCase() === found.title.trim().toLowerCase() || tour.tour_title === tour.source_tour_id) ? found : undefined;
+  // This is a booking/assignment record, not a SignatureTour content object.
+  const booking = tour;
+  const bookingItinerary = Array.isArray(booking.itinerary) ? booking.itinerary : [];
+  const bookingIncluded = Array.isArray(booking.included_items)
+    ? booking.included_items.filter((x) => typeof x === "string" && x.trim())
+    : [];
+  // Last-resort fallback: canonical public Signature content only, never prices.
+  // A custom day never borrows the public Signature fallback.
+  const found = booking.source_tour_id ? findTour(booking.source_tour_id) : undefined;
+  const catalogue =
+    found &&
+    (!booking.tour_title ||
+      booking.tour_title.trim().toLowerCase() === found.title.trim().toLowerCase() ||
+      booking.tour_title === booking.source_tour_id)
+      ? found
+      : undefined;
+  const catalogueContent = catalogue ? getTourContent(catalogue.id) : null;
   const itinerary = bookingItinerary.length
     ? bookingItinerary
-    : (catalogue?.stops ?? []).map((s, i) => ({ order: i + 1, label: s.label, note: s.story || null, durationMinutes: null }));
-  const included = bookingIncluded.length ? bookingIncluded : [...(catalogue?.included ?? [])];
+    : (catalogueContent?.itinerary ?? []).map((chapter) => ({
+        order: chapter.order,
+        label: chapter.label,
+        note: chapter.description || null,
+        durationMinutes: chapter.durationMinutes,
+      }));
+  const included = bookingIncluded.length ? bookingIncluded : [...(catalogueContent?.included ?? [])];
 
   return (
     <div className="space-y-6">

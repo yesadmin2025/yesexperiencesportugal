@@ -1,8 +1,8 @@
 /**
  * P0-1 / P0-2 — winery capacity and one composed-supplement authority.
  *
- * P0-1: the server sells up to four wineries without forcing removal of an
- * included Signature moment. Counts are still clamped server-side.
+ * P0-1: the server sells the approved winery ladder and enforces its
+ * structural trade-off threshold server-side.
  *
  * P0-2: the composed supplement is counted from STRUCTURAL identity, never
  * from the generic public labels, and one value feeds Your Day, the Guest
@@ -55,13 +55,13 @@ describe("P0-1 server-enforced winery capacity", () => {
     expect(serverExtraWineriesAllowed(TOUR, 1, undefined)).toBe(1);
   });
 
-  it("allows the 4th winery without forcing removal of included moments", () => {
-    expect(serverExtraWineriesAllowed(TOUR, 2, undefined)).toBe(2);
-    expect(serverExtraWineriesAllowed(TOUR, 2, [])).toBe(2);
+  it("refuses the 4th winery until one tradeable moment is removed", () => {
+    expect(serverExtraWineriesAllowed(TOUR, 2, undefined)).toBeNull();
+    expect(serverExtraWineriesAllowed(TOUR, 2, [])).toBeNull();
   });
 
-  it("ignores irrelevant trade ids while retaining structural counting", () => {
-    expect(serverExtraWineriesAllowed(TOUR, 2, ["made-up-stop"])).toBe(2);
+  it("ignores irrelevant trade ids and fails closed", () => {
+    expect(serverExtraWineriesAllowed(TOUR, 2, ["made-up-stop"])).toBeNull();
     expect(serverWineryTradeOffCount(TOUR, ["livramento", "livramento"])).toBe(1);
     expect(serverWineryTradeOffCount(TOUR, ["nope", "also-nope"])).toBe(0);
   });
@@ -95,7 +95,11 @@ describe("P0-2 structural commercial identity", () => {
   });
 
   it("charges nothing inside the included baseline", () => {
-    const day = [...CORE, winery("jmf", "A local winery"), winery("bacalhoa", "A second local winery")];
+    const day = [
+      ...CORE,
+      winery("jmf", "A local winery"),
+      winery("bacalhoa", "A second local winery"),
+    ];
     expect(studioComposedSupplementFromMoments(TOUR, day)).toBe(0);
     expect(studioTradedBlueprintStopIds(TOUR, day)).toEqual([]);
   });
@@ -126,7 +130,11 @@ describe("P0-2 local totals equal server arithmetic (2 adults)", () => {
   };
 
   it("baseline / 2 wineries", () => {
-    const day = [...CORE, winery("jmf", "A local winery"), winery("bacalhoa", "A second local winery")];
+    const day = [
+      ...CORE,
+      winery("jmf", "A local winery"),
+      winery("bacalhoa", "A second local winery"),
+    ];
     const supplement = studioComposedSupplementFromMoments(TOUR, day);
     const priced = resolveStudioStrictJourneyPricing(TOUR, party, TIERS, supplement);
     expect(priced?.totalEur).toBe(serverTotal(0));
@@ -161,7 +169,6 @@ describe("P0-2 local totals equal server arithmetic (2 adults)", () => {
     expect(priced?.totalEur).toBe(serverTotal(extra));
   });
 });
-
 
 describe("P0-1/P0-2 the client never prices this action", () => {
   const CHECKOUT_FN = readFileSync("supabase/functions/create-signature-checkout/index.ts", "utf8");

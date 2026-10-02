@@ -134,11 +134,11 @@ describe("D · Évora from Lisbon — corridor containment", () => {
     }
   });
 
-  it("is either inside 540 minutes or explicitly sent to curator review", () => {
+  it("is either inside 540 minutes or blocked by the door-to-door checkout authority", () => {
     if (result.doorToDoor.evaluable && result.doorToDoor.fitsHardMax) {
       expect(result.doorToDoor.overflowMinutes).toBe(0);
     } else {
-      expect(result.requiresCuratorReview).toBe(true);
+      expect(doorToDoorAllowsCheckout(result.doorToDoor)).toBe(false);
     }
   });
 });

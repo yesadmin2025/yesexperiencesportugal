@@ -8,14 +8,17 @@ import { tailorRules } from "@/data/tailorRules";
 import { TAILOR_BLUEPRINTS } from "@/data/tailorBlueprints";
 
 /** A tour that has an approved solo (tier 1) price in code metadata. */
-const withTier1 = signatureTours.find((t: { id: string }) => VIATOR_META[t.id]?.priceTiersEUR?.[1] != null)!;
+const withTier1 = signatureTours.find(
+  (t: { id: string }) => VIATOR_META[t.id]?.priceTiersEUR?.[1] != null,
+)!;
 /** A tour that has NO approved solo price. */
 const withoutTier1 = signatureTours.find(
-  (t: { id: string }) => VIATOR_META[t.id]?.priceTiersEUR != null && VIATOR_META[t.id]?.priceTiersEUR?.[1] == null,
+  (t: { id: string }) =>
+    VIATOR_META[t.id]?.priceTiersEUR != null && VIATOR_META[t.id]?.priceTiersEUR?.[1] == null,
 )!;
 
 describe("exact-tier parity — client resolver", () => {
-  it('resolves a generic anchor (never null) when guest count is unknown', () => {
+  it("resolves a generic anchor (never null) when guest count is unknown", () => {
     const r = resolvePerPaxEur(withoutTier1, null);
     expect(r).not.toBeNull();
     expect(r!.tier).toBe(8);
@@ -100,7 +103,4 @@ describe("winery quantity stays inside the authorized ladder", () => {
     // Winery options are never rendered by their operational estate label.
     expect(s).toMatch(/\.filter\(\(o\) => o\.category !== "winery"\)/);
   });
-
-
-});
 });

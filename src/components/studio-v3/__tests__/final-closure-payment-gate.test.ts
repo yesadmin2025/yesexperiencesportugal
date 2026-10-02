@@ -118,16 +118,12 @@ describe("time truth at the payment seam", () => {
 });
 
 describe("protected generated file", () => {
-  it("brand-audit.json matches the pre-closure protected baseline", () => {
-    const pristine = execFileSync(
+  it("brand-audit.json matches the protected content hash", () => {
+    const blobSha = execFileSync(
       "git",
-      ["show", "681b1159b4883a5a9be6899c9a1a17f25ca7269f:src/generated/brand-audit.json"],
-      { encoding: "utf8", maxBuffer: 64 * 1024 * 1024 },
-    );
-    const onDisk = readFileSync(
-      resolve(process.cwd(), "src/generated/brand-audit.json"),
-      "utf8",
-    );
-    expect(onDisk).toBe(pristine);
+      ["hash-object", "src/generated/brand-audit.json"],
+      { encoding: "utf8" },
+    ).trim();
+    expect(blobSha).toBe("f4fd73f4dadc7b1cd300e3df220fc1eaf6597562");
   });
 });

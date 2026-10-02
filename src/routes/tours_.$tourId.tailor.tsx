@@ -1,16 +1,7 @@
 import { trackEvent } from "@/lib/analytics-events";
 import { createFileRoute, Link, notFound, redirect, useNavigate } from "@tanstack/react-router";
 import { lazy, Suspense, useMemo, useRef, useState } from "react";
-import {
-  ArrowLeft,
-  Check,
-  Clock,
-  MapPin,
-  Sparkles,
-  MessageCircle,
-  Lock,
-  Info,
-} from "lucide-react";
+import { ArrowLeft, Check, Clock, MapPin, Sparkles, MessageCircle, Lock, Info } from "lucide-react";
 import { SiteLayout } from "@/components/SiteLayout";
 import { SiteBreadcrumbs } from "@/components/SiteBreadcrumbs";
 import { useMarketingMotion } from "@/hooks/use-marketing-motion";
@@ -38,31 +29,27 @@ import {
   stopActionId,
 } from "@/lib/tailor/tailor-price-catalog";
 import type { GuestDetails } from "@/components/checkout/FinalDetailsDialog";
-import {
-  ChargeSummaryLine,
-  type ChargeQuote,
-} from "@/components/checkout/ChargeSummaryLine";
+import { ChargeSummaryLine, type ChargeQuote } from "@/components/checkout/ChargeSummaryLine";
 import type { CheckoutSummary } from "@/components/checkout/BrandedCheckoutDrawer";
 import { getTailorBlueprint, type BlueprintStop } from "@/data/tailorBlueprints";
 import { DWELL_MINIMUM_MIN, evaluateDay, type FeasibilityStop } from "@/lib/feasibility";
 import { useTourPriceTiers } from "@/hooks/use-tour-price-tiers";
 import { resolvePerPaxEur, resolveJourneyPricing } from "@/data/signatureTourPricing";
-import { tailorAdjustedPerPax, tailorFinalPerPax } from "@/config/pricing";
 import {
   canSelectWineries,
   dedicatedLunchStopId,
-  lunchRemovalEur,
   principalEligibleStopIds,
   principalRemovalCount,
   tailorRules,
-  tailorSupplementsEur,
 } from "@/data/tailorRules";
-
-
 
 import { jsonLdScript, breadcrumbLd, tourTailorProductLd } from "@/lib/jsonld";
 import { CANCELLATION } from "@/config/business-nap";
-import { resolveClientIncludedItems, resolveCheckoutInclusions, applyTailorInclusionAdjustments } from "@/lib/checkout/inclusions";
+import {
+  resolveClientIncludedItems,
+  resolveCheckoutInclusions,
+  applyTailorInclusionAdjustments,
+} from "@/lib/checkout/inclusions";
 import { PriceBreakdownRows } from "@/components/checkout/PriceBreakdownRows";
 import { hasCompleteJourneyPricing } from "@/lib/checkout/journeyDisplay";
 import { CompositionField } from "@/components/booking/CompositionField";
@@ -235,7 +222,9 @@ export const Route = createFileRoute("/tours_/$tourId/tailor")({
           <h1 className="serif text-3xl" data-mixed-emphasis="exempt">
             Something went sideways
           </h1>
-          <p className="mt-3 text-[color:var(--charcoal-soft)] text-sm">{(error as Error).message}</p>
+          <p className="mt-3 text-[color:var(--charcoal-soft)] text-sm">
+            {(error as Error).message}
+          </p>
         </div>
       </section>
     </SiteLayout>
@@ -286,7 +275,6 @@ function TailorPage() {
   const guests = totalGuests(composition);
   const compositionReady = isCompositionComplete(composition);
   const [language] = useState<"en" | "pt">("en");
-
 
   const [skipped, setSkipped] = useState<Set<string>>(new Set());
   const [added, setAdded] = useState<Set<string>>(new Set());
@@ -392,7 +380,6 @@ function TailorPage() {
     if (id === dedicatedLunchStopId(tour.id)) setLunchRemoved(isSkipping);
   };
 
-
   const tryToggleChoice = (id: string) => {
     const on = choiceSelected.has(id);
     const next = new Set(choiceSelected);
@@ -420,8 +407,8 @@ function TailorPage() {
       }
     } else {
       next.add(id);
-       // Canonical winery ladder: max 4. The complete proposed day is then
-       // checked by the shared feasibility engine; nothing is auto-removed.
+      // Canonical winery ladder: max 4. The complete proposed day is then
+      // checked by the shared feasibility engine; nothing is auto-removed.
       const option0 = blueprint?.choice?.options.find((o) => o.id === id);
       // Only Signatures with an owner-approved winery supplement ladder may
       // INCREASE the winery count. Everywhere else the traveler swaps at
@@ -473,7 +460,6 @@ function TailorPage() {
           toast.success(`Adding ${option.label} adds about ${added} min to your day.`);
         }
       }
-
     }
     setChoiceSelected(next);
   };
@@ -532,8 +518,6 @@ function TailorPage() {
    * FinalDetailsDialog ("Anything we should know?"). The editor keeps no
    * stale local copies — the FinalDetails payload is the single source.
    */
-
-
 
   // ─── Derived live summary values ────────────────────────────
   const keptStops = useMemo(
@@ -594,7 +578,6 @@ function TailorPage() {
   const tierUnavailable = baseResolution == null;
   const basePerPax = baseResolution?.eurPerPax ?? tour.priceFrom;
 
-
   const [lunchAdded, setLunchAdded] = useState(false);
   /**
    * Arrábida Wine only: the canonical product INCLUDES lunch, so the
@@ -617,8 +600,6 @@ function TailorPage() {
     setLunchRemoved((v) => !v);
   };
 
-
-
   /**
    * −5% ladder count. The dedicated included-lunch stop is EXCLUDED: its
    * removal is priced by the flat −€15 pp credit only, so the same lunch
@@ -631,7 +612,6 @@ function TailorPage() {
         : principalRemovalCount(tour.id, skipped),
     [blueprint, skippedCore, skipped, tour.id],
   );
-
 
   // ─── Authorized Tailor supplements (Canonical Bible v1.1) ───
   // Only two levers exist beyond stop removal: "add lunch" (+€35 pp, and
@@ -648,28 +628,28 @@ function TailorPage() {
     const chosen = (blueprint.choice?.options ?? []).filter(
       (o) => o.category === "winery" && choiceSelected.has(o.id),
     ).length;
-    return core + chosen;
-  }, [blueprint, skippedCore, choiceSelected]);
+    const optional = blueprint.optional.filter(
+      (o) => o.category === "winery" && optionalSelected.has(o.id),
+    ).length;
+    return core + chosen + optional;
+  }, [blueprint, skippedCore, choiceSelected, optionalSelected]);
 
-  const supplementsPerPax = useMemo(
-    () =>
-      tailorSupplementsEur(tour.id, {
-        lunchAdded,
-        wineriesSelected: rules.wineries ? wineriesSelected : undefined,
-      }),
-    [tour.id, lunchAdded, rules.wineries, wineriesSelected],
+  const hasWineryMoments = Boolean(
+    blueprint &&
+      [
+        ...blueprint.core,
+        ...(blueprint.choice?.options ?? []),
+        ...blueprint.optional,
+      ].some((s) => s.category === "winery"),
   );
 
-  const reducedPerPax = useMemo(
-    () => tailorAdjustedPerPax(basePerPax, principalsRemoved),
-    [basePerPax, principalsRemoved],
-  );
-
-  /** Flat lunch-removal credit (Arrábida Wine only). Outside cap + floor. */
-  const lunchRemovalPerPax = useMemo(
-    () => lunchRemovalEur(tour.id, lunchRemoved),
-    [tour.id, lunchRemoved],
-  );
+  const lunchMomentRemoved =
+    lunchRemoved ||
+    Boolean(
+      blueprint?.core.some(
+        (s) => s.category === "lunch" && skippedCore.has(s.id),
+      ),
+    );
 
   /** Stable price-map actions for the current composition (sent to the
    *  server as selectors only — it recomputes every euro). */
@@ -687,7 +667,8 @@ function TailorPage() {
     }
     if (lunchAdded) out.push({ actionId: LUNCH_ACTION_ID, direction: "add" });
     for (const o of blueprint.optional) {
-      if (optionalSelected.has(o.id)) out.push({ actionId: optionalActionId(o.id), direction: "add" });
+      if (optionalSelected.has(o.id))
+        out.push({ actionId: optionalActionId(o.id), direction: "add" });
     }
     return out;
   }, [blueprint, skippedCore, choiceSelected, lunchAdded, optionalSelected]);
@@ -708,15 +689,9 @@ function TailorPage() {
   }, [priceMap.data, basePerPax, composition.adults, composition.minorAges, tailorActions]);
   const tailorPriceReady = tailorPrice?.ok === true;
 
-  const estimatedPrice = useMemo(
-    () =>
-      tailorPrice && tailorPrice.ok
-        ? tailorPrice.adultUnitEur
-        : tailorFinalPerPax(basePerPax, principalsRemoved, supplementsPerPax, lunchRemovalPerPax),
-    [tailorPrice, basePerPax, principalsRemoved, supplementsPerPax, lunchRemovalPerPax],
-  );
-
-  const savingsEur = Math.max(0, basePerPax - reducedPerPax);
+  // Tailor price display has one authority: the Admin-backed price map.
+  // Before it loads, show only the published base anchor; checkout stays gated.
+  const estimatedPrice = tailorPrice && tailorPrice.ok ? tailorPrice.adultUnitEur : basePerPax;
 
   // The journey resolver prefers real Viator tier data over `priceFrom`,
   // so passing the Tailor-adjusted per-pax as an anchor alone would be
@@ -834,8 +809,6 @@ function TailorPage() {
     ? `Your tailored ${tour.region?.split(/[·,&]/)[0]?.trim() || "Portugal"} day`
     : `Tailored — ${tour.title.split("—")[0].trim()}`;
 
-
-
   // Blueprint contains a winery selection surface (choice or core).
   const hasWinerySurface = useMemo(() => {
     if (!blueprint) return false;
@@ -850,7 +823,9 @@ function TailorPage() {
   // as advice only. Never auto-removed; the traveler decides.
   const removableCoreLabels = useMemo(() => {
     if (!blueprint) return [] as string[];
-    return blueprint.core.filter((s) => !tailorLocked(s) && !skippedCore.has(s.id)).map((s) => s.label);
+    return blueprint.core
+      .filter((s) => !tailorLocked(s) && !skippedCore.has(s.id))
+      .map((s) => s.label);
   }, [blueprint, skippedCore]);
 
   /* ── Presentation truth (no pricing or eligibility changes) ──
@@ -873,15 +848,13 @@ function TailorPage() {
     [blueprint],
   );
   /**
-   * Optional additions we may sell. Winery-category optionals are
-   * suppressed unless an owner-approved commercial ladder exists — an
-   * extra winery visit is never given away for free.
+   * Optional additions are public only when the Admin price map makes them
+   * bookable. Winery suppliers remain operational data: the UI renders them
+   * generically even though the stable internal option id is preserved.
    */
   const publicOptional = useMemo(
     () =>
-      (blueprint?.optional ?? []).filter(
-        (o) => o.category !== "winery" && priceMap.bookable(optionalActionId(o.id), "add"),
-      ),
+      (blueprint?.optional ?? []).filter((o) => priceMap.bookable(optionalActionId(o.id), "add")),
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [blueprint, priceMap.byKey, guests],
   );
@@ -889,26 +862,36 @@ function TailorPage() {
   /** Owner-set € amount for a fixed rule (display only). */
   const ruleEur = (actionId: string, direction: "add" | "remove") => {
     const r = priceMap.byKey.get(`${actionId}::${direction}`);
-    return r && r.adjustment_type === "fixed_eur" && r.adjustment_value != null ? Number(r.adjustment_value) : null;
+    return r && r.adjustment_type === "fixed_eur" && r.adjustment_value != null
+      ? Number(r.adjustment_value)
+      : null;
   };
   const extraWineryEur = ruleEur(choiceSlotId((blueprint?.choice?.pickMin ?? 0) + 1), "add");
   const lunchAddEur = ruleEur(LUNCH_ACTION_ID, "add");
   const lunchStop = dedicatedLunchStopId(tour.id);
   const lunchRemoveEur = lunchStop ? ruleEur(stopActionId(lunchStop), "remove") : null;
 
-  const canAdjustWineryCount = Boolean(rules.wineries) && wineryOptions.length > 0;
-  /** Real bounds — the control is disabled, never a toast at the edges. */
-  const wineryMin = rules.wineries?.min ?? rules.wineries?.included ?? 0;
-  const wineryMax = rules.wineries?.max ?? 0;
+  const wineryChoicePool =
+    Boolean(blueprint?.choice) &&
+    wineryOptions.length > 0 &&
+    wineryOptions.length === (blueprint?.choice?.options.length ?? 0);
+  const canAdjustWineryCount = wineryChoicePool;
+  /** Real bounds — special ladders may extend the blueprint; otherwise a
+   * winery choice pool can still be reduced to zero and restored to baseline. */
+  const wineryIncluded = rules.wineries?.included ?? blueprint?.choice?.pickMin ?? 0;
+  const wineryMin = rules.wineries?.min ?? 0;
+  const wineryMax = rules.wineries?.max ?? blueprint?.choice?.pickMax ?? 0;
   const pickMin = blueprint?.choice?.pickMin ?? 0;
   const canRemoveWineryVisit =
     canAdjustWineryCount &&
     wineriesSelected > wineryMin &&
-    (choiceSelected.size > pickMin || priceMap.bookable(choiceSlotId(choiceSelected.size), "remove"));
+    (choiceSelected.size > pickMin ||
+      priceMap.bookable(choiceSlotId(choiceSelected.size), "remove"));
   const canAddWineryVisit =
     canAdjustWineryCount &&
     wineriesSelected < wineryMax &&
-    (choiceSelected.size + 1 <= pickMin || priceMap.bookable(choiceSlotId(choiceSelected.size + 1), "add")) &&
+    (choiceSelected.size + 1 <= pickMin ||
+      priceMap.bookable(choiceSlotId(choiceSelected.size + 1), "add")) &&
     wineryOptions.some((o) => !choiceSelected.has(o.id));
   const addWineryVisit = () => {
     const next = wineryOptions.find((o) => !choiceSelected.has(o.id));
@@ -945,7 +928,6 @@ function TailorPage() {
       .filter((s) => skippedCore.has(s.id))
       .map((s) => (s.category === "winery" ? wineryLabel((w += 1)) : s.label));
   }, [blueprint, skippedCore]);
-
 
   /**
    * The day as an ordered list of moments. Core stops keep blueprint
@@ -985,7 +967,6 @@ function TailorPage() {
       });
     return [...core, ...chosen];
   }, [blueprint, skippedCore, choiceSelected, principalEligible, priceMap.byKey, guests]);
-
 
   // ─── Helpers ────────────────────────────────────────────────
   const toggle = <T extends string>(setter: (s: Set<T>) => void, current: Set<T>, val: T) => {
@@ -1069,7 +1050,17 @@ function TailorPage() {
       // fall back to full Viator tier pricing.
       tailorTierOverride,
     );
-    const totalForSummary = summaryJourney?.totalEur ?? Math.round(estimatedPrice * details.guests);
+    const totalForSummary =
+      tailorPrice && tailorPrice.ok
+        ? tailorPrice.totalEur
+        : (summaryJourney?.totalEur ?? Math.round(estimatedPrice * details.guests));
+    const adjustedCheckoutInclusions = applyTailorInclusionAdjustments(
+      resolveCheckoutInclusions(metaForSummary, tour),
+      {
+        lunchRemoved: lunchMomentRemoved,
+        wineryCount: hasWineryMoments ? wineriesSelected : undefined,
+      },
+    );
     setCheckoutSummary({
       tourTitle: tailoredTitle,
       region: tour.region,
@@ -1085,7 +1076,7 @@ function TailorPage() {
       heroSrc: metaForSummary?.localGallery?.[0]?.src ?? metaForSummary?.gallery?.[0] ?? tour.img,
       beats: stopLabels,
       itinerary: stopLabels.map((label) => ({ label })),
-      ...applyTailorInclusionAdjustments(resolveCheckoutInclusions(metaForSummary, tour), { lunchRemoved: rules.allowRemoveLunch === true && lunchRemoved, wineryCount: rules.wineries ? wineriesSelected : undefined }),
+      ...adjustedCheckoutInclusions,
       flowLabel: "Tailored Signature",
     });
 
@@ -1100,12 +1091,12 @@ function TailorPage() {
         itemCategory: "Signature",
       });
       item.price = estimatedPrice;
-      gaBeginCheckout({ items: [item], valueEur: Math.round(estimatedPrice * details.guests), productLine: "signature" });
+      gaBeginCheckout({ items: [item], valueEur: totalForSummary, productLine: "signature" });
       trackEvent("checkout_started", {
         experience_id: tour.id,
         experience_type: "tailor",
         group_size: details.guests,
-        value: Math.round(estimatedPrice * details.guests),
+        value: totalForSummary,
         currency: "EUR",
       });
     } catch {
@@ -1114,58 +1105,54 @@ function TailorPage() {
     try {
       const origin = typeof window !== "undefined" ? window.location.origin : "";
       const { data, error } = await invokeSignatureCheckout({
-          attribution: guideAttributionMetadata(),
-          tourId: tour.id,
-          tourTitle: tour.title,
-          guests: details.guests,
-          adults: details.adults,
-          minorAges: details.minorAges,
-          stopLabels: stopLabels.slice(0, 8),
-          includedItems: applyTailorInclusionAdjustments(
-            { included: resolveClientIncludedItems(metaForSummary, tour) ?? [], notIncluded: [] },
-            { lunchRemoved: rules.allowRemoveLunch === true && lunchRemoved, wineryCount: rules.wineries ? wineriesSelected : undefined },
-          ).included,
-          // Display-only: what the guest actually booked / opted out of.
-          // Never priced — the server re-derives every euro itself.
-          itinerary: stopLabels.slice(0, 20).map((label: string) => ({ label })),
-          removedOptions: [
-            ...skippedPublicLabels,
-            ...(rules.allowRemoveLunch === true && lunchRemoved ? ["Included lunch removed"] : []),
-          ],
+        attribution: guideAttributionMetadata(),
+        tourId: tour.id,
+        tourTitle: tour.title,
+        guests: details.guests,
+        adults: details.adults,
+        minorAges: details.minorAges,
+        stopLabels: stopLabels.slice(0, 8),
+        includedItems: adjustedCheckoutInclusions.included,
+        // Display-only: what the guest actually booked / opted out of.
+        // Never priced — the server re-derives every euro itself.
+        itinerary: stopLabels.slice(0, 20).map((label: string) => ({ label })),
+        removedOptions: [
+          ...skippedPublicLabels,
+          ...(rules.allowRemoveLunch === true && lunchRemoved ? ["Included lunch removed"] : []),
+        ],
 
+        pickupLabel: details.pickupAddress || pickup,
+        dateExact: details.tourDate || null,
+        journeyTitle: `Tailored — ${tour.title.split("—")[0].trim()}`,
+        priceFromEur: basePerPax,
+        principalsRemoved,
+        // Stable stop ids so the server can re-derive the −5% ladder
+        // itself and exclude the dedicated included-lunch stop.
+        skippedCoreStopIds: blueprint
+          ? blueprint.core.filter((s) => skippedCore.has(s.id)).map((s) => s.id)
+          : [],
 
-          pickupLabel: details.pickupAddress || pickup,
-          dateExact: details.tourDate || null,
-          journeyTitle: `Tailored — ${tour.title.split("—")[0].trim()}`,
-          priceFromEur: basePerPax,
-          principalsRemoved,
-          // Stable stop ids so the server can re-derive the −5% ladder
-          // itself and exclude the dedicated included-lunch stop.
-          skippedCoreStopIds: blueprint
-            ? blueprint.core.filter((s) => skippedCore.has(s.id)).map((s) => s.id)
-            : [],
+        // Price-map selectors — the server recomputes every euro.
+        tailorActions,
+        tailorLunchAdded: lunchAdded,
+        tailorExtraWineries: rules.wineries
+          ? Math.max(0, wineriesSelected - rules.wineries.included)
+          : 0,
+        // Boolean intent only — the server derives the €15 itself.
+        tailorLunchRemoved: rules.allowRemoveLunch === true && lunchRemoved,
 
-          // Price-map selectors — the server recomputes every euro.
-          tailorActions,
-          tailorLunchAdded: lunchAdded,
-          tailorExtraWineries: rules.wineries
-            ? Math.max(0, wineriesSelected - rules.wineries.included)
-            : 0,
-          // Boolean intent only — the server derives the €15 itself.
-          tailorLunchRemoved: rules.allowRemoveLunch === true && lunchRemoved,
-
-          returnUrl: `${origin}/booking-confirmed?tour=${tour.id}`,
-          tailored: true,
-          flow: "tailor",
-          uiMode: "embedded",
-          guestDetails: {
-            // FinalDetails is the single source of truth for every
-            // operational preference — never overwrite it with defaults.
-            ...details,
-            hotelPickupIncluded: true,
-            pace,
-            skippedCoreStops: skippedPublicLabels,
-          },
+        returnUrl: `${origin}/booking-confirmed?tour=${tour.id}`,
+        tailored: true,
+        flow: "tailor",
+        uiMode: "embedded",
+        guestDetails: {
+          // FinalDetails is the single source of truth for every
+          // operational preference — never overwrite it with defaults.
+          ...details,
+          hotelPickupIncluded: true,
+          pace,
+          skippedCoreStops: skippedPublicLabels,
+        },
       });
       if (error) throw error;
       const resp = (data ?? {}) as { clientSecret?: string; publishableKey?: string };
@@ -1178,7 +1165,7 @@ function TailorPage() {
         experience_id: tour.id,
         experience_type: "tailor",
         group_size: details.guests,
-        value: Math.round(estimatedPrice * details.guests),
+        value: totalForSummary,
         currency: "EUR",
       });
       // GA4 add_payment_info — payment surface ready.
@@ -1192,7 +1179,7 @@ function TailorPage() {
         gaAddPaymentInfo({
           paymentType: "stripe",
           items: [item],
-          valueEur: Math.round(estimatedPrice * details.guests),
+          valueEur: totalForSummary,
         });
       } catch {
         /* silent */
@@ -1204,7 +1191,8 @@ function TailorPage() {
         experience_type: "tailor",
         group_size: details.guests,
       });
-      const message = "Secure checkout couldn’t open. Your tailored day is saved — please try again.";
+      const message =
+        "Secure checkout couldn’t open. Your tailored day is saved — please try again.";
       setCheckoutError(message);
       toast.error(message);
     } finally {
@@ -1244,13 +1232,11 @@ function TailorPage() {
             <div>
               <Eyebrow>Tailor this day</Eyebrow>
               <SectionTitle as="h1" size="default" spacing="tight">
-                {tour.title.split("—")[0].trim()},{" "}
-                <SectionTitle.Em>your version</SectionTitle.Em>
+                {tour.title.split("—")[0].trim()}, <SectionTitle.Em>your version</SectionTitle.Em>
               </SectionTitle>
               <p className="mt-4 max-w-md text-[14.5px] leading-relaxed text-[color:var(--charcoal-soft)]">
                 Keep the character of this Signature, then shape a few moments and the rhythm.
               </p>
-
             </div>
 
             <div className="relative aspect-[16/9] overflow-hidden border border-[color:var(--border)]">
@@ -1356,7 +1342,11 @@ function TailorPage() {
                     </p>
                   ) : null}
                   {dateError ? (
-                    <p id="tailor-date-error" role="alert" className="mt-2 text-[12.5px] leading-snug text-destructive">
+                    <p
+                      id="tailor-date-error"
+                      role="alert"
+                      className="mt-2 text-[12.5px] leading-snug text-destructive"
+                    >
                       {dateError}
                     </p>
                   ) : null}
@@ -1365,7 +1355,6 @@ function TailorPage() {
                   <span className="mb-1.5 block text-[12px] font-medium uppercase tracking-[0.22em] text-[color:var(--charcoal)]">
                     Who&rsquo;s travelling
                   </span>
-
 
                   <CompositionField
                     value={composition}
@@ -1589,14 +1578,12 @@ function TailorPage() {
                             Winery visits
                           </span>
                           <span className="mt-0.5 block text-[12px] text-[color:var(--charcoal-soft)]">
-                            Starts with {rules.wineries!.included} included · choose {rules.wineries!.min}–{rules.wineries!.max}
+                            Starts with {wineryIncluded} included · choose {wineryMin}–{wineryMax}
                             {extraWineryEur != null && (
-                              <span className="block">Each visit above {rules.wineries!.included} +
-                              <PriceEur
-                                amountEur={extraWineryEur}
-                                role="per-person"
-                              />{" "}
-                              pp</span>
+                              <span className="block">
+                                Each visit above {wineryIncluded} +
+                                <PriceEur amountEur={extraWineryEur} role="per-person" /> pp
+                              </span>
                             )}
                           </span>
                         </span>
@@ -1627,7 +1614,6 @@ function TailorPage() {
                           >
                             +
                           </button>
-
                         </span>
                       </div>
                     )}
@@ -1651,11 +1637,7 @@ function TailorPage() {
                           </span>
                           <span className="mt-0.5 block text-[12px] text-[color:var(--charcoal-soft)]">
                             +
-                            <PriceEur
-                              amountEur={lunchAddEur ?? 0}
-                              role="per-person"
-                            />{" "}
-                            pp
+                            <PriceEur amountEur={lunchAddEur ?? 0} role="per-person" /> pp
                           </span>
                         </span>
                         <span className="shrink-0 text-[11px] uppercase tracking-[0.14em] text-[color:var(--charcoal-soft)]">
@@ -1683,11 +1665,8 @@ function TailorPage() {
                           </span>
                           <span className="mt-0.5 block text-[12px] text-[color:var(--charcoal-soft)]">
                             −
-                            <PriceEur
-                              amountEur={lunchRemoveEur ?? 0}
-                              role="per-person"
-                            />{" "}
-                            pp if removed
+                            <PriceEur amountEur={lunchRemoveEur ?? 0} role="per-person" /> pp if
+                            removed
                           </span>
                         </span>
                         <span className="shrink-0 text-[11px] uppercase tracking-[0.14em] text-[color:var(--charcoal-soft)]">
@@ -1714,11 +1693,13 @@ function TailorPage() {
                         >
                           <span className="min-w-0">
                             <span className="block text-[13.5px] leading-snug text-[color:var(--charcoal)]">
-                              {o.label}
+                              {o.category === "winery" ? "Add a winery visit" : o.label}
                             </span>
-                            {o.blurb && (
+                            {(o.category === "winery" || o.blurb) && (
                               <span className="mt-0.5 block text-[12px] text-[color:var(--charcoal-soft)]">
-                                {o.blurb}
+                                {o.category === "winery"
+                                  ? "An additional winery visit, subject to the day fitting comfortably."
+                                  : o.blurb}
                               </span>
                             )}
                           </span>
@@ -1765,7 +1746,11 @@ function TailorPage() {
                 <p className="mt-1 text-[12.5px] leading-snug text-[color:var(--charcoal-soft)]">
                   {date || "Date to choose"} · {formatCompositionSummary(composition)}
                 </p>
-                <RouteThread labels={summaryStops.map((stop) => stop.label)} compact className="mt-4" />
+                <RouteThread
+                  labels={summaryStops.map((stop) => stop.label)}
+                  compact
+                  className="mt-4"
+                />
 
                 <ChargeSummaryLine className="mt-3" quote={versionQuote} />
 
@@ -1847,105 +1832,121 @@ function TailorPage() {
         </div>
       </section>
 
-      {detailsOpen ? <Suspense fallback={null}><FinalDetailsDialog
-        priceQuote={({ adults, minorAges }) => {
-          // Never quote a price we can't charge instantly.
-          if (!tailorPriceReady || !priceMap.data) return null;
-          // Same shared engine the payment server runs → Stripe.
-          const partyBase = resolvePerPaxEur(tour, adults + minorAges.length, tierOverrides);
-          if (!partyBase) return null;
-          const q = computeTailorPrice({
-            basePerPaxEur: partyBase.eurPerPax,
-            adults,
-            minorAges,
-            ageBand: (age) => (age >= 11 ? "youth" : age >= 3 ? "child" : "infant"),
-            rules: priceMap.data.rules,
-            policies: priceMap.data.policies,
-            selected: tailorActions,
-          });
-          if (!q.ok) return null;
-          return {
-            totalEur: q.totalEur,
-            perPaxAdultEur: q.adultUnitEur,
-            hasMinors: minorAges.length > 0,
-            adults,
-            minors: minorAges.length,
-            journeySubtotalEur: q.totalEur,
-            addOnsEur: 0,
-            ledger: {
-              baseEur: q.baseTotalEur,
-              lines: q.lines.map((l) => ({ label: l.label, amountEur: l.amountEur })),
-            },
-          };
-        }}
-        open={detailsOpen}
-        onOpenChange={setDetailsOpen}
-        submitting={checkoutPending}
-        tourId={tour.id}
-        dateRule={rule}
-        productRecap={{
-          title: tour.title,
-          flowLabel: "Tailored Signature",
-          duration: tour.durationHours,
-          region: tour.region,
-          beats: publicSelectionLabels,
-          itinerary: publicSelectionLabels.map((label) => ({ label })),
-          ...applyTailorInclusionAdjustments(resolveCheckoutInclusions(meta, tour), { lunchRemoved: rules.allowRemoveLunch === true && lunchRemoved, wineryCount: rules.wineries ? wineriesSelected : undefined }),
-        }}
-        initial={{
-          tourDate: date,
-          adults: composition.adults,
-          minorAges: [...composition.minorAges],
-          // Default start time — adjustable in "Anything we should know?".
-          startTime: pickup,
+      {detailsOpen ? (
+        <Suspense fallback={null}>
+          <FinalDetailsDialog
+            priceQuote={({ adults, minorAges }) => {
+              // Never quote a price we can't charge instantly.
+              if (!tailorPriceReady || !priceMap.data) return null;
+              // Same shared engine the payment server runs → Stripe.
+              const partyBase = resolvePerPaxEur(tour, adults + minorAges.length, tierOverrides);
+              if (!partyBase) return null;
+              const q = computeTailorPrice({
+                basePerPaxEur: partyBase.eurPerPax,
+                adults,
+                minorAges,
+                ageBand: (age) => (age >= 11 ? "youth" : age >= 3 ? "child" : "infant"),
+                rules: priceMap.data.rules,
+                policies: priceMap.data.policies,
+                selected: tailorActions,
+              });
+              if (!q.ok) return null;
+              return {
+                totalEur: q.totalEur,
+                perPaxAdultEur: q.adultUnitEur,
+                hasMinors: minorAges.length > 0,
+                adults,
+                minors: minorAges.length,
+                journeySubtotalEur: q.totalEur,
+                addOnsEur: 0,
+                ledger: {
+                  baseEur: q.baseTotalEur,
+                  lines: q.lines.map((l) => ({ label: l.label, amountEur: l.amountEur })),
+                },
+              };
+            }}
+            open={detailsOpen}
+            onOpenChange={setDetailsOpen}
+            submitting={checkoutPending}
+            tourId={tour.id}
+            dateRule={rule}
+            productRecap={{
+              title: tour.title,
+              flowLabel: "Tailored Signature",
+              duration: tour.durationHours,
+              region: tour.region,
+              beats: publicSelectionLabels,
+              itinerary: publicSelectionLabels.map((label) => ({ label })),
+              ...applyTailorInclusionAdjustments(resolveCheckoutInclusions(meta, tour), {
+                lunchRemoved: lunchMomentRemoved,
+                wineryCount: hasWineryMoments ? wineriesSelected : undefined,
+              }),
+            }}
+            initial={{
+              tourDate: date,
+              adults: composition.adults,
+              minorAges: [...composition.minorAges],
+              // Default start time — adjustable in "Anything we should know?".
+              startTime: pickup,
 
-          language,
-        }}
-        onConfirm={async (d) => {
-          await handleReserve(d);
-        }}
-      /></Suspense> : null}
+              language,
+            }}
+            onConfirm={async (d) => {
+              await handleReserve(d);
+            }}
+          />
+        </Suspense>
+      ) : null}
 
-      {checkoutOpen ? <Suspense fallback={null}><BrandedCheckoutDrawer
-        open={checkoutOpen}
-        onOpenChange={(o) => {
-          setCheckoutOpen(o);
-          if (!o) {
-            setClientSecret(null);
-            setCheckoutError(null);
-          }
-        }}
-        clientSecret={clientSecret}
-        publishableKey={publishableKey}
-        loading={checkoutPending}
-        errorMessage={checkoutError}
-        onRetry={lastCheckoutDetails ? () => void handleReserve(lastCheckoutDetails) : undefined}
-        summary={
-          checkoutSummary ?? {
-            tourTitle: `Tailored — ${tour.title.split("—")[0].trim()}`,
-             region: tour.region,
-             durationHours: tour.durationHours,
-             dateExact: date || null,
-             startTime: pickup,
-             beats: publicSelectionLabels,
-             itinerary: publicSelectionLabels.map((label) => ({ label })),
-             ...applyTailorInclusionAdjustments(resolveCheckoutInclusions(meta, tour), { lunchRemoved: rules.allowRemoveLunch === true && lunchRemoved, wineryCount: rules.wineries ? wineriesSelected : undefined }),
-            guests,
-            adults: composition.adults,
-            minorAges: [...composition.minorAges],
-            pricePerPaxEur: estimatedPrice,
-            totalEur: Math.round(estimatedPrice * guests),
-            flowLabel: "Tailored Signature",
-          }
-        }
-        onComplete={(sid) => {
-          setCheckoutOpen(false);
-          navigate({
-            to: "/booking-confirmed",
-            search: { session_id: sid ?? undefined, tour: tour.id },
-          });
-        }}
-      /></Suspense> : null}
+      {checkoutOpen ? (
+        <Suspense fallback={null}>
+          <BrandedCheckoutDrawer
+            open={checkoutOpen}
+            onOpenChange={(o) => {
+              setCheckoutOpen(o);
+              if (!o) {
+                setClientSecret(null);
+                setCheckoutError(null);
+              }
+            }}
+            clientSecret={clientSecret}
+            publishableKey={publishableKey}
+            loading={checkoutPending}
+            errorMessage={checkoutError}
+            onRetry={
+              lastCheckoutDetails ? () => void handleReserve(lastCheckoutDetails) : undefined
+            }
+            summary={
+              checkoutSummary ?? {
+                tourTitle: `Tailored — ${tour.title.split("—")[0].trim()}`,
+                region: tour.region,
+                durationHours: tour.durationHours,
+                dateExact: date || null,
+                startTime: pickup,
+                beats: publicSelectionLabels,
+                itinerary: publicSelectionLabels.map((label) => ({ label })),
+                ...applyTailorInclusionAdjustments(resolveCheckoutInclusions(meta, tour), {
+                  lunchRemoved: lunchMomentRemoved,
+                  wineryCount: hasWineryMoments ? wineriesSelected : undefined,
+                }),
+                guests,
+                adults: composition.adults,
+                minorAges: [...composition.minorAges],
+                pricePerPaxEur: estimatedPrice,
+                totalEur: displayTotalEur,
+                flowLabel: "Tailored Signature",
+              }
+            }
+            onComplete={(sid) => {
+              setCheckoutOpen(false);
+              navigate({
+                to: "/booking-confirmed",
+                search: { session_id: sid ?? undefined, tour: tour.id },
+              });
+            }}
+          />
+        </Suspense>
+      ) : null}
     </SiteLayout>
   );
 }

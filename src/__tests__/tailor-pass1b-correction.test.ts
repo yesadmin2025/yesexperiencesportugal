@@ -4,8 +4,9 @@
  * Source-contract regressions covering:
  *  - no named winery estate ever reaches a public Tailor output path
  *  - generic winery visits never trigger a manual-confirmation gate
- *  - unpriced winery optionals are not offered on other Signatures
- *  - the winery counter has real bounds
+ *  - winery optionals are offered only when the Admin price map prices them
+ *  - generic winery choice pools can go to zero without exposing suppliers
+ *  - the winery counter has real bounds and preserves trade-off constraints
  *  - FinalDetails values are never overwritten with stale defaults
  *  - truthful intro copy
  */
@@ -41,7 +42,9 @@ describe("Tailor never leaks a winery supplier name", () => {
     expect(src).toMatch(/Winery visit added/);
     expect(src).not.toContain("supplier will confirm timing");
     // The toast for a winery never interpolates the internal label.
-    expect(src).not.toMatch(/Adding \$\{option\.label\} adds about \$\{added\} min to your day\.\$\{/);
+    expect(src).not.toMatch(
+      /Adding \$\{option\.label\} adds about \$\{added\} min to your day\.\$\{/,
+    );
   });
 
   it("builds display labels from the current selection, genericised", () => {
@@ -57,25 +60,32 @@ describe("Tailor never leaks a winery supplier name", () => {
   });
 });
 
-describe("Tailor Enhance offers nothing unpriced", () => {
-  it("Sintra's internal Colares winery optional is never a public enhancement", () => {
+describe("Tailor Enhance exposes only priced changes without leaking suppliers", () => {
+  it("Sintra's winery optional is price-map gated and rendered generically", () => {
     const sintra = TAILOR_BLUEPRINTS["sintra-cascais"];
     expect(sintra).toBeDefined();
     const wineryOptionals = sintra!.optional.filter((o) => o.category === "winery");
-    // The blueprint really does carry a winery-category optional…
-    expect(wineryOptionals.length).toBe(1);
+    expect(wineryOptionals).toHaveLength(1);
     expect(wineryOptionals[0]!.id).toBe("colares-winery");
-    // …and there is no owner-approved winery ladder to price it with,
-    // so the public Enhance filter must drop it.
-    expect(tailorRules("sintra-cascais").wineries).toBeUndefined();
-    const publicOptional = sintra!.optional.filter((o) => o.category !== "winery");
-    expect(publicOptional).toHaveLength(sintra!.optional.length - 1);
-    expect(publicOptional.some((o) => o.id === "colares-winery")).toBe(false);
+    expect(src).toContain('priceMap.bookable(optionalActionId(o.id), "add")');
+    expect(src).not.toContain('o.category !== "winery" && priceMap.bookable');
+    expect(src).toContain('o.category === "winery" ? "Add a winery visit" : o.label');
   });
 
-
-  it("Tiles and Évora have no extra winery ladder", () => {
+  it("Tiles has a generic winery choice pool that can be reduced to zero", () => {
+    const tiles = TAILOR_BLUEPRINTS["tiles-workshop"];
+    expect(tiles?.choice?.pickMin).toBe(1);
+    expect(tiles?.choice?.pickMax).toBe(1);
+    expect(tiles?.choice?.options.every((o) => o.category === "winery")).toBe(true);
     expect(tailorRules("tiles-workshop").wineries).toBeUndefined();
+    expect(src).toContain("const canAdjustWineryCount = wineryChoicePool;");
+    expect(src).toContain("const wineryMin = rules.wineries?.min ?? 0;");
+    expect(src).toContain(
+      "const wineryMax = rules.wineries?.max ?? blueprint?.choice?.pickMax ?? 0;",
+    );
+  });
+
+  it("Évora keeps its approved extra winery ladder", () => {
     expect(tailorRules("evora-alentejo").wineries?.max).toBe(3);
     expect(winerySupplementEur("tiles-workshop", 4)).toBe(0);
     expect(winerySupplementEur("evora-alentejo", 4)).toBe(25);
@@ -96,14 +106,16 @@ describe("Arrábida winery counter bounds", () => {
     expect(winerySupplementEur(id, 4)).toBe(40);
   });
 
-  it("allows a fourth visit without removing an included moment", () => {
-    expect(canSelectWineries(id, 4, 0).allowed).toBe(true);
+  it("requires freeing one moment before the fourth visit", () => {
+    expect(canSelectWineries(id, 4, 0).allowed).toBe(false);
     expect(canSelectWineries(id, 4, 1).allowed).toBe(true);
   });
 
   it("disables the controls at the bounds instead of toasting", () => {
-    expect(src).toContain("const wineryMin = rules.wineries?.min ?? rules.wineries?.included ?? 0;");
-    expect(src).toContain("const wineryMax = rules.wineries?.max ?? 0;");
+    expect(src).toContain("const wineryMin = rules.wineries?.min ?? 0;");
+    expect(src).toContain(
+      "const wineryMax = rules.wineries?.max ?? blueprint?.choice?.pickMax ?? 0;",
+    );
     expect(src).toContain("disabled={!canRemoveWineryVisit}");
     expect(src).toContain("disabled={!canAddWineryVisit}");
   });

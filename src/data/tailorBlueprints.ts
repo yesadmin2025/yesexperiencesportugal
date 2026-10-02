@@ -580,8 +580,8 @@ const troiaComporta: TailorBlueprint = {
       blurb: "Short ferry over the Sado estuary — dolphins are sometimes seen.",
       category: "drive-by",
       dwellMinutesOverride: 30,
-      // Kept for Studio route timing (internal transit). Tailor treats a
-      // mandatory_transfer lock as removable — the guest may skip Tróia.
+      // Internal transit truth for Studio timing. Tailor deliberately treats
+      // mandatory_transfer as removable, so this does not lock the customer.
       lock: {
         reasonCode: "mandatory_transfer",
         customerFacingReason: "The ferry is how the day reaches the Tróia peninsula.",

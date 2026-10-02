@@ -117,6 +117,7 @@ export const TAILOR_RULES: Record<string, TailorRules> = {
       min: 0,
       max: 4,
       supplementEur: TAILOR_EXTRA_WINERY_SUPPLEMENT_EUR,
+      requiresRemovalFrom: 4,
     },
   },
 };
@@ -163,8 +164,8 @@ export type WineryGateResult =
 /**
  * Can the guest move to `wineriesSelected` wineries right now?
  * Capacity is bounded here; the shared feasibility engine decides whether
- * the complete day fits. No included moment is auto-removed or required as
- * a commercial gate when a winery is added.
+ * the complete day fits. Where an approved ladder says an extra winery needs
+ * room, at least one other moment must be removed first.
  */
 export function canSelectWineries(
   tourId: string,
@@ -184,7 +185,7 @@ export function canSelectWineries(
     return {
       allowed: false,
       code: "needs-removal",
-      message: "To keep the day within 8 hours, remove another moment before adding a third winery.",
+      message: `To keep the day within 8 hours, remove another moment before adding winery ${wineriesSelected}.`,
     };
   }
   return { allowed: true };
@@ -268,4 +269,3 @@ export function principalRemovalCount(tourId: string, skippedStopIds: Iterable<s
   }
   return Math.min(seen.size, maxRemovalsForMinViable(tourId));
 }
-
