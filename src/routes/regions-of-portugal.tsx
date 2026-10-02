@@ -66,7 +66,7 @@ function RegionsPage() {
           </div>
         </header>
         <figure className="container-x max-w-6xl">
-          <img src={douroImage} alt="Morning light across the Douro Valley" width={1600} height={900} fetchPriority="high" decoding="async" className="aspect-[16/9] w-full object-cover md:aspect-[18/8]" />
+          <img src={douroImage} alt="Morning light across the Douro Valley" width={1600} height={900} loading="lazy" fetchPriority="low" decoding="async" className="aspect-[16/9] w-full object-cover md:aspect-[18/8]" />
           <figcaption className="mt-2 text-xs text-[color:var(--charcoal-soft)]">The Douro Valley · Northern Portugal</figcaption>
         </figure>
         <div className="container-x max-w-6xl py-16 md:py-24">
