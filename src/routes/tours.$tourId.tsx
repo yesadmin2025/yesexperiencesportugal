@@ -461,7 +461,7 @@ function TourHero({
             />
           </div>
 
-          <div className="mt-5 sm:mt-8 lg:mt-0">
+          <div className="mt-5 flex flex-col sm:mt-8 sm:block lg:mt-0">
             <Eyebrow>Private Signature Experience</Eyebrow>
             <h1 className="serif mt-3 max-w-3xl text-[40px] font-medium leading-[1.08] tracking-normal text-[color:var(--charcoal)] md:text-[60px] md:leading-[1.02]">
               {getSignatureSeo(tour.id)?.h1 ?? tour.title}
@@ -545,13 +545,11 @@ function TourHero({
              {tour.id !== "p23-artisan-pottery-cork" && <CtaButton
               to="/tours/$tourId/tailor"
               params={{ tourId: tour.id }}
-               variant="ghost"
-               size="sm"
+               variant="hairline"
               data-analytics="signature_tailor_click"
               data-analytics-placement="hero"
               data-analytics-experience-id={tour.id}
               data-analytics-experience-type="signature"
-               className="w-full justify-between sm:w-auto"
             >
                Tailor this day
              </CtaButton>}
@@ -560,6 +558,7 @@ function TourHero({
               title={tour.title}
               experienceId={tour.id}
             />
+          </div>
           </div>
         </div>
       </section>
