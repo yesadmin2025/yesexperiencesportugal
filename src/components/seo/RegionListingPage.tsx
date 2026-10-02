@@ -69,7 +69,7 @@ export function RegionListingPage({ region }: { region: LisbonRegion }) {
               {region.guideLink.lead}
               <Link
                 to="/local-stories/$slug"
-                params={{ slug: "best-wine-tours-from-lisbon" }}
+                params={{ slug: region.guideLink.slug }}
                 className="underline decoration-[color:var(--gold)]/60 underline-offset-4 hover:text-[color:var(--teal)] transition-colors"
               >
                 {region.guideLink.anchor}
