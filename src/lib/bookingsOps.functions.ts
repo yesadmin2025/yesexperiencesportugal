@@ -13,6 +13,7 @@ import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 import type { Json } from "@/integrations/supabase/types";
 import { canonicalize, canonicalizeAll, type ActiveAssignment, type RawBooking } from "@/lib/ops/booking-read-model";
 import { buildBookingBriefSections, briefSectionsToText, type BriefBookingRow } from "@/lib/ops/booking-brief";
+import { normalizeSnapshotItinerary } from "@/lib/booking-snapshot-contract";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 async function assertAdmin(context: { supabase: any; userId: string }) {
@@ -48,8 +49,28 @@ const LIST_COLUMNS = [
   "external_booking_ref", "customer_name", "customer_email", "customer_phone", "guests",
   "preferred_date", "start_time", "pickup_location", "amount_total", "amount_paid", "currency",
   "status", "metadata", "payment_status", "assigned_guide_id", "review_required", "review_reason",
-  "cancelled_at", "stripe_session_id",
+  "cancelled_at", "stripe_session_id", "booking_details",
 ].join(", ");
+
+/** Party + stops summary derived from the frozen checkout snapshot, for list rows. */
+export function listRowExtras(bookingDetails: Json | null | undefined): {
+  adults: number | null; minors: number; stops: string[];
+} {
+  const details = bookingDetails && typeof bookingDetails === "object" && !Array.isArray(bookingDetails)
+    ? (bookingDetails as Record<string, unknown>) : {};
+  const snap = details.snapshot && typeof details.snapshot === "object" && !Array.isArray(details.snapshot)
+    ? (details.snapshot as Record<string, unknown>) : null;
+  if (!snap) return { adults: null, minors: 0, stops: [] };
+  const composition = snap.composition && typeof snap.composition === "object" && !Array.isArray(snap.composition)
+    ? (snap.composition as Record<string, unknown>) : {};
+  const adults = Number(composition.adults);
+  const minorAges = Array.isArray(composition.minorAges) ? composition.minorAges : [];
+  return {
+    adults: Number.isFinite(adults) && adults > 0 ? adults : null,
+    minors: minorAges.length,
+    stops: normalizeSnapshotItinerary(snap.itinerary).map((s) => s.label),
+  };
+}
 
 const listInput = z.object({
   search: z.string().max(200).optional(),
@@ -140,7 +161,7 @@ export const listOpsBookings = createServerFn({ method: "POST" })
     }
     // Guide truth = active tour_assignments (never the mirror column).
     const assignments = await loadActiveAssignments(supabaseAdmin, list.map((r) => r.id));
-    let rows = canonicalizeAll(list, assignments);
+    let rows = canonicalizeAll(list, assignments).map((r) => ({ ...r, ...listRowExtras(r.booking_details) }));
     if (data.guide && data.guide !== "all") {
       rows = rows.filter((r) => (data.guide === "unassigned" ? r.guide_id === null : r.guide_id === data.guide));
     }
