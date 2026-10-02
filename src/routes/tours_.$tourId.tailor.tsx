@@ -628,8 +628,28 @@ function TailorPage() {
     const chosen = (blueprint.choice?.options ?? []).filter(
       (o) => o.category === "winery" && choiceSelected.has(o.id),
     ).length;
-    return core + chosen;
-  }, [blueprint, skippedCore, choiceSelected]);
+    const optional = blueprint.optional.filter(
+      (o) => o.category === "winery" && optionalSelected.has(o.id),
+    ).length;
+    return core + chosen + optional;
+  }, [blueprint, skippedCore, choiceSelected, optionalSelected]);
+
+  const hasWineryMoments = Boolean(
+    blueprint &&
+      [
+        ...blueprint.core,
+        ...(blueprint.choice?.options ?? []),
+        ...blueprint.optional,
+      ].some((s) => s.category === "winery"),
+  );
+
+  const lunchMomentRemoved =
+    lunchRemoved ||
+    Boolean(
+      blueprint?.core.some(
+        (s) => s.category === "lunch" && skippedCore.has(s.id),
+      ),
+    );
 
   /** Stable price-map actions for the current composition (sent to the
    *  server as selectors only — it recomputes every euro). */
@@ -1091,8 +1111,8 @@ function TailorPage() {
         includedItems: applyTailorInclusionAdjustments(
           { included: resolveClientIncludedItems(metaForSummary, tour) ?? [], notIncluded: [] },
           {
-            lunchRemoved: rules.allowRemoveLunch === true && lunchRemoved,
-            wineryCount: rules.wineries ? wineriesSelected : undefined,
+            lunchRemoved: lunchMomentRemoved,
+            wineryCount: hasWineryMoments ? wineriesSelected : undefined,
           },
         ).included,
         // Display-only: what the guest actually booked / opted out of.
@@ -1860,8 +1880,8 @@ function TailorPage() {
               beats: publicSelectionLabels,
               itinerary: publicSelectionLabels.map((label) => ({ label })),
               ...applyTailorInclusionAdjustments(resolveCheckoutInclusions(meta, tour), {
-                lunchRemoved: rules.allowRemoveLunch === true && lunchRemoved,
-                wineryCount: rules.wineries ? wineriesSelected : undefined,
+                lunchRemoved: lunchMomentRemoved,
+                wineryCount: hasWineryMoments ? wineriesSelected : undefined,
               }),
             }}
             initial={{
@@ -1908,8 +1928,8 @@ function TailorPage() {
                 beats: publicSelectionLabels,
                 itinerary: publicSelectionLabels.map((label) => ({ label })),
                 ...applyTailorInclusionAdjustments(resolveCheckoutInclusions(meta, tour), {
-                  lunchRemoved: rules.allowRemoveLunch === true && lunchRemoved,
-                  wineryCount: rules.wineries ? wineriesSelected : undefined,
+                  lunchRemoved: lunchMomentRemoved,
+                  wineryCount: hasWineryMoments ? wineriesSelected : undefined,
                 }),
                 guests,
                 adults: composition.adults,
