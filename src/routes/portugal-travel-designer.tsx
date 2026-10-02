@@ -193,9 +193,8 @@ function PortugalTravelDesignerPage() {
           sense.
         </p>
         <p>
-          Driving time, meal times, local opening hours and the energy of the travelers all
-          influence the final design. A good itinerary leaves room for discovery rather than
-          treating Portugal as a collection of boxes to be completed.
+          We balance driving time, meals, local opening hours and your energy so the route has room
+          for discovery rather than treating Portugal as a collection of boxes to be completed.
         </p>
       </Section>
 
