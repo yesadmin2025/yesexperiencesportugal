@@ -59,6 +59,7 @@ describe("compact payment drawer", () => {
   });
 
   it("hides traveller bands, add-ons and inclusions behind one Signature disclosure", () => {
+    expect(drawer).toContain('const [open, setOpen] = useState(false);');
     expect(drawer).toContain('data-testid="checkout-drawer-details-toggle"');
     expect(drawer).toContain("Your day at a glance");
     expect(drawer).toContain("What's included");
