@@ -263,7 +263,7 @@ function CorporatePage() {
             </SectionTitle>
             <p className="mt-5 font-serif italic text-[1.1rem] md:text-[1.2rem] text-[color:var(--teal)] leading-snug">
               An executive off-site and a 100-person incentive should never feel like the same
-              programme enlarged or reduced.
+              program enlarged or reduced.
             </p>
             <p className="mt-5 text-[15px] md:text-[16px] leading-[1.8] text-[color:var(--charcoal-soft)]">
               We design each corporate experience around the people, objective and pace of the
@@ -300,7 +300,7 @@ function CorporatePage() {
             <p className="mt-5 text-[15px] md:text-[16px] leading-[1.8] text-[color:var(--charcoal-soft)]">
               We operate across Portugal, combining the places a group may already know with the
               producers, landscapes, traditions and settings that give each region its character. A
-              programme can include Portugal's recognized highlights, quieter local encounters or a
+              program can include Portugal's recognized highlights, quieter local encounters or a
               considered balance of both.
             </p>
             <p className="mt-5 text-[15px] md:text-[16px] leading-[1.8] text-[color:var(--charcoal-soft)]">
