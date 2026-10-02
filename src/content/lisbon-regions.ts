@@ -28,6 +28,7 @@ export interface LisbonRegion {
     lead: string;
     anchor: string;
     tail: string;
+    slug: string;
   };
   /** Signature tour ids that genuinely run in this region. */
   tourIds: readonly string[];
@@ -247,6 +248,12 @@ export const LISBON_REGIONS: readonly LisbonRegion[] = [
     h1Em: "sand, rice and quiet.",
     standfirst:
       "Cross the Sado estuary by ferry and the landscape changes completely — Roman ruins on the sandspit, rice fields behind the dunes, and beaches that stay wide and quiet even in August.",
+    guideLink: {
+      lead: "Planning the coast before you choose a day? Read ",
+      anchor: "our local Comporta & Tróia guide",
+      tail: " — rice fields, Carrasqueira, Roman Tróia and the Atlantic.",
+      slug: "troia-comporta-guide",
+    },
     tourIds: ["troia-comporta", "southwest-vicentine-coast"],
     driveTime: "About 1h from central Lisbon, including the Sado ferry crossing",
     bestSeason: "May to October for the beaches; the estuary is beautiful all year.",
