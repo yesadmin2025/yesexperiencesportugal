@@ -98,3 +98,13 @@
 - [x] Mobile checkout drawer density
 - [x] Plain-English pairing for "Signature" at booking points
 - [x] Re-test at mobile + desktop
+
+# Tailor instant pricing (supersedes manual confirmation)
+
+- [ ] Remove Tailor "Request this day" gate and automatic Contact handoff
+- [ ] Admin-editable Tailor Price Map (DB) seeded with approved rules only
+- [ ] Admin completeness view: Missing price per tour
+- [ ] Client + server price from the same map; reject unknown/tampered ids
+- [ ] Price details ledger in Tailor; Contact/WhatsApp optional only
+- [ ] Tests: client == server == Stripe; listed Tailor scenarios
+- [ ] Owner enters missing prices before publish (blocked on Nídia)

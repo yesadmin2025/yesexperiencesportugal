@@ -58,8 +58,10 @@ describe("Tailor never leaks a winery supplier name", () => {
 });
 
 describe("Tailor manual-confirmation gate", () => {
-  it("is driven by a missing approved price or a removed Signature anchor", () => {
-    expect(src).toContain("(wineExtension.extra > 0 && !rules.wineries) || removedSignatureAnchor;");
+  it("is driven by a missing approved price, a removed anchor or a below-baseline choice", () => {
+    expect(src).toContain(
+      "(wineExtension.extra > 0 && !rules.wineries) || removedSignatureAnchor || choiceReduced;",
+    );
     expect(src).not.toContain("hasManualSupplier");
   });
 });

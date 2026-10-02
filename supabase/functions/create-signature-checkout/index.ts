@@ -68,6 +68,9 @@ interface Body {
    *  EVIDENCE for the 4th-winery entitlement — never a boolean, never a
    *  euro amount. Validated against the server whitelist. */
   tradedStopIds?: string[];
+  /** Tailor: stable ids of the choice-pool moments (wineries, palace…) in
+   *  the day. Lets the server refuse below-baseline reductions. */
+  tailorChoiceIds?: string[];
   /** Inventory stop ids composed into a bespoke Studio day from the owner
    *  price list (`studio_composable_stops`). SELECTORS ONLY — every euro is
    *  re-derived here from that table; unknown, inactive or unpriced ids are
@@ -116,6 +119,7 @@ import {
   serverAddOnsChargedTotalEur,
   serverAddOnAllowedForTour,
   serverPrincipalRemovalCount,
+  serverChoiceBelowBaseline,
 
   tailorFinalPerPax,
   type AgeBand,
@@ -344,6 +348,11 @@ Deno.serve(async (req) => {
         ? Math.min(8, serverPrincipalRemovalCount(body.tourId, skippedCoreStopIds))
         : 0;
     const principalsRemoved = isTailorFlow ? Math.min(claimedPrincipals, derivedPrincipals) : 0;
+    // FAIL-CLOSED: a Tailor day below its choice baseline (fewer wineries /
+    // no palace) has no approved price — it must be confirmed by the team.
+    if (isTailorFlow && serverChoiceBelowBaseline(body.tourId, body.tailorChoiceIds)) {
+      return jsonError("This tailored day needs confirmation from our team before payment.", 409);
+    }
 
 
     // COMPOSED-DAY COMMERCIAL TRUTH.

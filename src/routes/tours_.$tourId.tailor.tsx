@@ -29,6 +29,8 @@ import { RouteThread } from "@/components/motion/RouteThread";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { invokeSignatureCheckout } from "@/lib/checkout/session-request";
+import { choiceBelowBaseline } from "@/data/tailorChoiceBaseline";
+import { describeGuests, saveTailorHandoff } from "@/lib/tailor-handoff";
 import type { GuestDetails } from "@/components/checkout/FinalDetailsDialog";
 import {
   ChargeSummaryLine,
@@ -756,11 +758,19 @@ function TailorPage() {
   // ferry…) has no owner-approved price consequence, so the day is sent to
   // the team for confirmation instead of charging an invented total.
   const removedSignatureAnchor = removalNeedsConfirmation(tour.id, skippedCore);
+  // Fewer choice moments than the base price includes (e.g. 1 or 0
+  // wineries, no palace) has no approved reduction — confirm, never charge
+  // the old base price. Winery ladders compare against `included`.
+  const choiceReduced = choiceBelowBaseline(tour.id, {
+    choiceSelectedCount: choiceSelected.size,
+    wineriesSelected,
+  });
   const requiresManualConfirmation =
-    (wineExtension.extra > 0 && !rules.wineries) || removedSignatureAnchor;
+    (wineExtension.extra > 0 && !rules.wineries) || removedSignatureAnchor || choiceReduced;
   /** The day moved materially away from the source Signature. */
   const materiallyChanged =
     removedSignatureAnchor ||
+    choiceReduced ||
     skippedCore.size >= 2 ||
     (blueprint?.choice ? choiceSelected.size < blueprint.choice.pickMin : false);
   const tailoredTitle = materiallyChanged
@@ -1056,6 +1066,9 @@ function TailorPage() {
             ? blueprint.core.filter((s) => skippedCore.has(s.id)).map((s) => s.id)
             : [],
 
+          tailorChoiceIds: blueprint?.choice
+            ? blueprint.choice.options.filter((o) => choiceSelected.has(o.id)).map((o) => o.id)
+            : [],
           tailorLunchAdded: lunchAdded,
           tailorExtraWineries: rules.wineries
             ? Math.max(0, wineriesSelected - rules.wineries.included)
@@ -1734,12 +1747,21 @@ function TailorPage() {
                       return;
                     }
                     if (requiresManualConfirmation) {
+                      saveTailorHandoff({
+                        tourId: tour.id,
+                        title: tailoredTitle,
+                        date,
+                        guests: describeGuests(composition.adults, composition.minorAges.length),
+                        stops: summaryStops.map((st) => st.label),
+                        removed: [
+                          ...skippedPublicLabels,
+                          ...(rules.allowRemoveLunch === true && lunchRemoved ? ["Included lunch"] : []),
+                        ],
+                        pickup: `${pickup} (to confirm)`,
+                      });
                       navigate({
                         to: "/contact",
-                        search: {
-                          type: "private_day",
-                          place: `${tailoredTitle} · ${date}`.slice(0, 80),
-                        },
+                        search: { type: "private_day", from: "tailor" },
                       });
                       return;
                     }
