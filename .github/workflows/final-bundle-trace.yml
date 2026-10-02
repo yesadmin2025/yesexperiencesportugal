@@ -1,0 +1,31 @@
+name: Final bundle trace
+
+on:
+  push:
+    branches:
+      - fix/final-seo-performance-20261002
+
+jobs:
+  trace:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+      - run: bun install --frozen-lockfile
+      - run: bun run build
+      - name: Trace public route chunk imports
+        run: |
+          for pattern in contact about portugal-travel-designer experiences corporate proposal-in-portugal day-tours regions-of-portugal wineries._slug; do
+            file=$(find .output/public/assets -maxdepth 1 -type f -name "$pattern-*.js" | head -1)
+            if [ -n "$file" ]; then
+              echo "=== $pattern :: $file ==="
+              head -c 4000 "$file"; echo
+            fi
+          done
+          echo "=== BIG INDEX MARKERS ==="
+          big=$(find .output/public/assets -maxdepth 1 -type f -name 'index-*.js' -printf '%s %p\n' | sort -nr | head -1 | cut -d' ' -f2-)
+          echo "$big"
+          grep -o -E 'SupabaseClient|createClient|stripe|heic2any|leaflet|QueryClient|createRouter|lucide|recharts|mapbox|analytics|sentry|zod|radix|date-fns|MotionQaPanel|QaPanel' "$big" | sort | uniq -c || true
