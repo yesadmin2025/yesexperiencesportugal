@@ -51,6 +51,20 @@ describe("home-motion controller", () => {
       configurable: true,
       writable: true,
     });
+    // Make the default fixture a deterministic normal-power device. Individual
+    // tests may override these hints when they want to exercise low-power cadence.
+    Object.defineProperty(navigator, "hardwareConcurrency", {
+      value: 8,
+      configurable: true,
+    });
+    Object.defineProperty(navigator, "deviceMemory", {
+      value: 8,
+      configurable: true,
+    });
+    Object.defineProperty(navigator, "connection", {
+      value: { saveData: false, effectiveType: "4g" },
+      configurable: true,
+    });
     // Force not-reduced-motion by default.
     window.matchMedia = vi.fn().mockImplementation((q: string) => ({
       matches: false,
@@ -176,6 +190,27 @@ describe("home-motion controller", () => {
     const cards = document.querySelectorAll("li");
     expect(cards[0]?.getAttribute("data-motion")).toBe("card-reveal");
     expect(cards[1]?.getAttribute("data-motion-delay")).toBe("100");
+  });
+
+  it("uses the shorter card cadence on low-power devices", async () => {
+    Object.defineProperty(navigator, "hardwareConcurrency", {
+      value: 4,
+      configurable: true,
+    });
+    document.documentElement.dataset.motionScope = "marketing";
+    document.body.innerHTML = `
+      <main><section><ul>
+        <li><h3>Arrábida</h3></li>
+        <li><h3>Sintra</h3></li>
+      </ul></section></main>
+    `;
+    document.querySelectorAll<HTMLElement>("li, h3").forEach((el) => {
+      el.getBoundingClientRect = () =>
+        ({ top: 100, bottom: 200, left: 0, right: 320, width: 320, height: 100, x: 0, y: 100, toJSON: () => ({}) }) as DOMRect;
+    });
+    dispose = startHomeMotion();
+    await flushRaf();
+    expect(document.querySelectorAll("li")[1]?.getAttribute("data-motion-delay")).toBe("70");
   });
 
   it("does not double-tag content already owned by a legacy reveal", async () => {
