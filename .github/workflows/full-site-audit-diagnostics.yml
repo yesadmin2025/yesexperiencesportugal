@@ -22,4 +22,18 @@ jobs:
           echo "=== dist directories ==="
           find . -maxdepth 3 -type d \( -name assets -o -name client \) -print
           echo "=== largest built JS/CSS assets ==="
-          find . -type f \( -name '*.js' -o -name '*.css' \) -path '*dist*' -printf '%s %p\n' 2>/dev/null | sort -nr | head -40 || true
+          find .output/public/assets -maxdepth 1 -type f \\( -name '*.js' -o -name '*.css' \\) -printf '%s %p\\n' 2>/dev/null | sort -nr | head -40 || true
+          echo "=== route chunk import headers ==="
+          for pattern in contact about portugal-travel-designer experiences corporate proposal-in-portugal day-tours; do
+            file=$(find .output/public/assets -maxdepth 1 -type f -name "$pattern-*.js" | head -1)
+            if [ -n "$file" ]; then
+              echo "--- $pattern: $file ---"
+              head -c 1600 "$file"; echo
+            fi
+          done
+          echo "=== largest index chunk markers ==="
+          big=$(find .output/public/assets -maxdepth 1 -type f -name 'index-*.js' -printf '%s %p\\n' | sort -nr | head -1 | cut -d' ' -f2-)
+          if [ -n "$big" ]; then
+            echo "$big"
+            grep -o -E 'mapbox|MotionQaPanel|InstallAppPrompt|SupabaseClient|stripe|heic2any|react-query|QueryClient|leaflet|createRouter' "$big" | sort | uniq -c || true
+          fi
