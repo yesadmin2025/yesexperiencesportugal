@@ -130,7 +130,7 @@ function DayToursPage() {
                       imgClassName="group-hover:scale-105 transition-transform duration-700"
                     >
                       <span className="absolute top-4 right-4 text-[11px] uppercase tracking-[0.22em] bg-[color:var(--gold)]/95 text-[color:var(--charcoal)] px-3 py-1.5">
-                        Tailored Signature
+                        Signature day
                       </span>
                     </TourImage>
                   </Link>
@@ -156,7 +156,7 @@ function DayToursPage() {
                       <MapPin size={12} /> {t.theme}
                     </span>
                     <span className="text-[color:var(--teal)]">
-                      From <PriceEur amountEur={t.priceFrom} role="from" />
+                      From <PriceEur amountEur={t.priceFrom} role="from" />{" "}
                       <span className="ml-1 text-[11px] tracking-[0.18em] text-[color:var(--charcoal-soft)]">
                         per person
                       </span>
