@@ -530,9 +530,16 @@ function TailorPage() {
   // optional viewpoints the user added) — not the full Viator pool.
   const summaryStops = useMemo<{ label: string }[]>(() => {
     if (!blueprint) return keptStops.map((s: TourStop) => ({ label: s.label }));
+    // Winery suppliers stay operational data — public summary says "Winery visit N".
+    let wineryN = 0;
+    const chosen = blueprint.choice
+      ? blueprint.choice.options
+          .filter((o) => choiceSelected.has(o.id))
+          .map((o) => (o.category === "winery" ? { label: `Winery visit ${++wineryN}` } : o))
+      : [];
     return [
       ...blueprint.core.filter((s) => !skippedCore.has(s.id)),
-      ...(blueprint.choice ? blueprint.choice.options.filter((o) => choiceSelected.has(o.id)) : []),
+      ...chosen,
       ...blueprint.optional.filter((o) => optionalSelected.has(o.id)),
     ];
   }, [blueprint, keptStops, skippedCore, choiceSelected, optionalSelected]);
