@@ -96,7 +96,7 @@ function AboutPage() {
           <div>
             <div className="scene-atmosphere"><h1 className="m-0"><Eyebrow>About YES! Experiences Portugal · Private tours &amp; travel design</Eyebrow></h1></div>
             <div className="scene-title">
-              <SectionTitle as="p" size="anchor" spacing="loose">
+              <SectionTitle as="h2" size="anchor" spacing="loose">
                 Portugal is the stage. <SectionTitle.Em>You write the story.</SectionTitle.Em>
               </SectionTitle>
             </div>
