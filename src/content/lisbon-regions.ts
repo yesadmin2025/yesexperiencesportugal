@@ -82,6 +82,7 @@ export const LISBON_REGIONS: readonly LisbonRegion[] = [
       lead: "Still choosing between the wine regions? Our local guide lets you ",
       anchor: "compare wine days from Lisbon",
       tail: " before you reserve a private Arrábida or Sesimbra day.",
+      slug: "best-wine-tours-from-lisbon",
     },
     tourIds: [
       "arrabida-wine-allinclusive",
@@ -132,6 +133,7 @@ export const LISBON_REGIONS: readonly LisbonRegion[] = [
       lead: "If you are weighing Azeitão against Arrábida or the Alentejo, see ",
       anchor: "which Lisbon wine day suits you",
       tail: " before choosing the shape of the day.",
+      slug: "best-wine-tours-from-lisbon",
     },
     tourIds: ["azeitao-cheese", "arrabida-wine-allinclusive", "tiles-workshop"],
     driveTime: "About 40 minutes from central Lisbon",
