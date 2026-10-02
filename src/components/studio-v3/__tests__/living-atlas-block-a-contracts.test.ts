@@ -288,7 +288,11 @@ describe("Block A · review signals flow through the single validator", () => {
 
 describe("Block A · verified Sado internal transit", () => {
   it("withholds the verified 30 minutes and reports a truthful inclusive total", () => {
-    const live = resolve({ preferTourId: TROIA, dateExact: TUESDAY }).livingAtlasLive!;
+    const live = resolve({
+      preferTourId: TROIA,
+      eligibleTourIds: [TROIA],
+      dateExact: TUESDAY,
+    }).livingAtlasLive!;
     expect(live.internalTransitMinutes).toBe(30);
     expect(live.planningTiming).not.toBeNull();
     expect(live.totalPlannedMinutesIncludingInternalTransit).toBe(
