@@ -1,0 +1,25 @@
+name: Full-site audit bundle diagnostics
+
+on:
+  push:
+    branches:
+      - audit/full-site-20261002
+
+jobs:
+  diagnose:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+      - run: bun install --frozen-lockfile
+      - name: Build
+        run: bun run build
+      - name: Largest client assets
+        run: |
+          echo "=== dist directories ==="
+          find . -maxdepth 3 -type d \( -name assets -o -name client \) -print
+          echo "=== largest built JS/CSS assets ==="
+          find . -type f \( -name '*.js' -o -name '*.css' \) -path '*dist*' -printf '%s %p\n' 2>/dev/null | sort -nr | head -40 || true
