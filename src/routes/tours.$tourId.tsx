@@ -512,7 +512,7 @@ function TourHero({
                 {CANCELLATION.signature.en} · Secure payment
               </p>
 
-          <div className="max-sm:order-1 mt-6 flex flex-col items-start gap-3">
+          <div className="max-sm:order-1 mt-6 flex flex-col items-start gap-3 max-sm:pr-[72px]">
             {typeof (tour as { priceFrom?: number }).priceFrom === "number" ? (
               <div className="flex flex-wrap items-baseline gap-x-2.5 gap-y-1">
                 <span className="text-[12px] uppercase tracking-[0.12em] text-[color:var(--charcoal-soft)]">
