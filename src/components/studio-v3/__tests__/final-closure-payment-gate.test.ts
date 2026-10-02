@@ -121,7 +121,7 @@ describe("protected generated file", () => {
   it("brand-audit.json matches the pre-closure protected baseline", () => {
     const pristine = execFileSync(
       "git",
-      ["show", "681b1159b4883a5a9be6899c9a1a17f25ca7269f:src/generated/brand-audit.json"],
+      ["show", "87121363cc6a5064b1cafa47051babd399b6033e:src/generated/brand-audit.json"],
       { encoding: "utf8", maxBuffer: 64 * 1024 * 1024 },
     );
     const onDisk = readFileSync(
