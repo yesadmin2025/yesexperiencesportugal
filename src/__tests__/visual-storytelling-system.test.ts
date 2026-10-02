@@ -69,7 +69,7 @@ describe("homepage story motion", () => {
     expect(journey).toMatch(/"A Portugal"/);
     expect(journey).toMatch(/written around you\./);
     expect(journey.match(/story-beat/g)?.length ?? 0).toBe(2);
-    expect(journey).toMatch(/Multi-day Portugal, composed by a local —/);
+    expect(journey).toMatch(/Multi-day Portugal, composed by your local travel designer —/);
     expect(journey).toMatch(/delivered as a book, not a booking\./);
   });
 
