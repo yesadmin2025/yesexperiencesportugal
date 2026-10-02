@@ -454,7 +454,7 @@ export function SimpleBookingForm({ tour }: { tour: SignatureTour }) {
     >
       <Eyebrow>Availability</Eyebrow>
       <SectionTitle size="compact" spacing="tight">
-        Book the Signature, <SectionTitle.Em>as designed</SectionTitle.Em>
+        Reserve this private day, <SectionTitle.Em>as designed</SectionTitle.Em>
       </SectionTitle>
 
       {/* Top-of-form blocking summary — never rely on a floating toast alone. */}
@@ -723,12 +723,11 @@ export function SimpleBookingForm({ tour }: { tour: SignatureTour }) {
         </CtaButton>
       )}
 
-      {tour.id !== "p23-artisan-pottery-cork" && <div className="mt-3">
+      {tour.id !== "p23-artisan-pottery-cork" && <div className="mt-4 flex justify-center">
         <CtaButton
           to="/tours/$tourId/tailor"
           params={{ tourId: tour.id }}
-          variant="ghost"
-          className="w-full justify-between"
+          variant="hairline"
         >
           Tailor this day
         </CtaButton>

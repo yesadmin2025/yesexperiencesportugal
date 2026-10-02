@@ -86,3 +86,15 @@
 - [x] Refine homepage metadata and existing editorial sections for private Lisbon tours and Portugal travel designer intent
 - [x] Refine the Lisbon wine guide using verified tour facts and add centrally sourced operator details
 - [x] Verify focused SEO tests, mobile rendering and metadata
+
+# Conversion surgery (Oct 2026, no publish)
+
+- [ ] Finish the Studio walkthrough and open the Stripe payment screen (blocked: needs owner go-ahead, because it creates a pending booking in the shared database)
+- [x] Check visibility of the group-size price note (keep €135)
+- [x] Booking action easy to reach on the first phone screen (no stacked bars)
+- [x] Reserve with no date → focus date + inline message
+- [x] Tailor shown as a quieter secondary action
+- [x] Children age info hidden until a child is added (check current state)
+- [x] Mobile checkout drawer density
+- [x] Plain-English pairing for "Signature" at booking points
+- [x] Re-test at mobile + desktop

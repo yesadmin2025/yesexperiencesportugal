@@ -461,7 +461,7 @@ function TourHero({
             />
           </div>
 
-          <div className="mt-5 sm:mt-8 lg:mt-0">
+          <div className="mt-5 flex flex-col sm:mt-8 sm:block lg:mt-0">
             <Eyebrow>Private Signature Experience</Eyebrow>
             <h1 className="serif mt-3 max-w-3xl text-[40px] font-medium leading-[1.08] tracking-normal text-[color:var(--charcoal)] md:text-[60px] md:leading-[1.02]">
               {getSignatureSeo(tour.id)?.h1 ?? tour.title}
@@ -498,7 +498,9 @@ function TourHero({
               )}
             </div>
 
-             <ul className="mt-4 flex flex-wrap gap-x-4 gap-y-1.5 text-[12px] leading-snug text-[color:var(--charcoal)]" aria-label="Highlights of this day">
+             {/* On phones the highlights + cancellation line follow the price
+                 and Reserve action so booking is reachable in the first screen. */}
+             <ul className="max-sm:order-2 mt-4 flex flex-wrap gap-x-4 gap-y-1.5 text-[12px] leading-snug text-[color:var(--charcoal)]" aria-label="Highlights of this day">
                {getSignatureCardHighlights(tour.id).map((highlight) => (
                  <li key={highlight} className="flex max-w-full items-start gap-1.5">
                    <Check size={12} className="mt-0.5 shrink-0 text-[color:var(--teal)]" aria-hidden="true" />
@@ -506,13 +508,11 @@ function TourHero({
                  </li>
                ))}
              </ul>
-              <p className="mt-4 text-[12px] leading-snug text-[color:var(--charcoal-soft)]">
+              <p className="max-sm:order-3 mt-4 text-[12px] leading-snug text-[color:var(--charcoal-soft)]">
                 {CANCELLATION.signature.en} · Secure payment
               </p>
-          </div>
 
-
-          <div className="mt-6 flex flex-col items-start gap-3">
+          <div className="max-sm:order-1 mt-6 flex flex-col items-start gap-3">
             {typeof (tour as { priceFrom?: number }).priceFrom === "number" ? (
               <div className="flex flex-wrap items-baseline gap-x-2.5 gap-y-1">
                 <span className="text-[12px] uppercase tracking-[0.12em] text-[color:var(--charcoal-soft)]">
@@ -545,13 +545,11 @@ function TourHero({
              {tour.id !== "p23-artisan-pottery-cork" && <CtaButton
               to="/tours/$tourId/tailor"
               params={{ tourId: tour.id }}
-               variant="ghost"
-               size="sm"
+               variant="hairline"
               data-analytics="signature_tailor_click"
               data-analytics-placement="hero"
               data-analytics-experience-id={tour.id}
               data-analytics-experience-type="signature"
-               className="w-full justify-between sm:w-auto"
             >
                Tailor this day
              </CtaButton>}
@@ -560,6 +558,7 @@ function TourHero({
               title={tour.title}
               experienceId={tour.id}
             />
+          </div>
           </div>
         </div>
       </section>
