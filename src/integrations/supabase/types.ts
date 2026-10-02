@@ -3450,6 +3450,96 @@ export type Database = {
         }
         Relationships: []
       }
+      tailor_price_policies: {
+        Row: {
+          floor_pct_of_base: number
+          max_total_pct: number
+          note: string | null
+          policy_group: string
+          updated_at: string
+          updated_by: string | null
+        }
+        Insert: {
+          floor_pct_of_base: number
+          max_total_pct: number
+          note?: string | null
+          policy_group: string
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Update: {
+          floor_pct_of_base?: number
+          max_total_pct?: number
+          note?: string | null
+          policy_group?: string
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Relationships: []
+      }
+      tailor_price_rules: {
+        Row: {
+          action_id: string
+          action_kind: string
+          active: boolean
+          adjustment_type: string
+          adjustment_value: number | null
+          created_at: string
+          default_in_day: boolean
+          direction: string
+          id: string
+          label: string
+          max_party: number | null
+          min_party: number | null
+          note: string | null
+          policy_group: string | null
+          tour_id: string
+          unit: string
+          updated_at: string
+          updated_by: string | null
+        }
+        Insert: {
+          action_id: string
+          action_kind: string
+          active?: boolean
+          adjustment_type?: string
+          adjustment_value?: number | null
+          created_at?: string
+          default_in_day?: boolean
+          direction: string
+          id?: string
+          label: string
+          max_party?: number | null
+          min_party?: number | null
+          note?: string | null
+          policy_group?: string | null
+          tour_id: string
+          unit?: string
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Update: {
+          action_id?: string
+          action_kind?: string
+          active?: boolean
+          adjustment_type?: string
+          adjustment_value?: number | null
+          created_at?: string
+          default_in_day?: boolean
+          direction?: string
+          id?: string
+          label?: string
+          max_party?: number | null
+          min_party?: number | null
+          note?: string | null
+          policy_group?: string | null
+          tour_id?: string
+          unit?: string
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Relationships: []
+      }
       tour_assignments: {
         Row: {
           assigned_at: string
