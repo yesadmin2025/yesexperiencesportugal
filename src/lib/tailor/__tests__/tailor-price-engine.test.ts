@@ -225,6 +225,11 @@ describe("Tailor catalog + admin completeness", () => {
       true,
     );
   });
+  it("current Tailor blueprints expose no customer-facing content locks", () => {
+    const blueprints = readFileSync("src/data/tailorBlueprints.ts", "utf8");
+    expect(blueprints).not.toMatch(/\n\s+lock\s*:\s*\{/);
+  });
+
   it("row status: empty = Missing price, 0 = priced, inactive is not missing", () => {
     expect(tailorRowStatus({ value: "", active: true })).toBe("missing");
     expect(tailorRowStatus({ value: "0", active: true })).toBe("priced");
