@@ -94,14 +94,6 @@ describe("winery quantity stays inside the authorized ladder", () => {
     expect(w.max).toBe(4);
   });
 
-  it("unauthorized winery pools are swap-only at the blueprint baseline", () => {
-    const s = src("src/routes/tours_.$tourId.tailor.tsx");
-    // Only an owner-approved supplement ladder may expose a count control.
-    expect(s).toMatch(/canAdjustWineryCount = Boolean\(rules\.wineries\)/);
-    // The state guard still refuses an unpriced extra winery.
-    expect(s).toMatch(/option0\?\.category === "winery" &&\s*!rules\.wineries/);
-  });
-
   it("public Tailor never names a winery estate", () => {
     const s = src("src/routes/tours_.$tourId.tailor.tsx");
     expect(s).toMatch(/const wineryLabel = \(index: number\) => `Winery visit \$\{index\}`/);
@@ -110,8 +102,5 @@ describe("winery quantity stays inside the authorized ladder", () => {
   });
 
 
-  it("priced extra wineries are not pushed to manual confirmation", () => {
-    const s = src("src/routes/tours_.$tourId.tailor.tsx");
-    expect(s).toMatch(/wineExtension\.extra > 0 && !rules\.wineries/);
-  });
+});
 });

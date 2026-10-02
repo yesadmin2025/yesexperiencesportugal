@@ -6,6 +6,7 @@
 // active AND priced above €0.
 
 import { createFileRoute, Link, useRouter } from "@tanstack/react-router";
+import { TailorPriceMap } from "@/components/admin/TailorPriceMap";
 import { useEffect, useMemo, useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
@@ -65,6 +66,9 @@ function PriceMapError({ error: rawError, reset }: { error: unknown; reset: () =
 }
 
 export const Route = createFileRoute("/admin/price-map")({
+  validateSearch: (search: Record<string, unknown>): { mode?: "tailor" } => ({
+    mode: search.mode === "tailor" ? "tailor" : undefined,
+  }),
   head: () => ({
     meta: [
       { title: "Price map — YES Admin" },
@@ -83,6 +87,39 @@ export const Route = createFileRoute("/admin/price-map")({
 });
 
 function PriceMapPage() {
+  const { mode } = Route.useSearch();
+  if (mode === "tailor") {
+    return (
+      <SiteLayout>
+        <section className="pt-28 pb-32">
+          <div className="container-x max-w-6xl">
+            <p className="text-[11px] uppercase tracking-[0.22em] text-[color:var(--charcoal-soft)]">Pricing</p>
+            <h1 className="mt-2 text-3xl">Price map</h1>
+            <PriceMapModeTabs mode="tailor" />
+            <TailorPriceMap />
+          </div>
+        </section>
+      </SiteLayout>
+    );
+  }
+  return <StudioPriceMap />;
+}
+
+function PriceMapModeTabs({ mode }: { mode: "studio" | "tailor" }) {
+  const tab = (active: boolean) =>
+    [
+      "inline-flex min-h-[44px] items-center border-b-2 px-1 text-sm",
+      active ? "border-[color:var(--teal)] text-[color:var(--charcoal)]" : "border-transparent text-[color:var(--charcoal-soft)]",
+    ].join(" ");
+  return (
+    <nav aria-label="Price map mode" className="mt-4 flex gap-6 border-b border-[color:var(--border)]">
+      <Link to="/admin/price-map" search={{}} className={tab(mode === "studio")}>Studio moments</Link>
+      <Link to="/admin/price-map" search={{ mode: "tailor" }} className={tab(mode === "tailor")}>Tailor changes</Link>
+    </nav>
+  );
+}
+
+function StudioPriceMap() {
   const queryClient = useQueryClient();
   const { data: rows, isLoading, refetch } = useComposableStops();
   const [forms, setForms] = useState<Record<string, RowForm>>({});
@@ -201,6 +238,7 @@ function PriceMapPage() {
             Studio
           </p>
           <h1 className="mt-2 text-3xl">Price map</h1>
+          <PriceMapModeTabs mode="studio" />
           <p className="prose-longform mt-4 text-sm text-[color:var(--charcoal-soft)]">
             Every verified moment in one table: price, how it is billed and the minimum party it
             needs. Set them all, then save once. Unpriced moments stay invisible in the Studio.
