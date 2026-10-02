@@ -42,7 +42,9 @@ describe("Tailor never leaks a winery supplier name", () => {
     expect(src).toMatch(/Winery visit added/);
     expect(src).not.toContain("supplier will confirm timing");
     // The toast for a winery never interpolates the internal label.
-    expect(src).not.toMatch(/Adding \$\{option\.label\} adds about \$\{added\} min to your day\.\$\{/);
+    expect(src).not.toMatch(
+      /Adding \$\{option\.label\} adds about \$\{added\} min to your day\.\$\{/,
+    );
   });
 
   it("builds display labels from the current selection, genericised", () => {
@@ -65,7 +67,7 @@ describe("Tailor Enhance exposes only priced changes without leaking suppliers",
     const wineryOptionals = sintra!.optional.filter((o) => o.category === "winery");
     expect(wineryOptionals).toHaveLength(1);
     expect(wineryOptionals[0]!.id).toBe("colares-winery");
-    expect(src).toContain("priceMap.bookable(optionalActionId(o.id), \"add\")");
+    expect(src).toContain('priceMap.bookable(optionalActionId(o.id), "add")');
     expect(src).not.toContain('o.category !== "winery" && priceMap.bookable');
     expect(src).toContain('o.category === "winery" ? "Add a winery visit" : o.label');
   });
@@ -78,7 +80,9 @@ describe("Tailor Enhance exposes only priced changes without leaking suppliers",
     expect(tailorRules("tiles-workshop").wineries).toBeUndefined();
     expect(src).toContain("const canAdjustWineryCount = wineryChoicePool;");
     expect(src).toContain("const wineryMin = rules.wineries?.min ?? 0;");
-    expect(src).toContain("const wineryMax = rules.wineries?.max ?? blueprint?.choice?.pickMax ?? 0;");
+    expect(src).toContain(
+      "const wineryMax = rules.wineries?.max ?? blueprint?.choice?.pickMax ?? 0;",
+    );
   });
 
   it("Évora keeps its approved extra winery ladder", () => {
@@ -109,7 +113,9 @@ describe("Arrábida winery counter bounds", () => {
 
   it("disables the controls at the bounds instead of toasting", () => {
     expect(src).toContain("const wineryMin = rules.wineries?.min ?? 0;");
-    expect(src).toContain("const wineryMax = rules.wineries?.max ?? blueprint?.choice?.pickMax ?? 0;");
+    expect(src).toContain(
+      "const wineryMax = rules.wineries?.max ?? blueprint?.choice?.pickMax ?? 0;",
+    );
     expect(src).toContain("disabled={!canRemoveWineryVisit}");
     expect(src).toContain("disabled={!canAddWineryVisit}");
   });

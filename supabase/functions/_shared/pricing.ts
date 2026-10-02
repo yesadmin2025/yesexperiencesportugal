@@ -368,7 +368,6 @@ export function serverRoundEur5(eur: number): number {
   return Math.max(5, Math.round(eur / 5) * 5);
 }
 
-
 /**
  * Server-authoritative add-on line. `baseEur` MUST be the tour's approved
  * 8-pax anchor from `tour_price_tiers` — never a client-supplied number.
@@ -456,7 +455,6 @@ export const TAILOR_PRINCIPAL_ELIGIBLE_STOP_IDS: Readonly<Record<string, readonl
   "roman-heritage-alentejo": ["sao-cucufate", "vinho-talha", "mestre-daniel", "talha-lunch"],
 };
 
-
 /**
  * Server-authoritative principal-removal count from client-supplied ids.
  * Counts UNIQUE whitelisted ids only — invented ids, duplicated ids, locked
@@ -478,4 +476,3 @@ export function serverPrincipalRemovalCount(
   }
   return seen.size;
 }
-

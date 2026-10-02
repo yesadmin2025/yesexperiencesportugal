@@ -11,12 +11,16 @@ import { toast } from "sonner";
 import { Save } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { findTour } from "@/data/signatureTours";
-import { allTailorOfferedActions, type TailorOfferedAction } from "@/lib/tailor/tailor-price-catalog";
 import {
-  fetchTailorPriceMap,
-  TAILOR_PRICE_MAP_QUERY_KEY,
-} from "@/hooks/use-tailor-price-map";
-import type { TailorAdjustmentType, TailorPriceRule, TailorUnit } from "@/lib/tailor/tailor-price-engine";
+  allTailorOfferedActions,
+  type TailorOfferedAction,
+} from "@/lib/tailor/tailor-price-catalog";
+import { fetchTailorPriceMap, TAILOR_PRICE_MAP_QUERY_KEY } from "@/hooks/use-tailor-price-map";
+import type {
+  TailorAdjustmentType,
+  TailorPriceRule,
+  TailorUnit,
+} from "@/lib/tailor/tailor-price-engine";
 
 type Form = {
   type: TailorAdjustmentType;
@@ -39,7 +43,15 @@ const keyOf = (a: { tourId: string; actionId: string; direction: string }) =>
   `${a.tourId}|${a.actionId}|${a.direction}`;
 
 const serialize = (f: Form) =>
-  [f.type, f.value.trim(), f.unit, f.active, f.minParty.trim(), f.maxParty.trim(), f.note.trim()].join("|");
+  [
+    f.type,
+    f.value.trim(),
+    f.unit,
+    f.active,
+    f.minParty.trim(),
+    f.maxParty.trim(),
+    f.note.trim(),
+  ].join("|");
 
 function formFromRule(rule: TailorPriceRule | undefined): Form {
   return {
@@ -118,7 +130,9 @@ export function TailorPriceMap() {
       const raw = f.value.trim().replace(",", ".");
       const value = raw === "" ? null : Number(raw);
       if (value !== null && (!Number.isFinite(value) || value < 0)) {
-        toast.error(`${a.label}: enter 0 or a positive amount (direction already says add or remove).`);
+        toast.error(
+          `${a.label}: enter 0 or a positive amount (direction already says add or remove).`,
+        );
         return;
       }
       if (f.type === "percent" && value !== null && value > 100) {
@@ -137,7 +151,10 @@ export function TailorPriceMap() {
         adjustment_type: f.type,
         adjustment_value: value,
         unit: f.unit,
-        policy_group: f.type === "percent" && a.kind === "stop" && a.direction === "remove" ? "principal_removal" : null,
+        policy_group:
+          f.type === "percent" && a.kind === "stop" && a.direction === "remove"
+            ? "principal_removal"
+            : null,
         active: f.active,
         min_party: minP && minP > 0 ? minP : null,
         max_party: maxP && maxP > 0 ? maxP : null,
@@ -219,7 +236,11 @@ export function TailorPriceMap() {
           </select>
         </label>
         <label className="flex min-h-[44px] items-center gap-2 text-sm">
-          <input type="checkbox" checked={onlyMissing} onChange={(e) => setOnlyMissing(e.target.checked)} />
+          <input
+            type="checkbox"
+            checked={onlyMissing}
+            onChange={(e) => setOnlyMissing(e.target.checked)}
+          />
           Only missing prices
         </label>
       </div>
@@ -246,7 +267,11 @@ export function TailorPriceMap() {
                 const f = formFor(a);
                 const status = tailorRowStatus(f);
                 return (
-                  <tr key={keyOf(a)} data-testid="tailor-price-row" className="border-b border-[color:var(--border)] align-top">
+                  <tr
+                    key={keyOf(a)}
+                    data-testid="tailor-price-row"
+                    className="border-b border-[color:var(--border)] align-top"
+                  >
                     <td className="py-2 pr-3">
                       <span className="block">{a.label}</span>
                       <span className="block text-[11.5px] text-[color:var(--charcoal-soft)]">
@@ -254,7 +279,9 @@ export function TailorPriceMap() {
                       </span>
                     </td>
                     <td className="py-2 pr-3">{a.defaultInDay ? "Yes" : "No"}</td>
-                    <td className="py-2 pr-3">{a.direction === "remove" ? "Remove (−)" : "Add (+)"}</td>
+                    <td className="py-2 pr-3">
+                      {a.direction === "remove" ? "Remove (−)" : "Add (+)"}
+                    </td>
                     <td className="py-2 pr-3">
                       <select
                         aria-label={`${a.label} type`}

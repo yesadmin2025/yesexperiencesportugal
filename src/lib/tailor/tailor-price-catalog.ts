@@ -37,7 +37,9 @@ export function choiceMax(tourId: string): number {
   const bp = TAILOR_BLUEPRINTS[tourId];
   if (!bp?.choice) return 0;
   const w = tailorRules(tourId).wineries;
-  return w ? Math.min(w.max, bp.choice.options.length) : Math.min(bp.choice.pickMax, bp.choice.options.length);
+  return w
+    ? Math.min(w.max, bp.choice.options.length)
+    : Math.min(bp.choice.pickMax, bp.choice.options.length);
 }
 
 export function tailorOfferedActions(tourId: string): TailorOfferedAction[] {
@@ -46,22 +48,60 @@ export function tailorOfferedActions(tourId: string): TailorOfferedAction[] {
   const out: TailorOfferedAction[] = [];
   for (const s of bp.core) {
     if (!catalogStopRemovable(s)) continue;
-    out.push({ tourId, actionId: stopActionId(s.id), kind: "stop", direction: "remove", label: `Remove ${s.label}`, defaultInDay: true });
+    out.push({
+      tourId,
+      actionId: stopActionId(s.id),
+      kind: "stop",
+      direction: "remove",
+      label: `Remove ${s.label}`,
+      defaultInDay: true,
+    });
   }
   if (bp.choice) {
     const noun = bp.choice.options.every((o) => o.category === "winery") ? "winery" : "choice";
     for (let n = bp.choice.pickMin; n >= 1; n--) {
-      out.push({ tourId, actionId: choiceSlotId(n), kind: "choice_slot", direction: "remove", label: noun === "winery" ? `${n - 1} ${n - 1 === 1 ? "winery" : "wineries"} instead of ${n}` : `${n - 1} selected instead of ${n} — ${bp.choice.label}`, defaultInDay: true });
+      out.push({
+        tourId,
+        actionId: choiceSlotId(n),
+        kind: "choice_slot",
+        direction: "remove",
+        label:
+          noun === "winery"
+            ? `${n - 1} ${n - 1 === 1 ? "winery" : "wineries"} instead of ${n}`
+            : `${n - 1} selected instead of ${n} — ${bp.choice.label}`,
+        defaultInDay: true,
+      });
     }
     for (let n = bp.choice.pickMin + 1; n <= choiceMax(tourId); n++) {
-      out.push({ tourId, actionId: choiceSlotId(n), kind: "choice_slot", direction: "add", label: noun === "winery" ? `Winery number ${n}` : `Choice number ${n}`, defaultInDay: false });
+      out.push({
+        tourId,
+        actionId: choiceSlotId(n),
+        kind: "choice_slot",
+        direction: "add",
+        label: noun === "winery" ? `Winery number ${n}` : `Choice number ${n}`,
+        defaultInDay: false,
+      });
     }
   }
   if (tailorRules(tourId).allowAddLunch) {
-    out.push({ tourId, actionId: LUNCH_ACTION_ID, kind: "lunch", direction: "add", label: "Add restaurant lunch", defaultInDay: false });
+    out.push({
+      tourId,
+      actionId: LUNCH_ACTION_ID,
+      kind: "lunch",
+      direction: "add",
+      label: "Add restaurant lunch",
+      defaultInDay: false,
+    });
   }
   for (const o of bp.optional) {
-    out.push({ tourId, actionId: optionalActionId(o.id), kind: "optional", direction: "add", label: `Add ${o.label}`, defaultInDay: false });
+    out.push({
+      tourId,
+      actionId: optionalActionId(o.id),
+      kind: "optional",
+      direction: "add",
+      label: `Add ${o.label}`,
+      defaultInDay: false,
+    });
   }
   return out;
 }

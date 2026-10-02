@@ -269,4 +269,3 @@ export function principalRemovalCount(tourId: string, skippedStopIds: Iterable<s
   }
   return Math.min(seen.size, maxRemovalsForMinViable(tourId));
 }
-

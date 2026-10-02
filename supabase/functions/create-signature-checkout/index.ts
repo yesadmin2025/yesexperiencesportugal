@@ -126,7 +126,6 @@ import {
   serverAddOnsChargedTotalEur,
   serverAddOnAllowedForTour,
   serverPrincipalRemovalCount,
-
   tailorFinalPerPax,
   type AgeBand,
 } from "../_shared/pricing.ts";
@@ -268,8 +267,6 @@ Deno.serve(async (req) => {
       }
     }
 
-
-
     const { data: tierRow } = await admin
       .from("tour_price_tiers")
       .select("tiers")
@@ -328,7 +325,6 @@ Deno.serve(async (req) => {
     const approvedAnchorEur =
       tiers && typeof tiers["8"] === "number" && tiers["8"] > 0 ? tiers["8"] : null;
 
-
     // Tailor flow only: apply SSOT reduction based on principal stops the
     // guest removed, then add the authorized flat supplements (add lunch,
     // extra wineries) and subtract the flat lunch-removal credit.
@@ -366,19 +362,27 @@ Deno.serve(async (req) => {
       const selected: TailorSelectedAction[] = [];
       for (const a of rawActions) {
         if (
-          !a || typeof a.actionId !== "string" || a.actionId.length > 80 ||
+          !a ||
+          typeof a.actionId !== "string" ||
+          a.actionId.length > 80 ||
           (a.direction !== "add" && a.direction !== "remove")
         ) {
           return jsonError("Invalid Tailor action", 400);
         }
         selected.push({ actionId: a.actionId, direction: a.direction });
       }
-      const [{ data: ruleRows, error: ruleErr }, { data: policyRows, error: polErr }] = await Promise.all([
-        admin.from("tailor_price_rules").select(
-          "tour_id, action_id, action_kind, direction, adjustment_type, adjustment_value, unit, policy_group, active, min_party, max_party, label",
-        ).eq("tour_id", body.tourId),
-        admin.from("tailor_price_policies").select("policy_group, max_total_pct, floor_pct_of_base"),
-      ]);
+      const [{ data: ruleRows, error: ruleErr }, { data: policyRows, error: polErr }] =
+        await Promise.all([
+          admin
+            .from("tailor_price_rules")
+            .select(
+              "tour_id, action_id, action_kind, direction, adjustment_type, adjustment_value, unit, policy_group, active, min_party, max_party, label",
+            )
+            .eq("tour_id", body.tourId),
+          admin
+            .from("tailor_price_policies")
+            .select("policy_group, max_total_pct, floor_pct_of_base"),
+        ]);
       if (ruleErr || polErr) {
         console.error("tailor price map load failed", ruleErr ?? polErr);
         return jsonError("Tailor prices are temporarily unavailable. Please try again.", 503);
@@ -401,11 +405,16 @@ Deno.serve(async (req) => {
         selected,
       });
       if (!result.ok) {
-        return jsonError(`tailor_${result.code}${result.actionId ? `: ${result.actionId}` : ""}`, 400);
+        return jsonError(
+          `tailor_${result.code}${result.actionId ? `: ${result.actionId}` : ""}`,
+          400,
+        );
       }
       // Structural (not price) rule kept: some winery counts need a moment
       // traded away. Count of extra choice slots is derived from actions.
-      const extraSlots = selected.filter((a) => a.direction === "add" && /^choice-\d+$/.test(a.actionId)).length;
+      const extraSlots = selected.filter(
+        (a) => a.direction === "add" && /^choice-\d+$/.test(a.actionId),
+      ).length;
       if (extraSlots > 0) {
         const traded = selected
           .filter((a) => a.direction === "remove" && a.actionId.startsWith("stop:"))
@@ -415,11 +424,12 @@ Deno.serve(async (req) => {
         }
       }
       principalsRemoved = rules.filter(
-        (r) => r.adjustment_type === "percent" && selected.some((a) => a.actionId === r.action_id && a.direction === r.direction),
+        (r) =>
+          r.adjustment_type === "percent" &&
+          selected.some((a) => a.actionId === r.action_id && a.direction === r.direction),
       ).length;
       tailorEngine = result;
     }
-
 
     // COMPOSED-DAY COMMERCIAL TRUTH.
     // A Studio day is bespoke: it may legitimately compose a 3rd or 4th
@@ -446,17 +456,10 @@ Deno.serve(async (req) => {
         )
       : 0;
     if (extraWineriesAllowed === null) {
-      return jsonError(
-        "This winery count requires removing another moment from the day.",
-        400,
-      );
+      return jsonError("This winery count requires removing another moment from the day.", 400);
     }
     const tailorSupplements = isStudioFlow
-      ? serverTailorSupplementsEur(
-          body.tourId,
-          false,
-          extraWineriesAllowed,
-        )
+      ? serverTailorSupplementsEur(body.tourId, false, extraWineriesAllowed)
       : 0;
 
     // ── Lunch removal (Arrábida Wine only) ──────────────────────────
@@ -578,7 +581,12 @@ Deno.serve(async (req) => {
     const rawAddOns = Array.isArray(body.addOns) ? body.addOns : [];
     const candidateAddOns = rawAddOns
       .filter(
-        (a) => a && typeof a === "object" && typeof a.id === "string" && a.id.length > 0 && a.id.length <= 64,
+        (a) =>
+          a &&
+          typeof a === "object" &&
+          typeof a.id === "string" &&
+          a.id.length > 0 &&
+          a.id.length <= 64,
       )
       .slice(0, 6);
 
@@ -616,8 +624,6 @@ Deno.serve(async (req) => {
       validatedAddOns.map((a) => ({ perUnitEur: a.priceEur, quantity: a.quantity })),
     );
 
-
-
     // COMPOSABLE MOMENTS — a bespoke Studio day may hold verified regional
     // moments from outside the anchor Signature, placed at their natural point
     // in the day rather than bolted on at the end. Their ONLY pricing
@@ -645,7 +651,9 @@ Deno.serve(async (req) => {
     if (composableIds.length > 0) {
       const { data: composableRows, error: composableError } = await admin
         .from("studio_composable_stops")
-        .select("stop_id, price_cents, pricing_unit, min_guests, active, duration_minutes, open_from, open_to, fixed_start_times")
+        .select(
+          "stop_id, price_cents, pricing_unit, min_guests, active, duration_minutes, open_from, open_to, fixed_start_times",
+        )
         .in("stop_id", composableIds);
       if (composableError) return jsonError("composable_stop_lookup_failed", 500);
       const rowById = new Map(
@@ -707,7 +715,6 @@ Deno.serve(async (req) => {
         },
         quantity: a.quantity,
       }));
-
 
     // Build a Stripe line item per age band (grouped) so the guest sees
     // "Adult × 2 · €279", "Youth × 1 · €209", etc. — never a single

@@ -95,7 +95,11 @@ describe("P0-2 structural commercial identity", () => {
   });
 
   it("charges nothing inside the included baseline", () => {
-    const day = [...CORE, winery("jmf", "A local winery"), winery("bacalhoa", "A second local winery")];
+    const day = [
+      ...CORE,
+      winery("jmf", "A local winery"),
+      winery("bacalhoa", "A second local winery"),
+    ];
     expect(studioComposedSupplementFromMoments(TOUR, day)).toBe(0);
     expect(studioTradedBlueprintStopIds(TOUR, day)).toEqual([]);
   });
@@ -126,7 +130,11 @@ describe("P0-2 local totals equal server arithmetic (2 adults)", () => {
   };
 
   it("baseline / 2 wineries", () => {
-    const day = [...CORE, winery("jmf", "A local winery"), winery("bacalhoa", "A second local winery")];
+    const day = [
+      ...CORE,
+      winery("jmf", "A local winery"),
+      winery("bacalhoa", "A second local winery"),
+    ];
     const supplement = studioComposedSupplementFromMoments(TOUR, day);
     const priced = resolveStudioStrictJourneyPricing(TOUR, party, TIERS, supplement);
     expect(priced?.totalEur).toBe(serverTotal(0));
@@ -161,7 +169,6 @@ describe("P0-2 local totals equal server arithmetic (2 adults)", () => {
     expect(priced?.totalEur).toBe(serverTotal(extra));
   });
 });
-
 
 describe("P0-1/P0-2 the client never prices this action", () => {
   const CHECKOUT_FN = readFileSync("supabase/functions/create-signature-checkout/index.ts", "utf8");
