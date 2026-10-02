@@ -7,7 +7,7 @@ import {
 } from "../tailor-price-engine";
 import { allTailorOfferedActions, tailorOfferedActions } from "../tailor-price-catalog";
 import { tailorRowStatus } from "@/components/admin/TailorPriceMap";
-import { ageBand } from "@/config/pricing";
+import { ageBand } from "@/data/signatureTourPricing";
 import { readFileSync } from "node:fs";
 
 const rule = (p: Partial<TailorPriceRule> & Pick<TailorPriceRule, "action_id" | "direction">): TailorPriceRule => ({
