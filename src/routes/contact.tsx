@@ -5,7 +5,8 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { breadcrumbLd, jsonLdScript } from "@/lib/jsonld";
 import { SiteLayout } from "@/components/SiteLayout";
 import { Mail, Phone, MapPin, MessageCircle } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { clearTailorHandoff, readTailorHandoff, tailorHandoffMessage, type TailorHandoff } from "@/lib/tailor-handoff";
 import { z } from "zod";
 import ogImg from "@/assets/why-image.jpg";
 
@@ -59,12 +60,16 @@ function splitFullName(full: string): { first: string; last: string } {
 type Status = "idle" | "submitting" | "success" | "error";
 
 export const Route = createFileRoute("/contact")({
-  validateSearch: (search: Record<string, unknown>): { type?: string; place?: string } => {
+  validateSearch: (
+    search: Record<string, unknown>,
+  ): { type?: string; place?: string; from?: "tailor" } => {
     const raw = typeof search.type === "string" ? search.type : undefined;
     const place = typeof search.place === "string" ? search.place.trim().slice(0, 80) : undefined;
     return {
       type: raw && requestTypeValues.includes(raw) ? raw : undefined,
       place: place && place.length > 1 ? place : undefined,
+      // Tailor handoff flag only — the day itself travels via sessionStorage.
+      from: search.from === "tailor" ? "tailor" : undefined,
     };
   },
   head: (ctx) => {
@@ -147,7 +152,12 @@ export const Route = createFileRoute("/contact")({
 });
 
 function Page() {
-  const { type: presetRequestType, place: presetPlace } = Route.useSearch();
+  const { type: presetRequestType, place: presetPlace, from } = Route.useSearch();
+  // Read after hydration: sessionStorage is browser-only.
+  const [tailorDay, setTailorDay] = useState<TailorHandoff | null>(null);
+  useEffect(() => {
+    setTailorDay(from === "tailor" ? readTailorHandoff() : null);
+  }, [from]);
   useMarketingMotion();
   const [sent, setSent] = useState(false);
   const [status, setStatus] = useState<Status>("idle");
@@ -274,7 +284,29 @@ function Page() {
                   options={REQUEST_TYPES}
                   defaultValue={presetRequestType}
                 />
+                {tailorDay ? (
+                  <div
+                    data-testid="contact-tailor-handoff"
+                    className="border border-[color:var(--border)] bg-[color:var(--sand)]/40 px-4 py-4 text-left"
+                  >
+                    <p className="text-[11px] uppercase tracking-[0.22em] text-[color:var(--charcoal-soft)]">
+                      Your tailored day came with you
+                    </p>
+                    <p className="mt-1.5 font-serif text-[18px] leading-snug text-[color:var(--charcoal)]">
+                      {tailorDay.title}
+                    </p>
+                    <p className="mt-1 text-[13px] leading-relaxed text-[color:var(--charcoal-soft)]">
+                      {[tailorDay.date, tailorDay.guests].filter(Boolean).join(" · ")}
+                      {tailorDay.stops.length > 0 ? ` · ${tailorDay.stops.length} moments` : ""}
+                    </p>
+                    <p className="mt-2 text-[13px] leading-relaxed text-[color:var(--charcoal-soft)]">
+                      We've added your choices to the message below. Our team will confirm the day and price before any payment.
+                    </p>
+                  </div>
+                ) : null}
                 <Field
+                  key={tailorDay ? "travel-tailor" : "travel"}
+                  defaultValue={tailorDay?.date || undefined}
                   label="When are you traveling? (optional)"
                   name="travelDate"
                   type="date"
@@ -288,10 +320,13 @@ function Page() {
                   textarea
                   required={false}
                   autoComplete="off"
+                  key={tailorDay ? "message-tailor" : "message"}
                   defaultValue={
-                    presetPlace
-                      ? `I read your guide to ${presetPlace} and I'd like a private day designed there. `
-                      : undefined
+                    tailorDay
+                      ? tailorHandoffMessage(tailorDay)
+                      : presetPlace
+                        ? `I read your guide to ${presetPlace} and I'd like a private day designed there. `
+                        : undefined
                   }
                 />
                 {errorMsg ? (
