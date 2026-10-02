@@ -87,7 +87,7 @@ export const TAILOR_RULES: Record<string, TailorRules> = {
     // stays within 8 hours, so the 3rd requires removing another moment.
     wineries: {
       included: 2,
-      min: 1,
+      min: 0,
       max: 3,
       supplementEur: TAILOR_EVORA_EXTRA_WINERY_SUPPLEMENT_EUR,
       requiresRemovalFrom: 3,
@@ -114,7 +114,7 @@ export const TAILOR_RULES: Record<string, TailorRules> = {
       "A seated lunch is included in this Signature. Remove it and the day continues without the table.",
     wineries: {
       included: 2,
-      min: 1,
+      min: 0,
       max: 4,
       supplementEur: TAILOR_EXTRA_WINERY_SUPPLEMENT_EUR,
     },

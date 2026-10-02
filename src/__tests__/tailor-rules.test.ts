@@ -41,8 +41,8 @@ describe("tailor rules", () => {
     expect(canSelectWineries("evora-alentejo", 3, 1).allowed).toBe(true);
   });
 
-  it("allows one to four wineries without forcing removal of included moments", () => {
-    expect(tailorRules("arrabida-wine-allinclusive").wineries?.min).toBe(1);
+  it("allows zero to four wineries without forcing removal of included moments", () => {
+    expect(tailorRules("arrabida-wine-allinclusive").wineries?.min).toBe(0);
     expect(canSelectWineries("arrabida-wine-allinclusive", 3, 0).allowed).toBe(true);
     expect(canSelectWineries("arrabida-wine-allinclusive", 4, 0).allowed).toBe(true);
     expect(canSelectWineries("arrabida-wine-allinclusive", 4, 1).allowed).toBe(true);

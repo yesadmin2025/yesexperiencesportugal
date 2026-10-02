@@ -285,7 +285,7 @@ function AboutPage() {
             <div>
               <h3 className="font-[family-name:var(--font-editorial)] text-2xl">Talk to us directly</h3>
               <p className="mt-5 text-sm leading-relaxed text-[color:var(--charcoal-soft)]">{NIF_LABEL} · {ADDRESS_LINE}<br /><a href={EMAIL_HREF} className="underline underline-offset-4">{EMAIL}</a><br /><a href={whatsappUrl()} className="underline underline-offset-4">WhatsApp {PHONE_DISPLAY}</a><br />{BASED_IN_SHORT}</p>
-              <div className="mt-6"><CtaButton to="/contact" variant="ghost">Talk to a local</CtaButton></div>
+              <div className="mt-6"><CtaButton href={whatsappUrl()} target="_blank" rel="noopener noreferrer" variant="ghost">Talk to a local</CtaButton></div>
             </div>
           </div>
           <nav aria-label="Explore YES" className="mt-12 flex flex-wrap gap-x-6 gap-y-3 border-t border-[color:var(--border)] pt-8 text-sm">

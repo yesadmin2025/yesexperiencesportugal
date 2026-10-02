@@ -49,6 +49,7 @@ import {
   tailorRules,
   tailorSupplementsEur,
 } from "@/data/tailorRules";
+import { removalNeedsConfirmation } from "@/data/tailorStopPricing";
 
 
 import { TAILOR_LUNCH_REMOVAL_DISCOUNT_EUR, TAILOR_LUNCH_SUPPLEMENT_EUR } from "@/config/pricing";
@@ -105,6 +106,12 @@ import { guideAttributionMetadata } from "@/lib/guide-attribution";
  * available inside one specific Signature. The core route, story and
  * local guide stay locked. Live summary updates as the user adjusts.
  * ════════════════════════════════════════════════════════════ */
+
+/** Tailor freedom: a transfer lock (e.g. the Sado ferry) only informs route
+ *  timing; guests may still remove it. Other locks stay fixed. */
+function tailorLocked(s: { lock?: { reasonCode: string } | null }): boolean {
+  return Boolean(s.lock) && s.lock?.reasonCode !== "mandatory_transfer";
+}
 
 export const Route = createFileRoute("/tours_/$tourId/tailor")({
   loader: ({ params }) => {
@@ -347,8 +354,14 @@ function TailorPage() {
   const tryToggleSkippedCore = (id: string) => {
     const next = new Set(skippedCore);
     const isSkipping = !next.has(id);
-    if (isSkipping) next.add(id);
-    else {
+    if (isSkipping) {
+      next.add(id);
+      const proj = projectFeasibility(next, choiceSelected, optionalSelected);
+      if (proj && proj.experienceMinutes === 0) {
+        toast.error("Keep at least one moment in the day.");
+        return;
+      }
+    } else {
       // Un-skipping = adding a stop back → guard against overload.
       next.delete(id);
       const proj = projectFeasibility(next, choiceSelected, optionalSelected);
@@ -373,16 +386,19 @@ function TailorPage() {
       // The full Signature keeps its published baseline by default. Arrábida
       // Wine may be tailored down to one winery without removing any other
       // included moment; this is a composition change, not a price credit.
-      const selectableMin = rules.wineries?.min ?? blueprint?.choice?.pickMin ?? 0;
+      // Tailor freedom: the Signature's pick count is the DEFAULT, not a
+      // minimum. Any pool may go to zero as long as the day keeps a moment.
+      const selectableMin = rules.wineries?.min ?? 0;
       if (blueprint?.choice && next.size <= selectableMin) {
-        toast.error(
-          selectableMin === 1
-            ? "Keep at least one winery visit in this wine day."
-            : `This tour needs at least ${selectableMin} — swap one instead of removing it.`,
-        );
+        toast.error(`Keep at least ${selectableMin} here.`);
         return;
       }
       next.delete(id);
+      const projAfterRemoval = projectFeasibility(skippedCore, next, optionalSelected);
+      if (projAfterRemoval && projAfterRemoval.experienceMinutes === 0) {
+        toast.error("Keep at least one moment in the day.");
+        return;
+      }
     } else {
       next.add(id);
        // Canonical winery ladder: max 4. The complete proposed day is then
@@ -736,7 +752,20 @@ function TailorPage() {
   // generic winery visit is the entire public promise — which estate runs
   // it is operational, so an estate's internal confirmation status never
   // gates the guest.
-  const requiresManualConfirmation = wineExtension.extra > 0 && !rules.wineries;
+  // Removing a formerly product-defining stop (picnic, boat, workshop,
+  // ferry…) has no owner-approved price consequence, so the day is sent to
+  // the team for confirmation instead of charging an invented total.
+  const removedSignatureAnchor = removalNeedsConfirmation(tour.id, skippedCore);
+  const requiresManualConfirmation =
+    (wineExtension.extra > 0 && !rules.wineries) || removedSignatureAnchor;
+  /** The day moved materially away from the source Signature. */
+  const materiallyChanged =
+    removedSignatureAnchor ||
+    skippedCore.size >= 2 ||
+    (blueprint?.choice ? choiceSelected.size < blueprint.choice.pickMin : false);
+  const tailoredTitle = materiallyChanged
+    ? `Your tailored ${tour.region?.split(/[·,&]/)[0]?.trim() || "Portugal"} day`
+    : `Tailored — ${tour.title.split("—")[0].trim()}`;
 
 
 
@@ -754,7 +783,7 @@ function TailorPage() {
   // as advice only. Never auto-removed; the traveler decides.
   const removableCoreLabels = useMemo(() => {
     if (!blueprint) return [] as string[];
-    return blueprint.core.filter((s) => !s.lock && !skippedCore.has(s.id)).map((s) => s.label);
+    return blueprint.core.filter((s) => !tailorLocked(s) && !skippedCore.has(s.id)).map((s) => s.label);
   }, [blueprint, skippedCore]);
 
   /* ── Presentation truth (no pricing or eligibility changes) ──
@@ -845,8 +874,8 @@ function TailorPage() {
       return {
         id: s.id,
         label: isWinery ? wineryLabel(wineryIndex) : s.label,
-        locked: Boolean(s.lock),
-        lockReason: s.lock?.customerFacingReason ?? null,
+        locked: tailorLocked(s),
+        lockReason: tailorLocked(s) ? (s.lock?.customerFacingReason ?? null) : null,
         removed: skippedCore.has(s.id),
         earnsReduction: principalEligible.has(s.id),
       };
@@ -918,6 +947,10 @@ function TailorPage() {
     }
     // Exact-tier truth gate — the server refuses this party size, so never
     // open a checkout against the generic "from" anchor.
+    if (requiresManualConfirmation) {
+      toast.error("This version needs a quick check by our team before payment.");
+      return;
+    }
     if (tierUnavailable) {
       toast.error(
         "This Signature isn't published for this party size — a YES curator will confirm your investment.",
@@ -949,7 +982,7 @@ function TailorPage() {
     );
     const totalForSummary = summaryJourney?.totalEur ?? Math.round(estimatedPrice * details.guests);
     setCheckoutSummary({
-      tourTitle: `Tailored — ${tour.title.split("—")[0].trim()}`,
+      tourTitle: tailoredTitle,
       region: tour.region,
       durationHours: tour.durationHours,
       guests: details.guests,
@@ -1700,6 +1733,16 @@ function TailorPage() {
                       });
                       return;
                     }
+                    if (requiresManualConfirmation) {
+                      navigate({
+                        to: "/contact",
+                        search: {
+                          type: "private_day",
+                          place: `${tailoredTitle} · ${date}`.slice(0, 80),
+                        },
+                      });
+                      return;
+                    }
                     gaCheckoutDrawerOpened({ tourId: tour.id, surface: "tailor" });
                     setDetailsOpen(true);
                   }}
@@ -1710,10 +1753,12 @@ function TailorPage() {
                   icon={null}
                   className="mt-3 w-full"
                 >
-                  Reserve this day
+                  {requiresManualConfirmation ? "Request this day" : "Reserve this day"}
                 </CtaButton>
                 <p className="mt-2 text-center text-[12px] leading-relaxed text-[color:var(--charcoal-soft)]">
-                  Instant confirmation · {CANCELLATION.custom.en}
+                  {requiresManualConfirmation
+                    ? "This version needs a quick check by our team — a local confirms the price, usually within one working day. No payment now."
+                    : <>Instant confirmation · {CANCELLATION.custom.en}</>}
                 </p>
               </div>
             </aside>

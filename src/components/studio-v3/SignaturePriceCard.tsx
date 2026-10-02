@@ -826,10 +826,17 @@ export function SignaturePriceCard({
             </p>
             {(() => {
               const bands = bandRowsFromJourney(journeyLines);
+              // Canonical branch: the resolved adult unit already carries the
+              // composed per-person supplement. The journey band row is the
+              // pre-supplement tier, so showing it as "/ adult" next to a total
+              // that includes the supplement made the numbers disagree.
+              const adultsOnlyBands = bands.every((b) => b.band === "adult");
               const adultUnit =
-                bands.length > 0
-                  ? (bands.find((b) => b.band === "adult")?.unitEur ?? priceEur)
-                  : (perPersonDerived ?? priceEur);
+                usingResolved && resolvedPerPaxEur != null && adultsOnlyBands
+                  ? resolvedPerPaxEur
+                  : bands.length > 0
+                    ? (bands.find((b) => b.band === "adult")?.unitEur ?? priceEur)
+                    : (perPersonDerived ?? priceEur);
               const showParty = partyTotalEur != null && partyCount != null;
               return (
                 <>
