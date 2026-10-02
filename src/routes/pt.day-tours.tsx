@@ -8,7 +8,6 @@ import { SiteLayout } from "@/components/SiteLayout";
 import { Clock, MapPin } from "lucide-react";
 import { signatureTours, publicSignatureTours } from "@/data/signatureTours";
 import { useImportedTourImages } from "@/hooks/use-imported-tour-images";
-import { ImageQualityToggle } from "@/components/ImageQualityToggle";
 import { Eyebrow } from "@/components/ui/Eyebrow";
 import { SectionTitle } from "@/components/ui/SectionTitle";
 import { CtaButton } from "@/components/ui/CtaButton";
@@ -93,7 +92,6 @@ function DayToursPage() {
           <h2 className="sr-only">Experiências de um dia disponíveis</h2>
           <div className="flex flex-wrap items-center justify-end gap-4 mb-6">
             <PriceCurrencyChip />
-            <ImageQualityToggle />
           </div>
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-8">
             {dayTours.map((t) => (
