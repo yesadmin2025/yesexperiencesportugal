@@ -29,8 +29,14 @@ import { RouteThread } from "@/components/motion/RouteThread";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { invokeSignatureCheckout } from "@/lib/checkout/session-request";
-import { choiceBelowBaseline } from "@/data/tailorChoiceBaseline";
-import { describeGuests, saveTailorHandoff } from "@/lib/tailor-handoff";
+import { useTailorPriceMap } from "@/hooks/use-tailor-price-map";
+import { computeTailorPrice, type TailorSelectedAction } from "@/lib/tailor/tailor-price-engine";
+import {
+  choiceSlotId,
+  LUNCH_ACTION_ID,
+  optionalActionId,
+  stopActionId,
+} from "@/lib/tailor/tailor-price-catalog";
 import type { GuestDetails } from "@/components/checkout/FinalDetailsDialog";
 import {
   ChargeSummaryLine,
@@ -51,10 +57,8 @@ import {
   tailorRules,
   tailorSupplementsEur,
 } from "@/data/tailorRules";
-import { removalNeedsConfirmation } from "@/data/tailorStopPricing";
 
 
-import { TAILOR_LUNCH_REMOVAL_DISCOUNT_EUR, TAILOR_LUNCH_SUPPLEMENT_EUR } from "@/config/pricing";
 
 import { jsonLdScript, breadcrumbLd, tourTailorProductLd } from "@/lib/jsonld";
 import { CANCELLATION } from "@/config/business-nap";
@@ -293,6 +297,10 @@ function TailorPage() {
   // tour.stops which is the full Viator list and overstates what the
   // anchor price actually includes.
   const blueprint = useMemo(() => getTailorBlueprint(tour.id), [tour.id]);
+  // Admin-edited Tailor price map — an action is offered only when it is
+  // active AND explicitly priced (0 counts as an intentional price).
+  const priceMap = useTailorPriceMap(tour.id, guests);
+  const NOT_YET_PRICED = "This change isn't available to book online yet.";
   const [choiceSelected, setChoiceSelected] = useState<Set<string>>(() => {
     // Pre-select the minimum required (`pickMin`) by default.
     const bp = getTailorBlueprint(tour.id);
@@ -357,6 +365,10 @@ function TailorPage() {
     const next = new Set(skippedCore);
     const isSkipping = !next.has(id);
     if (isSkipping) {
+      if (!priceMap.bookable(stopActionId(id), "remove")) {
+        toast.error(NOT_YET_PRICED);
+        return;
+      }
       next.add(id);
       const proj = projectFeasibility(next, choiceSelected, optionalSelected);
       if (proj && proj.experienceMinutes === 0) {
@@ -390,9 +402,14 @@ function TailorPage() {
       // included moment; this is a composition change, not a price credit.
       // Tailor freedom: the Signature's pick count is the DEFAULT, not a
       // minimum. Any pool may go to zero as long as the day keeps a moment.
-      const selectableMin = rules.wineries?.min ?? 0;
-      if (blueprint?.choice && next.size <= selectableMin) {
-        toast.error(`Keep at least ${selectableMin} here.`);
+      // Going below the included count needs an owner price for that slot;
+      // removing an extra (above the included count) just drops its add.
+      if (
+        blueprint?.choice &&
+        next.size <= blueprint.choice.pickMin &&
+        !priceMap.bookable(choiceSlotId(next.size), "remove")
+      ) {
+        toast.error(NOT_YET_PRICED);
         return;
       }
       next.delete(id);
@@ -409,14 +426,16 @@ function TailorPage() {
       // Only Signatures with an owner-approved winery supplement ladder may
       // INCREASE the winery count. Everywhere else the traveler swaps at
       // the blueprint baseline — we never hand out an unpriced extra stop.
+      // Above the included count, each extra slot needs an owner price.
       if (
-        option0?.category === "winery" &&
-        !rules.wineries &&
         blueprint?.choice &&
-        choiceSelected.size >= blueprint.choice.pickMin
+        next.size > blueprint.choice.pickMin &&
+        !priceMap.bookable(choiceSlotId(next.size), "add")
       ) {
         toast.error(
-          `This Signature includes ${blueprint.choice.pickMin} — swap one instead of adding another.`,
+          option0?.category === "winery"
+            ? `This Signature includes ${blueprint.choice.pickMin} — swap one instead of adding another.`
+            : NOT_YET_PRICED,
         );
         return;
       }
@@ -464,6 +483,10 @@ function TailorPage() {
     const next = new Set(optionalSelected);
     if (on) next.delete(id);
     else {
+      if (!priceMap.bookable(optionalActionId(id), "add")) {
+        toast.error(NOT_YET_PRICED);
+        return;
+      }
       next.add(id);
       const proj = projectFeasibility(skippedCore, choiceSelected, next);
       if (proj && !proj.feasible) {
@@ -648,9 +671,49 @@ function TailorPage() {
     [tour.id, lunchRemoved],
   );
 
+  /** Stable price-map actions for the current composition (sent to the
+   *  server as selectors only — it recomputes every euro). */
+  const tailorActions = useMemo<TailorSelectedAction[]>(() => {
+    if (!blueprint) return [];
+    const out: TailorSelectedAction[] = [];
+    for (const s of blueprint.core) {
+      if (skippedCore.has(s.id)) out.push({ actionId: stopActionId(s.id), direction: "remove" });
+    }
+    if (blueprint.choice) {
+      const c = choiceSelected.size;
+      const min = blueprint.choice.pickMin;
+      for (let n = min; n > c; n--) out.push({ actionId: choiceSlotId(n), direction: "remove" });
+      for (let n = min + 1; n <= c; n++) out.push({ actionId: choiceSlotId(n), direction: "add" });
+    }
+    if (lunchAdded) out.push({ actionId: LUNCH_ACTION_ID, direction: "add" });
+    for (const o of blueprint.optional) {
+      if (optionalSelected.has(o.id)) out.push({ actionId: optionalActionId(o.id), direction: "add" });
+    }
+    return out;
+  }, [blueprint, skippedCore, choiceSelected, lunchAdded, optionalSelected]);
+
+  const tailorPrice = useMemo(() => {
+    if (!priceMap.data) return null;
+    return computeTailorPrice({
+      basePerPaxEur: basePerPax,
+      adults: Math.max(1, composition.adults),
+      minorAges: composition.minorAges.filter(
+        (a): a is number => typeof a === "number" && Number.isInteger(a) && a >= 0 && a <= 17,
+      ),
+      ageBand: (age) => (age >= 11 ? "youth" : age >= 3 ? "child" : "infant"),
+      rules: priceMap.data.rules,
+      policies: priceMap.data.policies,
+      selected: tailorActions,
+    });
+  }, [priceMap.data, basePerPax, composition.adults, composition.minorAges, tailorActions]);
+  const tailorPriceReady = tailorPrice?.ok === true;
+
   const estimatedPrice = useMemo(
-    () => tailorFinalPerPax(basePerPax, principalsRemoved, supplementsPerPax, lunchRemovalPerPax),
-    [basePerPax, principalsRemoved, supplementsPerPax, lunchRemovalPerPax],
+    () =>
+      tailorPrice && tailorPrice.ok
+        ? tailorPrice.adultUnitEur
+        : tailorFinalPerPax(basePerPax, principalsRemoved, supplementsPerPax, lunchRemovalPerPax),
+    [tailorPrice, basePerPax, principalsRemoved, supplementsPerPax, lunchRemovalPerPax],
   );
 
   const savingsEur = Math.max(0, basePerPax - reducedPerPax);
@@ -712,23 +775,27 @@ function TailorPage() {
   const journeyLines = journeyPricing?.lines ?? null;
   const showBandBreakdown =
     composition.minorAges.length > 0 && hasCompleteJourneyPricing(journeyLines);
-  const displayTotalEur = journeyPricing?.totalEur ?? estimatedPrice * guests;
+  const displayTotalEur =
+    tailorPrice && tailorPrice.ok
+      ? tailorPrice.totalEur
+      : (journeyPricing?.totalEur ?? estimatedPrice * guests);
 
   /**
    * Canonical total-first quote for "Your version". Pure presentation of
    * the same numbers the reserve handler sends to Stripe — no new math.
    */
   const versionQuote = useMemo<ChargeQuote | null>(() => {
-    if (!compositionReady || !minorAgesComplete) return null;
+    if (!compositionReady || !minorAgesComplete || !tailorPrice || !tailorPrice.ok) return null;
     return {
       totalEur: displayTotalEur,
       perPaxAdultEur: estimatedPrice,
       hasMinors: composition.minorAges.length > 0,
       adults: composition.adults,
       minors: composition.minorAges.length,
-      adjustments: lunchRemovalPerPax
-        ? [{ label: "Included lunch removed", amountEur: -lunchRemovalPerPax * guests }]
-        : undefined,
+      ledger: {
+        baseEur: tailorPrice.baseTotalEur,
+        lines: tailorPrice.lines.map((l) => ({ label: l.label, amountEur: l.amountEur })),
+      },
     };
   }, [
     compositionReady,
@@ -737,8 +804,7 @@ function TailorPage() {
     estimatedPrice,
     composition.adults,
     composition.minorAges.length,
-    lunchRemovalPerPax,
-    guests,
+    tailorPrice,
   ]);
 
   // ─── Wine-extension state ───────────────────────────────────
@@ -757,20 +823,11 @@ function TailorPage() {
   // Removing a formerly product-defining stop (picnic, boat, workshop,
   // ferry…) has no owner-approved price consequence, so the day is sent to
   // the team for confirmation instead of charging an invented total.
-  const removedSignatureAnchor = removalNeedsConfirmation(tour.id, skippedCore);
-  // Fewer choice moments than the base price includes (e.g. 1 or 0
-  // wineries, no palace) has no approved reduction — confirm, never charge
-  // the old base price. Winery ladders compare against `included`.
-  const choiceReduced = choiceBelowBaseline(tour.id, {
-    choiceSelectedCount: choiceSelected.size,
-    wineriesSelected,
-  });
-  const requiresManualConfirmation =
-    (wineExtension.extra > 0 && !rules.wineries) || removedSignatureAnchor || choiceReduced;
+  // Owner rule: every offered Tailor change is priced by the Admin price
+  // map and books instantly. There is no manual-confirmation path.
+  void wineExtension;
   /** The day moved materially away from the source Signature. */
   const materiallyChanged =
-    removedSignatureAnchor ||
-    choiceReduced ||
     skippedCore.size >= 2 ||
     (blueprint?.choice ? choiceSelected.size < blueprint.choice.pickMin : false);
   const tailoredTitle = materiallyChanged
@@ -821,18 +878,37 @@ function TailorPage() {
    * extra winery visit is never given away for free.
    */
   const publicOptional = useMemo(
-    () => (blueprint?.optional ?? []).filter((o) => o.category !== "winery"),
-    [blueprint],
+    () =>
+      (blueprint?.optional ?? []).filter(
+        (o) => o.category !== "winery" && priceMap.bookable(optionalActionId(o.id), "add"),
+      ),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [blueprint, priceMap.byKey, guests],
   );
+  const lunchAddOffered = rules.allowAddLunch && priceMap.bookable(LUNCH_ACTION_ID, "add");
+  /** Owner-set € amount for a fixed rule (display only). */
+  const ruleEur = (actionId: string, direction: "add" | "remove") => {
+    const r = priceMap.byKey.get(`${actionId}::${direction}`);
+    return r && r.adjustment_type === "fixed_eur" && r.adjustment_value != null ? Number(r.adjustment_value) : null;
+  };
+  const extraWineryEur = ruleEur(choiceSlotId((blueprint?.choice?.pickMin ?? 0) + 1), "add");
+  const lunchAddEur = ruleEur(LUNCH_ACTION_ID, "add");
+  const lunchStop = dedicatedLunchStopId(tour.id);
+  const lunchRemoveEur = lunchStop ? ruleEur(stopActionId(lunchStop), "remove") : null;
 
   const canAdjustWineryCount = Boolean(rules.wineries) && wineryOptions.length > 0;
   /** Real bounds — the control is disabled, never a toast at the edges. */
   const wineryMin = rules.wineries?.min ?? rules.wineries?.included ?? 0;
   const wineryMax = rules.wineries?.max ?? 0;
-  const canRemoveWineryVisit = canAdjustWineryCount && wineriesSelected > wineryMin;
+  const pickMin = blueprint?.choice?.pickMin ?? 0;
+  const canRemoveWineryVisit =
+    canAdjustWineryCount &&
+    wineriesSelected > wineryMin &&
+    (choiceSelected.size > pickMin || priceMap.bookable(choiceSlotId(choiceSelected.size), "remove"));
   const canAddWineryVisit =
     canAdjustWineryCount &&
     wineriesSelected < wineryMax &&
+    (choiceSelected.size + 1 <= pickMin || priceMap.bookable(choiceSlotId(choiceSelected.size + 1), "add")) &&
     wineryOptions.some((o) => !choiceSelected.has(o.id));
   const addWineryVisit = () => {
     const next = wineryOptions.find((o) => !choiceSelected.has(o.id));
@@ -884,7 +960,10 @@ function TailorPage() {
       return {
         id: s.id,
         label: isWinery ? wineryLabel(wineryIndex) : s.label,
-        locked: tailorLocked(s),
+        // Not removable online until the owner prices that removal.
+        locked:
+          tailorLocked(s) ||
+          (!skippedCore.has(s.id) && !priceMap.bookable(stopActionId(s.id), "remove")),
         lockReason: tailorLocked(s) ? (s.lock?.customerFacingReason ?? null) : null,
         removed: skippedCore.has(s.id),
         earnsReduction: principalEligible.has(s.id),
@@ -905,7 +984,7 @@ function TailorPage() {
         };
       });
     return [...core, ...chosen];
-  }, [blueprint, skippedCore, choiceSelected, principalEligible]);
+  }, [blueprint, skippedCore, choiceSelected, principalEligible, priceMap.byKey, guests]);
 
 
   // ─── Helpers ────────────────────────────────────────────────
@@ -957,8 +1036,8 @@ function TailorPage() {
     }
     // Exact-tier truth gate — the server refuses this party size, so never
     // open a checkout against the generic "from" anchor.
-    if (requiresManualConfirmation) {
-      toast.error("This version needs a quick check by our team before payment.");
+    if (!tailorPriceReady) {
+      toast.error("We're loading the latest prices. Please try again in a moment.");
       return;
     }
     if (tierUnavailable) {
@@ -1066,9 +1145,8 @@ function TailorPage() {
             ? blueprint.core.filter((s) => skippedCore.has(s.id)).map((s) => s.id)
             : [],
 
-          tailorChoiceIds: blueprint?.choice
-            ? blueprint.choice.options.filter((o) => choiceSelected.has(o.id)).map((o) => o.id)
-            : [],
+          // Price-map selectors — the server recomputes every euro.
+          tailorActions,
           tailorLunchAdded: lunchAdded,
           tailorExtraWineries: rules.wineries
             ? Math.max(0, wineriesSelected - rules.wineries.included)
@@ -1498,7 +1576,7 @@ function TailorPage() {
               </Group>
 
               {/* ── ENHANCE ─────────────────────────────── */}
-              {(rules.allowAddLunch ||
+              {(lunchAddOffered ||
                 rules.allowRemoveLunch ||
                 canAdjustWineryCount ||
                 publicOptional.length > 0) && (
@@ -1512,12 +1590,14 @@ function TailorPage() {
                           </span>
                           <span className="mt-0.5 block text-[12px] text-[color:var(--charcoal-soft)]">
                             Starts with {rules.wineries!.included} included · choose {rules.wineries!.min}–{rules.wineries!.max}
-                            <span className="block">Each visit above {rules.wineries!.included} +
-                            <PriceEur
-                              amountEur={rules.wineries!.supplementEur}
-                              role="per-person"
-                            />{" "}
-                            pp</span>
+                            {extraWineryEur != null && (
+                              <span className="block">Each visit above {rules.wineries!.included} +
+                              <PriceEur
+                                amountEur={extraWineryEur}
+                                role="per-person"
+                              />{" "}
+                              pp</span>
+                            )}
                           </span>
                         </span>
                         <span className="flex shrink-0 items-center gap-1">
@@ -1552,7 +1632,7 @@ function TailorPage() {
                       </div>
                     )}
 
-                    {rules.allowAddLunch && (
+                    {lunchAddOffered && (
                       <button
                         type="button"
                         onClick={() => setLunchAdded((v) => !v)}
@@ -1572,7 +1652,7 @@ function TailorPage() {
                           <span className="mt-0.5 block text-[12px] text-[color:var(--charcoal-soft)]">
                             +
                             <PriceEur
-                              amountEur={TAILOR_LUNCH_SUPPLEMENT_EUR}
+                              amountEur={lunchAddEur ?? 0}
                               role="per-person"
                             />{" "}
                             pp
@@ -1584,7 +1664,7 @@ function TailorPage() {
                       </button>
                     )}
 
-                    {rules.allowRemoveLunch && (
+                    {rules.allowRemoveLunch && (lunchRemoved || lunchRemoveEur != null) && (
                       <button
                         type="button"
                         onClick={() => toggleIncludedLunch()}
@@ -1604,7 +1684,7 @@ function TailorPage() {
                           <span className="mt-0.5 block text-[12px] text-[color:var(--charcoal-soft)]">
                             −
                             <PriceEur
-                              amountEur={TAILOR_LUNCH_REMOVAL_DISCOUNT_EUR}
+                              amountEur={lunchRemoveEur ?? 0}
                               role="per-person"
                             />{" "}
                             pp if removed
@@ -1746,25 +1826,6 @@ function TailorPage() {
                       });
                       return;
                     }
-                    if (requiresManualConfirmation) {
-                      saveTailorHandoff({
-                        tourId: tour.id,
-                        title: tailoredTitle,
-                        date,
-                        guests: describeGuests(composition.adults, composition.minorAges.length),
-                        stops: summaryStops.map((st) => st.label),
-                        removed: [
-                          ...skippedPublicLabels,
-                          ...(rules.allowRemoveLunch === true && lunchRemoved ? ["Included lunch"] : []),
-                        ],
-                        pickup: `${pickup} (to confirm)`,
-                      });
-                      navigate({
-                        to: "/contact",
-                        search: { type: "private_day", from: "tailor" },
-                      });
-                      return;
-                    }
                     gaCheckoutDrawerOpened({ tourId: tour.id, surface: "tailor" });
                     setDetailsOpen(true);
                   }}
@@ -1775,12 +1836,10 @@ function TailorPage() {
                   icon={null}
                   className="mt-3 w-full"
                 >
-                  {requiresManualConfirmation ? "Request this day" : "Reserve this day"}
+                  Reserve this day
                 </CtaButton>
                 <p className="mt-2 text-center text-[12px] leading-relaxed text-[color:var(--charcoal-soft)]">
-                  {requiresManualConfirmation
-                    ? "This version needs a quick check by our team — a local confirms the price, usually within one working day. No payment now."
-                    : <>Instant confirmation · {CANCELLATION.custom.en}</>}
+                  Instant confirmation · {CANCELLATION.custom.en}
                 </p>
               </div>
             </aside>
@@ -1791,32 +1850,32 @@ function TailorPage() {
       {detailsOpen ? <Suspense fallback={null}><FinalDetailsDialog
         priceQuote={({ adults, minorAges }) => {
           // Never quote a price we can't charge instantly.
-          if (requiresManualConfirmation) return null;
-          // Same resolver + pinned tiers as handleReserve → Stripe.
-          const j = resolveJourneyPricing(
-            { id: tour.id, priceFrom: estimatedPrice },
+          if (!tailorPriceReady || !priceMap.data) return null;
+          // Same shared engine the payment server runs → Stripe.
+          const partyBase = resolvePerPaxEur(tour, adults + minorAges.length, tierOverrides);
+          if (!partyBase) return null;
+          const q = computeTailorPrice({
+            basePerPaxEur: partyBase.eurPerPax,
             adults,
             minorAges,
-            tailorTierOverride,
-          );
-          if (!j) return null;
+            ageBand: (age) => (age >= 11 ? "youth" : age >= 3 ? "child" : "infant"),
+            rules: priceMap.data.rules,
+            policies: priceMap.data.policies,
+            selected: tailorActions,
+          });
+          if (!q.ok) return null;
           return {
-            totalEur: j.totalEur,
-            perPaxAdultEur: j.perPaxAdultEur,
+            totalEur: q.totalEur,
+            perPaxAdultEur: q.adultUnitEur,
             hasMinors: minorAges.length > 0,
             adults,
             minors: minorAges.length,
-            journeySubtotalEur: j.totalEur,
+            journeySubtotalEur: q.totalEur,
             addOnsEur: 0,
-            adjustments:
-              lunchRemovalPerPax > 0
-                ? [
-                    {
-                      label: "Included lunch removed",
-                      amountEur: -lunchRemovalPerPax * (adults + minorAges.length),
-                    },
-                  ]
-                : undefined,
+            ledger: {
+              baseEur: q.baseTotalEur,
+              lines: q.lines.map((l) => ({ label: l.label, amountEur: l.amountEur })),
+            },
           };
         }}
         open={detailsOpen}

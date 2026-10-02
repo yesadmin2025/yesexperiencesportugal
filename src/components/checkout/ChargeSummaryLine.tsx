@@ -38,6 +38,12 @@ export interface ChargeQuote {
   readonly addOnsEur?: number;
   /** Named adjustments (e.g. lunch removal) shown as their own rows. */
   readonly adjustments?: readonly ChargeAdjustment[];
+  /**
+   * Tailor ledger: when present the breakdown reads
+   * "Base private day · each price-changing change · Total" and the lines
+   * always sum exactly to `totalEur` (computed by the shared price engine).
+   */
+  readonly ledger?: { readonly baseEur: number; readonly lines: readonly ChargeAdjustment[] };
 }
 
 const eur = (n: number) =>
@@ -136,7 +142,23 @@ export function ChargeSummaryLine({
         </span>
       </button>
 
-      {open ? (
+      {open && quote.ledger ? (
+        <ul
+          data-testid="charge-summary-breakdown"
+          className="mt-1 max-h-[30vh] space-y-1 overflow-y-auto overscroll-contain border-t border-[color:var(--border)] pt-1.5 text-[12.5px]"
+        >
+          <Row label="Base private day" value={eur(quote.ledger.baseEur)} />
+          {quote.ledger.lines.map((a, i) => (
+            <Row
+              key={`${a.label}-${i}`}
+              label={a.label}
+              value={`${a.amountEur < 0 ? "−" : "+"}${eur(Math.abs(a.amountEur))}`}
+            />
+          ))}
+          {addOns > 0 ? <Row label="Add-ons" value={eur(addOns)} /> : null}
+          <Row label="Total" value={eur(quote.totalEur)} />
+        </ul>
+      ) : open ? (
         <ul
           data-testid="charge-summary-breakdown"
           className="mt-1 max-h-[30vh] space-y-1 overflow-y-auto overscroll-contain border-t border-[color:var(--border)] pt-1.5 text-[12.5px]"

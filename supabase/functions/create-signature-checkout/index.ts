@@ -11,6 +11,12 @@ import { isStudioCheckoutDateAllowed } from "../_shared/studio-booking-date.ts";
 import { checkTourOperatingRule } from "../_shared/tour-operating-rules.ts";
 
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.0";
+import {
+  computeTailorPrice,
+  type TailorPricePolicy,
+  type TailorPriceRule,
+  type TailorSelectedAction,
+} from "../_shared/tailor-price-engine.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -68,9 +74,10 @@ interface Body {
    *  EVIDENCE for the 4th-winery entitlement — never a boolean, never a
    *  euro amount. Validated against the server whitelist. */
   tradedStopIds?: string[];
-  /** Tailor: stable ids of the choice-pool moments (wineries, palace…) in
-   *  the day. Lets the server refuse below-baseline reductions. */
-  tailorChoiceIds?: string[];
+  /** Tailor: stable price-map actions (stop removals, winery slots, lunch,
+   *  optional stops). SELECTORS ONLY — every euro is re-derived here from
+   *  `tailor_price_rules`; unknown, inactive or unpriced ids are refused. */
+  tailorActions?: Array<{ actionId: string; direction: "add" | "remove" }>;
   /** Inventory stop ids composed into a bespoke Studio day from the owner
    *  price list (`studio_composable_stops`). SELECTORS ONLY — every euro is
    *  re-derived here from that table; unknown, inactive or unpriced ids are
@@ -119,7 +126,6 @@ import {
   serverAddOnsChargedTotalEur,
   serverAddOnAllowedForTour,
   serverPrincipalRemovalCount,
-  serverChoiceBelowBaseline,
 
   tailorFinalPerPax,
   type AgeBand,
@@ -347,11 +353,71 @@ Deno.serve(async (req) => {
       skippedCoreStopIds && skippedCoreStopIds.length > 0
         ? Math.min(8, serverPrincipalRemovalCount(body.tourId, skippedCoreStopIds))
         : 0;
-    const principalsRemoved = isTailorFlow ? Math.min(claimedPrincipals, derivedPrincipals) : 0;
-    // FAIL-CLOSED: a Tailor day below its choice baseline (fewer wineries /
-    // no palace) has no approved price — it must be confirmed by the team.
-    if (isTailorFlow && serverChoiceBelowBaseline(body.tourId, body.tailorChoiceIds)) {
-      return jsonError("This tailored day needs confirmation from our team before payment.", 409);
+    let principalsRemoved = isTailorFlow ? Math.min(claimedPrincipals, derivedPrincipals) : 0;
+
+    // ── Tailor price map (admin-edited SSOT) ────────────────────────
+    // The client names actions only. Rules and policies are loaded here and
+    // every euro is recomputed by the shared engine. Never a manual-
+    // confirmation path: invalid / tampered / unpriced selections are 400.
+    let tailorEngine: Extract<ReturnType<typeof computeTailorPrice>, { ok: true }> | null = null;
+    if (isTailorFlow) {
+      const rawActions = Array.isArray(body.tailorActions) ? body.tailorActions : [];
+      if (rawActions.length > 40) return jsonError("Too many Tailor actions", 400);
+      const selected: TailorSelectedAction[] = [];
+      for (const a of rawActions) {
+        if (
+          !a || typeof a.actionId !== "string" || a.actionId.length > 80 ||
+          (a.direction !== "add" && a.direction !== "remove")
+        ) {
+          return jsonError("Invalid Tailor action", 400);
+        }
+        selected.push({ actionId: a.actionId, direction: a.direction });
+      }
+      const [{ data: ruleRows, error: ruleErr }, { data: policyRows, error: polErr }] = await Promise.all([
+        admin.from("tailor_price_rules").select(
+          "tour_id, action_id, action_kind, direction, adjustment_type, adjustment_value, unit, policy_group, active, min_party, max_party, label",
+        ).eq("tour_id", body.tourId),
+        admin.from("tailor_price_policies").select("policy_group, max_total_pct, floor_pct_of_base"),
+      ]);
+      if (ruleErr || polErr) {
+        console.error("tailor price map load failed", ruleErr ?? polErr);
+        return jsonError("Tailor prices are temporarily unavailable. Please try again.", 503);
+      }
+      const rules = (ruleRows ?? []).map((r: Record<string, unknown>) => ({
+        ...r,
+        adjustment_value: r.adjustment_value === null ? null : Number(r.adjustment_value),
+      })) as TailorPriceRule[];
+      const result = computeTailorPrice({
+        basePerPaxEur: resolvedPerPax,
+        adults: adultsCount,
+        minorAges,
+        ageBand,
+        rules,
+        policies: ((policyRows ?? []) as Record<string, unknown>[]).map((p) => ({
+          policy_group: String(p.policy_group),
+          max_total_pct: Number(p.max_total_pct),
+          floor_pct_of_base: Number(p.floor_pct_of_base),
+        })) as TailorPricePolicy[],
+        selected,
+      });
+      if (!result.ok) {
+        return jsonError(`tailor_${result.code}${result.actionId ? `: ${result.actionId}` : ""}`, 400);
+      }
+      // Structural (not price) rule kept: some winery counts need a moment
+      // traded away. Count of extra choice slots is derived from actions.
+      const extraSlots = selected.filter((a) => a.direction === "add" && /^choice-\d+$/.test(a.actionId)).length;
+      if (extraSlots > 0) {
+        const traded = selected
+          .filter((a) => a.direction === "remove" && a.actionId.startsWith("stop:"))
+          .map((a) => a.actionId.slice(5));
+        if (serverExtraWineriesAllowed(body.tourId, extraSlots, traded) === null) {
+          return jsonError("This winery count requires removing another moment from the day.", 400);
+        }
+      }
+      principalsRemoved = rules.filter(
+        (r) => r.adjustment_type === "percent" && selected.some((a) => a.actionId === r.action_id && a.direction === r.direction),
+      ).length;
+      tailorEngine = result;
     }
 
 
@@ -372,7 +438,7 @@ Deno.serve(async (req) => {
     // server proves that from stable structural ids against its own whitelist;
     // a boolean, a euro value, an invented id or a duplicated id proves
     // nothing. 3 wineries need no trade-off; 4 do.
-    const extraWineriesAllowed = supplementsFlow
+    const extraWineriesAllowed = isStudioFlow
       ? serverExtraWineriesAllowed(
           body.tourId,
           Number(body.tailorExtraWineries ?? 0),
@@ -385,10 +451,10 @@ Deno.serve(async (req) => {
         400,
       );
     }
-    const tailorSupplements = supplementsFlow
+    const tailorSupplements = isStudioFlow
       ? serverTailorSupplementsEur(
           body.tourId,
-          isTailorFlow && body.tailorLunchAdded === true,
+          false,
           extraWineriesAllowed,
         )
       : 0;
@@ -406,11 +472,16 @@ Deno.serve(async (req) => {
     if (lunchRemoved && !TAILOR_LUNCH_REMOVAL_ELIGIBLE.has(body.tourId)) {
       return jsonError(`Lunch removal is not available for ${body.tourId}`, 400);
     }
-    const lunchRemovalCredit = isTailorFlow ? serverLunchRemovalEur(body.tourId, lunchRemoved) : 0;
+    // Tailor lunch removal is priced by the price map (stop:<lunch> remove);
+    // the legacy boolean is accepted for validation only.
+    const lunchRemovalCredit = 0;
+    void serverLunchRemovalEur;
 
-    const eurPerPax = supplementsFlow
-      ? tailorFinalPerPax(resolvedPerPax, principalsRemoved, tailorSupplements, lunchRemovalCredit)
-      : resolvedPerPax;
+    const eurPerPax = tailorEngine
+      ? tailorEngine.adultUnitEur
+      : isStudioFlow
+        ? tailorFinalPerPax(resolvedPerPax, 0, tailorSupplements, lunchRemovalCredit)
+        : resolvedPerPax;
 
     // Build itemised age-band lines (server-authoritative). When
     // composition is absent, this collapses to `headcount × adult`.
@@ -429,7 +500,14 @@ Deno.serve(async (req) => {
       });
     }
 
-    const tourSubtotalCents = priceLines.reduce((s, l) => s + Math.round(l.unitEur * 100), 0);
+    // Per-group / per-vehicle / flat Tailor changes apply once per booking.
+    const tailorGroupFixedEur = tailorEngine?.groupFixedEur ?? 0;
+    const tourSubtotalCents =
+      priceLines.reduce((s, l) => s + Math.round(l.unitEur * 100), 0) + tailorGroupFixedEur * 100;
+    if (tailorEngine && tourSubtotalCents !== tailorEngine.totalEur * 100) {
+      console.error("tailor parity mismatch", tourSubtotalCents, tailorEngine.totalEur);
+      return jsonError("Tailor price could not be verified. Please refresh and try again.", 500);
+    }
     if (tourSubtotalCents < 5000) return jsonError("Computed amount below minimum", 400);
 
     const stripe = createStripeClient(resolvedEnv);
@@ -650,7 +728,7 @@ Deno.serve(async (req) => {
       child: "Child (3–10)",
       infant: "Infant (0–2, free)",
     };
-    const tourLineItems = (["adult", "youth", "child", "infant"] as const)
+    const bandLineItems = (["adult", "youth", "child", "infant"] as const)
       .filter((b) => byBand[b].qty > 0)
       .map((b, idx) => ({
         price_data: {
@@ -673,6 +751,25 @@ Deno.serve(async (req) => {
         },
         quantity: byBand[b].qty,
       }));
+    // When a Tailor change applies once per booking (group / vehicle / flat),
+    // per-person lines cannot carry it exactly — charge one booking total.
+    const tourLineItems =
+      tailorGroupFixedEur !== 0
+        ? [
+            {
+              price_data: {
+                currency: "eur",
+                product_data: {
+                  name: productName,
+                  description,
+                  images: ["https://yesexperiencesportugal.com/og-cover.jpg"],
+                },
+                unit_amount: tourSubtotalCents,
+              },
+              quantity: 1,
+            },
+          ]
+        : bandLineItems;
 
     const sessionParams: Record<string, unknown> = {
       line_items: [...tourLineItems, ...addOnLineItems, ...composableLineItems],
