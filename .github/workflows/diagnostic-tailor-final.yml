@@ -1,0 +1,57 @@
+name: Diagnostic Tailor final
+
+on:
+  push:
+    branches:
+      - fix/tailor-price-map-ci-20261002
+
+jobs:
+  tailor:
+    name: Tailor targeted validation
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+      - run: bun install --frozen-lockfile
+      - name: Prettier changed Tailor files
+        run: >
+          bunx prettier --check
+          'src/routes/tours_.$tourId.tailor.tsx'
+          src/hooks/use-tailor-price-map.ts
+          src/components/admin/TailorPriceMap.tsx
+          src/lib/tailor/tailor-price-catalog.ts
+          src/lib/tailor/tailor-price-engine.ts
+          src/data/tailorRules.ts
+          supabase/functions/_shared/pricing.ts
+          supabase/functions/_shared/tailor-price-engine.ts
+          supabase/functions/create-signature-checkout/index.ts
+          src/__tests__/tailor-pass1b-correction.test.ts
+          src/__tests__/tailor-rules.test.ts
+          src/lib/tailor/__tests__/tailor-price-engine.test.ts
+          src/lib/studio-v3/__tests__/winery-tradeoff-and-price-parity.test.ts
+      - name: ESLint changed Tailor files
+        run: >
+          bunx eslint
+          'src/routes/tours_.$tourId.tailor.tsx'
+          src/hooks/use-tailor-price-map.ts
+          src/components/admin/TailorPriceMap.tsx
+          src/lib/tailor/tailor-price-catalog.ts
+          src/lib/tailor/tailor-price-engine.ts
+          src/data/tailorRules.ts
+          src/__tests__/tailor-pass1b-correction.test.ts
+          src/__tests__/tailor-rules.test.ts
+          src/lib/tailor/__tests__/tailor-price-engine.test.ts
+          src/lib/studio-v3/__tests__/winery-tradeoff-and-price-parity.test.ts
+      - name: Tailor tests
+        run: >
+          bunx vitest run
+          src/lib/tailor/__tests__/tailor-price-engine.test.ts
+          src/__tests__/tailor-pass1b-correction.test.ts
+          src/__tests__/tailor-rules.test.ts
+          src/lib/studio-v3/__tests__/winery-tradeoff-and-price-parity.test.ts
+          --reporter=dot
+      - name: Build
+        run: bun run build
