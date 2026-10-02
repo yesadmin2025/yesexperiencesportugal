@@ -854,7 +854,9 @@ export function composeLivingAtlasDay(
   const doorToDoor = certifyDoorToDoor(doorToDoorInputFor(selected));
   const requiresCuratorReview =
     status === "impossible" ||
-    selected.length === 0;
+    selected.length === 0 ||
+    !doorToDoor.evaluable ||
+    !doorToDoor.fitsHardMax;
 
   const moments = [...selected]
     .sort((a, b) => a.poolIndex - b.poolIndex)
