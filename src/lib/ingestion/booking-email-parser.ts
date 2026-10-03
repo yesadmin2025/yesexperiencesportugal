@@ -523,6 +523,59 @@ export function headingAbove(chunk: string): string | null {
 }
 
 const BOKUN_SENDERS = [/no-?reply@bokun\.io/i, /bokun/i];
+const GYG_SENDERS = [/getyourguide\./i];
+
+function firstLabelled(body: string, labels: string[]): string | null {
+  for (const l of labels) {
+    const v = labelled(body, l);
+    if (v) return v;
+  }
+  return null;
+}
+
+/** Supplier emails sent directly by GetYourGuide (new / cancelled bookings). */
+export function parseGetYourGuide(input: EmailInput): ParseResult {
+  const subject = input.subject ?? "";
+  const body = normaliseBody(input.body ?? "");
+  const haystack = `${subject}\n${body}`;
+  const cancelled = /\bcancel(l?ed|lation)\b/i.test(subject);
+  const isBooking =
+    cancelled ||
+    /\b(new )?booking\b|\bbuchung\b|\bhas been booked\b/i.test(subject) ||
+    /\bGYG[A-Z0-9]{6,}\b/.test(haystack);
+  if (!isBooking) return { kind: "ignored", reason: "gyg_not_a_booking", bookings: [] };
+
+  const draft = emptyBooking(0, "direct", "GETYOURGUIDE");
+  draft.intent = cancelled ? "cancel" : "create";
+  const ref =
+    clean(firstLabelled(body, ["Reference number", "Booking reference", "Reference", "Booking ID"])) ??
+    haystack.match(/\b(GYG[A-Z0-9]{6,})\b/)?.[1] ??
+    null;
+  draft.externalBookingRef = ref;
+  draft.tourTitle = clean(firstLabelled(body, ["Tour", "Activity", "Product", "Option"]));
+  draft.selectedRate = clean(firstLabelled(body, ["Option", "Tour option"]));
+  draft.customerName = clean(firstLabelled(body, ["Main customer", "Lead traveler", "Customer", "Name"]));
+  const email = firstLabelled(body, ["Email", "E-mail", "Customer email"]);
+  draft.customerEmail = email?.match(/[^\s<>]+@[^\s<>]+/)?.[0]?.toLowerCase() ?? null;
+  draft.customerPhone = clean(firstLabelled(body, ["Phone", "Phone number", "Mobile"]));
+  const dateLine = firstLabelled(body, ["Date", "Activity date", "Tour date"]) ?? subject;
+  const d = parseDateToken(dateLine);
+  draft.date = d.date;
+  draft.startTime = d.time ?? clean(firstLabelled(body, ["Time", "Start time"]));
+  const pax = parsePax(firstLabelled(body, ["Number of participants", "Participants", "Travelers", "Travellers"]));
+  draft.pax = pax.total;
+  draft.paxBreakdown = pax.breakdown;
+  draft.pickup = clean(firstLabelled(body, ["Pickup", "Pick-up", "Pickup location", "Meeting point"]));
+  draft.language = clean(firstLabelled(body, ["Language", "Tour language"]));
+  const money = parseMoney(firstLabelled(body, ["Price", "Total price", "Net price", "Amount"]));
+  draft.amountPaid = money.amount;
+  draft.currency = money.currency;
+  // GetYourGuide collects payment from the guest.
+  draft.paymentStatus = "PAID";
+  draft.bookingStatus = cancelled ? "cancelled" : "paid";
+  draft.notes = clean(firstLabelled(body, ["Special requirements", "Comments", "Notes"]));
+  return { kind: "direct", reason: null, bookings: [finalise(draft)] };
+}
 
 /**
  * Entry point. Returns `ignored` for anything that is not a real booking
@@ -539,6 +592,7 @@ export function parseBookingEmail(input: EmailInput): ParseResult {
 
   const fromBokun = BOKUN_SENDERS.some((re) => re.test(input.from ?? ""));
   if (fromBokun) return parseBokun(input);
+  if (GYG_SENDERS.some((re) => re.test(input.from ?? ""))) return parseGetYourGuide(input);
 
   const hasConfirmation =
     DIRECT_CONFIRM_MARKERS.some((re) => re.test(haystack)) ||
