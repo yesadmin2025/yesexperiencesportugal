@@ -104,6 +104,7 @@ import { Route as AdminAvailabilityRouteImport } from './routes/admin.availabili
 import { Route as AdminBuilderImagesRouteImport } from './routes/admin.builder-images'
 import { Route as AdminBuilderImagesQaRouteImport } from './routes/admin.builder-images-qa'
 import { Route as AdminComposableStopsRouteImport } from './routes/admin.composable-stops'
+import { Route as AdminConversionsRouteImport } from './routes/admin.conversions'
 import { Route as AdminDnsWatchRouteImport } from './routes/admin.dns-watch'
 import { Route as AdminDomainsHealthRouteImport } from './routes/admin.domains-health'
 import { Route as AdminDriftBehaviorRouteImport } from './routes/admin.drift-behavior'
@@ -199,6 +200,7 @@ import { Route as ApiPublicContactRouteImport } from './routes/api/public/contac
 import { Route as ApiPublicEditorialPhotoRouteImport } from './routes/api/public/editorial-photo'
 import { Route as ApiPublicPricingSsotRouteImport } from './routes/api/public/pricing-ssot'
 import { Route as ApiPublicProposalRequestRouteImport } from './routes/api/public/proposal-request'
+import { Route as ApiPublicVisitRouteImport } from './routes/api/public/visit'
 import { Route as FunctionsV1StripeWebhookRouteImport } from './routes/functions.v1.stripe-webhook'
 import { Route as GuideToursIndexRouteImport } from './routes/guide.tours.index'
 import { Route as GuideToursAssignmentIdRouteImport } from './routes/guide.tours.$assignmentId'
@@ -716,6 +718,11 @@ const AdminComposableStopsRoute = AdminComposableStopsRouteImport.update({
   path: '/composable-stops',
   getParentRoute: () => AdminRoute,
 } as any)
+const AdminConversionsRoute = AdminConversionsRouteImport.update({
+  id: '/conversions',
+  path: '/conversions',
+  getParentRoute: () => AdminRoute,
+} as any)
 const AdminDnsWatchRoute = AdminDnsWatchRouteImport.update({
   id: '/dns-watch',
   path: '/dns-watch',
@@ -1198,6 +1205,11 @@ const ApiPublicProposalRequestRoute =
     path: '/api/public/proposal-request',
     getParentRoute: () => rootRouteImport,
   } as any)
+const ApiPublicVisitRoute = ApiPublicVisitRouteImport.update({
+  id: '/api/public/visit',
+  path: '/api/public/visit',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const FunctionsV1StripeWebhookRoute =
   FunctionsV1StripeWebhookRouteImport.update({
     id: '/functions/v1/stripe-webhook',
@@ -1436,6 +1448,7 @@ export interface FileRoutesByFullPath {
   '/admin/builder-images': typeof AdminBuilderImagesRoute
   '/admin/builder-images-qa': typeof AdminBuilderImagesQaRoute
   '/admin/composable-stops': typeof AdminComposableStopsRoute
+  '/admin/conversions': typeof AdminConversionsRoute
   '/admin/dns-watch': typeof AdminDnsWatchRoute
   '/admin/domains-health': typeof AdminDomainsHealthRoute
   '/admin/drift-behavior': typeof AdminDriftBehaviorRoute
@@ -1530,6 +1543,7 @@ export interface FileRoutesByFullPath {
   '/api/public/editorial-photo': typeof ApiPublicEditorialPhotoRoute
   '/api/public/pricing-ssot': typeof ApiPublicPricingSsotRoute
   '/api/public/proposal-request': typeof ApiPublicProposalRequestRoute
+  '/api/public/visit': typeof ApiPublicVisitRoute
   '/functions/v1/stripe-webhook': typeof FunctionsV1StripeWebhookRoute
   '/guide/tours/$assignmentId': typeof GuideToursAssignmentIdRoute
   '/lovable/email/suppression': typeof LovableEmailSuppressionRoute
@@ -1649,6 +1663,7 @@ export interface FileRoutesByTo {
   '/admin/builder-images': typeof AdminBuilderImagesRoute
   '/admin/builder-images-qa': typeof AdminBuilderImagesQaRoute
   '/admin/composable-stops': typeof AdminComposableStopsRoute
+  '/admin/conversions': typeof AdminConversionsRoute
   '/admin/dns-watch': typeof AdminDnsWatchRoute
   '/admin/domains-health': typeof AdminDomainsHealthRoute
   '/admin/drift-behavior': typeof AdminDriftBehaviorRoute
@@ -1743,6 +1758,7 @@ export interface FileRoutesByTo {
   '/api/public/editorial-photo': typeof ApiPublicEditorialPhotoRoute
   '/api/public/pricing-ssot': typeof ApiPublicPricingSsotRoute
   '/api/public/proposal-request': typeof ApiPublicProposalRequestRoute
+  '/api/public/visit': typeof ApiPublicVisitRoute
   '/functions/v1/stripe-webhook': typeof FunctionsV1StripeWebhookRoute
   '/guide/tours/$assignmentId': typeof GuideToursAssignmentIdRoute
   '/lovable/email/suppression': typeof LovableEmailSuppressionRoute
@@ -1867,6 +1883,7 @@ export interface FileRoutesById {
   '/admin/builder-images': typeof AdminBuilderImagesRoute
   '/admin/builder-images-qa': typeof AdminBuilderImagesQaRoute
   '/admin/composable-stops': typeof AdminComposableStopsRoute
+  '/admin/conversions': typeof AdminConversionsRoute
   '/admin/dns-watch': typeof AdminDnsWatchRoute
   '/admin/domains-health': typeof AdminDomainsHealthRoute
   '/admin/drift-behavior': typeof AdminDriftBehaviorRoute
@@ -1961,6 +1978,7 @@ export interface FileRoutesById {
   '/api/public/editorial-photo': typeof ApiPublicEditorialPhotoRoute
   '/api/public/pricing-ssot': typeof ApiPublicPricingSsotRoute
   '/api/public/proposal-request': typeof ApiPublicProposalRequestRoute
+  '/api/public/visit': typeof ApiPublicVisitRoute
   '/functions/v1/stripe-webhook': typeof FunctionsV1StripeWebhookRoute
   '/guide/tours/$assignmentId': typeof GuideToursAssignmentIdRoute
   '/lovable/email/suppression': typeof LovableEmailSuppressionRoute
@@ -2086,6 +2104,7 @@ export interface FileRouteTypes {
     | '/admin/builder-images'
     | '/admin/builder-images-qa'
     | '/admin/composable-stops'
+    | '/admin/conversions'
     | '/admin/dns-watch'
     | '/admin/domains-health'
     | '/admin/drift-behavior'
@@ -2180,6 +2199,7 @@ export interface FileRouteTypes {
     | '/api/public/editorial-photo'
     | '/api/public/pricing-ssot'
     | '/api/public/proposal-request'
+    | '/api/public/visit'
     | '/functions/v1/stripe-webhook'
     | '/guide/tours/$assignmentId'
     | '/lovable/email/suppression'
@@ -2299,6 +2319,7 @@ export interface FileRouteTypes {
     | '/admin/builder-images'
     | '/admin/builder-images-qa'
     | '/admin/composable-stops'
+    | '/admin/conversions'
     | '/admin/dns-watch'
     | '/admin/domains-health'
     | '/admin/drift-behavior'
@@ -2393,6 +2414,7 @@ export interface FileRouteTypes {
     | '/api/public/editorial-photo'
     | '/api/public/pricing-ssot'
     | '/api/public/proposal-request'
+    | '/api/public/visit'
     | '/functions/v1/stripe-webhook'
     | '/guide/tours/$assignmentId'
     | '/lovable/email/suppression'
@@ -2516,6 +2538,7 @@ export interface FileRouteTypes {
     | '/admin/builder-images'
     | '/admin/builder-images-qa'
     | '/admin/composable-stops'
+    | '/admin/conversions'
     | '/admin/dns-watch'
     | '/admin/domains-health'
     | '/admin/drift-behavior'
@@ -2610,6 +2633,7 @@ export interface FileRouteTypes {
     | '/api/public/editorial-photo'
     | '/api/public/pricing-ssot'
     | '/api/public/proposal-request'
+    | '/api/public/visit'
     | '/functions/v1/stripe-webhook'
     | '/guide/tours/$assignmentId'
     | '/lovable/email/suppression'
@@ -2752,6 +2776,7 @@ export interface RootRouteChildren {
   ApiPublicEditorialPhotoRoute: typeof ApiPublicEditorialPhotoRoute
   ApiPublicPricingSsotRoute: typeof ApiPublicPricingSsotRoute
   ApiPublicProposalRequestRoute: typeof ApiPublicProposalRequestRoute
+  ApiPublicVisitRoute: typeof ApiPublicVisitRoute
   FunctionsV1StripeWebhookRoute: typeof FunctionsV1StripeWebhookRoute
   LovableEmailSuppressionRoute: typeof LovableEmailSuppressionRoute
   ToursTourIdTailorRoute: typeof ToursTourIdTailorRoute
@@ -3443,6 +3468,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminComposableStopsRouteImport
       parentRoute: typeof AdminRoute
     }
+    '/admin/conversions': {
+      id: '/admin/conversions'
+      path: '/conversions'
+      fullPath: '/admin/conversions'
+      preLoaderRoute: typeof AdminConversionsRouteImport
+      parentRoute: typeof AdminRoute
+    }
     '/admin/dns-watch': {
       id: '/admin/dns-watch'
       path: '/dns-watch'
@@ -4108,6 +4140,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicProposalRequestRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/visit': {
+      id: '/api/public/visit'
+      path: '/api/public/visit'
+      fullPath: '/api/public/visit'
+      preLoaderRoute: typeof ApiPublicVisitRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/functions/v1/stripe-webhook': {
       id: '/functions/v1/stripe-webhook'
       path: '/functions/v1/stripe-webhook'
@@ -4294,6 +4333,7 @@ interface AdminRouteChildren {
   AdminBuilderImagesRoute: typeof AdminBuilderImagesRoute
   AdminBuilderImagesQaRoute: typeof AdminBuilderImagesQaRoute
   AdminComposableStopsRoute: typeof AdminComposableStopsRoute
+  AdminConversionsRoute: typeof AdminConversionsRoute
   AdminDnsWatchRoute: typeof AdminDnsWatchRoute
   AdminDomainsHealthRoute: typeof AdminDomainsHealthRoute
   AdminDriftBehaviorRoute: typeof AdminDriftBehaviorRoute
@@ -4353,6 +4393,7 @@ const AdminRouteChildren: AdminRouteChildren = {
   AdminBuilderImagesRoute: AdminBuilderImagesRoute,
   AdminBuilderImagesQaRoute: AdminBuilderImagesQaRoute,
   AdminComposableStopsRoute: AdminComposableStopsRoute,
+  AdminConversionsRoute: AdminConversionsRoute,
   AdminDnsWatchRoute: AdminDnsWatchRoute,
   AdminDomainsHealthRoute: AdminDomainsHealthRoute,
   AdminDriftBehaviorRoute: AdminDriftBehaviorRoute,
@@ -4618,6 +4659,7 @@ const rootRouteChildren: RootRouteChildren = {
   ApiPublicEditorialPhotoRoute: ApiPublicEditorialPhotoRoute,
   ApiPublicPricingSsotRoute: ApiPublicPricingSsotRoute,
   ApiPublicProposalRequestRoute: ApiPublicProposalRequestRoute,
+  ApiPublicVisitRoute: ApiPublicVisitRoute,
   FunctionsV1StripeWebhookRoute: FunctionsV1StripeWebhookRoute,
   LovableEmailSuppressionRoute: LovableEmailSuppressionRoute,
   ToursTourIdTailorRoute: ToursTourIdTailorRoute,
