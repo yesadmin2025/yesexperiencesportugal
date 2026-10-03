@@ -14,6 +14,9 @@ export type ConversionReport = {
   avgEur: number;
   byPath: { path: string; visitors: number; paid: number }[];
   topPages: { path: string; visitors: number }[];
+  ctaClicks: { cta: string; clicks: number; visitors: number }[];
+  ctaByPage: { path: string; tailor: number; studio: number; signature: number }[];
+  landingPages: { path: string; visitors: number; clickedCta: number; startedBooking: number }[];
   emailIssues: {
     bookingId: string;
     sessionId: string | null;
@@ -65,6 +68,35 @@ export const getConversionReport = createServerFn({ method: "POST" })
     const views = visits.filter((v) => v.event === "view");
     const visitorSet = new Set(views.map((v) => v.visitor_id));
     const startSet = new Set(visits.filter((v) => v.event === "booking_start").map((v) => v.visitor_id));
+
+    const ctaRows = visits.filter((v) => v.event === "cta_click");
+    const ctaClicks = ["tailor", "studio", "signature"].map((c) => {
+      const rows = ctaRows.filter((r) => r.product_path === c);
+      return { cta: c, clicks: rows.length, visitors: new Set(rows.map((r) => r.visitor_id)).size };
+    });
+    const pageCta = new Map<string, { tailor: number; studio: number; signature: number }>();
+    for (const r of ctaRows) {
+      const k = r.product_path as "tailor" | "studio" | "signature" | null;
+      if (!k) continue;
+      const e = pageCta.get(r.path) ?? { tailor: 0, studio: 0, signature: 0 };
+      e[k] += 1;
+      pageCta.set(r.path, e);
+    }
+    const ctaVisitors = new Set(ctaRows.map((r) => r.visitor_id));
+    const landingMap = new Map<string, Set<string>>();
+    for (const v of visits.filter((x) => x.event === "landing")) {
+      if (!landingMap.has(v.path)) landingMap.set(v.path, new Set());
+      landingMap.get(v.path)!.add(v.visitor_id);
+    }
+    const landingPages = [...landingMap.entries()]
+      .map(([path, s]) => ({
+        path,
+        visitors: s.size,
+        clickedCta: [...s].filter((id) => ctaVisitors.has(id)).length,
+        startedBooking: [...s].filter((id) => startSet.has(id)).length,
+      }))
+      .sort((a, b) => b.visitors - a.visitors)
+      .slice(0, 15);
 
     const pathVisitors = new Map<string, Set<string>>();
     const pageVisitors = new Map<string, Set<string>>();
@@ -165,6 +197,12 @@ export const getConversionReport = createServerFn({ method: "POST" })
         .map(([path, s]) => ({ path, visitors: s.size }))
         .sort((a, b) => b.visitors - a.visitors)
         .slice(0, 10),
+      ctaClicks,
+      ctaByPage: [...pageCta.entries()]
+        .map(([path, c]) => ({ path, ...c }))
+        .sort((a, b) => b.tailor + b.studio + b.signature - (a.tailor + a.studio + a.signature))
+        .slice(0, 15),
+      landingPages,
       emailIssues,
     };
   });

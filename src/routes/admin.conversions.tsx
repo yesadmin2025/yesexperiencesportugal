@@ -119,6 +119,48 @@ function ConversionsPage() {
             <Stat label="Page views" value={r.pageViews} />
           </section>
 
+          <h2 className="mt-8 font-serif text-xl">CTA clicks</h2>
+          <section className="mt-2 grid grid-cols-3 gap-3">
+            {r.ctaClicks.map((c) => (
+              <Stat key={c.cta} label={c.cta === "tailor" ? "Tailor" : c.cta === "studio" ? "Studio" : "Signature"} value={c.clicks} sub={pct(c.visitors, r.visitors)} />
+            ))}
+          </section>
+
+          <h2 className="mt-8 font-serif text-xl">Where clicks happen</h2>
+          <div className="mt-2 overflow-x-auto">
+            <table className="w-full text-sm">
+              <thead className="text-left text-muted-foreground">
+                <tr><th className="py-2">Page</th><th>Tailor</th><th>Studio</th><th>Signature</th></tr>
+              </thead>
+              <tbody>
+                {r.ctaByPage.map((p) => (
+                  <tr key={p.path} className="border-t">
+                    <td className="max-w-[160px] truncate py-2">{p.path}</td>
+                    <td>{p.tailor}</td><td>{p.studio}</td><td>{p.signature}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+
+          <h2 className="mt-8 font-serif text-xl">Landing pages</h2>
+          <p className="text-xs text-muted-foreground">First page of each visit, and how many of those visitors went on to click a CTA or start a booking.</p>
+          <div className="mt-2 overflow-x-auto">
+            <table className="w-full text-sm">
+              <thead className="text-left text-muted-foreground">
+                <tr><th className="py-2">Page</th><th>Visitors</th><th>CTA</th><th>Booking</th></tr>
+              </thead>
+              <tbody>
+                {r.landingPages.map((p) => (
+                  <tr key={p.path} className="border-t">
+                    <td className="max-w-[160px] truncate py-2">{p.path}</td>
+                    <td>{p.visitors}</td><td>{p.clickedCta}</td><td>{p.startedBooking}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+
           <h2 className="mt-8 font-serif text-xl">By path</h2>
           <table className="mt-2 w-full text-sm">
             <thead className="text-left text-muted-foreground">
