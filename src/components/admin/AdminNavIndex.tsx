@@ -21,6 +21,7 @@ export const ADMIN_GROUPS: AdminGroup[] = [
     note: "Everything a paid or requested trip touches.",
     links: [
       { to: "/admin/bookings", label: "Bookings", hint: "Date, guests, payment, refunds" },
+      { to: "/admin/conversions", label: "Conversions", hint: "Visitors → leads → paid, missing emails" },
       { to: "/admin/activity", label: "Activity & payment health", hint: "Latest bookings, messages, payment events" },
       { to: "/admin/availability", label: "Availability calendar" },
       { to: "/admin/enquiries", label: "Enquiries & messages" },
