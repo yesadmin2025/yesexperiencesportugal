@@ -13,7 +13,7 @@
  *     possibly several dated bookings in one message.
  */
 
-export type SourceChannel = "VIATOR" | "GETYOURGUIDE" | "BOKUN" | "DIRECT" | "WEBSITE" | "OTHER";
+export type SourceChannel = "VIATOR" | "GETYOURGUIDE" | "TRIPADVISOR" | "BOKUN" | "DIRECT" | "WEBSITE" | "OTHER";
 
 export type ParsedIntent = "create" | "cancel";
 
@@ -135,6 +135,7 @@ export function channelFromText(value: string | null | undefined): SourceChannel
   if (!text) return "BOKUN";
   if (text.includes("viator") || text.includes("tripadvisor")) return "VIATOR";
   if (text.includes("getyourguide") || text.includes("get your guide")) return "GETYOURGUIDE";
+  if (text.includes("tripadvisor")) return "TRIPADVISOR";
   if (text.includes("expedia") || text.includes("airbnb") || text.includes("musement")) return "OTHER";
   if (text.includes("yes experiences") || text.includes("direct") || text.includes("website")) return "DIRECT";
   return "BOKUN";
@@ -523,7 +524,12 @@ export function headingAbove(chunk: string): string | null {
 }
 
 const BOKUN_SENDERS = [/no-?reply@bokun\.io/i, /bokun/i];
-const GYG_SENDERS = [/getyourguide\./i];
+const OTA_SENDERS: Array<[RegExp, SourceChannel]> = [
+  [/getyourguide\./i, "GETYOURGUIDE"],
+  [/viator\.com/i, "VIATOR"],
+  [/tripadvisor\./i, "TRIPADVISOR"],
+];
+const OTA_REF = /\b(GYG[A-Z0-9]{6,}|BR-\d{6,}|\d{9,10})\b/;
 
 function firstLabelled(body: string, labels: string[]): string | null {
   for (const l of labels) {
@@ -533,8 +539,12 @@ function firstLabelled(body: string, labels: string[]): string | null {
   return null;
 }
 
-/** Supplier emails sent directly by GetYourGuide (new / cancelled bookings). */
+/** Supplier emails sent directly by an OTA (GetYourGuide, Viator, Tripadvisor) or any other sender. */
 export function parseGetYourGuide(input: EmailInput): ParseResult {
+  return parseOta(input, "GETYOURGUIDE");
+}
+
+export function parseOta(input: EmailInput, channel: SourceChannel, forceReview = false): ParseResult {
   const subject = input.subject ?? "";
   const body = normaliseBody(input.body ?? "");
   const haystack = `${subject}\n${body}`;
@@ -543,13 +553,13 @@ export function parseGetYourGuide(input: EmailInput): ParseResult {
     cancelled ||
     /\b(new )?booking\b|\bbuchung\b|\bhas been booked\b/i.test(subject) ||
     /\bGYG[A-Z0-9]{6,}\b/.test(haystack);
-  if (!isBooking) return { kind: "ignored", reason: "gyg_not_a_booking", bookings: [] };
+  if (!isBooking) return { kind: "ignored", reason: "ota_not_a_booking", bookings: [] };
 
-  const draft = emptyBooking(0, "direct", "GETYOURGUIDE");
+  const draft = emptyBooking(0, "direct", channel);
   draft.intent = cancelled ? "cancel" : "create";
   const ref =
     clean(firstLabelled(body, ["Reference number", "Booking reference", "Reference", "Booking ID"])) ??
-    haystack.match(/\b(GYG[A-Z0-9]{6,})\b/)?.[1] ??
+    haystack.match(OTA_REF)?.[1] ??
     null;
   draft.externalBookingRef = ref;
   draft.tourTitle = clean(firstLabelled(body, ["Tour", "Activity", "Product", "Option"]));
@@ -570,11 +580,16 @@ export function parseGetYourGuide(input: EmailInput): ParseResult {
   const money = parseMoney(firstLabelled(body, ["Price", "Total price", "Net price", "Amount"]));
   draft.amountPaid = money.amount;
   draft.currency = money.currency;
-  // GetYourGuide collects payment from the guest.
+  // The channel collects payment from the guest.
   draft.paymentStatus = "PAID";
   draft.bookingStatus = cancelled ? "cancelled" : "paid";
   draft.notes = clean(firstLabelled(body, ["Special requirements", "Comments", "Notes"]));
-  return { kind: "direct", reason: null, bookings: [finalise(draft)] };
+  const done = finalise(draft);
+  if (forceReview) {
+    done.reviewRequired = true;
+    done.reviewReason = "Unknown sender: confirm this booking before it enters the diary";
+  }
+  return { kind: "direct", reason: null, bookings: [done] };
 }
 
 /**
@@ -592,7 +607,8 @@ export function parseBookingEmail(input: EmailInput): ParseResult {
 
   const fromBokun = BOKUN_SENDERS.some((re) => re.test(input.from ?? ""));
   if (fromBokun) return parseBokun(input);
-  if (GYG_SENDERS.some((re) => re.test(input.from ?? ""))) return parseGetYourGuide(input);
+  const ota = OTA_SENDERS.find(([re]) => re.test(input.from ?? ""));
+  if (ota) return parseOta(input, ota[1]);
 
   const hasConfirmation =
     DIRECT_CONFIRM_MARKERS.some((re) => re.test(haystack)) ||
