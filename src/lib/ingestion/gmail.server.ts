@@ -151,6 +151,7 @@ export function buildQueries(days: number): Array<{ query: string; mailbox: Gmai
     // Our own "New booking" notifications: enrich-only, never create bookings.
     { query: internalNotificationQuery(days), mailbox: "INTERNAL" },
     { query: `in:inbox from:bokun.io ${window}`, mailbox: "INBOX" },
+    { query: `in:anywhere from:getyourguide.com ${window}`, mailbox: "INBOX" },
     {
       query: `in:sent ${window} (subject:("Booking Confirmed" OR "Pre-Confirmation" OR "Confirmed & Fully Paid") OR "Confirmed & Fully Paid" OR "Pre-Confirmation Voucher")`,
       mailbox: "SENT",

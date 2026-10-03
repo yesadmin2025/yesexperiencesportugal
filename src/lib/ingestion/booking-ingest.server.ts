@@ -315,7 +315,9 @@ export async function ingestParsedBooking(
     return { ...base, action: "cancelled", bookingId: existing.id, candidateId: null, reason: null };
   }
 
-  const needsReview = booking.reviewRequired || !booking.customerEmail;
+  // GetYourGuide often hides the guest email; its reference identifies the booking.
+  const otaIdentified = booking.sourceChannel === "GETYOURGUIDE" && !!booking.externalBookingRef;
+  const needsReview = booking.reviewRequired || (!booking.customerEmail && !otaIdentified);
   if (needsReview && !existing) {
     const reason = booking.reviewReason ?? "missing_customer_email";
     const candidateId = dryRun ? null : await createCandidate(supabaseAdmin, ctx, booking, reason);
@@ -401,7 +403,48 @@ export async function ingestParsedBooking(
     bookingId: inserted?.id ?? null, confidence: booking.confidence, dedupeKey,
     channel: booking.sourceChannel, payload: { keys },
   });
+  if (inserted?.id) await alertTeamOfImport(booking, inserted.id);
   return { ...base, action: "created", bookingId: inserted?.id ?? null, candidateId: null, reason: null };
+}
+
+/** Private admin alert for every newly imported partner booking. Never emails the guest. */
+async function alertTeamOfImport(booking: ParsedBooking, bookingId: string) {
+  try {
+    const { sendTransactionalInternal } = await import("@/lib/email/send-internal.server");
+    const { TEAM_NOTIFICATION_RECIPIENTS } = await import("@/lib/email/team-recipients");
+    const amount =
+      booking.amountPaid != null
+        ? `${(booking.amountPaid / 100).toFixed(2)} ${booking.currency ?? "EUR"}`
+        : null;
+    await Promise.all(
+      TEAM_NOTIFICATION_RECIPIENTS.map((recipient) =>
+        sendTransactionalInternal({
+          templateName: "internal-booking",
+          recipientEmail: recipient,
+          idempotencyKey: `internal-booking-import-${bookingId}-${recipient}`,
+          templateData: {
+            customerName: booking.customerName,
+            customerEmail: booking.customerEmail,
+            customerPhone: booking.customerPhone,
+            tourTitle: booking.tourTitle,
+            experienceName: booking.tourTitle,
+            bookingType: booking.sourceChannel,
+            dateExact: booking.date,
+            startTime: booking.startTime,
+            guests: booking.pax,
+            pickup: booking.pickup,
+            language: booking.language,
+            amountFormatted: amount,
+            bookingRef: booking.externalBookingRef ?? booking.productBookingRef,
+            bookingId,
+            adminUrl: `https://yesexperiencesportugal.com/admin/bookings/${bookingId}`,
+          },
+        }),
+      ),
+    );
+  } catch (e) {
+    console.error("[ingest] team alert failed", { error: e instanceof Error ? e.message : e });
+  }
 }
 
 /**
