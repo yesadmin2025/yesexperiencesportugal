@@ -213,7 +213,12 @@ export function CinematicHero() {
       <div className="hero-cinematic-layout absolute inset-0 z-10 grid px-5 sm:px-10 md:px-16">
       <div className="hero-stanza-zone flex min-w-0 items-center justify-center">
         <div className="w-full text-center">
-           <h1
+           {/* Descriptive H1 for Google + screen readers; visually hidden so
+               the approved Hero composition stays pixel-identical. */}
+           <h1 className="sr-only">
+             Private Tours &amp; Travel Design in Portugal — YES! Experiences
+           </h1>
+           <div
             data-hero-stanza="true"
             data-mixed-emphasis="exempt"
             className="hero-h1 m-0 text-center font-serif"
