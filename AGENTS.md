@@ -12,3 +12,4 @@
 - Guide scheduling uses DB conflict guards and RLS-safe RPCs; `/guide` is the only work list (3 tabs, scoped PWA manifest); access/assignment rules: see `src/components/guide/AGENTS.md`.
 - Ops booking data rules: see `src/lib/ops/AGENTS.md`.
 - Admin daily navigation is Operations, Bookings, Payments, Guides, More; legacy planning and tour-calendar URLs redirect to Operations because each booking has one full detail page and one shared canonical list.
+- Conversion funnel counts only live-domain anonymous visits in `site_visits` (written by `/api/public/visit`, admin-only reads) plus live `cs_live_` paid bookings; one source keeps admin numbers free of preview/test noise.
