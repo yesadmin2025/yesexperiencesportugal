@@ -28,7 +28,7 @@ import { Scene } from "@/components/motion/Scene";
 import { usePageViewTracking } from "@/lib/analytics-page-view";
 import { installAnalyticsAttrs } from "@/lib/analytics";
 import { setAnalyticsLocale } from "@/lib/analytics-events";
-import { trackVisit } from "@/lib/site-visit-beacon";
+import { trackVisit, installCtaTracking } from "@/lib/site-visit-beacon";
 import { captureAcquisitionFromLocation, captureUtmsFromLocation } from "@/lib/utm";
 import { captureGuideRefFromLocation } from "@/lib/guide-attribution";
 import { LocaleProvider } from "@/i18n/locale-context";
@@ -314,6 +314,7 @@ function RootComponent() {
   useEffect(() => installDevHardReload(), []);
   useEffect(() => installAnalyticsAttrs(), []);
   useEffect(() => initializeGoogleAnalytics(), []);
+  useEffect(() => installCtaTracking(), []);
   usePageViewTracking();
   useEffect(() => {
     captureUtmsFromLocation();
