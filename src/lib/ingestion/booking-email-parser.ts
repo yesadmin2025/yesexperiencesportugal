@@ -615,6 +615,15 @@ export function parseBookingEmail(input: EmailInput): ParseResult {
     DIRECT_PRECONFIRM_MARKERS.some((re) => re.test(haystack));
 
   if (!hasConfirmation) {
+    // Any other sender whose subject announces a booking confirmation/details:
+    // parse it, but always hold it for review before it enters the diary.
+    if (
+      /\b(booking|reservation)\b/i.test(subject) &&
+      /\b(confirm(ed|ation)?|details|new|cancel(l?ed|lation)?)\b/i.test(subject) &&
+      !INQUIRY_MARKERS.some((re) => re.test(haystack))
+    ) {
+      return parseOta(input, channelFromText(`${input.from ?? ""} ${subject}`), true);
+    }
     const reason = INQUIRY_MARKERS.some((re) => re.test(haystack))
       ? "enquiry_not_a_booking"
       : "no_confirmation_marker";
