@@ -76,7 +76,7 @@ async function gotoHomeStable(page: Page) {
   await page.waitForLoadState("networkidle", { timeout: 5_000 }).catch(() => {});
   // Wait for the hero h1 — it lives inside an `sr-only` probe (visually
   // hidden but present), so assert attachment rather than visibility.
-  await expect(page.locator("h1.hero-h1")).toBeAttached();
+  await expect(page.locator(".hero-h1")).toBeAttached();
 
   // Disable smooth scroll + animations so layout is stable for measurement.
   await page.addStyleTag({

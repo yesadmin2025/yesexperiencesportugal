@@ -18,10 +18,10 @@ async function gotoHero(page: Page) {
   // are simultaneously visible. The auto-cycling sequence is for the
   // real visitor; the lock asserts the FINAL anchor state.
   await page.goto("/?hero=last");
-  const h1 = page.locator("h1.hero-h1");
+  const h1 = page.locator(".hero-h1");
   await expect(h1).toBeVisible();
   await page.waitForFunction(() => {
-    const el = document.querySelector("h1.hero-h1") as HTMLElement | null;
+    const el = document.querySelector(".hero-h1") as HTMLElement | null;
     return !!el && getComputedStyle(el).opacity === "1";
   });
 }
@@ -29,7 +29,7 @@ async function gotoHero(page: Page) {
 test.describe("Hero — approved copy lock", () => {
   test("headline (both lines) matches approved copy exactly", async ({ page }) => {
     await gotoHero(page);
-    const h1 = page.locator("h1.hero-h1");
+    const h1 = page.locator(".hero-h1");
     const text = (await h1.innerText()).replace(/\s+/g, " ").trim();
     expect(text).toBe(`${HERO_COPY.headlineLine1} ${HERO_COPY.headlineLine2}`);
   });
