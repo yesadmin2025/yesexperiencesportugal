@@ -315,8 +315,8 @@ export async function ingestParsedBooking(
     return { ...base, action: "cancelled", bookingId: existing.id, candidateId: null, reason: null };
   }
 
-  // GetYourGuide often hides the guest email; its reference identifies the booking.
-  const otaIdentified = booking.sourceChannel === "GETYOURGUIDE" && !!booking.externalBookingRef;
+  // OTAs often hide the guest email; its reference identifies the booking.
+  const otaIdentified = ["GETYOURGUIDE", "VIATOR", "TRIPADVISOR"].includes(booking.sourceChannel) && !!booking.externalBookingRef;
   const needsReview = booking.reviewRequired || (!booking.customerEmail && !otaIdentified);
   if (needsReview && !existing) {
     const reason = booking.reviewReason ?? "missing_customer_email";

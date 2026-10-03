@@ -7,7 +7,8 @@ const schema = z.object({
   visitorId: z.string().regex(/^[a-z0-9-]{8,64}$/i),
   path: z.string().min(1).max(300),
   referrer: z.string().max(300).nullable().optional(),
-  event: z.enum(["view", "booking_start"]).default("view"),
+  event: z.enum(["view", "booking_start", "landing", "cta_click"]).default("view"),
+  cta: z.enum(["tailor", "studio", "signature"]).optional(),
 });
 
 function productPath(path: string): string | null {
@@ -44,7 +45,7 @@ export const Route = createFileRoute("/api/public/visit")({
           visitor_id: d.visitorId,
           path: d.path.split("?")[0],
           referrer: d.referrer ? d.referrer.slice(0, 300) : null,
-          product_path: productPath(d.path),
+          product_path: d.event === "cta_click" ? (d.cta ?? null) : productPath(d.path),
           event: d.event,
         });
         return new Response(null, { status: 204 });
