@@ -241,8 +241,8 @@ export function CinematicHero() {
                 {HERO_PHRASES[1]}
               </span>
             </span>
-          </h1>
-            <p data-hero-field="subheadline" style={{ fontFamily: "var(--font-sans)" }} className="hero-support mx-auto mt-5 max-w-[32ch] font-sans font-normal text-[14px] leading-[1.5] sm:max-w-[48ch] sm:text-[16px]">{HERO_COPY.subheadline}</p>
+          </div>
+             <p data-hero-field="subheadline" style={{ fontFamily: "var(--font-sans)" }} className="hero-support mx-auto mt-5 max-w-[32ch] font-sans font-normal text-[14px] leading-[1.5] sm:max-w-[48ch] sm:text-[16px]">{HERO_COPY.subheadline}</p>
         </div>
       </div>
 
