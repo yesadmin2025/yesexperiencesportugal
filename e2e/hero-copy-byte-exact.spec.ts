@@ -39,10 +39,10 @@ async function gotoHero(page: Page) {
   await page.goto("/?hero=last");
   // Wait for the headline opacity animation to finish so any
   // animation-driven content swap has settled before we read text.
-  const h1 = page.locator("h1.hero-h1");
+  const h1 = page.locator(".hero-h1");
   await expect(h1).toBeVisible();
   await page.waitForFunction(() => {
-    const el = document.querySelector("h1.hero-h1") as HTMLElement | null;
+    const el = document.querySelector(".hero-h1") as HTMLElement | null;
     return !!el && getComputedStyle(el).opacity === "1";
   });
 }

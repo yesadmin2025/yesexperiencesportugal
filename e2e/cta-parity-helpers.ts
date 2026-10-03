@@ -77,10 +77,10 @@ export type CtaParityReport = {
 
 export async function gotoHero(page: Page, route = "/?hero=last") {
   await page.goto(route);
-  const h1 = page.locator("h1.hero-h1");
+  const h1 = page.locator(".hero-h1");
   await expect(h1).toBeVisible();
   await page.waitForFunction(() => {
-    const el = document.querySelector("h1.hero-h1") as HTMLElement | null;
+    const el = document.querySelector(".hero-h1") as HTMLElement | null;
     return !!el && getComputedStyle(el).opacity === "1";
   });
   // Freeze in-flight CTA fade/breathe animations so measurements are stable.
