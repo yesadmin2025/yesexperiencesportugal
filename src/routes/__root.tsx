@@ -28,6 +28,7 @@ import { Scene } from "@/components/motion/Scene";
 import { usePageViewTracking } from "@/lib/analytics-page-view";
 import { installAnalyticsAttrs } from "@/lib/analytics";
 import { setAnalyticsLocale } from "@/lib/analytics-events";
+import { trackVisit } from "@/lib/site-visit-beacon";
 import { captureAcquisitionFromLocation, captureUtmsFromLocation } from "@/lib/utm";
 import { captureGuideRefFromLocation } from "@/lib/guide-attribution";
 import { LocaleProvider } from "@/i18n/locale-context";
@@ -321,6 +322,12 @@ function RootComponent() {
   }, []);
   const pathname = useRouterState({ select: (s) => s.location.pathname });
   const isGuideApp = pathname === "/guide" || pathname.startsWith("/guide/");
+  useEffect(() => {
+    trackVisit(pathname);
+    if (pathname.startsWith("/checkout") || pathname.includes("/reserve")) {
+      trackVisit(pathname, "booking_start");
+    }
+  }, [pathname]);
   usePublicEditorialMotion(pathname);
   const { locale } = parseLocaleFromPath(pathname);
   useEffect(() => {
