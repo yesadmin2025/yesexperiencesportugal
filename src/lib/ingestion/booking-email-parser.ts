@@ -551,7 +551,7 @@ export function parseOta(input: EmailInput, channel: SourceChannel, forceReview 
   const cancelled = /\bcancel(l?ed|lation)\b/i.test(subject);
   const isBooking =
     cancelled ||
-    /\b(new )?booking\b|\bbuchung\b|\bhas been booked\b/i.test(subject) ||
+    /\b(new )?(booking|reservation)\b|\bbuchung\b|\bhas been booked\b/i.test(subject) ||
     /\bGYG[A-Z0-9]{6,}\b/.test(haystack);
   if (!isBooking) return { kind: "ignored", reason: "ota_not_a_booking", bookings: [] };
 
