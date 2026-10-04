@@ -124,7 +124,8 @@ for (const file of walk(ROUTES_DIR)) {
     const self = routePath === "/" ? "" : routePath;
     if (!href.endsWith(self)) continue;
   }
-  rows.push({ path: routePath, ...(OVERRIDES[routePath] ?? DEFAULT) });
+  const sitemapPath = routePath.length > 1 ? routePath.replace(/\/$/, "") : routePath;
+  rows.push({ path: sitemapPath, ...(OVERRIDES[routePath] ?? OVERRIDES[sitemapPath] ?? DEFAULT) });
 }
 
 rows.sort((a, b) => a.path.localeCompare(b.path));

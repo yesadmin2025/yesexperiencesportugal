@@ -111,8 +111,7 @@ export function StudioV3Intro({ onComplete }: Props) {
                 }}
               >
                 Portugal
-              </span>{" "}
-              is the stage. You write the story.
+              </span> is the stage. You write the story.
             </p>
             <p
               className="mt-5 text-[13px] leading-[1.6]"

@@ -9,14 +9,14 @@ import { breadcrumbLd, itemListLd, jsonLdScript } from "@/lib/jsonld";
 import { WEBSITE_URL } from "@/config/business-nap";
 import { WINERIES } from "@/content/wineries";
 
-const PAGE_URL = `${WEBSITE_URL}/wineries/`;
+const PAGE_URL = `${WEBSITE_URL}/wineries`;
 const TITLE = "Wineries We Visit near Lisbon · Arrábida, Azeitão & Évora";
 const DESC =
   "The partner wineries on our private wine days from Lisbon: José Maria da Fonseca, Catralvos, Bacalhôa, Cartuxa, Esporão and more — and which day visits each.";
 const crumbs = [
   { name: "Home", path: "/" },
   { name: "Lisbon wine tours", path: "/lisbon-wine-tours" },
-  { name: "Wineries", path: "/wineries/" },
+  { name: "Wineries", path: "/wineries" },
 ];
 
 export const Route = createFileRoute("/wineries/")({
@@ -36,7 +36,7 @@ export const Route = createFileRoute("/wineries/")({
       jsonLdScript(
         itemListLd({
           name: "Partner wineries",
-          path: "/wineries/",
+          path: "/wineries",
           items: WINERIES.map((w) => ({ id: w.slug, name: w.name, description: w.summary })),
         }),
       ),
