@@ -562,12 +562,23 @@ export function parseOta(input: EmailInput, channel: SourceChannel, forceReview 
     haystack.match(OTA_REF)?.[1] ??
     null;
   draft.externalBookingRef = ref;
-  draft.tourTitle = clean(firstLabelled(body, ["Tour", "Activity", "Product", "Option"]));
+  // GetYourGuide puts the tour title, unlabelled, on the first line after
+  // "Your offer has been booked:".
+  const bookedTitle =
+    body.match(/(?:offer|activity|tour) has been (?:booked|cancell?ed)[^\n]*\n\s*([^\n]{6,200})/i)?.[1] ?? null;
+  draft.tourTitle =
+    clean(firstLabelled(body, ["Tour", "Activity", "Product", "Option"])) ?? clean(bookedTitle);
   draft.selectedRate = clean(firstLabelled(body, ["Option", "Tour option"]));
-  draft.customerName = clean(firstLabelled(body, ["Main customer", "Lead traveler", "Customer", "Name"]));
-  const email = firstLabelled(body, ["Email", "E-mail", "Customer email"]);
-  draft.customerEmail = email?.match(/[^\s<>]+@[^\s<>]+/)?.[0]?.toLowerCase() ?? null;
-  draft.customerPhone = clean(firstLabelled(body, ["Phone", "Phone number", "Mobile"]));
+  // GYG flattens "Name email: phone Language: …" onto one line.
+  const customerLine = firstLabelled(body, ["Main customer", "Lead traveler", "Customer", "Name"]);
+  const nameOnly = customerLine?.split(/[^\s<>]+@[^\s<>]+|\bLanguage:/i)[0];
+  draft.customerName = clean(nameOnly ?? null);
+  const email = firstLabelled(body, ["Email", "E-mail", "Customer email"]) ?? customerLine;
+  draft.customerEmail = email?.match(/[^\s<>:]+@[^\s<>:]+/)?.[0]?.toLowerCase() ?? null;
+  draft.customerPhone =
+    clean(firstLabelled(body, ["Phone", "Phone number", "Mobile"])) ??
+    customerLine?.match(/\+?\d[\d\s()-]{7,}\d/)?.[0]?.trim() ??
+    null;
   const dateLine = firstLabelled(body, ["Date", "Activity date", "Tour date"]) ?? subject;
   const d = parseDateToken(dateLine);
   draft.date = d.date;
