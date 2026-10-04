@@ -221,8 +221,11 @@ function Page() {
           <p className="page-header-support mt-6 max-w-2xl mx-auto text-[color:var(--charcoal-soft)] leading-relaxed">
             Lisbon, Sintra, the Arrábida coast and the Alentejo — stitched into a single, unhurried
             private journey. This is a <strong className="font-medium text-[color:var(--charcoal)]">sample shape</strong>, not
-            a fixed package: the actual days are composed with a human Travel Designer and confirmed
-            in a written travel file.
+            a fixed package: the actual days are composed with a{" "}
+            <Link to="/portugal-travel-designer" className="text-[color:var(--teal)] underline underline-offset-4 decoration-[color:var(--gold)]/60">
+              travel designer in Portugal
+            </Link>{" "}
+            and confirmed in a written travel file.
           </p>
           <div className="mt-8 flex flex-wrap gap-3 justify-center">
             <CtaButton to="/portugal-travel-designer">Work with a travel designer</CtaButton>

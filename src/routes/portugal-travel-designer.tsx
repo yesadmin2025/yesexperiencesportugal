@@ -15,7 +15,7 @@ import { whatsappUrl } from "@/config/business-nap";
 const CANONICAL = "https://yesexperiencesportugal.com/portugal-travel-designer";
 const TITLE = "Portugal Travel Designer — Private Journeys | YES";
 const DESC =
-  "Plan a private Portugal journey of any length with a local travel designer. Your route, pace and starting point, shaped around you across the country.";
+  "Plan a custom multi-day journey with a Portugal travel designer. Your private route, pace and experiences are shaped around you by a local team.";
 const OG_IMAGE = `https://yesexperiencesportugal.com${ogImg}`;
 
 export const Route = createFileRoute("/portugal-travel-designer")({
@@ -98,8 +98,8 @@ function PortugalTravelDesignerPage() {
             Portugal, <SectionTitle.Em>shaped around you.</SectionTitle.Em>
           </SectionTitle>
           <p className="page-header-support mt-6 mx-auto max-w-2xl text-[16px] md:text-[17px] text-[color:var(--charcoal-soft)]">
-            One local hand connects the route, rhythm and private experiences into a journey that
-            feels entirely your own.
+            Work with a travel designer in Portugal to connect the route, rhythm and private
+            experiences into a multi-day journey that feels entirely your own.
           </p>
           <DirectAnswer>
             The YES Travel Designer service creates bespoke multi-day journeys across Portugal — of
@@ -118,7 +118,7 @@ function PortugalTravelDesignerPage() {
         </div>
       </section>
 
-      <Section tone="ivory">
+      <Section tone="ivory" title={<>How a Portugal travel designer <SectionTitle.Em>shapes your journey.</SectionTitle.Em></>}>
         <p>
           Portugal is not one experience repeated from north to south. Each region has its own
           rhythm, food, landscapes and traditions, and the right journey depends on far more than a

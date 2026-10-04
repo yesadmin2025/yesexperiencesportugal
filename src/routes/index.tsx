@@ -663,7 +663,7 @@ function HomePage() {
                     href="/portugal-travel-designer"
                     className="inline-flex min-h-11 items-center text-[color:var(--teal)] underline underline-offset-4 decoration-[color:var(--gold)]/60 hover:decoration-[color:var(--gold)] transition-colors"
                   >
-                    Portugal Travel Designer →
+                    Portugal travel designer for multi-day journeys →
                   </a>
                 </p>
               </div>
