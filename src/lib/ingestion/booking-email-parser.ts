@@ -586,7 +586,9 @@ export function parseOta(input: EmailInput, channel: SourceChannel, forceReview 
   const pax = parsePax(firstLabelled(body, ["Number of participants", "Participants", "Travelers", "Travellers"]));
   draft.pax = pax.total;
   draft.paxBreakdown = pax.breakdown;
-  draft.pickup = clean(firstLabelled(body, ["Pickup", "Pick-up", "Pickup location", "Meeting point"]));
+  draft.pickup = clean(
+    firstLabelled(body, ["Pickup", "Pick-up", "Pickup location", "Meeting point"])?.replace(/\s*Open in Google Maps\s*$/i, "") ?? null,
+  );
   draft.language = clean(firstLabelled(body, ["Language", "Tour language"]));
   const money = parseMoney(firstLabelled(body, ["Price", "Total price", "Net price", "Amount"]));
   draft.amountPaid = money.amount;
