@@ -311,6 +311,14 @@ function LisbonWineTours() {
               Arrábida &amp; Sesimbra
             </Link>{" "}
             ·{" "}
+            <Link to="/private-tours-alentejo-evora" className="underline underline-offset-4">
+              Évora &amp; the Alentejo
+            </Link>{" "}
+            ·{" "}
+            <a href="/wineries" className="underline underline-offset-4">
+              the wineries we visit
+            </a>{" "}
+            ·{" "}
             <Link to="/local-stories" className="underline underline-offset-4">
               local stories
             </Link>
