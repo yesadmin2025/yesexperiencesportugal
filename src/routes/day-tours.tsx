@@ -1,3 +1,4 @@
+import { RegionHubLinks } from "@/components/seo/RegionHubLinks";
 import { localeAlternateLinks } from "@/i18n/seo";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { breadcrumbLd, itemListLd, jsonLdScript } from "@/lib/jsonld";
@@ -203,6 +204,7 @@ function DayToursPage() {
           </div>
         </div>
       </section>
+      <RegionHubLinks />
     </SiteLayout>
   );
 }

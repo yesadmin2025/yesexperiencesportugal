@@ -1,3 +1,4 @@
+import { RegionHubLinks } from "@/components/seo/RegionHubLinks";
 import { localeAlternateLinks } from "@/i18n/seo";
 import { PriceQualifier } from "@/components/ui/PriceQualifier";
 import { createFileRoute, Link } from "@tanstack/react-router";
@@ -202,6 +203,7 @@ function ExperiencesPage() {
       </section>
 
       <CtaStrip />
+      <RegionHubLinks />
     </SiteLayout>
   );
 }
