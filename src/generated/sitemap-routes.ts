@@ -41,5 +41,5 @@ export const SITEMAP_STATIC_ROUTES: SitemapRoute[] = [
   { path: "/studio", changefreq: "weekly", priority: "0.9" },
   { path: "/terms", changefreq: "yearly", priority: "0.4" },
   { path: "/trade", changefreq: "monthly", priority: "0.7" },
-  { path: "/wineries/", changefreq: "monthly", priority: "0.7" },
+  { path: "/wineries", changefreq: "monthly", priority: "0.7" },
 ];
