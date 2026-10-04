@@ -195,7 +195,7 @@ function ExperiencesPage() {
           <h2 className="sr-only">Signature Experiences</h2>
           <div className="experiences-editorial-grid experiences-story grid gap-6 md:grid-cols-2 md:gap-7 lg:gap-8">
             {visibleTours.map((tour, index) => (
-              <TourCard key={tour.id} tour={tour} resolveImg={resolveImg} featured={index < 2} compareActive={selectedTours.includes(tour.id)} compareDisabled={selectedTours.length >= 2 && !selectedTours.includes(tour.id)} onCompare={() => toggleComparison(tour.id)} />
+              <TourCard key={tour.id} tour={tour} resolveImg={resolveImg} featured={index < 2} priorityImage={index === 0} compareActive={selectedTours.includes(tour.id)} compareDisabled={selectedTours.length >= 2 && !selectedTours.includes(tour.id)} onCompare={() => toggleComparison(tour.id)} />
             ))}
           </div>
           <ExperienceCompare tours={tours} selected={selectedTours} onToggle={toggleComparison} onClear={() => setSelectedTours([])} />
@@ -214,6 +214,7 @@ function TourCard({
   tour,
   resolveImg,
   featured = false,
+  priorityImage = false,
   compareActive,
   compareDisabled,
   onCompare,
@@ -221,6 +222,8 @@ function TourCard({
   tour: SignatureTour;
   resolveImg: ResolveImg;
   featured?: boolean;
+  /** Only the first, above-the-fold card image competes for bandwidth. */
+  priorityImage?: boolean;
   compareActive: boolean;
   compareDisabled: boolean;
   onCompare: () => void;
@@ -248,7 +251,7 @@ function TourCard({
           {...resolveImg(tour, featured ? "lg" : "md")}
           alt={`${tour.title} — private ${tour.theme.toLowerCase()} experience in ${tour.region}, Portugal`}
           ratio="3/2"
-          priority={featured}
+          priority={priorityImage}
           focal={tour.focal ?? "50% 50%"}
           imgClassName="transition-transform duration-[var(--dur-slow)] ease-[var(--ease-premium)] group-hover:scale-[1.02]"
         />
