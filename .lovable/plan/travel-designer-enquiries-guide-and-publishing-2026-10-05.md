@@ -8,4 +8,5 @@
 - Run a fresh security check and publish all requested updates. Report what was actually verified; rankings and PageSpeed gains require a later live audit.
 
 ## Technical approach
-Reuse the existing public contact endpoint and enquiry tables, with the multi-day request type and page attribution. Use the existing article registry and sitemap machinery rather than a parallel page system. Keep loading changes centralized and do not preload whole media sets.
+
+Reuse the existing public contact endpoint and enquiry tables, with the multi-day request type and page attribution. Use the existing article registry and sitemap machinery rather than a parallel page system. Keep loading changes centralized and do not preload whole media sets. Keep credit usage low 

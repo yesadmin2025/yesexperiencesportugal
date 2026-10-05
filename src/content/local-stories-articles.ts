@@ -58,6 +58,41 @@ export type LocalStoryArticle = {
 
 export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
   {
+    slug: "best-travel-designer-in-portugal",
+    title: "Best Travel Designer in Portugal: How to Choose | YES",
+    metaDescription: "Find the best travel designer in Portugal for your trip: local knowledge, realistic routes, transparent quotes and private multi-day journey planning.",
+    h1: "Best travel designer in Portugal: how to choose",
+    eyebrow: "Portugal · Journey planning",
+    standfirst: "The right designer is the one whose planning fits your people, your pace and the journey you want to make.",
+    directAnswer: "There is no single best travel designer for every Portugal trip. Look for local operational knowledge, a realistic multi-day route, clear responsibility for arrangements and a written quote that explains what is included before you commit.",
+    sections: [
+      {
+        heading: "Start with the journey, not a ranking",
+        body: "A honeymoon, a family holiday and a journey focused on food and wine need different decisions. Before choosing a designer, share your starting point, dates, number of guests, interests and preferred pace. Explain what you would rather leave out as well as what you want to see. A useful proposal should respond to those details, rather than simply add your name to a fixed itinerary.",
+      },
+      {
+        heading: "Ask how the route works on the ground",
+        body: "Portugal's regions reward time, but moving between them takes time too. Ask how driving, meals, opening hours and rest fit together. A designer should be able to explain why a stop belongs on your route and what happens if weather or availability changes. More places are not automatically a better journey; the order and rhythm matter.",
+      },
+      {
+        heading: "Make responsibilities and costs clear",
+        body: "Before committing, request a written outline of inclusions, exclusions, payment terms and cancellation conditions. Ask who coordinates each arrangement and who you contact during the trip. Check the operator's licence and ask which elements are confirmed and which remain subject to availability. A clear quote is more useful than an attractive headline price without those details.",
+      },
+      {
+        heading: "Choose the right kind of private experience",
+        body: "If you want one private day already designed, explore [Signature Experiences](/experiences). If you want to compose and reserve a single day online, use the [Experience Studio](/studio). For a custom route across several days, work with a [Portugal travel designer](/portugal-travel-designer). These are different ways to plan, not different names for the same service.",
+      },
+      {
+        heading: "How YES approaches travel design in Portugal",
+        body: "YES Experiences Portugal is a licensed Portuguese tour operator, RNAAT nº 31/2023, based in Sesimbra. The Travel Designer service shapes private multi-day journeys around your starting point, interests and pace, with a transparent price before commitment. You can discuss Lisbon, Arrábida, Alentejo, central Portugal, the Douro and the north without treating a sample route as a fixed package. [Discuss your private Portugal journey](/portugal-travel-designer) with the local team and decide whether the approach fits you.",
+      },
+    ],
+    ctaLead: "Begin with the people, the time you have and what matters most to you.",
+    ctaLabel: "Design my journey",
+    relatedReads: [{ path: "/portugal-travel-designer", label: "Portugal Travel Designer — private multi-day journeys" }],
+    datePublished: "2026-10-05",
+  },
+  {
     slug: "best-day-trips-from-lisbon",
     title: "Best Day Trips from Lisbon: A Local's Honest Guide",
     metaDescription:

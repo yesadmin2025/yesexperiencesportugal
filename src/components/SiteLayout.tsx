@@ -522,7 +522,9 @@ export function SiteLayout({ children }: { children: ReactNode }) {
     // so no-JS renders, crawlers and pre-hydration paint show content.
     document.documentElement.classList.add("reveal-ready");
 
+    const pendingReveals = new Set(els);
     const revealEl = (target: HTMLElement, source: RevealSource) => {
+      pendingReveals.delete(target);
       if (target.classList.contains("is-visible")) return;
       target.classList.add("is-visible");
       telemetry.log("reveal", source, target, describeReveal(target));
@@ -583,8 +585,9 @@ export function SiteLayout({ children }: { children: ReactNode }) {
     // the parent strip enters the vertical viewport, every off-screen
     // child is revealed via the standard `revealEl` path (so stagger
     // delays still apply and telemetry attributes the source as IO).
+    let carouselIo: IntersectionObserver | undefined;
     if (horizontalParents.size > 0) {
-      const carouselIo = new IntersectionObserver((entries) => {
+      carouselIo = new IntersectionObserver((entries) => {
         telemetry.markIoFired();
         entries.forEach((entry) => {
           if (!entry.isIntersecting && entry.boundingClientRect.bottom > 0) return;
@@ -593,10 +596,10 @@ export function SiteLayout({ children }: { children: ReactNode }) {
             revealEl(child, "io");
             io.unobserve(child);
           });
-          carouselIo.unobserve(entry.target);
+          carouselIo?.unobserve(entry.target);
         });
       }, ioOptions);
-      horizontalParents.forEach((_children, parent) => carouselIo.observe(parent));
+      horizontalParents.forEach((_children, parent) => carouselIo?.observe(parent));
     }
 
     if (revealDebug) {
@@ -610,7 +613,7 @@ export function SiteLayout({ children }: { children: ReactNode }) {
     // mobile preview still gets a visible entrance even when IO reports the
     // element as intersecting immediately on mount.
     const sweep = (source: "sweepInitial" | "sweepDelayed") => {
-      els.forEach((el) => {
+      pendingReveals.forEach((el) => {
         if (el.classList.contains("is-visible")) return;
         const rect = el.getBoundingClientRect();
         const viewportHeight = window.innerHeight || document.documentElement.clientHeight || 0;
@@ -640,7 +643,7 @@ export function SiteLayout({ children }: { children: ReactNode }) {
     const failSafe = window.setTimeout(() => {
       let forced = 0;
       const viewportHeight = window.innerHeight || document.documentElement.clientHeight || 0;
-      els.forEach((el) => {
+      pendingReveals.forEach((el) => {
         if (el.classList.contains("is-visible")) return;
         const rect = el.getBoundingClientRect();
         // Only force-visible if the element is at or above the viewport
@@ -653,6 +656,8 @@ export function SiteLayout({ children }: { children: ReactNode }) {
         el.style.transition = "none";
         el.style.transitionDelay = "0ms";
         el.classList.add("is-visible");
+        pendingReveals.delete(el);
+        io.unobserve(el);
         telemetry.log("reveal", "sweepDelayed", el, describeReveal(el));
         forced += 1;
       });
@@ -669,7 +674,7 @@ export function SiteLayout({ children }: { children: ReactNode }) {
     const scrollSweep = () => {
       scrollRaf = 0;
       const viewportHeight = window.innerHeight || document.documentElement.clientHeight || 0;
-      els.forEach((el) => {
+      pendingReveals.forEach((el) => {
         if (el.classList.contains("is-visible")) return;
         const rect = el.getBoundingClientRect();
         // Vertical band only — top has reached at least the lower 90%
@@ -684,6 +689,10 @@ export function SiteLayout({ children }: { children: ReactNode }) {
       });
     };
     const onScroll = () => {
+      if (!pendingReveals.size) {
+        window.removeEventListener("scroll", onScroll);
+        return;
+      }
       if (scrollRaf) return;
       scrollRaf = window.requestAnimationFrame(scrollSweep);
     };
@@ -695,6 +704,7 @@ export function SiteLayout({ children }: { children: ReactNode }) {
       window.removeEventListener("scroll", onScroll);
       if (scrollRaf) window.cancelAnimationFrame(scrollRaf);
       io.disconnect();
+      carouselIo?.disconnect();
     };
   }, []);
 

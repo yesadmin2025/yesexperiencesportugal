@@ -11,6 +11,7 @@ import { DirectAnswer } from "@/components/DirectAnswer";
 import ogImg from "@/assets/hero-coast.jpg";
 import { CTA_LABELS } from "@/content/cta-vocabulary";
 import { whatsappUrl } from "@/config/business-nap";
+import { JourneyEnquiryForm } from "@/components/travel-designer/JourneyEnquiryForm";
 
 const CANONICAL = "https://yesexperiencesportugal.com/portugal-travel-designer";
 const TITLE = "Portugal Travel Designer — Private Journeys | YES";
@@ -108,7 +109,7 @@ function PortugalTravelDesignerPage() {
             transparently before you commit to anything.
           </DirectAnswer>
           <div className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
-            <CtaButton to="/contact" search={{ type: "multi_day" }} variant="primary" onClick={() => void import("@/lib/analytics-events").then((a) => a.trackEvent("travel_designer_start", { placement: "travel_designer_page" }))}>
+            <CtaButton href="#journey-enquiry" variant="primary" onClick={() => void import("@/lib/analytics-events").then((a) => a.trackEvent("travel_designer_start", { placement: "travel_designer_page" }))}>
               {CTA_LABELS.travelDesigner}
             </CtaButton>
             <CtaButton to="/experiences" variant="ghost">
@@ -228,7 +229,7 @@ function PortugalTravelDesignerPage() {
              We shape the route, stays and private experiences into a personal travel file.
           </p>
           <div className="mt-7">
-            <CtaButton to="/contact" search={{ type: "multi_day" }} variant="primary" onClick={() => void import("@/lib/analytics-events").then((a) => a.trackEvent("travel_designer_start", { placement: "travel_designer_proof" }))}>
+            <CtaButton href="#journey-enquiry" variant="primary" onClick={() => void import("@/lib/analytics-events").then((a) => a.trackEvent("travel_designer_start", { placement: "travel_designer_proof" }))}>
               {CTA_LABELS.travelDesigner}
             </CtaButton>
             <div className="mt-3">
@@ -292,10 +293,19 @@ function PortugalTravelDesignerPage() {
         ]}
       />
 
+      <section id="journey-enquiry" className="reveal section-y chapter-flow scroll-mt-24 bg-[color:var(--ivory)]">
+        <div className="container-x max-w-2xl">
+          <Eyebrow>Your Portugal journey</Eyebrow>
+          <SectionTitle as="h2" size="default" spacing="tight">Design my journey</SectionTitle>
+          <div className="mt-8"><JourneyEnquiryForm /></div>
+          <p className="mt-8 text-sm text-[color:var(--charcoal-soft)]">Still choosing? <Link to="/local-stories/$slug" params={{ slug: "best-travel-designer-in-portugal" }} className="underline underline-offset-4">Read how to choose a travel designer in Portugal.</Link></p>
+        </div>
+      </section>
+
        <section className="reveal section-y chapter-flow bg-[color:var(--sand)]">
         <div className="container-x max-w-2xl text-center">
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-             <CtaButton to="/contact" search={{ type: "multi_day" }} variant="primary" onClick={() => void import("@/lib/analytics-events").then((a) => a.trackEvent("travel_designer_start", { placement: "travel_designer_page" }))}>
+             <CtaButton href="#journey-enquiry" variant="primary" onClick={() => void import("@/lib/analytics-events").then((a) => a.trackEvent("travel_designer_start", { placement: "travel_designer_page" }))}>
                {CTA_LABELS.travelDesigner}
             </CtaButton>
             <CtaButton to="/experiences" variant="ghost">

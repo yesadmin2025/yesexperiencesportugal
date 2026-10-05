@@ -75,7 +75,9 @@ export function TourImage({
     // hydration. Decode also covers an image that finishes between this
     // check and React's load handler, so a real photo never stays hidden.
     if (image?.complete && image.naturalWidth > 0) setLoaded(true);
-    else if (image) {
+    // decode() initiates a request even on a lazy image. Below-fold photos
+    // must wait for the browser's lazy-loading threshold and onLoad instead.
+    else if (image && priority) {
       image.decode().then(
         () => { if (!cancelled) setLoaded(true); },
         () => {
@@ -86,7 +88,7 @@ export function TourImage({
       );
     }
     return () => { cancelled = true; };
-  }, [src, srcSetFailed]);
+  }, [src, srcSetFailed, priority]);
 
   return (
     <div

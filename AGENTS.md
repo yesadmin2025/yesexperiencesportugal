@@ -1,5 +1,9 @@
 # Project architecture decisions
 
+- Travel Designer on-page enquiries reuse the public contact endpoint and contact_messages with request_type=multi_day; Conversions splits that category without double counting to preserve one durable enquiry pipeline.
+- Service planning guides use the existing Local Stories registry and dynamic article route so headings, metadata, discovery and sitemap stay in one system.
+- TourImage only calls decode() proactively for priority media; lazy images rely on onLoad so browser lazy-loading remains effective.
+
 - `/studio`, `/portugal-travel-designer`, `/proposal-in-portugal` are canonical; legacy `/studio-v3`, `/multi-day`, `/proposals` 301 to them to keep inbound links without duplicate sitemap entries.
 - P23 is reserve-as-designed; its Tailor link redirects to its tour page until venues are verified, to avoid unconfirmed changes.
 - SEO title/description/H1 proposals live in admin-only drafts; published Signature search copy lives in the Signature SEO map, facts in verified tour content.

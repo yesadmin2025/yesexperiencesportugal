@@ -3,6 +3,7 @@ import { LivingAtlasStudioPage } from "@/components/studio-v3/LivingAtlasStudioP
 import { breadcrumbLd, studioServiceLd, faqPageLd, jsonLdScript } from "@/lib/jsonld";
 import { STUDIO_FAQ } from "@/content/seo-faq";
 import ogImg from "@/assets/decision-studio.jpg";
+import atmCoastal from "@/assets/studio/atm-coastal-cinematic.jpg";
 
 /**
  * /studio — the canonical public Experience Studio.
@@ -39,7 +40,10 @@ export const Route = createFileRoute("/studio")({
       { name: "twitter:card", content: "summary_large_image" },
       { name: "twitter:image", content: `https://yesexperiencesportugal.com${ogImg}` },
     ],
-    links: [{ rel: "canonical", href: CANONICAL_URL }],
+    links: [
+      { rel: "canonical", href: CANONICAL_URL },
+      { rel: "preload", as: "image", href: atmCoastal, fetchPriority: "high" },
+    ],
     scripts: [
       jsonLdScript(
         breadcrumbLd([
