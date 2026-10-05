@@ -13,7 +13,7 @@ afterEach(() => { cleanup(); vi.unstubAllGlobals(); vi.restoreAllMocks(); });
 describe("Travel Designer enquiry and safe media loading", () => {
   it("persists the multi-day type and page attribution, blocking duplicate submits", async () => {
     let finish: ((value: { ok: boolean }) => void) | undefined;
-    const fetch = vi.fn(() => new Promise<{ ok: boolean }>((resolve) => { finish = resolve; }));
+    const fetch = vi.fn((_url: string, _init: RequestInit) => new Promise<{ ok: boolean }>((resolve) => { finish = resolve; }));
     vi.stubGlobal("fetch", fetch);
     render(<JourneyEnquiryForm />);
     fireEvent.change(screen.getByLabelText("Name"), { target: { value: "QA Journey" } });
@@ -21,7 +21,7 @@ describe("Travel Designer enquiry and safe media loading", () => {
     const form = screen.getByRole("form");
     fireEvent.submit(form); fireEvent.submit(form);
     expect(fetch).toHaveBeenCalledTimes(1);
-    const payload = JSON.parse(fetch.mock.calls[0]?.[1]?.body ?? "{}");
+    const payload = JSON.parse(String(fetch.mock.calls[0]?.[1]?.body ?? "{}"));
     expect(payload).toMatchObject({ first: "QA", last: "Journey", requestType: "multi_day", source: "travel-designer-page" });
     finish?.({ ok: true });
     await waitFor(() => expect(screen.getByRole("status")).toHaveTextContent("has reached our team"));
