@@ -4,15 +4,15 @@
 
 # October 5 Travel Designer enquiries and publication
 
-- [ ] Embed a journey enquiry form using the existing contact/admin/Conversions pipeline
-- [ ] Add a factual “Best travel designer in Portugal” selection guide using Local Stories
-- [ ] Verify enquiry persistence/admin counts, guide metadata, and mobile/desktop rendering
-- [ ] Complete safe performance fixes, check security, and publish the requested updates
+- [x] Embed a journey enquiry form using the existing contact/admin/Conversions pipeline
+- [x] Add a factual “Best travel designer in Portugal” selection guide using Local Stories
+- [x] Verify enquiry persistence/admin counts, guide metadata, and mobile/desktop rendering
+- [x] Complete safe performance fixes, check security, and request publication of the updates
 
-- [ ] Identify shared loading causes across the 13 requested pages
-- [ ] Apply only safe centralized media/priority/loading fixes
-- [ ] Verify focused tests, preview build, and Designer/Studio mobile + desktop
-- [ ] Report exact changes; keep SEO, appearance, booking logic and intentional noindex unchanged
+- [x] Identify shared loading causes across the 13 requested pages
+- [x] Apply only safe centralized media/priority/loading fixes
+- [x] Verify focused tests, preview build, and Designer/Studio mobile + desktop
+- [x] Report exact changes; keep SEO, appearance, booking logic and intentional noindex unchanged
 
 - [x] Audit trust proof and centralize approved 4.9/5 · 1,000 reviews
 - [x] Add quiet USD estimate / EUR checkout clarity
