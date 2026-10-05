@@ -16,7 +16,7 @@ import { JourneyEnquiryForm } from "@/components/travel-designer/JourneyEnquiryF
 const CANONICAL = "https://yesexperiencesportugal.com/portugal-travel-designer";
 const TITLE = "Portugal Travel Designer — Private Journeys | YES";
 const DESC =
-  "Plan a custom multi-day journey with a Portugal travel designer. Your private route, pace and experiences are shaped around you by a local team.";
+  "Design a private Portugal journey of any length with a local travel designer. Route, stays and experiences shaped around your pace, interests and travel style.";
 const OG_IMAGE = `https://yesexperiencesportugal.com${ogImg}`;
 
 export const Route = createFileRoute("/portugal-travel-designer")({
@@ -48,7 +48,7 @@ export const Route = createFileRoute("/portugal-travel-designer")({
           path: "/portugal-travel-designer",
           name: "Portugal Travel Designer — bespoke private itinerary planning",
           description:
-            "Personalized Portugal itinerary planning by a local travel designer: complete multi-day private journeys across the country, distinct from a single private day tour. Custom Portugal trips, honeymoons, family journeys and longer bespoke travel planning from Lisbon and Sesimbra to Alentejo, central Portugal, the Douro and the north.",
+            "Personalized Portugal journey planning by a local travel designer: private journeys of any length, with route, stays and experiences shaped around the traveler’s pace, interests and travel style.",
         }),
       ),
     ],
