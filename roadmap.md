@@ -2,6 +2,13 @@
 
 # October 5 performance-only cleanup
 
+# October 5 Travel Designer enquiries and publication
+
+- [ ] Embed a journey enquiry form using the existing contact/admin/Conversions pipeline
+- [ ] Add a factual “Best travel designer in Portugal” selection guide using Local Stories
+- [ ] Verify enquiry persistence/admin counts, guide metadata, and mobile/desktop rendering
+- [ ] Complete safe performance fixes, check security, and publish the requested updates
+
 - [ ] Identify shared loading causes across the 13 requested pages
 - [ ] Apply only safe centralized media/priority/loading fixes
 - [ ] Verify focused tests, preview build, and Designer/Studio mobile + desktop
