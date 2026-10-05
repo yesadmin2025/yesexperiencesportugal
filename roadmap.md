@@ -7,7 +7,7 @@
 - [x] Embed a journey enquiry form using the existing contact/admin/Conversions pipeline
 - [x] Add a factual “Best travel designer in Portugal” selection guide using Local Stories
 - [x] Verify enquiry persistence/admin counts, guide metadata, and mobile/desktop rendering
-- [ ] Complete safe performance fixes, check security, and publish the requested updates
+- [x] Complete safe performance fixes, check security, and request publication of the updates
 
 - [x] Identify shared loading causes across the 13 requested pages
 - [x] Apply only safe centralized media/priority/loading fixes
