@@ -1,5 +1,12 @@
 # Phase 1 optimization
 
+# October 5 performance-only cleanup
+
+- [ ] Identify shared loading causes across the 13 requested pages
+- [ ] Apply only safe centralized media/priority/loading fixes
+- [ ] Verify focused tests, preview build, and Designer/Studio mobile + desktop
+- [ ] Report exact changes; keep SEO, appearance, booking logic and intentional noindex unchanged
+
 - [x] Audit trust proof and centralize approved 4.9/5 · 1,000 reviews
 - [x] Add quiet USD estimate / EUR checkout clarity
 - [x] Strengthen tour detail reassurance and mobile booking CTA (sticky bar already compliant)
