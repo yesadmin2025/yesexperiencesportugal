@@ -110,6 +110,17 @@ export const getConversionReport = createServerFn({ method: "POST" })
 
     const leadsBySource: { source: string; count: number }[] = [];
     for (const [table, label] of LEAD_TABLES) {
+      if (table === "contact_messages") {
+        for (const journey of [true, false]) {
+          const query = sb.from("contact_messages").select("id", { count: "exact", head: true }).gte("created_at", since);
+          const { count, error } = await (journey
+            ? query.eq("request_type", "multi_day")
+            : query.or("request_type.neq.multi_day,request_type.is.null"));
+          if (error) throw new Error(error.message);
+          leadsBySource.push({ source: journey ? "Travel Designer enquiries" : label, count: count ?? 0 });
+        }
+        continue;
+      }
       const { count } = await sb
         .from(table)
         .select("id", { count: "exact", head: true })
