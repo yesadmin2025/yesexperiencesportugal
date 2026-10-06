@@ -129,7 +129,7 @@ function PtHomePage() {
             {
               eyebrow: "Roteiros à Medida",
               title: "Jornadas de vários dias",
-              body: "Roteiros privados de 3 a 14 dias, cosidos à mão por um Travel Designer, com hotéis escolhidos e transições sem esforço.",
+              body: "Roteiros privados com a duração que quiser, desenhados por um Travel Designer, com hotéis escolhidos e transições sem esforço.",
               href: "/pt/contact",
               cta: "Falar connosco",
             },
