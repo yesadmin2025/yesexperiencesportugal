@@ -96,7 +96,7 @@ function PortugalTravelDesignerPage() {
         <div className="container-x max-w-3xl text-center header-seq">
           <Eyebrow flank>Portugal Travel Designer</Eyebrow>
            <SectionTitle as="h1" size="anchor" spacing="loose" className="text-[40px] leading-[1.12] md:text-[60px] md:leading-[1.02]">
-            Portugal, <SectionTitle.Em>shaped around you.</SectionTitle.Em>
+            Your <SectionTitle.Em>Portugal Travel Designer</SectionTitle.Em>
           </SectionTitle>
           <p className="page-header-support mt-6 mx-auto max-w-2xl text-[16px] md:text-[17px] text-[color:var(--charcoal-soft)]">
             Work with a travel designer in Portugal to connect the route, rhythm and private
