@@ -66,7 +66,7 @@ export function organizationLd() {
       },
     ],
     description:
-      "YES Experiences Portugal is a licensed Portuguese travel studio and tour operator (RNAAT nº 31/2023), based in Sesimbra. It designs private Signature day experiences, custom days through its Studio, multi-day journeys, special moments and private group experiences across Portugal.",
+      "YES Experiences Portugal is a licensed Portuguese travel design company and tour operator (RNAAT nº 31/2023) based in Sesimbra. It combines curated private Signature day experiences, an interactive Experience Studio where travelers design a private day themselves, and a Travel Designer service for bespoke Portugal journeys of any length, alongside private special moments and corporate group experiences.",
     slogan:
       "Portugal, around you — private, personalized journeys with local hidden gems, designed in real time.",
     keywords:
@@ -78,7 +78,7 @@ export function organizationLd() {
       "Local Portugal tours with hidden gems",
       "Portugal around you — journeys built around the traveler",
       "Real-time private tour design in Portugal",
-      "Interactive private day-tour builder (YES Experience Studio) — first of its kind in Portugal",
+      "Interactive private day design (YES Experience Studio)",
       "Travel Designer service for full Portugal journeys",
       "Arrábida private wine tour from Lisbon (best-seller)",
       "Southwest Vicentine Coast private day tour from Lisbon",
@@ -98,7 +98,6 @@ export function organizationLd() {
       },
     ],
     award: [
-      "First Portuguese tour operator to offer real-time private tour design and instant reservation through an in-house Experience Studio",
       "Recognized on Tripadvisor, Viator and GetYourGuide for the Arrábida private wine tour from Lisbon",
     ],
     hasOfferCatalog: {
@@ -173,19 +172,73 @@ export function organizationLd() {
     makesOffer: [
       {
         "@type": "Offer",
-        name: "YES Experience Studio — design and reserve your private day in real time",
-        description:
-          "Portugal's first in-house real-time private tour builder: choose the mood, rhythm and route, see the live price update, and reserve instantly. Private, personalized, local — designed by you, around you.",
-        url: `${SITE_URL}/studio`,
-        category: "Interactive private tour design",
+        name: "Signature Experiences",
+        url: `${SITE_URL}/experiences`,
+        category: "Curated private day experiences",
+        itemOffered: {
+          "@type": "Service",
+          name: "Signature Experiences",
+          url: `${SITE_URL}/experiences`,
+          description:
+            "Private days already designed by YES around real routes in Portugal, reserved as designed or tailored within the same day.",
+          provider: { "@id": `${SITE_URL}/#organization` },
+        },
       },
       {
         "@type": "Offer",
-        name: "YES Travel Designer — full Portugal journeys, designed for you",
-        description:
-          "A local Travel Designer composes full private journeys across Portugal, from a few days to a full trip, shaped around your time, rhythm and interests. Personalized itineraries built around you, with local hidden gems. Delivered as a curated travel file.",
+        name: "YES Experience Studio",
+        url: `${SITE_URL}/studio`,
+        category: "Interactive private day design",
+        itemOffered: {
+          "@type": "Service",
+          name: "YES Experience Studio",
+          url: `${SITE_URL}/studio`,
+          description:
+            "An interactive online studio where travelers shape one private day themselves — route, pace and options — with a live price and instant online confirmation where available.",
+          provider: { "@id": `${SITE_URL}/#organization` },
+        },
+      },
+      {
+        "@type": "Offer",
+        name: "YES Travel Designer",
         url: `${SITE_URL}/portugal-travel-designer`,
-        category: "Bespoke multi-day Portugal travel design",
+        category: "Bespoke Portugal journey design",
+        itemOffered: {
+          "@type": "Service",
+          name: "YES Travel Designer",
+          url: `${SITE_URL}/portugal-travel-designer`,
+          description:
+            "A local Travel Designer plans bespoke private Portugal journeys of any length around the traveler's pace and interests, delivered as a curated travel file.",
+          provider: { "@id": `${SITE_URL}/#organization` },
+        },
+      },
+      {
+        "@type": "Offer",
+        name: "Moments and proposals",
+        url: `${SITE_URL}/proposal-in-portugal`,
+        category: "Private special moments",
+        itemOffered: {
+          "@type": "Service",
+          name: "Moments and proposals",
+          url: `${SITE_URL}/proposal-in-portugal`,
+          description:
+            "Private proposals and special moments in Portugal, planned with the couple or family.",
+          provider: { "@id": `${SITE_URL}/#organization` },
+        },
+      },
+      {
+        "@type": "Offer",
+        name: "Corporate and private groups",
+        url: `${SITE_URL}/corporate`,
+        category: "Private group experiences",
+        itemOffered: {
+          "@type": "Service",
+          name: "Corporate and private groups",
+          url: `${SITE_URL}/corporate`,
+          description:
+            "Private group and corporate experiences in Portugal, planned with the organizer.",
+          provider: { "@id": `${SITE_URL}/#organization` },
+        },
       },
     ],
     identifier: {
