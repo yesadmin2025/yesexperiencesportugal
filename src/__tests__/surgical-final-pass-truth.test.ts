@@ -22,7 +22,7 @@ describe("surgical final-pass truth locks", () => {
   it("uses the complete owned brand name in the Arrábida operator statement", () => {
     const arrabida = findTour("arrabida-wine-allinclusive");
     expect(arrabida?.contextParagraph).toContain(
-      "YES Experiences Portugal is a licensed Portuguese tour operator",
+      "YES Experiences Portugal is a licensed Portuguese travel design company and tour operator",
     );
     expect(arrabida?.contextParagraph).not.toContain("YES experiences is");
   });
