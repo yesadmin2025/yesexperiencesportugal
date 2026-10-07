@@ -41,9 +41,10 @@ describe("Canonical Google Business Profile entity link", () => {
     expect(SOCIAL.google).toBe(CANONICAL_GOOGLE_PROFILE);
   });
 
-  it("Organization/TravelAgency sameAs includes the canonical Google profile", () => {
+  it("Organization sameAs omits the stale Google share link until a verified URL exists", () => {
     const org = organizationLd();
-    expect(org.sameAs).toContain(CANONICAL_GOOGLE_PROFILE);
+    expect(org.sameAs).not.toContain(CANONICAL_GOOGLE_PROFILE);
+    expect(org.sameAs).toContain(SOCIAL.instagram);
     // The old Google short link must never replace or accompany it.
     expect(org.sameAs).not.toContain("maps.app.goo.gl/hbVa3Yw2mDV2DZHt8");
   });

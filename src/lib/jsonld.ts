@@ -293,7 +293,8 @@ export function organizationLd() {
     founder: { "@id": `${SITE_URL}/about#nidia-almeida` },
     employee: [{ "@id": `${SITE_URL}/about#nidia-almeida` }],
     sameAs: [
-      SOCIAL.google,
+      // Google Business Profile omitted: the stored share link points to an
+      // outdated listing and no verified current URL exists yet.
       SOCIAL.instagram,
       SOCIAL.facebook,
       SOCIAL.tripadvisor,

@@ -140,6 +140,14 @@ function NotFoundComponent() {
   );
 }
 
+/** Both Search Console ownership tokens, emitted as two separate meta elements. */
+const GOOGLE_VERIFICATION_TAGS = (
+  <>
+    <meta name="google-site-verification" content="osEeuJrBPxuoJix9iAIto7KYyWlQ5I_2Tqqfxk6ggCs" />
+    <meta name="google-site-verification" content="Svpb5FhGi6Fku6J-X230o8nKyBH23ilH-5-0fKOMVQ4" />
+  </>
+);
+
 export const Route = createRootRoute({
   beforeLoad: ({ location }) => {
     if (location.pathname.startsWith("/lovable/")) return;
@@ -157,14 +165,9 @@ export const Route = createRootRoute({
       { name: "application-name", content: "YES Experiences Portugal" },
       { name: "apple-mobile-web-app-title", content: "YES Experiences Portugal" },
       { name: "apple-mobile-web-app-status-bar-style", content: "black-translucent" },
-      {
-        name: "google-site-verification",
-        content: "osEeuJrBPxuoJix9iAIto7KYyWlQ5I_2Tqqfxk6ggCs",
-      },
-      {
-        name: "google-site-verification",
-        content: "Svpb5FhGi6Fku6J-X230o8nKyBH23ilH-5-0fKOMVQ4",
-      },
+      // google-site-verification tags render directly in RootShell <head>
+      // (GOOGLE_VERIFICATION_TAGS): head() dedupes meta by name, which
+      // dropped one of the two tokens.
       // Sitewide defaults only — page-specific title/description/og:* live
       // on leaf routes. Root keeps site_name, type, locale, twitter card/site,
       // geo, robots, verification. See head-meta rules.
@@ -280,6 +283,7 @@ function RootShell({ children }: { children: React.ReactNode }) {
     return (
       <html lang="pt-PT" suppressHydrationWarning>
         <head>
+          {GOOGLE_VERIFICATION_TAGS}
           <HeadContent />
         </head>
         <body>{shellBody}</body>
@@ -290,6 +294,7 @@ function RootShell({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en" suppressHydrationWarning>
       <head>
+        {GOOGLE_VERIFICATION_TAGS}
         <HeadContent />
       </head>
       <body>{shellBody}</body>

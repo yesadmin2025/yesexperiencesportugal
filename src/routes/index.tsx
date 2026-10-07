@@ -1093,6 +1093,18 @@ function HomePage() {
                     >
                       Talk to a local
                     </Link>
+                    <Link
+                      to="/about"
+                      className="inline-flex min-h-11 items-center text-[color:var(--charcoal-soft)] underline decoration-[color:var(--gold)]/50 underline-offset-4 hover:decoration-[color:var(--gold)]"
+                    >
+                      About YES
+                    </Link>
+                    <Link
+                      to="/faq"
+                      className="inline-flex min-h-11 items-center text-[color:var(--charcoal-soft)] underline decoration-[color:var(--gold)]/50 underline-offset-4 hover:decoration-[color:var(--gold)]"
+                    >
+                      Booking questions
+                    </Link>
                   </div>
                 </div>
               </div>
