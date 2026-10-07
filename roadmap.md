@@ -1,9 +1,10 @@
 # Phase 1 optimization
 
 # Urgent Travel Book restoration — October 7
-- [ ] Trace original book section, assets and removal in history/live site
-- [ ] Restore original proof in intended position without overwriting spacing/CTA/SEO work
-- [ ] Check original pages, mobile/desktop preview controls, tests and published result
+- [x] Trace original book section: September 25 commit 6467bbd4b converted /multi-day to redirect without transferring sample proof; assets survived
+- [x] Restore original 23-page shared preview before existing enquiry bridge; metadata, layout/CTA repairs and checkout unchanged
+- [x] Verify 23/23 original live assets, mobile/desktop image loading, browsing/full-size preview, no overflow; 47 targeted tests and build passed
+- [ ] Confirm production restoration after requested publication (first post-request check still served previous page)
 
 # Urgent public layout repair — October 7
 - [x] Audit CTA destinations across requested pages; exercise Signature/Tailor payment entry, winery controls, enquiry anchor and Studio entry at mobile/desktop
