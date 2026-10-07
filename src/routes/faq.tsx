@@ -90,7 +90,10 @@ function FaqPage() {
                     <AccordionTrigger className="px-5 md:px-6 py-4 md:py-5 text-left text-[15px] md:text-[17px] serif text-[color:var(--charcoal)] hover:no-underline hover:text-[color:var(--teal)] transition-colors duration-200 [&[data-state=open]]:text-[color:var(--teal)]">
                       {item.q}
                     </AccordionTrigger>
-                    <AccordionContent className="px-5 md:px-6 pb-5 md:pb-6 pt-0 text-[14.5px] md:text-[15px] leading-[1.65] text-[color:var(--charcoal)]">
+                    <AccordionContent
+                      forceMount
+                      className="group-data-[state=closed]:hidden px-5 md:px-6 pb-5 md:pb-6 pt-0 text-[14.5px] md:text-[15px] leading-[1.65] text-[color:var(--charcoal)]"
+                    >
                       {item.a}
                     </AccordionContent>
                   </AccordionItem>
