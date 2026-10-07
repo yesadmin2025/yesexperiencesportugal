@@ -36,6 +36,7 @@ import { Route as FaqRouteImport } from './routes/faq'
 import { Route as GuideRouteImport } from './routes/guide'
 import { Route as GuideResetPasswordRouteImport } from './routes/guide-reset-password'
 import { Route as HeroVerifyRouteImport } from './routes/hero-verify'
+import { Route as HowManyDaysDoYouNeedInPortugalRouteImport } from './routes/how-many-days-do-you-need-in-portugal'
 import { Route as HowManyDaysInPortugalRouteImport } from './routes/how-many-days-in-portugal'
 import { Route as ItineraryRouteImport } from './routes/itinerary'
 import { Route as LisbonPrivateToursRouteImport } from './routes/lisbon-private-tours'
@@ -366,6 +367,12 @@ const HeroVerifyRoute = HeroVerifyRouteImport.update({
   path: '/hero-verify',
   getParentRoute: () => rootRouteImport,
 } as any)
+const HowManyDaysDoYouNeedInPortugalRoute =
+  HowManyDaysDoYouNeedInPortugalRouteImport.update({
+    id: '/how-many-days-do-you-need-in-portugal',
+    path: '/how-many-days-do-you-need-in-portugal',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const HowManyDaysInPortugalRoute = HowManyDaysInPortugalRouteImport.update({
   id: '/how-many-days-in-portugal',
   path: '/how-many-days-in-portugal',
@@ -1381,6 +1388,7 @@ export interface FileRoutesByFullPath {
   '/guide': typeof GuideRouteWithChildren
   '/guide-reset-password': typeof GuideResetPasswordRoute
   '/hero-verify': typeof HeroVerifyRoute
+  '/how-many-days-do-you-need-in-portugal': typeof HowManyDaysDoYouNeedInPortugalRoute
   '/how-many-days-in-portugal': typeof HowManyDaysInPortugalRoute
   '/itinerary': typeof ItineraryRoute
   '/lisbon-private-tours': typeof LisbonPrivateToursRoute
@@ -1598,6 +1606,7 @@ export interface FileRoutesByTo {
   '/faq': typeof FaqRoute
   '/guide-reset-password': typeof GuideResetPasswordRoute
   '/hero-verify': typeof HeroVerifyRoute
+  '/how-many-days-do-you-need-in-portugal': typeof HowManyDaysDoYouNeedInPortugalRoute
   '/how-many-days-in-portugal': typeof HowManyDaysInPortugalRoute
   '/itinerary': typeof ItineraryRoute
   '/lisbon-private-tours': typeof LisbonPrivateToursRoute
@@ -1816,6 +1825,7 @@ export interface FileRoutesById {
   '/guide': typeof GuideRouteWithChildren
   '/guide-reset-password': typeof GuideResetPasswordRoute
   '/hero-verify': typeof HeroVerifyRoute
+  '/how-many-days-do-you-need-in-portugal': typeof HowManyDaysDoYouNeedInPortugalRoute
   '/how-many-days-in-portugal': typeof HowManyDaysInPortugalRoute
   '/itinerary': typeof ItineraryRoute
   '/lisbon-private-tours': typeof LisbonPrivateToursRoute
@@ -2037,6 +2047,7 @@ export interface FileRouteTypes {
     | '/guide'
     | '/guide-reset-password'
     | '/hero-verify'
+    | '/how-many-days-do-you-need-in-portugal'
     | '/how-many-days-in-portugal'
     | '/itinerary'
     | '/lisbon-private-tours'
@@ -2254,6 +2265,7 @@ export interface FileRouteTypes {
     | '/faq'
     | '/guide-reset-password'
     | '/hero-verify'
+    | '/how-many-days-do-you-need-in-portugal'
     | '/how-many-days-in-portugal'
     | '/itinerary'
     | '/lisbon-private-tours'
@@ -2471,6 +2483,7 @@ export interface FileRouteTypes {
     | '/guide'
     | '/guide-reset-password'
     | '/hero-verify'
+    | '/how-many-days-do-you-need-in-portugal'
     | '/how-many-days-in-portugal'
     | '/itinerary'
     | '/lisbon-private-tours'
@@ -2691,6 +2704,7 @@ export interface RootRouteChildren {
   GuideRoute: typeof GuideRouteWithChildren
   GuideResetPasswordRoute: typeof GuideResetPasswordRoute
   HeroVerifyRoute: typeof HeroVerifyRoute
+  HowManyDaysDoYouNeedInPortugalRoute: typeof HowManyDaysDoYouNeedInPortugalRoute
   HowManyDaysInPortugalRoute: typeof HowManyDaysInPortugalRoute
   ItineraryRoute: typeof ItineraryRoute
   LisbonPrivateToursRoute: typeof LisbonPrivateToursRoute
@@ -2990,6 +3004,13 @@ declare module '@tanstack/react-router' {
       path: '/hero-verify'
       fullPath: '/hero-verify'
       preLoaderRoute: typeof HeroVerifyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/how-many-days-do-you-need-in-portugal': {
+      id: '/how-many-days-do-you-need-in-portugal'
+      path: '/how-many-days-do-you-need-in-portugal'
+      fullPath: '/how-many-days-do-you-need-in-portugal'
+      preLoaderRoute: typeof HowManyDaysDoYouNeedInPortugalRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/how-many-days-in-portugal': {
@@ -4571,6 +4592,7 @@ const rootRouteChildren: RootRouteChildren = {
   GuideRoute: GuideRouteWithChildren,
   GuideResetPasswordRoute: GuideResetPasswordRoute,
   HeroVerifyRoute: HeroVerifyRoute,
+  HowManyDaysDoYouNeedInPortugalRoute: HowManyDaysDoYouNeedInPortugalRoute,
   HowManyDaysInPortugalRoute: HowManyDaysInPortugalRoute,
   ItineraryRoute: ItineraryRoute,
   LisbonPrivateToursRoute: LisbonPrivateToursRoute,
