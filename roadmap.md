@@ -1,8 +1,8 @@
 # Phase 1 optimization
 
 # Urgent public layout repair — October 7
-- [ ] Audit production and shared styles at 375px and desktop
-- [ ] Repair proven About alignment and shared label-spacing gaps without changing content or SEO
+- [x] Audit production and shared styles at 375px and desktop
+- [x] Repair proven About alignment and shared label-spacing gaps without changing content or SEO
 - [ ] Run focused regression tests and verify rendered layouts
 - [ ] Check security, publish and verify production
 

@@ -91,8 +91,8 @@ function AboutPage() {
   useMarketingMotion();
   return (
     <SiteLayout>
-      <section className="page-hero public-page-header text-left" data-section="hero">
-        <div className="container-x max-w-4xl">
+      <section className="page-hero public-page-header public-page-header--start text-left" data-section="hero">
+        <div className="container-x max-w-3xl">
           <div>
             <div className="scene-atmosphere"><h1 className="m-0"><Eyebrow>About YES Experiences Portugal · Private tours &amp; travel design</Eyebrow></h1></div>
             <div className="scene-title">

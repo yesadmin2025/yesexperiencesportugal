@@ -204,6 +204,8 @@
      56–72px). Desktop unchanged. */
   --section-gap-mobile: 64px;
   --section-gap-desktop: 96px;
+  --editorial-label-gap: var(--space-5);
+  --editorial-copy-gap: var(--space-6);
 
   /* Editorial shadows — softer, warmer than the legacy teal-tinted set. */
   --shadow-soft: 0 8px 24px rgba(20, 21, 24, 0.08);
@@ -8697,6 +8699,17 @@ html.reveal-ready .about-story.is-visible .about-copy-sequence p:nth-child(4) { 
 .public-page-header .page-header-support {
   max-width: 34rem;
 }
+/* Left-aligned editorial openings share one reading axis. The default
+   centred header remains unchanged on the other service pages. */
+.public-page-header--start h1 {
+  max-width: none;
+  margin-inline: 0;
+}
+.public-page-header--start .page-header-support {
+  max-width: 66ch;
+  margin-inline: 0;
+  margin-top: var(--editorial-copy-gap);
+}
 /* Decorative threads are retired from ordinary public headers. */
 .public-page-header .page-header-thread {
   display: none;
@@ -8805,7 +8818,7 @@ html.reveal-ready .cinematic-editorial--single.is-playing img {
    Scene / SplitLines / reveal system; no new animation library.
    ───────────────────────────────────────────────────────────── */
 
-/* 1. LABEL → MAJOR TITLE BREATH — 24px on mobile AND desktop.
+/* 1. LABEL → MAJOR TITLE BREATH — one 24px token on mobile AND desktop.
       Owned by shared selectors so routes never patch this with mt-*.
       Adjacent-sibling margins collapse, so this wins over the eyebrow's
       own mb-4/mb-5 and the title's mt-3 without touching SectionTitle. */
@@ -8813,6 +8826,9 @@ html.reveal-ready .cinematic-editorial--single.is-playing img {
     .public-page-header,
     .page-hero,
     .section-y,
+    .section-y-major,
+    .section-y-sm,
+    .section-y-lg,
     .home-major-intro,
     .home-story-intro,
     .section-seq,
@@ -8820,8 +8836,21 @@ html.reveal-ready .cinematic-editorial--single.is-playing img {
     .editorial-chapter-open
   )
   :is(.he-eyebrow-bar, .scene-atmosphere, [data-eyebrow])
-  + :is(h1, h2, h3, .motion-split) {
-  margin-top: 1.5rem;
+  + :is(h1, h2, h3, .motion-split, .scene-title) {
+  margin-top: var(--editorial-label-gap);
+}
+/* Scene wrappers retain their motion ownership; spacing belongs to the
+   wrapper, not both the wrapper and its heading. */
+:is(.public-page-header, .home-major-intro, .home-story-intro)
+  .scene-atmosphere + .scene-title > :is(h1, h2, h3, .motion-split) {
+  margin-top: 0;
+}
+/* Shared titles also occur in compact closing tools outside section-y. */
+.he-eyebrow-bar + .editorial-title-safe {
+  margin-top: var(--editorial-label-gap);
+}
+.he-eyebrow-bar:has(+ .editorial-title-safe) {
+  margin-bottom: 0;
 }
 
 /* The eyebrow label is inline-flex, so its own mb-4/mb-5 does NOT collapse
@@ -8831,26 +8860,32 @@ html.reveal-ready .cinematic-editorial--single.is-playing img {
     .public-page-header,
     .page-hero,
     .section-y,
+    .section-y-major,
+    .section-y-sm,
+    .section-y-lg,
     .home-major-intro,
     .home-story-intro,
     .section-seq,
     .editorial-label-stack,
     .editorial-chapter-open
   )
-  .he-eyebrow-bar:has(+ :is(h1, h2, h3, .motion-split)) {
+  .he-eyebrow-bar:has(+ :is(h1, h2, h3, .motion-split, .scene-title)) {
   margin-bottom: 0;
 }
 :is(
     .public-page-header,
     .page-hero,
     .section-y,
+    .section-y-major,
+    .section-y-sm,
+    .section-y-lg,
     .home-major-intro,
     .home-story-intro,
     .section-seq,
     .editorial-label-stack,
     .editorial-chapter-open
   )
-  :is(.scene-atmosphere, [data-eyebrow]):has(+ :is(h1, h2, h3, .motion-split))
+  :is(.scene-atmosphere, [data-eyebrow]):has(+ :is(h1, h2, h3, .motion-split, .scene-title))
   > .he-eyebrow-bar {
   margin-bottom: 0;
 }
