@@ -1,14 +1,15 @@
 # Phase 1 optimization
 
 # Urgent public layout repair — October 7
-- [ ] Audit actual CTA journeys and checkout/add-on presentation at mobile and desktop
-- [ ] Fix demonstrated conversion friction only; preserve instant checkout, pricing and search/tracking
-- [ ] Run conversion QA, publish after checks and report any external blockers
+- [x] Audit CTA destinations across requested pages; exercise Signature/Tailor payment entry, winery controls, enquiry anchor and Studio entry at mobile/desktop
+- [x] Fix demonstrated conversion friction only: inline Reserve guidance and mobile payment-header close-button overlap
+- [ ] Publish conversion fixes and verify production after focused QA (passed)
+- [ ] Complete Studio journey-to-payment walkthrough (not verified in this low-cost pass; no Studio changes)
 - [x] Audit production and shared styles at 375px and desktop
 - [x] Repair proven About alignment and shared label-spacing gaps without changing content or SEO
 - [x] Run focused regression tests and verify rendered layouts (4,019 tests passed; preview build OK; 375px/1280px layouts checked)
 - [x] Check security and request publication (12 informational public-catalogue notes; no security changes)
-- [ ] Verify repaired production spacing (publication requested; last live check still served previous spacing)
+- [x] Verify repaired production spacing (About alignment marker confirmed live)
 
 # October 5 performance-only cleanup
 
