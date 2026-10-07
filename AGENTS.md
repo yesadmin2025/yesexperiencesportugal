@@ -1,5 +1,7 @@
 # Project architecture decisions
 
+- Public label-to-title spacing is owned by the shared editorial spacing tokens and existing section/scene contract; left-aligned page openings opt into public-page-header--start so headings and support share one reading axis without overriding centred pages.
+
 - Travel Designer on-page enquiries reuse the public contact endpoint and contact_messages with request_type=multi_day; Conversions splits that category without double counting to preserve one durable enquiry pipeline.
 - Service planning guides use the existing Local Stories registry and dynamic article route so headings, metadata, discovery and sitemap stay in one system.
 - TourImage only calls decode() proactively for priority media; lazy images rely on onLoad so browser lazy-loading remains effective.

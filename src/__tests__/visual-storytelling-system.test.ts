@@ -42,11 +42,25 @@ describe("decorative gold ornament removed", () => {
 });
 
 describe("shared public label -> title breath contract", () => {
-  it("is owned by one shared selector at 1.5rem (24px)", () => {
+  it("is owned by the shared 24px spacing token across section variants and scene wrappers", () => {
     const contract = styles.slice(styles.indexOf("VISUAL STORYTELLING SYSTEM"));
     expect(contract).toMatch(/\.editorial-chapter-open/);
-    expect(contract).toMatch(/margin-top: 1\.5rem/);
+    expect(styles).toContain("--editorial-label-gap: var(--space-5)");
+    expect(contract).toContain("margin-top: var(--editorial-label-gap)");
+    for (const scope of [".section-y-major", ".section-y-sm", ".section-y-lg", ".scene-title"]) {
+      expect(contract).toContain(scope);
+    }
     expect(contract).toMatch(/margin-bottom: 0/);
+  });
+
+  it("keeps About's opening on one left-aligned reading axis without changing its story or metadata", () => {
+    const about = read("src/routes/about.tsx");
+    expect(about).toContain("public-page-header--start");
+    expect(styles).toMatch(/\.public-page-header--start h1\s*\{[^}]*max-width: none;[^}]*margin-inline: 0;/);
+    expect(styles).toMatch(/\.public-page-header--start \.page-header-support\s*\{[^}]*margin-inline: 0;/);
+    expect(about).toContain('const TITLE = "About YES Experiences Portugal · Our Story & Founder"');
+    expect(about).toContain("Portugal is the stage.");
+    expect(about).toContain("Travel should feel personal.");
   });
 
   it("tour and route-map chapter openers opt into the contract", () => {

@@ -1,5 +1,12 @@
 # Phase 1 optimization
 
+# Urgent public layout repair — October 7
+- [x] Audit production and shared styles at 375px and desktop
+- [x] Repair proven About alignment and shared label-spacing gaps without changing content or SEO
+- [x] Run focused regression tests and verify rendered layouts (4,019 tests passed; preview build OK; 375px/1280px layouts checked)
+- [x] Check security and request publication (12 informational public-catalogue notes; no security changes)
+- [ ] Verify repaired production spacing (publication requested; last live check still served previous spacing)
+
 # October 5 performance-only cleanup
 
 # October 5 Travel Designer enquiries and publication
