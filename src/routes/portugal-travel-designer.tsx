@@ -12,6 +12,7 @@ import ogImg from "@/assets/hero-coast.jpg";
 import { CTA_LABELS } from "@/content/cta-vocabulary";
 import { whatsappUrl } from "@/config/business-nap";
 import { JourneyEnquiryForm } from "@/components/travel-designer/JourneyEnquiryForm";
+import { TravelFilePreview } from "@/components/travel-designer/TravelFilePreview";
 
 const CANONICAL = "https://yesexperiencesportugal.com/portugal-travel-designer";
 const TITLE = "Portugal Travel Designer — Private Journeys | YES";
@@ -220,6 +221,25 @@ function PortugalTravelDesignerPage() {
           Licensed Portuguese tour operator · RNAAT nº 31/2023 · Based in Sesimbra, Portugal.
         </p>
       </Section>
+
+      <section id="sample-file" aria-label="Private travel file sample" className="reveal section-y chapter-flow scroll-mt-24 border-y border-[color:var(--border)] bg-[color:var(--ivory)]">
+        <div className="container-x max-w-3xl">
+          <div className="mx-auto max-w-2xl text-center">
+            <Eyebrow flank>The travel file</Eyebrow>
+            <SectionTitle as="h2" size="compact" spacing="loose">
+              Delivered as a <SectionTitle.Em>private travel file.</SectionTitle.Em>
+            </SectionTitle>
+            <p className="mt-6 text-[color:var(--charcoal-soft)] leading-relaxed">
+              Every Travel Designer journey is delivered as a curated dossier, not a generic
+              itinerary — the moving parts brought together in one place so the trip feels clear
+              before it begins.
+            </p>
+          </div>
+          <div className="mt-8 md:mt-10">
+            <TravelFilePreview />
+          </div>
+        </div>
+      </section>
 
       <section className="reveal border-b border-[color:var(--border)] bg-[color:var(--ivory)] py-12 md:py-16">
         <div className="container-x max-w-2xl text-center">
