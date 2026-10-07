@@ -219,16 +219,20 @@ export function SimpleBookingForm({ tour }: { tour: SignatureTour }) {
       formRef.current?.scrollIntoView({ behavior: "smooth", block: "center" });
       if (priceUnavailable) return;
       if (canReserve) {
+        setBlockMessage(null);
         setDetailsOpen(true);
         return;
       }
+      setBlockMessage(!dateValid
+        ? `Pick an available date at least ${leadHours} hours from now.`
+        : "Add an age for every child.");
       window.setTimeout(() => {
         if (!dateValid) dateRef.current?.focus({ preventScroll: true });
       }, 320);
     };
     window.addEventListener(SIGNATURE_RESERVE_INTENT_EVENT, onIntent);
     return () => window.removeEventListener(SIGNATURE_RESERVE_INTENT_EVENT, onIntent);
-  }, [tour.id, canReserve, dateValid, priceUnavailable]);
+  }, [tour.id, canReserve, dateValid, priceUnavailable, leadHours]);
 
   // Embedded checkout state
   const [checkoutOpen, setCheckoutOpen] = useState(false);
@@ -713,7 +717,6 @@ export function SimpleBookingForm({ tour }: { tour: SignatureTour }) {
             setDetailsOpen(true);
           }}
           disabled={pending}
-          aria-disabled={!canReserve}
           loading={pending}
           loadingLabel="Opening checkout…"
           iconLeading={<Sparkles size={15} aria-hidden="true" />}

@@ -33,6 +33,15 @@ describe("Signature primary CTA", () => {
     expect(matches).toHaveLength(1);
   });
 
+  it("keeps Reserve tappable for validation and gives page-level intents inline guidance", () => {
+    expect(bookingForm).not.toContain("aria-disabled={!canReserve}");
+    const intent = bookingForm.slice(bookingForm.indexOf("const onIntent ="), bookingForm.indexOf("// Embedded checkout state"));
+    expect(intent).toContain("setBlockMessage(!dateValid");
+    expect(intent).toContain("Add an age for every child.");
+    expect(intent).toContain("setBlockMessage(null)");
+    expect(intent).toContain("setDetailsOpen(true)");
+  });
+
   it("no longer treats 'Reserve this day' as a legacy CTA", () => {
     expect(legacy).not.toMatch(/^\s*"Reserve this day",$/m);
   });
