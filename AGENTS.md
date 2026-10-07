@@ -1,5 +1,7 @@
 # Project architecture decisions
 
+- Travel Designer sample proof reuses TravelFilePreview and its original public pages immediately before the existing enquiry bridge, so sample browsing and conversion stay in one shared system.
+
 - Public label-to-title spacing is owned by the shared editorial spacing tokens and existing section/scene contract; left-aligned page openings opt into public-page-header--start so headings and support share one reading axis without overriding centred pages.
 
 - Travel Designer on-page enquiries reuse the public contact endpoint and contact_messages with request_type=multi_day; Conversions splits that category without double counting to preserve one durable enquiry pipeline.
