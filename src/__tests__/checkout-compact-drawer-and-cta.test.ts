@@ -48,6 +48,11 @@ describe("Signature primary CTA", () => {
 });
 
 describe("compact payment drawer", () => {
+  it("reserves space for the close control beside long mobile checkout labels", () => {
+    expect(drawer).toContain('min-h-[44px] min-w-[44px]');
+    expect(drawer).toContain('<Eyebrow className="pr-12">');
+    expect(drawer).toContain('mt-2 pr-12 font-normal');
+  });
   it("keeps exactly one trust line and no bottom secure-checkout footer", () => {
     expect(drawer).toContain('data-testid="checkout-drawer-trust-line"');
     expect(drawer).not.toContain("256-bit encrypted");

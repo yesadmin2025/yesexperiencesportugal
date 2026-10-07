@@ -214,12 +214,12 @@ export function BrandedCheckoutDrawer({
             type="button"
             onClick={() => onOpenChange(false)}
             aria-label="Close checkout"
-            className="absolute top-4 right-4 p-2 text-[color:var(--charcoal-soft)] hover:text-[color:var(--charcoal)]"
+            className="absolute top-4 right-4 min-h-[44px] min-w-[44px] flex items-center justify-center text-[color:var(--charcoal-soft)] hover:text-[color:var(--charcoal)]"
           >
             <X size={18} />
           </button>
-          <Eyebrow>Step 2 of 2 · {summary.flowLabel ?? "Signature"} · Payment</Eyebrow>
-          <SheetTitle className="serif text-[1.35rem] leading-tight text-[color:var(--charcoal)] mt-2 font-normal">
+          <Eyebrow className="pr-12">Step 2 of 2 · {summary.flowLabel ?? "Signature"} · Payment</Eyebrow>
+          <SheetTitle className="serif text-[1.35rem] leading-tight text-[color:var(--charcoal)] mt-2 pr-12 font-normal">
             {summary.tourTitle}
           </SheetTitle>
           <SheetDescription className="sr-only">
