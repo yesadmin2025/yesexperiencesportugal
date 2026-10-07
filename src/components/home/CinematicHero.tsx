@@ -216,7 +216,7 @@ export function CinematicHero() {
            {/* Descriptive H1 for Google + screen readers; visually hidden so
                the approved Hero composition stays pixel-identical. */}
            <h1 className="sr-only">
-             Private Tours &amp; Travel Design in Portugal — YES! Experiences
+             Private Tours &amp; Travel Design in Portugal — YES Experiences
            </h1>
            <div
             data-hero-stanza="true"
