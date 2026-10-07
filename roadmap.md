@@ -122,3 +122,4 @@
 - [ ] Price details ledger in Tailor; Contact/WhatsApp optional only
 - [ ] Tests: client == server == Stripe; listed Tailor scenarios
 - [ ] Owner enters missing prices before publish (blocked on Nídia)
+- [x] Brand spelling: no 'YES!' anywhere public (owner correction)

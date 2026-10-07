@@ -94,14 +94,14 @@ function AboutPage() {
       <section className="page-hero public-page-header text-left" data-section="hero">
         <div className="container-x max-w-4xl">
           <div>
-            <div className="scene-atmosphere"><h1 className="m-0"><Eyebrow>About YES! Experiences Portugal · Private tours &amp; travel design</Eyebrow></h1></div>
+            <div className="scene-atmosphere"><h1 className="m-0"><Eyebrow>About YES Experiences Portugal · Private tours &amp; travel design</Eyebrow></h1></div>
             <div className="scene-title">
               <SectionTitle as="h2" size="anchor" spacing="loose">
                 Portugal is the stage. <SectionTitle.Em>You write the story.</SectionTitle.Em>
               </SectionTitle>
             </div>
             <div className="page-header-support scene-body mt-8 max-w-[66ch] space-y-4 text-[color:var(--charcoal-soft)] leading-[1.75]">
-              <p>YES! EXPERIENCES PORTUGAL was born from a very simple belief:</p>
+              <p>YES EXPERIENCES PORTUGAL was born from a very simple belief:</p>
               <p className="font-medium text-[color:var(--charcoal)]">Travel should feel personal.</p>
               <p>Not like following somebody else's itinerary. Not like ticking places off a list. And certainly not like having to adapt yourself to a tour that was designed for everyone.</p>
               <p className="font-medium text-[color:var(--charcoal)]">We believe the experience should adapt to you.</p>
@@ -175,7 +175,7 @@ function AboutPage() {
         <p>Then something unexpected happened.</p>
         <p>People started coming.</p>
         <p>One booking became another. Guests recommended their experiences to other travellers. Reviews appeared. A couple of tours a week became more tours, more guests, more places and more ideas.</p>
-        <p>And almost without realising it, I was building YES! EXPERIENCES PORTUGAL.</p>
+        <p>And almost without realising it, I was building YES EXPERIENCES PORTUGAL.</p>
       </StoryChapter>
 
       <StoryChapter title="But I never liked standard tours" tone="sand">
@@ -227,7 +227,7 @@ function AboutPage() {
       </StoryChapter>
 
       <StoryChapter title="YES today">
-        <p>Today, YES! EXPERIENCES PORTUGAL creates private day experiences, tailor-made itineraries, full journeys, celebrations, proposals and experiences for private and corporate groups across Portugal.</p>
+        <p>Today, YES EXPERIENCES PORTUGAL creates private day experiences, tailor-made itineraries, full journeys, celebrations, proposals and experiences for private and corporate groups across Portugal.</p>
         <p>The company has grown considerably since those first days with one car.</p>
         <p>We work with guides, local producers, wineries, restaurants, boats, artisans and trusted partners throughout the country.</p>
         <p>Technology has become an important part of what we do.</p>
