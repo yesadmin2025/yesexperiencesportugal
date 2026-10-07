@@ -1,6 +1,9 @@
 # Phase 1 optimization
 
 # Urgent public layout repair — October 7
+- [ ] Audit actual CTA journeys and checkout/add-on presentation at mobile and desktop
+- [ ] Fix demonstrated conversion friction only; preserve instant checkout, pricing and search/tracking
+- [ ] Run conversion QA, publish after checks and report any external blockers
 - [x] Audit production and shared styles at 375px and desktop
 - [x] Repair proven About alignment and shared label-spacing gaps without changing content or SEO
 - [x] Run focused regression tests and verify rendered layouts (4,019 tests passed; preview build OK; 375px/1280px layouts checked)
