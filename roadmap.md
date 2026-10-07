@@ -1,5 +1,10 @@
 # Phase 1 optimization
 
+# Urgent Travel Book restoration — October 7
+- [ ] Trace original book section, assets and removal in history/live site
+- [ ] Restore original proof in intended position without overwriting spacing/CTA/SEO work
+- [ ] Check original pages, mobile/desktop preview controls, tests and published result
+
 # Urgent public layout repair — October 7
 - [x] Audit CTA destinations across requested pages; exercise Signature/Tailor payment entry, winery controls, enquiry anchor and Studio entry at mobile/desktop
 - [x] Fix demonstrated conversion friction only: inline Reserve guidance and mobile payment-header close-button overlap
