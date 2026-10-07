@@ -238,6 +238,15 @@ function PortugalTravelDesignerPage() {
           <div className="mt-8 md:mt-10">
             <TravelFilePreview />
           </div>
+          <p className="mt-8 text-center">
+            <a
+              href="#journey-enquiry"
+              onClick={() => { try { sessionStorage.setItem("yes_journey_from_sample", "1"); } catch { /* storage unavailable */ } }}
+              className="inline-flex min-h-11 items-center text-[11.5px] font-medium uppercase tracking-[0.22em] text-[color:var(--teal)] underline-offset-4 hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)]"
+            >
+              Design my journey like this sample <span aria-hidden className="ml-2 text-[color:var(--gold)]">→</span>
+            </a>
+          </p>
         </div>
       </section>
 

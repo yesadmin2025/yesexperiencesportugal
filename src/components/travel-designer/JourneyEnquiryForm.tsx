@@ -3,6 +3,10 @@ import { CtaButton } from "@/components/ui/CtaButton";
 import { leadAttribution } from "@/lib/utm";
 import { EMAIL } from "@/config/business-nap";
 
+function fromSample() {
+  try { return sessionStorage.getItem("yes_journey_from_sample") === "1"; } catch { return false; }
+}
+
 /** Uses the same durable contact record and delivery path as /contact. */
 export function JourneyEnquiryForm() {
   const inFlight = useRef(false);
@@ -30,8 +34,8 @@ export function JourneyEnquiryForm() {
           email: String(data.get("email") ?? "").trim().toLowerCase(),
           requestType: "multi_day",
           travelDate: String(data.get("travelDate") ?? "") || null,
-          message: String(data.get("message") ?? "").trim(),
-          source: "travel-designer-page",
+          message: (fromSample() ? "Inspired by the sample travel file.\n" : "") + String(data.get("message") ?? "").trim(),
+          source: fromSample() ? "travel-designer-sample-file" : "travel-designer-page",
           attribution: leadAttribution(),
           locale: navigator.language.slice(0, 20),
           userAgent: navigator.userAgent.slice(0, 500),
