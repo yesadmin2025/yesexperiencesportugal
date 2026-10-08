@@ -199,6 +199,7 @@ import { Route as ApiPublicBookingItineraryDataRouteImport } from './routes/api/
 import { Route as ApiPublicBookingRequestRouteImport } from './routes/api/public/booking-request'
 import { Route as ApiPublicContactRouteImport } from './routes/api/public/contact'
 import { Route as ApiPublicEditorialPhotoRouteImport } from './routes/api/public/editorial-photo'
+import { Route as ApiPublicGuestPortalRouteImport } from './routes/api/public/guest-portal'
 import { Route as ApiPublicPricingSsotRouteImport } from './routes/api/public/pricing-ssot'
 import { Route as ApiPublicProposalRequestRouteImport } from './routes/api/public/proposal-request'
 import { Route as ApiPublicVisitRouteImport } from './routes/api/public/visit'
@@ -1201,6 +1202,11 @@ const ApiPublicEditorialPhotoRoute = ApiPublicEditorialPhotoRouteImport.update({
   path: '/api/public/editorial-photo',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiPublicGuestPortalRoute = ApiPublicGuestPortalRouteImport.update({
+  id: '/api/public/guest-portal',
+  path: '/api/public/guest-portal',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiPublicPricingSsotRoute = ApiPublicPricingSsotRouteImport.update({
   id: '/api/public/pricing-ssot',
   path: '/api/public/pricing-ssot',
@@ -1549,6 +1555,7 @@ export interface FileRoutesByFullPath {
   '/api/public/booking-request': typeof ApiPublicBookingRequestRoute
   '/api/public/contact': typeof ApiPublicContactRoute
   '/api/public/editorial-photo': typeof ApiPublicEditorialPhotoRoute
+  '/api/public/guest-portal': typeof ApiPublicGuestPortalRoute
   '/api/public/pricing-ssot': typeof ApiPublicPricingSsotRoute
   '/api/public/proposal-request': typeof ApiPublicProposalRequestRoute
   '/api/public/visit': typeof ApiPublicVisitRoute
@@ -1765,6 +1772,7 @@ export interface FileRoutesByTo {
   '/api/public/booking-request': typeof ApiPublicBookingRequestRoute
   '/api/public/contact': typeof ApiPublicContactRoute
   '/api/public/editorial-photo': typeof ApiPublicEditorialPhotoRoute
+  '/api/public/guest-portal': typeof ApiPublicGuestPortalRoute
   '/api/public/pricing-ssot': typeof ApiPublicPricingSsotRoute
   '/api/public/proposal-request': typeof ApiPublicProposalRequestRoute
   '/api/public/visit': typeof ApiPublicVisitRoute
@@ -1986,6 +1994,7 @@ export interface FileRoutesById {
   '/api/public/booking-request': typeof ApiPublicBookingRequestRoute
   '/api/public/contact': typeof ApiPublicContactRoute
   '/api/public/editorial-photo': typeof ApiPublicEditorialPhotoRoute
+  '/api/public/guest-portal': typeof ApiPublicGuestPortalRoute
   '/api/public/pricing-ssot': typeof ApiPublicPricingSsotRoute
   '/api/public/proposal-request': typeof ApiPublicProposalRequestRoute
   '/api/public/visit': typeof ApiPublicVisitRoute
@@ -2208,6 +2217,7 @@ export interface FileRouteTypes {
     | '/api/public/booking-request'
     | '/api/public/contact'
     | '/api/public/editorial-photo'
+    | '/api/public/guest-portal'
     | '/api/public/pricing-ssot'
     | '/api/public/proposal-request'
     | '/api/public/visit'
@@ -2424,6 +2434,7 @@ export interface FileRouteTypes {
     | '/api/public/booking-request'
     | '/api/public/contact'
     | '/api/public/editorial-photo'
+    | '/api/public/guest-portal'
     | '/api/public/pricing-ssot'
     | '/api/public/proposal-request'
     | '/api/public/visit'
@@ -2644,6 +2655,7 @@ export interface FileRouteTypes {
     | '/api/public/booking-request'
     | '/api/public/contact'
     | '/api/public/editorial-photo'
+    | '/api/public/guest-portal'
     | '/api/public/pricing-ssot'
     | '/api/public/proposal-request'
     | '/api/public/visit'
@@ -2788,6 +2800,7 @@ export interface RootRouteChildren {
   ApiPublicBookingRequestRoute: typeof ApiPublicBookingRequestRoute
   ApiPublicContactRoute: typeof ApiPublicContactRoute
   ApiPublicEditorialPhotoRoute: typeof ApiPublicEditorialPhotoRoute
+  ApiPublicGuestPortalRoute: typeof ApiPublicGuestPortalRoute
   ApiPublicPricingSsotRoute: typeof ApiPublicPricingSsotRoute
   ApiPublicProposalRequestRoute: typeof ApiPublicProposalRequestRoute
   ApiPublicVisitRoute: typeof ApiPublicVisitRoute
@@ -4147,6 +4160,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicEditorialPhotoRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/guest-portal': {
+      id: '/api/public/guest-portal'
+      path: '/api/public/guest-portal'
+      fullPath: '/api/public/guest-portal'
+      preLoaderRoute: typeof ApiPublicGuestPortalRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/public/pricing-ssot': {
       id: '/api/public/pricing-ssot'
       path: '/api/public/pricing-ssot'
@@ -4679,6 +4699,7 @@ const rootRouteChildren: RootRouteChildren = {
   ApiPublicBookingRequestRoute: ApiPublicBookingRequestRoute,
   ApiPublicContactRoute: ApiPublicContactRoute,
   ApiPublicEditorialPhotoRoute: ApiPublicEditorialPhotoRoute,
+  ApiPublicGuestPortalRoute: ApiPublicGuestPortalRoute,
   ApiPublicPricingSsotRoute: ApiPublicPricingSsotRoute,
   ApiPublicProposalRequestRoute: ApiPublicProposalRequestRoute,
   ApiPublicVisitRoute: ApiPublicVisitRoute,
