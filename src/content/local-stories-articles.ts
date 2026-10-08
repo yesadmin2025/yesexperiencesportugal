@@ -149,8 +149,6 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
       { slug: "wild-beaches-picnic", label: "Wild Beaches & Picnic" },
     ],
     relatedReads: [
-      { path: "/local-stories/lisbon-day-trips-with-kids-and-accessibility", label: "Day trips with kids or limited mobility" },
-      { path: "/studio", label: "Design your own private day in Studio" },
       { path: "/local-stories/what-to-do-in-sesimbra", label: "Things to do in Sesimbra" },
       { path: "/local-stories/arrabida-vs-sintra", label: "Arrábida vs Sintra" },
       { path: "/day-trips-from-lisbon", label: "Day trips by drive time" },
@@ -1926,8 +1924,6 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
       { slug: "troia-comporta", label: "Tróia & Comporta" },
     ],
     relatedReads: [
-      { path: "/local-stories/portuguese-culture-for-first-time-visitors", label: "A first-timer's guide to Portuguese culture" },
-      { path: "/studio", label: "Shape your own day in Studio" },
       { path: "/day-trips-from-lisbon", label: "Compare every day trip" },
       { path: "/portugal-for-american-travelers", label: "Plan Portugal from the United States" },
     ],
@@ -2342,8 +2338,6 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
       "Tell us your dates and how you like to travel — a local travel designer shapes the journey around them, for any length of stay.",
     ctaLabel: "Design my journey",
     relatedReads: [
-      { path: "/local-stories/porto-and-the-douro-valley-guide", label: "Porto and the Douro Valley" },
-      { path: "/local-stories/azores-sao-miguel-pico-guide", label: "The Azores: São Miguel and Pico" },
       { path: "/portugal-travel-designer", label: "Travel Designer — multi-day journeys" },
       { path: "/itineraries/10-day-private-portugal-tour", label: "A 10-day private Portugal journey" },
       { path: "/day-trips-from-lisbon", label: "Day trips from Lisbon" },
@@ -2402,6 +2396,7 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
     ctaLabel: "Explore Signature Experiences",
     relatedReads: [
       { path: "/faq", label: "Pricing, booking and cancellation answers" },
+      { path: "/studio", label: "Price your own private day in Studio" },
       { path: "/portugal-tours", label: "All private tours in Portugal" },
       { path: "/experiences", label: "Signature experiences with live prices" },
       { path: "/local-stories/private-tour-vs-group-tour", label: "Private vs group tours, honestly" },
