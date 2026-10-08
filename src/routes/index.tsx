@@ -19,6 +19,10 @@ import { StudioLivePreview } from "@/components/home/StudioLivePreview";
 import { CinematicHero } from "@/components/home/CinematicHero";
 import { RecentJourney } from "@/components/home/RecentJourney";
 import { FiveWaysIn } from "@/components/home/FiveWaysIn";
+import { EditorialCard } from "@/components/ui/EditorialCard";
+
+import imgMoments from "@/assets/exp-romantic.jpg";
+import imgCorporate from "@/assets/tours/fatima-nazare-obidos/nazare.jpg";
 
 import { getScrollDebugFlags, useScrollDebugFlags } from "@/lib/scroll-debug";
 
@@ -259,9 +263,10 @@ const baseSignatures = FEATURED_TOUR_IDS.filter((id) => isValidTourId(id))
     };
   });
 
-/* Moments and group services appear once in FiveWaysIn. Their dedicated
- * routes retain the complete service narratives without repeating the same
- * commercial choice later on this page. */
+/* Moments and Corporate appear in FiveWaysIn and, per the owner's request to
+ * surface these differentiators, also in the dedicated "Special occasions"
+ * band after the Travel Designer proof. Their dedicated routes retain the
+ * complete service narratives. */
 
 /* ──────────────────────────────────────────────────────────────────
  * Route definition — keeps headers, head meta and HERO_COPY_VERSION
@@ -882,6 +887,61 @@ function HomePage() {
           and the bespoke narrative deepens desire for higher-value
           Travel Designer journeys. */}
         <RecentJourney />
+
+        {/* 5c — SPECIAL OCCASIONS (Moments & Corporate)
+          Owner request: these specialist services must be visibly present
+          on the homepage, not only inside Five Ways. One quiet editorial
+          band, two cards, real photography from the dedicated routes,
+          locked CTA vocabulary. */}
+        <section
+          id="special-occasions"
+          className="he-section-rule section-enter py-12 md:py-16 bg-[color:var(--ivory)] border-b border-[color:var(--border)] scroll-mt-24 md:scroll-mt-28"
+          aria-labelledby="special-occasions-title"
+        >
+          <div className="container-x">
+            <div className="reveal text-center max-w-2xl mx-auto mb-10 md:mb-14">
+              <Eyebrow className="mb-5">Special occasions</Eyebrow>
+              <SectionTitle id="special-occasions-title">
+                A moment to mark,{" "}
+                <SectionTitle.Em>or a whole team to host.</SectionTitle.Em>
+              </SectionTitle>
+            </div>
+
+            <div className="mx-auto max-w-5xl">
+              <EditorialCard
+                eyebrow="Moments — proposals & celebrations"
+                accent="var(--gold)"
+                title={
+                  <>
+                    The proposal, the anniversary —{" "}
+                    <span className="italic font-normal text-[color:var(--teal)]">held with care.</span>
+                  </>
+                }
+                body="A proposal, an anniversary or a milestone, planned personally with our team — the place, the timing and every detail composed around the two of you."
+                detail="Planned personally with our team"
+                cta={{ label: "Plan a special moment", to: "/proposal-in-portugal" }}
+                image={{ src: imgMoments, alt: "Romantic private moment by the Portuguese coast", to: "/proposal-in-portugal" }}
+              />
+
+              <EditorialCard
+                reverse
+                className="mt-14 md:mt-20"
+                eyebrow="Corporate & groups"
+                accent="var(--teal)"
+                title={
+                  <>
+                    Team days & incentives,{" "}
+                    <span className="italic font-normal text-[color:var(--teal)]">handled end to end.</span>
+                  </>
+                }
+                body="Transport, venues and timing arranged by one local point of contact — from intimate boards to full incentive groups."
+                detail="One local point of contact"
+                cta={{ label: "Plan a private group experience", to: "/corporate" }}
+                image={{ src: imgCorporate, alt: "Private group experience day in Portugal", to: "/corporate" }}
+              />
+            </div>
+          </div>
+        </section>
 
         {/* 10 — EXPLORE PORTUGAL: interactive map
           Region pins link the real Signature days and the real Local
