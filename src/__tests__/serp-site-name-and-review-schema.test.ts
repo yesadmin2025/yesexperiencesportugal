@@ -201,6 +201,9 @@ describe("review structured data is first-party only", () => {
       "@id": "https://yesexperiencesportugal.com/#organization",
     });
     expect(reviews[0]!.datePublished).toBe("2026-05-04");
+    // Google warning: a Review nested inside its Product must NOT repeat
+    // itemReviewed (directional conflict). Standalone Review nodes keep it.
+    expect(reviews[0]).not.toHaveProperty("itemReviewed");
   });
 
   it("first-party rows used in schema are rendered in the visible review list", () => {
