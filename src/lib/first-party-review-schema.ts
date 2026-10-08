@@ -44,7 +44,6 @@ export function withFirstPartyReviews<T extends Reviewable>(
   if (!data) return productLd;
 
   const merged: Reviewable = { ...productLd };
-  const itemId = (productLd as { "@id"?: string })["@id"] ?? `${SITE_URL}/`;
 
   if (data.count > 0 && validAverage(data.average)) {
     merged.aggregateRating = {
@@ -58,6 +57,10 @@ export function withFirstPartyReviews<T extends Reviewable>(
 
   const reviews = (data.reviews ?? []).filter((r) => r.body?.trim() && validAverage(r.rating));
   if (reviews.length > 0) {
+    // NOTE: no `itemReviewed` here — these Review nodes are nested inside the
+    // Product they review, and Google flags a nested itemReviewed as a
+    // directional conflict. Standalone Review nodes (e.g. Local Stories)
+    // keep their own itemReviewed.
     merged.review = reviews.slice(0, 5).map((r) => ({
       "@type": "Review",
       reviewRating: {
@@ -71,7 +74,6 @@ export function withFirstPartyReviews<T extends Reviewable>(
       ...(r.title ? { name: r.title } : {}),
       reviewBody: r.body,
       publisher: { "@id": `${SITE_URL}/#organization` },
-      itemReviewed: { "@id": itemId },
     }));
   }
 
