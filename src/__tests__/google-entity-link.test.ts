@@ -12,7 +12,8 @@ import { resolve } from "node:path";
 import { organizationLd, localBusinessLd } from "@/lib/jsonld";
 import { SOCIAL, STRUCTURED_ADDRESS } from "@/config/business-nap";
 
-const CANONICAL_GOOGLE_PROFILE = "https://share.google/BaSl6G0cnoLKgXXay";
+/** Verified 8 Oct 2026 via the Business Profile API (locations/900772565940911174). */
+const CANONICAL_GOOGLE_PROFILE = "https://maps.google.com/maps?cid=18112725515561598058";
 
 /** Stale third-party identity that must never appear in public structured data. */
 const STALE_ENTITY_SIGNALS = [
@@ -41,11 +42,12 @@ describe("Canonical Google Business Profile entity link", () => {
     expect(SOCIAL.google).toBe(CANONICAL_GOOGLE_PROFILE);
   });
 
-  it("Organization sameAs omits the stale Google share link until a verified URL exists", () => {
+  it("Organization sameAs carries the verified Google Business Profile URL", () => {
     const org = organizationLd();
-    expect(org.sameAs).not.toContain(CANONICAL_GOOGLE_PROFILE);
+    expect(org.sameAs).toContain(CANONICAL_GOOGLE_PROFILE);
     expect(org.sameAs).toContain(SOCIAL.instagram);
-    // The old Google short link must never replace or accompany it.
+    // Stale short links and the old Meco Maps link must never appear.
+    expect(org.sameAs).not.toContain("share.google/");
     expect(org.sameAs).not.toContain("maps.app.goo.gl/hbVa3Yw2mDV2DZHt8");
   });
 
