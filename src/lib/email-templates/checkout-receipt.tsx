@@ -330,7 +330,7 @@ const CheckoutReceipt = ({
                 {itineraryUrl ? (
                   <Text style={{ ...body, margin: "0 0 8px" }}>
                     <Link href={itineraryUrl} style={link}>
-                      View your itinerary online
+                      Your guest portal — itinerary, date &amp; confirm attendance
                     </Link>
                   </Text>
                 ) : null}
