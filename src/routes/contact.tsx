@@ -6,7 +6,6 @@ import { breadcrumbLd, jsonLdScript } from "@/lib/jsonld";
 import { SiteLayout } from "@/components/SiteLayout";
 import { Mail, Phone, MapPin, MessageCircle } from "lucide-react";
 import { useEffect, useState } from "react";
-import { z } from "zod";
 import ogImg from "@/assets/why-image.jpg";
 
 import { Eyebrow } from "@/components/ui/Eyebrow";
@@ -34,7 +33,13 @@ const REQUEST_TYPES = [
 
 const requestTypeValues = REQUEST_TYPES.map((r) => r.value) as [string, ...string[]];
 
-const contactSchema = z.object({
+/**
+ * Validation schema is built on first submit so the validation library
+ * stays out of the initial /contact bundle. Rules and messages unchanged.
+ */
+async function loadContactSchema() {
+  const { z } = await import("zod");
+  return z.object({
   name: z.string().trim().min(1, "Please enter your name").max(160),
   email: z.string().trim().toLowerCase().email("Enter a valid email").max(254),
   requestType: z.enum(requestTypeValues as [string, ...string[]], {
@@ -47,7 +52,8 @@ const contactSchema = z.object({
     .optional()
     .or(z.literal("").transform(() => undefined)),
   message: z.string().trim().max(4000, "Message is too long"),
-});
+  });
+}
 
 /** Map a single Name field onto the existing first/last contract. */
 function splitFullName(full: string): { first: string; last: string } {
@@ -191,6 +197,7 @@ function Page() {
                   setErrorMsg(null);
                   const form = e.currentTarget;
                   const data = new FormData(form);
+                  const contactSchema = await loadContactSchema();
                   const parsed = contactSchema.safeParse({
                     name: String(data.get("name") ?? ""),
                     email: String(data.get("email") ?? ""),
