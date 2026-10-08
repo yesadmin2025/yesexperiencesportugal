@@ -26,6 +26,7 @@ import { lazy, Suspense, useCallback, useEffect, useMemo, useRef, useState } fro
 import { SiteLayout } from "@/components/SiteLayout";
 import { MAP_CANVAS_CLASS, MAP_FRAME_CLASS } from "@/components/SignatureRouteMapShell";
 import { Eyebrow } from "@/components/ui/Eyebrow";
+import { GuestAttendancePanel } from "@/components/itinerary/GuestAttendancePanel";
 import { SectionTitle } from "@/components/ui/SectionTitle";
 import {
   filterItineraryStops,
@@ -335,6 +336,14 @@ function ItineraryPage() {
                   </div>
                 ))}
             </dl>
+
+            {session_id ? (
+              <GuestAttendancePanel
+                sessionId={session_id}
+                guestCount={Number.parseInt(data.guestsLabel ?? "", 10) || 1}
+                currentPickup={data.pickup}
+              />
+            ) : null}
 
             {/* ---------------------------------------------------------- *
              * The route on a map — order only, never clock times.

@@ -85,7 +85,57 @@ export const Route = createFileRoute("/api/public/hooks/tour-day-before")({
             console.error("[tour-day-before] send failed", { id: row.id, error: e instanceof Error ? e.message : e });
           }
         }
-        return Response.json({ ok: true, date: tomorrow, considered: rows?.length ?? 0, sent, skipped, failed });
+        // Guest portal: 48h attendance reminder for paid bookings two days out
+        // that haven't confirmed yet. Same daily run; idempotent per booking.
+        let reminders = 0;
+        try {
+          const d = new Date(`${tomorrow}T12:00:00Z`);
+          d.setUTCDate(d.getUTCDate() + 1);
+          const inTwoDays = d.toISOString().slice(0, 10);
+          const { data: upcoming } = await supabaseAdmin
+            .from("bookings")
+            .select("id, customer_email, customer_name, stripe_session_id, booking_details")
+            .is("cancelled_at", null)
+            .eq("status", "paid")
+            .eq("preferred_date", inTwoDays)
+            .limit(200);
+          const ids = (upcoming ?? []).map((r) => r.id);
+          const { data: responses } = ids.length
+            ? await supabaseAdmin
+                .from("guest_portal_responses")
+                .select("booking_id, attendance_confirmed_at")
+                .in("booking_id", ids)
+            : { data: [] };
+          const confirmed = new Set(
+            (responses ?? []).filter((r) => r.attendance_confirmed_at).map((r) => r.booking_id),
+          );
+          for (const row of upcoming ?? []) {
+            const email = str(row.customer_email, 320);
+            const sessionId = str(row.stripe_session_id, 300);
+            if (!email || !sessionId || confirmed.has(row.id)) continue;
+            const snap = (((row.booking_details as AnyRec | null)?.snapshot ?? {}) as AnyRec);
+            const name = str(snap.customerName, 160) ?? str(row.customer_name, 160);
+            try {
+              await sendTransactionalInternal({
+                templateName: "attendance-reminder",
+                recipientEmail: email,
+                idempotencyKey: `attendance-reminder-${row.id}`,
+                templateData: {
+                  firstName: name ? name.split(" ")[0] : null,
+                  experienceName: str(snap.experienceName) ?? str(snap.tourTitle),
+                  dateLabel: str(snap.dateExact, 32) ?? inTwoDays,
+                  portalUrl: `https://yesexperiencesportugal.com/itinerary?session_id=${encodeURIComponent(sessionId)}`,
+                },
+              });
+              reminders += 1;
+            } catch (e) {
+              console.error("[attendance-reminder] send failed", { id: row.id, error: e instanceof Error ? e.message : e });
+            }
+          }
+        } catch (e) {
+          console.error("[attendance-reminder] run failed", e);
+        }
+        return Response.json({ ok: true, date: tomorrow, considered: rows?.length ?? 0, sent, skipped, failed, reminders });
       },
     },
   },
