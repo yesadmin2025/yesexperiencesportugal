@@ -504,6 +504,7 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
       { slug: "troia-comporta", label: "Tróia & Comporta" },
     ],
     relatedReads: [
+      { path: "/local-stories/marvao-castelo-de-vide-guide", label: "Marvão and Castelo de Vide" },
       { path: "/local-stories/best-wine-tours-from-lisbon", label: "Compare wine days from Lisbon" },
       { path: "/portugal-travel-designer", label: "Plan a longer Alentejo journey" },
     ],
@@ -674,6 +675,7 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
     signatureSlug: "arrabida-wine-allinclusive",
     relatedSignatures: [{ slug: "evora-alentejo", label: "Évora & Alentejo Signature" }],
     relatedReads: [
+      { path: "/wineries", label: "Every winery we visit" },
       { path: "/tours/arrabida-wine-allinclusive", label: "Arrábida Wine — All Inclusive" },
       { path: "/local-stories/setubal-wine-guide", label: "Setúbal wine country guide" },
     ],
@@ -1390,6 +1392,8 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
       { slug: "roman-heritage-alentejo", label: "Roman Heritage Wine Tour" },
     ],
     relatedReads: [
+      { path: "/local-stories/arrabida-wine-tour-what-to-expect", label: "What an Arrábida wine day is like" },
+      { path: "/wineries", label: "The wineries we visit" },
       {
         path: "/local-stories/arrabida-wine-tour-from-lisbon",
         label: "The Arrábida wine day in detail",
@@ -1759,6 +1763,7 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
     ctaLabel: "Design my experience",
     signatureSlug: "arrabida-wine-allinclusive",
     relatedReads: [
+      { path: "/local-stories/lisbon-day-trips-with-kids-and-accessibility", label: "Planning with children or reduced mobility" },
       { path: "/day-trips-from-lisbon", label: "Best day trips from Lisbon" },
       {
         path: "/local-stories/arrabida-wine-tour-from-lisbon",
@@ -1857,6 +1862,7 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
     ctaLabel: "Compare private day trips",
     signatureSlug: "sintra-cascais",
     relatedReads: [
+      { path: "/local-stories/portuguese-culture-for-first-time-visitors", label: "Portuguese culture for first-time visitors" },
       { path: "/portugal-for-american-travelers", label: "Portugal planning for American travelers" },
       { path: "/day-trips-from-lisbon", label: "Best day trips from Lisbon" },
     ],
@@ -2389,6 +2395,8 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
       "Every Signature day shows its real price per person by group size — choose one and see your date instantly.",
     ctaLabel: "Explore Signature Experiences",
     relatedReads: [
+      { path: "/faq", label: "Pricing, booking and cancellation answers" },
+      { path: "/studio", label: "Price your own private day in Studio" },
       { path: "/portugal-tours", label: "All private tours in Portugal" },
       { path: "/experiences", label: "Signature experiences with live prices" },
       { path: "/local-stories/private-tour-vs-group-tour", label: "Private vs group tours, honestly" },
@@ -2505,6 +2513,8 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
       { slug: "fatima-nazare-obidos", label: "Fátima · Nazaré · Óbidos" },
     ],
     relatedReads: [
+      { path: "/local-stories/lisbon-day-trips-with-kids-and-accessibility", label: "Accessible day trips from Lisbon" },
+      { path: "/faq", label: "Questions on pickup, pace and cancellation" },
       { path: "/day-trips-from-lisbon", label: "Best day trips from Lisbon" },
       { path: "/portugal-travel-designer", label: "Travel Designer — multi-day journeys" },
     ],

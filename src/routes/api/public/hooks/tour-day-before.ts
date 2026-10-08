@@ -85,7 +85,7 @@ export const Route = createFileRoute("/api/public/hooks/tour-day-before")({
             console.error("[tour-day-before] send failed", { id: row.id, error: e instanceof Error ? e.message : e });
           }
         }
-        // Guest portal: 48h attendance reminder for paid bookings two days out
+        // Guest portal: attendance reminder for paid bookings two days out
         // that haven't confirmed yet. Same daily run; idempotent per booking.
         let reminders = 0;
         try {

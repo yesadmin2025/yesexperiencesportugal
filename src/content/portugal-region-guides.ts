@@ -152,6 +152,7 @@ export const PORTUGAL_REGION_GUIDES: LocalStoryArticle[] = [
     ctaLabel: DESIGN_CTA_LABEL,
     plannerRegionIds: ["aveiro"],
     relatedReads: [
+      { path: "/local-stories/serra-da-estrela-guide", label: "Inland to Serra da Estrela" },
       { path: "/local-stories/porto-and-the-douro-valley-guide", label: "Porto & the Douro" },
       { path: "/portugal-travel-designer", label: "Design a multi-day route" },
     ],

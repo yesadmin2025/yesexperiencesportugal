@@ -55,7 +55,7 @@ const AttendanceReminder = ({ firstName, experienceName, dateLabel, portalUrl }:
 export const template = {
   component: AttendanceReminder,
   subject: "Please confirm your YES day",
-  displayName: "Guest — confirm attendance (48h)",
+  displayName: "Guest — confirm attendance (two days before)",
   previewData: {
     firstName: "Sofia",
     experienceName: "Private Sintra & Cascais Tour from Lisbon",
