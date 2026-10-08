@@ -1871,6 +1871,50 @@ export type Database = {
         }
         Relationships: []
       }
+      guest_portal_responses: {
+        Row: {
+          attendance_confirmed_at: string | null
+          booking_id: string
+          created_at: string
+          guest_names: string[]
+          guest_note: string | null
+          id: string
+          pickup_update: string | null
+          reminder_sent_at: string | null
+          updated_at: string
+        }
+        Insert: {
+          attendance_confirmed_at?: string | null
+          booking_id: string
+          created_at?: string
+          guest_names?: string[]
+          guest_note?: string | null
+          id?: string
+          pickup_update?: string | null
+          reminder_sent_at?: string | null
+          updated_at?: string
+        }
+        Update: {
+          attendance_confirmed_at?: string | null
+          booking_id?: string
+          created_at?: string
+          guest_names?: string[]
+          guest_note?: string | null
+          id?: string
+          pickup_update?: string | null
+          reminder_sent_at?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "guest_portal_responses_booking_id_fkey"
+            columns: ["booking_id"]
+            isOneToOne: true
+            referencedRelation: "bookings"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       guide_availability: {
         Row: {
           created_at: string
