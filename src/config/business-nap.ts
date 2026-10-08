@@ -112,11 +112,12 @@ export const SOCIAL = {
   tripadvisor:
     "https://www.tripadvisor.com/Attraction_Review-g227946-d34430097-Reviews-Yes_Experiences_Portugal-Sesimbra_Setubal_District_Alentejo.html",
   /**
-   * Canonical Google Business Profile share URL, supplied by the owner.
+   * Canonical Google Business Profile URL — verified 8 Oct 2026 directly via
+   * the Business Profile API (locations/900772565940911174, hasVoiceOfMerchant).
    * Use exactly this link in sameAs and any public profile reference.
-   * Do NOT substitute a Maps short link or any obsolete listing address.
+   * Do NOT use a share.google short link or any obsolete listing address.
    */
-  google: "https://share.google/BaSl6G0cnoLKgXXay" as string,
+  google: "https://maps.google.com/maps?cid=18112725515561598058" as string,
   viator: "" as string,
 } as const;
 
