@@ -14,7 +14,7 @@ const PAGE_URL = `${BASE_URL}${PAGE_PATH}`;
 
 const TITLE = "Portugal Tours — Private Days & Multi-Day Journeys | YES";
 const DESCRIPTION =
-  "Private Portugal tours by a local operator — Lisbon, Sintra, Arrábida, Alentejo, Douro. Signature days confirmed online, plus multi-day journeys planned with a Travel Designer.";
+  "Private Portugal tours: Lisbon, Sintra, Arrábida, Alentejo and Douro days confirmed online, plus multi-day journeys shaped by a Travel Designer.";
 
 const articleJsonLd = {
   "@context": "https://schema.org",
