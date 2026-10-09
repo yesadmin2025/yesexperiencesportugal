@@ -4,7 +4,7 @@ import { useState } from "react";
 import { toast } from "sonner";
 import { AdminShell } from "@/components/admin/AdminShell";
 import { signatureTours } from "@/data/signatureTours";
-import { createManualBooking } from "@/lib/manualBooking.functions";
+import { createBookingPaymentLink, createManualBooking } from "@/lib/manualBooking.functions";
 
 export const Route = createFileRoute("/admin/bookings/new")({
   head: () => ({
