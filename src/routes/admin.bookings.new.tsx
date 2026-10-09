@@ -59,11 +59,22 @@ function NewBookingPage() {
           channel: f.channel as "DIRECT",
           reference: f.reference || null,
           amountEuros: Number(f.amount || 0),
-          paid: f.paid,
+          paid: f.payment === "paid",
         },
       });
-      toast.success(res.assignedGuideId ? "Booking saved and a guide was assigned." : "Booking saved. No guide was free — assign one on the booking.");
-      void navigate({ to: "/admin/bookings/$id", params: { id: res.id } });
+      if (f.payment === "link") {
+        try {
+          const link = await issueLink({ data: { bookingId: res.id } });
+          setPaymentLink({ url: link.url, bookingId: res.id });
+          toast.success("Booking saved and payment link issued.");
+        } catch (linkErr) {
+          toast.error(linkErr instanceof Error ? linkErr.message : "Booking saved, but the payment link failed.");
+          void navigate({ to: "/admin/bookings/$id", params: { id: res.id } });
+        }
+      } else {
+        toast.success(res.assignedGuideId ? "Booking saved and a guide was assigned." : "Booking saved. No guide was free — assign one on the booking.");
+        void navigate({ to: "/admin/bookings/$id", params: { id: res.id } });
+      }
     } catch (err) {
       toast.error(err instanceof Error ? err.message : "Could not save the booking.");
     } finally {
