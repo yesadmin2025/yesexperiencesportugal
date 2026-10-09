@@ -1354,6 +1354,7 @@ function TailorPage() {
                           Number(date.slice(8, 10)),
                         ),
                       ).toLocaleDateString("en-GB", {
+                        timeZone: "UTC",
                         weekday: "short",
                         day: "numeric",
                         month: "short",
