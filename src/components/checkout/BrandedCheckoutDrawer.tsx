@@ -494,9 +494,17 @@ function Meta({ icon, children }: { icon: React.ReactNode; children: React.React
 
 function formatDate(iso: string): string {
   try {
+    // Calendar dates ("2026-10-15") parse as UTC midnight; format in UTC so
+    // guests west of UTC don't see the previous day.
     const d = new Date(iso);
     if (Number.isNaN(d.getTime())) return iso;
-    return d.toLocaleDateString("en-GB", { weekday: "short", day: "numeric", month: "long" });
+    const dateOnly = /^\d{4}-\d{2}-\d{2}$/.test(iso);
+    return d.toLocaleDateString("en-GB", {
+      weekday: "short",
+      day: "numeric",
+      month: "long",
+      ...(dateOnly ? { timeZone: "UTC" } : {}),
+    });
   } catch {
     return iso;
   }
