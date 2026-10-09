@@ -4,9 +4,11 @@
  * existing least-busy-free-guide auto-assignment.
  */
 import { createServerFn } from "@tanstack/react-start";
+import { getRequestHeader } from "@tanstack/react-start/server";
 import { z } from "zod";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 import { signatureTours } from "@/data/signatureTours";
+import { isCanonicalPaymentHost } from "@/lib/payments-environment";
 
 const input = z.object({
   tourId: z.string().trim().max(120).optional().nullable(),
