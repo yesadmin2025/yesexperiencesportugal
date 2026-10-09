@@ -148,9 +148,35 @@ function NewBookingPage() {
           disabled={busy}
           className="min-h-12 w-full rounded-full bg-[color:var(--teal)] px-6 text-[12px] uppercase tracking-[0.16em] text-[color:var(--ivory)] disabled:opacity-60 sm:w-auto"
         >
-          {busy ? "Saving…" : "Save booking"}
+          {busy ? "Saving…" : f.payment === "link" ? "Save booking & issue link" : "Save booking"}
         </button>
       </form>
+
+      {paymentLink ? (
+        <section className="mt-8 border border-[color:var(--gold)] bg-[color:var(--ivory)] p-5">
+          <h2 className="font-[family-name:var(--font-editorial)] text-xl text-[color:var(--charcoal)]">Payment link ready</h2>
+          <p className="mt-2 text-sm text-[color:var(--charcoal-soft)]">
+            Send this link to the guest. When they pay, the booking is marked paid automatically and the confirmation emails go out.
+          </p>
+          <div className="mt-3 flex flex-col gap-2 sm:flex-row">
+            <input readOnly value={paymentLink.url} onFocus={(e) => e.target.select()} className={`${field} mt-0 flex-1`} />
+            <button
+              type="button"
+              onClick={() => { void navigator.clipboard.writeText(paymentLink.url).then(() => toast.success("Link copied.")); }}
+              className="min-h-11 rounded-full border border-[color:var(--teal)] px-5 text-[12px] uppercase tracking-[0.16em] text-[color:var(--teal)]"
+            >
+              Copy link
+            </button>
+          </div>
+          <button
+            type="button"
+            onClick={() => void navigate({ to: "/admin/bookings/$id", params: { id: paymentLink.bookingId } })}
+            className="mt-4 min-h-11 rounded-full bg-[color:var(--teal)] px-6 text-[12px] uppercase tracking-[0.16em] text-[color:var(--ivory)]"
+          >
+            Open booking
+          </button>
+        </section>
+      ) : null}
     </AdminShell>
   );
 }
