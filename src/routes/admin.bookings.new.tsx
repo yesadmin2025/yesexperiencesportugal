@@ -4,7 +4,7 @@ import { useState } from "react";
 import { toast } from "sonner";
 import { AdminShell } from "@/components/admin/AdminShell";
 import { signatureTours } from "@/data/signatureTours";
-import { createManualBooking } from "@/lib/manualBooking.functions";
+import { createBookingPaymentLink, createManualBooking } from "@/lib/manualBooking.functions";
 
 export const Route = createFileRoute("/admin/bookings/new")({
   head: () => ({
@@ -27,11 +27,14 @@ const label = "block text-[11px] uppercase tracking-[0.18em] text-[color:var(--c
 
 function NewBookingPage() {
   const create = useServerFn(createManualBooking);
+  const issueLink = useServerFn(createBookingPaymentLink);
   const navigate = useNavigate();
   const [busy, setBusy] = useState(false);
+  const [paymentLink, setPaymentLink] = useState<{ url: string; bookingId: string } | null>(null);
   const [f, setF] = useState({
     tourId: "", tourTitle: "", date: "", startTime: "", pickup: "", guests: "2", language: "English",
-    name: "", email: "", phone: "", notes: "", channel: "DIRECT", reference: "", amount: "", paid: true,
+    name: "", email: "", phone: "", notes: "", channel: "DIRECT", reference: "", amount: "",
+    payment: "paid" as "paid" | "link" | "later",
   });
   const set = (k: keyof typeof f) => (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) =>
     setF({ ...f, [k]: e.target.type === "checkbox" ? (e.target as HTMLInputElement).checked : e.target.value });
@@ -56,11 +59,22 @@ function NewBookingPage() {
           channel: f.channel as "DIRECT",
           reference: f.reference || null,
           amountEuros: Number(f.amount || 0),
-          paid: f.paid,
+          paid: f.payment === "paid",
         },
       });
-      toast.success(res.assignedGuideId ? "Booking saved and a guide was assigned." : "Booking saved. No guide was free — assign one on the booking.");
-      void navigate({ to: "/admin/bookings/$id", params: { id: res.id } });
+      if (f.payment === "link") {
+        try {
+          const link = await issueLink({ data: { bookingId: res.id } });
+          setPaymentLink({ url: link.url, bookingId: res.id });
+          toast.success("Booking saved and payment link issued.");
+        } catch (linkErr) {
+          toast.error(linkErr instanceof Error ? linkErr.message : "Booking saved, but the payment link failed.");
+          void navigate({ to: "/admin/bookings/$id", params: { id: res.id } });
+        }
+      } else {
+        toast.success(res.assignedGuideId ? "Booking saved and a guide was assigned." : "Booking saved. No guide was free — assign one on the booking.");
+        void navigate({ to: "/admin/bookings/$id", params: { id: res.id } });
+      }
     } catch (err) {
       toast.error(err instanceof Error ? err.message : "Could not save the booking.");
     } finally {
@@ -119,8 +133,13 @@ function NewBookingPage() {
           </label>
           <label className={label}>Booking / voucher reference<input value={f.reference} onChange={set("reference")} className={field} /></label>
           <label className={label}>Amount (€)<input type="number" min={0} step="0.01" value={f.amount} onChange={set("amount")} className={field} /></label>
-          <label className="flex min-h-11 items-center gap-2 self-end text-sm text-[color:var(--charcoal)]">
-            <input type="checkbox" checked={f.paid} onChange={set("paid")} className="h-5 w-5" /> Already paid
+          <label className={label}>
+            Payment
+            <select value={f.payment} onChange={set("payment")} className={field}>
+              <option value="paid">Already paid</option>
+              <option value="link">Issue Stripe payment link</option>
+              <option value="later">Pay later (no link)</option>
+            </select>
           </label>
         </fieldset>
 
@@ -129,9 +148,35 @@ function NewBookingPage() {
           disabled={busy}
           className="min-h-12 w-full rounded-full bg-[color:var(--teal)] px-6 text-[12px] uppercase tracking-[0.16em] text-[color:var(--ivory)] disabled:opacity-60 sm:w-auto"
         >
-          {busy ? "Saving…" : "Save booking"}
+          {busy ? "Saving…" : f.payment === "link" ? "Save booking & issue link" : "Save booking"}
         </button>
       </form>
+
+      {paymentLink ? (
+        <section className="mt-8 border border-[color:var(--gold)] bg-[color:var(--ivory)] p-5">
+          <h2 className="font-[family-name:var(--font-editorial)] text-xl text-[color:var(--charcoal)]">Payment link ready</h2>
+          <p className="mt-2 text-sm text-[color:var(--charcoal-soft)]">
+            Send this link to the guest. When they pay, the booking is marked paid automatically and the confirmation emails go out.
+          </p>
+          <div className="mt-3 flex flex-col gap-2 sm:flex-row">
+            <input readOnly value={paymentLink.url} onFocus={(e) => e.target.select()} className={`${field} mt-0 flex-1`} />
+            <button
+              type="button"
+              onClick={() => { void navigator.clipboard.writeText(paymentLink.url).then(() => toast.success("Link copied.")); }}
+              className="min-h-11 rounded-full border border-[color:var(--teal)] px-5 text-[12px] uppercase tracking-[0.16em] text-[color:var(--teal)]"
+            >
+              Copy link
+            </button>
+          </div>
+          <button
+            type="button"
+            onClick={() => void navigate({ to: "/admin/bookings/$id", params: { id: paymentLink.bookingId } })}
+            className="mt-4 min-h-11 rounded-full bg-[color:var(--teal)] px-6 text-[12px] uppercase tracking-[0.16em] text-[color:var(--ivory)]"
+          >
+            Open booking
+          </button>
+        </section>
+      ) : null}
     </AdminShell>
   );
 }
