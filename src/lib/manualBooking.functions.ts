@@ -108,7 +108,7 @@ export const createBookingPaymentLink = createServerFn({ method: "POST" })
     const { data: booking, error: bErr } = await supabaseAdmin
       .from("bookings")
       .select(
-        "id, status, tour_title, preferred_date, guests, customer_email, amount_total, currency, source_tour_id, stripe_session_id",
+        "id, status, tour_title, preferred_date, start_time, guests, customer_name, customer_email, pickup_location, amount_total, currency, source_tour_id, stripe_session_id",
       )
       .eq("id", data.bookingId)
       .maybeSingle();
@@ -160,6 +160,10 @@ export const createBookingPaymentLink = createServerFn({ method: "POST" })
     params.set("metadata[tour_id]", booking.source_tour_id ?? "");
     params.set("metadata[guests]", String(booking.guests ?? 1));
     params.set("metadata[date_exact]", booking.preferred_date ?? "");
+    params.set("metadata[created_via]", "admin_manual");
+    params.set("metadata[tour_title]", title);
+    if (booking.pickup_location) params.set("metadata[pickup]", booking.pickup_location.slice(0, 450));
+    if (booking.customer_name) params.set("metadata[customer_name]", booking.customer_name.slice(0, 200));
 
     const response = await fetch("https://api.stripe.com/v1/checkout/sessions", {
       method: "POST",
@@ -189,6 +193,30 @@ export const createBookingPaymentLink = createServerFn({ method: "POST" })
       .update({ stripe_session_id: session.id })
       .eq("id", booking.id);
     if (upErr) throw new Error(upErr.message);
+
+    // Draft snapshot so the payment webhook freezes it: the confirmation
+    // email, /itinerary and guest portal then carry the booking's own details.
+    const { error: snapErr } = await supabaseAdmin.from("booking_snapshots").upsert(
+      {
+        stripe_session_id: session.id,
+        payload: {
+          tourId: booking.source_tour_id ?? null,
+          tourTitle: title,
+          experienceName: title,
+          customerName: booking.customer_name ?? null,
+          dateExact: booking.preferred_date ?? null,
+          startTime: booking.start_time ?? null,
+          pickup: booking.pickup_location ?? null,
+          composition: { guests: booking.guests ?? 1 },
+          pricing: { totalEur: Math.round(amountCents) / 100 },
+          itinerary: [],
+          includedItems: [],
+          source: "admin_manual",
+        },
+      },
+      { onConflict: "stripe_session_id" },
+    );
+    if (snapErr) throw new Error(snapErr.message);
 
     return { url: session.url, sessionId: session.id };
   });
