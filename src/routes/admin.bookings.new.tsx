@@ -133,8 +133,13 @@ function NewBookingPage() {
           </label>
           <label className={label}>Booking / voucher reference<input value={f.reference} onChange={set("reference")} className={field} /></label>
           <label className={label}>Amount (€)<input type="number" min={0} step="0.01" value={f.amount} onChange={set("amount")} className={field} /></label>
-          <label className="flex min-h-11 items-center gap-2 self-end text-sm text-[color:var(--charcoal)]">
-            <input type="checkbox" checked={f.paid} onChange={set("paid")} className="h-5 w-5" /> Already paid
+          <label className={label}>
+            Payment
+            <select value={f.payment} onChange={set("payment")} className={field}>
+              <option value="paid">Already paid</option>
+              <option value="link">Issue Stripe payment link</option>
+              <option value="later">Pay later (no link)</option>
+            </select>
           </label>
         </fieldset>
 
