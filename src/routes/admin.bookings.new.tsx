@@ -27,11 +27,14 @@ const label = "block text-[11px] uppercase tracking-[0.18em] text-[color:var(--c
 
 function NewBookingPage() {
   const create = useServerFn(createManualBooking);
+  const issueLink = useServerFn(createBookingPaymentLink);
   const navigate = useNavigate();
   const [busy, setBusy] = useState(false);
+  const [paymentLink, setPaymentLink] = useState<{ url: string; bookingId: string } | null>(null);
   const [f, setF] = useState({
     tourId: "", tourTitle: "", date: "", startTime: "", pickup: "", guests: "2", language: "English",
-    name: "", email: "", phone: "", notes: "", channel: "DIRECT", reference: "", amount: "", paid: true,
+    name: "", email: "", phone: "", notes: "", channel: "DIRECT", reference: "", amount: "",
+    payment: "paid" as "paid" | "link" | "later",
   });
   const set = (k: keyof typeof f) => (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) =>
     setF({ ...f, [k]: e.target.type === "checkbox" ? (e.target as HTMLInputElement).checked : e.target.value });
