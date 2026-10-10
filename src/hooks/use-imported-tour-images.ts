@@ -3,6 +3,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { signatureTours } from "@/data/signatureTours";
 import { useImageQuality, type ImageQuality } from "@/hooks/use-image-quality";
 import { bundledTourCardImage } from "@/content/tour-card-images";
+import { useHydrated } from "@/hooks/use-hydrated";
 
 type Row = { id: string; image_url: string | null; source_url: string };
 
@@ -48,6 +49,7 @@ const SIZES: Record<CardSize, string> = {
 export function useImportedTourImages() {
   const [rows, setRows] = useState<Row[]>([]);
   const { quality } = useImageQuality();
+  const hydrated = useHydrated();
 
   useEffect(() => {
     let cancelled = false;
@@ -98,6 +100,10 @@ export function useImportedTourImages() {
       size: CardSize = "md",
     ): { src: string; srcSet?: string; sizes?: string } => {
       const bundled = bundledTourCardImage(tour.img, SIZES[size]);
+      // Server and browser builds can name the generated WebP variants
+      // differently, so the srcset is only emitted after hydration; the
+      // server HTML keeps the plain bundled image, which always exists.
+      if (!hydrated) return { src: tour.img };
       // Signature cards must prefer our durable, build-time assets. Imported
       // marketplace URLs can expire and are only a fallback for tours without
       // a bundled image.
@@ -114,7 +120,7 @@ export function useImportedTourImages() {
         sizes: SIZES[size],
       };
     };
-  }, [byUrl, quality]);
+  }, [byUrl, quality, hydrated]);
 
   return { resolve, resolveImg, hasLive: rows.length > 0, quality };
 }
