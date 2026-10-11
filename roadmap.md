@@ -144,4 +144,6 @@
 # Studio guest details — October 11
 - [x] Move closed day summary below client fields and verify name above mobile fixed bar (393×706)
 - [x] Keep chosen tour language on checkout return; paid webhook fills bookings.language from purchase snapshot without overwriting ops edits
-- [x] Verified actual sandbox Studio snapshot pt and local signed webhook database read-back pt; 36 tests + mobile checkout pass; no payment/publication. Admin UI read unavailable without owner session.
+- [x] Verified actual sandbox Studio snapshot pt and local signed webhook database read-back pt; 36 tests + mobile checkout pass. Admin UI read unavailable without owner session.
+- [x] Published on request and verified live build: served Studio chunk summary has no open attribute (closed by default) and sits after the client fields; quiet language marker present
+- [ ] Read the stored tour language back in the admin booking view (blocked: needs an owner admin session)
