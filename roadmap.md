@@ -142,6 +142,6 @@
 - [x] Brand spelling: no 'YES!' anywhere public (owner correction)
 
 # Studio guest details — October 11
-- [ ] Move closed day summary below client fields and verify name above mobile fixed bar
-- [ ] Forward chosen tour language into checkout and booking record, with regression tests
-- [ ] Verify actual language storage and mobile checkout without real payment; do not publish
+- [x] Move closed day summary below client fields and verify name above mobile fixed bar (393×706)
+- [x] Keep chosen tour language on checkout return; paid webhook fills bookings.language from purchase snapshot without overwriting ops edits
+- [x] Verified actual sandbox Studio snapshot pt and local signed webhook database read-back pt; 36 tests + mobile checkout pass; no payment/publication. Admin UI read unavailable without owner session.
