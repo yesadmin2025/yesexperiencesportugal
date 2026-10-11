@@ -574,25 +574,50 @@ export function GuestDetailsStep({
               testId="studio-v3-pickup-later"
             />
           </GuestField>
-          <GuestField label="Preferred tour language" required as="div">
-            <div className="grid grid-cols-2 border border-[color:var(--border)]">
-              {(["en", "pt"] as const).map((l) => (
+          <GuestField label="Tour language" as="div">
+            {!langEditing ? (
+              <div className="flex min-h-[44px] items-center justify-between gap-3">
+                <span className="text-[13.5px] text-[color:var(--charcoal)]">
+                  {language === "en" ? "English" : "Portuguese"}
+                </span>
                 <button
-                  key={l}
                   type="button"
-                  onClick={() => setLanguage(l)}
-                  aria-pressed={language === l}
-                  className={[
-                    "min-h-[44px] py-2.5 text-xs uppercase tracking-[0.18em] transition-colors",
-                    language === l
-                      ? "bg-[color:var(--charcoal)] text-[color:var(--ivory)]"
-                      : "text-[color:var(--charcoal-soft)] hover:text-[color:var(--charcoal)]",
-                  ].join(" ")}
+                  onClick={() => setLangEditing(true)}
+                  data-testid="studio-v3-language-change"
+                  className="min-h-[44px] px-2 text-[12px] uppercase tracking-[0.18em] font-semibold text-[color:var(--teal)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)]/45"
                 >
-                  {l}
+                  Change
                 </button>
-              ))}
-            </div>
+              </div>
+            ) : (
+              <div
+                role="group"
+                aria-label="Tour language"
+                data-testid="studio-v3-language-options"
+                className="grid grid-cols-2 border border-[color:var(--border)]"
+              >
+                {(["en", "pt"] as const).map((l) => (
+                  <button
+                    key={l}
+                    type="button"
+                    onClick={() => {
+                      setLanguage(l);
+                      setLangEditing(false);
+                    }}
+                    aria-pressed={language === l}
+                    data-testid={`studio-v3-language-${l}`}
+                    className={[
+                      "min-h-[44px] py-2.5 text-xs uppercase tracking-[0.18em] transition-colors",
+                      language === l
+                        ? "bg-[color:var(--charcoal)] text-[color:var(--ivory)]"
+                        : "text-[color:var(--charcoal-soft)] hover:text-[color:var(--charcoal)]",
+                    ].join(" ")}
+                  >
+                    {l === "en" ? "English" : "Portuguese"}
+                  </button>
+                ))}
+              </div>
+            )}
             <p className="mt-1.5 text-[12.5px] leading-snug text-[color:var(--charcoal-soft)]">
               Spanish available on request — subject to guide availability.
             </p>
