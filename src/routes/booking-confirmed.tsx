@@ -18,6 +18,7 @@ import { SectionTitle } from "@/components/ui/SectionTitle";
 import { findTour } from "@/data/signatureTours";
 import { gaPurchase, buildTourItem } from "@/lib/analytics-ga4";
 import { trackEvent } from "@/lib/analytics-events";
+import { trackStep } from "@/lib/studio-v3-funnel";
 import { whatsappUrl } from "@/config/business-nap";
 
 interface Search {
@@ -152,7 +153,20 @@ function BookingConfirmedPage() {
       items: [item],
       currency: state.data.currency ? state.data.currency.toUpperCase() : "EUR",
     });
-    const isStudio = (tour ?? "").startsWith("studio");
+    // Studio checkouts return with the resolved Signature tour id, so the
+    // booking type from the verified Stripe session is the reliable signal.
+    const isStudio =
+      state.data.metadata?.booking_type === "builder" || (tour ?? "").startsWith("studio");
+    if (isStudio) {
+      // Terminal Studio funnel step: same session id (sessionStorage survives
+      // the same-tab Stripe return), so paid sessions count as completed.
+      trackStep({
+        stepNumber: 0,
+        stepKey: "checkoutSummary",
+        event: "secure_confirm",
+        value: { value_eur: valueEur },
+      });
+    }
     trackEvent(isStudio ? "studio_checkout_completed" : "checkout_completed", {
       experience_id: tour ?? null,
       experience_type: isStudio ? "studio" : "signature",
