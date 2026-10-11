@@ -164,7 +164,14 @@ function BookingConfirmedPage() {
         stepNumber: 0,
         stepKey: "checkoutSummary",
         event: "secure_confirm",
-        value: { value_eur: valueEur },
+        // Same experience_id as the GA call below, so the 800ms dedupe keeps
+        // exactly one GA "studio_checkout_completed" hit.
+        value: {
+          experience_id: tour ?? null,
+          experience_type: "studio",
+          value: valueEur,
+          currency: state.data.currency ? state.data.currency.toUpperCase() : "EUR",
+        },
       });
     }
     trackEvent(isStudio ? "studio_checkout_completed" : "checkout_completed", {
