@@ -332,22 +332,23 @@ export function GuestDetailsStep({
               className="cursor-pointer min-h-[44px] flex items-center justify-between gap-3 text-[12px] uppercase tracking-[0.22em] font-semibold"
               style={{ color: "var(--teal)" }}
             >
-              <span className="min-w-0">
-                What your day includes
+              <span className="min-w-0 truncate">What your day includes</span>
+              <span className="flex shrink-0 items-center gap-2">
                 <span
-                  className="ml-2 font-medium normal-case tracking-[0.06em]"
+                  className="text-[11.5px] font-medium normal-case tracking-[0.06em]"
                   style={{ color: "color-mix(in oklab, var(--charcoal) 52%, transparent)" }}
                 >
-                  · {daySummary.stops.length} {daySummary.stops.length === 1 ? "stop" : "stops"}
+                  {daySummary.stops.length} {daySummary.stops.length === 1 ? "stop" : "stops"}
                 </span>
+                <ChevronDown
+                  size={14}
+                  aria-hidden
+                  className="shrink-0 transition-transform duration-200 motion-reduce:transition-none group-open:rotate-180"
+                  style={{ color: "var(--gold)" }}
+                />
               </span>
-              <ChevronDown
-                size={14}
-                aria-hidden
-                className="shrink-0 transition-transform duration-200 motion-reduce:transition-none group-open:rotate-180"
-                style={{ color: "var(--gold)" }}
-              />
             </summary>
+
             <ol className="mt-1 space-y-2.5">
               {daySummary.stops.map((s, i) => (
                 <li key={`${s.label}-${i}`} className="flex gap-3">
