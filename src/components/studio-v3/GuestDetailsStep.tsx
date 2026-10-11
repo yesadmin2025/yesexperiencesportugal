@@ -17,7 +17,7 @@
  */
 
 import { useEffect, useRef, useState } from "react";
-import { ArrowLeft, Lock } from "lucide-react";
+import { ArrowLeft, ChevronDown, Lock } from "lucide-react";
 import { Eyebrow } from "@/components/ui/Eyebrow";
 import { CtaButton } from "@/components/ui/CtaButton";
 import { BookingCtaSkeleton } from "@/components/ui/BookingCtaSkeleton";
@@ -132,6 +132,9 @@ export function GuestDetailsStep({
   // Secondary by default: only surfaced when the guest says they are booking
   // for someone else. Payload contract (mainContact) is unchanged.
   const [showMainContact, setShowMainContact] = useState(false);
+  // Tour language is never a decision the traveler has to make — English is
+  // already chosen. The alternative stays one tap away, out of the form's way.
+  const [langEditing, setLangEditing] = useState(false);
   const [dietary, setDietary] = useState("");
   const [mobility, setMobility] = useState("");
   const [children, setChildren] = useState("");
@@ -318,20 +321,37 @@ export function GuestDetailsStep({
         ) : null}
         {daySummary && daySummary.stops.length > 0 ? (
           <details
-            open
             data-testid="studio-v3-guest-day-summary"
-            className="mt-5 rounded-[6px] border px-4 py-3"
+            className="group mt-5 rounded-[6px] border px-4 py-2"
             style={{
               background: "color-mix(in oklab, var(--sand) 45%, var(--ivory))",
               borderColor: "color-mix(in oklab, var(--charcoal) 10%, transparent)",
             }}
           >
-            <summary
-              className="cursor-pointer min-h-[44px] flex items-center text-[12px] uppercase tracking-[0.22em] font-semibold"
-              style={{ color: "var(--teal)" }}
-            >
-              What your day includes
+            <summary className="cursor-pointer min-h-[44px] flex items-center justify-between gap-3">
+              <span
+                className="min-w-0 truncate text-[13.5px] font-medium"
+                style={{ color: "var(--charcoal)" }}
+              >
+                What your day includes
+              </span>
+              <span className="flex shrink-0 items-center gap-2">
+                <span
+                  className="text-[12px] uppercase tracking-[0.2em] font-medium"
+                  style={{ color: "color-mix(in oklab, var(--charcoal) 52%, transparent)" }}
+                >
+                  {daySummary.stops.length} {daySummary.stops.length === 1 ? "stop" : "stops"}
+                </span>
+                <ChevronDown
+                  size={14}
+                  aria-hidden
+                  className="shrink-0 transition-transform duration-200 motion-reduce:transition-none group-open:rotate-180"
+                  style={{ color: "var(--gold)" }}
+                />
+              </span>
             </summary>
+
+
             <ol className="mt-1 space-y-2.5">
               {daySummary.stops.map((s, i) => (
                 <li key={`${s.label}-${i}`} className="flex gap-3">
@@ -373,12 +393,6 @@ export function GuestDetailsStep({
             ) : null}
           </details>
         ) : null}
-        <p
-          className="mt-3 text-[12px]"
-          style={{ color: "color-mix(in oklab, var(--charcoal) 62%, transparent)" }}
-        >
-          Fields marked * are required. Everything else is optional.
-        </p>
       </header>
 
       <form onSubmit={handleSubmit} noValidate className="mt-8 space-y-7">
@@ -574,25 +588,50 @@ export function GuestDetailsStep({
               testId="studio-v3-pickup-later"
             />
           </GuestField>
-          <GuestField label="Preferred tour language" required as="div">
-            <div className="grid grid-cols-2 border border-[color:var(--border)]">
-              {(["en", "pt"] as const).map((l) => (
+          <GuestField label="Tour language" as="div">
+            {!langEditing ? (
+              <div className="flex min-h-[44px] items-center justify-between gap-3">
+                <span className="text-[13.5px] text-[color:var(--charcoal)]">
+                  {language === "en" ? "English" : "Portuguese"}
+                </span>
                 <button
-                  key={l}
                   type="button"
-                  onClick={() => setLanguage(l)}
-                  aria-pressed={language === l}
-                  className={[
-                    "min-h-[44px] py-2.5 text-xs uppercase tracking-[0.18em] transition-colors",
-                    language === l
-                      ? "bg-[color:var(--charcoal)] text-[color:var(--ivory)]"
-                      : "text-[color:var(--charcoal-soft)] hover:text-[color:var(--charcoal)]",
-                  ].join(" ")}
+                  onClick={() => setLangEditing(true)}
+                  data-testid="studio-v3-language-change"
+                  className="min-h-[44px] px-2 text-[12px] uppercase tracking-[0.18em] font-semibold text-[color:var(--teal)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)]/45"
                 >
-                  {l}
+                  Change
                 </button>
-              ))}
-            </div>
+              </div>
+            ) : (
+              <div
+                role="group"
+                aria-label="Tour language"
+                data-testid="studio-v3-language-options"
+                className="grid grid-cols-2 border border-[color:var(--border)]"
+              >
+                {(["en", "pt"] as const).map((l) => (
+                  <button
+                    key={l}
+                    type="button"
+                    onClick={() => {
+                      setLanguage(l);
+                      setLangEditing(false);
+                    }}
+                    aria-pressed={language === l}
+                    data-testid={`studio-v3-language-${l}`}
+                    className={[
+                      "min-h-[44px] py-2.5 text-xs uppercase tracking-[0.18em] transition-colors",
+                      language === l
+                        ? "bg-[color:var(--charcoal)] text-[color:var(--ivory)]"
+                        : "text-[color:var(--charcoal-soft)] hover:text-[color:var(--charcoal)]",
+                    ].join(" ")}
+                  >
+                    {l === "en" ? "English" : "Portuguese"}
+                  </button>
+                ))}
+              </div>
+            )}
             <p className="mt-1.5 text-[12.5px] leading-snug text-[color:var(--charcoal-soft)]">
               Spanish available on request — subject to guide availability.
             </p>
@@ -648,7 +687,15 @@ export function GuestDetailsStep({
           </GuestField>
         </CollapsibleFieldGroup>
 
+        <p
+          className="mt-6 text-[12px]"
+          style={{ color: "color-mix(in oklab, var(--charcoal) 62%, transparent)" }}
+        >
+          Fields marked * are required. Everything else is optional.
+        </p>
+
         {/* Sticky CTA — sits above the virtual keyboard via safe-area padding
+
             on the wrapper. */}
         <div
           className="fixed inset-x-0 bottom-0 z-40 border-t border-[color:var(--border)] bg-[color:var(--ivory)] px-5 pt-3 pb-[calc(env(safe-area-inset-bottom)+0.75rem)]"
