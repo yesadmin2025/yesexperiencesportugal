@@ -337,7 +337,7 @@ export function GuestDetailsStep({
               </span>
               <span className="flex shrink-0 items-center gap-2">
                 <span
-                  className="text-[11px] uppercase tracking-[0.2em] font-medium"
+                  className="text-[12px] uppercase tracking-[0.2em] font-medium"
                   style={{ color: "color-mix(in oklab, var(--charcoal) 52%, transparent)" }}
                 >
                   {daySummary.stops.length} {daySummary.stops.length === 1 ? "stop" : "stops"}
