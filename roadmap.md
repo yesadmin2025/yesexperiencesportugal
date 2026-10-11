@@ -140,3 +140,8 @@
 - [ ] Tests: client == server == Stripe; listed Tailor scenarios
 - [ ] Owner enters missing prices before publish (blocked on Nídia)
 - [x] Brand spelling: no 'YES!' anywhere public (owner correction)
+
+# Studio guest details — October 11
+- [ ] Move closed day summary below client fields and verify name above mobile fixed bar
+- [ ] Forward chosen tour language into checkout and booking record, with regression tests
+- [ ] Verify actual language storage and mobile checkout without real payment; do not publish

@@ -319,80 +319,6 @@ export function GuestDetailsStep({
             {journeyTitle}
           </p>
         ) : null}
-        {daySummary && daySummary.stops.length > 0 ? (
-          <details
-            data-testid="studio-v3-guest-day-summary"
-            className="group mt-5 rounded-[6px] border px-4 py-2"
-            style={{
-              background: "color-mix(in oklab, var(--sand) 45%, var(--ivory))",
-              borderColor: "color-mix(in oklab, var(--charcoal) 10%, transparent)",
-            }}
-          >
-            <summary className="cursor-pointer min-h-[44px] flex items-center justify-between gap-3">
-              <span
-                className="min-w-0 truncate text-[13.5px] font-medium"
-                style={{ color: "var(--charcoal)" }}
-              >
-                What your day includes
-              </span>
-              <span className="flex shrink-0 items-center gap-2">
-                <span
-                  className="text-[12px] uppercase tracking-[0.2em] font-medium"
-                  style={{ color: "color-mix(in oklab, var(--charcoal) 52%, transparent)" }}
-                >
-                  {daySummary.stops.length} {daySummary.stops.length === 1 ? "stop" : "stops"}
-                </span>
-                <ChevronDown
-                  size={14}
-                  aria-hidden
-                  className="shrink-0 transition-transform duration-200 motion-reduce:transition-none group-open:rotate-180"
-                  style={{ color: "var(--gold)" }}
-                />
-              </span>
-            </summary>
-
-
-            <ol className="mt-1 space-y-2.5">
-              {daySummary.stops.map((s, i) => (
-                <li key={`${s.label}-${i}`} className="flex gap-3">
-                  <span
-                    className="mt-0.5 text-[12px] font-semibold tabular-nums"
-                    style={{ color: "var(--gold)" }}
-                  >
-                    {String(i + 1).padStart(2, "0")}
-                  </span>
-                  <div className="min-w-0">
-                    <p className="text-[14px] font-medium" style={{ color: "var(--charcoal)" }}>
-                      {s.label}
-                    </p>
-                    {s.story ? (
-                      <p
-                        className="mt-0.5 text-[12.5px] leading-snug"
-                        style={{ color: "color-mix(in oklab, var(--charcoal) 70%, transparent)" }}
-                      >
-                        {s.story}
-                      </p>
-                    ) : null}
-                  </div>
-                </li>
-              ))}
-            </ol>
-            {daySummary.included && daySummary.included.length > 0 ? (
-              <p
-                className="mt-3 pt-3 border-t text-[12.5px] leading-snug"
-                style={{
-                  borderColor: "color-mix(in oklab, var(--charcoal) 10%, transparent)",
-                  color: "color-mix(in oklab, var(--charcoal) 75%, transparent)",
-                }}
-              >
-                <span className="font-medium" style={{ color: "var(--charcoal)" }}>
-                  Included:{" "}
-                </span>
-                {daySummary.included.join(" · ")}
-              </p>
-            ) : null}
-          </details>
-        ) : null}
       </header>
 
       <form onSubmit={handleSubmit} noValidate className="mt-8 space-y-7">
@@ -686,6 +612,81 @@ export function GuestDetailsStep({
             </p>
           </GuestField>
         </CollapsibleFieldGroup>
+
+        {daySummary && daySummary.stops.length > 0 ? (
+          <details
+            data-testid="studio-v3-guest-day-summary"
+            className="group mt-5 rounded-[6px] border px-4 py-2"
+            style={{
+              background: "color-mix(in oklab, var(--sand) 45%, var(--ivory))",
+              borderColor: "color-mix(in oklab, var(--charcoal) 10%, transparent)",
+            }}
+          >
+            <summary className="cursor-pointer min-h-[44px] flex items-center justify-between gap-3">
+              <span
+                className="min-w-0 truncate text-[13.5px] font-medium"
+                style={{ color: "var(--charcoal)" }}
+              >
+                What your day includes
+              </span>
+              <span className="flex shrink-0 items-center gap-2">
+                <span
+                  className="text-[12px] uppercase tracking-[0.2em] font-medium"
+                  style={{ color: "color-mix(in oklab, var(--charcoal) 52%, transparent)" }}
+                >
+                  {daySummary.stops.length} {daySummary.stops.length === 1 ? "stop" : "stops"}
+                </span>
+                <ChevronDown
+                  size={14}
+                  aria-hidden
+                  className="shrink-0 transition-transform duration-200 motion-reduce:transition-none group-open:rotate-180"
+                  style={{ color: "var(--gold)" }}
+                />
+              </span>
+            </summary>
+
+
+            <ol className="mt-1 space-y-2.5">
+              {daySummary.stops.map((s, i) => (
+                <li key={`${s.label}-${i}`} className="flex gap-3">
+                  <span
+                    className="mt-0.5 text-[12px] font-semibold tabular-nums"
+                    style={{ color: "var(--gold)" }}
+                  >
+                    {String(i + 1).padStart(2, "0")}
+                  </span>
+                  <div className="min-w-0">
+                    <p className="text-[14px] font-medium" style={{ color: "var(--charcoal)" }}>
+                      {s.label}
+                    </p>
+                    {s.story ? (
+                      <p
+                        className="mt-0.5 text-[12.5px] leading-snug"
+                        style={{ color: "color-mix(in oklab, var(--charcoal) 70%, transparent)" }}
+                      >
+                        {s.story}
+                      </p>
+                    ) : null}
+                  </div>
+                </li>
+              ))}
+            </ol>
+            {daySummary.included && daySummary.included.length > 0 ? (
+              <p
+                className="mt-3 pt-3 border-t text-[12.5px] leading-snug"
+                style={{
+                  borderColor: "color-mix(in oklab, var(--charcoal) 10%, transparent)",
+                  color: "color-mix(in oklab, var(--charcoal) 75%, transparent)",
+                }}
+              >
+                <span className="font-medium" style={{ color: "var(--charcoal)" }}>
+                  Included:{" "}
+                </span>
+                {daySummary.included.join(" · ")}
+              </p>
+            ) : null}
+          </details>
+        ) : null}
 
         <p
           className="mt-6 text-[12px]"
