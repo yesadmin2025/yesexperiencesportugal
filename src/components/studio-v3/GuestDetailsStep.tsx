@@ -329,7 +329,7 @@ export function GuestDetailsStep({
             }}
           >
             <summary
-              className="cursor-pointer min-h-[44px] flex items-center justify-between gap-3 text-[12px] uppercase tracking-[0.22em] font-semibold"
+              className="cursor-pointer min-h-[44px] flex items-center justify-between gap-3 text-[11px] uppercase tracking-[0.22em] font-semibold"
               style={{ color: "var(--teal)" }}
             >
               <span className="min-w-0 truncate">What your day includes</span>
