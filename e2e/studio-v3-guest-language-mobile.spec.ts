@@ -15,6 +15,7 @@ test("client fields precede day summary and Portuguese reaches the purchase snap
   expect(barBox).not.toBeNull();
   if (!nameBox || !barBox) throw new Error("Missing form or fixed payment bar");
   expect(nameBox.y + nameBox.height).toBeLessThanOrEqual(barBox.y);
+  expect(nameBox.y).toBeGreaterThanOrEqual(0);
   await page.screenshot({ path: "/tmp/browser/studio-language-arrival.png" });
   expect(await page.getByTestId("studio-v3-guest-day-summary").getAttribute("open")).toBeNull();
   await fillGuestDetails(page, { fullName: "QA Studio Language", email: "qa+studio-language@example.com" });
@@ -39,11 +40,4 @@ test("client fields precede day summary and Portuguese reaches the purchase snap
   // Print only the non-secret session identifier, never the client secret.
   const session = String(payload.clientSecret ?? "").split("_secret_")[0];
   console.log("QA sandbox checkout session:", session);
-  await page.waitForTimeout(4000);
-  for (const frame of page.frames()) {
-    if (frame.url().includes("stripe.com")) {
-      console.log("Stripe input labels", await frame.locator("input").evaluateAll(nodes => nodes.map(n => ({ name: n.getAttribute("name"), placeholder: n.getAttribute("placeholder"), aria: n.getAttribute("aria-label") }))));
-      console.log("Stripe buttons", await frame.getByRole("button").allTextContents());
-    }
-  }
 });
