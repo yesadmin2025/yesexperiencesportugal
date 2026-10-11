@@ -17,7 +17,7 @@
  */
 
 import { useEffect, useRef, useState } from "react";
-import { ArrowLeft, Lock } from "lucide-react";
+import { ArrowLeft, ChevronDown, Lock } from "lucide-react";
 import { Eyebrow } from "@/components/ui/Eyebrow";
 import { CtaButton } from "@/components/ui/CtaButton";
 import { BookingCtaSkeleton } from "@/components/ui/BookingCtaSkeleton";
@@ -132,6 +132,9 @@ export function GuestDetailsStep({
   // Secondary by default: only surfaced when the guest says they are booking
   // for someone else. Payload contract (mainContact) is unchanged.
   const [showMainContact, setShowMainContact] = useState(false);
+  // Tour language is never a decision the traveler has to make — English is
+  // already chosen. The alternative stays one tap away, out of the form's way.
+  const [langEditing, setLangEditing] = useState(false);
   const [dietary, setDietary] = useState("");
   const [mobility, setMobility] = useState("");
   const [children, setChildren] = useState("");
@@ -318,19 +321,32 @@ export function GuestDetailsStep({
         ) : null}
         {daySummary && daySummary.stops.length > 0 ? (
           <details
-            open
             data-testid="studio-v3-guest-day-summary"
-            className="mt-5 rounded-[6px] border px-4 py-3"
+            className="group mt-5 rounded-[6px] border px-4 py-2"
             style={{
               background: "color-mix(in oklab, var(--sand) 45%, var(--ivory))",
               borderColor: "color-mix(in oklab, var(--charcoal) 10%, transparent)",
             }}
           >
             <summary
-              className="cursor-pointer min-h-[44px] flex items-center text-[12px] uppercase tracking-[0.22em] font-semibold"
+              className="cursor-pointer min-h-[44px] flex items-center justify-between gap-3 text-[12px] uppercase tracking-[0.22em] font-semibold"
               style={{ color: "var(--teal)" }}
             >
-              What your day includes
+              <span className="min-w-0">
+                What your day includes
+                <span
+                  className="ml-2 font-medium normal-case tracking-[0.06em]"
+                  style={{ color: "color-mix(in oklab, var(--charcoal) 52%, transparent)" }}
+                >
+                  · {daySummary.stops.length} {daySummary.stops.length === 1 ? "stop" : "stops"}
+                </span>
+              </span>
+              <ChevronDown
+                size={14}
+                aria-hidden
+                className="shrink-0 transition-transform duration-200 motion-reduce:transition-none group-open:rotate-180"
+                style={{ color: "var(--gold)" }}
+              />
             </summary>
             <ol className="mt-1 space-y-2.5">
               {daySummary.stops.map((s, i) => (
