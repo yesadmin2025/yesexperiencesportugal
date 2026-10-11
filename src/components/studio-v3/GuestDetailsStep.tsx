@@ -328,14 +328,16 @@ export function GuestDetailsStep({
               borderColor: "color-mix(in oklab, var(--charcoal) 10%, transparent)",
             }}
           >
-            <summary
-              className="cursor-pointer min-h-[44px] flex items-center justify-between gap-3 text-[11px] uppercase tracking-[0.22em] font-semibold"
-              style={{ color: "var(--teal)" }}
-            >
-              <span className="min-w-0 truncate">What your day includes</span>
+            <summary className="cursor-pointer min-h-[44px] flex items-center justify-between gap-3">
+              <span
+                className="min-w-0 truncate text-[13.5px] font-medium"
+                style={{ color: "var(--charcoal)" }}
+              >
+                What your day includes
+              </span>
               <span className="flex shrink-0 items-center gap-2">
                 <span
-                  className="text-[11.5px] font-medium normal-case tracking-[0.06em]"
+                  className="text-[11px] uppercase tracking-[0.2em] font-medium"
                   style={{ color: "color-mix(in oklab, var(--charcoal) 52%, transparent)" }}
                 >
                   {daySummary.stops.length} {daySummary.stops.length === 1 ? "stop" : "stops"}
@@ -348,6 +350,7 @@ export function GuestDetailsStep({
                 />
               </span>
             </summary>
+
 
             <ol className="mt-1 space-y-2.5">
               {daySummary.stops.map((s, i) => (
