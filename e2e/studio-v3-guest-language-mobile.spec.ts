@@ -22,7 +22,7 @@ test("client fields precede day summary and Portuguese reaches the purchase snap
   await page.getByTestId("studio-v3-language-pt").click();
   await page.getByTestId("studio-v3-guest-details-submit").click();
   await expect(page.getByTestId("studio-v3-checkout-summary")).toBeVisible();
-  await page.getByTestId("studio-v3-checkout-summary-edit-guests").click();
+  await page.getByTestId("studio-v3-checkout-summary-edit-guest-details").click();
   await expect(page.getByTestId("studio-v3-language-change").locator("..")).toContainText("Portuguese");
   await page.getByTestId("studio-v3-guest-details-submit").click();
   const responsePromise = page.waitForResponse(r => r.url().includes("create-signature-checkout") && r.request().method() === "POST");
