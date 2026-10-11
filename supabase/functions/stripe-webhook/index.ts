@@ -353,7 +353,7 @@ Deno.serve(async (req) => {
   // Upsert booking — unique on stripe_session_id.
   const { data: existing } = await admin
     .from("bookings")
-    .select("id, booking_details")
+    .select("id, booking_details, language")
     .eq("stripe_session_id", session.id)
     .maybeSingle();
 
@@ -454,6 +454,28 @@ Deno.serve(async (req) => {
     }
   } catch (e) {
     console.warn("snapshot freeze failed:", e instanceof Error ? e.message : e);
+  }
+
+  // Tour language is an operational booking field, not just receipt copy.
+  // Only the purchased snapshot can supply it; never replace a language that
+  // operations already confirmed when Stripe retries the same paid event.
+  const purchasedLanguage = snapshot?.language;
+  if (
+    !existing?.language &&
+    (purchasedLanguage === "en" || purchasedLanguage === "pt")
+  ) {
+    const { error: languageError } = await admin
+      .from("bookings")
+      .update({ language: purchasedLanguage })
+      .eq("id", bookingId)
+      .is("language", null);
+    if (languageError) {
+      console.error("booking language persistence failed:", languageError);
+      return new Response("Booking language persistence failed", {
+        status: 500,
+        headers: corsHeaders,
+      });
+    }
   }
 
   // Fire-and-forget: send branded checkout confirmation email with receipt link.

@@ -140,3 +140,8 @@
 - [ ] Tests: client == server == Stripe; listed Tailor scenarios
 - [ ] Owner enters missing prices before publish (blocked on Nídia)
 - [x] Brand spelling: no 'YES!' anywhere public (owner correction)
+
+# Studio guest details — October 11
+- [x] Move closed day summary below client fields and verify name above mobile fixed bar (393×706)
+- [x] Keep chosen tour language on checkout return; paid webhook fills bookings.language from purchase snapshot without overwriting ops edits
+- [x] Verified actual sandbox Studio snapshot pt and local signed webhook database read-back pt; 36 tests + mobile checkout pass; no payment/publication. Admin UI read unavailable without owner session.

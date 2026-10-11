@@ -455,6 +455,7 @@ export interface StudioV3State {
     phone?: string;
     pickupAddress?: string;
     guideNotes?: string;
+    language?: "en" | "pt";
   } | null;
 }
 
