@@ -4287,6 +4287,7 @@ export function StudioV3() {
               email: state.guestDraft?.email ?? null,
               phone: state.guestDraft?.phone ?? null,
               guideNotes: state.guestDraft?.guideNotes ?? null,
+              language: state.guestDraft?.language ?? (state.language === "pt" ? "pt" : "en"),
             }}
             onBack={() => back("storyboard")}
             onStorySubmit={async (email: string) => {
@@ -4335,6 +4336,7 @@ export function StudioV3() {
                   phone: d.phone,
                   pickupAddress: d.pickupAddress,
                   guideNotes: d.guideNotes,
+                  language: d.language,
                 },
               }));
               advance("checkoutSummary");
