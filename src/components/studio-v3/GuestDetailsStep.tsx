@@ -684,7 +684,15 @@ export function GuestDetailsStep({
           </GuestField>
         </CollapsibleFieldGroup>
 
+        <p
+          className="mt-6 text-[12px]"
+          style={{ color: "color-mix(in oklab, var(--charcoal) 62%, transparent)" }}
+        >
+          Fields marked * are required. Everything else is optional.
+        </p>
+
         {/* Sticky CTA — sits above the virtual keyboard via safe-area padding
+
             on the wrapper. */}
         <div
           className="fixed inset-x-0 bottom-0 z-40 border-t border-[color:var(--border)] bg-[color:var(--ivory)] px-5 pt-3 pb-[calc(env(safe-area-inset-bottom)+0.75rem)]"
