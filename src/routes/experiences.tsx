@@ -20,7 +20,7 @@ import { PriceEur } from "@/components/ui/PriceEur";
 import { CTA_LABELS } from "@/content/cta-vocabulary";
 import { getViatorMeta } from "@/data/signatureToursViator";
 import { Star } from "lucide-react";
-import { listPublishedExperienceContent, type ExperienceContentOverride } from "@/lib/experienceContent.functions";
+import { listPublishedExperienceContent } from "@/lib/experienceContent.functions";
 import { CompareControl, ExperienceCompare } from "@/components/experiences/ExperienceCompare";
 import { getSignatureCardHighlights, getSignatureCardPromise } from "@/lib/signatureCardHighlights";
 
