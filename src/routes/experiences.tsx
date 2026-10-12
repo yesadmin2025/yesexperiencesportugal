@@ -90,30 +90,18 @@ export const Route = createFileRoute("/experiences")({
       ),
     ],
   }),
+  loader: async () => ({ contentOverrides: await listPublishedExperienceContent() }),
   component: ExperiencesPage,
 });
 
 function ExperiencesPage() {
-  const [contentOverrides, setContentOverrides] = useState<ExperienceContentOverride[]>([]);
+  const { contentOverrides } = Route.useLoaderData();
   useMarketingMotion();
 
-  // The catalog is source-controlled and must never wait on a network call.
-  // Published editorial overrides enhance the already-visible cards after hydration.
   useEffect(() => {
     void import("@/lib/analytics-events").then((a) => a.trackEvent("view_item_list", { list_id: "experiences", item_count: publicSignatureTours.length }));
   }, []);
 
-  useEffect(() => {
-    let cancelled = false;
-    void listPublishedExperienceContent()
-      .then((rows) => {
-        if (!cancelled) setContentOverrides(rows);
-      })
-      .catch(() => undefined);
-    return () => {
-      cancelled = true;
-    };
-  }, []);
   const { resolveImg } = useImportedTourImages();
   const [selectedTours, setSelectedTours] = useState<string[]>([]);
   const [activeFilter, setActiveFilter] = useState<ExperienceFilter>("all");
