@@ -8,6 +8,7 @@ import {
   installStudioSessionPrivacyGuard,
 } from "@/components/studio-v3/studioSessionPrivacy";
 import { toast } from "sonner";
+import { STUDIO_FAQ } from "@/content/seo-faq";
 
 /**
  * Page body for the public Experience Studio at /studio.
@@ -107,6 +108,30 @@ export function LivingAtlasStudioPage() {
       >
         <StudioV3 />
       </div>
+      {/* Quiet, always-rendered answers below the composer: gives search engines
+       * real visible text and keeps the FAQ structured data matched to the page. */}
+      <section
+        aria-labelledby="studio-faq-title"
+        data-testid="studio-visible-faq"
+        className="border-t border-[color:var(--border)] bg-[color:var(--ivory)] py-16 md:py-24"
+      >
+        <div className="container-x max-w-[720px]">
+          <h2 id="studio-faq-title" className="t-h2 text-[color:var(--charcoal)]">
+            About the Studio
+          </h2>
+          <dl className="mt-8 divide-y divide-[color:var(--border)]">
+            {STUDIO_FAQ.map((item) => (
+              <div key={item.q} className="py-5">
+                <dt className="font-sans text-[15px] font-medium text-[color:var(--charcoal)]">{item.q}</dt>
+                <dd className="mt-2 text-[15px] leading-[1.65] text-[color:var(--charcoal-soft)]">{item.a}</dd>
+              </div>
+            ))}
+          </dl>
+          <p className="mt-6 text-[15px] leading-[1.65] text-[color:var(--charcoal-soft)]">
+            Planning several days? <a className="underline underline-offset-4 text-[color:var(--teal)]" href="/portugal-travel-designer">Work with our Portugal Travel Designer</a>.
+          </p>
+        </div>
+      </section>
     </>
   );
 }

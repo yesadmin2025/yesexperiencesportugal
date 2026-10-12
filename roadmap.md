@@ -147,3 +147,9 @@
 - [x] Verified actual sandbox Studio snapshot pt and local signed webhook database read-back pt; 36 tests + mobile checkout pass. Admin UI read unavailable without owner session.
 - [x] Published on request and verified live build: served Studio chunk summary has no open attribute (closed by default) and sits after the client fields; quiet language marker present
 - [ ] Read the stored tour language back in the admin booking view (blocked: needs an owner admin session)
+
+# Audit follow-up — October 12
+- [x] Homepage: cached published card copy with short timeout so the first response never waits on the database
+- [x] Experiences: card copy loaded before render (no shift after load)
+- [x] Studio: visible "About the Studio" answers below the composer for indexing
+- [ ] Studio intro drop-off: proposal only, awaiting owner choice
