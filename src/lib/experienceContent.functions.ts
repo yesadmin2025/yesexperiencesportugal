@@ -88,17 +88,43 @@ export const getPublishedExperienceContent = createServerFn({ method: "GET" })
     }
   });
 
+// Per-isolate cache: published card copy changes rarely, and public pages
+// (homepage, Experiences) must never wait on a slow database round-trip.
+const PUBLISHED_TTL_MS = 60_000;
+const PUBLISHED_TIMEOUT_MS = 700;
+let publishedCache: { at: number; rows: ExperienceContentOverride[] } | null = null;
+let publishedInflight: Promise<ExperienceContentOverride[]> | null = null;
+
+async function fetchPublished(): Promise<ExperienceContentOverride[]> {
+  const { data, error } = await publicClient()
+    .from("experience_content_overrides")
+    .select(SELECT)
+    .eq("is_published", true);
+  if (error) throw error;
+  const rows = (data ?? []).map(toOverride);
+  publishedCache = { at: Date.now(), rows };
+  return rows;
+}
+
 /** Published card copy for public collection pages, fetched in one request. */
 export const listPublishedExperienceContent = createServerFn({ method: "GET" }).handler(
   async (): Promise<ExperienceContentOverride[]> => {
+    if (publishedCache && Date.now() - publishedCache.at < PUBLISHED_TTL_MS) {
+      return publishedCache.rows;
+    }
+    publishedInflight ??= fetchPublished().finally(() => {
+      publishedInflight = null;
+    });
+    const fallback = publishedCache?.rows ?? [];
     try {
-      const { data } = await publicClient()
-        .from("experience_content_overrides")
-        .select(SELECT)
-        .eq("is_published", true);
-      return (data ?? []).map(toOverride);
+      return await Promise.race([
+        publishedInflight,
+        new Promise<ExperienceContentOverride[]>((resolve) =>
+          setTimeout(() => resolve(fallback), PUBLISHED_TIMEOUT_MS),
+        ),
+      ]);
     } catch {
-      return [];
+      return fallback;
     }
   },
 );
