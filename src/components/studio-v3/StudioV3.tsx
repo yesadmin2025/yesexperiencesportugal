@@ -7473,3 +7473,14 @@ function SaveSignatureButton({
     </div>
   );
 }
+
+function StudioAutoStart({ onStart }: { onStart: () => void }) {
+  const started = useRef(false);
+  useEffect(() => {
+    if (started.current) return;
+    started.current = true;
+    void import("@/lib/analytics-ga4").then((m) => m.gaStudioStart());
+    onStart();
+  }, [onStart]);
+  return <main aria-label="YES Studio" data-testid="studio-v3-root" data-phase="intro" />;
+}
