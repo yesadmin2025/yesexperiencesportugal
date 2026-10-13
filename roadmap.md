@@ -153,3 +153,11 @@
 - [x] Experiences: card copy loaded before render (no shift after load)
 - [x] Studio: visible "About the Studio" answers below the composer for indexing
 - [ ] Studio intro drop-off: proposal only, awaiting owner choice
+
+## Studio funnel — October 13
+- [x] Studio opens on feeling; date/pickup/party asked just before the reveal
+- [x] Payment sweep in test mode (8/9 profiles reach Stripe)
+- [x] Backfilled payment status on 17 paid site bookings
+- [ ] Cheese day: composer swaps winery for Azeitão village + Azulejos de Azeitão (no owner price) → checkout blocked. Blocked on owner prices or approval to keep the winery
+- [ ] Sesimbra guide title/description — waiting on option choice
+- [ ] Publish — waiting on user
