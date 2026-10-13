@@ -37,6 +37,7 @@ import {
   type LivingAtlasSignatureId,
 } from "@/components/studio-v3/livingAtlasTaxonomy";
 import { buildExperienceProfile } from "@/lib/studio-v3/livingAtlasBridge";
+import { getTailorBlueprint } from "@/data/tailorBlueprints";
 import { scheduleMealAtMidday } from "@/lib/studio-v3/mealDaypartAuthority";
 import type { ResolvedRoutePoint } from "@/components/studio-v3/curation";
 import type { Feeling, Interest, Rhythm } from "@/components/studio-v3/types";
