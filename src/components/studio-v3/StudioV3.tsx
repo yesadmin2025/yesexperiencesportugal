@@ -7478,6 +7478,7 @@ function StudioAutoStart({ onStart }: { onStart: () => void }) {
   useEffect(() => {
     if (started.current) return;
     started.current = true;
+    console.log("[autostart] fired");
     void import("@/lib/analytics-ga4").then((m) => m.gaStudioStart());
     onStart();
   }, [onStart]);
