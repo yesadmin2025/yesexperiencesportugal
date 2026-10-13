@@ -346,7 +346,14 @@ export function composeHybridDay(
     rhythm: input.rhythm,
     timeBudget,
     requiredTypes: [...(input.requiredTypes ?? [])],
-    excludedTypes: input.wineIntent ? [] : ["winery"],
+    // A winery is excluded only when the traveler expressed no wine intent AND
+    // the anchor's own structural truth does not include one. When the
+    // Signature's verified core already contains a winery (e.g. "Cheese &
+    // Wine in Azeitão" includes the Quinta de Catralvos cellar), the winery
+    // is part of the product the traveler chose — swapping it out would
+    // silently sell a different day.
+    excludedTypes:
+      input.wineIntent || anchorCoreIncludesWinery(anchorId) ? [] : ["winery"],
     excludedStopIds: [...new Set(input.rejectedStopIds ?? [])].filter(
       (stopId) => !mustIncludeStopIds.includes(stopId),
     ),
