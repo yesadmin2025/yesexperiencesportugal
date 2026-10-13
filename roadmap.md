@@ -160,4 +160,9 @@
 - [x] Backfilled payment status on 17 paid site bookings
 - [x] Cheese day: owner chose B — winery (Quinta de Catralvos, blueprint core) is no longer swapped out when the traveller has no wine intent; regression test added
 - [x] Sesimbra guide title/description — owner chose option 1, applied
-- [ ] Publish — waiting on user
+- [x] Publish — completed on owner request
+
+## Service SEO and publication — October 13 evening
+- [x] Improve Proposal and Travel Designer titles/descriptions using existing page facts only; preserve content, canonical URLs, schema and booking flows
+- [ ] Verify rendered metadata and focused SEO tests, then publish with the pending About search text
+- [ ] FAQ and Studio indexing request — blocked: Google Search Console API cannot request indexing; owner must use URL Inspection

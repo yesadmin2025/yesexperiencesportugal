@@ -25,9 +25,9 @@ const PAGE_URL = `${BASE_URL}${PAGE_PATH}`;
 // National intent: proposals and celebrations designed anywhere in Portugal.
 // The head-on "private tours in <city>" queries stay with the area pages so
 // this page never competes with them for the same result.
-const TITLE = "Portugal Proposal Planning — Private Proposals in Lisbon";
+const TITLE = "Marriage Proposal in Portugal | YES Experiences Portugal";
 const DESCRIPTION =
-  "Plan a proposal in Portugal: Lisbon terraces, Sintra palaces, Arrábida cliffs or quiet vineyards. A licensed local team handles it all discreetly.";
+  "Plan a private marriage proposal anywhere in Portugal. Our local team coordinates the setting, timing and surprise, with every detail confirmed with you.";
 
 export const Route = createFileRoute("/proposal-in-portugal")({
   head: () => ({
