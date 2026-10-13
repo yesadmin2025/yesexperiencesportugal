@@ -40,7 +40,6 @@ import { LogisticsPhase } from "./LogisticsPhase";
 import { composeDirectorsRead } from "./directorsRead";
 
 import { InvestmentTierPicker } from "./InvestmentTierPicker";
-import { StudioV3Intro } from "./StudioV3Intro";
 import { PhaseShell } from "./PhaseShell";
 import { MobileBeatReveal } from "./MobileBeatReveal";
 import type { StudioV3BeatId } from "./StudioV3ProgressStepper";
