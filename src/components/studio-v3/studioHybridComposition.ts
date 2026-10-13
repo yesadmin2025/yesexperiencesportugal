@@ -49,6 +49,15 @@ import { resolveTimeBudget } from "@/lib/studio-v3/resolveTimeBudget";
  * Hybrid role of a moment — describes USER / OPERATIONAL importance, never
  * inherited Signature status.
  */
+/**
+ * Structural truth check: does the anchor Signature's own verified blueprint
+ * core include a winery? Read-only; never invents inclusion.
+ */
+function anchorCoreIncludesWinery(anchorId: LivingAtlasSignatureId): boolean {
+  const blueprint = getTailorBlueprint(anchorId);
+  return Boolean(blueprint?.core.some((stop) => stop.category === "winery"));
+}
+
 export type HybridMomentRole =
   | "principal"
   | "required-operational"
