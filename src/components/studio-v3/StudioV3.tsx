@@ -1503,6 +1503,7 @@ export function StudioV3() {
       // certified goes to the curator path. Never a stale ledger, never a
       // base-pricing fallback.
       if (!liveAuthority.safe) {
+        console.warn("[studio-checkout-block]", JSON.stringify({ reason: liveAuthority.unsafeReason, notes: liveAuthority.notes, anchor: currentState.tourId ?? tour.id, stops: checkoutStops.map((s) => [s.label, s.inventoryStopId ?? null, s.blueprintStopId ?? null]), report: liveAuthority.report }));
         setCheckoutPending(false);
         setCheckoutBlock("This day changed while we verified it. Edit the stops, then try secure checkout again.");
         return;
