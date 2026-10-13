@@ -3771,7 +3771,7 @@ export function StudioV3() {
             onMinorAgeChange={onMinorAgeChange}
             acknowledgement={renderAcknowledgement("logistics")}
             // PREFLIGHT — this is now the first screen after the invitation.
-            onBackPhase={() => back("intro")}
+            onBackPhase={() => window.history.back()}
             conflict={logisticsConflict ?? bookingBlock ?? pickupDoorToDoorConflict}
             onCompose={() => {
               void runPreflight();
