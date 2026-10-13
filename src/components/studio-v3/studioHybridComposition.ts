@@ -37,6 +37,7 @@ import {
   type LivingAtlasSignatureId,
 } from "@/components/studio-v3/livingAtlasTaxonomy";
 import { buildExperienceProfile } from "@/lib/studio-v3/livingAtlasBridge";
+import { getTailorBlueprint } from "@/data/tailorBlueprints";
 import { scheduleMealAtMidday } from "@/lib/studio-v3/mealDaypartAuthority";
 import type { ResolvedRoutePoint } from "@/components/studio-v3/curation";
 import type { Feeling, Interest, Rhythm } from "@/components/studio-v3/types";
@@ -48,6 +49,15 @@ import { resolveTimeBudget } from "@/lib/studio-v3/resolveTimeBudget";
  * Hybrid role of a moment — describes USER / OPERATIONAL importance, never
  * inherited Signature status.
  */
+/**
+ * Structural truth check: does the anchor Signature's own verified blueprint
+ * core include a winery? Read-only; never invents inclusion.
+ */
+function anchorCoreIncludesWinery(anchorId: LivingAtlasSignatureId): boolean {
+  const blueprint = getTailorBlueprint(anchorId);
+  return Boolean(blueprint?.core.some((stop) => stop.category === "winery"));
+}
+
 export type HybridMomentRole =
   | "principal"
   | "required-operational"
@@ -345,7 +355,14 @@ export function composeHybridDay(
     rhythm: input.rhythm,
     timeBudget,
     requiredTypes: [...(input.requiredTypes ?? [])],
-    excludedTypes: input.wineIntent ? [] : ["winery"],
+    // A winery is excluded only when the traveler expressed no wine intent AND
+    // the anchor's own structural truth does not include one. When the
+    // Signature's verified core already contains a winery (e.g. "Cheese &
+    // Wine in Azeitão" includes the Quinta de Catralvos cellar), the winery
+    // is part of the product the traveler chose — swapping it out would
+    // silently sell a different day.
+    excludedTypes:
+      input.wineIntent || anchorCoreIncludesWinery(anchorId) ? [] : ["winery"],
     excludedStopIds: [...new Set(input.rejectedStopIds ?? [])].filter(
       (stopId) => !mustIncludeStopIds.includes(stopId),
     ),
