@@ -164,5 +164,5 @@
 
 ## Service SEO and publication — October 13 evening
 - [x] Improve Proposal and Travel Designer titles/descriptions using existing page facts only; preserve content, canonical URLs, schema and booking flows
-- [ ] Verify rendered metadata and focused SEO tests, then publish with the pending About search text
+- [x] Verify rendered metadata (all three pages HTTP 200, one H1, self-canonical) and 35 focused SEO tests; preview build OK; publication requested with the pending About search text
 - [ ] FAQ and Studio indexing request — blocked: Google Search Console API cannot request indexing; owner must use URL Inspection
