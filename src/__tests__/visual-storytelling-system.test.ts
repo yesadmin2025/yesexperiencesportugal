@@ -58,7 +58,7 @@ describe("shared public label -> title breath contract", () => {
     expect(about).toContain("public-page-header--start");
     expect(styles).toMatch(/\.public-page-header--start h1\s*\{[^}]*max-width: none;[^}]*margin-inline: 0;/);
     expect(styles).toMatch(/\.public-page-header--start \.page-header-support\s*\{[^}]*margin-inline: 0;/);
-    expect(about).toContain('const TITLE = "About YES Experiences Portugal · Our Story & Founder"');
+    expect(about).toContain('const TITLE = "About YES Experiences Portugal · Private Tours by a Local"');
     expect(about).toContain("Portugal is the stage.");
     expect(about).toContain("Travel should feel personal.");
   });
