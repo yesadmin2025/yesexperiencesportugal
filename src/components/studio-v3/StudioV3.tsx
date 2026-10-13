@@ -3583,17 +3583,11 @@ export function StudioV3() {
   // Intro is a pre-Studio moment — render its own canvas and short-circuit
   // the rest of the Studio chrome (no ComposerMap, no Journey pill,
   // no footer help, no progress).
+  // Option B (Oct 2026): the Studio opens directly on the first question.
+  // The invitation + name screen was the largest drop-off; the name is
+  // collected at guest details. StudioV3Intro stays for tests/back-compat.
   if (state.phase === "intro") {
-    return (
-      <StudioV3Intro
-        onComplete={(name, pathMode) => {
-          setState((s) => ({ ...s, firstName: name, pathMode }));
-          // PREFLIGHT FIRST — the practical facts decide what is sellable
-          // before the Studio spends the traveler's time designing.
-          advance("logistics");
-        }}
-      />
-    );
+    return <StudioAutoStart onStart={() => advance("logistics")} />;
   }
 
   // Ambient anticipation — Portugal silhouette behind every phase.
