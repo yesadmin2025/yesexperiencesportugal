@@ -236,7 +236,7 @@ describe("G/H — reward hands over to admin, admin does not compose", () => {
   });
 
   it("returns from the preflight to the invitation", () => {
-    expect(SRC).toContain('onBackPhase={() => back("intro")}');
+    expect(SRC).toContain('onBackPhase={() => window.history.back()}');
   });
 });
 

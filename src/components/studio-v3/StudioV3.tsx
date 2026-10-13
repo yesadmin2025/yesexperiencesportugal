@@ -40,7 +40,6 @@ import { LogisticsPhase } from "./LogisticsPhase";
 import { composeDirectorsRead } from "./directorsRead";
 
 import { InvestmentTierPicker } from "./InvestmentTierPicker";
-import { StudioV3Intro } from "./StudioV3Intro";
 import { PhaseShell } from "./PhaseShell";
 import { MobileBeatReveal } from "./MobileBeatReveal";
 import type { StudioV3BeatId } from "./StudioV3ProgressStepper";
@@ -3583,17 +3582,11 @@ export function StudioV3() {
   // Intro is a pre-Studio moment — render its own canvas and short-circuit
   // the rest of the Studio chrome (no ComposerMap, no Journey pill,
   // no footer help, no progress).
+  // Option B (Oct 2026): the Studio opens directly on the first question.
+  // The invitation + name screen was the largest drop-off; the name is
+  // collected at guest details. StudioV3Intro stays for tests/back-compat.
   if (state.phase === "intro") {
-    return (
-      <StudioV3Intro
-        onComplete={(name, pathMode) => {
-          setState((s) => ({ ...s, firstName: name, pathMode }));
-          // PREFLIGHT FIRST — the practical facts decide what is sellable
-          // before the Studio spends the traveler's time designing.
-          advance("logistics");
-        }}
-      />
-    );
+    return <StudioAutoStart onStart={() => advance("logistics")} />;
   }
 
   // Ambient anticipation — Portugal silhouette behind every phase.
@@ -3778,7 +3771,7 @@ export function StudioV3() {
             onMinorAgeChange={onMinorAgeChange}
             acknowledgement={renderAcknowledgement("logistics")}
             // PREFLIGHT — this is now the first screen after the invitation.
-            onBackPhase={() => back("intro")}
+            onBackPhase={() => window.history.back()}
             conflict={logisticsConflict ?? bookingBlock ?? pickupDoorToDoorConflict}
             onCompose={() => {
               void runPreflight();
@@ -7478,4 +7471,15 @@ function SaveSignatureButton({
       ) : null}
     </div>
   );
+}
+
+function StudioAutoStart({ onStart }: { onStart: () => void }) {
+  const started = useRef(false);
+  useEffect(() => {
+    if (started.current) return;
+    started.current = true;
+    void import("@/lib/analytics-ga4").then((m) => m.gaStudioStart());
+    onStart();
+  }, [onStart]);
+  return <main aria-label="YES Studio" data-testid="studio-v3-root" data-phase="intro" />;
 }
