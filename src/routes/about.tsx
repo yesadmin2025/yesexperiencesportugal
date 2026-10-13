@@ -23,9 +23,9 @@ import {
   whatsappUrl,
 } from "@/config/business-nap";
 
-const TITLE = "About YES Experiences Portugal · Our Story & Founder";
+const TITLE = "About YES Experiences Portugal · Private Tours by a Local";
 const DESCRIPTION =
-  "YES Experiences Portugal is a private tour company founded by Nídia Almeida. Meet the local team behind our private days and journeys across Portugal.";
+  "Nídia Almeida began with one car and a few tours a week. Today YES Experiences Portugal designs private days, journeys and proposals around each traveller.";
 const founderSrcSet = [480, 720, 900, 1200]
   .map((width) => `${founderAsset.url}?w=${width}&q=78 ${width}w`)
   .join(", ");
