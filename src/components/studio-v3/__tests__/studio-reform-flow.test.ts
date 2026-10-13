@@ -12,11 +12,11 @@ describe("Studio reform — phase model", () => {
     // be sold are collected BEFORE the Studio spends time designing a day.
     expect(asked.slice(0, 6)).toEqual([
       "intro",
-      "logistics",
       "feeling",
       "who",
       "interests",
       "rhythm",
+      "logistics",
     ]);
     expect(asked.indexOf("logistics")).toBeLessThan(asked.indexOf("storyboard"));
     expect(asked).not.toContain("map");
@@ -40,9 +40,9 @@ describe("Studio reform — phase model", () => {
 
   it("walks rhythm → the unified storyboard surface → logistics", () => {
     const s: StudioV3State = { ...base, feeling: "coastal", companions: "couple", refinement: "coast-wild-beaches" };
-    expect(getNextPhase(s, "rhythm")).toBe("storyboard");
+    expect(getNextPhase(s, "rhythm")).toBe("logistics");
     expect(getNextPhase(s, "storyboard")).toBe("guestDetails");
-    expect(getNextPhase(s, "intro")).toBe("logistics");
+    expect(getNextPhase(s, "intro")).toBe("feeling");
   });
 });
 

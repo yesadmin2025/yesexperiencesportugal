@@ -3479,14 +3479,15 @@ export function isPhaseRelevant(phase: StudioV3Phase, state: StudioV3State): boo
  */
 export const STUDIO_V3_PHASE_ORDER: StudioV3Phase[] = [
   "intro",
-  // INSTANT-BOOKABLE TRUTH — the practical facts that decide what can be
-  // SOLD (exact date, supported pickup area, party) are collected BEFORE the
-  // Studio spends the traveler's time designing. One compact screen.
-  "logistics",
+  // DESIRE BEFORE COMMITMENT (Oct 2026) — the Studio opens on feeling, not
+  // a date. The practical facts that decide what can be SOLD (exact date,
+  // pickup, party) are still collected BEFORE the day is composed and
+  // revealed, so every reveal stays instantly bookable.
   "feeling",
   "who",
   "interests",
   "rhythm",
+  "logistics",
   "refinement",
   // PASS 4 — REWARD BEFORE ADMIN. The composed day ("Your Day", canonical
   // `storyboard`) is revealed immediately after the last Director question.

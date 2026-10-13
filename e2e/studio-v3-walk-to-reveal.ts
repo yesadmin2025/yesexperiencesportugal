@@ -232,12 +232,12 @@ export async function advanceIntro(page: Page): Promise<boolean> {
 // investment is never asked.
 export const PHASE_SEQUENCE = [
   "intro",
-  "logistics",
   "feeling",
   "destination",
   "who",
   "interests",
   "rhythm",
+  "logistics",
   "refinement",
   // Consolidated logistics beat (date + pickup + party). The legacy
   // standalone phases stay listed after it so saved/deep-linked states that
