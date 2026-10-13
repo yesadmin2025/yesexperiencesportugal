@@ -57,7 +57,7 @@ describe("A/B — canonical order and adaptive walk", () => {
 
   it("walks the live path and still skips retired legacy questions", () => {
     const s = state();
-    expect(getNextPhase(s, "rhythm")).toBe("storyboard");
+    expect(getNextPhase(s, "rhythm")).toBe("logistics");
     expect(getNextPhase(s, "refinement")).toBe("storyboard");
     expect(getNextPhase(s, "storyboard")).toBe("guestDetails");
     for (const legacy of [
@@ -236,7 +236,7 @@ describe("G/H — reward hands over to admin, admin does not compose", () => {
   });
 
   it("returns from the preflight to the invitation", () => {
-    expect(SRC).toContain('onBackPhase={() => window.history.back()}');
+    expect(SRC).toContain('onBackPhase={() => back("rhythm")}');
   });
 });
 

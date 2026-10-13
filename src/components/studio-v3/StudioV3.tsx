@@ -3586,7 +3586,7 @@ export function StudioV3() {
   // The invitation + name screen was the largest drop-off; the name is
   // collected at guest details. StudioV3Intro stays for tests/back-compat.
   if (state.phase === "intro") {
-    return <StudioAutoStart onStart={() => advance("logistics")} />;
+    return <StudioAutoStart onStart={() => advance("feeling")} />;
   }
 
   // Ambient anticipation — Portugal silhouette behind every phase.
@@ -3638,8 +3638,9 @@ export function StudioV3() {
           progress={studioV3Progress(state, state.phase)}
           anticipation={anticipation}
         >
-          {/* P1 — date, pickup and party stay editable from the first question. */}
-          <BackLink onClick={() => back("logistics")} />
+          {/* Feeling is the first question — Back leaves the Studio. */}
+          <BackLink onClick={() => window.history.back()} />
+
           <PhaseHeader
             eyebrow="The feeling"
             title="How would you like"
@@ -3770,8 +3771,8 @@ export function StudioV3() {
             onRemoveMinor={onRemoveMinor}
             onMinorAgeChange={onMinorAgeChange}
             acknowledgement={renderAcknowledgement("logistics")}
-            // PREFLIGHT — this is now the first screen after the invitation.
-            onBackPhase={() => window.history.back()}
+            // Logistics now follows the Director questions, before the reveal.
+            onBackPhase={() => back("rhythm")}
             conflict={logisticsConflict ?? bookingBlock ?? pickupDoorToDoorConflict}
             onCompose={() => {
               void runPreflight();
