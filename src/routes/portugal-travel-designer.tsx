@@ -17,7 +17,7 @@ import { TravelFilePreview } from "@/components/travel-designer/TravelFilePrevie
 const CANONICAL = "https://yesexperiencesportugal.com/portugal-travel-designer";
 const TITLE = "Portugal Travel Designer | YES Experiences Portugal";
 const DESC =
-  "Plan a private multi-day Portugal journey of any length with a local travel designer. Route, stays and experiences shaped with you, priced before you commit.";
+  "Plan a private multi-day Portugal journey of any length with a local designer. Route, stays and experiences shaped with you, priced before you commit.";
 const OG_IMAGE = `https://yesexperiencesportugal.com${ogImg}`;
 
 export const Route = createFileRoute("/portugal-travel-designer")({
