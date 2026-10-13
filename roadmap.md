@@ -158,6 +158,6 @@
 - [x] Studio opens on feeling; date/pickup/party asked just before the reveal
 - [x] Payment sweep in test mode (8/9 profiles reach Stripe)
 - [x] Backfilled payment status on 17 paid site bookings
-- [ ] Cheese day: composer swaps winery for Azeitão village + Azulejos de Azeitão (no owner price) → checkout blocked. Blocked on owner prices or approval to keep the winery
-- [ ] Sesimbra guide title/description — waiting on option choice
+- [x] Cheese day: owner chose B — winery (Quinta de Catralvos, blueprint core) is no longer swapped out when the traveller has no wine intent; regression test added
+- [x] Sesimbra guide title/description — owner chose option 1, applied
 - [ ] Publish — waiting on user
