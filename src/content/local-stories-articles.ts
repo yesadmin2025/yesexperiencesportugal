@@ -2534,6 +2534,64 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
     ],
     datePublished: "2026-09-28",
   },
+  {
+    slug: "portugal-in-november-december",
+    title: "Portugal in November & December: What to Do | YES",
+    metaDescription: "Portugal in November and December: wine cellars, cheese and tile workshops, Sintra and Évora without the crowds. Private days that run all year.",
+    h1: "Portugal in November and December: what to do",
+    eyebrow: "Portugal · Autumn & winter",
+    standfirst: "The cooler months are when Portugal's cellars, workshops and historic towns are at their calmest — and every private day we run operates all year.",
+    directAnswer: "November and December are good months for private touring in Portugal. Wine cellars, cheese-making and tile-painting workshops, cork and pottery ateliers, and historic towns such as Sintra, Tomar, Coimbra and Évora all operate year-round, with fewer visitors than in summer.",
+    sections: [
+      {
+        heading: "Cellars, not crowds",
+        body: "Wine days are at their best in the cooler months. In Arrábida and Azeitão, family cellars and tasting rooms are quiet, and lunch stretches without a queue. The Alentejo adds cork oak plains, pottery workshops and talha wine cellars in Évora — all indoor-friendly stops that suit a shorter day.",
+      },
+      {
+        heading: "Hands-on days: cheese, tiles, cork and pottery",
+        body: "Winter is workshop season. You can make Azeitão cheese with the people who produce it, paint your own azulejo tile in a working atelier, or spend a day with cork and pottery artisans. These days are private to your party and run in every month of the year.",
+      },
+      {
+        heading: "Historic towns without the queues",
+        body: "Sintra's palaces, the Templar convent in Tomar, Coimbra's university and the sanctuary of Fátima are all open through autumn and winter, and noticeably calmer than in high season. A private car and driver means weather never decides your day — the route adapts, and you are collected at your address.",
+      },
+      {
+        heading: "Planning a November or December trip",
+        body: "All of our Signature days run year-round and can be reserved online for your date, with free cancellation up to 24 hours before. For a longer stay, the Travel Designer shapes multi-day journeys at a winter pace — shorter drives, longer lunches, and stays chosen for the season.",
+      },
+    ],
+    ctaLead:
+      "A good first winter day: wine and cheese in Arrábida and Azeitão, with pickup at your address.",
+    ctaLabel: "See the Arrábida Wine Signature",
+    signatureSlug: "arrabida-wine-allinclusive",
+    relatedSignatures: [
+      { slug: "azeitao-cheese", label: "Azeitão Cheese Making" },
+      { slug: "tiles-workshop", label: "Azulejo Painting Workshop" },
+      { slug: "sintra-cascais", label: "Sintra & Cascais" },
+      { slug: "evora-alentejo", label: "Évora & Alentejo Wine" },
+    ],
+    relatedReads: [
+      { path: "/local-stories/best-wine-tours-from-lisbon", label: "Best wine tours from Lisbon" },
+      { path: "/local-stories/what-to-do-in-sesimbra", label: "What to do in Sesimbra" },
+      { path: "/portugal-travel-designer", label: "Travel Designer — multi-day journeys" },
+      { path: "/corporate", label: "Corporate & team days" },
+    ],
+    faq: [
+      {
+        q: "Do private tours in Portugal run in November and December?",
+        a: "Yes. All of our Signature days operate year-round, including wine tastings, cheese and tile workshops, and historic town visits.",
+      },
+      {
+        q: "What happens if it rains on the day?",
+        a: "The route adapts. You travel in one private car with a local driver, and indoor stops — cellars, workshops, palaces — can take precedence when the weather turns.",
+      },
+      {
+        q: "Can I cancel if my travel plans change?",
+        a: "Cancellation is free up to 24 hours before the day.",
+      },
+    ],
+    datePublished: "2026-10-14",
+  },
 ];
 
 
