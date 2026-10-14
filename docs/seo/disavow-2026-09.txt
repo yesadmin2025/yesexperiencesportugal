@@ -45,3 +45,13 @@ domain:cvillico.com
 domain:plendo.shop
 domain:polva.shop
 domain:fashionclothingnews.com
+
+# Added 2026-10-14 from Semrush backlink report (PBN / "buy backlinks" anchors)
+domain:feedbackplatform.io
+domain:breachviews.com
+domain:casinooftheking.com
+domain:ggmap.co.com
+domain:mylisthero.com
+domain:newblogerseo.com
+domain:rdxextremez.com
+domain:royaldb.us.com
