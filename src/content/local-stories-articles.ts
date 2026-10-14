@@ -217,6 +217,11 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
     ctaLabel: "See the Sintra & Cascais Signature",
     signatureSlug: "sintra-cascais",
     relatedSignatures: [{ slug: "arrabida-wine-allinclusive", label: "Arrábida Wine Signature" }],
+    relatedReads: [
+      { path: "/local-stories/sintra-day-tour-from-lisbon", label: "Sintra day tour from Lisbon" },
+      { path: "/local-stories/arrabida-day-trip-from-lisbon", label: "Arrábida day trip from Lisbon" },
+      { path: "/local-stories/best-day-trips-from-lisbon", label: "Best day trips from Lisbon" },
+    ],
     datePublished: "2026-06-02",
   },
   {
@@ -315,6 +320,8 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
       { path: "/tours/wild-beaches-picnic", label: "Wild Beaches & Picnic — private day" },
       { path: "/tours/arrabida-wine-allinclusive", label: "Arrábida Wine — All Inclusive" },
       { path: "/day-trips-from-lisbon", label: "Best day trips from Lisbon" },
+      { path: "/local-stories/arrabida-boat-tour-from-lisbon", label: "Arrábida boat tour" },
+      { path: "/local-stories/best-day-trips-from-lisbon", label: "Best day trips from Lisbon" },
     ],
 
     datePublished: "2026-06-04",
@@ -350,6 +357,11 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
       "If a private day feels right, our Signature experiences are fully private — one host, one car, one route shaped to you.",
     ctaLabel: "See our Signature experiences",
     signatureSlug: "arrabida-wine-allinclusive",
+    relatedReads: [
+      { path: "/local-stories/private-tours-portugal-cost", label: "What private tours cost" },
+      { path: "/local-stories/best-private-day-tours-from-lisbon", label: "Best private day tours from Lisbon" },
+      { path: "/studio", label: "Design your day in the Studio" },
+    ],
     datePublished: "2026-06-05",
   },
   {
@@ -563,6 +575,11 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
       { slug: "evora-alentejo", label: "Évora & Alentejo Signature" },
       { slug: "azeitao-cheese", label: "Azeitão Cheese & Wine" },
     ],
+    relatedReads: [
+      { path: "/local-stories/best-wine-tours-from-lisbon", label: "Best wine tours from Lisbon" },
+      { path: "/local-stories/arrabida-wine-tour-what-to-expect", label: "Arrábida wine tour: what to expect" },
+      { path: "/local-stories/best-wineries-near-lisbon", label: "Best wineries near Lisbon" },
+    ],
     datePublished: "2026-06-10",
   },
   {
@@ -643,6 +660,11 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
     ctaLabel: "See the Arrábida Wine Signature",
     signatureSlug: "arrabida-wine-allinclusive",
     relatedSignatures: [{ slug: "evora-alentejo", label: "Évora & Alentejo Signature" }],
+    relatedReads: [
+      { path: "/local-stories/arrabida-wine-tour-from-lisbon", label: "Arrábida wine tour from Lisbon" },
+      { path: "/local-stories/alentejo-wine-tour-from-lisbon", label: "Alentejo wine tour from Lisbon" },
+      { path: "/local-stories/best-wine-tours-from-lisbon", label: "Best wine tours from Lisbon" },
+    ],
     datePublished: "2026-06-12",
   },
   {
@@ -828,6 +850,12 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
       { slug: "arrabida-wine-allinclusive", label: "Arrábida Wine" },
       { slug: "wild-beaches-picnic", label: "Wild Beaches & Picnic" },
       { slug: "fatima-nazare-obidos", label: "Fátima · Nazaré · Óbidos" },
+    ],
+    relatedReads: [
+      { path: "/local-stories/best-day-trips-from-lisbon", label: "Best day trips from Lisbon" },
+      { path: "/local-stories/arrabida-vs-sintra", label: "Arrábida or Sintra?" },
+      { path: "/local-stories/fatima-day-trip-from-lisbon", label: "Fátima day trip from Lisbon" },
+      { path: "/studio", label: "Design your day in the Studio" },
     ],
     datePublished: "2026-07-03",
     faq: [
@@ -1068,6 +1096,11 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
       { slug: "roman-heritage-alentejo", label: "Roman Heritage & Talha Wines" },
       { slug: "troia-comporta", label: "Tróia & Comporta" },
     ],
+    relatedReads: [
+      { path: "/local-stories/alentejo-wine-tour-from-lisbon", label: "Alentejo wine tour from Lisbon" },
+      { path: "/local-stories/roman-heritage-alentejo-talha-wines", label: "Roman heritage & talha wines" },
+      { path: "/local-stories/arrabida-vs-alentejo", label: "Arrábida or Alentejo?" },
+    ],
     datePublished: "2026-07-08",
   },
   {
@@ -1102,6 +1135,11 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
     relatedSignatures: [
       { slug: "roman-heritage-alentejo", label: "Roman Heritage & Talha Wines" },
       { slug: "troia-comporta", label: "Tróia & Comporta" },
+    ],
+    relatedReads: [
+      { path: "/local-stories/evora-alentejo-wine-tour", label: "Évora & Alentejo wine tour" },
+      { path: "/local-stories/roman-heritage-alentejo-talha-wines", label: "Roman heritage & talha wines" },
+      { path: "/local-stories/best-day-trips-from-lisbon", label: "Best day trips from Lisbon" },
     ],
     datePublished: "2026-07-09",
   },
@@ -1148,6 +1186,12 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
       { slug: "sintra-cascais", label: "Sintra & Cascais Signature" },
       { slug: "evora-alentejo", label: "Évora & Alentejo Signature" },
       { slug: "wild-beaches-picnic", label: "Wild Beaches & Picnic" },
+    ],
+    relatedReads: [
+      { path: "/local-stories/best-day-trips-from-lisbon", label: "Best day trips from Lisbon" },
+      { path: "/local-stories/private-tour-vs-group-tour", label: "Private or group tour?" },
+      { path: "/local-stories/private-tours-portugal-cost", label: "What private tours cost" },
+      { path: "/studio", label: "Design your day in the Studio" },
     ],
     datePublished: "2026-07-16",
     faq: [
@@ -1984,6 +2028,8 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
         path: "/portugal-for-american-travelers",
         label: "Plan Portugal from the United States",
       },
+      { path: "/local-stories/best-day-trips-from-lisbon", label: "Best day trips from Lisbon" },
+      { path: "/local-stories/sintra-day-tour-from-lisbon", label: "Sintra day tour from Lisbon" },
     ],
     faq: [
       {
@@ -2203,6 +2249,7 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
         path: "/portugal-for-american-travelers",
         label: "Plan Portugal from the United States",
       },
+      { path: "/local-stories/best-day-trips-from-lisbon", label: "Best day trips from Lisbon" },
     ],
     faq: [
       {
@@ -2578,6 +2625,10 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
       { path: "/local-stories/what-to-do-in-sesimbra", label: "What to do in Sesimbra" },
       { path: "/portugal-travel-designer", label: "Travel Designer — multi-day journeys" },
       { path: "/corporate", label: "Corporate & team days" },
+      { path: "/local-stories/azeitao-cheese-workshop-near-lisbon", label: "Azeitão cheese workshop" },
+      { path: "/local-stories/azulejo-tile-painting-workshop-lisbon", label: "Azulejo tile workshop" },
+      { path: "/local-stories/evora-private-tour-from-lisbon", label: "Évora private tour from Lisbon" },
+      { path: "/studio", label: "Design your day in the Studio" },
     ],
     faq: [
       {
