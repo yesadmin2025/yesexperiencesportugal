@@ -147,8 +147,11 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
     relatedSignatures: [
       { slug: "sintra-cascais", label: "Sintra & Cascais Signature" },
       { slug: "wild-beaches-picnic", label: "Wild Beaches & Picnic" },
+      { slug: "fatima-nazare-obidos", label: "Fátima · Nazaré · Óbidos" },
     ],
     relatedReads: [
+      { path: "/local-stories/sintra-day-tour-from-lisbon", label: "Sintra day tour from Lisbon" },
+      { path: "/local-stories/fatima-day-trip-from-lisbon", label: "Fátima day trip from Lisbon" },
       { path: "/local-stories/what-to-do-in-sesimbra", label: "Things to do in Sesimbra" },
       { path: "/local-stories/arrabida-vs-sintra", label: "Arrábida vs Sintra" },
       { path: "/day-trips-from-lisbon", label: "Day trips by drive time" },
@@ -1967,7 +1970,7 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
       },
     ],
     ctaLead:
-      "This is the day exactly as we run it — private to your party, hotel pickup included, lunch and entrances arranged.",
+      "This is the day exactly as we run it — private to your party, with hotel pickup included; lunch in Nazaré is at your own expense.",
     ctaLabel: "See dates & reserve",
     signatureSlug: "fatima-nazare-obidos",
     relatedSignatures: [
