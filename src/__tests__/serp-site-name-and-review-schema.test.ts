@@ -18,7 +18,7 @@ describe("WebSite / site-name signals", () => {
     const ld = websiteLd() as unknown as Record<string, unknown>;
     expect(ld["@type"]).toBe("WebSite");
     expect(ld.name).toBe("YES Experiences Portugal");
-    expect(ld.alternateName).toEqual(["YES Experiences", "YESExperiences", "YES Portugal", "Yes Experiences Portugal", "YesExperiencesPortugal", "ES Experiences"]);
+    expect(ld.alternateName).toEqual(["YES Experiences", "Yes Experiences", "YESExperiences", "YesExperiences", "YESExperiences Portugal", "YesExperiences Portugal", "YesExperiencesPortugal", "Yes Experiences Portugal", "YES Portugal", "YES Tours", "Yes Tours", "YES Tours Portugal", "YES Experiences Tours", "Yes Experiences Tours", "YES Experiences Tours Portugal", "ES Experiences", "ESExperiences", "ES Experiences Portugal"]);
     expect(ld.url).toBe("https://yesexperiencesportugal.com/");
     expect(ld.publisher).toEqual({ "@id": "https://yesexperiencesportugal.com/#organization" });
   });
@@ -26,7 +26,7 @@ describe("WebSite / site-name signals", () => {
   it("Organization keeps the exact brand name and brand-consistent alternates", () => {
     const ld = organizationLd() as unknown as Record<string, unknown>;
     expect(ld.name).toBe("YES Experiences Portugal");
-    expect(ld.alternateName).toEqual(["YES Experiences", "YESExperiences", "YES Portugal", "Yes Experiences Portugal", "YesExperiencesPortugal", "ES Experiences"]);
+    expect(ld.alternateName).toEqual(["YES Experiences", "Yes Experiences", "YESExperiences", "YesExperiences", "YESExperiences Portugal", "YesExperiences Portugal", "YesExperiencesPortugal", "Yes Experiences Portugal", "YES Portugal", "YES Tours", "Yes Tours", "YES Tours Portugal", "YES Experiences Tours", "Yes Experiences Tours", "YES Experiences Tours Portugal", "ES Experiences", "ESExperiences", "ES Experiences Portugal"]);
     expect(ld.logo).toMatchObject({
       "@type": "ImageObject",
       url: "https://yesexperiencesportugal.com/icon-192.png",
