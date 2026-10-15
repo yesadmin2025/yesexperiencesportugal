@@ -76,7 +76,24 @@ const trailingSlashRedirect = createMiddleware().server(async ({ next, request }
   const { pathname } = url;
   if (pathname === "/" || !pathname.endsWith("/")) return next();
   if (pathname.startsWith("/lovable/")) return next();
-  const target = pathname.replace(/\/+$/, "") + url.search + url.hash;
+  let target = pathname.replace(/\/+$/, "") + url.search + url.hash;
+  // Collapse chains: if the no-slash URL itself redirects (e.g. retired
+  // /pt/blog → /pt), point straight at the final URL so crawlers get a
+  // single hop instead of a "redirect error" chain.
+  try {
+    let probe = new URL(target, url);
+    for (let i = 0; i < 4; i++) {
+      const res = await fetch(probe.toString(), { method: "HEAD", redirect: "manual" });
+      const loc = res.headers.get("location");
+      if (res.status < 300 || res.status >= 400 || !loc) break;
+      const next = new URL(loc, probe);
+      if (next.origin !== url.origin) break;
+      probe = next;
+      target = next.pathname + next.search + next.hash;
+    }
+  } catch {
+    /* fall back to the plain slash-strip target */
+  }
   return new Response(null, { status: 301, headers: { location: target } });
 });
 
