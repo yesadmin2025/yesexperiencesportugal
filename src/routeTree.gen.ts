@@ -164,6 +164,7 @@ import { Route as ITokenRouteImport } from './routes/i.$token'
 import { Route as Itineraries10DayPrivatePortugalTourRouteImport } from './routes/itineraries.10-day-private-portugal-tour'
 import { Route as LocalStoriesIndexRouteImport } from './routes/local-stories.index'
 import { Route as LocalStoriesSlugRouteImport } from './routes/local-stories.$slug'
+import { Route as PartnersIndexRouteImport } from './routes/partners.index'
 import { Route as PartnersSplatRouteImport } from './routes/partners.$'
 import { Route as PtIndexRouteImport } from './routes/pt.index'
 import { Route as PtSplatRouteImport } from './routes/pt.$'
@@ -1023,6 +1024,11 @@ const LocalStoriesSlugRoute = LocalStoriesSlugRouteImport.update({
   path: '/$slug',
   getParentRoute: () => LocalStoriesRoute,
 } as any)
+const PartnersIndexRoute = PartnersIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => PartnersRoute,
+} as any)
 const PartnersSplatRoute = PartnersSplatRouteImport.update({
   id: '/$',
   path: '/$',
@@ -1542,6 +1548,7 @@ export interface FileRoutesByFullPath {
   '/admin/': typeof AdminIndexRoute
   '/guide/': typeof GuideIndexRoute
   '/local-stories/': typeof LocalStoriesIndexRoute
+  '/partners/': typeof PartnersIndexRoute
   '/pt/': typeof PtIndexRoute
   '/wineries/': typeof WineriesIndexRoute
   '/.lovable/oauth/consent': typeof DotlovableOauthConsentRoute
@@ -1625,7 +1632,6 @@ export interface FileRoutesByTo {
   '/mcp-signin': typeof McpSigninRoute
   '/moments': typeof MomentsRoute
   '/multi-day': typeof MultiDayRoute
-  '/partners': typeof PartnersRouteWithChildren
   '/portugal-for-american-travelers': typeof PortugalForAmericanTravelersRoute
   '/portugal-itinerary': typeof PortugalItineraryRoute
   '/portugal-tours': typeof PortugalToursRoute
@@ -1759,6 +1765,7 @@ export interface FileRoutesByTo {
   '/admin': typeof AdminIndexRoute
   '/guide': typeof GuideIndexRoute
   '/local-stories': typeof LocalStoriesIndexRoute
+  '/partners': typeof PartnersIndexRoute
   '/pt': typeof PtIndexRoute
   '/wineries': typeof WineriesIndexRoute
   '/.lovable/oauth/consent': typeof DotlovableOauthConsentRoute
@@ -1981,6 +1988,7 @@ export interface FileRoutesById {
   '/admin/': typeof AdminIndexRoute
   '/guide/': typeof GuideIndexRoute
   '/local-stories/': typeof LocalStoriesIndexRoute
+  '/partners/': typeof PartnersIndexRoute
   '/pt/': typeof PtIndexRoute
   '/wineries/': typeof WineriesIndexRoute
   '/.lovable/oauth/consent': typeof DotlovableOauthConsentRoute
@@ -2204,6 +2212,7 @@ export interface FileRouteTypes {
     | '/admin/'
     | '/guide/'
     | '/local-stories/'
+    | '/partners/'
     | '/pt/'
     | '/wineries/'
     | '/.lovable/oauth/consent'
@@ -2287,7 +2296,6 @@ export interface FileRouteTypes {
     | '/mcp-signin'
     | '/moments'
     | '/multi-day'
-    | '/partners'
     | '/portugal-for-american-travelers'
     | '/portugal-itinerary'
     | '/portugal-tours'
@@ -2421,6 +2429,7 @@ export interface FileRouteTypes {
     | '/admin'
     | '/guide'
     | '/local-stories'
+    | '/partners'
     | '/pt'
     | '/wineries'
     | '/.lovable/oauth/consent'
@@ -2642,6 +2651,7 @@ export interface FileRouteTypes {
     | '/admin/'
     | '/guide/'
     | '/local-stories/'
+    | '/partners/'
     | '/pt/'
     | '/wineries/'
     | '/.lovable/oauth/consent'
@@ -3915,6 +3925,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LocalStoriesSlugRouteImport
       parentRoute: typeof LocalStoriesRoute
     }
+    '/partners/': {
+      id: '/partners/'
+      path: '/'
+      fullPath: '/partners/'
+      preLoaderRoute: typeof PartnersIndexRouteImport
+      parentRoute: typeof PartnersRoute
+    }
     '/partners/$': {
       id: '/partners/$'
       path: '/$'
@@ -4526,10 +4543,12 @@ const LocalStoriesRouteWithChildren = LocalStoriesRoute._addFileChildren(
 
 interface PartnersRouteChildren {
   PartnersSplatRoute: typeof PartnersSplatRoute
+  PartnersIndexRoute: typeof PartnersIndexRoute
 }
 
 const PartnersRouteChildren: PartnersRouteChildren = {
   PartnersSplatRoute: PartnersSplatRoute,
+  PartnersIndexRoute: PartnersIndexRoute,
 }
 
 const PartnersRouteWithChildren = PartnersRoute._addFileChildren(

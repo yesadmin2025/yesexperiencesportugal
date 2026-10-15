@@ -1,11 +1,9 @@
-import { createFileRoute, redirect } from "@tanstack/react-router";
+import { createFileRoute, Outlet } from "@tanstack/react-router";
 
 /**
- * /partners — retired. The platform landing pages were removed; the footer
- * now links straight out to the real marketplace listings.
+ * /partners — layout only. The exact path redirects in partners.index.tsx
+ * (to /trade); subpaths redirect in partners.$.tsx (to /reviews).
  */
 export const Route = createFileRoute("/partners")({
-  beforeLoad: () => {
-    throw redirect({ to: "/trade", statusCode: 301 });
-  },
+  component: () => <Outlet />,
 });
