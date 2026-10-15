@@ -131,8 +131,22 @@ const literalParamSegment404 = createMiddleware().server(async ({ next, request 
   return next();
 });
 
+/**
+ * Retired /partners URLs: exact path → /trade, subpaths → /reviews.
+ * Handled at request level (single 301 hop) so it can't be shadowed by
+ * router layout matching.
+ */
+const partnersRedirect = createMiddleware().server(async ({ next, request }) => {
+  const url = new URL(request.url);
+  const p = url.pathname.replace(/\/+$/, "");
+  if (p === "/partners") return new Response(null, { status: 301, headers: { location: "/trade" } });
+  if (p.startsWith("/partners/")) return new Response(null, { status: 301, headers: { location: "/reviews" } });
+  return next();
+});
+
 export const startInstance = createStart(() => ({
   requestMiddleware: [
+    partnersRedirect,
     legacyDomainRedirect,
     trailingSlashRedirect,
     literalParamSegment404,
