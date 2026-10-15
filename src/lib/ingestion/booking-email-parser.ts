@@ -548,7 +548,9 @@ export function parseOta(input: EmailInput, channel: SourceChannel, forceReview 
   const subject = input.subject ?? "";
   const body = normaliseBody(input.body ?? "");
   const haystack = `${subject}\n${body}`;
-  const cancelled = /\bcancel(l?ed|lation)\b/i.test(subject);
+  const cancelled =
+    /\bcancel(l?ed|lation)\b/i.test(subject) ||
+    /\b(?:booking|reservation)\s+(?:has\s+been\s+|was\s+)?cancell?ed\b/i.test(body.slice(0, 1500));
   const isBooking =
     cancelled ||
     /\b(new )?(booking|reservation)\b|\bbuchung\b|\bhas been booked\b/i.test(subject) ||
@@ -558,7 +560,7 @@ export function parseOta(input: EmailInput, channel: SourceChannel, forceReview 
   const draft = emptyBooking(0, "direct", channel);
   draft.intent = cancelled ? "cancel" : "create";
   const ref =
-    clean(firstLabelled(body, ["Reference number", "Booking reference", "Reference", "Booking ID"])) ??
+    clean(firstLabelled(body, ["Reference number", "Booking Reference", "Booking reference", "Reference", "Booking ID"])) ??
     haystack.match(OTA_REF)?.[1] ??
     null;
   draft.externalBookingRef = ref;
@@ -570,7 +572,7 @@ export function parseOta(input: EmailInput, channel: SourceChannel, forceReview 
     clean(firstLabelled(body, ["Tour", "Activity", "Product", "Option"])) ?? clean(bookedTitle);
   draft.selectedRate = clean(firstLabelled(body, ["Option", "Tour option"]));
   // GYG flattens "Name email: phone Language: …" onto one line.
-  const customerLine = firstLabelled(body, ["Main customer", "Lead traveler", "Customer", "Name"]);
+  const customerLine = firstLabelled(body, ["Main customer", "Lead Traveler Name", "Lead traveller name", "Lead traveler", "Customer", "Name"]);
   const nameOnly = customerLine?.split(/[^\s<>]+@[^\s<>]+|\bLanguage:/i)[0];
   draft.customerName = clean(nameOnly ?? null);
   const email = firstLabelled(body, ["Email", "E-mail", "Customer email"]) ?? customerLine;
@@ -579,7 +581,7 @@ export function parseOta(input: EmailInput, channel: SourceChannel, forceReview 
     clean(firstLabelled(body, ["Phone", "Phone number", "Mobile"])) ??
     customerLine?.match(/\+?\d[\d\s()-]{7,}\d/)?.[0]?.trim() ??
     null;
-  const dateLine = firstLabelled(body, ["Date", "Activity date", "Tour date"]) ?? subject;
+  const dateLine = firstLabelled(body, ["Travel Date", "Date", "Activity date", "Tour date"]) ?? subject;
   const d = parseDateToken(dateLine);
   draft.date = d.date;
   draft.startTime = d.time ?? clean(firstLabelled(body, ["Time", "Start time"]));
