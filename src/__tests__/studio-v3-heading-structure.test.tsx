@@ -30,7 +30,7 @@ vi.mock("sonner", () => ({
 }));
 
 vi.mock("@/components/studio-v3/StudioV3", () => ({
-  StudioV3: () => <h1 data-testid="studio-real-h1">Design your private Portugal day.</h1>,
+  StudioV3: () => <div data-testid="studio-real-shell" />,
 }));
 
 import { LivingAtlasStudioPage } from "@/components/studio-v3/LivingAtlasStudioPage";
@@ -44,16 +44,8 @@ describe("/studio heading structure", () => {
   it("renders exactly one <h1> during SSR", () => {
     const markup = renderToStaticMarkup(<LivingAtlasStudioPage />);
     expect(countH1(markup)).toBe(1);
-    expect(markup).toContain('data-testid="studio-real-h1"');
-  });
-
-  it("keeps the SSR intent block but removes its H1 semantics", () => {
-    const markup = renderToStaticMarkup(<LivingAtlasStudioPage />);
-    expect(markup).toContain('data-testid="studio-v3-ssr-intent"');
-    // The SSR intent must no longer contain an <h1> tag.
     const intentMatch = markup.match(/<header[^>]*data-testid="studio-v3-ssr-intent"[\s\S]*?<\/header>/i);
-    expect(intentMatch).toBeTruthy();
-    expect(intentMatch![0]).not.toMatch(/<h1[\s>]/i);
+    expect(intentMatch![0]).toMatch(/<h1[\s>]/i);
   });
 
   it("preserves the canonical lead text in the SSR intent", () => {
