@@ -80,7 +80,7 @@ export function LivingAtlasStudioPage() {
        * the live keyboard/focus order behind the real experience. */}
       {!hydrated && (
         <header className="sr-only" data-testid="studio-v3-ssr-intent">
-          <p className="font-medium">Design your private Portugal day.</p>
+          <h1 className="font-medium">Design your private Portugal day.</h1>
           <p>
             A cinematic composer that reads how you want the day to feel, who is traveling and the
             rhythm you want, then proposes a private Portugal day built from real Signature routes.
