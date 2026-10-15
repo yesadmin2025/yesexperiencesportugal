@@ -152,8 +152,13 @@ export function buildQueries(days: number): Array<{ query: string; mailbox: Gmai
     { query: internalNotificationQuery(days), mailbox: "INTERNAL" },
     { query: `in:inbox from:bokun.io ${window}`, mailbox: "INBOX" },
     { query: `in:anywhere (from:getyourguide.com OR from:viator.com OR from:tripadvisor.com) ${window}`, mailbox: "INBOX" },
+    // Team forwards of OTA/Bókun emails (original sender sits in the body).
     {
-      query: `in:inbox ${window} subject:(booking OR reservation) subject:(confirmed OR confirmation OR details OR new OR cancelled) -from:bokun.io -from:getyourguide.com -from:viator.com -from:tripadvisor.com -from:me`,
+      query: `in:anywhere ${window} subject:(Fwd OR Fw OR Enc OR Tr) (viator OR getyourguide OR tripadvisor OR bokun OR "BR-") -from:bokun.io -from:viator.com -from:getyourguide.com`,
+      mailbox: "INBOX",
+    },
+    {
+      query: `in:inbox ${window} subject:(booking OR reservation) subject:(confirmed OR confirmation OR details OR new OR cancelled OR canceled OR cancellation) -from:bokun.io -from:getyourguide.com -from:viator.com -from:tripadvisor.com -from:me`,
       mailbox: "INBOX",
     },
     {
