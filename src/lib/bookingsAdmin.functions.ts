@@ -255,6 +255,8 @@ export const cancelAndRefundBooking = createServerFn({ method: "POST" })
       .from("bookings")
       .update({
         status: "refunded",
+        payment_status: "REFUNDED",
+        cancelled_at: updatedAt,
         metadata: {
           ...previousMetadata,
           refund_id: refund.id,

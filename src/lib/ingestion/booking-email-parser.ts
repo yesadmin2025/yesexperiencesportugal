@@ -609,7 +609,54 @@ export function parseOta(input: EmailInput, channel: SourceChannel, forceReview 
  * Entry point. Returns `ignored` for anything that is not a real booking
  * notification or confirmation — enquiries, quotes, marketing, refund threads.
  */
-export function parseBookingEmail(input: EmailInput): ParseResult {
+const FORWARD_SUBJECT = /^\s*(?:(?:fwd?|fw|enc|tr|wg)\s*:\s*)+/i;
+const FORWARD_BODY_MARKER =
+  /-{2,}\s*(?:forwarded message|mensagem encaminhada|original message|mensagem original)\s*-{2,}|^\s*begin forwarded message:/im;
+
+/**
+ * Team members forward OTA/Bókun emails from their own inbox. Read the
+ * original sender and subject from the forwarded header block so the message
+ * is parsed exactly like the original.
+ */
+export function unwrapForwarded(input: EmailInput): EmailInput {
+  const subject = input.subject ?? "";
+  const body = input.body ?? "";
+  const marker = FORWARD_BODY_MARKER.exec(body);
+  if (!FORWARD_SUBJECT.test(subject) && !marker) return input;
+  const tail = marker ? body.slice(marker.index + marker[0].length) : body;
+  const head = tail.slice(0, 1500);
+  const originalFrom = head.match(/^[>\s*]*(?:from|de|von)\s*:\s*(.+)$/im)?.[1]?.trim() ?? null;
+  const originalSubject = head.match(/^[>\s*]*(?:subject|assunto|betreff)\s*:\s*(.+)$/im)?.[1]?.trim() ?? null;
+  return {
+    ...input,
+    from: originalFrom || input.from,
+    subject: (originalSubject || subject).replace(FORWARD_SUBJECT, ""),
+    body: marker ? tail : body,
+  };
+}
+
+/** Viator/Bókun write the same reservation as "#BR-1447627445", "BR-1447627445" or "1447627445". */
+export function normaliseOtaRef(ref: string | null | undefined): string | null {
+  if (!ref) return null;
+  const trimmed = ref.trim().replace(/^#+/, "");
+  const br = /^BR-(\d{6,})$/i.exec(trimmed);
+  return br ? br[1]! : trimmed || null;
+}
+
+export function parseBookingEmail(rawInput: EmailInput): ParseResult {
+  const input = unwrapForwarded(rawInput);
+  const result = parseBookingEmailInner(input);
+  for (const booking of result.bookings) {
+    if (booking.sourceChannel === "VIATOR" || booking.sourceChannel === "TRIPADVISOR" || /^#?BR-/i.test(booking.externalBookingRef ?? "")) {
+      booking.externalBookingRef = normaliseOtaRef(booking.externalBookingRef);
+    } else if (booking.externalBookingRef) {
+      booking.externalBookingRef = booking.externalBookingRef.replace(/^#+/, "");
+    }
+  }
+  return result;
+}
+
+function parseBookingEmailInner(input: EmailInput): ParseResult {
   const subject = input.subject ?? "";
   const body = input.body ?? "";
   const haystack = `${subject}\n${body}`;
@@ -618,7 +665,10 @@ export function parseBookingEmail(input: EmailInput): ParseResult {
     return { kind: "ignored", reason: "non_booking_message", bookings: [] };
   }
 
-  const fromBokun = BOKUN_SENDERS.some((re) => re.test(input.from ?? ""));
+  // Viator/Tripadvisor emails relayed through Bókun or forwarded by the team
+  // keep their own channel.
+  const fromViator = /viator\.com|tripadvisor\./i.test(input.from ?? "");
+  const fromBokun = !fromViator && BOKUN_SENDERS.some((re) => re.test(input.from ?? ""));
   if (fromBokun) return parseBokun(input);
   const ota = OTA_SENDERS.find(([re]) => re.test(input.from ?? ""));
   if (ota) return parseOta(input, ota[1]);
