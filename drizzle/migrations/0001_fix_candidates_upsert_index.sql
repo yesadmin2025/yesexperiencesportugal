@@ -1,0 +1,2 @@
+CREATE UNIQUE INDEX IF NOT EXISTS booking_ingestion_candidates_msg_slot_full_uniq ON public.booking_ingestion_candidates (gmail_message_id, slot);
+DROP INDEX IF EXISTS public.booking_ingestion_candidates_msg_slot_uniq;
