@@ -20,7 +20,10 @@ import { PriceEur } from "@/components/ui/PriceEur";
 import { CTA_LABELS } from "@/content/cta-vocabulary";
 import { getViatorMeta } from "@/data/signatureToursViator";
 import { Star } from "lucide-react";
-import { listPublishedExperienceContent } from "@/lib/experienceContent.functions";
+import {
+  listPublishedExperienceContent,
+  type ExperienceContentOverride,
+} from "@/lib/experienceContent.functions";
 import { CompareControl, ExperienceCompare } from "@/components/experiences/ExperienceCompare";
 import { getSignatureCardHighlights, getSignatureCardPromise } from "@/lib/signatureCardHighlights";
 
@@ -90,13 +93,20 @@ export const Route = createFileRoute("/experiences")({
       ),
     ],
   }),
-  loader: async () => ({ contentOverrides: await listPublishedExperienceContent() }),
   component: ExperiencesPage,
 });
 
 function ExperiencesPage() {
-  const { contentOverrides } = Route.useLoaderData();
+  // The catalogue is source-controlled, so it paints immediately. Published
+  // admin copy fades in after hydration rather than delaying the first render.
+  const [contentOverrides, setContentOverrides] = useState<ExperienceContentOverride[]>([]);
   useMarketingMotion();
+
+  useEffect(() => {
+    void listPublishedExperienceContent()
+      .then(setContentOverrides)
+      .catch(() => {});
+  }, []);
 
   useEffect(() => {
     void import("@/lib/analytics-events").then((a) => a.trackEvent("view_item_list", { list_id: "experiences", item_count: publicSignatureTours.length }));
