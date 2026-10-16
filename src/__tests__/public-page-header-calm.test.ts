@@ -24,7 +24,7 @@ describe("public page header grammar (editorial calm pass)", () => {
     const about = read("src/routes/about.tsx");
     expect(about).not.toContain("page-header-secondary");
     expect(about.match(/page-header-support/g)?.length ?? 0).toBe(1);
-    expect(about).toContain("Travel should feel personal.");
+    expect(about).toContain("travel should feel personal.");
     expect(about).toContain("We believe the experience should adapt to you.");
   });
 

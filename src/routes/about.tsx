@@ -94,17 +94,16 @@ function AboutPage() {
       <section className="page-hero public-page-header public-page-header--start text-left" data-section="hero">
         <div className="container-x max-w-3xl">
           <div>
-            <div className="scene-atmosphere"><h1 className="m-0"><Eyebrow>About YES Experiences Portugal · Private tours &amp; travel design</Eyebrow></h1></div>
+            <div className="scene-atmosphere"><Eyebrow>About YES Experiences Portugal</Eyebrow></div>
             <div className="scene-title">
-              <SectionTitle as="h2" size="anchor" spacing="loose">
+              <SectionTitle as="h1" size="anchor" spacing="loose">
                 Portugal is the stage. <SectionTitle.Em>You write the story.</SectionTitle.Em>
               </SectionTitle>
             </div>
-            <div className="page-header-support scene-body mt-8 max-w-[66ch] space-y-4 text-[color:var(--charcoal-soft)] leading-[1.75]">
-              <p>YES EXPERIENCES PORTUGAL was born from a very simple belief:</p>
-              <p className="font-medium text-[color:var(--charcoal)]">Travel should feel personal.</p>
+            <div className="page-header-support scene-body mt-6 max-w-[66ch] space-y-4 text-[color:var(--charcoal-soft)] leading-[1.75]">
+              <p>YES Experiences Portugal was born from a very simple belief: travel should feel personal.</p>
               <p>Not like following somebody else's itinerary. Not like ticking places off a list. And certainly not like having to adapt yourself to a tour that was designed for everyone.</p>
-              <p className="font-medium text-[color:var(--charcoal)]">We believe the experience should adapt to you.</p>
+              <p>We believe the experience should adapt to you.</p>
               <p>But that idea didn't begin in a meeting room or with a business plan. It began much earlier.</p>
             </div>
           </div>
@@ -114,9 +113,10 @@ function AboutPage() {
       <section className="reveal about-story section-y-major chapter-flow bg-[color:var(--sand)]">
         <div className="container-x grid items-start gap-12 lg:grid-cols-[minmax(0,1fr)_minmax(340px,0.72fr)] lg:gap-16">
           <div>
+            <Eyebrow>A note from Nídia Almeida, founder</Eyebrow>
             <SectionTitle as="h2" size="default" spacing="tight">A love of travel. And a love of home.</SectionTitle>
             <div className={storyClass}>
-              <p>I never planned to build a travel company.</p>
+              <p>When I started YES Experiences Portugal, I never planned to build a travel company.</p>
               <p>In fact, I never imagined I would work in tourism.</p>
               <p>Travel, however, had always been part of my life.</p>
               <p>I travelled from childhood, lived in different countries from a young age, and grew up fascinated by other cultures, different ways of life and the people you meet when you step outside your own world.</p>
