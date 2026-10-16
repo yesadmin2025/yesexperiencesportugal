@@ -72,8 +72,12 @@ export interface ApprovedSection {
 }
 
 /**
- * The approved 10-chapter structure (v11 — single social-proof surface).
+ * The approved 12-chapter structure (v12 — seasonal + special-occasions bands).
  *
+ * v12 change: two owner-requested bands were registered rather than left
+ * outside the lock — the Autumn & winter reassurance band that follows the
+ * Signature preview, and the Special occasions band (Moments & Corporate)
+ * that follows the Travel Designer proof.
  * v11 change: the second, duplicate reviews block was removed and the
  * remaining guest proof lives inside the compact trust strip (#2), which
  * is intentionally a compact reassurance band, not a full chapter.
@@ -84,11 +88,13 @@ export interface ApprovedSection {
  *   3.  Five ways in (Signature / Studio / Designer / Occasions …)
  *   4.  Experience Studio (promoted)
  *   5.  Signature experiences preview
- *   6.  Travel Designer (multi-day, bespoke)
- *   7.  Explore Portugal map
- *   8.  Local Stories
- *   9.  FAQ
- *   10. Final decision
+ *   6.  Autumn & winter (seasonal reassurance + real tour links)
+ *   7.  Travel Designer (multi-day, bespoke)
+ *   8.  Special occasions (Moments & Corporate)
+ *   9.  Explore Portugal map
+ *   10. Local Stories
+ *   11. FAQ
+ *   12. Final decision
  */
 export const APPROVED_HOMEPAGE_SECTIONS: readonly ApprovedSection[] = [
   {
@@ -127,32 +133,48 @@ export const APPROVED_HOMEPAGE_SECTIONS: readonly ApprovedSection[] = [
   },
   {
     order: 6,
+    name: "Autumn & winter — year-round private days",
+    ariaLabelledBy: "winter-days-title",
+    // Facts-only seasonal reassurance (owner-confirmed year-round operation)
+    // with text links to the real winter-suitable Signature days.
+    requiredSpacing: { kind: "py", minScale: 12 },
+  },
+  {
+    order: 7,
     name: "Travel Designer — multi-day, written around you",
     componentTag: "RecentJourney",
     inComponent: true,
     requiredSpacing: { kind: "py", minScale: 14 },
   },
   {
-    order: 7,
+    order: 8,
+    name: "Special occasions — Moments & Corporate",
+    ariaLabelledBy: "special-occasions-title",
+    // Owner-requested band: the two specialist services sit on the homepage
+    // with their own photography and locked CTA vocabulary.
+    requiredSpacing: { kind: "py", minScale: 12 },
+  },
+  {
+    order: 9,
     name: "Explore Portugal — interactive region map",
     ariaLabelledBy: "plan-map-title",
     requiredSpacing: { kind: "pb", minScale: 10 },
   },
   {
-    order: 8,
+    order: 10,
     name: "Local Stories — selected guides",
     ariaLabelledBy: "journal-title",
     requiredSpacing: { kind: "pb", minScale: 16 },
   },
   {
-    order: 9,
+    order: 11,
     name: "FAQ — visible helpful answers",
     componentTag: "FAQ",
     inComponent: true,
     requiredSpacing: { kind: "py", minScale: 16 },
   },
   {
-    order: 10,
+    order: 12,
     name: "Final decision — three ways forward",
     ariaLabelledBy: "final-cta-title",
     requiredSpacing: { kind: "py", minScale: 16 },

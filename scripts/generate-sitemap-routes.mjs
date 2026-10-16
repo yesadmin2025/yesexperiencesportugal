@@ -102,6 +102,19 @@ for (const file of walk(ROUTES_DIR)) {
   if (EXCLUDED_PATHS.has(routePath)) continue;
   if (routePath !== "/" && EXCLUDED_PREFIXES.some((p) => routePath.startsWith(p))) continue;
   if (/throw\s+redirect\s*\(/.test(source)) continue;
+  // A layout-only file (its component renders just <Outlet />) contributes no
+  // content of its own — the URL is served by its index sibling. When that
+  // index redirects, the parent path is a permanent redirect and must never
+  // be advertised (e.g. /partners → /trade).
+  if (/component:\s*\(\)\s*=>\s*<Outlet\s*\/>/.test(source)) {
+    const indexSibling = file.replace(/\.tsx$/, ".index.tsx");
+    if (
+      fs.existsSync(indexSibling) &&
+      /throw\s+redirect\s*\(/.test(fs.readFileSync(indexSibling, "utf8"))
+    ) {
+      continue;
+    }
+  }
   // Unconditional noindex only — routes that noindex a query-param variant
   // (`...(isParamVariant ? [{ robots: noindex }] : [])`) stay indexable at
   // their clean URL and belong in the sitemap.
