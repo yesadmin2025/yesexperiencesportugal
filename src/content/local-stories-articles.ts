@@ -2627,7 +2627,7 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
       { path: "/corporate", label: "Corporate & team days" },
       { path: "/local-stories/azeitao-cheese-workshop-near-lisbon", label: "Azeitão cheese workshop" },
       { path: "/local-stories/azulejo-tile-painting-workshop-lisbon", label: "Azulejo tile workshop" },
-      { path: "/local-stories/evora-private-tour-from-lisbon", label: "Évora private tour from Lisbon" },
+      { path: "/local-stories/alentejo-wine-tour-from-lisbon", label: "Évora and Alentejo from Lisbon" },
       { path: "/studio", label: "Design your day in the Studio" },
     ],
     faq: [
