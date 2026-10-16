@@ -60,7 +60,7 @@ describe("shared public label -> title breath contract", () => {
     expect(styles).toMatch(/\.public-page-header--start \.page-header-support\s*\{[^}]*margin-inline: 0;/);
     expect(about).toContain('const TITLE = "About YES Experiences Portugal · Private Tours by a Local"');
     expect(about).toContain("Portugal is the stage.");
-    expect(about).toContain("Travel should feel personal.");
+    expect(about).toContain("travel should feel personal.");
   });
 
   it("tour and route-map chapter openers opt into the contract", () => {

@@ -220,7 +220,7 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
     relatedReads: [
       { path: "/local-stories/sintra-day-tour-from-lisbon", label: "Sintra day tour from Lisbon" },
       { path: "/local-stories/arrabida-day-trip-from-lisbon", label: "Arrábida day trip from Lisbon" },
-      { path: "/local-stories/best-day-trips-from-lisbon", label: "Best day trips from Lisbon" },
+      { path: "/day-trips-from-lisbon", label: "Best day trips from Lisbon" },
     ],
     datePublished: "2026-06-02",
   },
