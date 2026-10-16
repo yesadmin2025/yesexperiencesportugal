@@ -66,7 +66,7 @@ export function organizationLd() {
       },
     ],
     description:
-      "YES Experiences Portugal is a licensed Portuguese travel design company and tour operator (RNAAT nº 31/2023) based in Sesimbra. It combines curated private Signature day experiences, an interactive Experience Studio where travelers design a private day themselves, and a Travel Designer service for bespoke Portugal journeys of any length, alongside private special moments and corporate group experiences.",
+      "YES Experiences Portugal is a Portuguese experience design brand founded by local host Nídia Almeida in Sesimbra (licensed RNAAT nº 31/2023). Rather than a fixed tour catalogue, it offers the interactive YES Experience Studio, where travelers design their own private Portugal day around their feeling, interests and pace and confirm it instantly; curated private Signature days built on local relationships such as family wineries in Arrábida; a Travel Designer for multi-day journeys of any length; and private proposals, celebrations and corporate days. Private only, never shared groups.",
     slogan:
       "Portugal, around you — private, personalized journeys with local hidden gems, designed in real time.",
     keywords:
