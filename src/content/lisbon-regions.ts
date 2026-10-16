@@ -70,9 +70,9 @@ export const LISBON_REGIONS: readonly LisbonRegion[] = [
     path: "/private-tours-arrabida-sesimbra",
     slug: "arrabida-sesimbra",
     name: "Arrábida & Sesimbra",
-    title: "Private Arrábida & Sesimbra Tours from Lisbon",
+    title: "Sesimbra & Arrábida Private Day Trip from Lisbon",
     description:
-      "Private days on the Arrábida coast and in Sesimbra: hidden coves, the boat trip under the cliffs, viewpoints and a fishing-town lunch. Door-to-door pickup.",
+      "A private day 40 minutes from Lisbon: Arrábida coves, a boat trip under the cliffs and a Sesimbra fishing-town lunch. Door-to-door pickup, instant confirmation.",
     eyebrow: "Setúbal district · 40 minutes from Lisbon",
     h1Lead: "Private Arrábida & Sesimbra tours,",
     h1Em: "where the hills meet the sea.",
