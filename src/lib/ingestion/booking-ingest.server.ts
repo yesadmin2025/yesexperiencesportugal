@@ -312,21 +312,8 @@ export async function ingestParsedBooking(
           source_email_url: ctx.sourceEmailUrl ?? (ctx.gmailMessageId ? gmailUrl(ctx.gmailMessageId) : null),
         } as never)
         .eq("id", existing.id);
-      // Duplicate rows of the same guest + day must not stay "paid" in the diary.
-      const { data: cancelledRow } = await supabaseAdmin
-        .from("bookings")
-        .select("customer_email, preferred_date")
-        .eq("id", existing.id)
-        .maybeSingle();
-      if (cancelledRow?.customer_email && cancelledRow.preferred_date) {
-        await supabaseAdmin
-          .from("bookings")
-          .update({ status: "cancelled", cancelled_at: new Date().toISOString() } as never)
-          .eq("customer_email", cancelledRow.customer_email)
-          .eq("preferred_date", cancelledRow.preferred_date)
-          .in("status", ["paid", "pending"])
-          .neq("id", existing.id);
-      }
+      // Only the matched booking is cancelled: same email + date can be a
+      // separate real booking (agents, two tours a day). Duplicates stay manual.
       await logIngestion(supabaseAdmin, ctx, {
         parser: booking.parser, parseStatus: "parsed", action: "cancelled",
         bookingId: existing.id, confidence: booking.confidence, dedupeKey, channel: booking.sourceChannel,
