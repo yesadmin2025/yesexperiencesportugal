@@ -1,5 +1,7 @@
 # Project architecture decisions
 
+- Studio preflight admits actual composed routes through the existing timing and commercial payment authorities, not date-open products alone, so an eligible alternative cannot introduce a known checkout dead end.
+
 - Corporate guest proof reuses the existing Viator review record and source link, never a separately maintained testimonial or an implied client case study.
 - The booking request selector promotes the existing tour-specific instant booking route when a real tour is chosen; enquiry stays optional and payment logic stays in SimpleBookingForm.
 
