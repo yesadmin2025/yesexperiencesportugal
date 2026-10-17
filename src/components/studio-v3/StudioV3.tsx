@@ -5580,6 +5580,10 @@ export function StoryboardHandoff({
       },
     });
 
+    if (import.meta.env.DEV) {
+      const trial = editedStops.filter((p) => !closedOnDate(p.label));
+      console.warn("[repair-dbg]", JSON.stringify({ certified: result.certified, stops: editedStops.map((p) => [p.label, p.inventoryStopId ?? null, p.blueprintStopId ?? null]), commercial: rebuildLiveCommercialAuthority({ anchorTourId: anchorTourKey ?? null, moments: trial.map((p) => ({ label: p.label, inventoryStopId: p.inventoryStopId ?? null, blueprintStopId: p.blueprintStopId ?? null })), edited: true }).unsafeReason, op: judgeOperational(trial).status, time: judgeFinalDayTime({ points: trial, addOnsMinutes: selectedAddOnMinutes, skeletonTourId: anchorTourKey, rhythm: state.rhythm ?? null }).bookable, d2d: frozenDayAllowsCheckout(certifyFrozenDayFromPickup({ points: trial, pickupCoord: pickupOriginCoord(state.pickup), addOnsMinutes: selectedAddOnMinutes, rhythm: state.rhythm ?? null })), removable: momentOptionality.map((m) => m?.removable) }));
+    }
     if (!result.certified || result.repairs.length === 0) return;
     setEdited(() => [...result.points]);
     const note = describeDayRepair(result.repairs, revealLabel);
