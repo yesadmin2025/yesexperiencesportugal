@@ -15,6 +15,7 @@ import {
 import { ChevronDown } from "lucide-react";
 import { CANCELLATION, LICENSE_LABEL } from "@/config/business-nap";
 import { toast } from "sonner";
+import { trackEvent } from "@/lib/analytics-events";
 import { prewarmStripeScript } from "@/components/checkout/BrandedCheckoutDrawer";
 import { CompositionField } from "@/components/booking/CompositionField";
 import {
@@ -211,6 +212,7 @@ export function FinalDetailsDialog({
         const message = dateAvailabilityMessage(dateCheck.reason, dateRule.minLeadHours);
         setDateError(message);
         setMissingSummary([message]);
+        trackEvent("guest_details_validation_failed", { experience_id: tourId ?? null, missing_fields: `date_${dateCheck.reason}` });
         setEditDay(true);
         requestAnimationFrame(() => dateInputRef.current?.focus());
         toast.error(message);
@@ -219,6 +221,10 @@ export function FinalDetailsDialog({
     }
     if (missing.length) {
       setMissingSummary(missing);
+      trackEvent("guest_details_validation_failed", {
+        experience_id: tourId ?? null,
+        missing_fields: missing.map((m) => m.replace(/[^a-z]+/gi, "_")).join(","),
+      });
       toast.error(`Please complete: ${missing.join(", ")}`);
       return;
     }

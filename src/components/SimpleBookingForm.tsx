@@ -162,6 +162,18 @@ export function SimpleBookingForm({ tour }: { tour: SignatureTour }) {
   const firedLanguage = useRef(false);
   const firedDrawer = useRef(false);
   const firedAvailability = useRef(false);
+  const detailsOpenedAt = useRef<number | null>(null);
+  useEffect(() => {
+    if (!detailsOpen) return;
+    detailsOpenedAt.current = Date.now();
+    trackEvent("guest_details_opened", {
+      experience_id: tour.id,
+      experience_type: "signature",
+      group_size: guests,
+      has_minors: composition.minorAges.length > 0,
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [detailsOpen]);
 
   useEffect(() => {
     if (compositionReady && !firedComposition.current) {
@@ -705,6 +717,11 @@ export function SimpleBookingForm({ tour }: { tour: SignatureTour }) {
             if (!canReserve) {
               const reason = !dateValid ? "date_missing_or_unavailable" : "composition_incomplete";
               gaBookingValidationBlocked({ tourId: tour.id, surface: "signature", reason });
+              trackEvent("booking_validation_blocked", {
+                experience_id: tour.id,
+                experience_type: "signature",
+                reason: !date ? "missing_date" : !dateValid ? "date_unavailable" : "composition_incomplete",
+              });
               const msg = !dateValid
                 ? `Pick an available date at least ${leadHours} hours from now.`
                 : "Add an age for every child.";
@@ -755,6 +772,16 @@ export function SimpleBookingForm({ tour }: { tour: SignatureTour }) {
         open={detailsOpen}
         onOpenChange={(o) => {
           setDetailsOpen(o);
+          if (!o && !pending) {
+            trackEvent("guest_details_abandoned", {
+              experience_id: tour.id,
+              experience_type: "signature",
+              group_size: guests,
+              seconds_open: detailsOpenedAt.current
+                ? Math.round((Date.now() - detailsOpenedAt.current) / 1000)
+                : undefined,
+            });
+          }
           if (o && !firedAvailability.current) {
             firedAvailability.current = true;
             trackEvent("availability_open", {
@@ -802,6 +829,13 @@ export function SimpleBookingForm({ tour }: { tour: SignatureTour }) {
         onOpenChange={(o) => {
           setCheckoutOpen(o);
           if (!o) {
+            trackEvent("checkout_drawer_abandoned", {
+              experience_id: tour.id,
+              experience_type: "signature",
+              group_size: guests,
+              stripe_ready: Boolean(clientSecret),
+              had_error: Boolean(checkoutError),
+            });
             setClientSecret(null);
             setCheckoutError(null);
           }
