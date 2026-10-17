@@ -2088,8 +2088,8 @@ export function StudioV3() {
         },
         tourPriceTiers,
       );
-      // Studio only composes instantly bookable days: a Signature whose own
-      // itinerary has a moment closed on this exact date is not offered.
+      // Certify the actual composed routes against the unchanged closure,
+      // timing, pickup and commercial authorities before offering a day.
       const openTourIds = admitBookableStudioRoutes(state, result.eligibleTourIds);
       result.eligibleTourIds.splice(0, result.eligibleTourIds.length, ...openTourIds);
       if (result.eligibleTourIds.length === 0) {

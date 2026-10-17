@@ -26,8 +26,7 @@ describe("Monday wine route admission", () => {
   });
   it("keeps a certified alternative and never widens an empty candidate set", () => {
     const admitted = admitBookableStudioRoutes(mondayWine, signatureTours.map((tour) => tour.id));
-    expect(admitted.length).toBeGreaterThan(0);
+    expect(admitted).toContain("troia-comporta");
     expect(admitBookableStudioRoutes(mondayWine, [])).toEqual([]);
-    console.log("Monday certified candidates", admitted);
   });
 });
