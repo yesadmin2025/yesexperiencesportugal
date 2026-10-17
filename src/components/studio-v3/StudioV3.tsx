@@ -142,6 +142,7 @@ import { REGION_STOP_POOL } from "@/data/regionStopPool";
 import { isStopClosedOn } from "@/data/stopOperational";
 import { TAILOR_BLUEPRINTS } from "@/data/tailorBlueprints";
 import { nextOpenDatesForDay } from "@/lib/studio-v3/nextOpenDates";
+import { admitBookableStudioRoutes } from "./bookableRouteAdmission";
 import { REGION_ORIGIN, type RegionKey } from "@/data/regionStops";
 import { lookupStopGeo } from "@/lib/studio/stop-lookup";
 import { useRouteLegMinutes, type RouteLegStop } from "@/hooks/use-route-leg-minutes";
@@ -2087,14 +2088,9 @@ export function StudioV3() {
         },
         tourPriceTiers,
       );
-      // Studio only composes instantly bookable days: a Signature whose own
-      // itinerary has a moment closed on this exact date is not offered.
-      const openTourIds = result.eligibleTourIds.filter((id) => {
-        const tour = signatureTours.find((t) => t.id === id);
-        return !tour?.stops?.some((s) =>
-          isStopClosedOn(`${s.label} ${(s as { story?: string }).story ?? ""}`, state.dateExact as string),
-        );
-      });
+      // Certify the actual composed routes against the unchanged closure,
+      // timing, pickup and commercial authorities before offering a day.
+      const openTourIds = admitBookableStudioRoutes(state, result.eligibleTourIds);
       result.eligibleTourIds.splice(0, result.eligibleTourIds.length, ...openTourIds);
       if (result.eligibleTourIds.length === 0) {
         setLogisticsConflict(

@@ -1,10 +1,10 @@
-import fs from "node:fs";
 import { describe, expect, it } from "vitest";
 import { isStopClosedOn } from "@/data/stopOperational";
-const STUDIO = fs.readFileSync("src/components/studio-v3/StudioV3.tsx", "utf8");
+import { admitBookableStudioRoutes } from "../bookableRouteAdmission";
+import { INITIAL_STATE } from "../types";
 describe("Studio composes only instantly bookable days", () => {
   it("drops Signatures with a moment closed on the exact date before composing", () => {
-    expect(STUDIO).toContain("const openTourIds = result.eligibleTourIds.filter(");
+    expect(admitBookableStudioRoutes({ ...INITIAL_STATE, dateExact: "2026-10-26", pickup: "lisbon", feeling: "wine-food", interests: ["wine"], rhythm: "full" }, ["arrabida-wine-allinclusive"])).toEqual([]);
   });
   it("Mercado do Livramento is closed on Mondays", () => {
     expect(isStopClosedOn("Mercado do Livramento", "2026-10-19")).toBe(true);
