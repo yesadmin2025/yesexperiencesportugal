@@ -5465,7 +5465,7 @@ export function StoryboardHandoff({
     if (!state.dateExact) return null;
     const closed = editedStops.find((s) => isStopClosedOn(s.label, state.dateExact as string));
     return closed
-      ? `${closed.label} is closed on that date. Studio is selecting the verified alternative.`
+      ? `${closed.label} is closed on that date. Choose another date or remove this moment to reserve.`
       : null;
   }, [editedStops, state.dateExact]);
 
@@ -5508,11 +5508,20 @@ export function StoryboardHandoff({
     const dateExact = state.dateExact ?? null;
     const closedOnDate = (label: string) => !!dateExact && isStopClosedOn(label, dateExact);
 
-    const result = repairDayToBookable<AuthoredRoutePoint>({
-      points: editedStops,
-      minStops: REFINE_MIN_STOPS,
-      certify: (points) =>
+    const certifyDay = (points: readonly AuthoredRoutePoint[]): boolean =>
         !points.some((s) => closedOnDate(s.label)) &&
+        // The payment seam rebuilds the commercial ledger from the exact
+        // route; a repaired day it cannot price would only move the dead end
+        // to checkout, so the repair must satisfy it too.
+        rebuildLiveCommercialAuthority({
+          anchorTourId: anchorTourKey ?? null,
+          moments: points.map((s) => ({
+            label: s.label,
+            inventoryStopId: s.inventoryStopId ?? null,
+            blueprintStopId: s.blueprintStopId ?? null,
+          })),
+          edited: true,
+        }).safe &&
         // The operator's own hard rules (single-hop cap, day distance, driving
         // share, backtracking). A day this validator rejects can never be
         // reserved, so the repair must aim at it too — otherwise Studio shows
@@ -5534,23 +5543,40 @@ export function StoryboardHandoff({
             addOnsMinutes: selectedAddOnMinutes,
             rhythm: state.rhythm ?? null,
           }),
-        ),
+        );
+
+    const result = repairDayToBookable<AuthoredRoutePoint>({
+      points: editedStops,
+      minStops: REFINE_MIN_STOPS,
+      certify: certifyDay,
       isBlocked: (s) => closedOnDate(s.label),
       isRemovable: (_s, index) => momentOptionality[index]?.removable ?? false,
       substitute: (s) => {
-        const candidate = swapPool.find((c) => !closedOnDate(c.label));
-        if (!candidate) return null;
-        return {
-          ...s,
-          label: candidate.label,
-          story: candidate.story,
-          lat: candidate.lat ?? null,
-          lng: candidate.lng ?? null,
-          durationMinutes: candidate.durationMinutes ?? null,
-          durationSource: candidate.durationSource ?? null,
-          inventoryStopId: candidate.inventoryStopId ?? null,
-          blueprintStopId: candidate.blueprintStopId ?? null,
-        } as AuthoredRoutePoint;
+        const index = editedStops.indexOf(s);
+        const toPoint = (candidate: (typeof swapPool)[number]) =>
+          ({
+            ...s,
+            label: candidate.label,
+            story: candidate.story,
+            lat: candidate.lat ?? null,
+            lng: candidate.lng ?? null,
+            durationMinutes: candidate.durationMinutes ?? null,
+            durationSource: candidate.durationSource ?? null,
+            inventoryStopId: candidate.inventoryStopId ?? null,
+            blueprintStopId: candidate.blueprintStopId ?? null,
+          }) as AuthoredRoutePoint;
+        // Prefer an open alternative whose resulting day is fully bookable;
+        // otherwise let the repair ease the closed moment out instead.
+        for (const candidate of swapPool) {
+          if (closedOnDate(candidate.label)) continue;
+          if (editedStops.some((p) => p.label === candidate.label)) continue;
+          const point = toPoint(candidate);
+          const trial = editedStops
+            .map((p, i) => (i === index ? point : p))
+            .filter((p) => !closedOnDate(p.label));
+          if (certifyDay(trial)) return point;
+        }
+        return null;
       },
     });
 

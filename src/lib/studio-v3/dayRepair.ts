@@ -72,11 +72,20 @@ function defaultDropPriority(point: unknown): number {
 }
 
 export function repairDayToBookable<P>(input: DayRepairInput<P>): DayRepairResult<P> {
+  const first = repairOnce(input, true);
+  if (first.certified) return first;
+  // A substitute can itself break the day (e.g. a far-away alternative). When
+  // that happens, retry by simply easing the blocked moment out instead.
+  if (!input.substitute) return first;
+  return repairOnce(input, false);
+}
+
+function repairOnce<P>(input: DayRepairInput<P>, allowSubstitute: boolean): DayRepairResult<P> {
   const original = [...input.points];
   const repairs: DayRepairStep[] = [];
   const isBlocked = input.isBlocked ?? (() => false);
   const isRemovable = input.isRemovable ?? (() => true);
-  const substitute = input.substitute ?? (() => null);
+  const substitute = (allowSubstitute && input.substitute) || (() => null);
   const dropPriority = input.dropPriority ?? defaultDropPriority;
   const maxRemovals = input.maxRemovals ?? original.length;
 
