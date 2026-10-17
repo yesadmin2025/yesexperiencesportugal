@@ -4,6 +4,7 @@ import {
 } from "@/lib/booking/signature-selection-storage";
 import { lazy, Suspense, useEffect, useId, useRef, useState } from "react";
 import { trackEvent } from "@/lib/analytics-events";
+import { whatsappUrl } from "@/config/business-nap";
 import { Calendar, Sparkles, ChevronDown } from "lucide-react";
 import { Link, useNavigate } from "@tanstack/react-router";
 import type { SignatureTour } from "@/data/signatureTours";
