@@ -31,7 +31,7 @@ import { CORPORATE_SERVICE_IMAGES } from "@/content/editorial-service-images";
 import { useEditorialOverrides } from "@/lib/editorial-overrides";
 
 import { CORPORATE_FAQ } from "@/content/seo-faq";
-import imgFatimaNazare from "@/assets/tours/fatima-nazare-obidos/nazare.jpg";
+import { getViatorMeta } from "@/data/signatureToursViator";
 import { CTA_LABELS } from "@/content/cta-vocabulary";
 import { whatsappUrl } from "@/config/business-nap";
 
@@ -50,6 +50,12 @@ const CANONICAL = "https://yesexperiencesportugal.com/corporate";
  * the page as leisure travel rather than corporate work.
  */
 const CORPORATE_BLOCK_IMAGES = CORPORATE_SERVICE_IMAGES;
+// Reuse the existing source record; group photography is not a named client case study.
+const corporateSource = getViatorMeta("arrabida-boat");
+const corporateReview = corporateSource?.topReviews.find(
+  (review) => review.title === "Fantastic corporate team experience!",
+);
+const corporateReviewExcerpt = corporateReview?.text.split(". ").slice(0, 3).join(". ");
 
 export const Route = createFileRoute("/corporate")({
   head: () => ({
@@ -60,10 +66,10 @@ export const Route = createFileRoute("/corporate")({
       { property: "og:description", content: OG_DESCRIPTION },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
-      { property: "og:image", content: `https://yesexperiencesportugal.com${imgFatimaNazare}` },
+      { property: "og:image", content: CORPORATE_SERVICE_IMAGES[0]?.src },
       {
         name: "twitter:image",
-        content: `https://yesexperiencesportugal.com${imgFatimaNazare}`,
+        content: CORPORATE_SERVICE_IMAGES[0]?.src,
       },
       { property: "og:url", content: CANONICAL },
       { property: "og:locale", content: "en_US" },
@@ -241,6 +247,9 @@ function CorporatePage() {
               Talk to a local
             </CtaButton>
           </div>
+          <a href="#group-formats" className="mt-5 inline-flex min-h-11 items-center text-sm text-[color:var(--teal)] underline underline-offset-4">
+            Team building · incentives · retreats
+          </a>
         </div>
       </section>
 
@@ -326,7 +335,7 @@ function CorporatePage() {
       </section>
 
       {/* ── Corporate formats ────────────────────────────── */}
-      <section className="section-y chapter-flow">
+      <section id="group-formats" className="section-y chapter-flow scroll-mt-24">
         <div className="container-x">
           <div className="max-w-2xl reveal">
             <Eyebrow>What we design</Eyebrow>
@@ -373,6 +382,31 @@ function CorporatePage() {
           </p>
         </div>
       </section>
+
+      {corporateReview && corporateSource && corporateReviewExcerpt ? (
+        <section className="section-y chapter-flow reveal">
+          <div className="container-x max-w-3xl">
+            <Eyebrow>From a guest's team day</Eyebrow>
+            <SectionTitle size="compact" spacing="loose">
+              Outside the conference. <SectionTitle.Em>Together in Portugal.</SectionTitle.Em>
+            </SectionTitle>
+            <blockquote className="mt-6 border-l-2 border-[color:var(--gold)] pl-5">
+              <p className="text-base leading-relaxed text-[color:var(--charcoal)]">
+                “{corporateReviewExcerpt}.”
+              </p>
+              <footer className="mt-4 text-sm text-[color:var(--charcoal-soft)]">
+                {corporateReview.author} · {corporateReview.date} · excerpt from an existing {corporateReview.source ?? "Viator"} review
+              </footer>
+            </blockquote>
+            <a href={corporateSource.viatorUrl} target="_blank" rel="noopener noreferrer" className="mt-4 inline-flex min-h-11 items-center text-sm text-[color:var(--teal)] underline underline-offset-4">
+              View the source experience on Viator
+            </a>
+            <p className="mt-4 text-sm leading-relaxed text-[color:var(--charcoal-soft)]">
+              The group photographs on this page are from our private experiences. Your corporate program is planned separately around your brief.
+            </p>
+          </div>
+        </section>
+      ) : null}
 
       {/* ── FAQ ──────────────────────────────────────────── */}
       <section className="section-y chapter-flow bg-[color:var(--ivory)] reveal">
