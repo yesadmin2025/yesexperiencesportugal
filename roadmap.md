@@ -1,9 +1,9 @@
 # Phase 1 optimization
 
 ## Studio Monday wine mobile verification — October 17
-- [ ] Exercise a real Monday/wine journey at 393×596 through immediate payment without charging
-- [ ] Correct demonstrated blockers without changing prices or booking rules; run focused regressions
-- [ ] Verify mobile evidence and report preview-only outcome (no publication requested)
+- [x] Exercise a real Monday/wine journey at 393×596: 26 October, two adults, Lisbon → Tróia/Comporta wine day → Stripe test form, HTTP 200, €484 unchanged through summary/payment; no charge
+- [x] Correct demonstrated blockers by certifying composed routes before admission, without changing prices or booking rules; focused regressions pass
+- [x] Verify mobile screenshots, enabled reserve action and zero horizontal overflow; preview only (no publication requested)
 
 ## Corporate, indexing and direct conversion — October 17
 - [x] Strengthen Corporate using existing formats and operational proof only
