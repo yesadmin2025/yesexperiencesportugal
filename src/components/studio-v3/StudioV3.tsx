@@ -2087,6 +2087,15 @@ export function StudioV3() {
         },
         tourPriceTiers,
       );
+      // Studio only composes instantly bookable days: a Signature whose own
+      // itinerary has a moment closed on this exact date is not offered.
+      const openTourIds = result.eligibleTourIds.filter((id) => {
+        const tour = signatureTours.find((t) => t.id === id);
+        return !tour?.stops?.some((s) =>
+          isStopClosedOn(`${s.label} ${(s as { story?: string }).story ?? ""}`, state.dateExact as string),
+        );
+      });
+      result.eligibleTourIds.splice(0, result.eligibleTourIds.length, ...openTourIds);
       if (result.eligibleTourIds.length === 0) {
         setLogisticsConflict(
           "Nothing is open for that exact combination. Try another date, or a different pickup area — we'll design around it immediately.",
