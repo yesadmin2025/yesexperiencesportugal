@@ -64,7 +64,7 @@ export const Route = createFileRoute("/book")({
       {
         property: "og:description",
         content:
-          "Three short steps, then a personal reply within 24 hours with your private day in Portugal confirmed.",
+          "Choose a private day, see available dates and confirm securely by card. Prefer advice first? Send a request to our local team.",
       },
       { property: "og:type", content: "website" },
       { property: "og:url", content: PAGE_URL },
@@ -523,9 +523,9 @@ function BookPage() {
                       <CtaButton to="/book" search={{ tour: chosenTour.id }} className="w-full" data-testid="request-to-instant-link">
                         See dates &amp; reserve
                       </CtaButton>
-                      <button type="button" onClick={next} className="min-h-11 text-sm text-[color:var(--teal)] underline underline-offset-4">
+                      <CtaButton type="button" onClick={next} variant="hairline" icon={null}>
                         Ask a local before booking
-                      </button>
+                      </CtaButton>
                     </div>
                   ) : step < 2 ? (
                     <button type="button" onClick={next} className={primaryBtn}>

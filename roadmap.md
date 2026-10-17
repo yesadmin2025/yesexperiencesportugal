@@ -1,10 +1,11 @@
 # Phase 1 optimization
 
 ## Corporate, indexing and direct conversion — October 17
-- [ ] Strengthen Corporate using existing formats and operational proof only
-- [ ] Inspect Sesimbra, Studio, FAQ and sitemaps in Search Console; explain owner-only reindexing steps
-- [ ] Compare recent live visits and direct bookings, identify measurable abandonment and repair demonstrated friction
-- [ ] Run focused tests and verify real mobile enquiry/booking entry; report publication status
+- [x] Strengthen Corporate using existing formats and operational proof only
+- [x] Inspect Sesimbra, Studio, FAQ and sitemaps in Search Console; indexed, zero sitemap errors; owner-only reindexing steps supplied
+- [x] Compare recent live visits and direct bookings; limited visitor history prevents reliable abandonment rates; promote direct booking from the existing request selector
+- [x] Verify mobile booking details and corporate enquiry destination; no payments submitted; focused tests passed
+- [ ] Publish current Corporate and booking-entry improvements (awaiting explicit publication request)
 
 # Urgent Travel Book restoration — October 7
 - [x] Trace original book section: September 25 commit 6467bbd4b converted /multi-day to redirect without transferring sample proof; assets survived
