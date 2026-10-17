@@ -558,6 +558,18 @@ export function SimpleBookingForm({ tour }: { tour: SignatureTour }) {
               {blockMessage}
             </p>
           )}
+          {blockMessage && !dateValid && (
+            <a
+              href={whatsappUrl(`Hi, I'd like to book "${tour.title}" for a date soon. Is it possible?`)}
+              target="_blank"
+              rel="noopener noreferrer"
+              data-testid="signature-last-minute-whatsapp"
+              onClick={() => trackEvent("booking_validation_blocked", { experience_id: tour.id, experience_type: "signature", reason: "last_minute_whatsapp" })}
+              className="mt-2 inline-flex min-h-[44px] items-center text-[12px] uppercase tracking-[0.22em] text-[color:var(--teal)] underline underline-offset-4"
+            >
+              Need it sooner? Ask us on WhatsApp
+            </a>
+          )}
         </Field>
       </div>
 
