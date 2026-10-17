@@ -53,6 +53,12 @@ export type YesAnalyticsEvent =
   | "checkout_session_failed"
   | "add_on_attached"
   | "checkout_completed"
+  // Direct-booking abandonment funnel (no PII; reasons/field names only)
+  | "booking_validation_blocked"
+  | "guest_details_opened"
+  | "guest_details_validation_failed"
+  | "guest_details_abandoned"
+  | "checkout_drawer_abandoned"
   // Studio
   | "studio_started"
   | "studio_step_completed"
