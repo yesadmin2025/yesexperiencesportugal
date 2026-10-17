@@ -140,6 +140,8 @@ const SIGNATURE_MIN_PRICE_EUR: number = (() => {
 import { regionalVoiceFor } from "./regionalVoice";
 import { REGION_STOP_POOL } from "@/data/regionStopPool";
 import { isStopClosedOn } from "@/data/stopOperational";
+import { TAILOR_BLUEPRINTS } from "@/data/tailorBlueprints";
+import { nextOpenDatesForDay } from "@/lib/studio-v3/nextOpenDates";
 import { REGION_ORIGIN, type RegionKey } from "@/data/regionStops";
 import { lookupStopGeo } from "@/lib/studio/stop-lookup";
 import { useRouteLegMinutes, type RouteLegStop } from "@/hooks/use-route-leg-minutes";
@@ -5469,6 +5471,16 @@ export function StoryboardHandoff({
       : null;
   }, [editedStops, state.dateExact]);
 
+  // One-tap alternative dates when this exact date cannot be sold. Same
+  // lead-time and closure rules as every picker — nothing is relaxed.
+  const suggestedDates = useMemo(
+    () =>
+      state.dateExact
+        ? nextOpenDatesForDay(state.dateExact, editedStops.map((s) => s.label), 3)
+        : [],
+    [state.dateExact, editedStops],
+  );
+
   const canProceedToLogistics =
     editedStops.length >= REFINE_MIN_STOPS &&
     revealValidation.ok &&
@@ -5567,10 +5579,24 @@ export function StoryboardHandoff({
           }) as AuthoredRoutePoint;
         // Prefer an open alternative whose resulting day is fully bookable;
         // otherwise let the repair ease the closed moment out instead.
-        for (const candidate of swapPool) {
+        // Verified fallback: the anchor tour's OWN supplier pool (e.g. the
+        // Viator "2 or 3 wineries" choice list), carried with its blueprint
+        // identity so the commercial ledger prices it exactly as Tailor does.
+        const blueprintPool = (anchorTourKey ? TAILOR_BLUEPRINTS[anchorTourKey]?.choice?.options : undefined) ?? [];
+        const candidates = [
+          ...swapPool,
+          ...blueprintPool.map((o) => ({
+            label: o.label,
+            story: o.blurb,
+            blueprintStopId: o.id,
+            durationMinutes: o.dwellMinutesOverride ?? null,
+            durationSource: null,
+          })),
+        ];
+        for (const candidate of candidates) {
           if (closedOnDate(candidate.label)) continue;
           if (editedStops.some((p) => p.label === candidate.label)) continue;
-          const point = toPoint(candidate);
+          const point = toPoint(candidate as (typeof swapPool)[number]);
           const trial = editedStops
             .map((p, i) => (i === index ? point : p))
             .filter((p) => !closedOnDate(p.label));
@@ -6577,6 +6603,35 @@ export function StoryboardHandoff({
           >
             {reserveBlockedReason}
           </p>
+        ) : null}
+
+        {!canReserve && state.dateExact && suggestedDates.length > 0 ? (
+          <div data-testid="studio-v3-other-dates" className="flex w-full max-w-[380px] flex-col items-center gap-2">
+            <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-[color:var(--charcoal)]">
+              Try another date
+            </p>
+            <div className="flex w-full gap-2">
+              {suggestedDates.map((iso) => (
+                <button
+                  key={iso}
+                  type="button"
+                  data-testid="studio-v3-other-date"
+                  onClick={() => {
+                    repairedRouteSignature.current = null;
+                    onStateChange((s) => ({ ...s, dateExact: iso, dateMode: "exact" }));
+                  }}
+                  className="min-h-[44px] flex-1 rounded-full border border-[color:var(--charcoal)]/20 px-2 text-[13px] text-[color:var(--charcoal)] transition-colors duration-150 hover:border-[color:var(--teal)] focus:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)]"
+                >
+                  {new Date(`${iso}T12:00:00Z`).toLocaleDateString("en-GB", {
+                    weekday: "short",
+                    day: "numeric",
+                    month: "short",
+                    timeZone: "UTC",
+                  })}
+                </button>
+              ))}
+            </div>
+          </div>
         ) : null}
 
         {canReserve ? (
