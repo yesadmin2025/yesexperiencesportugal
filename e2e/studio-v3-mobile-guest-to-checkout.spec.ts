@@ -19,7 +19,6 @@ test.describe("Studio V3 · guest details → checkout @ 393px", () => {
   test.use({ viewport: VIEWPORT });
 
   test("fills guest details and mounts Stripe from the checkout summary", async ({ page }) => {
-    page.on("console", (m) => { if (m.text().includes("repair-dbg")) console.log("DBG", m.text()); });
     test.setTimeout(180_000);
     if (!(await reachGuestDetails(page))) {
       test.skip(true, "Funnel did not reach Guest Details in this run.");
