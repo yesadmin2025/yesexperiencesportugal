@@ -1,5 +1,8 @@
 # Project architecture decisions
 
+- Corporate guest proof reuses the existing Viator review record and source link, never a separately maintained testimonial or an implied client case study.
+- The booking request selector promotes the existing tour-specific instant booking route when a real tour is chosen; enquiry stays optional and payment logic stays in SimpleBookingForm.
+
 - Travel Designer sample proof reuses TravelFilePreview and its original public pages immediately before the existing enquiry bridge, so sample browsing and conversion stay in one shared system.
 
 - Public label-to-title spacing is owned by the shared editorial spacing tokens and existing section/scene contract; left-aligned page openings opt into public-page-header--start so headings and support share one reading axis without overriding centred pages.

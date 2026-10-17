@@ -64,7 +64,7 @@ export const Route = createFileRoute("/book")({
       {
         property: "og:description",
         content:
-          "Three short steps, then a personal reply within 24 hours with your private day in Portugal confirmed.",
+          "Choose a private day, see available dates and confirm securely by card. Prefer advice first? Send a request to our local team.",
       },
       { property: "og:type", content: "website" },
       { property: "og:url", content: PAGE_URL },
@@ -382,16 +382,7 @@ function BookPage() {
                             From €{chosenTour.priceFrom} per person <PriceQualifier /> · private, hotel pickup included.
                           </p>
                           <p className="mt-1.5 text-[13px] leading-relaxed text-[color:var(--charcoal-soft)]">
-                            Prefer instant confirmation?{" "}
-                            <Link
-                              to="/book"
-                              search={{ tour: chosenTour.id }}
-                              className="underline decoration-[color:var(--gold)] underline-offset-4 hover:text-[color:var(--teal)]"
-                              data-testid="request-to-instant-link"
-                            >
-                              See live dates &amp; reserve
-                            </Link>
-                            .
+                            See available dates and the final amount before paying. Prefer to ask first? You can still send a request below.
                           </p>
                         </>
                       ) : null}
@@ -527,7 +518,16 @@ function BookPage() {
                 )}
 
                 <div className="flex flex-col gap-3 sm:flex-row-reverse">
-                  {step < 2 ? (
+                  {step === 0 && chosenTour ? (
+                    <div className="flex w-full flex-col items-center gap-2">
+                      <CtaButton to="/book" search={{ tour: chosenTour.id }} className="w-full" data-testid="request-to-instant-link">
+                        See dates &amp; reserve
+                      </CtaButton>
+                      <CtaButton type="button" onClick={next} variant="hairline" icon={null}>
+                        Ask a local before booking
+                      </CtaButton>
+                    </div>
+                  ) : step < 2 ? (
                     <button type="button" onClick={next} className={primaryBtn}>
                       Continue
                     </button>
