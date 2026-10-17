@@ -98,3 +98,18 @@ describe("describeDayRepair", () => {
     expect(line).toBe("We reshaped a couple of moments so the day stays comfortable.");
   });
 });
+
+describe("repairDayToBookable · substitute fallback", () => {
+  it("removes a closed moment when its substitute would break the day", async () => {
+    const { repairDayToBookable } = await import("../dayRepair");
+    const r = repairDayToBookable<string>({
+      points: ["Market", "Park", "Winery", "Azeitao"],
+      minStops: 2,
+      isBlocked: (s) => s === "Market",
+      substitute: () => "Far away",
+      certify: (pts) => !pts.includes("Market") && !pts.includes("Far away"),
+    });
+    expect(r.certified).toBe(true);
+    expect(r.points).toEqual(["Park", "Winery", "Azeitao"]);
+  });
+});
