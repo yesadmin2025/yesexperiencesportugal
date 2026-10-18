@@ -1,4 +1,5 @@
 import { composedDayInclusions } from "./composedDayInclusions";
+import { StudioDayWhatsApp } from "./StudioDayWhatsApp";
 import {
   lazy,
   Suspense,
@@ -1671,13 +1672,11 @@ export function StudioV3() {
             // relying on the metadata-truncated stopLabels fallback.
             itinerary: stopLabels.map((label) => ({ label })),
 
-            includedItems: (() => {
-              const c = getTourContent(tour.id);
-              if (c.included.length > 0) return c.included;
-              const m = getViatorMeta(tour.id);
-              if (m?.included && m.included.length > 0) return m.included;
-              return tour.included ?? [];
-            })(),
+            includedItems: composedDayInclusions({
+              verified: getTourContent(tour.id).included,
+              stopLabels: checkoutStops.map((s) => s.label),
+              dates: [currentState.dateExact, details.tourDate],
+            }),
             pickupLabel: details.pickupAddress || pickupCityLabel(currentState.pickup) || "",
             dateExact: details.tourDate || currentState.dateExact || null,
             journeyTitle: currentState.journeyTitle ?? null,
@@ -4254,8 +4253,7 @@ export function StudioV3() {
             journeyTitle={state.journeyTitle ?? undefined}
             daySummary={(() => {
               const t = state.tourId ? findTour(state.tourId) : null;
-              const pts =
-                state.editedRoutePoints ?? state.committedRoutePoints ?? t?.stops ?? [];
+              const pts = resolvedJourney.stops;
               return {
                 stops: pts.map((p) => ({ label: p.label, story: p.story ?? null })),
                 included: composedDayInclusions({
@@ -6490,11 +6488,11 @@ export function StoryboardHandoff({
           partyConfirmed={state.guests != null}
           adults={state.adults ?? null}
           minorAges={state.minorAges ?? []}
-          included={(() => {
-            if (!skeletonTour?.id) return skeletonTour?.included ?? [];
-            const c = getTourContent(skeletonTour.id);
-            return c.included.length > 0 ? c.included : (skeletonTour.included ?? []);
-          })()}
+          included={composedDayInclusions({
+            verified: skeletonTour?.id ? getTourContent(skeletonTour.id).included : [],
+            stopLabels: editedStops.map((p) => p.label),
+            dates: [safeDate.dateExact],
+          })}
           showAddOns={true}
           selectedAddOnIds={selectedAddOnIds}
           onAddOnsChange={onAddOnsChange}
@@ -6656,6 +6654,14 @@ export function StoryboardHandoff({
           </button>
         ) : null}
 
+        {canReserve ? (
+          <StudioDayWhatsApp
+            title={journeyTitle ?? "My private Portugal day"}
+            stops={editedStops.map((p) => revealLabel(p.label))}
+            date={state.dateExact}
+            totalEur={resolvedTotalEur ?? null}
+          />
+        ) : null}
         <SaveSignatureButton state={state} journeyTitle={journeyTitle} />
       </div>
 

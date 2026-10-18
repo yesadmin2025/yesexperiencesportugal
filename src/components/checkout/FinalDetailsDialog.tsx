@@ -589,9 +589,6 @@ function ProductRecap({
   const hasDetail = itinerary.length > 0 || beats.length > 0 || notIncluded.length > 0;
   const detailLabel =
     recap.flowLabel === "Tailored Signature" ? "Your tailored day in detail" : "Your day in detail";
-  void date;
-  void composition;
-  void compositionComplete;
 
   return (
     <section
@@ -607,6 +604,9 @@ function ProductRecap({
           Private day · {context.join(" · ")}
         </p>
       ) : null}
+      <p className="mt-2 text-[12.5px] leading-relaxed text-[color:var(--charcoal)]" data-testid="final-details-date-party">
+        {[date ? formatKnownDate(date) : null, compositionComplete ? formatCompositionSummary(composition) : null].filter(Boolean).join(" · ")}
+      </p>
       {hasDetail ? (
         <div className="mt-2">
           <Disclosure

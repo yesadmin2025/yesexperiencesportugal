@@ -164,12 +164,14 @@ export function LogisticsPhase({
       onBackPhase();
       return;
     }
-    setMoment(MOMENT_ORDER[index - 1]!);
+    const previous = MOMENT_ORDER[index - 1];
+    if (previous) setMoment(previous);
   };
 
   const goNext = () => {
     const index = MOMENT_ORDER.indexOf(moment);
-    if (index < MOMENT_ORDER.length - 1) setMoment(MOMENT_ORDER[index + 1]!);
+    const next = MOMENT_ORDER[index + 1];
+    if (next) setMoment(next);
   };
 
   return (
@@ -209,6 +211,7 @@ export function LogisticsPhase({
 
         {moment === "where" ? (
           <section className="w-full" aria-label="Where the day begins">
+            <p className="mb-4 text-[13px] leading-relaxed text-[color:var(--charcoal)]">Choose the area now. Your hotel or address can be confirmed later.</p>
             <ChoiceGrid
               options={PICKUP_GROUPS}
               value={group}
@@ -337,7 +340,7 @@ export function LogisticsPhase({
             checking
               ? "Checking availability…"
               : preflight
-                ? "Start designing your day"
+                ? "Review route & price"
                 : "Continue to guest details"
           }
         />

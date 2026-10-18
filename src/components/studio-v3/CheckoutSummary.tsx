@@ -18,7 +18,6 @@ import { CtaButton } from "@/components/ui/CtaButton";
 import { BookingCtaSkeleton } from "@/components/ui/BookingCtaSkeleton";
 import { findTour } from "@/data/signatureTours";
 import { getTourContent } from "@/lib/tourContent";
-import { isStopClosedOn } from "@/data/stopOperational";
 import { buildWineryDisplayLabels, studioDisplayLabel } from "./studioWineryPresentation";
 import { formatGuestComposition } from "./formatGuests";
 import {
@@ -252,7 +251,6 @@ export function CheckoutSummary({
     stopLabels: canonicalStopLabels,
     dates: [state.dateExact, toIsoDate(guestDetails.tourDate)],
   });
-  void isStopClosedOn;
 
   // Same priority chain as FinalRevealStory — labels only, no stories.
   // Canonical labels are resolved first (order/count are authoritative), then

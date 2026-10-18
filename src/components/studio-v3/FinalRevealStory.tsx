@@ -316,12 +316,7 @@ export function FinalRevealStory({
       stopLabels: keptStops.map((s) => s.label),
       dates: [state.dateExact],
     });
-    if (list.length > 0) return list;
-    return [
-      "Private licensed guide",
-      "Private door-to-door transport",
-      "All confirmed entries listed above",
-    ];
+    return list;
   })();
 
   return (

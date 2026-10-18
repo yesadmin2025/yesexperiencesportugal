@@ -673,6 +673,7 @@ export function GuestDetailsStep({
             </ol>
             {daySummary.included && daySummary.included.length > 0 ? (
               <p
+                data-testid="studio-v3-guest-details-inclusions"
                 className="mt-3 pt-3 border-t text-[12.5px] leading-snug"
                 style={{
                   borderColor: "color-mix(in oklab, var(--charcoal) 10%, transparent)",

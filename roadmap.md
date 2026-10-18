@@ -1,5 +1,14 @@
 # Phase 1 optimization
 
+## Studio and checkout completion — October 18 (prepare, do not publish)
+- [ ] Confirm preview error is resolved
+- [ ] Align composed-day inclusions through reveal, guest recap and frozen purchase payload
+- [ ] Measure recent funnel exits by device with explicit data limitations
+- [ ] Complete date/pickup clarity and quiet WhatsApp day sharing
+- [ ] Align existing checkout recap and add instant-booking/urgent contact shortcuts
+- [ ] Exercise nine Studio profiles, Signature, Tailor and /book at 393px through test Stripe; no payment
+- [ ] Run focused regressions and security scan; prepare publication without deploying
+
 ## Studio Monday wine mobile verification — October 17
 - [x] Exercise a real Monday/wine journey at 393×596: 26 October, two adults, Lisbon → Tróia/Comporta wine day → Stripe test form, HTTP 200, €484 unchanged through summary/payment; no charge
 - [x] Correct demonstrated blockers by certifying composed routes before admission, without changing prices or booking rules; focused regressions pass
