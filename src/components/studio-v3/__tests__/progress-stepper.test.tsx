@@ -51,9 +51,9 @@ const CANONICAL_LIVE_SEQUENCE: StudioV3Phase[] = [
   "who",
   "interests",
   "rhythm",
+  "logistics",
   "refinement",
   "storyboard",
-  "logistics",
   "guestDetails",
   "checkoutSummary",
 ];
