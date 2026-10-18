@@ -31,10 +31,14 @@ for (const flow of ["signature", "book", "tailor"] as const) {
     await expect(dialog).toBeVisible();
     await dialog.getByRole("button", { name: "Continue to payment", exact: true }).click();
     await expect(dialog.getByTestId("final-details-error-summary")).toBeVisible();
+    await expect(dialog.getByRole("textbox", { name: /full name/i })).toBeFocused();
     await dialog.getByRole("textbox", { name: /full name/i }).fill("Checkout QA");
+    await expect(dialog.getByTestId("final-details-error-summary")).not.toContainText("full name");
+    await expect(dialog.getByTestId("final-details-error-summary")).toContainText("email");
     await dialog.getByRole("textbox", { name: /^email/i }).fill("qa+mobile-checkout@example.com");
     await dialog.getByRole("textbox", { name: /phone/i }).fill("+351910000000");
     await dialog.getByTestId("pickup-later-toggle").check();
+    await expect(dialog.getByTestId("final-details-error-summary")).toHaveCount(0);
     const responsePromise = page.waitForResponse((r) => r.url().includes("create-signature-checkout") && r.request().method() === "POST");
     await dialog.getByRole("button", { name: "Continue to payment", exact: true }).click();
     const response = await responsePromise;
