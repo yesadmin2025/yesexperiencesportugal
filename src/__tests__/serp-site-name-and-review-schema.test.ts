@@ -65,7 +65,7 @@ describe("brand-critical SERP snippets", () => {
   it("homepage title and description are locked", () => {
     const home = read("src/routes/index.tsx");
     expect(home).toContain(
-      '"Private Lisbon Tours & Portugal Travel Designer | YES Experiences"',
+      '"Private Tours from Lisbon & Portugal Travel Designer | YES"',
     );
     expect(home).toContain(
       "YES Experiences Portugal — private tours, Signature days, Studio design-your-own, multi-day Travel Designer journeys, proposals and corporate events.",
