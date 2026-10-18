@@ -37,6 +37,15 @@ import { ComposableLineItems } from "./ComposableLineItems";
 import { isPickupToBeConfirmed } from "@/components/checkout/PickupLaterToggle";
 import type { ComposableDisplayLine } from "./useResolvedJourney";
 
+function toIsoDate(v: string | null | undefined): string | null {
+  if (!v) return null;
+  if (/^\d{4}-\d{2}-\d{2}/.test(v)) return v.slice(0, 10);
+  const d = new Date(v);
+  if (Number.isNaN(d.getTime())) return null;
+  const m = String(d.getMonth() + 1).padStart(2, "0");
+  return `${d.getFullYear()}-${m}-${String(d.getDate()).padStart(2, "0")}`;
+}
+
 // One Stripe instance per publishable key, memoized across renders.
 const stripeCache = new Map<string, Promise<Stripe | null>>();
 function getStripePromise(pk: string): Promise<Stripe | null> {
@@ -235,7 +244,11 @@ export function CheckoutSummary({
     .filter(Boolean)
     // A secondary stop closed on the chosen date is left out of the day, so
     // never list it as included (e.g. Livramento market on a Monday).
-    .filter((i) => !isStopClosedOn(i, guestDetails.tourDate ?? state.dateExact));
+    .filter(
+      (i) =>
+        !isStopClosedOn(i, state.dateExact) &&
+        !isStopClosedOn(i, toIsoDate(guestDetails.tourDate)),
+    );
 
   // Same priority chain as FinalRevealStory — labels only, no stories.
   // Canonical labels are resolved first (order/count are authoritative), then
