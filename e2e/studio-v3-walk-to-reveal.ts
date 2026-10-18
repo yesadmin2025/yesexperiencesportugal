@@ -405,12 +405,14 @@ async function advanceThroughLogistics(page: Page, options: WalkOptions = {}): P
       );
       const dayCount = await days.count().catch(() => 0);
       let picked = false;
+      if (options.weekday !== undefined) console.log("OPEN_DAYS", await days.evaluateAll((els) => els.map((e) => e.getAttribute("data-day")).join(",")));
       if (dayCount > 0 && options.weekday !== undefined) {
         for (let i = 0; i < dayCount && !picked; i++) {
           const iso = await days.nth(i).getAttribute("data-day").catch(() => null);
           if (iso && new Date(iso + "T12:00:00").getDay() === options.weekday) {
             await days.nth(i).click({ timeout: 4_000, force: true }).catch(() => undefined);
             picked = true;
+            console.log("PICKED_DAY", iso);
           }
         }
       }
