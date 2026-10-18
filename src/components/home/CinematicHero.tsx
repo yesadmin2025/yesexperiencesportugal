@@ -19,7 +19,7 @@ import { HERO_FILM } from "@/content/hero-scenes-manifest";
 
 /** Cinematic pace: opposing phrases cross the frame, then copy and actions settle. */
 const TEXT_FADE_MS = 1450;
-const CTA_FADE_MS = 1000;
+const CTA_FADE_MS = 400;
 const EASE = "cubic-bezier(0.22,1,0.36,1)";
 
 function storyLineStyle(delayMs: number): React.CSSProperties {
@@ -252,7 +252,8 @@ export function CinematicHero() {
         data-hero-composed="true"
         style={{
           opacity: 1,
-          animation: `heroApprovedReveal ${CTA_FADE_MS}ms ${EASE} 1200ms both`,
+          // Actions are tappable at once on mobile; only a short fade remains.
+          animation: `heroApprovedReveal ${CTA_FADE_MS}ms ${EASE} 0ms both`,
           pointerEvents: "auto",
         }}
       >
