@@ -165,10 +165,21 @@ export function LivingAtlasBookingStep({
         <GuestDetailsStep
           tourId={tour.id}
           journeyTitle={handoff.journeyTitle}
-          daySummary={{
-            stops: (tour.stops ?? []).map((s) => ({ label: s.label, story: s.story ?? null })),
-            included: getTourContent(tour.id).included,
-          }}
+          daySummary={(() => {
+            // The day the traveler composed, not the base catalogue tour.
+            const stops =
+              handoff.itinerary.length > 0
+                ? handoff.itinerary.map((m) => ({ label: m.label, story: m.story ?? null }))
+                : (tour.stops ?? []).map((s) => ({ label: s.label, story: s.story ?? null }));
+            return {
+              stops,
+              included: composedDayInclusions({
+                verified: getTourContent(tour.id).included,
+                stopLabels: stops.map((s) => s.label),
+                dates: [selectedDate],
+              }),
+            };
+          })()}
           fixedTourDate={selectedDate}
           submitLabel="Continue to secure checkout"
           initial={{ tourDate: selectedDate, adults: 2, minorAges: [] }}
