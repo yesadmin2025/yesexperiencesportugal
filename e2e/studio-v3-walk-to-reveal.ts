@@ -404,7 +404,19 @@ async function advanceThroughLogistics(page: Page, options: WalkOptions = {}): P
         '[data-testid="studio-v3-logistics"] button[data-day]:not([disabled])',
       );
       const dayCount = await days.count().catch(() => 0);
-      if (dayCount > 0) {
+      let picked = false;
+      if (dayCount > 0 && options.weekday !== undefined) {
+        for (let i = 0; i < dayCount && !picked; i++) {
+          const iso = await days.nth(i).getAttribute("data-day").catch(() => null);
+          if (iso && new Date(iso + "T12:00:00").getDay() === options.weekday) {
+            await days.nth(i).click({ timeout: 4_000, force: true }).catch(() => undefined);
+            picked = true;
+          }
+        }
+      }
+      if (picked) {
+        // weekday chosen above
+      } else if (dayCount > 0) {
         await days
           .nth(Math.min(6, dayCount - 1))
           .click({ timeout: 4_000, force: true })
@@ -471,6 +483,8 @@ export interface WalkOptions {
   preferredOptionIds?: readonly string[];
   /** Party size to set on the logistics "who" moment (default: Studio default). */
   partyAdults?: number;
+  /** Pick the first open calendar day on this weekday (0 = Sunday, 1 = Monday). */
+  weekday?: number;
 }
 
 export async function walkToReveal(page: Page, options: WalkOptions = {}): Promise<void> {
