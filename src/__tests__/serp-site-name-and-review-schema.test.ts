@@ -68,7 +68,7 @@ describe("brand-critical SERP snippets", () => {
       '"Private Tours from Lisbon & Portugal Travel Designer | YES"',
     );
     expect(home).toContain(
-      "YES Experiences Portugal — private tours, Signature days, Studio design-your-own, multi-day Travel Designer journeys, proposals and corporate events.",
+      "Private, tailor-made day trips from Lisbon and multi-day Portugal journeys. Local guides, wine & coastal experiences, hotel pickup and instant confirmation.",
     );
   });
 
