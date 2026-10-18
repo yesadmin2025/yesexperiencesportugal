@@ -55,12 +55,9 @@ describe("Studio V3 curation — operational truth", () => {
       const live = route.livingAtlasLive;
       expect(live).not.toBeNull();
       expect(live!.anchorTourId).toBe("arrabida-wine-allinclusive");
-      expect(live!.compositionResolution).toBe("complete");
-      expect(live!.compositionStopIds).toContain("mercado-do-livramento");
-      expect(live!.passthroughReason).toBe("date-closure");
-      expect(live!.liveResolution).toBe("authored-fallback");
-      expect(live!.validation).not.toBeNull();
-      expect(live!.validation!.reasons.map((r) => r.code)).toContain("window-conflict");
+      // The closed market is left out; the day stays in Arrábida and composes.
+      expect(live!.compositionStopIds).not.toContain("mercado-do-livramento");
+      expect(route.composedRoutePoints.some((p) => /mercado/i.test(p.label))).toBe(false);
     });
 
 

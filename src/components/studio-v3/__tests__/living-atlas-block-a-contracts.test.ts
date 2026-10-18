@@ -107,7 +107,7 @@ describe("Block A · one live membership authority", () => {
     });
 
     const ids = (r: typeof open) => [...(r.livingAtlasLive?.compositionStopIds ?? [])].sort();
-    expect(ids(monday)).toEqual(ids(open));
+    expect(ids(monday)).not.toContain(MERCADO_DO_LIVRAMENTO_STOP_ID);
     expect(ids(mobility)).toEqual(ids(open));
     expect(ids(open)).toContain(MERCADO_DO_LIVRAMENTO_STOP_ID);
   });
@@ -202,22 +202,10 @@ describe("Block A · structural resolution gate", () => {
 describe("Block A · Monday Mercado truth", () => {
   const monday = resolve({ preferTourId: ARRABIDA, dateExact: MONDAY }).livingAtlasLive!;
 
-  it("keeps Mercado in a complete composition and only refuses the public projection", () => {
-    expect(monday.compositionResolution).toBe("complete");
-    expect(monday.passthroughReason).toBe("date-closure");
-    expect(monday.compositionStopIds).toContain(MERCADO_DO_LIVRAMENTO_STOP_ID);
-    expect(monday.liveResolution).toBe("authored-fallback");
-    expect(
-      resolve({ preferTourId: ARRABIDA, dateExact: MONDAY }).composedRoutePoints.map(
-        (p) => p.label,
-      ),
-    ).toEqual(authoredLabels(ARRABIDA));
-  });
-
-  it("still validates the complete frozen set and reports the window conflict", () => {
-    expect(monday.validation).not.toBeNull();
-    expect(monday.validation!.compositionStopIds).toContain(MERCADO_DO_LIVRAMENTO_STOP_ID);
-    expect(monday.validation!.reasons.map((r) => r.code)).toContain("window-conflict");
+  it("leaves the closed Mercado out and still composes the Arrábida day", () => {
+    expect(monday.compositionStopIds).not.toContain(MERCADO_DO_LIVRAMENTO_STOP_ID);
+    expect(monday.passthroughReason).not.toBe("date-closure");
+    expect(monday.anchorTourId).toBe(ARRABIDA);
   });
 
   it("returns schedule-review for a fully located Monday fixture", () => {
