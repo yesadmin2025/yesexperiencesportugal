@@ -44,4 +44,18 @@ describe("composedDayInclusions", () => {
   it("does not confuse village lunch with its tile factory or cheese tasting with wine", () => {
     expect(composedDayInclusions({ verified: ["Azeitão tile factory", "Cheese tasting", "Wine tastings", "Lunch"], stopLabels: ["Long lunch in Azeitão", "Local winery"] })).toEqual(["Wine tastings", "Lunch"]);
   });
+
+  it("does not promise two selected winery visits when only one remains", () => {
+    const item = "Two selected winery visits and tastings";
+    expect(composedDayInclusions({ verified: [item], stopLabels: ["José Maria da Fonseca winery"] })).toEqual([]);
+    expect(composedDayInclusions({ verified: [item], stopLabels: ["José Maria da Fonseca winery", "Bacalhôa winery"] })).toEqual([item]);
+  });
+
+  it("does not retain a named winery tasting at another winery", () => {
+    expect(composedDayInclusions({ verified: ["Wine tasting at José Maria da Fonseca"], stopLabels: ["Bacalhôa winery"] })).toEqual([]);
+  });
+
+  it("does not retain a winery lunch for unrelated town lunch time", () => {
+    expect(composedDayInclusions({ verified: ["Traditional Alentejo lunch at the winery"], stopLabels: ["Long lunch in Azeitão", "Local winery"] })).toEqual([]);
+  });
 });
