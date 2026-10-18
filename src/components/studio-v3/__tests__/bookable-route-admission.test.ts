@@ -18,8 +18,8 @@ const mondayWine: StudioV3State = {
 };
 
 describe("Monday wine route admission", () => {
-  it("never admits the Monday-closed Mercado do Livramento wine day", () => {
-    expect(admitBookableStudioRoutes(mondayWine, ["arrabida-wine-allinclusive"])).toEqual([]);
+  it("keeps the Arrábida wine day on Monday without the closed market", () => {
+    expect(admitBookableStudioRoutes(mondayWine, ["arrabida-wine-allinclusive"])).toEqual(["arrabida-wine-allinclusive"]);
   });
   it("never admits the full Alentejo alternative that exceeds the unchanged timing gates", () => {
     expect(admitBookableStudioRoutes(mondayWine, ["alentejo-wine"])).toEqual([]);
