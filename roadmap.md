@@ -1,9 +1,9 @@
 # Phase 1 optimization
 
 ## Final mobile checkout review and authorized publication — October 18
-- [ ] Re-run mobile Signature, /book, Tailor and Studio payment-entry and validation/retry checks
-- [ ] Fix only demonstrated remaining checkout friction; preserve frozen SEO and pricing/payment rules
-- [ ] Verify regressions, current preview errors and payment-screen screenshots
+- [x] Re-run mobile Signature, /book, Tailor and Studio payment-entry and validation/retry checks: final 17/17 mobile checks passed, plus six invalid-request checks; five-person profile passed three repeats and full final sweep
+- [x] Fix demonstrated remaining checkout friction: Signature/Book/Tailor corrected fields clear their own warnings and invalid submit focuses the first missing contact field; frozen SEO and pricing/payment rules preserved
+- [x] Verify 41 focused regressions, preview build OK, 76-route metadata check and payment-screen screenshots; no payment submitted or paid confirmation claimed
 - [ ] Publish on Nídia's explicit request and verify live pages
 
 ## Current mobile checkout friction audit — preview only
