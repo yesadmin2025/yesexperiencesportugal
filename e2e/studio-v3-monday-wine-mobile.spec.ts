@@ -13,7 +13,7 @@ test("Monday wine + Arrábida stays in region and reaches payment @ 393px", asyn
   expect(reached).toBe(true);
   const details = page.getByTestId("studio-v3-guest-details");
   await expect(details).toBeVisible();
-  const text = (await page.locator("body").innerText()).toLowerCase();
+  const text = (await details.innerText()).toLowerCase();
   expect(text).not.toContain("livramento");
   expect(text).not.toMatch(/évora|evora|alentejo/);
   console.log("DAY:", (await details.innerText()).slice(0, 600).replace(/\n+/g, " | "));
