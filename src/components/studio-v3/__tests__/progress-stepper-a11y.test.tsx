@@ -28,7 +28,7 @@ describe("StudioV3ProgressStepper · accessibility", () => {
   beforeEach(() => vi.clearAllMocks());
 
   it("sets aria-current=step on the active chapter and nothing else", () => {
-    render(<StudioV3ProgressStepper phase="logistics" onJumpToBeat={() => {}} />);
+    render(<StudioV3ProgressStepper phase="guestDetails" onJumpToBeat={() => {}} />);
     const nav = screen.getByTestId("studio-v3-progress-stepper");
     const current = within(nav).getAllByRole("button");
     // 2 completed (You, Your day) + 1 active (Make it yours) … active uses div.
@@ -82,7 +82,7 @@ describe("StudioV3ProgressStepper · accessibility", () => {
     expect(onJump).toHaveBeenCalledWith("region", "feeling");
 
     fireEvent.click(screen.getByRole("button", { name: "Return to Your day" }));
-    expect(onJump).toHaveBeenCalledWith("rhythm", "refinement");
+    expect(onJump).toHaveBeenCalledWith("rhythm", "logistics");
   });
 
   it("never moves focus forward past the active chapter", () => {
@@ -118,14 +118,14 @@ describe("StudioV3ProgressStepper · accessibility", () => {
   });
 
   it("every chapter label is present and rendered exactly once", () => {
-    render(<StudioV3ProgressStepper phase="logistics" onJumpToBeat={() => {}} />);
+    render(<StudioV3ProgressStepper phase="guestDetails" onJumpToBeat={() => {}} />);
     STUDIO_V3_BEATS.forEach((b) => {
       expect(screen.getAllByText(b.label)).toHaveLength(1);
     });
   });
 
   it("nav has an accessible name", () => {
-    render(<StudioV3ProgressStepper phase="logistics" />);
+    render(<StudioV3ProgressStepper phase="guestDetails" />);
     expect(screen.getByRole("navigation", { name: /studio progress/i })).toBeInTheDocument();
   });
 });

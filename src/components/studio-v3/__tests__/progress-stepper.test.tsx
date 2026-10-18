@@ -34,12 +34,12 @@ const PHASE_TO_BEAT: Record<StudioV3Phase, number | null> = {
   confirmation: 1,
   investment: 1,
   // MAKE IT YOURS
-  logistics: 2,
+  logistics: 1,
   guestDetails: 2,
   checkoutSummary: 2,
-  date: 2,
-  pickup: 2,
-  guests: 2,
+  date: 1,
+  pickup: 1,
+  guests: 1,
 };
 
 /**
@@ -51,9 +51,9 @@ const CANONICAL_LIVE_SEQUENCE: StudioV3Phase[] = [
   "who",
   "interests",
   "rhythm",
+  "logistics",
   "refinement",
   "storyboard",
-  "logistics",
   "guestDetails",
   "checkoutSummary",
 ];
@@ -95,7 +95,7 @@ describe("StudioV3ProgressStepper", () => {
       expect(indices[i]!).toBeGreaterThanOrEqual(indices[i - 1]!);
     }
     // The sequence visits all three chapters, in order, exactly once each.
-    expect(indices).toEqual([0, 0, 0, 0, 1, 1, 2, 2, 2]);
+    expect(indices).toEqual([0, 0, 0, 0, 1, 1, 1, 2, 2]);
   });
 
   it("renders the active chapter monotonically while walking the live sequence", () => {

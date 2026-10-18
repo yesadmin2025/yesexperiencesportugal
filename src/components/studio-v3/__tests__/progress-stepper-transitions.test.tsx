@@ -42,7 +42,7 @@ describe("StudioV3ProgressStepper — out-of-order & rapid transitions", () => {
   });
 
   it("deep-link into logistics renders Make it yours active immediately (no replay)", () => {
-    render(<StudioV3ProgressStepper phase="logistics" />);
+    render(<StudioV3ProgressStepper phase="guestDetails" />);
     expect(activeBeat()).toBe("compose");
     const nav = screen.getByTestId("studio-v3-progress-stepper");
     const current = nav.querySelectorAll('[aria-current="step"]');
