@@ -34,12 +34,12 @@ const PHASE_TO_BEAT: Record<StudioV3Phase, number | null> = {
   confirmation: 1,
   investment: 1,
   // MAKE IT YOURS
-  logistics: 2,
+  logistics: 1,
   guestDetails: 2,
   checkoutSummary: 2,
-  date: 2,
-  pickup: 2,
-  guests: 2,
+  date: 1,
+  pickup: 1,
+  guests: 1,
 };
 
 /**
