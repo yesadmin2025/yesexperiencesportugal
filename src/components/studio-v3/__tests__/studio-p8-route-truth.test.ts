@@ -180,23 +180,20 @@ describe("P8 — operational closures survive composition", () => {
   // membership mutation. The Living Atlas branch keeps the stop in the frozen
   // composition, refuses the PUBLIC projection (`date-closure`) and reports
   // the conflict. The public day falls back to the raw authored Signature.
-  it("turns a Monday closure into an explicit date-closure, never a silent drop", () => {
+  it("leaves a Monday-closed secondary stop out of the day", () => {
     const resolved = resolveStudioV3Route(studioRouteShapingInput(setubalish(MONDAY)));
     const live = resolved.livingAtlasLive;
     expect(live).not.toBeNull();
     expect(live?.anchorTourId).toBe("arrabida-wine-allinclusive");
-    expect(live?.compositionResolution).toBe("complete");
-    expect(live?.compositionStopIds.some((id) => /mercado-do-livramento/.test(id))).toBe(true);
-    expect(live?.passthroughReason).toBe("date-closure");
-    expect(live?.liveResolution).toBe("authored-fallback");
-    expect(live?.validation?.reasons.map((r) => r.code)).toContain("window-conflict");
+    expect(live?.compositionStopIds.some((id) => /mercado-do-livramento/.test(id))).toBe(false);
+    expect(live?.passthroughReason).not.toBe("date-closure");
   });
 
-  it("keeps the closure visible to the downstream story snapshot as review truth", () => {
+  it("never shows the closed market in the Monday story", () => {
     const snapshot = buildSignatureStorySnapshot(setubalish(MONDAY));
     // The snapshot still renders a real day — the closure never empties it.
     expect(JSON.stringify(snapshot).length).toBeGreaterThan(0);
-    expect(mercado.test(JSON.stringify(snapshot))).toBe(true);
+    expect(mercado.test(JSON.stringify(snapshot))).toBe(false);
   });
 
 

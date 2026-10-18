@@ -344,7 +344,18 @@ export function composeHybridDay(
     ),
   ];
 
-  const mustIncludeStopIds = [...principalStopIds, ...matchedOperationalStopIds];
+  // A secondary moment closed on the exact date is simply left out: the day
+  // stays in the chosen region and theme and is re-composed from what is
+  // open. Only an explicit traveler obligation keeps it (and then blocks).
+  const closedStopIds = input.dateExact
+    ? pool
+        .filter((stop) => isStopClosedOn(`${stop.name} ${stop.notes ?? ""}`, input.dateExact ?? null))
+        .map((stop) => stop.id)
+        .filter((stopId) => !principalStopIds.includes(stopId))
+    : [];
+  const mustIncludeStopIds = [...principalStopIds, ...matchedOperationalStopIds].filter(
+    (stopId) => !closedStopIds.includes(stopId),
+  );
 
   const timeBudget = withInternalTransit(input.timeBudget, anchorId, internalTransitMinutes);
 
@@ -363,7 +374,7 @@ export function composeHybridDay(
     // silently sell a different day.
     excludedTypes:
       input.wineIntent || anchorCoreIncludesWinery(anchorId) ? [] : ["winery"],
-    excludedStopIds: [...new Set(input.rejectedStopIds ?? [])].filter(
+    excludedStopIds: [...new Set([...(input.rejectedStopIds ?? []), ...closedStopIds])].filter(
       (stopId) => !mustIncludeStopIds.includes(stopId),
     ),
     mustIncludeStopIds,

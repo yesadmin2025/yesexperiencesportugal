@@ -12,15 +12,18 @@ export function admitBookableStudioRoutes(state: StudioV3State, candidateIds: re
   if (!state.dateExact || !state.pickup) return [];
   return candidateIds.filter((id) => {
     const tour = findTour(id);
-    if (!tour || tour.stops.some((stop) => isStopClosedOn(stop.label, state.dateExact))) return false;
+    if (!tour) return false;
     const resolved = resolveStudioV3Route({
       ...studioRouteShapingInput(state),
       eligibleTourIds: [id],
       preferTourId: id,
     });
     if (resolved.skeletonTourKey !== id) return false;
-    const points = resolveAuthoritativeRouteStops({ resolved, catalogStops: tour.stops, anchorTourId: id });
-    if (points.length < 3 || points.some((point) => isStopClosedOn(point.label, state.dateExact))) return false;
+    // A secondary moment closed on the date is left out of the day — the
+    // region and theme stay; the remaining verified day must still certify.
+    const points = resolveAuthoritativeRouteStops({ resolved, catalogStops: tour.stops, anchorTourId: id })
+      .filter((point) => !isStopClosedOn(point.label, state.dateExact));
+    if (points.length < 3) return false;
     return judgeFinalDayTime({ points, skeletonTourId: id, rhythm: state.rhythm }).bookable &&
       frozenDayAllowsCheckout(certifyFrozenDayFromPickup({ points, pickupCoord: pickupOriginCoord(state.pickup), rhythm: state.rhythm })) &&
       rebuildLiveCommercialAuthority({
