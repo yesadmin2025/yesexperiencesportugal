@@ -9,7 +9,7 @@ import { resolveAuthoritativeRouteStops, studioRouteShapingInput } from "../stud
 import { INITIAL_STATE } from "../types";
 it("dbg", () => {
   const id="arrabida-wine-allinclusive";
-  const state:any={...INITIAL_STATE,feeling:"wine-food",companions:"couple",interests:["wine","gastronomy"],rhythm:"full",dateExact:"2026-10-26",dateMode:"exact",pickup:"lisbon",adults:2,guests:2};
+  const state:any={...INITIAL_STATE,feeling:"wine-food",companions:"couple",interests:["wine","gastronomy"],rhythm:"full",dateExact:"2026-10-27",dateMode:"exact",pickup:"lisbon",adults:2,guests:2};
   const tour=findTour(id)!;
   const resolved=resolveStudioV3Route({...studioRouteShapingInput(state),eligibleTourIds:[id],preferTourId:id});
   const all=resolveAuthoritativeRouteStops({resolved,catalogStops:tour.stops,anchorTourId:id});
