@@ -4257,7 +4257,11 @@ export function StudioV3() {
                 state.editedRoutePoints ?? state.committedRoutePoints ?? t?.stops ?? [];
               return {
                 stops: pts.map((p) => ({ label: p.label, story: p.story ?? null })),
-                included: t?.included ?? [],
+                included: composedDayInclusions({
+                  verified: t ? getTourContent(t.id).included : [],
+                  stopLabels: pts.map((p) => p.label),
+                  dates: [state.dateExact],
+                }),
               };
             })()}
             submitting={false}
