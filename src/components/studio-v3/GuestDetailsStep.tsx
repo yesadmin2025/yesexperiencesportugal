@@ -162,6 +162,26 @@ export function GuestDetailsStep({
       ? { "aria-invalid": true as const, "aria-describedby": `studio-v3-error-${key}` }
       : {};
 
+  // Clear only corrected controls; untouched or still-invalid answers retain
+  // their messages. Submission keeps the same authoritative validation.
+  useEffect(() => {
+    const valid: Record<FieldKey, boolean> = {
+      fullName: Boolean(fullName.trim()),
+      email: isEmail(email),
+      phone: Boolean(phone.trim()),
+      tourDate: isStudioBookingDateAllowed(tourDate),
+      pickupAddress: pickupLater || Boolean(pickupAddress.trim()),
+      composition: isCompositionComplete(composition),
+    };
+    setErrors((current) => {
+      const corrected = (Object.keys(current) as FieldKey[]).filter((key) => current[key] && valid[key]);
+      if (corrected.length === 0) return current;
+      const next = { ...current };
+      for (const key of corrected) delete next[key];
+      return next;
+    });
+  }, [fullName, email, phone, tourDate, pickupAddress, pickupLater, composition]);
+
   useEffect(() => {
     prewarmStripeScript();
   }, []);

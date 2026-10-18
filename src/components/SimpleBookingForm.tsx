@@ -53,6 +53,7 @@ import {
 } from "@/lib/analytics-ga4";
 import { guideAttributionMetadata } from "@/lib/guide-attribution";
 import { SIGNATURE_RESERVE_INTENT_EVENT } from "@/lib/booking/reserve-intent";
+import { isWithin48Hours } from "@/lib/booking/urgent-date";
 
 const FinalDetailsDialog = lazy(() =>
   import("@/components/checkout/FinalDetailsDialog").then((module) => ({
@@ -525,7 +526,7 @@ export function SimpleBookingForm({ tour }: { tour: SignatureTour }) {
                       ? "This tour doesn't run on that day. Please pick another date."
                       : check.reason === "blackout"
                         ? "That date is unavailable. Please pick another."
-                        : "Please choose a date at least 24 hours from now.";
+                        : `Please choose a date at least ${leadHours} hours from now.`;
                   // Only nag once the date is actually complete (YYYY-MM-DD).
                   if (v.length === 10) {
                     setBlockMessage(msg);
@@ -570,7 +571,7 @@ export function SimpleBookingForm({ tour }: { tour: SignatureTour }) {
               {blockMessage}
             </p>
           )}
-          {blockMessage && !dateValid && (
+          {blockMessage && !dateValid && isWithin48Hours(date) && (
             <a
               href={whatsappUrl(`Hi, I'd like to book "${tour.title}" for a date soon. Is it possible?`)}
               target="_blank"
