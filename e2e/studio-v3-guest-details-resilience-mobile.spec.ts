@@ -87,6 +87,8 @@ test.describe("Studio V3 · guest details resilience @ 393px", () => {
       .getByLabel(/^email/i)
       .first()
       .fill("qa+studio@example.com");
+    await expect(form.locator("#studio-v3-error-email")).toHaveCount(0);
+    await expect(form.getByLabel(/^email/i).first()).not.toHaveAttribute("aria-invalid", "true");
     await submit(page);
 
     await expect(page.getByTestId("studio-v3-checkout-summary")).toBeVisible({ timeout: 20_000 });

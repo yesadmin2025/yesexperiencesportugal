@@ -1,5 +1,10 @@
 # Phase 1 optimization
 
+## Current mobile checkout friction audit — preview only
+- [x] Exercise Signature, /book, Tailor and Studio through real sandbox Stripe at 393px; stop before payment
+- [x] Correct demonstrated frontend friction only: clear corrected Studio field errors, limit Signature urgent support to near-term dates, show configured lead time; preserve prices, booking/payment authorities and frozen SEO
+- [x] Run 28 focused unit regressions and six mobile checks; inspect Signature/Book/Tailor payment screenshots, build OK; no publication or payment submitted
+
 ## SEO findings — October 18
 - [x] Verify reported missing H1s: sampled named pages already render one H1; /moments redirects to Proposal. No speculative heading changes; composite scanner finding remains unmodified pending scanner review
 - [x] Replace generic homepage search and share descriptions with factual, differentiated copy

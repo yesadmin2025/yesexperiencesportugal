@@ -57,6 +57,20 @@ describe("GuestDetailsStep", () => {
     });
   });
 
+  it("clears corrected email validation without submitting or clearing other invalid fields", async () => {
+    const onSubmit = vi.fn();
+    render(<GuestDetailsStep onBack={() => {}} onSubmit={onSubmit} />);
+    fireEvent.click(screen.getByTestId("studio-v3-guest-details-submit"));
+    const email = screen.getByRole("textbox", { name: /email/i });
+    expect(email).toHaveAttribute("aria-invalid", "true");
+    fireEvent.change(email, { target: { value: "still-invalid" } });
+    expect(email).toHaveAttribute("aria-invalid", "true");
+    fireEvent.change(email, { target: { value: "guest@example.com" } });
+    await waitFor(() => expect(email).not.toHaveAttribute("aria-invalid"));
+    expect(screen.getByRole("textbox", { name: /full name/i })).toHaveAttribute("aria-invalid", "true");
+    expect(onSubmit).not.toHaveBeenCalled();
+  });
+
   it("fires onSubmit with the full GuestDetails payload once required fields are filled", async () => {
     const onSubmit = vi.fn().mockResolvedValue(undefined);
     render(
