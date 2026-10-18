@@ -4,7 +4,7 @@
 - [x] Re-run mobile Signature, /book, Tailor and Studio payment-entry and validation/retry checks: final 17/17 mobile checks passed, plus six invalid-request checks; five-person profile passed three repeats and full final sweep
 - [x] Fix demonstrated remaining checkout friction: Signature/Book/Tailor corrected fields clear their own warnings and invalid submit focuses the first missing contact field; frozen SEO and pricing/payment rules preserved
 - [x] Verify 41 focused regressions, preview build OK, 76-route metadata check and payment-screen screenshots; no payment submitted or paid confirmation claimed
-- [ ] Publish on Nídia's explicit request and verify live pages
+- [x] Publish on Nídia's explicit request and verify live pages: corrected-field repair confirmed on production at 393px with zero overflow; /book, /studio, /experiences and Tailor HTTP 200; current security scan has 12 informational catalogue notes only
 
 ## Current mobile checkout friction audit — preview only
 - [x] Exercise Signature, /book, Tailor and Studio through real sandbox Stripe at 393px; stop before payment
