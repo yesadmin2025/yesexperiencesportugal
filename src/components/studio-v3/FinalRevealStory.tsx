@@ -13,6 +13,7 @@
  * "to be confirmed" / "pending" copy on this surface.
  */
 
+import { composedDayInclusions } from "./composedDayInclusions";
 import * as React from "react";
 import { useEffect } from "react";
 import { Eyebrow } from "@/components/ui/Eyebrow";
@@ -305,11 +306,17 @@ export function FinalRevealStory({
 
 
   const included: string[] = (() => {
-    if (tour?.id) {
-      const c = getTourContent(tour.id);
-      if (c.included.length > 0) return c.included;
-    }
-    if (tour?.included && tour.included.length > 0) return tour.included;
+    const verified = tour?.id
+      ? getTourContent(tour.id).included.length > 0
+        ? getTourContent(tour.id).included
+        : (tour?.included ?? [])
+      : (tour?.included ?? []);
+    const list = composedDayInclusions({
+      verified,
+      stopLabels: keptStops.map((s) => s.label),
+      dates: [state.dateExact],
+    });
+    if (list.length > 0) return list;
     return [
       "Private licensed guide",
       "Private door-to-door transport",

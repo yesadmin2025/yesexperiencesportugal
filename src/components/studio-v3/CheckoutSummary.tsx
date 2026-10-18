@@ -7,6 +7,7 @@
  * always match. Instant-confirmation language only.
  */
 
+import { composedDayInclusions } from "./composedDayInclusions";
 import * as React from "react";
 import { ArrowLeft, Lock } from "lucide-react";
 import type { Stripe } from "@stripe/stripe-js";
@@ -238,17 +239,20 @@ export function CheckoutSummary({
       typeof guestDetails.guests === "number" ? guestDetails.guests : null,
     ) ?? "—";
 
-  // Real inclusions from the resolved Signature source of truth only.
-  const inclusions: string[] = (tour ? getTourContent(tour.id).included : [])
-    .map((i: string) => i.trim())
-    .filter(Boolean)
-    // A secondary stop closed on the chosen date is left out of the day, so
-    // never list it as included (e.g. Livramento market on a Monday).
-    .filter(
-      (i) =>
-        !isStopClosedOn(i, state.dateExact) &&
-        !isStopClosedOn(i, toIsoDate(guestDetails.tourDate)),
-    );
+  const canonicalStopLabels: string[] =
+    state.editedRoutePoints && state.editedRoutePoints.length > 0
+      ? state.editedRoutePoints.map((p) => p.label)
+      : composedStops && composedStops.length > 0
+        ? composedStops.map((p) => p.label)
+        : (tour?.stops ?? []).map((s) => s.label);
+  // Shared Studio inclusion authority: verified items narrowed to the
+  // composed day, closed stops removed.
+  const inclusions: string[] = composedDayInclusions({
+    verified: tour ? getTourContent(tour.id).included : [],
+    stopLabels: canonicalStopLabels,
+    dates: [state.dateExact, toIsoDate(guestDetails.tourDate)],
+  });
+  void isStopClosedOn;
 
   // Same priority chain as FinalRevealStory — labels only, no stories.
   // Canonical labels are resolved first (order/count are authoritative), then
