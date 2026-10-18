@@ -1,3 +1,4 @@
+import { isWithin48Hours } from "@/lib/booking/urgent-date";
 import { localeAlternateLinks } from "@/i18n/seo";
 import { trackEvent } from "@/lib/analytics-events";
 import { leadAttribution } from "@/lib/utm";
@@ -160,6 +161,7 @@ function Page() {
   const [sent, setSent] = useState(false);
   const [status, setStatus] = useState<Status>("idle");
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
+  const [travelDate, setTravelDate] = useState("");
 
   return (
     <SiteLayout>
@@ -184,9 +186,6 @@ function Page() {
                 <CtaButton to="/experiences" size="sm" onClick={() => trackEvent("booking_cta_click", { placement: "contact_signature" })}>Explore Signature days</CtaButton>
                 <CtaButton to="/studio" variant="ghost" size="sm" onClick={() => trackEvent("booking_cta_click", { placement: "contact_studio" })}>Design your day</CtaButton>
               </div>
-              <CtaButton href={whatsappUrl("Hello! I’d like a private day within the next 48 hours. Can you help?")} target="_blank" rel="noopener noreferrer" variant="hairline" iconLeading={<MessageCircle size={16} aria-hidden />} icon={null} className="mt-3" onClick={() => trackEvent("whatsapp_click", { placement: "contact_urgent" })}>
-                Within 48 hours? Ask us on WhatsApp
-              </CtaButton>
             </div>
           ) : null}
         </Scene>
@@ -295,14 +294,30 @@ function Page() {
                   options={REQUEST_TYPES}
                   defaultValue={presetRequestType}
                 />
-                <Field
-                  label="When are you traveling? (optional)"
-                  name="travelDate"
-                  type="date"
-                  required={false}
-                  min={new Date().toISOString().slice(0, 10)}
-                  autoComplete="off"
-                />
+                <div
+                  onInput={(e) => {
+                    const t = e.target as HTMLInputElement;
+                    if (t.name === "travelDate") setTravelDate(t.value);
+                  }}
+                  onChange={(e) => {
+                    const t = e.target as HTMLInputElement;
+                    if (t.name === "travelDate") setTravelDate(t.value);
+                  }}
+                >
+                  <Field
+                    label="When are you traveling? (optional)"
+                    name="travelDate"
+                    type="date"
+                    required={false}
+                    min={new Date().toISOString().slice(0, 10)}
+                    autoComplete="off"
+                  />
+                  {isWithin48Hours(travelDate) ? (
+                    <CtaButton href={whatsappUrl("Hello! I’d like a private day within the next 48 hours. Can you help?")} target="_blank" rel="noopener noreferrer" variant="hairline" iconLeading={<MessageCircle size={16} aria-hidden />} icon={null} className="mt-3" data-testid="contact-urgent-whatsapp" onClick={() => trackEvent("whatsapp_click", { placement: "contact_urgent" })}>
+                      Within 48 hours? Ask us on WhatsApp
+                    </CtaButton>
+                  ) : null}
+                </div>
                 <Field
                   label="What are you dreaming of? (optional)"
                   name="message"

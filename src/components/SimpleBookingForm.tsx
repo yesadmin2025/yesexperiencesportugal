@@ -247,6 +247,17 @@ export function SimpleBookingForm({ tour }: { tour: SignatureTour }) {
     return () => window.removeEventListener(SIGNATURE_RESERVE_INTENT_EVENT, onIntent);
   }, [tour.id, canReserve, dateValid, priceUnavailable, leadHours]);
 
+  // Arriving from a tour card ("See dates & reserve" → #book): land on the
+  // date choice directly instead of the top of the page.
+  useEffect(() => {
+    if (typeof window === "undefined" || window.location.hash !== "#book") return;
+    const t = window.setTimeout(() => {
+      formRef.current?.scrollIntoView({ behavior: "auto", block: "center" });
+      dateRef.current?.focus({ preventScroll: true });
+    }, 250);
+    return () => window.clearTimeout(t);
+  }, []);
+
   // Embedded checkout state
   const [checkoutOpen, setCheckoutOpen] = useState(false);
   const [clientSecret, setClientSecret] = useState<string | null>(null);

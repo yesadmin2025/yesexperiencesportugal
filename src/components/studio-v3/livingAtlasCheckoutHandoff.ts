@@ -38,7 +38,7 @@ export type LivingAtlasCheckoutHandoff = {
   studioState: StudioV3State;
 };
 
-const SIGNATURE_DESTINATION: Readonly<Record<LivingAtlasSignatureId, DestinationIntent>> = {
+export const SIGNATURE_DESTINATION: Readonly<Record<LivingAtlasSignatureId, DestinationIntent>> = {
   "arrabida-wine-allinclusive": "arrabida-setubal-azeitao",
   "arrabida-boat": "arrabida-setubal-azeitao",
   "wild-beaches-picnic": "arrabida-setubal-azeitao",

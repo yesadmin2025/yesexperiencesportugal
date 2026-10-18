@@ -303,6 +303,7 @@ function TourCard({
           <CtaButton
             to="/tours/$tourId"
             params={{ tourId: tour.id }}
+            hash="book"
             variant="primary"
             size="sm"
             className="w-full"
