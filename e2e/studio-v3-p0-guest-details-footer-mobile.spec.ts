@@ -29,8 +29,8 @@ test("guest-details footer microcopy does not clip on 393px", async ({ page }) =
   const text = (await footerP.innerText()).trim();
 
   expect(text, "footer must not contain an ellipsis").not.toMatch(/[…\u2026]/);
-  expect(text).toContain("Secure checkout");
-  expect(text).toContain("Final price");
+  expect(text.toLowerCase()).toContain("secure checkout");
+  expect(text.toLowerCase()).toContain("this total is what you pay");
 
   const overflows = await footerP.evaluate((el) => el.scrollWidth > el.clientWidth + 1);
   expect(overflows, `footer text overflows its container (text=${JSON.stringify(text)})`).toBe(

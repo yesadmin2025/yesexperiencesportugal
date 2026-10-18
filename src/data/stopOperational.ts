@@ -22,7 +22,7 @@ export interface StopOperationalRule {
 
 export const STOP_OPERATIONAL_RULES: ReadonlyArray<StopOperationalRule> = [
   {
-    match: /mercado\s+do\s+livramento/i,
+    match: /mercado\s+do\s+livramento|livramento\s+market/i,
     closedOn: [1],
     reason: "Mercado do Livramento closed on Mondays",
     source: "https://www.mun-setubal.pt/mercado-do-livramento/",
