@@ -1,5 +1,11 @@
 # Phase 1 optimization
 
+## SEO findings — October 18
+- [ ] Verify reported missing H1s against rendered public pages; repair only confirmed defects
+- [ ] Replace generic homepage search and share descriptions with factual, differentiated copy
+- [ ] Validate metadata and headings; record complete corrections without publishing
+- [ ] Wine-guide snippet opportunity: awaiting specific approval
+
 ## Studio and checkout completion — October 18 (prepare, do not publish)
 - [x] Confirm preview error is resolved
 - [x] Align composed-day inclusions through reveal, guest recap and frozen purchase payload
