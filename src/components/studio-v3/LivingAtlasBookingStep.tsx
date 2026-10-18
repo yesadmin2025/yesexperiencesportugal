@@ -1,3 +1,4 @@
+import { composedDayInclusions } from "./composedDayInclusions";
 import { useMemo, useState } from "react";
 import { toast } from "sonner";
 
@@ -169,7 +170,7 @@ export function LivingAtlasBookingStep({
             // The day the traveler composed, not the base catalogue tour.
             const stops =
               handoff.itinerary.length > 0
-                ? handoff.itinerary.map((m) => ({ label: m.label, story: m.story ?? null }))
+                ? handoff.itinerary.map((m) => ({ label: m.label, story: null }))
                 : (tour.stops ?? []).map((s) => ({ label: s.label, story: s.story ?? null }));
             return {
               stops,
