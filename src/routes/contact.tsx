@@ -313,8 +313,8 @@ function Page() {
                     autoComplete="off"
                   />
                   {isWithin48Hours(travelDate) ? (
-                    <CtaButton href={whatsappUrl("Hello! I’d like a private day within the next 48 hours. Can you help?")} target="_blank" rel="noopener noreferrer" variant="hairline" iconLeading={<MessageCircle size={16} aria-hidden />} icon={null} className="mt-3" data-testid="contact-urgent-whatsapp" onClick={() => trackEvent("whatsapp_click", { placement: "contact_urgent" })}>
-                      Within 48 hours? Ask us on WhatsApp
+                    <CtaButton href={whatsappUrl("Hello! I’d like a private day in the next two days. Can you help?")} target="_blank" rel="noopener noreferrer" variant="hairline" iconLeading={<MessageCircle size={16} aria-hidden />} icon={null} className="mt-3" data-testid="contact-urgent-whatsapp" onClick={() => trackEvent("whatsapp_click", { placement: "contact_urgent" })}>
+                      Travelling this soon? Ask us on WhatsApp
                     </CtaButton>
                   ) : null}
                 </div>
