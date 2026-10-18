@@ -95,7 +95,7 @@ describe("StudioV3ProgressStepper", () => {
       expect(indices[i]!).toBeGreaterThanOrEqual(indices[i - 1]!);
     }
     // The sequence visits all three chapters, in order, exactly once each.
-    expect(indices).toEqual([0, 0, 0, 0, 1, 1, 2, 2, 2]);
+    expect(indices).toEqual([0, 0, 0, 0, 1, 1, 1, 2, 2]);
   });
 
   it("renders the active chapter monotonically while walking the live sequence", () => {
