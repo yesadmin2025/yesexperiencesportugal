@@ -1,9 +1,9 @@
 # Phase 1 optimization
 
 ## SEO findings — October 18
-- [ ] Verify reported missing H1s against rendered public pages; repair only confirmed defects
-- [ ] Replace generic homepage search and share descriptions with factual, differentiated copy
-- [ ] Validate metadata and headings; record complete corrections without publishing
+- [x] Verify reported missing H1s: sampled named pages already render one H1; /moments redirects to Proposal. No speculative heading changes; composite scanner finding remains unmodified pending scanner review
+- [x] Replace generic homepage search and share descriptions with factual, differentiated copy
+- [x] Validate rendered metadata/headings, 40 focused tests and 76-route metadata check; record the two complete corrections without publishing
 - [ ] Wine-guide snippet opportunity: awaiting specific approval
 
 ## Studio and checkout completion — October 18 (prepare, do not publish)
