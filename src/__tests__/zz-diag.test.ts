@@ -9,7 +9,7 @@ it("diag", async () => {
   setComposableStopAuthority((data??[]).map((r:any)=>({stopId:r.stop_id,region:r.region,priceCents:r.price_cents,pricingUnit:r.pricing_unit,minGuests:r.min_guests,active:r.active,notes:r.notes,durationMinutes:r.duration_minutes,openFrom:r.open_from?.slice(0,5)??null,openTo:r.open_to?.slice(0,5)??null,fixedStartTimes:(r.fixed_start_times??[]).map((v:string)=>v.slice(0,5)),durationOptionsMinutes:r.duration_options_minutes??[],quantityOptions:r.quantity_options??[]})));
   const profiles:any[] = [
     {feeling:"wine-food",interests:["gastronomy","coast"]},
-    {feeling:"wine-food",interests:["wine","hands-on","coast"]},{feeling:"nature",interests:["coast","hands-on"],destinationIntent:"arrabida"},{feeling:"wine-food",interests:["wine","coast"],rhythm:"slow"},
+    {feeling:"wine-food",interests:["wine","hands-on","coast"]},{feeling:"nature",interests:["coast","hands-on"]},{feeling:"wine-food",interests:["wine","coast"],rhythm:"slow"},
     {feeling:"nature",interests:["coast","nature"]},
     {feeling:"culture",interests:["heritage","hands-on"]},
   ];
