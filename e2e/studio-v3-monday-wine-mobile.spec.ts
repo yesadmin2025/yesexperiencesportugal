@@ -21,6 +21,9 @@ test("Monday wine + Arrábida stays in region and reaches payment @ 393px", asyn
   await fillGuestDetails(page, { email: "qa+monday-wine@example.com" });
   await page.getByTestId("studio-v3-guest-details-submit").click();
   await expect(page.getByTestId("studio-v3-checkout-summary")).toBeVisible({ timeout: 20_000 });
+  const summaryText = (await page.getByTestId("studio-v3-checkout-summary").innerText()).toLowerCase();
+  console.log("SUMMARY:", summaryText.replace(/\n+/g, " | ").slice(0, 900));
+  expect(summaryText).not.toMatch(/livramento|évora|evora|alentejo/);
   const res = page.waitForResponse((r) => r.url().includes("create-signature-checkout"), { timeout: 45_000 });
   await page.getByTestId("studio-v3-checkout-summary-reserve").click();
   expect((await res).status()).toBe(200);
