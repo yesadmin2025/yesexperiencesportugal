@@ -1,5 +1,11 @@
 # Phase 1 optimization
 
+## Final mobile checkout review and authorized publication — October 18
+- [ ] Re-run mobile Signature, /book, Tailor and Studio payment-entry and validation/retry checks
+- [ ] Fix only demonstrated remaining checkout friction; preserve frozen SEO and pricing/payment rules
+- [ ] Verify regressions, current preview errors and payment-screen screenshots
+- [ ] Publish on Nídia's explicit request and verify live pages
+
 ## Current mobile checkout friction audit — preview only
 - [x] Exercise Signature, /book, Tailor and Studio through real sandbox Stripe at 393px; stop before payment
 - [x] Correct demonstrated frontend friction only: clear corrected Studio field errors, limit Signature urgent support to near-term dates, show configured lead time; preserve prices, booking/payment authorities and frozen SEO
