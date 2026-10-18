@@ -22,4 +22,4 @@ Live Stripe bookings created in the current week: three paid-status bookings, ‚Ç
 
 ## Release checks
 
-Preview only. No deployment or payment submission authorized in this phase. Mobile sweeps must open real test Stripe before the release is called ready.
+Preview only; no deployment or payment submitted. The latest preview build is clean. Nine Studio profiles plus Monday Arr√°bida, guest validation/retry and /book handoff passed (14 mobile tests). Signature, Tailor and /book each returned sandbox HTTP 200 and rendered Stripe payment methods at 393px with zero horizontal overflow. Composed inclusions match guest recap, checkout and submitted snapshot in all nine profiles; named wineries, winery counts and unrelated meals have dedicated regressions. 1,930 broader regression tests passed before the final additional three inclusion assertions; all 11 final inclusion/share unit tests passed. Security scan completed with 12 informational public-catalogue notes and no critical/high findings. Publication awaits explicit authorization.
