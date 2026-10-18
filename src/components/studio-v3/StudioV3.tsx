@@ -1,3 +1,4 @@
+import { studioFromPriceEur } from "./regionFromPrice";
 import { composedDayInclusions } from "./composedDayInclusions";
 import { StudioDayWhatsApp } from "./StudioDayWhatsApp";
 import {
@@ -3661,7 +3662,14 @@ export function StudioV3() {
           {state.feeling ? (
             <NextTeaser>{contextualTeaser("feeling", state)}</NextTeaser>
           ) : (
-            <FooterHint>One choice. You can shape the rest later.</FooterHint>
+            <FooterHint>
+              One choice. You can shape the rest later.
+              {studioFromPriceEur() != null ? (
+                <span className="block mt-1" data-testid="studio-from-price">
+                  Private days from €{studioFromPriceEur()} per guest — exact price before you reserve.
+                </span>
+              ) : null}
+            </FooterHint>
           )}
           {/* P10 — Feeling is answered personally. Delegation is offered once,
               later, as one concierge moment (see StudioDelegationCard). */}

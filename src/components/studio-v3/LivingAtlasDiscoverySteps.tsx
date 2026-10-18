@@ -1,6 +1,7 @@
 import { ArrowLeft, ArrowRight, Check, MapPin } from "lucide-react";
 
 import type { DestinationIntent } from "@/components/studio-v3/types";
+import { regionFromPriceEur } from "@/components/studio-v3/regionFromPrice";
 import { StepActions } from "@/components/studio-v3/LivingAtlasPreviewPrimitives";
 import {
   EXPERIENCE_DIMENSIONS,
@@ -228,6 +229,15 @@ export function DestinationStep({
                   >
                     {item.whisper}
                   </p>
+                  {regionFromPriceEur(item.id) != null ? (
+                    <p
+                      className="mt-2 text-[12px] font-medium"
+                      style={{ color: "var(--gold)" }}
+                      data-testid="studio-region-from-price"
+                    >
+                      From €{regionFromPriceEur(item.id)} per guest
+                    </p>
+                  ) : null}
                 </div>
               </div>
             </button>
