@@ -32,16 +32,18 @@ const BEAT_REASSURANCE: Record<StudioV3BeatId, string> = {
 /** First phase associated with each beat — used as jump-back target. */
 const BEAT_ENTRY_PHASE: Record<StudioV3BeatId, StudioV3Phase> = {
   region: "feeling",
-  rhythm: "refinement",
-  compose: "logistics",
+  rhythm: "logistics",
+  compose: "guestDetails",
 };
 
 /**
  * Phase → chapter index (0..2) or null when no chapter should be highlighted.
  *
  * The grouping mirrors the REAL live sequence
- *   feeling → who → interests → rhythm → refinement → storyboard →
- *   logistics → guestDetails → checkoutSummary
+ *   feeling → who → interests → rhythm → logistics (date frame) →
+ *   refinement → storyboard → guestDetails → checkoutSummary
+ * Logistics frames the day (only bookable days on that date are composed),
+ * so it belongs to "Your Day"; chapter 3 is details and payment only.
  * so the visible progress can only hold or advance, never regress.
  *
  * Legacy/hydration-only ids are folded into the closest sensible chapter
@@ -64,6 +66,10 @@ export function beatIndexForPhase(phase: StudioV3Phase): number | null {
     case "language":
       return 0;
     // Chapter 2 — YOUR DAY: the day being composed and refined.
+    case "logistics":
+    case "date":
+    case "pickup":
+    case "guests":
     case "refinement":
     case "storyboard":
     // Legacy ids that canonicalize onto the unified "Your Day" surface.
@@ -72,13 +78,8 @@ export function beatIndexForPhase(phase: StudioV3Phase): number | null {
     case "investment":
       return 1;
     // Chapter 3 — MAKE IT YOURS: practical facts, details and payment.
-    case "logistics":
     case "guestDetails":
     case "checkoutSummary":
-    // Legacy standalone logistics questions.
-    case "date":
-    case "pickup":
-    case "guests":
       return 2;
     default:
       return null;
