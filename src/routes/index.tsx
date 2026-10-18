@@ -61,10 +61,10 @@ const LIVE_REVIEW_FALLBACK_TOURS = [
  * dedicated landing pages own Lisbon and day-trip search intent.
  */
 const HOME_SEO_TITLE =
-  "Private Lisbon Tours & Portugal Travel Designer | YES Experiences";
+  "Private Tours from Lisbon & Portugal Travel Designer | YES";
 const HOME_SEO_SOCIAL_TITLE = HOME_SEO_TITLE;
 const HOME_SEO_DESCRIPTION =
-  "YES Experiences Portugal — private tours, Signature days, Studio design-your-own, multi-day Travel Designer journeys, proposals and corporate events.";
+  "Private, tailor-made day trips from Lisbon and multi-day Portugal journeys. Local guides, wine & coastal experiences, hotel pickup and instant confirmation.";
 
 
 /** Homepage Journal row — three evergreen Local Stories guides.

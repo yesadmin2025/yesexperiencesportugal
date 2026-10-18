@@ -2780,4 +2780,12 @@ export const GUIDE_INLINE_BOOKING: Readonly<
     tourSlug: "arrabida-boat",
     lead: "The coastal day with the boat ride included — hidden coves, Sesimbra at golden hour and pickup on both sides of the Tagus.",
   },
+  "setubal-wine-guide": {
+    tourSlug: "arrabida-wine-allinclusive",
+    lead: "The Setúbal wine day we run ourselves: family cellars, Azeitão lunch and the Arrábida coast, private from your Lisbon door and confirmed instantly.",
+  },
+  "arrabida-vs-sintra": {
+    tourSlug: "arrabida-wine-allinclusive",
+    lead: "If Arrábida wins for you: cellars, a long lunch and the coast road, private to your party with hotel pickup.",
+  },
 } as const;
