@@ -168,6 +168,10 @@ export function FinalDetailsDialog({
   const [dateError, setDateError] = useState<string | null>(null);
   /** Missing/invalid fields surfaced at the top of the form, not only in a toast. */
   const [missingSummary, setMissingSummary] = useState<string[]>([]);
+  const fullNameInputRef = useRef<HTMLInputElement>(null);
+  const emailInputRef = useRef<HTMLInputElement>(null);
+  const phoneInputRef = useRef<HTMLInputElement>(null);
+  const pickupInputRef = useRef<HTMLInputElement>(null);
   const dateInputRef = useRef<HTMLInputElement>(null);
   const dateErrorId = useId();
 
@@ -187,6 +191,21 @@ export function FinalDetailsDialog({
 
 
   const compositionComplete = isCompositionComplete(composition);
+  useEffect(() => {
+    setMissingSummary((previous) => {
+      const remaining = previous.filter((field) => {
+        if (field === "full name") return !fullName.trim();
+        if (field === "email") return !isEmail(email);
+        if (field === "phone / WhatsApp") return !phone.trim();
+        if (field === "pickup address") return !pickupLater && !pickupAddress.trim();
+        if (field === "age for every child") return !compositionComplete;
+        if (field === "tour date") return !tourDate;
+        return !tourDate || Boolean(dateRule && !validateDateISO(tourDate, dateRule).ok);
+      });
+      return remaining.length === previous.length ? previous : remaining;
+    });
+  }, [fullName, email, phone, pickupLater, pickupAddress, compositionComplete, tourDate, dateRule]);
+
   const quote =
     priceQuote && compositionComplete
       ? priceQuote({ adults: composition.adults, minorAges: [...composition.minorAges] })
@@ -221,6 +240,13 @@ export function FinalDetailsDialog({
     }
     if (missing.length) {
       setMissingSummary(missing);
+      const firstInput = !fullName.trim() ? fullNameInputRef.current
+        : !isEmail(email) ? emailInputRef.current
+        : !phone.trim() ? phoneInputRef.current
+        : !tourDate ? dateInputRef.current
+        : !pickupLater && !pickupAddress.trim() ? pickupInputRef.current
+        : null;
+      requestAnimationFrame(() => firstInput?.focus());
       trackEvent("guest_details_validation_failed", {
         experience_id: tourId ?? null,
         missing_fields: missing.map((m) => m.replace(/[^a-z]+/gi, "_")).join(","),
@@ -373,6 +399,7 @@ export function FinalDetailsDialog({
             <GuestFieldGroup title="Who's coming">
               <GuestField label="Full name" required>
                 <input
+                  ref={fullNameInputRef}
                   value={fullName}
                   onChange={(e) => setFullName(e.target.value)}
                   className={guestInputClass}
@@ -382,6 +409,7 @@ export function FinalDetailsDialog({
               <GuestRow>
                 <GuestField label="Email" required>
                   <input
+                    ref={emailInputRef}
                     type="email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
@@ -391,6 +419,7 @@ export function FinalDetailsDialog({
                 </GuestField>
                 <GuestField label="Phone / WhatsApp" required>
                   <input
+                    ref={phoneInputRef}
                     type="tel"
                     value={phone}
                     onChange={(e) => setPhone(e.target.value)}
@@ -403,6 +432,7 @@ export function FinalDetailsDialog({
               <GuestField label="Pickup address / hotel" required={!pickupLater}>
                 {pickupLater ? null : (
                   <input
+                    ref={pickupInputRef}
                     value={isPickupToBeConfirmed(pickupAddress) ? "" : pickupAddress}
                     onChange={(e) => setPickupAddress(e.target.value)}
                     placeholder="Hotel, address or meeting point"

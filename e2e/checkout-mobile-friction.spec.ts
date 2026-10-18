@@ -1,4 +1,5 @@
 import { expect, test } from "@playwright/test";
+import { fillGuestDetails, reachGuestDetails } from "./studio-v3-walk-to-reveal";
 
 test.use({ viewport: { width: 393, height: 852 } });
 
@@ -31,10 +32,14 @@ for (const flow of ["signature", "book", "tailor"] as const) {
     await expect(dialog).toBeVisible();
     await dialog.getByRole("button", { name: "Continue to payment", exact: true }).click();
     await expect(dialog.getByTestId("final-details-error-summary")).toBeVisible();
+    await expect(dialog.getByRole("textbox", { name: /full name/i })).toBeFocused();
     await dialog.getByRole("textbox", { name: /full name/i }).fill("Checkout QA");
+    await expect(dialog.getByTestId("final-details-error-summary")).not.toContainText("full name");
+    await expect(dialog.getByTestId("final-details-error-summary")).toContainText("email");
     await dialog.getByRole("textbox", { name: /^email/i }).fill("qa+mobile-checkout@example.com");
     await dialog.getByRole("textbox", { name: /phone/i }).fill("+351910000000");
     await dialog.getByTestId("pickup-later-toggle").check();
+    await expect(dialog.getByTestId("final-details-error-summary")).toHaveCount(0);
     const responsePromise = page.waitForResponse((r) => r.url().includes("create-signature-checkout") && r.request().method() === "POST");
     await dialog.getByRole("button", { name: "Continue to payment", exact: true }).click();
     const response = await responsePromise;
@@ -56,4 +61,39 @@ test("Signature missing date does not offer last-minute support", async ({ page 
   await page.getByTestId("signature-reserve-cta").click();
   await expect(page.getByTestId("signature-block-summary")).toBeVisible();
   await expect(page.getByTestId("signature-last-minute-whatsapp")).toHaveCount(0);
+});
+
+test("Studio mobile payment failure preserves details and retries into real sandbox Stripe", async ({ page }) => {
+  test.setTimeout(180_000);
+  expect(await reachGuestDetails(page)).toBe(true);
+  await fillGuestDetails(page);
+  await page.getByTestId("studio-v3-guest-details-submit").click();
+  const summary = page.getByTestId("studio-v3-checkout-summary");
+  await expect(summary).toBeVisible();
+  const total = page.getByTestId("studio-v3-checkout-summary-total");
+  const before = await total.textContent();
+  let requests = 0;
+  await page.route(/\/functions\/v1\/create-signature-checkout(?:\?|$)/, async (route) => {
+    requests += 1;
+    if (requests === 1) {
+      await route.fulfill({ status: 500, contentType: "application/json", body: JSON.stringify({ error: "temporary checkout failure" }) });
+      return;
+    }
+    await route.continue();
+  });
+  const reserve = page.getByTestId("studio-v3-checkout-summary-reserve");
+  await reserve.click();
+  await expect(page.getByTestId("studio-v3-checkout-summary-error")).toBeVisible();
+  await expect(total).toHaveText(before ?? "");
+  await expect(summary).toContainText("Ana Test");
+  await expect(reserve).toHaveText(/try secure checkout again/i);
+  const responsePromise = page.waitForResponse((r) => r.url().includes("create-signature-checkout") && r.request().method() === "POST");
+  await reserve.click();
+  const response = await responsePromise;
+  expect(response.status()).toBe(200);
+  expect(response.request().postDataJSON().environment).toBe("sandbox");
+  expect(requests).toBe(2);
+  await expect(page.locator('iframe[src*="stripe.com"]').first()).toBeAttached({ timeout: 45_000 });
+  await page.waitForTimeout(4000);
+  await page.screenshot({ path: "/tmp/browser/checkout-audit/studio-retry-verified.png" });
 });
