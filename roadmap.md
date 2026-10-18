@@ -1,5 +1,11 @@
 # Phase 1 optimization
 
+## SEO findings — October 18
+- [x] Verify reported missing H1s: sampled named pages already render one H1; /moments redirects to Proposal. No speculative heading changes; composite scanner finding remains unmodified pending scanner review
+- [x] Replace generic homepage search and share descriptions with factual, differentiated copy
+- [x] Validate rendered metadata/headings, 40 focused tests and 76-route metadata check; record the two complete corrections without publishing
+- [ ] Wine-guide snippet opportunity: awaiting specific approval
+
 ## Studio and checkout completion — October 18 (prepare, do not publish)
 - [x] Confirm preview error is resolved
 - [x] Align composed-day inclusions through reveal, guest recap and frozen purchase payload
