@@ -177,6 +177,18 @@ function Page() {
             Tell us a little about who you are and what you'd love to experience. A local replies
             personally within 24 hours.
           </p>
+          {!presetRequestType || presetRequestType === "private_day" || presetRequestType === "studio" ? (
+            <div className="scene-body mt-6 mx-auto max-w-xl" data-testid="contact-instant-booking">
+              <p className="text-sm text-[color:var(--charcoal)]">Ready to reserve a private day?</p>
+              <div className="mt-4 flex flex-col items-stretch gap-3 sm:flex-row sm:justify-center">
+                <CtaButton to="/experiences" size="sm" onClick={() => trackEvent("booking_cta_click", { placement: "contact_signature" })}>Explore Signature days</CtaButton>
+                <CtaButton to="/studio" variant="ghost" size="sm" onClick={() => trackEvent("booking_cta_click", { placement: "contact_studio" })}>Design your day</CtaButton>
+              </div>
+              <CtaButton href={whatsappUrl("Hello! I’d like a private day within the next 48 hours. Can you help?")} target="_blank" rel="noopener noreferrer" variant="hairline" iconLeading={<MessageCircle size={16} aria-hidden />} icon={null} className="mt-3" onClick={() => trackEvent("whatsapp_click", { placement: "contact_urgent" })}>
+                Within 48 hours? Ask us on WhatsApp
+              </CtaButton>
+            </div>
+          ) : null}
         </Scene>
       </section>
 

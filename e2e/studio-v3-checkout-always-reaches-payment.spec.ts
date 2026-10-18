@@ -82,6 +82,12 @@ test.describe("Studio V3 · every profile reaches payment @ 393px", () => {
       // The Studio must never end at a curator hand-off for these profiles.
       await expect(page.getByTestId("studio-v3-guest-details")).toBeVisible();
 
+      const details = page.getByTestId("studio-v3-guest-details");
+      const disclosure = details.locator("details").first();
+      if (await disclosure.count()) await disclosure.locator("summary").click();
+      const guestText = await details.getByTestId("studio-v3-guest-details-inclusions").textContent();
+      const guestItems = (guestText ?? "").trim().replace(/^Included:\s*/, "").split(" · ");
+
       await fillGuestDetails(page, { email: "qa+studio-sweep@example.com" });
 
       const submit = page.getByTestId("studio-v3-guest-details-submit");
@@ -92,6 +98,10 @@ test.describe("Studio V3 · every profile reaches payment @ 393px", () => {
       await expect(summary).toBeVisible({ timeout: 20_000 });
       await expect(summary).toContainText(/€/);
 
+      const summaryItems = await summary.locator('[data-testid="studio-v3-checkout-summary-inclusions"] li').allTextContents();
+      const normalize = (items: string[]) => items.map((s) => s.replace(/^[·\s]+/, "").trim());
+      expect(normalize(summaryItems)).toEqual(normalize(guestItems));
+
       const checkoutResponse = page.waitForResponse(
         (response) =>
           response.url().includes("create-signature-checkout") &&
@@ -101,6 +111,9 @@ test.describe("Studio V3 · every profile reaches payment @ 393px", () => {
       await page.getByTestId("studio-v3-checkout-summary-reserve").click();
 
       const response = await checkoutResponse;
+      const request = response.request().postDataJSON() as { includedItems?: string[]; environment?: string };
+      expect(request.includedItems).toEqual(normalize(summaryItems));
+      expect(request.environment).toBe("sandbox");
       expect(response.status(), `${profile.name}: checkout function failed`).toBe(200);
       const payload = (await response.json()) as {
         clientSecret?: string;

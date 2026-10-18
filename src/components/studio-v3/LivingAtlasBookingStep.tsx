@@ -97,12 +97,11 @@ export function LivingAtlasBookingStep({
     try {
       const content = getTourContent(tour.id);
       const viator = getViatorMeta(tour.id);
-      const includedItems =
-        content.included.length > 0
-          ? content.included
-          : viator?.included && viator.included.length > 0
-            ? viator.included
-            : [];
+      const includedItems = composedDayInclusions({
+        verified: content.included,
+        stopLabels: handoff.itinerary.map((m) => m.label),
+        dates: [selectedDate],
+      });
       const origin = typeof window !== "undefined" ? window.location.origin : "";
       const { data, error } = await invokeSignatureCheckout({
           attribution: guideAttributionMetadata(),

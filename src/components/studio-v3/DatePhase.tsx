@@ -2,6 +2,9 @@ import { useMemo, useState } from "react";
 import { StudioDateCalendar } from "./StudioDateCalendar";
 import { isStudioBookingDateAllowed, minimumStudioBookingDateIso } from "./dateGuards";
 import type { DateMode } from "./types";
+import { CtaButton } from "@/components/ui/CtaButton";
+import { MessageCircle } from "lucide-react";
+import { whatsappUrl } from "@/config/business-nap";
 
 /**
  * DatePhaseControls — Phase 2 operational date selection.
@@ -126,6 +129,12 @@ export function DatePhaseControls({
           </p>
         ) : null}
       </div>
+
+      {exactDateOnly ? (
+        <CtaButton href={whatsappUrl("Hello! I’m visiting soon and would like a private Portugal day. Can you help with my date?")} target="_blank" rel="noopener noreferrer" variant="hairline" iconLeading={<MessageCircle size={16} aria-hidden />} icon={null} className="mt-3" data-testid="studio-date-urgent-whatsapp">
+          Need an earlier date? Ask us on WhatsApp
+        </CtaButton>
+      ) : null}
 
       {/* Secondary options */}
       {exactDateOnly ? null : (

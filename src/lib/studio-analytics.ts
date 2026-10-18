@@ -50,6 +50,7 @@ export type StudioAnalyticsEvent =
   | "studio_signature_candidate"
   | "studio_final_skeleton"
   | "studio_checkout_started"
+  | "day_shared"
   // PASS 4 — the committed day cannot honor the exact date chosen. Structural
   // only: never the stop, never the date.
   | "logistics_date_conflict";
