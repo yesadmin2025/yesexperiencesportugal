@@ -17,6 +17,7 @@ import { CtaButton } from "@/components/ui/CtaButton";
 import { BookingCtaSkeleton } from "@/components/ui/BookingCtaSkeleton";
 import { findTour } from "@/data/signatureTours";
 import { getTourContent } from "@/lib/tourContent";
+import { isStopClosedOn } from "@/data/stopOperational";
 import { buildWineryDisplayLabels, studioDisplayLabel } from "./studioWineryPresentation";
 import { formatGuestComposition } from "./formatGuests";
 import {
@@ -231,7 +232,10 @@ export function CheckoutSummary({
   // Real inclusions from the resolved Signature source of truth only.
   const inclusions: string[] = (tour ? getTourContent(tour.id).included : [])
     .map((i: string) => i.trim())
-    .filter(Boolean);
+    .filter(Boolean)
+    // A secondary stop closed on the chosen date is left out of the day, so
+    // never list it as included (e.g. Livramento market on a Monday).
+    .filter((i) => !isStopClosedOn(i, guestDetails.tourDate ?? state.dateExact));
 
   // Same priority chain as FinalRevealStory — labels only, no stories.
   // Canonical labels are resolved first (order/count are authoritative), then
