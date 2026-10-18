@@ -374,7 +374,7 @@ export function composeHybridDay(
     // silently sell a different day.
     excludedTypes:
       input.wineIntent || anchorCoreIncludesWinery(anchorId) ? [] : ["winery"],
-    excludedStopIds: [...new Set(input.rejectedStopIds ?? [])].filter(
+    excludedStopIds: [...new Set([...(input.rejectedStopIds ?? []), ...closedStopIds])].filter(
       (stopId) => !mustIncludeStopIds.includes(stopId),
     ),
     mustIncludeStopIds,
