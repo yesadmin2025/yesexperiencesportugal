@@ -7587,5 +7587,23 @@ function StudioAutoStart({ onStart }: { onStart: () => void }) {
     void import("@/lib/analytics-ga4").then((m) => m.gaStudioStart());
     onStart();
   }, [onStart]);
-  return <main aria-label="YES Studio" data-testid="studio-v3-root" data-phase="intro" />;
+  // Visible opening frame painted by SSR, so a slow phone never sees an empty
+  // page while the Studio becomes interactive.
+  return (
+    <main aria-label="YES Studio" data-testid="studio-v3-root" data-phase="intro">
+      <div
+        aria-hidden="true"
+        data-testid="studio-v3-opening-frame"
+        className="container-x flex min-h-[70svh] flex-col items-center justify-center py-16 text-center"
+      >
+        <span className="text-[11px] uppercase tracking-[0.22em] text-[color:var(--charcoal-soft)]">
+          YES Studio
+        </span>
+        <p className="mt-4 font-display text-[32px] leading-[1.15] text-[color:var(--charcoal)] md:text-[44px]">
+          Design your private Portugal day.
+        </p>
+        <span className="mt-8 block h-px w-16 animate-pulse bg-[color:var(--gold)]" />
+      </div>
+    </main>
+  );
 }
