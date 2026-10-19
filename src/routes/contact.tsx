@@ -6,7 +6,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { breadcrumbLd, jsonLdScript } from "@/lib/jsonld";
 import { SiteLayout } from "@/components/SiteLayout";
 import { Mail, Phone, MapPin, MessageCircle } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import ogImg from "@/assets/why-image.jpg";
 
 import { Eyebrow } from "@/components/ui/Eyebrow";
@@ -163,6 +163,7 @@ function Page() {
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
   const [travelDate, setTravelDate] = useState("");
   const [minimumTravelDate, setMinimumTravelDate] = useState<string>();
+  const enquiryInFlight = useRef(false);
 
   useEffect(() => {
     setMinimumTravelDate(new Date().toISOString().slice(0, 10));
@@ -210,10 +211,19 @@ function Page() {
               <form
                 onSubmit={async (e) => {
                   e.preventDefault();
+                  if (enquiryInFlight.current) return;
+                  enquiryInFlight.current = true;
                   setErrorMsg(null);
                   const form = e.currentTarget;
                   const data = new FormData(form);
-                  const contactSchema = await loadContactSchema();
+                  let contactSchema: Awaited<ReturnType<typeof loadContactSchema>>;
+                  try {
+                    contactSchema = await loadContactSchema();
+                  } catch {
+                    enquiryInFlight.current = false;
+                    setErrorMsg(`We couldn't prepare your message. Please email ${EMAIL}.`);
+                    return;
+                  }
                   const parsed = contactSchema.safeParse({
                     name: String(data.get("name") ?? ""),
                     email: String(data.get("email") ?? ""),
@@ -222,6 +232,7 @@ function Page() {
                     message: String(data.get("message") ?? ""),
                   });
                   if (!parsed.success) {
+                    enquiryInFlight.current = false;
                     setErrorMsg(parsed.error.issues[0]?.message ?? "Please check the form.");
                     return;
                   }
@@ -286,6 +297,8 @@ function Page() {
                     setErrorMsg(
                       `Sorry, something went wrong sending your message. Please email ${EMAIL}.`,
                     );
+                  } finally {
+                    enquiryInFlight.current = false;
                   }
                 }}
                 className="space-y-6"
