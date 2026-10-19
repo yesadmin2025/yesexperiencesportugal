@@ -5,6 +5,8 @@ import { FloatingActions } from "./FloatingActions";
 
 import { CookieConsent } from "./CookieConsent";
 import { CurrencyProvider } from "@/lib/currency";
+import { useRouterState } from "@tanstack/react-router";
+import { usePublicEditorialMotion } from "@/hooks/use-marketing-motion";
 
 import {
   installQaModeActivators,
@@ -392,6 +394,10 @@ function flashDebug(el: HTMLElement, label: string) {
 }
 
 export function SiteLayout({ children }: { children: ReactNode }) {
+  const pathname = useRouterState({ select: (state) => state.location.pathname });
+  // Route content owns its controller: the root can commit before a lazy
+  // route hydrates, so starting there mutates server HTML ahead of React.
+  usePublicEditorialMotion(pathname);
   const [qaEnabled, setQaEnabled] = useState(false);
   const [motionQaRequested, setMotionQaRequested] = useState(false);
 

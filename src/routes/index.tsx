@@ -290,6 +290,8 @@ export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
       { title: HOME_SEO_TITLE },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
       { name: "yes-hero-copy-version", content: HERO_COPY_VERSION },
       { name: "description", content: HOME_SEO_DESCRIPTION },
       { property: "og:title", content: HOME_SEO_SOCIAL_TITLE },
@@ -662,15 +664,6 @@ function HomePage() {
                     {CTA_LABELS.studioSection}
                   </CtaButton>
                 </div>
-                <p className="reveal-stagger mt-4 text-[13px] text-[color:var(--charcoal-soft)]">
-                  Prefer a human hand?{" "}
-                  <a
-                    href="/portugal-travel-designer"
-                    className="inline-flex min-h-11 items-center text-[color:var(--teal)] underline underline-offset-4 decoration-[color:var(--gold)]/60 hover:decoration-[color:var(--gold)] transition-colors"
-                  >
-                    Portugal travel designer for multi-day journeys →
-                  </a>
-                </p>
               </div>
 
               <div className="reveal lg:col-span-7 lg:order-2 order-2">
@@ -1071,7 +1064,7 @@ function HomePage() {
                     <p className="mt-3 text-sm leading-relaxed text-[color:var(--charcoal-soft)]">
                       {entry.blurb}
                     </p>
-                    <span className="mt-4 flex items-center justify-between gap-3 text-[11px] uppercase tracking-[0.22em] text-[color:var(--gold)]">
+                    <span className="mt-4 flex items-center justify-between gap-3 text-[11px] uppercase tracking-[0.22em] text-[color:var(--teal)]">
                       Read the guide →
                       {meta.date ? (
                         <time

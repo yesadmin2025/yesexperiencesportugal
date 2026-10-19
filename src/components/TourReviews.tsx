@@ -31,6 +31,7 @@ function Stars({ rating }: { rating: number }) {
   return (
     <span
       className="inline-flex items-center gap-0.5 text-[color:var(--teal)]"
+      role="img"
       aria-label={`${rating} out of 5`}
     >
       {Array.from({ length: 5 }).map((_, i) => (
@@ -206,7 +207,7 @@ export function TourReviews({
               )}
               {!useFallback && (
                 <p className="mt-2 text-[12px] text-[color:var(--charcoal)]/70">
-                  Collected directly by YES. Our platform reviews are verified by Trustindex.
+                  These reviews were collected directly on our website. Platform reviews are linked to their original source when available.
                 </p>
               )}
               {showHeadline && (

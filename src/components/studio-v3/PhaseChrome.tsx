@@ -29,7 +29,7 @@ export function PhaseHeader({
       >
         <span style={{ color: "var(--gold)" }}>—</span> {eyebrow}
       </p>
-      <h2
+      <h1
         className="t-h1 mt-4 text-balance sm:mt-5"
         style={{
           color: "var(--charcoal)",
@@ -43,7 +43,7 @@ export function PhaseHeader({
         >
           {titleAccent}
         </span>
-      </h2>
+      </h1>
     </header>
   );
 }

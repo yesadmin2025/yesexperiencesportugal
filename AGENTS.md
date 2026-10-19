@@ -1,5 +1,7 @@
 # Project architecture decisions
 
+- Public editorial motion starts in the committed SiteLayout, not the root shell, so lazy route HTML hydrates before any controller mutates it.
+
 - All Studio inclusion surfaces and purchase payloads use composedDayInclusions on authoritative route labels; removed or closed activities cannot survive via catalogue fallbacks.
 - Studio WhatsApp sharing contains an unconfirmed day summary without guest details; reservation confirmation messages remain restricted to verified paid sessions.
 

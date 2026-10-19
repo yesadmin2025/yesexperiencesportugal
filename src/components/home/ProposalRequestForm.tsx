@@ -28,6 +28,7 @@ export function ProposalRequestForm({ id = "proposal-request" }: { id?: string }
   const [state, setState] = useState<"idle" | "sending" | "sent">("idle");
   const [error, setError] = useState<string | null>(null);
   const startedRef = useRef(false);
+  const inFlight = useRef(false);
 
   /** Fires once, the first time a visitor engages with any field. */
   function onFirstInteraction() {
@@ -38,6 +39,7 @@ export function ProposalRequestForm({ id = "proposal-request" }: { id?: string }
 
   async function onSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
+    if (inFlight.current) return;
     const form = new FormData(event.currentTarget);
     const payload = {
       name: String(form.get("name") ?? "").trim(),
@@ -57,6 +59,7 @@ export function ProposalRequestForm({ id = "proposal-request" }: { id?: string }
       return setError("Tell us a little about what you have in mind.");
 
     setError(null);
+    inFlight.current = true;
     setState("sending");
     try {
       const res = await fetch("/api/public/proposal-request", {
@@ -78,6 +81,8 @@ export function ProposalRequestForm({ id = "proposal-request" }: { id?: string }
     } catch {
       setState("idle");
       setError("Something went wrong. Please email info@yesexperiencesportugal.com and we'll pick it up.");
+    } finally {
+      inFlight.current = false;
     }
   }
 

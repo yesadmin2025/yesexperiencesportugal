@@ -33,6 +33,7 @@ export const Route = createFileRoute("/studio")({
         content: "Design your own private day and confirm it instantly. See your route and live price as you choose.",
       },
       { property: "og:url", content: CANONICAL_URL },
+      { property: "og:type", content: "website" },
       { property: "og:image", content: `https://yesexperiencesportugal.com${ogImg}` },
       { property: "og:image:width", content: "1200" },
       { property: "og:image:height", content: "630" },

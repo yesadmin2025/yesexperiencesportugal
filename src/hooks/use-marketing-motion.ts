@@ -69,5 +69,6 @@ export function usePublicEditorialMotion(pathname: string): void {
  */
 export function useMarketingMotion(): void {
   // Kept as a compatibility hook for existing public route components.
-  // RootComponent owns the pathname-aware controller.
+  // Committed SiteLayout owns the pathname-aware controller so lazy route
+  // hydration completes before any editorial DOM annotation.
 }

@@ -477,9 +477,9 @@ function TourHero({
                       className="text-[color:var(--gold)]"
                     />
                     <span className="font-semibold">{meta.rating.toFixed(1)}</span>
-                    <span className="text-[color:var(--charcoal-soft)]">
-                      · {meta.reviewCount} reviews across platforms
-                    </span>
+                    <a href="#tour-reviews-heading" className="inline-flex min-h-11 items-center text-[color:var(--charcoal-soft)] underline underline-offset-4 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--teal)]">
+                      · {meta.reviewCount} guest reviews · View sources
+                    </a>
                   </span>
                 </>
               )}
@@ -711,7 +711,7 @@ function ItineraryTimeline({
                 key={s.label + i}
                 className="scene-item grid grid-cols-[2rem_minmax(0,1fr)] gap-x-3 border-t border-[color:var(--border)] pt-5 first:border-t-0 first:pt-0"
               >
-                <span className="serif mt-[2px] text-[15px] tabular-nums text-[color:var(--charcoal-soft)]/75">
+                <span className="serif mt-[2px] text-[15px] tabular-nums text-[color:var(--charcoal-soft)]">
                   {String(i + 1).padStart(2, "0")}
                 </span>
                 <div className="min-w-0">

@@ -78,8 +78,10 @@ describe("Premium System Lock", () => {
   it("activates editorial motion centrally while excluding transactional journeys", () => {
     const hook = read("src/hooks/use-marketing-motion.ts");
     const root = read("src/routes/__root.tsx");
+    const layout = read("src/components/SiteLayout.tsx");
 
-    expect(root).toContain("usePublicEditorialMotion(pathname)");
+    expect(layout).toContain("usePublicEditorialMotion(pathname)");
+    expect(root).not.toContain("usePublicEditorialMotion(pathname)");
     expect(hook).toContain("NON_EDITORIAL_PATHS");
     expect(hook).toMatch(/\/\^\\\/checkout/);
     expect(hook).toMatch(/\/\^\\\/studio/);

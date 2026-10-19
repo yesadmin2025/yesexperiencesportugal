@@ -168,6 +168,7 @@ export const Route = createFileRoute("/local-stories/$slug")({
           { property: "og:description", content: article.metaDescription },
           { property: "og:url", content: url },
           { property: "og:type", content: "article" },
+          { name: "twitter:card", content: "summary_large_image" },
           ...(imageUrl ? [{ property: "og:image", content: imageUrl }] : []),
           ...(imageUrl ? [{ property: "og:image:alt", content: `${article.h1} — local guide by YES Experiences Portugal` }] : []),
           ...(imageUrl ? [{ name: "twitter:image", content: imageUrl }] : []),
@@ -237,6 +238,8 @@ export const Route = createFileRoute("/local-stories/$slug")({
         { property: "og:description", content: description },
         { property: "og:url", content: url },
         { property: "og:type", content: "article" },
+        { name: "twitter:card", content: "summary_large_image" },
+        ...(post.heroImage?.startsWith("https://") ? [{ name: "twitter:image", content: post.heroImage }] : []),
         ...(post.heroImage ? [{ property: "og:image", content: post.heroImage }] : []),
         ...(post.publishedAt
           ? [{ property: "article:published_time", content: post.publishedAt }]
