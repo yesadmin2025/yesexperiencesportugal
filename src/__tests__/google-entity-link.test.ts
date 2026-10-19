@@ -15,6 +15,12 @@ import { SOCIAL, STRUCTURED_ADDRESS } from "@/config/business-nap";
 /** Verified 8 Oct 2026 via the Business Profile API (locations/900772565940911174). */
 const CANONICAL_GOOGLE_PROFILE = "https://maps.google.com/maps?cid=18112725515561598058";
 
+/** Official distribution-platform identities the entity graph must carry. */
+const PLATFORM_PROFILES = [
+  "https://www.getyourguide.com/yesexperiences-portugal-s249432/",
+  "https://www.viator.com/tours/Lisbon/Private-Wine-Tour-with-Food-and-Wine-Tasting-in-Southern-Lisbon/d538-349639P3",
+];
+
 /** Stale third-party identity that must never appear in public structured data. */
 const STALE_ENTITY_SIGNALS = [
   "maps.app.goo.gl/hbVa3Yw2mDV2DZHt8",
