@@ -1,6 +1,5 @@
 import * as React from "react";
 import type { StudioProposal } from "@/lib/studio-v3/studioProposal";
-import { whatsappUrl } from "@/config/business-nap";
 
 function eur(n: number): string {
   return new Intl.NumberFormat("en-GB", {
@@ -16,7 +15,7 @@ const valueStyle = { color: "var(--charcoal)" } as const;
 
 export function StudioProposalCard({
   proposal,
-  tourTitle,
+  tourTitle: _tourTitle,
 }: {
   proposal: StudioProposal;
   tourTitle: string;
@@ -80,15 +79,6 @@ export function StudioProposalCard({
           </div>
         ) : null}
       </dl>
-      <a
-        href={whatsappUrl(`Hello, I'd like to talk about "${tourTitle}" from Studio.`)}
-        target="_blank"
-        rel="noopener noreferrer"
-        className="mt-5 inline-flex min-h-[44px] items-center text-[12px] uppercase tracking-[0.18em] underline underline-offset-4"
-        style={{ color: "var(--teal)" }}
-      >
-        Talk to a local
-      </a>
     </section>
   );
 }
