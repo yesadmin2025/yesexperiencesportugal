@@ -25,7 +25,7 @@ const PAGE_URL = `${BASE_URL}${PAGE_PATH}`;
 // National intent: proposals and celebrations designed anywhere in Portugal.
 // The head-on "private tours in <city>" queries stay with the area pages so
 // this page never competes with them for the same result.
-const TITLE = "Marriage Proposal in Portugal | YES Experiences Portugal";
+const TITLE = "Marriage Proposal in Portugal — Planned Locally, in Private | YES";
 const DESCRIPTION =
   "Plan a private marriage proposal anywhere in Portugal. Our local team coordinates the setting, timing and surprise, with every detail confirmed with you.";
 

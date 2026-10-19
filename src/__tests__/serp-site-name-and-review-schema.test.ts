@@ -65,10 +65,10 @@ describe("brand-critical SERP snippets", () => {
   it("homepage title and description are locked", () => {
     const home = read("src/routes/index.tsx");
     expect(home).toContain(
-      '"Private Tours from Lisbon — Design Your Portugal Day | YES"',
+      '"Private Tours in Portugal from Lisbon — Design Your Day | YES"',
     );
     expect(home).toContain(
-      "Design your own private day from Lisbon online — family cellars, tile workshops, boat trips — with live pricing. Plus multi-day journeys and corporate events.",
+      "Private days across Portugal — Arrábida wine, Sintra, Évora, the coast — or design your own in our Studio with live pricing. Multi-day journeys too.",
     );
   });
 

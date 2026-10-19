@@ -30,7 +30,7 @@ import arrabidaWineImage from "@/assets/tours/arrabida-wine-allinclusive/hero.jp
 
 const PATH = "/lisbon-wine-tours";
 const PAGE_URL = `${WEBSITE_URL}${PATH}`;
-const TITLE = "Book a Private Lisbon Wine Tour: Dates, Prices, Pickup";
+const TITLE = "Private Wine Tours from Lisbon — Family Cellars & Lunch | YES";
 
 const crumbs = [
   { name: "Home", path: "/" },
@@ -51,7 +51,7 @@ const WINE_DAYS = WINE_IDS.map((id) => signatureTours.find((t) => t.id === id)).
 );
 
 const WINE_FROM = Math.min(...WINE_DAYS.map((t) => t.priceFrom));
-const DESCRIPTION = `Reserve a private wine tour from Lisbon online: Arrábida, Azeitão or the Alentejo, from €${WINE_FROM} per person, with hotel pickup and tastings.`;
+const DESCRIPTION = `Private wine days from Lisbon to Arrábida, Azeitão or the Alentejo: family cellars, cheese, lunch and hotel pickup, from €${WINE_FROM} per person.`;
 
 const BOOKABLE_IDS = [
   "arrabida-wine-allinclusive",

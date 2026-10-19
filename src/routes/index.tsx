@@ -61,10 +61,10 @@ const LIVE_REVIEW_FALLBACK_TOURS = [
  * dedicated landing pages own Lisbon and day-trip search intent.
  */
 const HOME_SEO_TITLE =
-  "Private Tours from Lisbon — Design Your Portugal Day | YES";
+  "Private Tours in Portugal from Lisbon — Design Your Day | YES";
 const HOME_SEO_SOCIAL_TITLE = HOME_SEO_TITLE;
 const HOME_SEO_DESCRIPTION =
-  "Design your own private day from Lisbon online — family cellars, tile workshops, boat trips — with live pricing. Plus multi-day journeys and corporate events.";
+  "Private days across Portugal — Arrábida wine, Sintra, Évora, the coast — or design your own in our Studio with live pricing. Multi-day journeys too.";
 
 
 /** Homepage Journal row — three evergreen Local Stories guides.
