@@ -118,6 +118,7 @@ export const SOCIAL = {
    * Do NOT use a share.google short link or any obsolete listing address.
    */
   google: "https://maps.google.com/maps?cid=18112725515561598058" as string,
+  visitportugal: "https://www.visitportugal.com/en/content/yesexperiences-portugal",
   viator: "" as string,
 } as const;
 
