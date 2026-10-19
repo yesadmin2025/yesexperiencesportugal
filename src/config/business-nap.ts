@@ -119,7 +119,14 @@ export const SOCIAL = {
    */
   google: "https://maps.google.com/maps?cid=18112725515561598058" as string,
   visitportugal: "https://www.visitportugal.com/en/content/yesexperiences-portugal",
-  viator: "" as string,
+  /**
+   * Official distribution-platform identities.
+   * GetYourGuide supplier profile (same URL the site footer links to);
+   * Viator product page operated by YesExperiences Portugal (best-seller
+   * Arrábida wine tour, d538-349639P3).
+   */
+  getyourguide: "https://www.getyourguide.com/yesexperiences-portugal-s249432/" as string,
+  viator: "https://www.viator.com/tours/Lisbon/Private-Wine-Tour-with-Food-and-Wine-Tasting-in-Southern-Lisbon/d538-349639P3" as string,
 } as const;
 
 /** PT counterpart of LICENSE_LABEL — European Portuguese uses "n.º" with a period. */
