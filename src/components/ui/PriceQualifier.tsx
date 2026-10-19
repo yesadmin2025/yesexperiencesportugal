@@ -10,7 +10,7 @@ import { cn } from "@/lib/utils";
  */
 export function PriceQualifier({ className }: { className?: string }) {
   return (
-    <span className={cn("text-[11px] font-normal", className)}>
+    <span className={cn("text-[12px] font-normal leading-relaxed tracking-normal", className)}>
       {PRICE_GROUP_QUALIFIER}
     </span>
   );

@@ -562,6 +562,12 @@ export function FinalDetailsDialog({
           </div>
 
           <div className="flex flex-col shrink-0 px-5 sm:px-7 pt-4 pb-[calc(env(safe-area-inset-bottom)+1rem)] sm:py-4 border-t border-[color:var(--border)] bg-[color:var(--sand)]/40 gap-2">
+            {productRecap ? (
+              <p data-testid="final-details-payment-context" className="text-[12px] leading-snug text-[color:var(--charcoal-soft)]">
+                <span className="block truncate font-medium text-[color:var(--charcoal)]" title={productRecap.title}>{productRecap.title}</span>
+                {[tourDate ? formatKnownDate(tourDate) : null, compositionComplete ? formatCompositionSummary(composition) : null].filter(Boolean).join(" · ")}
+              </p>
+            ) : null}
             {priceQuote ? <ChargeSummaryLine quote={quote} /> : null}
             {/* Canonical cancellation + payment reassurance, never hand-authored. */}
             <p

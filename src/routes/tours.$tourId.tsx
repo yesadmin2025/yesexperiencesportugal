@@ -477,9 +477,9 @@ function TourHero({
                       className="text-[color:var(--gold)]"
                     />
                     <span className="font-semibold">{meta.rating.toFixed(1)}</span>
-                    <span className="text-[color:var(--charcoal-soft)]">
-                      · {meta.reviewCount} reviews across platforms
-                    </span>
+                    <a href="#tour-reviews-heading" className="inline-flex min-h-11 items-center text-[color:var(--charcoal-soft)] underline underline-offset-4 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--teal)]">
+                      · {meta.reviewCount} guest reviews · View sources
+                    </a>
                   </span>
                 </>
               )}
