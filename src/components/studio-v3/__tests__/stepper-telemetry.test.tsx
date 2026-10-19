@@ -58,8 +58,8 @@ describe("StudioV3ProgressStepper · telemetry contract", () => {
     rerender(<StudioV3ProgressStepper phase="logistics" />);
     expect(recordMock).toHaveBeenCalledTimes(4);
     expect(recordMock).toHaveBeenLastCalledWith({
-      step: "compose",
-      stepIndex: 2,
+      step: "rhythm",
+      stepIndex: 1,
       phase: "logistics",
     });
   });
@@ -143,7 +143,7 @@ describe("StudioV3ProgressStepper · telemetry contract", () => {
       />,
     );
     expect(onBeatAdvance).toHaveBeenCalledTimes(2);
-    expect(onBeatAdvance).toHaveBeenLastCalledWith("compose", 2);
+    expect(onBeatAdvance).toHaveBeenLastCalledWith("rhythm", 1);
 
     // Jump back to a completed chapter → no new advance event.
     rerender(
