@@ -46,17 +46,17 @@ function matchesExperienceFilter(tour: SignatureTour, filter: ExperienceFilter) 
 export const Route = createFileRoute("/experiences")({
   head: () => ({
     meta: [
-      { title: "Private Day Tours from Lisbon & Portugal | YES Experiences" },
+      { title: "Private Day Trips from Lisbon — Reserve or Tailor | YES" },
       {
         name: "description",
         content:
-          "Explore Sintra, Arrábida wine country, Évora and the coast on curated private day trips. Door-to-door pickup, local guides, instant online booking.",
+          "Private day trips from Lisbon to Sintra, Arrábida wine country, Évora and the coast. Reserve a Signature day instantly or tailor its stops with live pricing.",
       },
-      { property: "og:title", content: "Private Day Tours from Lisbon & Portugal | YES Experiences" },
+      { property: "og:title", content: "Private Day Trips from Lisbon — Reserve or Tailor | YES" },
       {
         property: "og:description",
         content:
-          "Explore Sintra, Arrábida wine country, Évora and the coast on curated private day trips. Door-to-door pickup, local guides, instant online booking.",
+          "Private day trips from Lisbon to Sintra, Arrábida wine country, Évora and the coast. Reserve a Signature day instantly or tailor its stops with live pricing.",
       },
       { property: "og:url", content: "https://yesexperiencesportugal.com/experiences" },
       { property: "og:image", content: `https://yesexperiencesportugal.com${ogImg}` },
