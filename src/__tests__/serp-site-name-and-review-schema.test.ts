@@ -65,10 +65,10 @@ describe("brand-critical SERP snippets", () => {
   it("homepage title and description are locked", () => {
     const home = read("src/routes/index.tsx");
     expect(home).toContain(
-      '"Private Tours from Lisbon & Portugal Travel Designer | YES"',
+      '"Private Tours from Lisbon — Design Your Portugal Day | YES"',
     );
     expect(home).toContain(
-      "Private, tailor-made day trips from Lisbon and multi-day Portugal journeys. Local guides, wine & coastal experiences, hotel pickup and instant confirmation.",
+      "Design your own private day from Lisbon online — family cellars, tile workshops, boat trips — with live pricing. Plus multi-day journeys and corporate events.",
     );
   });
 
