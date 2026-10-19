@@ -63,6 +63,17 @@ describe("Canonical Google Business Profile entity link", () => {
     expect(org.sameAs).not.toContain("maps.app.goo.gl/hbVa3Yw2mDV2DZHt8");
   });
 
+  it("Organization sameAs carries the official GetYourGuide and Viator identities", () => {
+    const org = organizationLd();
+    for (const profile of PLATFORM_PROFILES) {
+      expect(org.sameAs, `expected ${profile} in sameAs`).toContain(profile);
+    }
+    // The supplier/product links must be non-empty once confirmed — never
+    // ship an empty-string platform entry into the entity graph.
+    expect(SOCIAL.getyourguide).not.toBe("");
+    expect(SOCIAL.viator).not.toBe("");
+  });
+
   it("emits the current official NAP, not the obsolete Meco listing", () => {
     const text = structuredDataText();
     expect(text).toContain("+351911889992");
