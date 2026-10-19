@@ -15,9 +15,9 @@ import { JourneyEnquiryForm } from "@/components/travel-designer/JourneyEnquiryF
 import { TravelFilePreview } from "@/components/travel-designer/TravelFilePreview";
 
 const CANONICAL = "https://yesexperiencesportugal.com/portugal-travel-designer";
-const TITLE = "Portugal Travel Designer | YES Experiences Portugal";
+const TITLE = "Portugal Travel Designer — Private Multi-Day Journeys | YES";
 const DESC =
-  "Plan a private multi-day Portugal journey of any length with a local designer. Route, stays and experiences shaped with you, priced before you commit.";
+  "A local designer shapes your multi-day route across Portugal — stays, private days and transfers — shaped with you and priced before you commit.";
 const OG_IMAGE = `https://yesexperiencesportugal.com${ogImg}`;
 
 export const Route = createFileRoute("/portugal-travel-designer")({
