@@ -325,7 +325,7 @@ export function TourReviews({
               <p className="mt-2 text-[14.5px] leading-relaxed text-[color:var(--charcoal)]/85">
                 {r.body}
               </p>
-              <p className="mt-3 text-[12px] text-[color:var(--charcoal)]/60">
+              <p className="mt-3 text-[12px] text-[color:var(--charcoal-soft)]">
                 {r.reviewer_name ?? "Guest"}
                 {r.reviewer_country ? ` · ${r.reviewer_country}` : ""}
               </p>
@@ -334,7 +334,7 @@ export function TourReviews({
         </ul>
       )}
 
-      <p className="mt-8 text-center text-[12px] text-[color:var(--charcoal)]/60">
+      <p className="mt-8 text-center text-[12px] text-[color:var(--charcoal-soft)]">
         {useFallback
           ? "Based on reviews across major booking platforms."
           : "Collected directly by YES Experiences Portugal."}
