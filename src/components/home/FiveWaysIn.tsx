@@ -224,7 +224,7 @@ function PathCard({ path, index, primary }: { path: Path; index: number; primary
       <div className="five-ways-copy">
         <div className="five-ways-kicker flex items-start justify-between gap-4">
           <span className="five-ways-icon" aria-hidden="true"><Icon size={19} strokeWidth={1.7} /></span>
-          <span className="five-ways-number">{String(index + 1).padStart(2, "0")}</span>
+          <span className="five-ways-number text-[color:var(--teal)]">{String(index + 1).padStart(2, "0")}</span>
         </div>
         <p className="five-ways-eyebrow mt-5">{path.eyebrow}</p>
         <h3 className="five-ways-title editorial-title-safe t-h3 mt-4 font-normal text-[color:var(--charcoal)]">

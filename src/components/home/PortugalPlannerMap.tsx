@@ -205,7 +205,7 @@ export function PortugalPlannerMap() {
                   <span className="text-[14.5px] leading-snug text-[color:var(--charcoal)]">
                     {tour.title}
                   </span>
-                  <span className="ml-auto shrink-0 text-[11px] uppercase tracking-[0.22em] text-[color:var(--gold)]">
+                  <span className="ml-auto shrink-0 text-[11px] uppercase tracking-[0.22em] text-[color:var(--teal)]">
                     View →
                   </span>
                 </Link>

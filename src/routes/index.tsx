@@ -1064,7 +1064,7 @@ function HomePage() {
                     <p className="mt-3 text-sm leading-relaxed text-[color:var(--charcoal-soft)]">
                       {entry.blurb}
                     </p>
-                    <span className="mt-4 flex items-center justify-between gap-3 text-[11px] uppercase tracking-[0.22em] text-[color:var(--gold)]">
+                    <span className="mt-4 flex items-center justify-between gap-3 text-[11px] uppercase tracking-[0.22em] text-[color:var(--teal)]">
                       Read the guide →
                       {meta.date ? (
                         <time

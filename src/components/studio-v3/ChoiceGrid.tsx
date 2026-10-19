@@ -59,7 +59,7 @@ export function ChoiceGrid<T extends string>({
           : value === opt.id;
         const lockedByCap = isMulti && atCap && !selected;
         return (
-          <li key={opt.id}>
+          <li key={opt.id} role="presentation">
             <button
               type="button"
               role={isMulti ? "checkbox" : "radio"}
@@ -95,7 +95,7 @@ export function ChoiceGrid<T extends string>({
                 style={{
                   fontFamily: "var(--font-body)",
                   color: "var(--charcoal)",
-                  letterSpacing: "-0.005em",
+                  letterSpacing: "0",
                 }}
               >
                 {opt.label}

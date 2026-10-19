@@ -711,7 +711,7 @@ function ItineraryTimeline({
                 key={s.label + i}
                 className="scene-item grid grid-cols-[2rem_minmax(0,1fr)] gap-x-3 border-t border-[color:var(--border)] pt-5 first:border-t-0 first:pt-0"
               >
-                <span className="serif mt-[2px] text-[15px] tabular-nums text-[color:var(--charcoal-soft)]/75">
+                <span className="serif mt-[2px] text-[15px] tabular-nums text-[color:var(--charcoal-soft)]">
                   {String(i + 1).padStart(2, "0")}
                 </span>
                 <div className="min-w-0">
