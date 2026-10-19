@@ -868,7 +868,7 @@ function GalleryStrip({
           </p>
         </div>
 
-        <div className="-mx-4 px-4 overflow-x-auto overscroll-x-contain scrollbar-thin">
+        <div tabIndex={0} role="region" aria-label="Day photo gallery" className="-mx-4 px-4 overflow-x-auto overscroll-x-contain scrollbar-thin focus-visible:outline-2 focus-visible:outline-[color:var(--teal)] focus-visible:outline-offset-4">
           <div className="flex gap-3 md:gap-4 snap-x snap-mandatory">
             {photos.map((p, i) => (
               <figure
