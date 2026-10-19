@@ -247,6 +247,9 @@ function CorporatePage() {
               Talk to a local
             </CtaButton>
           </div>
+          <p className="mt-4 text-sm leading-relaxed text-[color:var(--charcoal-soft)]">
+            Share a planning enquiry. Your local team will shape a proposal before any booking is confirmed.
+          </p>
           <a href="#group-formats" className="mt-5 inline-flex min-h-11 items-center text-sm text-[color:var(--teal)] underline underline-offset-4">
             Team building · incentives · retreats
           </a>

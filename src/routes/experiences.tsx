@@ -60,6 +60,7 @@ export const Route = createFileRoute("/experiences")({
           "Arrábida wine country, Sintra palaces, Évora and wild coasts as private days with hotel pickup. Reserve instantly or tailor the stops with live pricing.",
       },
       { property: "og:url", content: "https://yesexperiencesportugal.com/experiences" },
+      { property: "og:type", content: "website" },
       { property: "og:image", content: `https://yesexperiencesportugal.com${ogImg}` },
       { property: "og:image:width", content: "1200" },
       { property: "og:image:height", content: "630" },

@@ -290,6 +290,8 @@ export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
       { title: HOME_SEO_TITLE },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
       { name: "yes-hero-copy-version", content: HERO_COPY_VERSION },
       { name: "description", content: HOME_SEO_DESCRIPTION },
       { property: "og:title", content: HOME_SEO_SOCIAL_TITLE },

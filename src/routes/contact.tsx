@@ -162,6 +162,11 @@ function Page() {
   const [status, setStatus] = useState<Status>("idle");
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
   const [travelDate, setTravelDate] = useState("");
+  const [minimumTravelDate, setMinimumTravelDate] = useState<string>();
+
+  useEffect(() => {
+    setMinimumTravelDate(new Date().toISOString().slice(0, 10));
+  }, []);
 
   return (
     <SiteLayout>
@@ -286,6 +291,9 @@ function Page() {
                 className="space-y-6"
                 noValidate
               >
+                <p className="text-sm leading-relaxed text-[color:var(--charcoal-soft)]">
+                  This is a planning enquiry, not a confirmed booking. Our local team will reply personally.
+                </p>
                 <Field label="Name" name="name" autoComplete="name" />
                 <Field label="Email" name="email" type="email" autoComplete="email" />
                 <SelectField
@@ -309,7 +317,7 @@ function Page() {
                     name="travelDate"
                     type="date"
                     required={false}
-                    min={new Date().toISOString().slice(0, 10)}
+                    min={minimumTravelDate}
                     autoComplete="off"
                   />
                   {isWithin48Hours(travelDate) ? (
@@ -331,7 +339,7 @@ function Page() {
                   }
                 />
                 {errorMsg ? (
-                  <p className="text-[13px] text-red-700" role="alert">
+                  <p className="text-[13px] text-destructive" role="alert">
                     {errorMsg}
                   </p>
                 ) : null}
