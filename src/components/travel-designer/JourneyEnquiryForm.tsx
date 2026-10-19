@@ -67,6 +67,7 @@ export function JourneyEnquiryForm() {
   const fieldClass = "mt-2 min-h-11 w-full border-b border-[color:var(--charcoal)]/30 bg-transparent py-2 text-base text-[color:var(--charcoal)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)]";
   return (
     <form onSubmit={submit} className="space-y-6" aria-label="Travel Designer journey enquiry">
+      <p className="text-sm leading-relaxed text-[color:var(--charcoal-soft)]">A planning enquiry, not a confirmed booking. Your journey and investment are agreed before you commit.</p>
       <div className="grid gap-6 sm:grid-cols-2">
         <label className="block text-sm text-[color:var(--charcoal-soft)]" htmlFor="journey-name">Name
           <input id="journey-name" name="name" required maxLength={160} autoComplete="name" className={fieldClass} />
@@ -81,7 +82,7 @@ export function JourneyEnquiryForm() {
       <label className="block text-sm text-[color:var(--charcoal-soft)]" htmlFor="journey-message">Your journey — starting point, number of days, guests and interests (optional)
         <textarea id="journey-message" name="message" rows={5} maxLength={4000} className={`${fieldClass} resize-y`} />
       </label>
-      <p className="text-sm text-[color:var(--charcoal-soft)]">A planning enquiry, not a confirmed booking. Your journey and price are agreed before you commit. <a href="/privacy" className="underline underline-offset-4">Privacy policy</a></p>
+      <p className="text-sm text-[color:var(--charcoal-soft)]"><a href="/privacy" className="underline underline-offset-4">Privacy policy</a></p>
       {error && <p role="alert" className="text-sm text-[color:var(--charcoal)]">{error}</p>}
       <CtaButton type="submit" disabled={status === "sending"} loading={status === "sending"} loadingLabel="Sending…">Design my journey</CtaButton>
     </form>

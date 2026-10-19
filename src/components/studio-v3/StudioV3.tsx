@@ -7594,7 +7594,7 @@ function StudioAutoStart({ onStart }: { onStart: () => void }) {
       <div
         aria-hidden="true"
         data-testid="studio-v3-opening-frame"
-        className="container-x flex min-h-[70svh] flex-col items-center justify-center py-16 text-center"
+        className="container-x flex min-h-[100svh] flex-col items-center justify-center py-16 text-center"
       >
         <span className="text-[11px] uppercase tracking-[0.22em] text-[color:var(--charcoal-soft)]">
           YES Studio
@@ -7602,7 +7602,7 @@ function StudioAutoStart({ onStart }: { onStart: () => void }) {
         <p className="mt-4 font-display text-[32px] leading-[1.15] text-[color:var(--charcoal)] md:text-[44px]">
           Design your private Portugal day.
         </p>
-        <span className="mt-8 block h-px w-16 animate-pulse bg-[color:var(--gold)]" />
+        <span className="mt-8 block h-px w-16 bg-[color:var(--gold)]" />
       </div>
     </main>
   );

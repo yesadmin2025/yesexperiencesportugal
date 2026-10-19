@@ -167,7 +167,7 @@ export function ProposalInPortugalPage() {
 
                 <div className="section-seq">
                   <Eyebrow icon={<Icon strokeWidth={1.8} />}>{b.eyebrow}</Eyebrow>
-                  <h2 className="mt-4 font-serif text-[24px] font-medium leading-[1.08] text-[color:var(--charcoal)] md:text-[26px]">
+                  <h2 className="t-h2 mt-4 font-serif text-[color:var(--charcoal)]">
                     {b.title}
                   </h2>
                   <p className="mt-4 font-serif italic text-[1.1rem] md:text-[1.2rem] text-[color:var(--teal)] leading-snug">
@@ -179,9 +179,6 @@ export function ProposalInPortugalPage() {
                   <div className="mt-5 pl-4 border-l-2 border-[color:var(--border)] text-sm text-[color:var(--charcoal-soft)] leading-relaxed">
                     {b.local}
                   </div>
-                  <CtaButton href="#proposal-request" variant="ghost" size="sm" className="mt-6">
-                    {b.cta}
-                  </CtaButton>
                 </div>
               </article>
             );
@@ -221,7 +218,7 @@ export function ProposalInPortugalPage() {
               Tell us about <SectionTitle.Em>the moment.</SectionTitle.Em>
             </SectionTitle>
             <p className="mt-5 text-[color:var(--charcoal-soft)] leading-relaxed">
-              Share what you know so far. Our local team will reply personally and keep every detail discreet.
+              Share what you know so far. Our local team will reply personally and keep every detail discreet. This is a planning enquiry, not a confirmed booking.
             </p>
           </div>
           <ProposalRequestForm id="proposal-request" />

@@ -167,10 +167,6 @@ export function FiveWaysIn() {
           <SectionTitle id="choose-path-title" className="five-ways-heading scene-title">
             Five ways to <SectionTitle.Em>shape your Portugal.</SectionTitle.Em>
           </SectionTitle>
-          <p className="scene-body mx-auto mt-5 max-w-xl text-[14.5px] leading-[1.65] text-[color:var(--charcoal-soft)] md:text-[16px]">
-            Begin with a ready-designed private day, shape your own day live in the Studio, or plan
-            a complete journey with a local Portugal travel designer.
-          </p>
         </Scene>
 
         <Scene
@@ -236,9 +232,6 @@ function PathCard({ path, index, primary }: { path: Path; index: number; primary
             <>{path.titleLead} <em className="font-normal text-[color:var(--teal)]">{path.titleEmphasis}</em></>
           ) : path.title}
         </h3>
-        <p className="five-ways-body mt-3 text-[14px] leading-[1.65] text-[color:var(--charcoal-soft)] md:text-[15px]">
-          {path.body}
-        </p>
         <span className="five-ways-action mt-auto flex min-h-[44px] w-full items-center justify-between gap-3 pt-5">
           <span className="text-[11px] uppercase tracking-[0.22em] font-semibold text-[color:var(--teal)]">
             {path.cta}

@@ -14,6 +14,7 @@ import ogImg from "@/assets/hero-coast.jpg";
 import { Eyebrow } from "@/components/ui/Eyebrow";
 import { SectionTitle } from "@/components/ui/SectionTitle";
 import { CtaButton } from "@/components/ui/CtaButton";
+import { Button } from "@/components/ui/button";
 import { useMarketingMotion } from "@/hooks/use-marketing-motion";
 import { PriceCurrencyChip } from "@/components/PriceCurrencyChip";
 import { PriceEur } from "@/components/ui/PriceEur";
@@ -140,7 +141,7 @@ function ExperiencesPage() {
         <div className="container-x">
           <SiteBreadcrumbs
             containerClassName=""
-            className="bg-transparent pt-0 pb-6 text-left"
+            className="bg-transparent pt-0 pb-4 text-left"
             crumbs={[
               { name: "Home", path: "/" },
               { name: "Signature Experiences", path: "/experiences" },
@@ -151,32 +152,32 @@ function ExperiencesPage() {
             Private days, <SectionTitle.Em>ready when you are.</SectionTitle.Em>
           </SectionTitle>
           <p className="mt-3 max-w-[52ch] mx-auto text-[15px] md:text-[16px] leading-[1.65] text-[color:var(--charcoal-soft)]">
-            Private days across Portugal. See what is included, choose the experience that fits
-            you and reserve your date — or tailor the day around your group.
+            Private days across Portugal. Reserve your date or tailor the day around your group.
           </p>
-          <div className="mt-5 flex justify-center">
+          <div className="mt-4 flex justify-center">
             <PriceCurrencyChip />
           </div>
-          <p className="mt-4 text-[11px] font-medium uppercase tracking-[0.16em] text-[color:var(--charcoal-soft)]">
+          <p className="mt-3 text-[12px] leading-relaxed text-[color:var(--charcoal-soft)]">
             Clear inclusions · Hotel pickup on listed routes · Secure checkout
           </p>
-          <div className="mt-6 flex flex-wrap items-center justify-center gap-2" aria-label="Filter Signature Experiences">
+          <div className="mt-4 flex flex-wrap items-center justify-center gap-2" aria-label="Filter Signature Experiences">
             {EXPERIENCE_FILTERS.map((filter) => {
               const active = activeFilter === filter.id;
               return (
-                <button
+                <Button
                   key={filter.id}
                   type="button"
                   aria-pressed={active}
                   onClick={() => setActiveFilter(filter.id)}
-                  className={`min-h-[38px] rounded-full border px-4 py-2 font-sans text-[11px] font-semibold uppercase tracking-[0.14em] transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--teal)] ${
+                  variant="outline"
+                  className={`min-h-[44px] rounded-sm border px-4 py-2 font-sans text-[12px] font-medium tracking-normal transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--teal)] ${
                     active
-                      ? "border-[color:var(--teal)] bg-[color:var(--teal)] text-white"
+                      ? "border-primary bg-primary text-primary-foreground hover:bg-primary hover:text-primary-foreground"
                       : "border-[color:var(--border)] bg-[color:var(--ivory)] text-[color:var(--charcoal)] hover:border-[color:var(--gold)]"
                   }`}
                 >
                   {filter.label}
-                </button>
+                </Button>
               );
             })}
           </div>
@@ -184,7 +185,7 @@ function ExperiencesPage() {
       </section>
 
       <section
-        className="motion-skip section-y bg-[color:var(--ivory)] border-b border-[color:var(--border)]"
+        className="motion-skip pb-16 pt-6 md:py-24 bg-[color:var(--ivory)] border-b border-[color:var(--border)]"
         aria-label="Signature collection"
       >
         <div className="container-x">

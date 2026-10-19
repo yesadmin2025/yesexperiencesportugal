@@ -282,13 +282,6 @@ export function CinematicHero() {
           <span className="relative z-10">{HERO_COPY.secondaryCta}</span>
         </Link>
         </div>
-        <Link
-          to="/portugal-travel-designer"
-          data-testid="hero-travel-designer"
-          className="inline-flex min-h-[44px] max-w-[260px] items-center justify-center text-center font-sans text-[12px] leading-[1.4] text-[color:var(--ivory)] underline decoration-[color:var(--gold-soft)]/70 underline-offset-4 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)] sm:max-w-full sm:text-[13px]"
-        >
-          Planning a full Portugal journey? Work with a Travel Designer →
-        </Link>
       </div>
       </div>
 

@@ -33,7 +33,6 @@ import { captureAcquisitionFromLocation, captureUtmsFromLocation } from "@/lib/u
 import { captureGuideRefFromLocation } from "@/lib/guide-attribution";
 import { LocaleProvider } from "@/i18n/locale-context";
 import { LOCALE_BCP47, parseLocaleFromPath } from "@/i18n/config";
-import { usePublicEditorialMotion } from "@/hooks/use-marketing-motion";
 import { initializeGoogleAnalytics } from "@/lib/google-analytics";
 
 /* ──────────────────────────────────────────────────────────────────
@@ -334,7 +333,6 @@ function RootComponent() {
       trackVisit(pathname, "booking_start");
     }
   }, [pathname]);
-  usePublicEditorialMotion(pathname);
   const { locale } = parseLocaleFromPath(pathname);
   useEffect(() => {
     setAnalyticsLocale(locale);
