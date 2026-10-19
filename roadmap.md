@@ -1,5 +1,15 @@
 # Phase 1 optimization
 
+## Complete public-flow audit implementation — October 19
+- [x] Recover all ten audit priorities and prepare a sequenced implementation plan with protected-system boundaries
+- [ ] Reproduce Studio opening and public hydration warnings with cold loads and restored drafts; repair confirmed causes
+- [ ] Simplify homepage hero decisions and consolidate repeated explanations/actions without hiding the five services
+- [ ] Bring Experiences cards earlier; align mobile typography, labels, prices and touch targets
+- [ ] Keep authoritative reservation context accessible through Signature, /book, Tailor and Studio payment entry; preserve quiet guest details
+- [ ] Clarify human enquiry paths and review provenance; remove only redundant CTAs and competing decorative motion
+- [ ] Run mobile, tablet, desktop and reduced-motion checks plus focused regressions; complete a real sandbox payment-entry/retry sweep
+- [ ] Review every audit item against before/after evidence and report any external blockers; publication requires a separate explicit request
+
 ## Final mobile checkout review and authorized publication — October 18
 - [x] Re-run mobile Signature, /book, Tailor and Studio payment-entry and validation/retry checks: final 17/17 mobile checks passed, plus six invalid-request checks; five-person profile passed three repeats and full final sweep
 - [x] Fix demonstrated remaining checkout friction: Signature/Book/Tailor corrected fields clear their own warnings and invalid submit focuses the first missing contact field; frozen SEO and pricing/payment rules preserved
