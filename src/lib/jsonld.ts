@@ -298,6 +298,7 @@ export function organizationLd() {
       SOCIAL.instagram,
       SOCIAL.facebook,
       SOCIAL.tripadvisor,
+      SOCIAL.visitportugal,
       SOCIAL.viator,
       "https://www.linkedin.com/in/nidiadealmeida",
     ].filter(Boolean),

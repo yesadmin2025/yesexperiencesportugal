@@ -38,6 +38,12 @@ function websiteAndLocalBusinessSample() {
 }
 
 describe("Canonical Google Business Profile entity link", () => {
+  it("includes the verified YES VisitPortugal profile in Organization sameAs", () => {
+    expect(organizationLd().sameAs).toContain(
+      "https://www.visitportugal.com/en/content/yesexperiences-portugal",
+    );
+  });
+
   it("SOCIAL.google is exactly the owner-supplied canonical share URL", () => {
     expect(SOCIAL.google).toBe(CANONICAL_GOOGLE_PROFILE);
   });
