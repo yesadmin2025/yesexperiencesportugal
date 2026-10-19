@@ -19,7 +19,7 @@ function completeForm() {
 describe("Private moment enquiry delivery", () => {
   it("prevents duplicate requests while delivery is in flight", async () => {
     let finish: ((value: Response) => void) | undefined;
-    const fetch = vi.fn(() => new Promise<Response>((resolve) => { finish = resolve; }));
+    const fetch = vi.fn((_url: string, _init: RequestInit) => new Promise<Response>((resolve) => { finish = resolve; }));
     vi.stubGlobal("fetch", fetch);
     render(<ProposalRequestForm />);
     const form = completeForm();
