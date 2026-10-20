@@ -127,6 +127,10 @@ export const SOCIAL = {
    */
   getyourguide: "https://www.getyourguide.com/yesexperiences-portugal-s249432/" as string,
   viator: "https://www.viator.com/tours/Lisbon/Private-Wine-Tour-with-Food-and-Wine-Tasting-in-Southern-Lisbon/d538-349639P3" as string,
+  /** Company LinkedIn page (founder's personal profile lives on the Person entity). */
+  linkedin: "https://www.linkedin.com/company/yesexperiencesportugal",
+  /** Trustindex review page for the official domain. */
+  trustindex: "https://www.trustindex.io/reviews/yesexperiencesportugal.com",
 } as const;
 
 /** PT counterpart of LICENSE_LABEL — European Portuguese uses "n.º" with a period. */

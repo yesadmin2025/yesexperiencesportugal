@@ -50,6 +50,13 @@ describe("Canonical Google Business Profile entity link", () => {
     );
   });
 
+  it("includes the company LinkedIn and Trustindex profiles in Organization sameAs", () => {
+    const sameAs = organizationLd().sameAs;
+    expect(sameAs).toContain("https://www.linkedin.com/company/yesexperiencesportugal");
+    expect(sameAs).toContain("https://www.trustindex.io/reviews/yesexperiencesportugal.com");
+    expect(sameAs).not.toContain("https://www.linkedin.com/in/nidiadealmeida");
+  });
+
   it("SOCIAL.google is exactly the owner-supplied canonical share URL", () => {
     expect(SOCIAL.google).toBe(CANONICAL_GOOGLE_PROFILE);
   });
