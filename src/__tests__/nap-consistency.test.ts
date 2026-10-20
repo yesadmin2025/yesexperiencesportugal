@@ -160,7 +160,7 @@ describe("NAP + license consistency", () => {
     expect(nap.BASED_IN).toBe("Sesimbra, Portugal");
     expect(nap.STRUCTURED_ADDRESS).toEqual({
       "@type": "PostalAddress",
-      streetAddress: "Avenida 25 de Abril",
+      streetAddress: "Avenida 25 de Abril, S/N, Quinta da Raposa, Zambujal de Cima",
       postalCode: "2970-130",
       addressLocality: "Sesimbra",
       addressRegion: "Setúbal",

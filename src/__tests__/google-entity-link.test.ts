@@ -86,7 +86,7 @@ describe("Canonical Google Business Profile entity link", () => {
     expect(text).toContain("+351911889992");
     expect(text).toContain("info@yesexperiencesportugal.com");
     expect(JSON.parse(JSON.stringify(STRUCTURED_ADDRESS))).toMatchObject({
-      streetAddress: "Avenida 25 de Abril",
+      streetAddress: "Avenida 25 de Abril, S/N, Quinta da Raposa, Zambujal de Cima",
       postalCode: "2970-130",
       addressLocality: "Sesimbra",
     });
