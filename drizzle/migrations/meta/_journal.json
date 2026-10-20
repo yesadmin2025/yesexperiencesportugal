@@ -15,6 +15,13 @@
       "when": 1792097376358,
       "tag": "0001_fix_candidates_upsert_index",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1792472321454,
+      "tag": "0002_tailor_policies_admin_only",
+      "breakpoints": true
     }
   ]
 }
