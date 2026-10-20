@@ -1,6 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { useMemo } from "react";
 import { supabase } from "@/integrations/supabase/client";
+import { getTailorPricePolicies } from "@/lib/tailor/tailorPolicies.functions";
 import {
   tailorRuleBookable,
   tailorRuleKey,
@@ -32,13 +33,13 @@ export async function fetchTailorPriceMap(tourId?: string): Promise<TailorPriceM
   const rulesQuery = tourId
     ? db.from("tailor_price_rules").select(publicRuleCols).eq("tour_id", tourId)
     : db.from("tailor_price_rules").select(adminRuleCols);
-  const policyCols = tourId
-    ? "policy_group, max_total_pct, floor_pct_of_base"
-    : "policy_group, max_total_pct, floor_pct_of_base, note";
-  const [r, p] = await Promise.all([
-    rulesQuery,
-    db.from("tailor_price_policies").select(policyCols),
-  ]);
+  // Policies table is admin-only; guests read the caps via a server function.
+  const policiesQuery = tourId
+    ? getTailorPricePolicies().then((data) => ({ data, error: null as Error | null }))
+    : db
+        .from("tailor_price_policies")
+        .select("policy_group, max_total_pct, floor_pct_of_base, note");
+  const [r, p] = await Promise.all([rulesQuery, policiesQuery]);
   if (r.error) throw r.error;
   if (p.error) throw p.error;
   return {
