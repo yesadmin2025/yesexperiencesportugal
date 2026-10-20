@@ -301,7 +301,8 @@ export function organizationLd() {
       SOCIAL.visitportugal,
       SOCIAL.getyourguide,
       SOCIAL.viator,
-      "https://www.linkedin.com/in/nidiadealmeida",
+      SOCIAL.linkedin,
+      SOCIAL.trustindex,
     ].filter(Boolean),
   } as const;
 }
