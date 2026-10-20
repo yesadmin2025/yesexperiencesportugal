@@ -189,7 +189,7 @@ Deno.serve(async (req) => {
           "STRIPE_WEBHOOK_SECRET",
           "STRIPE_WEBHOOK_SECRET_SANDBOX",
         ][i];
-        return `${name}: ${s ? `present len=${s.length} prefix=${s.slice(0, 8)}` : "missing"}`;
+        return `${name}: ${s ? `present len=${s.length}` : "missing"}`;
       })
       .join(" | ");
     const sigPrefix = sig.slice(0, 40);

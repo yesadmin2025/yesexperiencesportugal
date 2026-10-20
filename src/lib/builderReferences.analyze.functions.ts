@@ -14,6 +14,7 @@ import { guardAiCaller } from "./abuseGuard.server";
 const schema = z.object({
   sessionId: z.string().min(8).max(64),
   fileIds: z.array(z.string().min(1).max(64)).max(5).default([]),
+  pass: z.string().min(16).max(128).optional(),
 });
 
 export interface ToneResult {
@@ -24,6 +25,11 @@ export interface ToneResult {
 export const analyzeBuilderReferences = createServerFn({ method: "POST" })
   .inputValidator((input: unknown) => schema.parse(input))
   .handler(async ({ data }): Promise<ToneResult | { error: string }> => {
+    // Only the guest holding this session's upload pass may spend AI on it.
+    const { verifyBuilderSessionPass } = await import("./builderSessionPass.server");
+    if (!(await verifyBuilderSessionPass(data.sessionId, data.pass))) {
+      return { error: "Couldn't read tone from these references." };
+    }
     const guard = await guardAiCaller({
       bucket: "analyze_refs",
       limit: 10,

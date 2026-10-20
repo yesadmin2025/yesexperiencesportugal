@@ -16,6 +16,7 @@ import { supabaseAdmin } from "@/integrations/supabase/client.server";
  */
 const Input = z.object({
   sessionId: z.string().min(8).max(64),
+  pass: z.string().min(16).max(128).optional(),
 });
 
 const SIGNED_URL_TTL_SECONDS = 60 * 5;
@@ -23,6 +24,10 @@ const SIGNED_URL_TTL_SECONDS = 60 * 5;
 export const listBuilderReferences = createServerFn({ method: "POST" })
   .inputValidator((input: unknown) => Input.parse(input))
   .handler(async ({ data }) => {
+    const { verifyBuilderSessionPass } = await import("./builderSessionPass.server");
+    if (!(await verifyBuilderSessionPass(data.sessionId, data.pass))) {
+      return { ok: true as const, rows: [] };
+    }
     const { data: rows, error } = await supabaseAdmin
       .from("builder_reference_uploads")
       .select(

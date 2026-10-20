@@ -91,7 +91,7 @@ export function ReferenceUploader({ sessionId, onToneReady }: Props) {
     let cancelled = false;
     void (async () => {
       try {
-        const result = await listBuilderReferences({ data: { sessionId } });
+        const result = await listBuilderReferences({ data: { sessionId, pass: readPass(sessionId) } });
         if (cancelled) return;
         if (!result.ok) return;
         const data = result.rows;
@@ -169,7 +169,7 @@ export function ReferenceUploader({ sessionId, onToneReady }: Props) {
       }
       // Re-list via server function to pick up signed URLs.
       try {
-        const refreshed = await listBuilderReferences({ data: { sessionId } });
+        const refreshed = await listBuilderReferences({ data: { sessionId, pass: readPass(sessionId) } });
         if (refreshed.ok) {
           setRows(refreshed.rows as ReferenceRow[]);
           setTone(null);
@@ -206,7 +206,7 @@ export function ReferenceUploader({ sessionId, onToneReady }: Props) {
     setAnalyzing(true);
     try {
       const result = (await analyzeBuilderReferences({
-        data: { sessionId, fileIds: rows.map((r) => r.id) },
+        data: { sessionId, fileIds: rows.map((r) => r.id), pass: readPass(sessionId) },
       })) as ToneResult | { error: string } | null;
       if (!result || "error" in (result ?? {})) {
         toast.error(
