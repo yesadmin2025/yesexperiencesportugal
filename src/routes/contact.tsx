@@ -395,7 +395,7 @@ function Page() {
           </aside>
         </div>
 
-        <div className="mx-auto max-w-5xl mt-16 md:mt-24 pt-10 border-t border-[color:var(--sand)]">
+        <div className="container-x mx-auto max-w-5xl mt-16 md:mt-24 pt-10 border-t border-[color:var(--sand)]">
           <p className="text-[11px] uppercase tracking-[0.22em] text-[color:var(--charcoal-soft)]">
             Before you write
           </p>
