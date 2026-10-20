@@ -23,7 +23,8 @@ export const LICENSE_LONG =
 export const CITY = "Sesimbra" as const;
 export const COUNTRY_CODE = "PT" as const;
 /** Current public listing address; use for every machine-readable business address. */
-export const STREET_ADDRESS = "Avenida 25 de Abril" as const;
+export const STREET_ADDRESS =
+  "Avenida 25 de Abril, S/N, Quinta da Raposa, Zambujal de Cima" as const;
 export const POSTAL_CODE = "2970-130" as const;
 export const ADDRESS_LOCALITY = CITY;
 export const ADDRESS_REGION = "Setúbal" as const;
