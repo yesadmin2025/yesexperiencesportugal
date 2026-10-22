@@ -779,6 +779,7 @@ Deno.serve(async (req) => {
         : bandLineItems;
 
     const sessionParams: Record<string, unknown> = {
+      // (product photo is resolved above as productImageUrl)
       line_items: [...tourLineItems, ...addOnLineItems, ...composableLineItems],
 
       mode: "payment",
@@ -803,7 +804,12 @@ Deno.serve(async (req) => {
           (body.guestDetails["phone"] as string).trim().length >= 6
         ),
       },
-      allow_promotion_codes: true,
+      // No promo-code box: no live booking has used one, and an empty code
+      // field sends guests away to search for discounts mid-payment.
+      allow_promotion_codes: false,
+      // Short-lived session so an unfinished payment triggers the one-time
+      // "not confirmed yet" notice the same day (Stripe minimum is 30 min).
+      expires_at: Math.floor(Date.now() / 1000) + 3 * 60 * 60,
       custom_text: {
         submit: { message: submitMessage.slice(0, 1200) },
         terms_of_service_acceptance: {

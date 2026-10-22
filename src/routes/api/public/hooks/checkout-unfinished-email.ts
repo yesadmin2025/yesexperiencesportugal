@@ -5,6 +5,7 @@ import { resumePathFor, shouldSendUnfinishedReminder } from "@/lib/checkout/unfi
 
 const payloadSchema = z.object({
   sessionId: z.string().startsWith("cs_live_").max(255),
+  email: z.string().email().max(320),
 });
 
 const SITE = "https://yesexperiencesportugal.com";
@@ -24,7 +25,7 @@ export const Route = createFileRoute("/api/public/hooks/checkout-unfinished-emai
         }
         const parsed = payloadSchema.safeParse(await request.json().catch(() => null));
         if (!parsed.success) return Response.json({ ok: false, error: "invalid_payload" }, { status: 400 });
-        const { sessionId } = parsed.data;
+        const { sessionId, email } = parsed.data;
 
         const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
         const { data: snap } = await supabaseAdmin
@@ -35,8 +36,6 @@ export const Route = createFileRoute("/api/public/hooks/checkout-unfinished-emai
         if (!snap) return Response.json({ ok: true, skipped: "no_snapshot" });
         const p = (snap.payload ?? {}) as Record<string, unknown>;
         const str = (v: unknown) => (typeof v === "string" && v.trim() ? v.trim() : null);
-        const mainContact = (p.mainContact ?? {}) as Record<string, unknown>;
-        const email = str(mainContact.email) ?? str(p.customerEmail);
         const customerName = str(p.customerName);
 
         let alreadyPaid = false;

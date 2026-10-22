@@ -293,6 +293,28 @@ Deno.serve(async (req) => {
     return Response.json({ received: true, bookingUpdated: true, status }, { status: 200, headers: corsHeaders });
   }
 
+  // Unfinished live checkout: one service notice to that guest, with a link
+  // back to the site so availability and lead-time gates are rechecked.
+  if (event.type === "checkout.session.expired" && event.livemode) {
+    const expired = event.data.object as Stripe.Checkout.Session;
+    const email = expired.customer_details?.email ?? expired.customer_email ?? null;
+    await logEvent({ ...baseLog, status_code: 200, error_message: "expired (unfinished notice)" });
+    const internalSecret = Deno.env.get("EMAIL_INTERNAL_SECRET");
+    const siteUrl = Deno.env.get("SITE_URL") ?? "https://yesexperiencesportugal.com";
+    if (internalSecret && email && expired.id?.startsWith("cs_live_") && expired.payment_status !== "paid") {
+      try {
+        await fetch(`${siteUrl}/api/public/hooks/checkout-unfinished-email`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json", Authorization: `Bearer ${internalSecret}` },
+          body: JSON.stringify({ sessionId: expired.id, email }),
+        });
+      } catch (e) {
+        console.error("unfinished notice dispatch failed", e instanceof Error ? e.message : e);
+      }
+    }
+    return Response.json({ received: true, handled: "expired" }, { status: 200, headers: corsHeaders });
+  }
+
   // Idempotency: ignore other non-checkout events quickly.
   if (
     event.type !== "checkout.session.completed" &&
