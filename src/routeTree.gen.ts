@@ -215,6 +215,7 @@ import { Route as ApiPublicFeedsThingsToDoDotxmlRouteImport } from './routes/api
 import { Route as ApiPublicHooksBokunBookingRouteImport } from './routes/api/public/hooks/bokun-booking'
 import { Route as ApiPublicHooksBookingCancelledEmailRouteImport } from './routes/api/public/hooks/booking-cancelled-email'
 import { Route as ApiPublicHooksCheckoutEmailRouteImport } from './routes/api/public/hooks/checkout-email'
+import { Route as ApiPublicHooksCheckoutUnfinishedEmailRouteImport } from './routes/api/public/hooks/checkout-unfinished-email'
 import { Route as ApiPublicHooksDnsWatchRouteImport } from './routes/api/public/hooks/dns-watch'
 import { Route as ApiPublicHooksEmailFlushRouteImport } from './routes/api/public/hooks/email-flush'
 import { Route as ApiPublicHooksEnquiryFollowupRouteImport } from './routes/api/public/hooks/enquiry-followup'
@@ -1290,6 +1291,12 @@ const ApiPublicHooksCheckoutEmailRoute =
     path: '/api/public/hooks/checkout-email',
     getParentRoute: () => rootRouteImport,
   } as any)
+const ApiPublicHooksCheckoutUnfinishedEmailRoute =
+  ApiPublicHooksCheckoutUnfinishedEmailRouteImport.update({
+    id: '/api/public/hooks/checkout-unfinished-email',
+    path: '/api/public/hooks/checkout-unfinished-email',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const ApiPublicHooksDnsWatchRoute = ApiPublicHooksDnsWatchRouteImport.update({
   id: '/api/public/hooks/dns-watch',
   path: '/api/public/hooks/dns-watch',
@@ -1579,6 +1586,7 @@ export interface FileRoutesByFullPath {
   '/api/public/hooks/bokun-booking': typeof ApiPublicHooksBokunBookingRoute
   '/api/public/hooks/booking-cancelled-email': typeof ApiPublicHooksBookingCancelledEmailRoute
   '/api/public/hooks/checkout-email': typeof ApiPublicHooksCheckoutEmailRoute
+  '/api/public/hooks/checkout-unfinished-email': typeof ApiPublicHooksCheckoutUnfinishedEmailRoute
   '/api/public/hooks/dns-watch': typeof ApiPublicHooksDnsWatchRoute
   '/api/public/hooks/email-flush': typeof ApiPublicHooksEmailFlushRoute
   '/api/public/hooks/enquiry-followup': typeof ApiPublicHooksEnquiryFollowupRoute
@@ -1796,6 +1804,7 @@ export interface FileRoutesByTo {
   '/api/public/hooks/bokun-booking': typeof ApiPublicHooksBokunBookingRoute
   '/api/public/hooks/booking-cancelled-email': typeof ApiPublicHooksBookingCancelledEmailRoute
   '/api/public/hooks/checkout-email': typeof ApiPublicHooksCheckoutEmailRoute
+  '/api/public/hooks/checkout-unfinished-email': typeof ApiPublicHooksCheckoutUnfinishedEmailRoute
   '/api/public/hooks/dns-watch': typeof ApiPublicHooksDnsWatchRoute
   '/api/public/hooks/email-flush': typeof ApiPublicHooksEmailFlushRoute
   '/api/public/hooks/enquiry-followup': typeof ApiPublicHooksEnquiryFollowupRoute
@@ -2019,6 +2028,7 @@ export interface FileRoutesById {
   '/api/public/hooks/bokun-booking': typeof ApiPublicHooksBokunBookingRoute
   '/api/public/hooks/booking-cancelled-email': typeof ApiPublicHooksBookingCancelledEmailRoute
   '/api/public/hooks/checkout-email': typeof ApiPublicHooksCheckoutEmailRoute
+  '/api/public/hooks/checkout-unfinished-email': typeof ApiPublicHooksCheckoutUnfinishedEmailRoute
   '/api/public/hooks/dns-watch': typeof ApiPublicHooksDnsWatchRoute
   '/api/public/hooks/email-flush': typeof ApiPublicHooksEmailFlushRoute
   '/api/public/hooks/enquiry-followup': typeof ApiPublicHooksEnquiryFollowupRoute
@@ -2243,6 +2253,7 @@ export interface FileRouteTypes {
     | '/api/public/hooks/bokun-booking'
     | '/api/public/hooks/booking-cancelled-email'
     | '/api/public/hooks/checkout-email'
+    | '/api/public/hooks/checkout-unfinished-email'
     | '/api/public/hooks/dns-watch'
     | '/api/public/hooks/email-flush'
     | '/api/public/hooks/enquiry-followup'
@@ -2460,6 +2471,7 @@ export interface FileRouteTypes {
     | '/api/public/hooks/bokun-booking'
     | '/api/public/hooks/booking-cancelled-email'
     | '/api/public/hooks/checkout-email'
+    | '/api/public/hooks/checkout-unfinished-email'
     | '/api/public/hooks/dns-watch'
     | '/api/public/hooks/email-flush'
     | '/api/public/hooks/enquiry-followup'
@@ -2682,6 +2694,7 @@ export interface FileRouteTypes {
     | '/api/public/hooks/bokun-booking'
     | '/api/public/hooks/booking-cancelled-email'
     | '/api/public/hooks/checkout-email'
+    | '/api/public/hooks/checkout-unfinished-email'
     | '/api/public/hooks/dns-watch'
     | '/api/public/hooks/email-flush'
     | '/api/public/hooks/enquiry-followup'
@@ -2822,6 +2835,7 @@ export interface RootRouteChildren {
   ApiPublicHooksBokunBookingRoute: typeof ApiPublicHooksBokunBookingRoute
   ApiPublicHooksBookingCancelledEmailRoute: typeof ApiPublicHooksBookingCancelledEmailRoute
   ApiPublicHooksCheckoutEmailRoute: typeof ApiPublicHooksCheckoutEmailRoute
+  ApiPublicHooksCheckoutUnfinishedEmailRoute: typeof ApiPublicHooksCheckoutUnfinishedEmailRoute
   ApiPublicHooksDnsWatchRoute: typeof ApiPublicHooksDnsWatchRoute
   ApiPublicHooksEmailFlushRoute: typeof ApiPublicHooksEmailFlushRoute
   ApiPublicHooksEnquiryFollowupRoute: typeof ApiPublicHooksEnquiryFollowupRoute
@@ -4282,6 +4296,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicHooksCheckoutEmailRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/hooks/checkout-unfinished-email': {
+      id: '/api/public/hooks/checkout-unfinished-email'
+      path: '/api/public/hooks/checkout-unfinished-email'
+      fullPath: '/api/public/hooks/checkout-unfinished-email'
+      preLoaderRoute: typeof ApiPublicHooksCheckoutUnfinishedEmailRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/public/hooks/dns-watch': {
       id: '/api/public/hooks/dns-watch'
       path: '/api/public/hooks/dns-watch'
@@ -4731,6 +4752,8 @@ const rootRouteChildren: RootRouteChildren = {
   ApiPublicHooksBookingCancelledEmailRoute:
     ApiPublicHooksBookingCancelledEmailRoute,
   ApiPublicHooksCheckoutEmailRoute: ApiPublicHooksCheckoutEmailRoute,
+  ApiPublicHooksCheckoutUnfinishedEmailRoute:
+    ApiPublicHooksCheckoutUnfinishedEmailRoute,
   ApiPublicHooksDnsWatchRoute: ApiPublicHooksDnsWatchRoute,
   ApiPublicHooksEmailFlushRoute: ApiPublicHooksEmailFlushRoute,
   ApiPublicHooksEnquiryFollowupRoute: ApiPublicHooksEnquiryFollowupRoute,
