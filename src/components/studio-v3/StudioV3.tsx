@@ -6592,7 +6592,7 @@ export function StoryboardHandoff({
       {/* ---------- /Unified "Your Signature" card ---------- */}
 
       {/* ---------- CTA stack — Continue + Save my signature ---------- */}
-      <div className="mt-10 sm:mt-12 flex flex-col items-center gap-4">
+      <div ref={ctaStackRef} className="mt-10 sm:mt-12 flex flex-col items-center gap-4">
         {pending ? (
           <BookingCtaSkeleton className="w-full max-w-[380px]" />
         ) : (
@@ -6693,6 +6693,45 @@ export function StoryboardHandoff({
 
       {/* ---------- Quiet secondary footer — other directions ---------- */}
       {footerSlot ? <div className="mt-12">{footerSlot}</div> : null}
+
+      {/* ---------- Your Day reserve bar — the primary action, always at hand ----------
+          Appears only while the surface's own CTA is scrolled out of view
+          and the day is reservable. Same gate, same handler, same price —
+          no second path, no new booking logic. */}
+      {(() => {
+        const reserveBarVisible = !composing && !pending && canReserve && !ctaInView;
+        const barDateLabel = (() => {
+          if (safeDate.dateExact) {
+            try {
+              return new Intl.DateTimeFormat("en-GB", {
+                weekday: "long",
+                day: "numeric",
+                month: "long",
+              }).format(new Date(safeDate.dateExact + "T00:00:00"));
+            } catch {
+              return safeDate.dateExact;
+            }
+          }
+          if (state.dateMode === "flexible") return "Flexible date";
+          if (state.dateMode === "undecided") return "Date to confirm";
+          return null;
+        })();
+        return (
+          <>
+            {reserveBarVisible ? <div aria-hidden className="h-20" /> : null}
+            <YourDayReserveBar
+              totalEur={resolvedTotalEur}
+              dateLabel={barDateLabel}
+              guestsLabel={formatGuestComposition(state.adults, state.minorAges, state.guests)}
+              visible={reserveBarVisible}
+              onReserve={() => {
+                trackStudio("reserve_bar_cta", { phase: "storyboard" });
+                onSecure();
+              }}
+            />
+          </>
+        );
+      })()}
     </div>
   );
 }
