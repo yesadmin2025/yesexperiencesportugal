@@ -6734,7 +6734,7 @@ export function StoryboardHandoff({
             <YourDayReserveBar
               totalEur={resolvedTotalEur}
               dateLabel={barDateLabel}
-              guestsLabel={formatGuestComposition(state.adults, state.minorAges, state.guests)}
+              guestsLabel={barGuestsLabel}
               visible={reserveBarVisible}
               onReserve={() => {
                 trackStudio("reserve_bar_cta", { phase: "storyboard" });
