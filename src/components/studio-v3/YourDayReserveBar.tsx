@@ -12,6 +12,8 @@
  * - Mobile-first, safe-area aware, reduced-motion safe, semantic tokens.
  */
 
+import { useEffect, useState } from "react";
+import { createPortal } from "react-dom";
 import { CTA_MAKE_IT_REAL } from "@/content/signature-day-copy";
 import { cn } from "@/lib/utils";
 
@@ -48,7 +50,15 @@ export function YourDayReserveBar({
 }: YourDayReserveBarProps) {
   const facts = [dateLabel, guestsLabel].filter(Boolean).join(" · ");
 
-  return (
+  // Portal to <body>: the "Your Day" surface root carries an entrance
+  // animation with fill-mode both, whose lingering transform would
+  // otherwise become the containing block for `position: fixed` and pin
+  // the bar to the bottom of the document instead of the viewport.
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => setMounted(true), []);
+  if (!mounted) return null;
+
+  return createPortal(
     <div
       data-testid={testId ?? "studio-v3-reserve-bar"}
       data-visible={visible ? "true" : "false"}
