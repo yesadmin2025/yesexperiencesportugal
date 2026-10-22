@@ -105,7 +105,8 @@ export function YourDayReserveBar({
           {CTA_MAKE_IT_REAL}
         </button>
       </div>
-    </div>
+    </div>,
+    document.body,
   );
 }
 
