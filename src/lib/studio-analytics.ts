@@ -50,6 +50,9 @@ export type StudioAnalyticsEvent =
   | "studio_signature_candidate"
   | "studio_final_skeleton"
   | "studio_checkout_started"
+  // Your Day reserve bar — measures whether the always-at-hand primary
+  // action lifts handoff to checkout versus the in-flow CTA.
+  | "reserve_bar_cta"
   | "day_shared"
   // PASS 4 — the committed day cannot honor the exact date chosen. Structural
   // only: never the stop, never the date.

@@ -353,6 +353,7 @@ import { GuestStepper, guestBucketLabel } from "./GuestStepper";
 import { Composition } from "./Composition";
 import { type GuestDetails } from "@/components/checkout/FinalDetailsDialog";
 import { FinalRevealStory } from "./FinalRevealStory";
+import { YourDayReserveBar } from "./YourDayReserveBar";
 import { WhyRouteWorks } from "./WhyRouteWorks";
 import { OtherDirections } from "./OtherDirections";
 import { deriveStudioIntelligence } from "@/lib/studio-v3/livingAtlasBridge";
@@ -4968,6 +4969,22 @@ export function StoryboardHandoff({
     () => safeDateForReveal(state.dateExact, state.dateMode),
     [state.dateExact, state.dateMode],
   );
+
+  // Your Day reserve bar — tracks whether the surface's own primary CTA is
+  // on-screen. The fixed bottom bar only appears while that CTA is scrolled
+  // out of view, so there is never more than one primary action visible.
+  const ctaStackRef = useRef<HTMLDivElement | null>(null);
+  const [ctaInView, setCtaInView] = useState(true);
+  useEffect(() => {
+    const el = ctaStackRef.current;
+    if (!el || typeof IntersectionObserver === "undefined") return;
+    const io = new IntersectionObserver(
+      (entries) => setCtaInView(entries[0]?.isIntersecting ?? true),
+      { threshold: 0.1 },
+    );
+    io.observe(el);
+    return () => io.disconnect();
+  }, []);
   const swapPool = useMemo(() => {
     const inUse = new Set(editedStops.map((s) => s.label.toLowerCase()));
     const pool: Array<{
@@ -6574,7 +6591,7 @@ export function StoryboardHandoff({
       {/* ---------- /Unified "Your Signature" card ---------- */}
 
       {/* ---------- CTA stack — Continue + Save my signature ---------- */}
-      <div className="mt-10 sm:mt-12 flex flex-col items-center gap-4">
+      <div ref={ctaStackRef} className="mt-10 sm:mt-12 flex flex-col items-center gap-4">
         {pending ? (
           <BookingCtaSkeleton className="w-full max-w-[380px]" />
         ) : (
@@ -6675,6 +6692,57 @@ export function StoryboardHandoff({
 
       {/* ---------- Quiet secondary footer — other directions ---------- */}
       {footerSlot ? <div className="mt-12">{footerSlot}</div> : null}
+
+      {/* ---------- Your Day reserve bar — the primary action, always at hand ----------
+          Appears only while the surface's own CTA is scrolled out of view
+          and the day is reservable. Same gate, same handler, same price —
+          no second path, no new booking logic. */}
+      {(() => {
+        const reserveBarVisible = !composing && !pending && canReserve && !ctaInView;
+        const barDateLabel = (() => {
+          if (safeDate.dateExact) {
+            try {
+              // Compact form: the bar has ~140px for facts, so the full
+              // "Saturday, 14 November" would truncate the guest count.
+              return new Intl.DateTimeFormat("en-GB", {
+                weekday: "short",
+                day: "numeric",
+                month: "short",
+              }).format(new Date(safeDate.dateExact + "T00:00:00"));
+            } catch {
+              return safeDate.dateExact;
+            }
+          }
+          if (state.dateMode === "flexible") return "Flexible date";
+          if (state.dateMode === "undecided") return "Date to confirm";
+          return null;
+        })();
+        // Compact party fact for the bar — the full adult/child split stays
+        // on the price card and checkout, per the shared formatter rule.
+        const barGuestsTotal =
+          typeof state.guests === "number" && state.guests > 0
+            ? state.guests
+            : (state.adults ?? 0) + (state.minorAges?.length ?? 0);
+        const barGuestsLabel =
+          barGuestsTotal > 0
+            ? `${barGuestsTotal} ${barGuestsTotal === 1 ? "guest" : "guests"}`
+            : null;
+        return (
+          <>
+            {reserveBarVisible ? <div aria-hidden className="h-20" /> : null}
+            <YourDayReserveBar
+              totalEur={resolvedTotalEur}
+              dateLabel={barDateLabel}
+              guestsLabel={barGuestsLabel}
+              visible={reserveBarVisible}
+              onReserve={() => {
+                trackStudio("reserve_bar_cta", { phase: "storyboard" });
+                onSecure();
+              }}
+            />
+          </>
+        );
+      })()}
     </div>
   );
 }
