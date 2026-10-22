@@ -716,6 +716,28 @@ Deno.serve(async (req) => {
         quantity: a.quantity,
       }));
 
+    // Real cover photo of this tour from /admin/photos (private bucket, so a
+    // signed URL); the brand cover stays as fallback for tours with no photos.
+    let productImageUrl = "https://yesexperiencesportugal.com/og-cover.jpg";
+    try {
+      const { data: cover } = await admin
+        .from("tour_gallery_photos")
+        .select("storage_path")
+        .eq("tour_id", body.tourId)
+        .order("is_cover", { ascending: false })
+        .order("sort_order", { ascending: true })
+        .limit(1)
+        .maybeSingle();
+      if (cover?.storage_path) {
+        const { data: signed } = await admin.storage
+          .from("tour-photos")
+          .createSignedUrl(cover.storage_path, 60 * 60 * 24 * 2);
+        if (signed?.signedUrl) productImageUrl = signed.signedUrl;
+      }
+    } catch (_) {
+      /* keep brand fallback */
+    }
+
     // Build a Stripe line item per age band (grouped) so the guest sees
     // "Adult × 2 · €279", "Youth × 1 · €209", etc. — never a single
     // opaque total. Adult-only bookings collapse into one line.
@@ -748,7 +770,7 @@ Deno.serve(async (req) => {
             ...(idx === 0
               ? {
                   description,
-                  images: ["https://yesexperiencesportugal.com/og-cover.jpg"],
+                  images: [productImageUrl],
                 }
               : {}),
           },
@@ -769,7 +791,7 @@ Deno.serve(async (req) => {
                 product_data: {
                   name: productName,
                   description,
-                  images: ["https://yesexperiencesportugal.com/og-cover.jpg"],
+                  images: [productImageUrl],
                 },
                 unit_amount: tourSubtotalCents,
               },
@@ -803,7 +825,12 @@ Deno.serve(async (req) => {
           (body.guestDetails["phone"] as string).trim().length >= 6
         ),
       },
-      allow_promotion_codes: true,
+      // No promo-code box: no live booking has used one, and an empty code
+      // field sends guests away to search for discounts mid-payment.
+      allow_promotion_codes: false,
+      // Short-lived session so an unfinished payment triggers the one-time
+      // "not confirmed yet" notice the same day (Stripe minimum is 30 min).
+      expires_at: Math.floor(Date.now() / 1000) + 3 * 60 * 60,
       custom_text: {
         submit: { message: submitMessage.slice(0, 1200) },
         terms_of_service_acceptance: {
