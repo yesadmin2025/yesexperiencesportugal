@@ -353,6 +353,8 @@ import { GuestStepper, guestBucketLabel } from "./GuestStepper";
 import { Composition } from "./Composition";
 import { type GuestDetails } from "@/components/checkout/FinalDetailsDialog";
 import { FinalRevealStory } from "./FinalRevealStory";
+import { YourDayReserveBar } from "./YourDayReserveBar";
+import { formatGuestComposition } from "./formatGuests";
 import { WhyRouteWorks } from "./WhyRouteWorks";
 import { OtherDirections } from "./OtherDirections";
 import { deriveStudioIntelligence } from "@/lib/studio-v3/livingAtlasBridge";
