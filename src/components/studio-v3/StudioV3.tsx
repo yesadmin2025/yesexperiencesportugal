@@ -4970,6 +4970,22 @@ export function StoryboardHandoff({
     () => safeDateForReveal(state.dateExact, state.dateMode),
     [state.dateExact, state.dateMode],
   );
+
+  // Your Day reserve bar — tracks whether the surface's own primary CTA is
+  // on-screen. The fixed bottom bar only appears while that CTA is scrolled
+  // out of view, so there is never more than one primary action visible.
+  const ctaStackRef = useRef<HTMLDivElement | null>(null);
+  const [ctaInView, setCtaInView] = useState(true);
+  useEffect(() => {
+    const el = ctaStackRef.current;
+    if (!el || typeof IntersectionObserver === "undefined") return;
+    const io = new IntersectionObserver(
+      (entries) => setCtaInView(entries[0]?.isIntersecting ?? true),
+      { threshold: 0.1 },
+    );
+    io.observe(el);
+    return () => io.disconnect();
+  }, []);
   const swapPool = useMemo(() => {
     const inUse = new Set(editedStops.map((s) => s.label.toLowerCase()));
     const pool: Array<{
