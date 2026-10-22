@@ -801,7 +801,6 @@ Deno.serve(async (req) => {
         : bandLineItems;
 
     const sessionParams: Record<string, unknown> = {
-      // (product photo is resolved above as productImageUrl)
       line_items: [...tourLineItems, ...addOnLineItems, ...composableLineItems],
 
       mode: "payment",
