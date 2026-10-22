@@ -6703,10 +6703,12 @@ export function StoryboardHandoff({
         const barDateLabel = (() => {
           if (safeDate.dateExact) {
             try {
+              // Compact form: the bar has ~140px for facts, so the full
+              // "Saturday, 14 November" would truncate the guest count.
               return new Intl.DateTimeFormat("en-GB", {
-                weekday: "long",
+                weekday: "short",
                 day: "numeric",
-                month: "long",
+                month: "short",
               }).format(new Date(safeDate.dateExact + "T00:00:00"));
             } catch {
               return safeDate.dateExact;
@@ -6716,6 +6718,16 @@ export function StoryboardHandoff({
           if (state.dateMode === "undecided") return "Date to confirm";
           return null;
         })();
+        // Compact party fact for the bar — the full adult/child split stays
+        // on the price card and checkout, per the shared formatter rule.
+        const barGuestsTotal =
+          typeof state.guests === "number" && state.guests > 0
+            ? state.guests
+            : (state.adults ?? 0) + (state.minorAges?.length ?? 0);
+        const barGuestsLabel =
+          barGuestsTotal > 0
+            ? `${barGuestsTotal} ${barGuestsTotal === 1 ? "guest" : "guests"}`
+            : null;
         return (
           <>
             {reserveBarVisible ? <div aria-hidden className="h-20" /> : null}
