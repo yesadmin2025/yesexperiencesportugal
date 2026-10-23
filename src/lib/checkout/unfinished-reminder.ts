@@ -2,11 +2,18 @@
  * Rules for the one-time "reservation not completed" notice sent when a live
  * Stripe Checkout session expires unpaid. Pure so it can be unit tested.
  */
-const INTERNAL_NAME_MARKERS = ["test", "teste", "nidia", "nídia", "almeida"];
+// Whole-word markers only; common surnames (e.g. Almeida) must never be filtered.
+const INTERNAL_WORDS = new Set(["test", "teste", "testing"]);
 
 export function isInternalTestName(name: string | null | undefined): boolean {
-  const n = (name ?? "").toLowerCase();
-  return INTERNAL_NAME_MARKERS.some((m) => n.includes(m));
+  const n = (name ?? "")
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "");
+  const words = n.split(/[^a-z0-9]+/).filter(Boolean);
+  if (words.some((w) => INTERNAL_WORDS.has(w))) return true;
+  // The founder's own test checkouts: first name + surname together.
+  return words.includes("nidia") && words.includes("almeida");
 }
 
 /** Link back to the site so availability and lead-time gates are rechecked. */

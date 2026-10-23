@@ -27,3 +27,16 @@ describe("unfinished reservation notice", () => {
     expect(src).toContain("images: [productImageUrl]");
   });
 });
+
+import { isInternalTestName as _isInternal } from "../unfinished-reminder";
+describe("internal name filter does not drop real surnames", () => {
+  it("keeps real guests named Almeida or Nídia", () => {
+    expect(_isInternal("João Almeida")).toBe(false);
+    expect(_isInternal("Nídia Costa")).toBe(false);
+    expect(_isInternal("Contessa Smith")).toBe(false);
+  });
+  it("still skips explicit test names and the founder", () => {
+    expect(_isInternal("Test Booking")).toBe(true);
+    expect(_isInternal("Nídia de Almeida")).toBe(true);
+  });
+});
