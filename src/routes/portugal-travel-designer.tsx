@@ -13,6 +13,9 @@ import { CTA_LABELS } from "@/content/cta-vocabulary";
 import { whatsappUrl } from "@/config/business-nap";
 import { JourneyEnquiryForm } from "@/components/travel-designer/JourneyEnquiryForm";
 import { TravelFilePreview } from "@/components/travel-designer/TravelFilePreview";
+import imgWine from "@/assets/tours/arrabida-wine-allinclusive.jpg";
+import imgAlentejo from "@/assets/tours/evora-alentejo.jpg";
+import imgTiles from "@/assets/tours/tiles-workshop.jpg";
 
 const CANONICAL = "https://yesexperiencesportugal.com/portugal-travel-designer";
 const TITLE = "Portugal Travel Designer — Private Multi-Day Journeys | YES";
@@ -62,11 +65,13 @@ function Section({
   title,
   children,
   tone = "ivory",
+  image,
 }: {
   eyebrow?: string;
   title?: React.ReactNode;
   children: React.ReactNode;
   tone?: "ivory" | "sand";
+  image?: { src: string; alt: string };
 }) {
   return (
     <section
@@ -77,11 +82,20 @@ function Section({
         {title && (
           <SplitLines
             as="h2"
-            className="mt-5 font-display text-[29px] font-medium leading-[1.18] tracking-normal text-balance text-[color:var(--charcoal)] md:text-[36px] md:leading-[1.1]"
+            className={`${eyebrow ? "mt-6" : ""} font-display text-[29px] font-medium leading-[1.18] tracking-normal text-balance text-[color:var(--charcoal)] md:text-[36px] md:leading-[1.1]`}
             lines={[title]}
           />
         )}
-        <div className="mt-7 space-y-6 text-[color:var(--charcoal-soft)] leading-relaxed md:mt-8">
+        {image && (
+          <img
+            src={image.src}
+            alt={image.alt}
+            loading="lazy"
+            decoding="async"
+            className="mt-8 aspect-[3/2] w-full rounded-[4px] object-cover"
+          />
+        )}
+        <div className="mt-8 space-y-5 text-[16px] text-[color:var(--charcoal-soft)] leading-[1.7]">
           {children}
         </div>
       </div>
@@ -160,6 +174,7 @@ function PortugalTravelDesignerPage() {
       <Section
         tone="sand"
         eyebrow="Three ways to shape your Portugal"
+        image={{ src: imgWine, alt: "Private wine tasting in Arrábida with YES Experiences Portugal" }}
         title={<>Signature, Tailor, <SectionTitle.Em>Studio.</SectionTitle.Em></>}
       >
         <p>
@@ -182,6 +197,7 @@ function PortugalTravelDesignerPage() {
       <Section
         tone="ivory"
         eyebrow="From one private day to a complete journey"
+        image={{ src: imgAlentejo, alt: "Évora and the Alentejo on a private YES journey" }}
         title={<>A route with geographical <SectionTitle.Em>and emotional sense.</SectionTitle.Em></>}
       >
         <p>
@@ -203,6 +219,7 @@ function PortugalTravelDesignerPage() {
       <Section
         tone="sand"
         eyebrow="Designed locally, operated personally"
+        image={{ src: imgTiles, alt: "Hand-painted tile workshop with a local artisan" }}
         title={<>A licensed local operator, <SectionTitle.Em>not a reseller.</SectionTitle.Em></>}
       >
         <p>A beautiful itinerary is only useful when it can work in real life.</p>

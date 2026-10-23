@@ -232,7 +232,8 @@ function PathCard({ path, index, primary }: { path: Path; index: number; primary
             <>{path.titleLead} <em className="font-normal text-[color:var(--teal)]">{path.titleEmphasis}</em></>
           ) : path.title}
         </h3>
-        <span className="five-ways-action mt-auto flex min-h-[44px] w-full items-center justify-between gap-3 pt-5">
+        <p className="five-ways-body mt-4 text-[15px] leading-[1.6] text-[color:var(--charcoal-soft)]">{path.body}</p>
+        <span className="five-ways-action mt-auto flex min-h-[44px] w-full items-center justify-between gap-3 pt-6">
           <span className="text-[11px] uppercase tracking-[0.22em] font-semibold text-[color:var(--teal)]">
             {path.cta}
           </span>

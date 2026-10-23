@@ -8,6 +8,7 @@ import { SectionTitle } from "@/components/ui/SectionTitle";
 import { CtaButton } from "@/components/ui/CtaButton";
 import { PUBLISHED_LOCAL_STORIES_ARTICLES as LOCAL_STORIES_ARTICLES } from "@/content/local-stories-articles";
 import ogImg from "@/assets/edit-viewpoint.jpg";
+import comportaImg from "@/assets/tours/troia-comporta.jpg";
 import { useMarketingMotion } from "@/hooks/use-marketing-motion";
 
 // Database-authored posts are secondary to the static editorial catalogue.
@@ -169,7 +170,15 @@ function Page() {
       <section className="py-16 md:py-24 bg-[color:var(--ivory)]">
         <div className="container-x">
           {featuredComporta ? (
-            <article className="mb-16 rounded-[8px] border border-[color:var(--gold-soft)]/70 bg-[color:var(--sand)] p-7 md:mb-20 md:p-10">
+            <article className="mb-16 overflow-hidden rounded-[8px] border border-[color:var(--gold-soft)]/70 bg-[color:var(--sand)] md:mb-20">
+              <img
+                src={comportaImg}
+                alt="Private day in Tróia and Comporta with YES Experiences Portugal"
+                loading="lazy"
+                decoding="async"
+                className="aspect-[3/2] w-full object-cover md:aspect-[18/7]"
+              />
+              <div className="p-7 md:p-10">
               <Eyebrow>Featured guide · Comporta & Tróia</Eyebrow>
               <div className="mt-5 grid gap-7 md:grid-cols-[minmax(0,1.3fr)_auto] md:items-end">
                 <div>
@@ -192,6 +201,7 @@ function Page() {
                     See the private day
                   </CtaButton>
                 </div>
+              </div>
               </div>
             </article>
           ) : null}
