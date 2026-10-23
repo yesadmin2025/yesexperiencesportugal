@@ -174,6 +174,7 @@ function PortugalTravelDesignerPage() {
       <Section
         tone="sand"
         eyebrow="Three ways to shape your Portugal"
+        image={{ src: imgWine, alt: "Private wine tasting in Arrábida with YES Experiences Portugal" }}
         title={<>Signature, Tailor, <SectionTitle.Em>Studio.</SectionTitle.Em></>}
       >
         <p>
@@ -196,6 +197,7 @@ function PortugalTravelDesignerPage() {
       <Section
         tone="ivory"
         eyebrow="From one private day to a complete journey"
+        image={{ src: imgAlentejo, alt: "Évora and the Alentejo on a private YES journey" }}
         title={<>A route with geographical <SectionTitle.Em>and emotional sense.</SectionTitle.Em></>}
       >
         <p>
@@ -217,6 +219,7 @@ function PortugalTravelDesignerPage() {
       <Section
         tone="sand"
         eyebrow="Designed locally, operated personally"
+        image={{ src: imgTiles, alt: "Hand-painted tile workshop with a local artisan" }}
         title={<>A licensed local operator, <SectionTitle.Em>not a reseller.</SectionTitle.Em></>}
       >
         <p>A beautiful itinerary is only useful when it can work in real life.</p>
