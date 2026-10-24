@@ -347,19 +347,6 @@ function PortugalTravelDesignerPage() {
           <p className="mt-8 text-sm text-[color:var(--charcoal-soft)]">Still choosing? <Link to="/local-stories/$slug" params={{ slug: "best-travel-designer-in-portugal" }} className="underline underline-offset-4">Read how to choose a travel designer in Portugal.</Link></p>
         </div>
       </section>
-
-       <section className="reveal section-y chapter-flow bg-[color:var(--sand)]">
-        <div className="container-x max-w-2xl text-center">
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-             <CtaButton href="#journey-enquiry" variant="primary" onClick={() => void import("@/lib/analytics-events").then((a) => a.trackEvent("travel_designer_start", { placement: "travel_designer_page" }))}>
-               {CTA_LABELS.travelDesigner}
-            </CtaButton>
-            <CtaButton to="/experiences" variant="ghost">
-              {CTA_LABELS.signatureDiscovery}
-            </CtaButton>
-          </div>
-        </div>
-      </section>
     </SiteLayout>
   );
 }

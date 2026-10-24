@@ -299,14 +299,6 @@ export function FinalDetailsDialog({
           </DialogHeader>
 
           <div className="min-h-0 overflow-y-auto overscroll-contain px-5 sm:px-7 py-5 space-y-5">
-            {productRecap ? (
-              <ProductRecap
-                recap={productRecap}
-                date={tourDate}
-                composition={composition}
-                compositionComplete={compositionComplete}
-              />
-            ) : null}
             {/* Errors live in the form itself, not only in a floating toast. */}
             {missingSummary.length > 0 ? (
               <div
@@ -329,11 +321,19 @@ export function FinalDetailsDialog({
                 )}
               </div>
             ) : null}
-            {/* Already-known day + party: compact summary with Edit, never re-asked. */}
+            {/* One quiet booking summary: product, day + party with Edit, never re-asked. */}
             <div
               data-testid="final-details-known-summary"
-              className="border border-[color:var(--border)] bg-[color:var(--sand)]/30 px-3.5 py-3"
+              className="border-b border-[color:var(--border)] pb-3"
             >
+              {productRecap ? (
+                <ProductRecap
+                  recap={productRecap}
+                  date={tourDate}
+                  composition={composition}
+                  compositionComplete={compositionComplete}
+                />
+              ) : null}
               <div className="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-3">
                 <p className="min-w-0 text-[13px] leading-snug text-[color:var(--charcoal)]">
                   {tourDate ? formatKnownDate(tourDate) : "Date not set"}
