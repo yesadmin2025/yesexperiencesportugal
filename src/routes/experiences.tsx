@@ -153,7 +153,7 @@ function ExperiencesPage() {
             Private days, <SectionTitle.Em>ready when you are.</SectionTitle.Em>
           </SectionTitle>
           <p className="mt-3 max-w-[52ch] mx-auto text-[15px] md:text-[16px] leading-[1.65] text-[color:var(--charcoal-soft)]">
-            Private days across Portugal. Reserve your date or tailor the day around your group.
+            Reserve your date, or tailor the day around your group.
           </p>
           <div className="mt-4 flex justify-center">
             <PriceCurrencyChip />
@@ -385,8 +385,7 @@ function CtaStrip() {
               <SectionTitle.Em>quite right?</SectionTitle.Em>
             </SectionTitle>
             <p className="mt-3 text-[15px] md:text-[16px] leading-[1.65] text-[color:var(--charcoal-soft)] max-w-lg">
-              Design your own private day and confirm it instantly. See the route and live price
-              take shape in the Studio.
+              Design your own private day in the Studio and confirm it instantly.
             </p>
             <p className="mt-3 text-[13px] leading-relaxed text-[color:var(--charcoal-soft)]">
               Traveling for several days?{" "}
