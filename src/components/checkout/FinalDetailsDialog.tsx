@@ -251,7 +251,7 @@ export function FinalDetailsDialog({
         experience_id: tourId ?? null,
         missing_fields: missing.map((m) => m.replace(/[^a-z]+/gi, "_")).join(","),
       });
-      toast.error(`Please complete: ${missing.join(", ")}`);
+      // The inline summary above the form is the single error message; no duplicate toast.
       return;
     }
     setMissingSummary([]);
