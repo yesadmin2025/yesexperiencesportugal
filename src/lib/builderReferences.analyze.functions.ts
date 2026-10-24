@@ -38,6 +38,18 @@ export const analyzeBuilderReferences = createServerFn({ method: "POST" })
     if (!guard.ok) {
       return { error: "Too many tone reads right now — please try again in a moment." };
     }
+    // Hard cap: a guest session gets at most 2 paid tone reads per day.
+    const { rateLimit } = await import("./rateLimit.server");
+    const perSession = await rateLimit({
+      sessionId: data.sessionId,
+      bucket: "session:analyze_refs",
+      limit: 2,
+      windowSec: 86400,
+    });
+    if (!perSession.ok) {
+      return { error: "Your references have already been read for this day." };
+    }
+
 
     const url = process.env.SUPABASE_URL;
     const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;

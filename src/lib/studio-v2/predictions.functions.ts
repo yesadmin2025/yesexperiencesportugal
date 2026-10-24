@@ -91,9 +91,20 @@ async function loadOrInit(sessionId: string): Promise<PredictionState> {
   };
 }
 
+export const issuePredictionSession = createServerFn({ method: "POST" }).handler(async () => {
+  const { mintPredictionSessionId } = await import("./predictionSession.server");
+  return { sessionId: mintPredictionSessionId() };
+});
+
+async function assertOwnedSession(id: string) {
+  const { isValidPredictionSessionId } = await import("./predictionSession.server");
+  if (!isValidPredictionSessionId(id)) throw new Error("invalid_session");
+}
+
 export const loadPredictions = createServerFn({ method: "POST" })
   .inputValidator((input: unknown) => z.object({ sessionId: sessionIdSchema }).parse(input))
   .handler(async ({ data }) => {
+    await assertOwnedSession(data.sessionId);
     const state = await loadOrInit(data.sessionId);
     return { state };
   });
@@ -108,6 +119,7 @@ export const recordSignal = createServerFn({ method: "POST" })
       .parse(input),
   )
   .handler(async ({ data }) => {
+    await assertOwnedSession(data.sessionId);
     const prev = await loadOrInit(data.sessionId);
     const next = applySignal(prev, data.signal as GestureSignal);
 

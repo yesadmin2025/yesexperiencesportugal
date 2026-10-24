@@ -26,8 +26,8 @@ import { ArrowLeft, Settings2 } from "lucide-react";
 import { lazy, Suspense } from "react";
 import { useServerFn } from "@tanstack/react-start";
 import { trackBuilderEvent } from "@/lib/builder-analytics";
-import { getOrCreateAnonId } from "@/lib/ab-testing";
 import { recordSignal, loadPredictions } from "@/lib/studio-v2/predictions.functions";
+import { getPredictionSessionId } from "@/lib/studio-v2/predictionSessionClient";
 import type { GestureSignal, MoodVector } from "@/lib/studio-v2/predictions";
 import type { PriorityKey } from "@/lib/studio-v2/profile";
 import { INTENT_IMAGE } from "@/lib/studio-v2/images";
@@ -262,10 +262,9 @@ export function LivingItinerary({
   // by re-sorting the alternate pool so substitutions feel pre-tuned.
   useEffect(() => {
     if (typeof window === "undefined") return;
-    const sessionId = getOrCreateAnonId();
-    if (!sessionId) return;
     let cancelled = false;
-    loadWarm({ data: { sessionId } })
+    getPredictionSessionId()
+      .then((sessionId) => (sessionId && !cancelled ? loadWarm({ data: { sessionId } }) : null))
       .then((r) => {
         if (cancelled) return;
         if (!r?.state || r.state.signalCount <= 0) return;
@@ -343,10 +342,10 @@ export function LivingItinerary({
   const emitSignal = (signal: GestureSignal) => {
     signalCount.current += 1;
     if (typeof window === "undefined") return;
-    const sessionId = getOrCreateAnonId();
-    if (!sessionId) return;
     void trackBuilderEvent("studio_v2_predict_signal", { type: signal.type });
-    sendSignal({ data: { sessionId, signal } }).catch(() => {
+    getPredictionSessionId()
+      .then((sessionId) => (sessionId ? sendSignal({ data: { sessionId, signal } }) : null))
+      .catch(() => {
       void trackBuilderEvent("studio_v2_predict_signal_error", { type: signal.type });
     });
     // Defer reveal check to allow the current gesture animation to settle.
