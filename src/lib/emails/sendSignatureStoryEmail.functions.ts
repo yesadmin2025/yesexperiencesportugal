@@ -131,12 +131,8 @@ export const sendSignatureStoryEmail = createServerFn({ method: "POST" })
       // sends a fresh copy.
       const revision = data.journeyRevision ?? data.dateIso ?? "";
       const key = await sha1Hex(`${data.email.toLowerCase()}|${data.tourId ?? ""}|${revision}`);
-      await sendTransactionalInternal({
-        templateName: "signature-story",
-        recipientEmail: data.email,
-        idempotencyKey: `signature-story-${key}`,
-        templateData: data.snapshot as unknown as Record<string, unknown>,
-      });
+      // Guest copy disabled: the recipient is caller-chosen and unverified,
+      // so only the fixed YES team inboxes receive the designed day.
 
       // Team copy — the YES team must see every designed day, even when the
       // traveller never books. Same revision key so refining sends once more
