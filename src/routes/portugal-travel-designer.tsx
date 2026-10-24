@@ -178,14 +178,12 @@ function PortugalTravelDesignerPage() {
         title={<>Signature, Tailor, <SectionTitle.Em>Studio.</SectionTitle.Em></>}
       >
         <p>
-          Our Signatures are complete private experiences designed around a particular region, story
-          or tradition. They are ready to reserve, but still feel personal because the guide and
-          vehicle are dedicated exclusively to your party.
+          Signatures are complete private days around one region or tradition, ready to reserve,
+          with a guide and vehicle for your party alone.
         </p>
         <p>
-          Tailor is for travelers who like the structure of a Signature but want to adjust part of
-          the day. A stop may be changed, an activity added or the pace adapted without rebuilding
-          the entire journey from the beginning.
+          Tailor keeps a Signature's structure while you change a stop, add an activity or adjust
+          the pace.
         </p>
         <p>
           Studio lets you design your own private day and confirm it instantly, with the route and
@@ -301,10 +299,6 @@ function PortugalTravelDesignerPage() {
           specific interests. It is also useful when different people in the same party want
           different things from the journey.
         </p>
-        <p>
-          The result does not need to feel complicated. It should simply feel considered: the right
-          places, in the right order, with enough time to experience them properly.
-        </p>
       </Section>
 
       <ServiceCrossLinks
@@ -312,12 +306,6 @@ function PortugalTravelDesignerPage() {
         eyebrow="Related YES services"
         title="Where travel design sits among our services."
         links={[
-          {
-            to: "/studio",
-            label: "Design a private day in the Experience Studio",
-            description:
-              "Build your own Portugal day online: choose the region, stops and rhythm, watch the route and price evolve, then confirm the finished day instantly.",
-          },
           {
             to: "/itineraries/10-day-private-portugal-tour",
             label: "See a sample ten-day private Portugal itinerary",
