@@ -442,11 +442,11 @@ function HomePage() {
     review: "reviews",
     reviews: "reviews",
     // Final CTA
-    "final-cta": "final-cta",
-    final: "final-cta",
-    book: "final-cta",
-    talk: "final-cta",
-    contact: "final-cta",
+    "final-cta": "faq",
+    final: "faq",
+    book: "faq",
+    talk: "faq",
+    contact: "faq",
   };
 
   // Shared "don't sync the hash right now" lock. Held while a programmatic
