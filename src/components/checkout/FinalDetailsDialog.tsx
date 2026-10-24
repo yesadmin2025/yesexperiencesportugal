@@ -441,25 +441,6 @@ export function FinalDetailsDialog({
                 )}
                 <PickupLaterToggle checked={pickupLater} onChange={setPickupLater} />
               </GuestField>
-              {altContact ? (
-                <GuestField label="Main contact person">
-                  <input
-                    value={mainContact}
-                    onChange={(e) => setMainContact(e.target.value)}
-                    placeholder={fullName || "Full name"}
-                    className={guestInputClass}
-                  />
-                </GuestField>
-              ) : (
-                <button
-                  type="button"
-                  data-testid="final-details-alt-contact-toggle"
-                  onClick={() => setAltContact(true)}
-                  className="min-h-[44px] text-left text-[12px] text-[color:var(--teal)] hover:text-[color:var(--charcoal)]"
-                >
-                  Someone else is the main contact
-                </button>
-              )}
             </GuestFieldGroup>
 
             <Disclosure
@@ -469,6 +450,25 @@ export function FinalDetailsDialog({
               testId="final-details-extras"
             >
               <div className="space-y-4 pt-3">
+                {altContact ? (
+                  <GuestField label="Main contact person">
+                    <input
+                      value={mainContact}
+                      onChange={(e) => setMainContact(e.target.value)}
+                      placeholder={fullName || "Full name"}
+                      className={guestInputClass}
+                    />
+                  </GuestField>
+                ) : (
+                  <button
+                    type="button"
+                    data-testid="final-details-alt-contact-toggle"
+                    onClick={() => setAltContact(true)}
+                    className="min-h-[44px] text-left text-[12px] text-[color:var(--teal)] hover:text-[color:var(--charcoal)]"
+                  >
+                    Someone else is the main contact
+                  </button>
+                )}
                 <GuestRow>
                   <GuestField label="Dietary restrictions">
                     <input
@@ -625,7 +625,7 @@ function ProductRecap({
     <section
       aria-label="Your booking"
       data-testid="final-details-product-recap"
-      className="border border-[color:var(--border)] bg-[color:var(--sand)]/30 px-4 py-3"
+      className="pb-1"
     >
       <h3 className="font-serif text-[17px] font-medium leading-snug text-[color:var(--charcoal)]">
         {recap.title}
