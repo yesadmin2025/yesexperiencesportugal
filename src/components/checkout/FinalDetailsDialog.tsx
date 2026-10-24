@@ -299,14 +299,6 @@ export function FinalDetailsDialog({
           </DialogHeader>
 
           <div className="min-h-0 overflow-y-auto overscroll-contain px-5 sm:px-7 py-5 space-y-5">
-            {productRecap ? (
-              <ProductRecap
-                recap={productRecap}
-                date={tourDate}
-                composition={composition}
-                compositionComplete={compositionComplete}
-              />
-            ) : null}
             {/* Errors live in the form itself, not only in a floating toast. */}
             {missingSummary.length > 0 ? (
               <div
@@ -329,11 +321,19 @@ export function FinalDetailsDialog({
                 )}
               </div>
             ) : null}
-            {/* Already-known day + party: compact summary with Edit, never re-asked. */}
+            {/* One quiet booking summary: product, day + party with Edit, never re-asked. */}
             <div
               data-testid="final-details-known-summary"
-              className="border border-[color:var(--border)] bg-[color:var(--sand)]/30 px-3.5 py-3"
+              className="border-b border-[color:var(--border)] pb-3"
             >
+              {productRecap ? (
+                <ProductRecap
+                  recap={productRecap}
+                  date={tourDate}
+                  composition={composition}
+                  compositionComplete={compositionComplete}
+                />
+              ) : null}
               <div className="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-3">
                 <p className="min-w-0 text-[13px] leading-snug text-[color:var(--charcoal)]">
                   {tourDate ? formatKnownDate(tourDate) : "Date not set"}
@@ -441,25 +441,6 @@ export function FinalDetailsDialog({
                 )}
                 <PickupLaterToggle checked={pickupLater} onChange={setPickupLater} />
               </GuestField>
-              {altContact ? (
-                <GuestField label="Main contact person">
-                  <input
-                    value={mainContact}
-                    onChange={(e) => setMainContact(e.target.value)}
-                    placeholder={fullName || "Full name"}
-                    className={guestInputClass}
-                  />
-                </GuestField>
-              ) : (
-                <button
-                  type="button"
-                  data-testid="final-details-alt-contact-toggle"
-                  onClick={() => setAltContact(true)}
-                  className="min-h-[44px] text-left text-[12px] text-[color:var(--teal)] hover:text-[color:var(--charcoal)]"
-                >
-                  Someone else is the main contact
-                </button>
-              )}
             </GuestFieldGroup>
 
             <Disclosure
@@ -469,6 +450,25 @@ export function FinalDetailsDialog({
               testId="final-details-extras"
             >
               <div className="space-y-4 pt-3">
+                {altContact ? (
+                  <GuestField label="Main contact person">
+                    <input
+                      value={mainContact}
+                      onChange={(e) => setMainContact(e.target.value)}
+                      placeholder={fullName || "Full name"}
+                      className={guestInputClass}
+                    />
+                  </GuestField>
+                ) : (
+                  <button
+                    type="button"
+                    data-testid="final-details-alt-contact-toggle"
+                    onClick={() => setAltContact(true)}
+                    className="min-h-[44px] text-left text-[12px] text-[color:var(--teal)] hover:text-[color:var(--charcoal)]"
+                  >
+                    Someone else is the main contact
+                  </button>
+                )}
                 <GuestRow>
                   <GuestField label="Dietary restrictions">
                     <input
@@ -625,7 +625,7 @@ function ProductRecap({
     <section
       aria-label="Your booking"
       data-testid="final-details-product-recap"
-      className="border border-[color:var(--border)] bg-[color:var(--sand)]/30 px-4 py-3"
+      className="pb-1"
     >
       <h3 className="font-serif text-[17px] font-medium leading-snug text-[color:var(--charcoal)]">
         {recap.title}
