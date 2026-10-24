@@ -86,7 +86,7 @@ export function YourDayReserveBar({
           {facts ? (
             <p
               data-testid="studio-v3-reserve-bar-facts"
-              className="mt-1 truncate text-[10.5px] uppercase tracking-[0.16em]"
+              className="mt-1 truncate text-[11px] uppercase tracking-[0.16em]"
               style={{ color: "color-mix(in oklab, var(--charcoal) 58%, transparent)" }}
             >
               {facts}

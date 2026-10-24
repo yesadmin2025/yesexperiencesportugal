@@ -26,6 +26,13 @@ import { act } from "react";
 
 // SiteLayout imports many heavy children (Navbar, Footer, FAB, etc.).
 // We don't need any of them for telemetry — stub them out.
+vi.mock("@tanstack/react-router", async (orig) => ({
+  ...(await orig<typeof import("@tanstack/react-router")>()),
+  useRouterState: (opts?: { select?: (s: { location: { pathname: string } }) => unknown }) => {
+    const state = { location: { pathname: "/" } };
+    return opts?.select ? opts.select(state) : state;
+  },
+}));
 vi.mock("@/components/Navbar", () => ({ Navbar: () => null }));
 vi.mock("@/components/Footer", () => ({ Footer: () => null }));
 vi.mock("@/components/FloatingActions", () => ({ FloatingActions: () => null }));

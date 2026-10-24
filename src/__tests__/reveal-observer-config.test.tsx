@@ -24,6 +24,13 @@
 import { describe, it, expect, beforeEach, afterEach, vi } from "vitest";
 import { render, cleanup } from "@testing-library/react";
 
+vi.mock("@tanstack/react-router", async (orig) => ({
+  ...(await orig<typeof import("@tanstack/react-router")>()),
+  useRouterState: (opts?: { select?: (s: { location: { pathname: string } }) => unknown }) => {
+    const state = { location: { pathname: "/" } };
+    return opts?.select ? opts.select(state) : state;
+  },
+}));
 vi.mock("@/components/Navbar", () => ({ Navbar: () => null }));
 vi.mock("@/components/Footer", () => ({ Footer: () => null }));
 vi.mock("@/components/FloatingActions", () => ({ FloatingActions: () => null }));
