@@ -26,7 +26,6 @@ import { ArrowLeft, Settings2 } from "lucide-react";
 import { lazy, Suspense } from "react";
 import { useServerFn } from "@tanstack/react-start";
 import { trackBuilderEvent } from "@/lib/builder-analytics";
-import { getOrCreateAnonId } from "@/lib/ab-testing";
 import { recordSignal, loadPredictions } from "@/lib/studio-v2/predictions.functions";
 import { getPredictionSessionId } from "@/lib/studio-v2/predictionSessionClient";
 import type { GestureSignal, MoodVector } from "@/lib/studio-v2/predictions";
