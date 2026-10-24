@@ -18,7 +18,7 @@ describe("decorative gold ornament removed", () => {
 
   it("itinerary ordinals are neutral, not gold", () => {
     const itinerary = tourRoute.slice(tourRoute.indexOf("function ItineraryTimeline"));
-    expect(itinerary).toMatch(/text-\[color:var\(--charcoal-soft\)\]\/75/);
+    expect(itinerary).toMatch(/tabular-nums text-\[color:var\(--charcoal-soft\)\]/);
     expect(itinerary).not.toMatch(/--gold-ink/);
   });
 

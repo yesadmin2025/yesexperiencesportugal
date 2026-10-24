@@ -251,7 +251,7 @@ export function FinalDetailsDialog({
         experience_id: tourId ?? null,
         missing_fields: missing.map((m) => m.replace(/[^a-z]+/gi, "_")).join(","),
       });
-      toast.error(`Please complete: ${missing.join(", ")}`);
+      // The inline summary above the form is the single error message; no duplicate toast.
       return;
     }
     setMissingSummary([]);
@@ -561,12 +561,18 @@ export function FinalDetailsDialog({
             </Disclosure>
           </div>
 
-          <div className="flex flex-col shrink-0 px-5 sm:px-7 pt-4 pb-[calc(env(safe-area-inset-bottom)+1rem)] sm:py-4 border-t border-[color:var(--border)] bg-[color:var(--sand)]/40 gap-2">
-            {priceQuote ? <ChargeSummaryLine quote={quote} /> : null}
+          {/* While the phone keyboard is open (short viewport) the footer shrinks to the
+              payment button only, so the field being typed stays in view. */}
+          <div className="flex flex-col shrink-0 px-5 sm:px-7 pt-4 pb-[calc(env(safe-area-inset-bottom)+1rem)] sm:py-4 [@media(max-height:520px)]:py-2 border-t border-[color:var(--border)] bg-[color:var(--sand)]/40 gap-2">
+            {priceQuote ? (
+              <div className="[@media(max-height:520px)]:hidden">
+                <ChargeSummaryLine quote={quote} />
+              </div>
+            ) : null}
             {/* Canonical cancellation + payment reassurance, never hand-authored. */}
             <p
               data-testid="final-details-reassurance"
-              className="flex items-center gap-2 text-[12px] leading-snug text-[color:var(--charcoal-soft)]"
+              className="flex items-center gap-2 text-[12px] leading-snug text-[color:var(--charcoal-soft)] [@media(max-height:520px)]:hidden"
             >
               <Lock size={12} aria-hidden className="shrink-0" />
               <span>

@@ -26,7 +26,8 @@ describe("homepage approved brand restoration", () => {
     // The short service descriptor must be visibly present, not only in data.
     expect(hero).toContain('data-hero-field="subheadline"');
     expect(hero).toContain("{HERO_COPY.subheadline}");
-    expect(hero).toContain('to="/portugal-travel-designer"');
+    // Visual hierarchy lock (21 Sep): Hero keeps two CTAs only, no third Travel Designer link.
+    expect(hero).not.toContain('to="/portugal-travel-designer"');
     expect(hero).toContain("data-hero-subheadline={HERO_COPY.subheadline}");
   });
 
