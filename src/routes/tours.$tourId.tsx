@@ -915,12 +915,7 @@ function BookingBlock({ tour, meta }: { tour: SignatureTour; meta?: ViatorMeta }
       className="py-16 md:py-24 bg-[color:var(--sand)]/50 scroll-mt-24 md:scroll-mt-28"
     >
       <div className="container-x max-w-3xl">
-        <div className="mb-5 text-center">
-          <Eyebrow flank>Reserve your day</Eyebrow>
-          <SectionTitle size="compact">
-            Date, party and price — <SectionTitle.Em>in one place.</SectionTitle.Em>
-          </SectionTitle>
-        </div>
+        {/* One booking heading only: the form below carries "Reserve this private day". */}
         <div className="border border-[color:var(--border)] bg-[color:var(--ivory)]">
           <TrustStrip meta={meta} />
           <div className="px-4 pt-5 sm:px-7 sm:pt-6">
