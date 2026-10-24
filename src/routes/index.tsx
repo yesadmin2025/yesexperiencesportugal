@@ -12,7 +12,7 @@ import { buildResponsiveSrc } from "@/lib/responsive-image";
 
 import heroImg from "@/assets/hero-coast.jpg";
 
-import { Star, MessageCircle } from "lucide-react";
+import { Star } from "lucide-react";
 
 import { GuestQuotes } from "@/components/home/GuestQuotes";
 import { StudioLivePreview } from "@/components/home/StudioLivePreview";
