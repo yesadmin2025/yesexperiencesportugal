@@ -19,12 +19,19 @@ import { supabaseAdmin } from "@/integrations/supabase/client.server";
 const Input = z.object({
   rowId: z.string().uuid(),
   sessionId: z.string().min(8).max(64),
+  pass: z.string().min(16).max(128).optional(),
 });
 
 export const deleteBuilderReference = createServerFn({ method: "POST" })
   .inputValidator((input: unknown) => Input.parse(input))
   .handler(async ({ data }) => {
-    const { rowId, sessionId } = data;
+    const { rowId, sessionId, pass } = data;
+
+    // 0. Require the server-issued ownership pass for this session.
+    const { verifyBuilderSessionPass } = await import("@/lib/builderSessionPass.server");
+    if (!(await verifyBuilderSessionPass(sessionId, pass))) {
+      return { ok: false as const, reason: "not_found" };
+    }
 
     // 1. Look up the row, scoped to the caller's session id. If the
     //    pair doesn't match, we treat it as an unauthorized attempt

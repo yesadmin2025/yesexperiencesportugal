@@ -191,7 +191,7 @@ export function ReferenceUploader({ sessionId, onToneReady }: Props) {
     // Anonymous client-side deletes are no longer permitted by RLS.
     try {
       const result = await deleteBuilderReference({
-        data: { rowId: row.id, sessionId },
+        data: { rowId: row.id, sessionId, pass: readPass(sessionId) },
       });
       if (!result.ok) {
         console.warn("Failed to delete reference:", result.reason);
