@@ -401,8 +401,6 @@ function Page() {
           </p>
           <ul className="mt-5 grid gap-x-10 gap-y-3 sm:grid-cols-2">
             {[
-              { to: "/experiences", label: "Signature Experiences — private days already designed" },
-              { to: "/studio", label: "Experience Studio — design your own day" },
               { to: "/portugal-travel-designer", label: "Travel Designer — multi-day journeys" },
               { to: "/proposal-in-portugal", label: "Proposals & special moments" },
               { to: "/corporate", label: "Private group and corporate days" },
