@@ -173,12 +173,6 @@ export const APPROVED_HOMEPAGE_SECTIONS: readonly ApprovedSection[] = [
     inComponent: true,
     requiredSpacing: { kind: "py", minScale: 16 },
   },
-  {
-    order: 12,
-    name: "Final decision — three ways forward",
-    ariaLabelledBy: "final-cta-title",
-    requiredSpacing: { kind: "py", minScale: 16 },
-  },
 
 ] as const;
 

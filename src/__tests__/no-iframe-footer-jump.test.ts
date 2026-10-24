@@ -184,7 +184,7 @@ describe("Homepage scrollToHash — static contract", () => {
     const aliases = src.match(/HASH_ALIASES:\s*Record<string,\s*string>\s*=\s*\{[\s\S]*?\n {2}\};/);
     expect(aliases, "HASH_ALIASES missing in routes/index.tsx").toBeTruthy();
     expect(aliases![0]).toMatch(/studio:\s*"studio"/);
-    expect(aliases![0]).toMatch(/"final-cta":\s*"final-cta"/);
+    expect(aliases![0]).toMatch(/"final-cta":\s*"faq"/);
     expect(aliases![0]).not.toMatch(/footer/);
     expect(aliases![0]).not.toMatch(/site-footer/);
   });

@@ -16,7 +16,7 @@ const titleSrc = readFileSync(titlePath, "utf8");
 
 describe("Homepage H2 — shared historical hierarchy", () => {
   it("uses SectionTitle for the key homepage headings", () => {
-    for (const id of ["studio-title", "final-cta-title"]) {
+    for (const id of ["studio-title"]) {
       expect(src).toMatch(new RegExp(`<SectionTitle[\\s\\S]{0,120}id="${id}"`));
     }
   });
