@@ -343,10 +343,10 @@ export function LivingItinerary({
   const emitSignal = (signal: GestureSignal) => {
     signalCount.current += 1;
     if (typeof window === "undefined") return;
-    const sessionId = getOrCreateAnonId();
-    if (!sessionId) return;
     void trackBuilderEvent("studio_v2_predict_signal", { type: signal.type });
-    sendSignal({ data: { sessionId, signal } }).catch(() => {
+    getPredictionSessionId()
+      .then((sessionId) => (sessionId ? sendSignal({ data: { sessionId, signal } }) : null))
+      .catch(() => {
       void trackBuilderEvent("studio_v2_predict_signal_error", { type: signal.type });
     });
     // Defer reveal check to allow the current gesture animation to settle.
