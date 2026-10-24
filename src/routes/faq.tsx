@@ -1,5 +1,5 @@
 import { socialImageMeta } from "@/lib/seo";
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute } from "@tanstack/react-router";
 
 import { SiteLayout } from "@/components/SiteLayout";
 import { SiteBreadcrumbs } from "@/components/SiteBreadcrumbs";
@@ -59,8 +59,7 @@ function FaqPage() {
             Everything worth asking, <SectionTitle.Em>answered honestly.</SectionTitle.Em>
           </SectionTitle>
           <p className="page-header-support mt-6 text-[15.5px] md:text-[17px] text-[color:var(--charcoal-soft)]">
-            How our private days are designed, what they cost, where you stand if plans change, and
-            the two ways to book. If your question isn&apos;t here, a local answers it personally.
+            Design, prices, changes and booking. Anything else, a local answers personally.
           </p>
         </div>
       </section>
@@ -128,13 +127,9 @@ function FaqPage() {
                 Send a booking request
               </CtaButton>
               <CtaButton to="/experiences" variant="ghost">
-                Browse Signature days
+                Explore Signature days
               </CtaButton>
             </div>
-            <p className="mt-5 text-[13px] text-[color:var(--charcoal-soft)]">
-              Prefer to read first? <Link to="/about" className="underline">Our story</Link> ·{" "}
-              <Link to="/terms" className="underline">Terms</Link>
-            </p>
           </div>
         </div>
       </section>
