@@ -117,9 +117,7 @@ export function ProposalInPortugalPage() {
             A proposal in Portugal, <SectionTitle.Em>planned discreetly.</SectionTitle.Em>
           </SectionTitle>
           <p className="page-header-support mt-6 text-[1rem] md:text-[1.1rem] text-[color:var(--charcoal-soft)]">
-            Anywhere in Portugal — coastline, vineyard, palace garden or a quiet city terrace. A
-            private moment shaped end to end by a local team, with the setting, timing and surprise
-            handled quietly on your behalf.
+            The setting, timing and surprise, handled quietly by a local team.
           </p>
           <DirectAnswer>
             YES Experiences Portugal plans private marriage proposals anywhere in Portugal —
@@ -274,18 +272,6 @@ export function ProposalInPortugalPage() {
             label: "Private wine tour from Lisbon for the day around the proposal",
             description:
               "Family cellars in Azeitão and Arrábida, Moscatel tastings and a long lunch — the most-chosen day to build a celebration around.",
-          },
-          {
-            to: "/lisbon-wine-tour-prices-and-inclusions",
-            label: "Lisbon wine tour prices and what is included",
-            description:
-              "Per-person prices, tastings, lunch and transport spelled out, so a celebration day can be budgeted before you write to us.",
-          },
-          {
-            to: "/lisbon-wine-tour-pickup-and-wineries",
-            label: "Lisbon wine tour pickup points and wineries",
-            description:
-              "Where we collect you in Lisbon, the timings, and the cellars you actually sit in.",
           },
         ]}
       />
