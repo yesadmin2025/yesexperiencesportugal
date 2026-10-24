@@ -278,11 +278,9 @@ function CorporatePage() {
               program enlarged or reduced.
             </p>
             <p className="mt-5 text-[15px] md:text-[16px] leading-[1.8] text-[color:var(--charcoal-soft)]">
-              We design each corporate experience around the people, objective and pace of the
-              group — team-building days, incentive programs, corporate retreats, executive
-              off-sites, client hosting and company celebrations, from leadership teams to groups of
-              100+. Every route is grounded in real timings, suitable venues, local knowledge and
-              practical delivery.
+              Team-building days, incentives, retreats, executive off-sites, client hosting and
+              company celebrations, each designed around the people, objective and pace of the
+              group, with real timings and suitable venues.
             </p>
             <div className="mt-6 pl-4 border-l-2 border-[color:var(--gold)] text-[14.5px] md:text-[15px] text-[color:var(--charcoal-soft)] leading-relaxed">
               Transport, venues, activities, guides, staffing and on-the-ground coordination are
@@ -310,10 +308,8 @@ function CorporatePage() {
               Local knowledge, <SectionTitle.Em>across the country.</SectionTitle.Em>
             </SectionTitle>
             <p className="mt-5 text-[15px] md:text-[16px] leading-[1.8] text-[color:var(--charcoal-soft)]">
-              We operate across Portugal, combining the places a group may already know with the
-              producers, landscapes, traditions and settings that give each region its character. A
-              program can include Portugal's recognized highlights, quieter local encounters or a
-              considered balance of both.
+              We operate across Portugal, balancing well-known highlights with the producers,
+              landscapes and traditions that give each region its character.
             </p>
             <p className="mt-5 text-[15px] md:text-[16px] leading-[1.8] text-[color:var(--charcoal-soft)]">
               Wine estates, coastal settings, historic towns, boats, workshops, gastronomy, outdoor
@@ -477,10 +473,6 @@ function CorporatePage() {
             <p className="mt-5 text-[15px] md:text-[16px] leading-[1.8] text-[color:var(--charcoal-soft)]">
               Share the group size, dates, objectives and the kind of experience you want to create.
               We will shape a realistic proposal around the people, purpose and place.
-            </p>
-            <p className="mt-5 text-[15px] md:text-[16px] leading-[1.8] text-[color:var(--charcoal-soft)]">
-              From leadership teams to groups of 100+, every proposal is developed around the actual
-              brief, never copied from a standard package.
             </p>
             <div className="mt-6 pl-4 border-l-2 border-[color:var(--gold)] text-[13.5px] md:text-sm text-[color:var(--charcoal-soft)] leading-relaxed">
               Real driving times, real venues, real partners.
