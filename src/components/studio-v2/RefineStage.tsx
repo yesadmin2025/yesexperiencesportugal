@@ -17,6 +17,7 @@ import { useServerFn } from "@tanstack/react-start";
 import { trackBuilderEvent } from "@/lib/builder-analytics";
 import { getOrCreateAnonId } from "@/lib/ab-testing";
 import { recordSignal } from "@/lib/studio-v2/predictions.functions";
+import { getPredictionSessionId } from "@/lib/studio-v2/predictionSessionClient";
 import type { GestureSignal } from "@/lib/studio-v2/predictions";
 
 export interface RefineStop {
@@ -70,10 +71,10 @@ export function RefineStage({ stops, alternates, onChange, caps }: Props) {
   // Fire-and-forget — predictive engine update should never block UX.
   const emitSignal = (signal: GestureSignal) => {
     if (typeof window === "undefined") return;
-    const sessionId = getOrCreateAnonId();
-    if (!sessionId) return;
     void trackBuilderEvent("studio_v2_predict_signal", { type: signal.type });
-    sendSignal({ data: { sessionId, signal } }).catch(() => {
+    getPredictionSessionId()
+      .then((sessionId) => (sessionId ? sendSignal({ data: { sessionId, signal } }) : null))
+      .catch(() => {
       void trackBuilderEvent("studio_v2_predict_signal_error", { type: signal.type });
     });
   };
