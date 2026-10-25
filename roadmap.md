@@ -1,5 +1,11 @@
 # Phase 1 optimization
 
+## Article-to-reservation conversion — October 25 (preview only)
+- [x] Refine one contextual recommendation in each priority guide, using existing tours and canonical booking controls
+- [x] Clarify direct-booking confidence beside the tour reservation form without changing checkout or policies
+- [x] Verify all three article-to-tour-to-reservation journeys at 393px and the recommendation at 1280px; 20 focused tests passed, images rendered, no overflow or runtime errors; no payment initiated
+- [ ] Publish only after Nídia explicitly requests it
+
 ## Complete public-flow audit implementation — October 19
 - [x] Recover all ten audit priorities and prepare a sequenced implementation plan with protected-system boundaries
 - [x] Reproduce Studio opening and public hydration warnings with cold loads and restored drafts; repair confirmed causes — mobile refresh and internal navigation regressions passed

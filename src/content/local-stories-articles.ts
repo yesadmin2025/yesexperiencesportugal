@@ -2738,7 +2738,7 @@ export const PUBLISHED_LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = LOCAL_STORI
  * from-price) from `signatureTours`. Only the editorial lead lives here.
  */
 export const GUIDE_INLINE_BOOKING: Readonly<
-  Record<string, { tourSlug: string; lead: string }>
+  Record<string, { tourSlug: string; lead: string; afterSection?: number }>
 > = {
   "arrabida-day-trip-from-lisbon": {
     tourSlug: "arrabida-wine-allinclusive",
@@ -2758,11 +2758,13 @@ export const GUIDE_INLINE_BOOKING: Readonly<
   },
   "best-wine-tours-from-lisbon": {
     tourSlug: "arrabida-wine-allinclusive",
-    lead: "Most readers of this page book this one: the full Arrábida wine day, private to your party, hotel pickup included and confirmed for your date.",
+    lead: "Prefer to leave the driving and arrangements to a local? Explore the private Arrábida wine day, with tastings, lunch and hotel pickup included.",
+    afterSection: 2,
   },
   "what-to-do-in-sesimbra": {
     tourSlug: "wild-beaches-picnic",
     lead: "The coastal version of this guide: Arrábida viewpoints, a quiet cove and a picnic by the sea, with pickup in Lisbon.",
+    afterSection: 1,
   },
   "fatima-day-trip-from-lisbon": {
     tourSlug: "fatima-nazare-obidos",
@@ -2791,5 +2793,6 @@ export const GUIDE_INLINE_BOOKING: Readonly<
   "portugal-coastal-drives-from-lisbon": {
     tourSlug: "wild-beaches-picnic",
     lead: "Prefer the coast without the wheel? Arrábida viewpoints, a quiet cove and a picnic by the sea, private from your Lisbon door.",
+    afterSection: 1,
   },
 } as const;

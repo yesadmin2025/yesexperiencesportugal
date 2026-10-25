@@ -314,6 +314,7 @@ function Page() {
 
 function StaticArticleView({ article }: { article: LocalStoryArticle }) {
   const trackGuideLink = useGuideLinkTracker(article.slug);
+  const inlineBooking = GUIDE_INLINE_BOOKING[article.slug];
 
   return (
     <SiteLayout>
@@ -380,11 +381,11 @@ function StaticArticleView({ article }: { article: LocalStoryArticle }) {
                       />
                     </figure>
                   )}
-                  {index === 0 && GUIDE_INLINE_BOOKING[article.slug] && (
+                  {inlineBooking && index === (inlineBooking.afterSection ?? 0) && (
                     <GuideBookingCta
                       guideSlug={article.slug}
-                      tourSlug={GUIDE_INLINE_BOOKING[article.slug]!.tourSlug}
-                      lead={GUIDE_INLINE_BOOKING[article.slug]!.lead}
+                      tourSlug={inlineBooking.tourSlug}
+                      lead={inlineBooking.lead}
                     />
                   )}
                 </div>
