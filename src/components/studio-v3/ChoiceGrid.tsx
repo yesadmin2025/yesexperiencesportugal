@@ -11,9 +11,17 @@ import type { ChoiceOption } from "./types";
  * Multi-select: pass `mode="multi"`, `values`, `onToggle`. Visual language is
  * identical — the gold dot indicator simply reflects each tile's selected
  * state. No badges, no counts, no checkboxes.
+ *
+ * Accessibility: tiles are native <button> elements with aria-pressed, so
+ * screen readers announce them as buttons with a selected state, and every
+ * grid is a named list (aria-label) so the question context travels with
+ * the group. Native buttons keep Tab navigation and Enter/Space activation
+ * with no custom keyboard code.
  */
 interface ChoiceGridProps<T extends string> {
   options: ChoiceOption<T>[];
+  /** Accessible name for the group — the question being asked. */
+  label: string;
   /** Single-select value (ignored in multi mode). */
   value?: T | null;
   /** Single-select handler (ignored in multi mode). */
@@ -33,6 +41,7 @@ interface ChoiceGridProps<T extends string> {
 
 export function ChoiceGrid<T extends string>({
   options,
+  label,
   value,
   onSelect,
   values,
@@ -48,10 +57,10 @@ export function ChoiceGrid<T extends string>({
       : false;
   return (
     <ul
+      aria-label={label}
       className={`mt-7 grid w-full max-w-[520px] gap-x-6 gap-y-1 sm:mt-8 sm:gap-y-0 ${
         columns === 2 ? "grid-cols-1 sm:grid-cols-2" : "grid-cols-1"
       }`}
-      role={isMulti ? "group" : "radiogroup"}
     >
       {options.map((opt, i) => {
         const selected = isMulti
@@ -59,11 +68,10 @@ export function ChoiceGrid<T extends string>({
           : value === opt.id;
         const lockedByCap = isMulti && atCap && !selected;
         return (
-          <li key={opt.id} role="presentation">
+          <li key={opt.id}>
             <button
               type="button"
-              role={isMulti ? "checkbox" : "radio"}
-              aria-checked={selected}
+              aria-pressed={selected}
               aria-disabled={lockedByCap || undefined}
               disabled={lockedByCap}
               data-testid="studio-v3-choice"
