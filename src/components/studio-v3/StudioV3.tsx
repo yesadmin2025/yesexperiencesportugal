@@ -343,6 +343,15 @@ import {
 import { StudioDelegationCard } from "./StudioDelegationCard";
 
 import { trackStudio } from "@/lib/studio-analytics";
+import { getPredictionSessionId } from "@/lib/studio-v2/predictionSessionClient";
+import { loadPredictions, recordSignal } from "@/lib/studio-v2/predictions.functions";
+import {
+  moodScoreForPriorities,
+  type GestureSignal,
+  type MoodVector,
+} from "@/lib/studio-v2/predictions";
+import type { PriorityKey } from "@/lib/studio-v2/profile";
+import { prioritiesForInterests, prioritiesForStopName } from "./tasteSignals";
 import {
   resolveRefineIntents,
   REFINE_MIN_STOPS,
@@ -5020,6 +5029,9 @@ export function StoryboardHandoff({
       blueprintStopId?: string | null;
       image?: string | null;
       focal?: string | null;
+      /** Taste-memory priorities — mapped from the candidate's real
+       *  suitsInterests; undefined when no truthful mapping exists. */
+      priorities?: PriorityKey[];
     }> = [];
 
 
@@ -5031,6 +5043,7 @@ export function StoryboardHandoff({
             label: s.label,
             story: s.story,
             source: "skeleton",
+            priorities: prioritiesForStopName(s.label),
             image: s.image ?? null,
             focal: s.focal ?? null,
           });
@@ -5072,6 +5085,7 @@ export function StoryboardHandoff({
           label: c.name,
           story: customerStopBlurb(c),
           source: "region-pool",
+          priorities: prioritiesForInterests(c.suitsInterests),
           durationMinutes: operational.durationMinutes,
           // Owner-published catalog duration is the live inventory truth.
           durationSource:
@@ -5082,6 +5096,17 @@ export function StoryboardHandoff({
         });
 
       }
+    }
+
+    // Taste memory — a returning guest's learned mood floats best-fit
+    // alternatives to the front of the swap pool. Stable sort: candidates
+    // with no signal keep their curated order.
+    if (tasteMood) {
+      pool.sort(
+        (a, b) =>
+          moodScoreForPriorities(b.priorities, tasteMood) -
+          moodScoreForPriorities(a.priorities, tasteMood),
+      );
     }
 
     return pool;
@@ -5095,6 +5120,7 @@ export function StoryboardHandoff({
     composableRows,
     state.investment,
     state.considerations,
+    tasteMood,
   ]);
 
   const setEdited = useCallback(
@@ -5270,6 +5296,38 @@ export function StoryboardHandoff({
   // and collapsed until the traveler asks for it ("Edit your day"), which
   // matters most at 393px where an open editor buried the day and the CTA.
   const [refineOpen, setRefineOpen] = useState<boolean>(false);
+
+  // ── Taste memory (verified V2 prediction engine, signed anonymous session) ──
+  // Refine gestures (swap / remove / reorder) are saved server-side against
+  // the guest's signed session; on a return visit the learned mood vector
+  // re-sorts the swap pool so alternatives surface to their taste. Fire-and-
+  // forget: taste memory must never block or break the day being composed.
+  const [tasteMood, setTasteMood] = useState<MoodVector | null>(null);
+  const tasteLoadedRef = useRef(false);
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    if (tasteLoadedRef.current) return;
+    if (editedStops.length === 0) return;
+    tasteLoadedRef.current = true;
+    getPredictionSessionId()
+      .then((sessionId) => (sessionId ? loadPredictions({ data: { sessionId } }) : null))
+      .then((r) => {
+        if (r?.state && r.state.signalCount > 0) setTasteMood(r.state.moodVector);
+      })
+      .catch(() => {
+        /* warm memory is optional — never block the day */
+      });
+  }, [editedStops.length]);
+
+  const emitTasteSignal = useCallback((signal: GestureSignal) => {
+    if (typeof window === "undefined") return;
+    getPredictionSessionId()
+      .then((sessionId) => (sessionId ? recordSignal({ data: { sessionId, signal } }) : null))
+      .catch(() => {
+        trackStudio("taste_signal_error", { type: signal.type });
+      });
+  }, []);
 
   // ---------- Cinematic 3-beat composing reveal (Fase 4) ----------
   // Beat 1 (0–900ms):   hero photo of the resolved Signature fades in over ivory.
@@ -6323,15 +6381,22 @@ export function StoryboardHandoff({
                     swapPool={swapPoolPublic}
                     swapOpen={swapOpenIdx === i}
                     onToggleSwap={() => setSwapOpenIdx(swapOpenIdx === i ? null : i)}
-                    onMoveEarlier={() =>
-                      applyAuthoredChange("earlier", applyGesture(editedStops, i, "earlier"))
-                    }
-                    onMoveLater={() =>
-                      applyAuthoredChange("later", applyGesture(editedStops, i, "later"))
-                    }
+                    onMoveEarlier={() => {
+                      emitTasteSignal({ type: "reorder", stopKey: s.label });
+                      applyAuthoredChange("earlier", applyGesture(editedStops, i, "earlier"));
+                    }}
+                    onMoveLater={() => {
+                      emitTasteSignal({ type: "reorder", stopKey: s.label });
+                      applyAuthoredChange("later", applyGesture(editedStops, i, "later"));
+                    }}
                     onRemove={() => {
                       // Fail closed: only a proven-optional moment may leave.
                       if (!momentOptionality[i]?.removable) return;
+                      emitTasteSignal({
+                        type: "remove",
+                        stopKey: s.label,
+                        priorities: prioritiesForStopName(s.label),
+                      });
                       applyAuthoredChange(
                         "remove",
                         applyGesture(editedStops, i, "remove", { minStops: REFINE_MIN_STOPS }),
@@ -6363,6 +6428,12 @@ export function StoryboardHandoff({
                       );
                       if (!swapFit.fits) return;
 
+                      emitTasteSignal({
+                        type: "swap",
+                        fromKey: s.label,
+                        toKey: canonical.label,
+                        toPriorities: canonical.priorities,
+                      });
                       applyAuthoredChange(
                         "swap",
                         applyGesture(editedStops, i, "swap", {
