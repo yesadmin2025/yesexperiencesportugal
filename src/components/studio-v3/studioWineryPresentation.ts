@@ -395,3 +395,33 @@ export function studioTradedBlueprintStopIds(
     .filter((s) => s.category !== "winery" && !present.has(s.id))
     .map((s) => s.id);
 }
+
+/** Accent/case/punctuation-insensitive key for a visible moment name. */
+export function visibleNameKey(label: string): string {
+  return label
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, " ")
+    .trim();
+}
+
+/**
+ * Keep only swap alternatives whose visible name is distinct from every
+ * moment already in the day and from earlier alternatives, so the list never
+ * shows two entries a guest cannot tell apart.
+ */
+export function dedupePublicSwapPool<T extends { label: string }>(
+  dayLabels: readonly string[],
+  pool: readonly T[],
+): T[] {
+  const seen = new Set(dayLabels.map(visibleNameKey));
+  const out: T[] = [];
+  for (const c of pool) {
+    const key = visibleNameKey(c.label);
+    if (!key || seen.has(key)) continue;
+    seen.add(key);
+    out.push(c);
+  }
+  return out;
+}
