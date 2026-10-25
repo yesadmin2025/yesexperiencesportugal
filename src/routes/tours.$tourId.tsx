@@ -558,18 +558,17 @@ function TourHero({
  * ════════════════════════════════════════════════════════════ */
 function TrustStrip({ meta: _meta }: { meta?: ViatorMeta }) {
   const items = [
-    { icon: <Shield size={14} />, label: SITE_RATING_LABEL },
-    { icon: <Shield size={14} />, label: "Instant confirmation · Secure payment" },
+    { icon: <Check size={14} />, label: "Book directly with YES · Private to your party" },
+    { icon: <Shield size={14} />, label: "Secure payment with Stripe · Instant confirmation" },
     { icon: <Check size={14} />, label: CANCELLATION.signature.en },
-    { icon: <Check size={14} />, label: "A local on WhatsApp if you need help" },
   ];
   return (
     <section className="border-y border-[color:var(--border)] bg-[color:var(--ivory)] reveal">
-      <div className="container-x max-w-6xl py-4">
-        <ul className="flex flex-wrap items-center justify-center gap-x-8 gap-y-3 text-[12px] uppercase tracking-[0.12em] text-[color:var(--charcoal-soft)]">
+      <div className="px-4 py-5 sm:px-7">
+        <ul className="grid gap-3 text-[13px] leading-relaxed text-[color:var(--charcoal-soft)]" aria-label="Booking confidence">
           {items.map((it) => (
-            <li key={it.label} className="flex items-center gap-2">
-              <span className="text-[color:var(--gold)]">{it.icon}</span>
+            <li key={it.label} className="flex items-start gap-3">
+              <span aria-hidden="true" className="mt-1 shrink-0 text-[color:var(--teal)]">{it.icon}</span>
               {it.label}
             </li>
           ))}

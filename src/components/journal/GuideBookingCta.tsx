@@ -11,7 +11,8 @@
  */
 
 import { PriceQualifier } from "@/components/ui/PriceQualifier";
-import { Link } from "@tanstack/react-router";
+import { CtaButton } from "@/components/ui/CtaButton";
+import { Eyebrow } from "@/components/ui/Eyebrow";
 
 import { signatureTours } from "@/data/signatureTours";
 import { guideRefDataAttrs } from "@/lib/guide-attribution-inline";
@@ -33,13 +34,19 @@ export function GuideBookingCta({
   return (
     <aside
       data-testid="guide-booking-cta"
-      className="not-prose reveal my-12 rounded-[6px] border border-[color:var(--gold)]/45 bg-[color:var(--sand)] p-6 md:p-8"
+      className="not-prose reveal my-12 overflow-hidden rounded-[6px] border border-[color:var(--border)] bg-[color:var(--sand)]"
     >
-      <span className="block font-sans text-[11px] uppercase tracking-[0.28em] text-[color:var(--gold-ink)]">
-        Book this day
-      </span>
+      <img
+        src={tour.img}
+        alt={tour.title}
+        loading="lazy"
+        decoding="async"
+        className="block aspect-[3/2] w-full object-cover"
+      />
+      <div className="p-6 md:p-8">
+      <Eyebrow>A private day from Lisbon</Eyebrow>
 
-      <h2 className="font-display mt-4 text-[1.35rem] md:text-[1.6rem] font-medium leading-[1.2] text-[color:var(--charcoal)]">
+      <h2 className="font-display mt-4 text-[24px] md:text-[26px] font-medium leading-[1.2] text-[color:var(--charcoal)]">
         {tour.title}
       </h2>
 
@@ -56,7 +63,7 @@ export function GuideBookingCta({
       </ul>
 
       <div className="mt-7 flex flex-col gap-4 sm:flex-row sm:items-center">
-        <Link
+        <CtaButton
           to="/tours/$tourId"
           params={{ tourId: tour.id }}
           {...guideRefDataAttrs(guideSlug, "inline_book")}
@@ -68,29 +75,11 @@ export function GuideBookingCta({
               destination: `/tours/${tour.id}`,
             })
           }
-          className="inline-flex min-h-[48px] items-center justify-center gap-2 rounded-[4px] bg-[color:var(--teal)] px-7 font-sans text-[12px] uppercase tracking-[0.18em] font-semibold text-[color:var(--ivory)] no-underline transition-colors duration-200 hover:bg-[color:var(--charcoal)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--teal)] focus-visible:ring-offset-2"
+          className="w-full sm:w-auto no-underline"
         >
           {CTA_LABELS.signatureCardBooking}
-          <span aria-hidden="true" className="text-[color:var(--gold)]">
-            →
-          </span>
-        </Link>
-
-        <Link
-          to="/studio"
-          {...guideRefDataAttrs(guideSlug, "inline_book_studio")}
-          onClick={() =>
-            recordGuideLinkClick({
-              guideSlug,
-              slot: "inline_book_studio",
-              kind: "studio",
-              destination: "/studio",
-            })
-          }
-          className="inline-flex min-h-[48px] items-center gap-2 font-sans text-[12px] uppercase tracking-[0.16em] font-semibold text-[color:var(--teal)] underline decoration-[color:var(--gold)]/60 underline-offset-4 hover:text-[color:var(--charcoal)]"
-        >
-          {CTA_LABELS.studio}
-        </Link>
+        </CtaButton>
+      </div>
       </div>
     </aside>
   );
