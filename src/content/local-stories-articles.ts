@@ -2788,4 +2788,8 @@ export const GUIDE_INLINE_BOOKING: Readonly<
     tourSlug: "arrabida-wine-allinclusive",
     lead: "If Arrábida wins for you: cellars, a long lunch and the coast road, private to your party with hotel pickup.",
   },
+  "portugal-coastal-drives-from-lisbon": {
+    tourSlug: "wild-beaches-picnic",
+    lead: "Prefer the coast without the wheel? Arrábida viewpoints, a quiet cove and a picnic by the sea, private from your Lisbon door.",
+  },
 } as const;
