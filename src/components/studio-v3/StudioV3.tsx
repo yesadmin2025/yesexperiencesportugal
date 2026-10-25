@@ -3656,6 +3656,7 @@ export function StudioV3() {
             titleAccent="Portugal to feel?"
           />
           <ChoiceGrid
+            label="How would you like Portugal to feel?"
             options={filterFeelings(FEELINGS, state.companions)}
             value={state.feeling}
             onSelect={onFeeling}
@@ -3703,6 +3704,7 @@ export function StudioV3() {
             data-selected-region={state.destinationIntent ?? ""}
           >
             <ChoiceGrid
+              label="Choose a direction for your day"
               options={filterDestinationIntents(DESTINATION_INTENTS)}
               value={state.destinationIntent}
               onSelect={onDestination}
@@ -3731,6 +3733,7 @@ export function StudioV3() {
           <BackLink onClick={() => back("destination")} />
           <PhaseHeader eyebrow="The company" title="Who is" titleAccent="travelling?" />
           <ChoiceGrid
+            label="Who is travelling?"
             options={filterCompanions(COMPANIONS, state.feeling)}
             value={state.companions}
             onSelect={onCompanions}
@@ -3753,7 +3756,12 @@ export function StudioV3() {
         >
           <BackLink onClick={() => back("who")} />
           <PhaseHeader eyebrow="The occasion" title="Is there a" titleAccent="reason behind it?" />
-          <ChoiceGrid options={orderedOccasions} value={state.occasion} onSelect={onOccasion} />
+          <ChoiceGrid
+            label="Is there a reason behind the trip?"
+            options={orderedOccasions}
+            value={state.occasion}
+            onSelect={onOccasion}
+          />
           {state.occasion ? (
             <NextTeaser>{contextualTeaser("occasion", state)}</NextTeaser>
           ) : (
@@ -3830,7 +3838,13 @@ export function StudioV3() {
         >
           <BackLink onClick={() => back("date")} />
           <PhaseHeader eyebrow="The beginning" title="Where does" titleAccent="the day begin?" />
-          <ChoiceGrid options={PICKUPS} value={state.pickup} onSelect={onPickup} columns={1} />
+          <ChoiceGrid
+            label="Where does the day begin?"
+            options={PICKUPS}
+            value={state.pickup}
+            onSelect={onPickup}
+            columns={1}
+          />
           {state.pickup ? (
             <NextTeaser>{contextualTeaser("pickup", state)}</NextTeaser>
           ) : (
@@ -3959,6 +3973,7 @@ export function StudioV3() {
           })()}
           <ChoiceGrid
             mode="multi"
+            label="Choose the interests that draw you"
             options={orderedInterests}
             values={countableSelectedInterests}
             onToggle={toggleInterest}
@@ -4010,6 +4025,7 @@ export function StudioV3() {
           <BackLink onClick={() => back("interests")} />
           <PhaseHeader eyebrow="The rhythm" title="How should the" titleAccent="day unfold?" />
           <ChoiceGrid
+            label="How should the day unfold?"
             options={orderedRhythms}
             value={state.rhythm}
             onSelect={onRhythm}
@@ -4056,6 +4072,7 @@ export function StudioV3() {
             ) : (
               <ChoiceGrid
                 key={directorQuestion.questionKey}
+                label={`${directorQuestion.title} ${directorQuestion.titleAccent}`}
                 options={directorQuestion.options}
                 // A rendered Director question is by definition unanswered.
                 value={null}
@@ -4080,6 +4097,7 @@ export function StudioV3() {
           <PhaseHeader eyebrow="The care" title="Anything we should" titleAccent="hold for you?" />
           <ChoiceGrid
             mode="multi"
+            label="Anything we should hold for you?"
             options={orderedConsiderations}
             values={state.considerations}
             onToggle={toggleConsideration}
