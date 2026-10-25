@@ -1,9 +1,9 @@
 # Phase 1 optimization
 
 ## Article-to-reservation conversion — October 25 (preview only)
-- [ ] Refine one contextual recommendation in each priority guide, using existing tours and canonical booking controls
-- [ ] Clarify direct-booking confidence beside the tour reservation form without changing checkout or policies
-- [ ] Verify article-to-tour-to-reservation journeys at mobile and desktop sizes; run focused regressions
+- [x] Refine one contextual recommendation in each priority guide, using existing tours and canonical booking controls
+- [x] Clarify direct-booking confidence beside the tour reservation form without changing checkout or policies
+- [x] Verify all three article-to-tour-to-reservation journeys at 393px and the recommendation at 1280px; 20 focused tests passed, images rendered, no overflow or runtime errors; no payment initiated
 - [ ] Publish only after Nídia explicitly requests it
 
 ## Complete public-flow audit implementation — October 19
