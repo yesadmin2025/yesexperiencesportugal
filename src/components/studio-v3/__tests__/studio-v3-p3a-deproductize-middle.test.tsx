@@ -59,15 +59,19 @@ describe("PhaseShell — no numeric progress", () => {
 });
 
 describe("ChoiceGrid — editorial surface, unchanged behaviour", () => {
-  it("keeps roles, aria and data attributes", () => {
+  it("keeps native button semantics, aria and data attributes", () => {
     const onSelect = vi.fn();
-    render(<ChoiceGrid options={options} value="b" onSelect={onSelect} />);
+    render(<ChoiceGrid label="Test question" options={options} value="b" onSelect={onSelect} />);
     const buttons = screen.getAllByTestId("studio-v3-choice");
     expect(buttons).toHaveLength(3);
-    expect(buttons[0]!.getAttribute("role")).toBe("radio");
+    // Native <button> — no role override, so screen readers announce a
+    // button with a pressed state, and the group carries the question label.
+    expect(buttons[0]!.getAttribute("role")).toBeNull();
+    expect(screen.getByRole("list", { name: "Test question" })).toBeTruthy();
     expect(buttons[0]!.getAttribute("data-phase-cta")).toBe("choice");
     expect(buttons[0]!.getAttribute("data-option-id")).toBe("a");
-    expect(buttons[1]!.getAttribute("aria-checked")).toBe("true");
+    expect(buttons[1]!.getAttribute("aria-pressed")).toBe("true");
+    expect(buttons[0]!.getAttribute("aria-pressed")).toBe("false");
     expect(buttons[1]!.getAttribute("data-selected")).toBe("true");
     expect(buttons[0]!.getAttribute("data-locked")).toBe("false");
     buttons[2]!.click();
@@ -78,6 +82,7 @@ describe("ChoiceGrid — editorial surface, unchanged behaviour", () => {
     const onToggle = vi.fn();
     render(
       <ChoiceGrid
+        label="Test multi question"
         options={options}
         mode="multi"
         values={["a", "b"]}
@@ -86,7 +91,8 @@ describe("ChoiceGrid — editorial surface, unchanged behaviour", () => {
       />,
     );
     const buttons = screen.getAllByTestId("studio-v3-choice");
-    expect(buttons[0]!.getAttribute("role")).toBe("checkbox");
+    expect(buttons[0]!.getAttribute("role")).toBeNull();
+    expect(buttons[0]!.getAttribute("aria-pressed")).toBe("true");
     const locked = buttons.find((b) => b.getAttribute("data-option-id") === "c")!;
     expect(locked.getAttribute("data-locked")).toBe("true");
     expect(locked.getAttribute("aria-disabled")).toBe("true");
