@@ -28,6 +28,7 @@ export type StudioAnalyticsEvent =
   | "moment_kept"
   | "moment_swapped"
   | "moment_removed"
+  | "taste_signal_error"
   | "story_reveal_viewed"
   | "price_expanded"
   | "guest_details_started"

@@ -343,6 +343,15 @@ import {
 import { StudioDelegationCard } from "./StudioDelegationCard";
 
 import { trackStudio } from "@/lib/studio-analytics";
+import { getPredictionSessionId } from "@/lib/studio-v2/predictionSessionClient";
+import { loadPredictions, recordSignal } from "@/lib/studio-v2/predictions.functions";
+import {
+  moodScoreForPriorities,
+  type GestureSignal,
+  type MoodVector,
+} from "@/lib/studio-v2/predictions";
+import type { PriorityKey } from "@/lib/studio-v2/profile";
+import { prioritiesForInterests, prioritiesForStopName } from "./tasteSignals";
 import {
   resolveRefineIntents,
   REFINE_MIN_STOPS,
@@ -3656,6 +3665,7 @@ export function StudioV3() {
             titleAccent="Portugal to feel?"
           />
           <ChoiceGrid
+            label="How would you like Portugal to feel?"
             options={filterFeelings(FEELINGS, state.companions)}
             value={state.feeling}
             onSelect={onFeeling}
@@ -3703,6 +3713,7 @@ export function StudioV3() {
             data-selected-region={state.destinationIntent ?? ""}
           >
             <ChoiceGrid
+              label="Choose a direction for your day"
               options={filterDestinationIntents(DESTINATION_INTENTS)}
               value={state.destinationIntent}
               onSelect={onDestination}
@@ -3731,6 +3742,7 @@ export function StudioV3() {
           <BackLink onClick={() => back("destination")} />
           <PhaseHeader eyebrow="The company" title="Who is" titleAccent="travelling?" />
           <ChoiceGrid
+            label="Who is travelling?"
             options={filterCompanions(COMPANIONS, state.feeling)}
             value={state.companions}
             onSelect={onCompanions}
@@ -3753,7 +3765,12 @@ export function StudioV3() {
         >
           <BackLink onClick={() => back("who")} />
           <PhaseHeader eyebrow="The occasion" title="Is there a" titleAccent="reason behind it?" />
-          <ChoiceGrid options={orderedOccasions} value={state.occasion} onSelect={onOccasion} />
+          <ChoiceGrid
+            label="Is there a reason behind the trip?"
+            options={orderedOccasions}
+            value={state.occasion}
+            onSelect={onOccasion}
+          />
           {state.occasion ? (
             <NextTeaser>{contextualTeaser("occasion", state)}</NextTeaser>
           ) : (
@@ -3830,7 +3847,13 @@ export function StudioV3() {
         >
           <BackLink onClick={() => back("date")} />
           <PhaseHeader eyebrow="The beginning" title="Where does" titleAccent="the day begin?" />
-          <ChoiceGrid options={PICKUPS} value={state.pickup} onSelect={onPickup} columns={1} />
+          <ChoiceGrid
+            label="Where does the day begin?"
+            options={PICKUPS}
+            value={state.pickup}
+            onSelect={onPickup}
+            columns={1}
+          />
           {state.pickup ? (
             <NextTeaser>{contextualTeaser("pickup", state)}</NextTeaser>
           ) : (
@@ -3959,6 +3982,7 @@ export function StudioV3() {
           })()}
           <ChoiceGrid
             mode="multi"
+            label="Choose the interests that draw you"
             options={orderedInterests}
             values={countableSelectedInterests}
             onToggle={toggleInterest}
@@ -4010,6 +4034,7 @@ export function StudioV3() {
           <BackLink onClick={() => back("interests")} />
           <PhaseHeader eyebrow="The rhythm" title="How should the" titleAccent="day unfold?" />
           <ChoiceGrid
+            label="How should the day unfold?"
             options={orderedRhythms}
             value={state.rhythm}
             onSelect={onRhythm}
@@ -4056,6 +4081,7 @@ export function StudioV3() {
             ) : (
               <ChoiceGrid
                 key={directorQuestion.questionKey}
+                label={`${directorQuestion.title} ${directorQuestion.titleAccent}`}
                 options={directorQuestion.options}
                 // A rendered Director question is by definition unanswered.
                 value={null}
@@ -4080,6 +4106,7 @@ export function StudioV3() {
           <PhaseHeader eyebrow="The care" title="Anything we should" titleAccent="hold for you?" />
           <ChoiceGrid
             mode="multi"
+            label="Anything we should hold for you?"
             options={orderedConsiderations}
             values={state.considerations}
             onToggle={toggleConsideration}
@@ -4104,7 +4131,12 @@ export function StudioV3() {
         >
           <BackLink onClick={() => back("considerations")} />
           <PhaseHeader eyebrow="The voice" title="Hosted in" titleAccent="which language?" />
-          <ChoiceGrid options={LANGUAGES} value={state.language} onSelect={onLanguage} />
+          <ChoiceGrid
+            label="Hosted in which language?"
+            options={LANGUAGES}
+            value={state.language}
+            onSelect={onLanguage}
+          />
           {state.language ? (
             <NextTeaser>{contextualTeaser("language", state)}</NextTeaser>
           ) : (
@@ -4985,6 +5017,38 @@ export function StoryboardHandoff({
     io.observe(el);
     return () => io.disconnect();
   }, []);
+  // ── Taste memory (verified V2 prediction engine, signed anonymous session) ──
+  // Refine gestures (swap / remove / reorder) are saved server-side against
+  // the guest's signed session; on a return visit the learned mood vector
+  // re-sorts the swap pool so alternatives surface to their taste. Fire-and-
+  // forget: taste memory must never block or break the day being composed.
+  const [tasteMood, setTasteMood] = useState<MoodVector | null>(null);
+  const tasteLoadedRef = useRef(false);
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    if (tasteLoadedRef.current) return;
+    if (editedStops.length === 0) return;
+    tasteLoadedRef.current = true;
+    getPredictionSessionId()
+      .then((sessionId) => (sessionId ? loadPredictions({ data: { sessionId } }) : null))
+      .then((r) => {
+        if (r?.state && r.state.signalCount > 0) setTasteMood(r.state.moodVector);
+      })
+      .catch(() => {
+        /* warm memory is optional — never block the day */
+      });
+  }, [editedStops.length]);
+
+  const emitTasteSignal = useCallback((signal: GestureSignal) => {
+    if (typeof window === "undefined") return;
+    getPredictionSessionId()
+      .then((sessionId) => (sessionId ? recordSignal({ data: { sessionId, signal } }) : null))
+      .catch(() => {
+        trackStudio("taste_signal_error", { type: signal.type });
+      });
+  }, []);
+
   const swapPool = useMemo(() => {
     const inUse = new Set(editedStops.map((s) => s.label.toLowerCase()));
     const pool: Array<{
@@ -5002,6 +5066,9 @@ export function StoryboardHandoff({
       blueprintStopId?: string | null;
       image?: string | null;
       focal?: string | null;
+      /** Taste-memory priorities — mapped from the candidate's real
+       *  suitsInterests; undefined when no truthful mapping exists. */
+      priorities?: PriorityKey[];
     }> = [];
 
 
@@ -5013,6 +5080,7 @@ export function StoryboardHandoff({
             label: s.label,
             story: s.story,
             source: "skeleton",
+            priorities: prioritiesForStopName(s.label),
             image: s.image ?? null,
             focal: s.focal ?? null,
           });
@@ -5054,6 +5122,7 @@ export function StoryboardHandoff({
           label: c.name,
           story: customerStopBlurb(c),
           source: "region-pool",
+          priorities: prioritiesForInterests(c.suitsInterests),
           durationMinutes: operational.durationMinutes,
           // Owner-published catalog duration is the live inventory truth.
           durationSource:
@@ -5064,6 +5133,17 @@ export function StoryboardHandoff({
         });
 
       }
+    }
+
+    // Taste memory — a returning guest's learned mood floats best-fit
+    // alternatives to the front of the swap pool. Stable sort: candidates
+    // with no signal keep their curated order.
+    if (tasteMood) {
+      pool.sort(
+        (a, b) =>
+          moodScoreForPriorities(b.priorities, tasteMood) -
+          moodScoreForPriorities(a.priorities, tasteMood),
+      );
     }
 
     return pool;
@@ -5077,6 +5157,7 @@ export function StoryboardHandoff({
     composableRows,
     state.investment,
     state.considerations,
+    tasteMood,
   ]);
 
   const setEdited = useCallback(
@@ -6305,15 +6386,22 @@ export function StoryboardHandoff({
                     swapPool={swapPoolPublic}
                     swapOpen={swapOpenIdx === i}
                     onToggleSwap={() => setSwapOpenIdx(swapOpenIdx === i ? null : i)}
-                    onMoveEarlier={() =>
-                      applyAuthoredChange("earlier", applyGesture(editedStops, i, "earlier"))
-                    }
-                    onMoveLater={() =>
-                      applyAuthoredChange("later", applyGesture(editedStops, i, "later"))
-                    }
+                    onMoveEarlier={() => {
+                      emitTasteSignal({ type: "reorder", stopKey: s.label });
+                      applyAuthoredChange("earlier", applyGesture(editedStops, i, "earlier"));
+                    }}
+                    onMoveLater={() => {
+                      emitTasteSignal({ type: "reorder", stopKey: s.label });
+                      applyAuthoredChange("later", applyGesture(editedStops, i, "later"));
+                    }}
                     onRemove={() => {
                       // Fail closed: only a proven-optional moment may leave.
                       if (!momentOptionality[i]?.removable) return;
+                      emitTasteSignal({
+                        type: "remove",
+                        stopKey: s.label,
+                        priorities: prioritiesForStopName(s.label),
+                      });
                       applyAuthoredChange(
                         "remove",
                         applyGesture(editedStops, i, "remove", { minStops: REFINE_MIN_STOPS }),
@@ -6345,6 +6433,12 @@ export function StoryboardHandoff({
                       );
                       if (!swapFit.fits) return;
 
+                      emitTasteSignal({
+                        type: "swap",
+                        fromKey: s.label,
+                        toKey: canonical.label,
+                        toPriorities: canonical.priorities,
+                      });
                       applyAuthoredChange(
                         "swap",
                         applyGesture(editedStops, i, "swap", {

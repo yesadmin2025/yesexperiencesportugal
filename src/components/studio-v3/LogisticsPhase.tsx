@@ -213,6 +213,7 @@ export function LogisticsPhase({
           <section className="w-full" aria-label="Where the day begins">
             <p className="mb-4 text-[13px] leading-relaxed text-[color:var(--charcoal)]">Choose the area now. Your hotel or address can be confirmed later.</p>
             <ChoiceGrid
+              label="Choose the area where the day begins"
               options={PICKUP_GROUPS}
               value={group}
               onSelect={(id) =>
