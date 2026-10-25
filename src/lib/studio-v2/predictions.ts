@@ -185,6 +185,23 @@ export function projectStateOntoProfile(
   };
 }
 
+// Score a candidate's priorities against a learned mood vector. Pure and
+// isomorphic — shared by the V2 living itinerary and the V3 swap pool so
+// both sort alternatives the same way for a returning guest.
+export function moodScoreForPriorities(
+  priorities: readonly PriorityKey[] | undefined,
+  mood: MoodVector,
+): number {
+  if (!priorities || priorities.length === 0) return 0;
+  let score = 0;
+  for (const p of priorities) {
+    for (const m of PRIORITY_TO_MOODS[p] ?? []) {
+      score += mood[m] ?? 0;
+    }
+  }
+  return score;
+}
+
 // Forecast the next best-fit stop key from a candidate pool, given the
 // current state. Returns the highest-scoring candidate not already used.
 // Pure scoring — used to *prefetch* the likely next substitution before
