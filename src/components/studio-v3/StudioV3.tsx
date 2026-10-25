@@ -5858,11 +5858,17 @@ export function StoryboardHandoff({
   ]);
   const authorLabel = (label: string) => studioDisplayLabel(label, authorDisplayLabels);
   const authorText = (text: string) => genericiseWineryText(text, authorDisplayLabels);
-  const swapPoolPublic = swapPool.map((c) => ({
-    id: c.label,
-    label: authorLabel(c.label),
-    story: authorText(c.story ?? ""),
-  }));
+  // Guests must be able to tell alternatives apart: drop any candidate whose
+  // visible name (accent/case-folded) matches a moment already in the day or
+  // an earlier alternative — same place under another catalogue spelling.
+  const swapPoolPublic = dedupePublicSwapPool(
+    editedStops.map((s) => authorLabel(s.label)),
+    swapPool.map((c) => ({
+      id: c.label,
+      label: authorLabel(c.label),
+      story: authorText(c.story ?? ""),
+    })),
+  );
 
   const hasNamedPickup = !!pickupCity && pickupCity !== "your chosen starting point";
   const regionForStory = skeletonTour?.region?.trim() || null;
