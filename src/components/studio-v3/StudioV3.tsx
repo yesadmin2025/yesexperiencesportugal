@@ -4131,7 +4131,12 @@ export function StudioV3() {
         >
           <BackLink onClick={() => back("considerations")} />
           <PhaseHeader eyebrow="The voice" title="Hosted in" titleAccent="which language?" />
-          <ChoiceGrid options={LANGUAGES} value={state.language} onSelect={onLanguage} />
+          <ChoiceGrid
+            label="Hosted in which language?"
+            options={LANGUAGES}
+            value={state.language}
+            onSelect={onLanguage}
+          />
           {state.language ? (
             <NextTeaser>{contextualTeaser("language", state)}</NextTeaser>
           ) : (
@@ -5012,6 +5017,38 @@ export function StoryboardHandoff({
     io.observe(el);
     return () => io.disconnect();
   }, []);
+  // ── Taste memory (verified V2 prediction engine, signed anonymous session) ──
+  // Refine gestures (swap / remove / reorder) are saved server-side against
+  // the guest's signed session; on a return visit the learned mood vector
+  // re-sorts the swap pool so alternatives surface to their taste. Fire-and-
+  // forget: taste memory must never block or break the day being composed.
+  const [tasteMood, setTasteMood] = useState<MoodVector | null>(null);
+  const tasteLoadedRef = useRef(false);
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    if (tasteLoadedRef.current) return;
+    if (editedStops.length === 0) return;
+    tasteLoadedRef.current = true;
+    getPredictionSessionId()
+      .then((sessionId) => (sessionId ? loadPredictions({ data: { sessionId } }) : null))
+      .then((r) => {
+        if (r?.state && r.state.signalCount > 0) setTasteMood(r.state.moodVector);
+      })
+      .catch(() => {
+        /* warm memory is optional — never block the day */
+      });
+  }, [editedStops.length]);
+
+  const emitTasteSignal = useCallback((signal: GestureSignal) => {
+    if (typeof window === "undefined") return;
+    getPredictionSessionId()
+      .then((sessionId) => (sessionId ? recordSignal({ data: { sessionId, signal } }) : null))
+      .catch(() => {
+        trackStudio("taste_signal_error", { type: signal.type });
+      });
+  }, []);
+
   const swapPool = useMemo(() => {
     const inUse = new Set(editedStops.map((s) => s.label.toLowerCase()));
     const pool: Array<{
@@ -5296,38 +5333,6 @@ export function StoryboardHandoff({
   // and collapsed until the traveler asks for it ("Edit your day"), which
   // matters most at 393px where an open editor buried the day and the CTA.
   const [refineOpen, setRefineOpen] = useState<boolean>(false);
-
-  // ── Taste memory (verified V2 prediction engine, signed anonymous session) ──
-  // Refine gestures (swap / remove / reorder) are saved server-side against
-  // the guest's signed session; on a return visit the learned mood vector
-  // re-sorts the swap pool so alternatives surface to their taste. Fire-and-
-  // forget: taste memory must never block or break the day being composed.
-  const [tasteMood, setTasteMood] = useState<MoodVector | null>(null);
-  const tasteLoadedRef = useRef(false);
-
-  useEffect(() => {
-    if (typeof window === "undefined") return;
-    if (tasteLoadedRef.current) return;
-    if (editedStops.length === 0) return;
-    tasteLoadedRef.current = true;
-    getPredictionSessionId()
-      .then((sessionId) => (sessionId ? loadPredictions({ data: { sessionId } }) : null))
-      .then((r) => {
-        if (r?.state && r.state.signalCount > 0) setTasteMood(r.state.moodVector);
-      })
-      .catch(() => {
-        /* warm memory is optional — never block the day */
-      });
-  }, [editedStops.length]);
-
-  const emitTasteSignal = useCallback((signal: GestureSignal) => {
-    if (typeof window === "undefined") return;
-    getPredictionSessionId()
-      .then((sessionId) => (sessionId ? recordSignal({ data: { sessionId, signal } }) : null))
-      .catch(() => {
-        trackStudio("taste_signal_error", { type: signal.type });
-      });
-  }, []);
 
   // ---------- Cinematic 3-beat composing reveal (Fase 4) ----------
   // Beat 1 (0–900ms):   hero photo of the resolved Signature fades in over ivory.
