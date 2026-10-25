@@ -46,7 +46,7 @@ describe("prioritiesForStopName", () => {
     expect(prioritiesForStopName("Invented Place That Does Not Exist")).toBeUndefined();
   });
 
-  it("is case-insensitive and trims whitespace", () => {
+  it("is case-insensitive and trims whitespace", async () => {
     // Any real pool stop resolves the same regardless of casing/space.
     const { REGION_STOP_POOL } = await import("@/data/regionStopPool");
     const first = REGION_STOP_POOL[0]!;

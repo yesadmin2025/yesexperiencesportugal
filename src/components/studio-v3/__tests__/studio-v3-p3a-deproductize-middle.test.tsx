@@ -103,7 +103,9 @@ describe("ChoiceGrid — editorial surface, unchanged behaviour", () => {
   });
 
   it("selected state differs and keeps the gold dot, without shadow", () => {
-    const { container } = render(<ChoiceGrid options={options} value="a" onSelect={() => {}} />);
+    const { container } = render(
+      <ChoiceGrid label="Test question" options={options} value="a" onSelect={() => {}} />,
+    );
     const buttons = screen.getAllByTestId("studio-v3-choice");
     const selectedStyle = buttons[0]!.getAttribute("style") ?? "";
     const plainStyle = buttons[1]!.getAttribute("style") ?? "";
