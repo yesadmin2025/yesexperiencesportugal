@@ -19,7 +19,7 @@ import type { PriorityKey } from "./profile";
 const sessionIdSchema = z
   .string()
   .min(8)
-  .max(64)
+  .max(65) // signed ids are 32 + "-" + 32 = 65 chars
   .regex(/^[a-zA-Z0-9_-]+$/);
 
 const priorityKeyValues = [
