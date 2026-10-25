@@ -15,6 +15,7 @@ import {
 import { trackEvent } from "@/lib/analytics-events";
 import {
   buildWineryDisplayLabels,
+  dedupePublicSwapPool,
   publicMomentAltText,
   publicSafeText,
   studioDisplayLabel,
