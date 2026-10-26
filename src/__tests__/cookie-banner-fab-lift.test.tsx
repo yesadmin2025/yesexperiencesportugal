@@ -38,7 +38,7 @@ describe("cookie banner vs floating WhatsApp button (393px)", () => {
     expect(FLOATING_ACTIONS_SRC).toContain("var(--cookie-banner-lift,0px)");
   });
 
-  it("first visit: banner sets --cookie-banner-lift, dismissing removes it", () => {
+  it("first visit: banner sets --cookie-banner-lift, dismissing removes it", async () => {
     render(<CookieConsent />);
 
     // Banner is shown on a first visit (no stored consent).
@@ -50,7 +50,9 @@ describe("cookie banner vs floating WhatsApp button (393px)", () => {
 
     // Dismiss via "Accept all" — the lift must be removed so the button
     // returns to its normal position.
-    fireEvent.click(screen.getByRole("button", { name: /accept all/i }));
+    await act(async () => {
+      fireEvent.click(screen.getByRole("button", { name: /accept all/i }));
+    });
     expect(screen.queryByRole("dialog")).toBeNull();
     expect(document.documentElement.style.getPropertyValue("--cookie-banner-lift")).toBe("");
   });

@@ -58,8 +58,8 @@ function CookiesPage() {
           <div className="mt-10 space-y-7 text-[15px] leading-[1.75] text-[color:var(--charcoal-soft)]">
             <p>
               This site uses a small number of cookies and similar technologies so the experience
-              works reliably and so we can keep improving it. We do not use cookies to build
-              advertising profiles.
+              works reliably and so we can keep improving it. Optional Google advertising cookies
+              support advertising measurement and ad delivery under your marketing preferences.
             </p>
             <p className="text-[13px] text-[color:var(--charcoal-soft)]/80">
               Yes Experiences Portugal · {NIF_LABEL} · {ADDRESS_LINE}
@@ -94,6 +94,15 @@ function CookiesPage() {
               Third-party services
             </h2>
             <p>
+              Google Ads receives page URLs without query strings, device/browser information, IP
+              address and advertising cookie identifiers. The Ads tag is blocked until Marketing is
+              accepted in regions requiring consent or when location is unknown; explicit refusal
+              is respected everywhere. No booking contact details are sent. See{" "}
+              <a href="https://business.safety.google/privacy/" className="underline underline-offset-4">
+                Google's privacy information
+              </a>.
+            </p>
+            <p>
               Some pages embed content from trusted partners — payment processing (Stripe), maps
               (Mapbox) and review platforms (Tripadvisor, Viator). Those services may set their own
               cookies when their content loads.
@@ -103,7 +112,9 @@ function CookiesPage() {
               Managing cookies
             </h2>
             <p>
-              You can clear or block cookies at any time from your browser settings. Blocking
+              Use Cookie preferences in the footer to change or withdraw marketing permission.
+              Your browser keeps the time, notice, region and history of choices as consent evidence.
+              You can also clear or block cookies from your browser settings. Blocking
               strictly-necessary cookies may prevent parts of the site from working.
             </p>
 

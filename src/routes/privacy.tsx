@@ -84,6 +84,21 @@ function PrivacyPage() {
               Your rights
             </h2>
             <p>
+              Google Ads may receive page URLs without query strings, device and browser information,
+              IP address and advertising cookie identifiers for advertising measurement and ad delivery
+              optimization. We do not send booking names, emails or phone numbers for customer matching.
+              In the EEA, UK, Switzerland and Canada, and when location cannot be established, the Ads
+              tag is blocked until you accept Marketing. Elsewhere it may run unless you refuse.
+            </p>
+            <p>
+              Your browser retains a visitor reference, region, the notice shown, timestamp and each
+              advertising choice, including later withdrawal without erasing earlier acceptance.
+              Use Cookie preferences in the footer to withdraw at any time. See{" "}
+              <a href="https://business.safety.google/privacy/" className="underline underline-offset-4">
+                how Google uses information
+              </a>.
+            </p>
+            <p>
               Under GDPR you can access, correct or delete your personal data at any time. Write to
               us and we will respond within 30 days.
             </p>
