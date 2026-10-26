@@ -1,5 +1,10 @@
 # Phase 1 optimization
 
+## Google Ads tag — October 26
+- [x] Verify conversion owner and absence of the requested destination in the published GTM container
+- [x] Reuse existing marketing choices, retain notice evidence and disclose Google advertising measurement
+- [ ] Verify permitted loading, refusal, withdrawal and reload in the preview; do not publish or change campaigns
+
 ## Article-to-reservation conversion — October 25 (preview only)
 - [x] Refine one contextual recommendation in each priority guide, using existing tours and canonical booking controls
 - [x] Clarify direct-booking confidence beside the tour reservation form without changing checkout or policies

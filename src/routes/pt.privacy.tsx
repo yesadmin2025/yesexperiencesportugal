@@ -72,6 +72,21 @@ function PrivacyPage() {
               Os seus direitos
             </h2>
             <p>
+              O Google Ads pode receber endereços de páginas sem parâmetros, informação do dispositivo
+              e navegador, endereço IP e identificadores de cookies publicitários para medir publicidade
+              e otimizar a apresentação de anúncios. Não enviamos nomes, emails ou telefones de reservas
+              para correspondência de clientes. No EEE, Reino Unido, Suíça e Canadá, ou quando a localização
+              é desconhecida, bloqueamos a tag até aceitar Marketing; fora dessas regiões, respeitamos recusas.
+            </p>
+            <p>
+              O navegador guarda uma referência do visitante, região, aviso apresentado, data e escolhas,
+              preservando a aceitação anterior quando há retirada. Pode retirar a autorização em Cookie
+              preferences no rodapé. Consulte{" "}
+              <a href="https://business.safety.google/privacy/" className="underline underline-offset-4">
+                a utilização de informação pelo Google
+              </a>.
+            </p>
+            <p>
               Ao abrigo do RGPD, pode aceder, corrigir ou apagar os seus dados pessoais a qualquer
               momento. Escreva-nos e responderemos no prazo máximo de 30 dias.
             </p>

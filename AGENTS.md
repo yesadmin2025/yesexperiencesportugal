@@ -1,5 +1,7 @@
 # Project architecture decisions
 
+- Google Ads uses the existing marketing-consent store and basic tag blocking, with append-only local notice evidence and cross-tab withdrawal; ordinary regional permission never enables customer matching.
+
 - Public editorial motion starts in the committed SiteLayout, not the root shell, so lazy route HTML hydrates before any controller mutates it.
 
 - All Studio inclusion surfaces and purchase payloads use composedDayInclusions on authoritative route labels; removed or closed activities cannot survive via catalogue fallbacks.

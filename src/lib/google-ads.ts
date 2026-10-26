@@ -1,5 +1,9 @@
 import type {} from "@/lib/google-analytics";
 
+declare global {
+  interface Window { "ga-disable-AW-18281912739"?: boolean }
+}
+
 export const GOOGLE_ADS_ID = "AW-18281912739";
 export const COOKIE_CHOICE_KEY = "yes.cookieConsent.v1";
 export const AD_NOTICE_VERSION = "google-ads-2026-10-26";
@@ -75,7 +79,7 @@ export async function syncGoogleAds(): Promise<void> {
     ad_user_data: "denied", // No customer matching requested.
     ad_personalization: allowed ? "granted" : "denied",
   });
-  window[`ga-disable-${GOOGLE_ADS_ID}` as keyof Window] = !allowed as never;
+  window["ga-disable-AW-18281912739"] = !allowed;
   if (!allowed || configured) return;
   configured = true;
   window.gtag("set", "developer_id.dZjgwMW", true);

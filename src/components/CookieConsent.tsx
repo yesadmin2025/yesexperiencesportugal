@@ -14,6 +14,7 @@ import * as React from "react";
 import { useHydrated } from "@/hooks/use-hydrated";
 import { trackEvent, setAnalyticsConsent } from "@/lib/analytics-events";
 import { Button } from "@/components/ui/button";
+import { AD_NOTICE_VERSION, lookupAdRegion, requiresAdConsent, recordAdDecision, syncGoogleAds } from "@/lib/google-ads";
 
 const STORAGE_KEY = "yes.cookieConsent.v1";
 const OPEN_EVENT = "yes:open-cookie-consent";
@@ -25,6 +26,7 @@ interface ConsentChoice {
   ads: ConsentState;
   decidedAt: string;
   version: 1;
+  noticeVersion?: string;
 }
 
 function applyConsent(choice: Pick<ConsentChoice, "analytics" | "ads">) {
@@ -33,7 +35,7 @@ function applyConsent(choice: Pick<ConsentChoice, "analytics" | "ads">) {
     g("consent", "update", {
       analytics_storage: choice.analytics,
       ad_storage: choice.ads,
-      ad_user_data: choice.ads,
+      ad_user_data: "denied",
       ad_personalization: choice.ads,
     });
   }
@@ -64,6 +66,7 @@ export function CookieConsent() {
   const [customize, setCustomize] = React.useState(false);
   const [analytics, setAnalytics] = React.useState(true);
   const [ads, setAds] = React.useState(false);
+  const [saving, setSaving] = React.useState(false);
   // Conversion-critical UI (guest details, checkout, validation toasts) must
   // never be blocked by the consent bar on small screens.
   const [conversionOverlayOpen, setConversionOverlayOpen] = React.useState(false);
@@ -147,6 +150,15 @@ export function CookieConsent() {
           page_title: document.title,
         });
       }
+      if (existing.ads === "granted" && existing.noticeVersion !== AD_NOTICE_VERSION) {
+        void lookupAdRegion().then((country) => {
+          if (requiresAdConsent(country)) {
+            setAnalytics(existing.analytics === "granted");
+            setAds(false);
+            setOpen(true);
+          }
+        });
+      }
     }
     const onOpen = () => {
       const cur = readStored();
@@ -158,14 +170,38 @@ export function CookieConsent() {
       setOpen(true);
     };
     window.addEventListener(OPEN_EVENT, onOpen);
-    return () => window.removeEventListener(OPEN_EVENT, onOpen);
+    const onStorage = (event: StorageEvent) => {
+      if (event.key !== STORAGE_KEY && event.key !== null) return;
+      const latest = readStored();
+      if (latest) {
+        applyConsent(latest);
+        setAnalyticsConsent(latest.analytics);
+        setAnalytics(latest.analytics === "granted");
+        setAds(latest.ads === "granted");
+      }
+      void syncGoogleAds();
+    };
+    window.addEventListener("storage", onStorage);
+    return () => {
+      window.removeEventListener(OPEN_EVENT, onOpen);
+      window.removeEventListener("storage", onStorage);
+    };
   }, [hydrated]);
 
   const commit = React.useCallback(
-    (choice: Pick<ConsentChoice, "analytics" | "ads">, source: string) => {
-      const full: ConsentChoice = { ...choice, decidedAt: new Date().toISOString(), version: 1 };
+    async (choice: Pick<ConsentChoice, "analytics" | "ads">, source: string) => {
+      if (saving) return;
+      setSaving(true);
+      try {
+        await recordAdDecision(choice.ads, choice.analytics);
+      } catch {
+        // A grant without retained evidence must not enable advertising.
+        choice = { ...choice, ads: "denied" };
+      }
+      const full: ConsentChoice = { ...choice, decidedAt: new Date().toISOString(), version: 1, noticeVersion: AD_NOTICE_VERSION };
       persist(full);
       applyConsent(full);
+      void syncGoogleAds();
       setAnalyticsConsent(full.analytics);
       // GTM starts while Consent Mode is denied, so its automatic initial
       // page view cannot be collected. Emit that one page view immediately
@@ -185,8 +221,9 @@ export function CookieConsent() {
       });
       setOpen(false);
       setCustomize(false);
+      setSaving(false);
     },
-    [],
+    [saving],
   );
 
   if (!hydrated || !open || conversionOverlayOpen) return null;
@@ -219,7 +256,7 @@ export function CookieConsent() {
               We use cookies
             </p>
             <p className="mt-0.5 max-w-[62ch] font-sans text-[12px] leading-[1.4] text-[color:var(--charcoal-soft)] sm:leading-[1.42]">
-              Essential cookies keep the site working. Analytics help us improve.{" "}
+              Essential cookies keep the site working. Optional Google analytics and advertising measure visits and improve ad delivery.{" "}
               <a
                 href="/cookies"
                 className="underline decoration-[color:var(--gold-warm)]/60 underline-offset-[3px] hover:text-[color:var(--charcoal)]"
@@ -247,7 +284,7 @@ export function CookieConsent() {
               />
               <ConsentRow
                 label="Marketing"
-                hint="Personalized ads across partners."
+                hint="Google Ads: advertising measurement and ad delivery. No booking contact details are shared. Change this choice anytime below."
                 checked={ads}
                 onChange={setAds}
               />
@@ -274,6 +311,7 @@ export function CookieConsent() {
                 <Button
                   type="button"
                   variant="outline"
+                  disabled={saving}
                   onClick={() => commit({ analytics: "denied", ads: "denied" }, "essential_only")}
                   className="tap min-h-11 flex-1 rounded-sm border-[color:var(--charcoal)]/[0.18] bg-transparent px-2 text-[11.5px] uppercase tracking-[0.04em] text-[color:var(--charcoal)] shadow-none hover:border-[color:var(--teal)] hover:bg-transparent hover:text-[color:var(--teal)] sm:flex-none sm:px-3 sm:tracking-[0.14em]"
                 >
@@ -282,6 +320,7 @@ export function CookieConsent() {
                 <Button
                   type="button"
                   onClick={() => commit({ analytics: "granted", ads: "granted" }, "accept_all")}
+                  disabled={saving}
                   className="tap min-h-11 flex-1 rounded-sm bg-[color:var(--teal)] px-2 text-[11.5px] uppercase tracking-[0.05em] text-[color:var(--ivory)] shadow-none hover:bg-[color:var(--teal-2)] sm:flex-none sm:px-4 sm:tracking-[0.16em]"
                 >
                   Accept all
@@ -299,6 +338,7 @@ export function CookieConsent() {
                 </Button>
                 <Button
                   type="button"
+                  disabled={saving}
                   onClick={() =>
                     commit(
                       {

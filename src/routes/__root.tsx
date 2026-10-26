@@ -34,6 +34,7 @@ import { captureGuideRefFromLocation } from "@/lib/guide-attribution";
 import { LocaleProvider } from "@/i18n/locale-context";
 import { LOCALE_BCP47, parseLocaleFromPath } from "@/i18n/config";
 import { initializeGoogleAnalytics } from "@/lib/google-analytics";
+import { initializeGoogleAds } from "@/lib/google-ads";
 
 /* ──────────────────────────────────────────────────────────────────
  * App readiness flag — sets `window.__APP_READY__ = true` and fires
@@ -318,6 +319,7 @@ function RootComponent() {
   useEffect(() => installDevHardReload(), []);
   useEffect(() => installAnalyticsAttrs(), []);
   useEffect(() => initializeGoogleAnalytics(), []);
+  useEffect(() => initializeGoogleAds(), []);
   useEffect(() => installCtaTracking(), []);
   usePageViewTracking();
   useEffect(() => {
