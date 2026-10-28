@@ -96,17 +96,35 @@ Deno.serve(async (req) => {
       paymentStatus: session.payment_status, // paid | unpaid | no_payment_required
       amountTotal: session.amount_total,
       currency: session.currency,
-      customerEmail: session.customer_details?.email ?? session.customer_email ?? null,
-      customerName: session.customer_details?.name ?? null,
+      // The session id is a bearer link that can be forwarded or leak via
+      // history, so only masked identity is returned — never full PII.
+      customerEmail: maskEmail(session.customer_details?.email ?? session.customer_email ?? null),
+      customerName: maskName(session.customer_details?.name ?? null),
       receiptUrl,
       environment: env,
     });
 
   } catch (e) {
     console.error("stripe-session-status error:", e);
-    return json({ error: e instanceof Error ? e.message : "Unknown error" }, 500);
+    return json({ error: "Unable to load booking status" }, 500);
   }
 });
+
+function maskEmail(email: string | null): string | null {
+  if (!email || !email.includes("@")) return null;
+  const at = email.lastIndexOf("@");
+  const local = email.slice(0, at);
+  const domain = email.slice(at + 1);
+  return `${local.slice(0, 1)}${"*".repeat(Math.max(2, Math.min(local.length - 1, 6)))}@${domain}`;
+}
+
+function maskName(name: string | null): string | null {
+  if (!name) return null;
+  const parts = name.trim().split(/\s+/);
+  const first = parts[0] ?? "";
+  const lastInitial = parts.length > 1 ? ` ${parts[parts.length - 1].slice(0, 1)}.` : "";
+  return `${first}${lastInitial}` || null;
+}
 
 function json(body: unknown, status = 200) {
   return new Response(JSON.stringify(body), {
