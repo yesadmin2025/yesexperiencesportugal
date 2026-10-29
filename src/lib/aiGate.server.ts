@@ -65,3 +65,24 @@ export async function allowAiCall(bucket: string): Promise<string | undefined> {
   if (!key) return undefined;
   return (await aiCallAllowed(bucket)) ? key : undefined;
 }
+
+/**
+ * Per-network-address cap for public, non-AI write actions (saving drafts,
+ * confirming enquiries). Fails closed when the caller address is unknown.
+ */
+export async function publicActionAllowed(
+  bucket: string,
+  limit: number,
+  windowSec = 3600,
+): Promise<boolean> {
+  const ip = clientIp();
+  if (!ip) return false;
+  const slot = Math.floor(Date.now() / 1000 / windowSec);
+  const rl = await rateLimit({
+    sessionId: `ip${await sha(`${ip}|${slot}`)}`,
+    bucket: `public_${bucket}`,
+    limit,
+    windowSec,
+  });
+  return rl.ok;
+}
