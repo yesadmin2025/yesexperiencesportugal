@@ -549,6 +549,8 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
     eyebrow: "Lisbon · Wine",
     standfirst:
       "The short answer is yes — if you go private, go south, and skip the bus. Here is the longer one.",
+    directAnswer:
+      "Yes, when the day is private and paced around one or two real wineries with a sit-down lunch. Setúbal, Palmela and Arrábida are within an hour of Lisbon; Alentejo is within two. Skip it if you have only one day in Lisbon or do not drink wine.",
     sections: [
       {
         heading: "The short answer",
@@ -591,6 +593,8 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
     eyebrow: "Wine · Regions",
     standfirst:
       "Four regions, four very different days. How we choose between them when guests ask.",
+    directAnswer:
+      "The main wine regions near Lisbon are Setúbal and Palmela (the closest, for Moscatel and Castelão), Arrábida (wine with coastal scenery) and Alentejo (about 90 minutes east, for talha wines and Évora). Arrábida suits one beautiful day; Alentejo rewards a longer one.",
     sections: [
       {
         heading: "Setúbal — the closest, the most underrated",
@@ -637,6 +641,8 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
     eyebrow: "Compare · Wine",
     standfirst:
       "Both are brilliant. They are also very different days. Here is how we help guests choose.",
+    directAnswer:
+      "Choose Arrábida for a shorter coastal wine day: about 40 minutes from Lisbon, Moscatel and Castelão, lunch by the sea, 7–9 hours door to door. Choose Alentejo for a slower, deeper day: about 90 minutes each way, talha cellars and Évora, closer to 10 hours.",
     sections: [
       {
         heading: "What Arrábida feels like",
@@ -676,6 +682,8 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
     eyebrow: "Wine · Lisbon Region",
     standfirst:
       "The cellars we actually take guests to — small, family-run, and within an easy private drive of Lisbon.",
+    directAnswer:
+      "The closest wineries to Lisbon are in Arrábida, Azeitão and Setúbal, 40–50 minutes south, known for Moscatel de Setúbal and Castelão reds. For traditional clay-amphora (talha) wine, Alentejo producers near Évora are about 1h20–1h40 east and suit a longer day.",
     sections: [
       {
         heading: "Arrábida: the coast that quietly makes great wine",
