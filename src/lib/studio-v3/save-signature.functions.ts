@@ -34,6 +34,10 @@ export const saveStudioV3Signature = createServerFn({ method: "POST" })
   .inputValidator((input: unknown) => schema.parse(input))
   .handler(async ({ data }) => {
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const { publicActionAllowed } = await import("@/lib/aiGate.server");
+    if (!(await publicActionAllowed("studio_v3_save", 20))) {
+      throw new Error("Too many saves from this connection. Please try again later.");
+    }
     const safeState = sanitizeStudioDurableState(data.state);
 
     if (!isMeaningfulStudioDraft(safeState)) {

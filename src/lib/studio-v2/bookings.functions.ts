@@ -94,6 +94,10 @@ const confirmSchema = z.object({
 export const confirmCustomBookingDraft = createServerFn({ method: "POST" })
   .inputValidator((input: unknown) => confirmSchema.parse(input))
   .handler(async ({ data }) => {
+    const { publicActionAllowed } = await import("@/lib/aiGate.server");
+    if (!(await publicActionAllowed("studio_v2_confirm", 5))) {
+      throw new Error("Too many requests from this connection. Please try again later.");
+    }
     // Load the draft (need stops/timings for the confirmation email).
     const { data: draft, error: loadErr } = await supabaseAdmin
       .from("studio_v2_bookings")
@@ -112,7 +116,7 @@ export const confirmCustomBookingDraft = createServerFn({ method: "POST" })
       minorAges: data.minorAges,
     });
 
-    const { error } = await supabaseAdmin
+    const { data: updated, error } = await supabaseAdmin
       .from("studio_v2_bookings")
       .update({
         contact_name: data.contactName,
@@ -126,8 +130,12 @@ export const confirmCustomBookingDraft = createServerFn({ method: "POST" })
         status: "submitted",
       })
       .eq("draft_token", data.draftToken)
-      .eq("status", "draft");
+      .eq("status", "draft")
+      .select("draft_token");
     if (error) throw new Error(error.message);
+    // Only the first confirmation of a draft sends emails; replays of an
+    // already-submitted draft must not re-target a new address.
+    if (!updated || updated.length === 0) throw new Error("This request was already sent.");
 
     // Fire-and-forget confirmation email; never block the booking on email.
     try {
