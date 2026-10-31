@@ -1330,7 +1330,7 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
     eyebrow: "Lisbon · Wine",
     standfirst:
       "Compare private wine day trips from Lisbon to Arrábida, Azeitão and the Alentejo by drive time, wine focus, inclusions and pace.",
-    directAnswer: "For a private Lisbon tour focused on wine, Arrábida and Azeitão combine wineries, Setúbal Moscatel and the coast within one day. The Alentejo is a longer inland day for Évora or traditional Vinho de Talha. Compare current dates, verified inclusions and per-person prices before choosing.",
+    directAnswer: "The best wine tour from Lisbon depends on the day you want: Arrábida and Azeitão combine family wineries, Setúbal Moscatel and the coast in about eight hours, while the Alentejo is a longer inland day for Évora's heritage or traditional Vinho de Talha. This guide compares the Setúbal Peninsula and the Alentejo side by side — drive time, wineries, inclusions and pace — so you can choose before checking dates and prices.",
     sections: [
       {
         heading: "The short answer: which wine tour from Lisbon is best?",
