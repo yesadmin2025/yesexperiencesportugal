@@ -171,7 +171,7 @@ function journalCardMeta(
 
 
 /* ──────────────────────────────────────────────────────────────────
- * Featured Signature tours — exactly 4 real tours, in display order.
+ * Featured Signature tours — exactly 5 real tours, in display order.
  * Each id MUST exist in `signatureTours` (validated below).
  * ────────────────────────────────────────────────────────────── */
 const FEATURED_TOUR_IDS = [
