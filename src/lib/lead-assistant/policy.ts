@@ -13,8 +13,8 @@ export function withinReplyWindow(lastInbound: string | null, now = new Date()):
  if (!lastInbound) return false;
  const age=now.getTime()-new Date(lastInbound).getTime(); return age>=0 && age<24*3600000;
 }
-export function dailyMoney(rows: Array<{id:string;kind:string;environment:string;amount:number|null;currency:string}>) {
+export function dailyMoney(rows: Array<{id:string;kind:string;environment:string;amount:number|null;currency:string|null}>) {
  const seen=new Set<string>(); const totals:Record<string,number>={}; let sales=0;
- for (const r of rows) { if(r.environment!=='live'||seen.has(r.id)||!['payment','refund'].includes(r.kind))continue; seen.add(r.id); const c=r.currency.toUpperCase(); totals[c]=(totals[c]??0)+(r.kind==='refund'?-1:1)*Math.abs(r.amount??0); if(r.kind==='payment')sales++; }
+ for (const r of rows) { if(r.environment!=='live'||seen.has(r.id)||!['payment','refund'].includes(r.kind))continue; if(!r.currency)throw new Error('Payment currency missing'); seen.add(r.id); const c=r.currency.toUpperCase(); totals[c]=(totals[c]??0)+(r.kind==='refund'?-1:1)*Math.abs(r.amount??0); if(r.kind==='payment')sales++; }
  return {sales,netMinorUnits:totals};
 }
