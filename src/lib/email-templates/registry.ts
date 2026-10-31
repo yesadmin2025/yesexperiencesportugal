@@ -17,6 +17,7 @@ import { template as guideAppDeclined } from "./guide-app-declined";
 import { template as tourDayBefore } from "./tour-day-before";
 import { template as attendanceReminder } from "./attendance-reminder";
 import { template as checkoutUnfinished } from "./checkout-unfinished";
+import { template as dailyOwnerSummary } from "./daily-owner-summary";
 
 export interface TemplateEntry {
   component: ComponentType<any>;
@@ -32,6 +33,7 @@ export interface TemplateEntry {
  * Import and register new templates here after creating them in this directory.
  */
 export const TEMPLATES: Record<string, TemplateEntry> = {
+  "daily-owner-summary": dailyOwnerSummary,
   "booking-confirmation": bookingConfirmation,
   "booking-cancelled": bookingCancelled,
   "checkout-receipt": checkoutReceipt,

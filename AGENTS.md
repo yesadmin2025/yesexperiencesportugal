@@ -1,5 +1,8 @@
 # Project architecture decisions
 
+- Lead automation uses durable jobs and explicit human handoff; quotations reuse current tier pricing and experience checkout remains the only reservation authority, so chat never creates paid bookings.
+- The owner digest aggregates live payment records and separate call requests for the previous Lisbon calendar day; AI receives aggregates only, with persisted pause and lease state to prevent duplicate automated work.
+
 - Google Ads uses the existing marketing-consent store and basic tag blocking, with append-only local notice evidence and cross-tab withdrawal; ordinary regional permission never enables customer matching.
 
 - Public editorial motion starts in the committed SiteLayout, not the root shell, so lazy route HTML hydrates before any controller mutates it.
