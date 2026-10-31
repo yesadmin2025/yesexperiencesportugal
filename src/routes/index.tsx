@@ -794,6 +794,206 @@ function HomePage() {
               </CtaButton>
             </div>
 
+        {/* 5 — SIGNATURE EXPERIENCES PREVIEW
+          Moved BEFORE the Travel Designer proof so the highest-intent
+          shoppable inventory sits closest to the Studio — conversion
+          before storytelling.
+          Up to 4 real Signature tours. Each card uses the tour's real
+          hero image (sourced from the matching Viator page), real title
+          and real blurb from `signatureTours`. No vague taglines, no
+          repeated labels. */}
+        <section
+          id="signatures"
+          className="he-section-rule section-enter py-12 md:py-16 bg-[color:var(--ivory)] border-b border-[color:var(--border)] scroll-mt-24 md:scroll-mt-28"
+          aria-labelledby="signatures-title"
+        >
+          <div className="container-x">
+            <Scene className="home-major-intro home-story-intro text-center max-w-2xl mx-auto mb-10 md:mb-14">
+              <div className="scene-atmosphere"><Eyebrow className="mb-5">Signature</Eyebrow></div>
+              <SplitLines
+                as="h2"
+                id="signatures-title"
+                className="editorial-title-safe font-serif text-[color:var(--charcoal)] font-medium tracking-normal text-[1.8125rem] md:text-[2.25rem] leading-[1.18] md:leading-[1.1] mx-auto"
+                lineClassName="mx-auto"
+                lines={[
+                  "Signature days,",
+                  <SectionTitle.Em key="loved">already loved.</SectionTitle.Em>,
+                ]}
+              />
+              <p className="scene-body mt-5 text-[15px] md:text-[16px] leading-[1.65] text-[color:var(--charcoal-soft)]">
+                A few of the private days guests choose most often.
+              </p>
+            </Scene>
+
+            {/* Mobile: full-bleed editorial cover carousel. Uses
+              snap-proximity (NOT mandatory) so the horizontal strip
+              never grabs vertical page scroll near snap points — that
+              was the main source of "jumpy" feel on Android. Each card
+              is 84vw so the next card peeks. `overscroll-x-contain`
+              + `[contain:layout_paint]` isolate the strip from the
+              page so its own scroll never reflows neighbours.
+              Tablet+: keeps the calm 2/4-col grid. */}
+            <ul
+              className={[
+                scrollDebug.staticMobileCarousels
+                  ? "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4"
+                  : "flex sm:grid sm:grid-cols-2 lg:grid-cols-4 -mx-5 px-5 sm:mx-0 sm:px-0 overflow-x-auto sm:overflow-visible overscroll-x-contain sm:overscroll-auto [contain:layout_paint] sm:[contain:none] [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden snap-x snap-proximity sm:snap-none scroll-pl-5 sm:scroll-pl-0",
+                "he-stagger gap-5 md:gap-7 list-none p-0",
+              ].join(" ")}
+              aria-label="Signature experiences"
+            >
+              {signatures.map((t) => {
+                return (
+                  <li
+                    key={t.id}
+                    className={
+                      scrollDebug.staticMobileCarousels
+                        ? "reveal-stagger w-full"
+                        : "reveal-stagger shrink-0 snap-start w-[80vw] sm:w-auto sm:shrink"
+                    }
+                  >
+                    {/* Card is a structured composition (NOT a single link) so
+                      we can expose two distinct CTAs — Book + Tailor — and
+                      a short list of REAL highlights pulled from the
+                      Viator-sourced catalog. No invented copy. */}
+                    <article className="he-card-lift group relative flex flex-col h-full overflow-hidden rounded-[6px] border border-[color:var(--border)] bg-[color:var(--ivory)] transition-all duration-300 ease-[cubic-bezier(0.22,0.61,0.36,1)] hover:border-[color:var(--charcoal)]/30 hover:shadow-[0_18px_40px_-22px_rgba(46,46,46,0.32)]">
+                      {/* Cover — clickable to detail page */}
+                      <Link
+                        to="/tours/$tourId"
+                        params={{ tourId: t.id }}
+                        className="he-image-cinema he-image-rise relative block aspect-[3/2] overflow-hidden bg-[color:var(--sand)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--teal)] focus-visible:ring-offset-2"
+                        aria-label={`Open ${t.title}`}
+                      >
+                        {(() => {
+                          const r = buildResponsiveSrc(t.img, { sizes: "card" });
+                          return (
+                            <img
+                              src={r.src}
+                              srcSet={r.srcSet}
+                              sizes={r.sizes}
+                              alt={`${t.title} — private day tour in ${t.region}, Portugal`}
+                              loading="lazy"
+                              decoding="async"
+                              className="relative z-[1] w-full h-full object-cover transition-transform duration-[700ms] ease-out group-hover:scale-[1.05]"
+                            />
+                          );
+                        })()}
+                        {/* Two-sided gradient — protects pills (top) and title (bottom) on both
+                          bright skies and dark hero shots. Tuned to clear WCAG AA over Viator imagery. */}
+                        <div
+                          aria-hidden="true"
+                          className="absolute inset-0 z-[2] bg-[linear-gradient(to_bottom,rgba(0,0,0,0.42)_0%,rgba(0,0,0,0.08)_22%,rgba(0,0,0,0.08)_55%,rgba(0,0,0,0.72)_100%)]"
+                        />
+                        {/* Top row: region + rating + price — social proof and value signal above the fold */}
+                        <div className="absolute inset-x-0 top-0 z-[3] p-4 md:p-5 flex items-start justify-between gap-2">
+                          <span className="min-w-0 max-w-[62%] whitespace-normal break-words text-[11px] uppercase leading-[1.35] tracking-[0.16em] font-medium text-white [text-shadow:0_1px_3px_rgba(0,0,0,0.55)]">
+                            {t.region}
+                          </span>
+                          <div className="flex items-center gap-1.5 shrink-0">
+                            {t.rating && t.reviewCount > 0 && (
+                              <span className="inline-flex items-center gap-1 bg-white text-[color:var(--charcoal)] px-2 py-1 text-[11px] rounded-full shadow-[0_2px_8px_rgba(0,0,0,0.22)]">
+                                <Star
+                                  size={10}
+                                  fill="currentColor"
+                                  strokeWidth={0}
+                                  className="text-[color:var(--gold)]"
+                                />
+                                <span className="font-semibold tracking-tight leading-none">
+                                  {t.rating.toFixed(1)}
+                                </span>
+                                <span className="text-[color:var(--charcoal-soft)] leading-none">
+                                  ({t.reviewCount})
+                                </span>
+                              </span>
+                            )}
+                            <span className="inline-flex items-baseline gap-1 rounded-full bg-white px-2.5 py-1 text-[color:var(--charcoal)] shadow-[0_2px_8px_rgba(0,0,0,0.22)]">
+                              <span className="text-[11px] uppercase tracking-[0.16em] font-semibold">
+                                From
+                              </span>
+                              <span className="font-sans text-[13.5px] leading-none">
+                                €{t.priceFrom}
+                              </span>
+                            </span>
+                          </div>
+                        </div>
+                        {/* Bottom: title + meta — full factual titles remain readable rather than
+                          being clipped to fit the photographic card. */}
+                        <div className="absolute inset-x-0 bottom-0 z-[3] p-5 md:p-6 text-white">
+                          <h3 className="serif text-[1.2rem] md:text-[1.35rem] leading-[1.2] text-white text-balance [text-shadow:0_2px_14px_rgba(0,0,0,0.55)]">
+                            <span className="sm:hidden">
+                              {MOBILE_TITLE_OVERRIDES[t.id] ?? t.title}
+                            </span>
+                            <span className="hidden sm:inline">{t.title}</span>
+                          </h3>
+                          <div className="mt-3 flex items-center gap-2">
+                            <span className="inline-block text-[11px] uppercase tracking-[0.22em] text-white [text-shadow:0_1px_3px_rgba(0,0,0,0.55)]">
+                              {signatureDurationLabel(t.id, t.durationHours)}
+                            </span>
+                            <span
+                              className="inline-block w-px h-3 bg-white/60"
+                              aria-hidden="true"
+                            />
+                            <span className="inline-block text-[11px] uppercase tracking-[0.22em] text-white [text-shadow:0_1px_3px_rgba(0,0,0,0.55)]">
+                              Private
+                            </span>
+                          </div>
+                        </div>
+                      </Link>
+
+                      {/* Body — concise factual highlights from the matching
+                        Signature source, followed by one conversion action. */}
+                      <div className="flex flex-col gap-4 p-5 md:p-6">
+                        {t.highlights.length > 0 ? (
+                          <ul className="signature-card-highlights m-0 list-none space-y-2 p-0 text-[13px] leading-[1.45] text-[color:var(--charcoal)]">
+                            {t.highlights.map((highlight) => (
+                              <li key={highlight} className="grid grid-cols-[auto_minmax(0,1fr)] gap-2.5">
+                                <span aria-hidden="true" className="mt-[0.58em] h-1 w-1 rounded-full bg-[color:var(--gold)]" />
+                                <span>{highlight}</span>
+                              </li>
+                            ))}
+                          </ul>
+                        ) : (
+                          <p className="text-[13.5px] leading-[1.55] text-[color:var(--charcoal)]">
+                            {t.line}
+                          </p>
+                        )}
+
+                        <div className="mt-auto flex flex-col gap-2.5 pt-1">
+                          <CtaButton
+                            to="/tours/$tourId"
+                            params={{ tourId: t.id }}
+                            variant="primary"
+                            size="sm"
+                            className="w-full"
+                            aria-label={`See dates and reserve — ${t.title}`}
+                          >
+                            See dates &amp; reserve
+                          </CtaButton>
+                          <Link
+                            to="/tours/$tourId/tailor"
+                            params={{ tourId: t.id }}
+                            data-analytics="signature_tailor_click"
+                            data-analytics-placement="home-card"
+                            data-analytics-experience-id={t.id}
+                            data-analytics-experience-type="signature"
+                            className="editorial-action inline-flex min-h-[44px] items-center justify-between gap-3 font-sans text-[11px] font-semibold uppercase tracking-[0.18em] text-[color:var(--charcoal)] underline decoration-[color:var(--gold)]/60 underline-offset-4 transition-colors hover:text-[color:var(--teal)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)]"
+                          >
+                            Tailor this day <CtaMotionArrow />
+                          </Link>
+                        </div>
+                      </div>
+                    </article>
+                  </li>
+                );
+              })}
+            </ul>
+
+            <div className="mt-12 md:mt-14 text-center">
+              <CtaButton to="/experiences" variant="hairline">
+                {CTA_LABELS.signatureDiscovery}
+              </CtaButton>
+            </div>
+
         {/* 4 — EXPERIENCE STUDIO (promoted)
           Promoted up the page so the Builder reads as the core
           innovation, not just another tile. The five-path introduction
@@ -876,6 +1076,7 @@ function HomePage() {
             </div>
           </div>
         </section>
+
 
         {/* 5a — AUTUMN & WINTER BAND
           Seasonal reassurance, facts only: every Signature day runs
