@@ -725,7 +725,11 @@ function HomePage() {
                             <span className="sm:hidden">
                               {MOBILE_TITLE_OVERRIDES[t.id] ?? t.title}
                             </span>
-                            <span className="hidden sm:inline">{t.title}</span>
+                            <span className="hidden sm:inline">
+                              {t.id === "roman-heritage-alentejo"
+                                ? MOBILE_TITLE_OVERRIDES[t.id]
+                                : t.title}
+                            </span>
                           </h3>
                           <div className="mt-3 flex items-center gap-2">
                             <span className="inline-block text-[11px] uppercase tracking-[0.22em] text-white [text-shadow:0_1px_3px_rgba(0,0,0,0.55)]">
