@@ -10,6 +10,7 @@ import { useEffect, useState } from "react";
 import { useServerFn } from "@tanstack/react-start";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
+import { LeadAutomationPanel } from './LeadAutomationPanel';
 import {
   getOpsWhatsAppStatus,
   runOpsWhatsAppHistoryImport,
@@ -177,6 +178,8 @@ export function OpsWhatsAppPanel({ onChanged }: { onChanged?: () => void }) {
           guessed, and no chat ever creates a new paid reservation.
         </p>
       </section>
+
+      <LeadAutomationPanel />
 
       {report ? (
         <section className="rounded-lg border border-[color:var(--charcoal)]/12 bg-white p-4">
