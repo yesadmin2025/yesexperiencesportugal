@@ -8,15 +8,21 @@ import {dailyMoney,withinReplyWindow,previousLisbonDay,isReportHour} from './pol
 type Admin=SupabaseClient<Database>;
 type Job=Database['public']['Tables']['lead_automation_jobs']['Row'];
 async function checked(p:PromiseLike<{error:unknown}>) {const r=await p;if(r.error)throw new Error('Automation data could not be saved');}
+async function patchJob(admin:Admin,job:Job,patch:Database['public']['Tables']['lead_automation_jobs']['Update']) {
+ const {data,error}=await admin.from('lead_automation_jobs').update(patch).eq('id',job.id).eq('lease_token',job.lease_token??'').gt('lease_until',new Date().toISOString()).select('id').maybeSingle();
+ if(error||!data)throw new Error('Automation lease no longer owned');
+}
 async function handoff(admin:Admin,id:string,reason:string) {await checked(admin.from('whatsapp_conversations').update({assistant_handoff_at:new Date().toISOString(),assistant_handoff_reason:reason.slice(0,500)}).eq('id',id));}
 async function reply(admin:Admin,job:Job) {
  if(!job.conversation_id||!job.message_id)throw new Error('Missing conversation');
  const {data:c,error}=await admin.from('whatsapp_conversations').select('id,phone_e164,last_inbound_at,assistant_handoff_at,matched_booking_id').eq('id',job.conversation_id).single();
  if(error||!c)throw new Error('Conversation unavailable');
  if(c.assistant_handoff_at||!withinReplyWindow(c.last_inbound_at))return {skipped:true};
- const {data:history,error:historyError}=await admin.from('whatsapp_messages').select('body,direction,sent_at,created_at,provider_message_id').eq('conversation_id',c.id).order('sent_at',{ascending:true,nullsFirst:false}).order('created_at',{ascending:true}).limit(1001);
+ const {data:history,error:historyError}=await admin.from('whatsapp_messages').select('id,body,direction,sent_at,created_at,provider_message_id').eq('conversation_id',c.id).order('sent_at',{ascending:true,nullsFirst:false}).order('created_at',{ascending:true}).limit(1001);
  if(historyError)throw new Error('Conversation history unavailable');
  if((history?.length??0)>1000){await handoff(admin,c.id,'Conversation too long for safe automatic assistance');return {handoff:true};}
+ const newest=(history??[]).filter(m=>m.direction==='inbound').at(-1);
+ if(newest?.id!==job.message_id)return {skipped:true,superseded:true};
  const messages:ModelMessage[]=(history??[]).filter(m=>m.body).map(m=>({role:m.direction==='inbound'?'user':'assistant',content:m.body??''}));
  let answer=job.output as {reply?:string;handoff?:boolean}|null;
  if(!answer?.reply){
@@ -28,37 +34,43 @@ async function reply(admin:Admin,job:Job) {
     await checked(admin.from('lead_appointments').upsert({conversation_id:c.id,message_id:job.message_id as string,requested_time:requestedTime,state:'requested'},{onConflict:'message_id',ignoreDuplicates:true}));
     return {status:'requested',confirmed:false,next:'Nidia must confirm the time; set handoff=true.'};
    }})});
-  await checked(admin.from('lead_automation_jobs').update({output:answer as never}).eq('id',job.id).eq('lease_token',job.lease_token??''));
+  await patchJob(admin,job,{output:answer as never});
  }
+ const latest=await admin.from('whatsapp_messages').select('id').eq('conversation_id',c.id).eq('direction','inbound').order('created_at',{ascending:false}).limit(1).maybeSingle();
+ const gate=await admin.from('lead_automation_control').select('enabled,pause_reason').eq('id','whatsapp').single();
+ if(latest.error||gate.error)throw new Error('Reply freshness could not be checked');
+ if(latest.data?.id!==job.message_id||!gate.data.enabled||gate.data.pause_reason)return {skipped:true};
  if(answer.handoff)await handoff(admin,c.id,'Guest request or assistant cannot safely complete the enquiry');
  // The job is marked uncertain BEFORE the external send: a network crash must never blindly resend.
- await checked(admin.from('lead_automation_jobs').update({state:'uncertain',error:'Send outcome pending verification'}).eq('id',job.id).eq('lease_token',job.lease_token??''));
+ await patchJob(admin,job,{state:'uncertain',error:'Send outcome pending verification'});
  const {sendWhatsAppText}=await import('@/lib/whatsapp/client.server');
  const result=await sendWhatsAppText(c.phone_e164,answer.reply??'');
  const {recordWhatsAppMessage}=await import('@/lib/whatsapp/reconcile.server');
  await recordWhatsAppMessage(admin,{providerMessageId:result.id,phone:c.phone_e164,direction:'outbound',sentAt:new Date().toISOString(),body:answer.reply??'',ingestSource:'webhook'});
  await checked(admin.from('whatsapp_messages').update({delivery_status:'accepted'}).eq('provider_message_id',result.id).is('delivery_status',null));
- await checked(admin.from('lead_automation_jobs').update({provider_message_id:result.id}).eq('id',job.id));
+ await patchJob(admin,job,{provider_message_id:result.id});
  return {accepted:true,handoff:answer.handoff};
 }
 export async function summaryFacts(admin:Admin,date:string) {
- const [appointments,calls,review,notifications]=await Promise.all([
+ const {lisbonDayBounds}=await import('./time'); const bounds=lisbonDayBounds(date);
+ const [appointments,calls,openCalls,review,notifications]=await Promise.all([
  admin.from('bookings').select('id',{count:'exact',head:true}).eq('preferred_date',date).eq('status','paid').is('cancelled_at',null),
- admin.from('lead_appointments').select('id,state,created_at').order('created_at').limit(1001),
+ admin.from('lead_appointments').select('id',{count:'exact',head:true}).gte('created_at',bounds.start).lt('created_at',bounds.end),
+ admin.from('lead_appointments').select('id',{count:'exact',head:true}).eq('state','requested'),
  admin.from('booking_ingestion_candidates').select('id',{count:'exact',head:true}).eq('status','pending'),
  admin.from('ops_notifications').select('id',{count:'exact',head:true}).is('read_at',null)
  ]);
  // Actual previous-Lisbon-day interval is queried below, including DST.
- const {lisbonDayBounds}=await import('./time'); const bounds=lisbonDayBounds(date);
  const rows=await admin.from('payment_records').select('id,kind,environment,amount,currency').eq('environment','live').gte('event_at',bounds.start).lt('event_at',bounds.end).limit(1001);
- if([appointments,calls,review,notifications,rows].some(r=>r.error))throw new Error('Daily source data unavailable');
- if((rows.data?.length??0)>1000||(calls.data?.length??0)>1000)throw new Error('Daily report exceeds safe data cap');
- return {date,...dailyMoney(rows.data??[]),paidToursOnDay:appointments.count??0,newCallRequests:(calls.data??[]).filter(c=>c.created_at>=bounds.start&&c.created_at<bounds.end).length,openCallRequests:(calls.data??[]).filter(c=>c.state==='requested'&&c.created_at<bounds.end).length,pendingBookingReviews:review.count??0,unreadOperationalNotifications:notifications.count??0,taskScope:'Open call requests, pending booking reviews and unread operational notifications only; pending counts are current, not a historical end-of-day snapshot.'};
+ if([appointments,calls,openCalls,review,notifications,rows].some(r=>r.error))throw new Error('Daily source data unavailable');
+ if((rows.data?.length??0)>1000)throw new Error('Daily report exceeds safe data cap');
+ return {date,...dailyMoney(rows.data??[]),paidToursOnDay:appointments.count??0,newCallRequests:calls.count??0,openCallRequests:openCalls.count??0,pendingBookingReviews:review.count??0,unreadOperationalNotifications:notifications.count??0,taskScope:'Open call requests, pending booking reviews and unread operational notifications only; pending counts are current, not a historical end-of-day snapshot.'};
 }
 async function digest(admin:Admin,job:Job,recipient:string) {
  const date=job.report_date; if(!date)throw new Error('Report date missing');
  let output=job.output as {reply?:string}|null;
- if(!output?.reply){const facts=await summaryFacts(admin,date); output=await generateAssistantAnswer([{role:'user',content:JSON.stringify(facts)}],'Write a short Portuguese owner report, at most 6 compact lines, using only the supplied aggregate numbers. Money is in minor units: divide by 100 and keep currencies separate. Distinguish received payments/net revenue from tours that occurred on the date. Do not describe vouchers as cash sales. Clearly label pending counts as current. Do not invent generic tasks or claim missing calendars were checked. Return handoff=false.'); await checked(admin.from('lead_automation_jobs').update({output:output as never}).eq('id',job.id));}
+ if(!output?.reply){const facts=await summaryFacts(admin,date); output=await generateAssistantAnswer([{role:'user',content:JSON.stringify(facts)}],'Write a short Portuguese owner report, at most 6 compact lines, using only the supplied aggregate numbers. Money is in minor units: divide by 100 and keep currencies separate. Distinguish received payments/net revenue from tours that occurred on the date. Do not describe vouchers as cash sales. Clearly label pending counts as current. Do not invent generic tasks or claim missing calendars were checked. Return handoff=false.'); await patchJob(admin,job,{output:{...output,recipient,facts} as never});}
+ await patchJob(admin,job,{state:'uncertain',error:'Email enqueue outcome pending verification'});
  const {sendTransactionalInternal}=await import('@/lib/email/send-internal.server');
  const r=await sendTransactionalInternal({templateName:'daily-owner-summary',recipientEmail:recipient,templateData:{date,summary:output.reply},idempotencyKey:job.dedupe_key});
  if(!r.ok)throw new Error(r.reason??'Email could not be queued');
@@ -71,7 +83,7 @@ export async function runLeadJob(admin:Admin,jobId:string) {
  if(cError)throw new Error('Automation settings unavailable');
  if(!control?.enabled||control.pause_reason)return {paused:true};
  const {data:claimed,error}=await admin.rpc('claim_lead_job',{_id:jobId});if(error)throw new Error('Could not claim automation');const job=claimed?.[0];if(!job)return {skipped:true};
- try {const out=job.kind==='daily_summary'?await digest(admin,job,control.recipient_email??''):await reply(admin,job);await checked(admin.from('lead_automation_jobs').update({state:'completed',completed_at:new Date().toISOString(),error:null}).eq('id',job.id).eq('lease_token',job.lease_token??''));return out;}
+ try {const out=job.kind==='daily_summary'?await digest(admin,job,control.recipient_email??''):await reply(admin,job);await patchJob(admin,job,{state:'completed',completed_at:new Date().toISOString(),error:null});return out;}
  catch(e){const status=typeof e==='object'&&e!==null&&'statusCode' in e?Number(e.statusCode):0;const detail=e instanceof Error?e.message:'Automation failed';
   if([402,403,401,404].includes(status)||status===400)await checked(admin.from('lead_automation_control').update({pause_reason:detail.slice(0,500)}).eq('id',controlId));
   await checked(admin.from('lead_automation_jobs').update({state:'failed',error:detail.slice(0,500)}).eq('id',job.id).eq('state','running'));
