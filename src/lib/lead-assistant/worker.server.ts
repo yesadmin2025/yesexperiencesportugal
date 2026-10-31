@@ -51,25 +51,32 @@ async function reply(admin:Admin,job:Job) {
  await patchJob(admin,job,{provider_message_id:result.id});
  return {accepted:true,handoff:answer.handoff};
 }
+async function scheduledDay(admin:Admin,day:string) {
+ const r=await admin.from('bookings').select('id,assigned_guide_id').eq('preferred_date',day).eq('status','paid').is('cancelled_at',null).limit(201);
+ if(r.error)throw new Error('Daily source data unavailable');
+ const rows=r.data??[];if(rows.length>200)throw new Error('Daily report exceeds safe data cap');
+ return {date:day,paidTours:rows.length,withoutGuide:rows.filter(b=>!b.assigned_guide_id).length};
+}
 export async function summaryFacts(admin:Admin,date:string) {
  const {lisbonDayBounds}=await import('./time'); const bounds=lisbonDayBounds(date);
- const [appointments,calls,openCalls,review,notifications]=await Promise.all([
- admin.from('bookings').select('id',{count:'exact',head:true}).eq('preferred_date',date).eq('status','paid').is('cancelled_at',null),
+ const {addDays}=await import('./policy');
+ const [calls,openCalls,review,notifications]=await Promise.all([
  admin.from('lead_appointments').select('id',{count:'exact',head:true}).gte('created_at',bounds.start).lt('created_at',bounds.end),
  admin.from('lead_appointments').select('id',{count:'exact',head:true}).eq('state','requested'),
  admin.from('booking_ingestion_candidates').select('id',{count:'exact',head:true}).eq('status','pending'),
  admin.from('ops_notifications').select('id',{count:'exact',head:true}).is('read_at',null)
  ]);
+ const [today,tomorrow]=await Promise.all([scheduledDay(admin,addDays(date,1)),scheduledDay(admin,addDays(date,2))]);
  // Actual previous-Lisbon-day interval is queried below, including DST.
  const rows=await admin.from('payment_records').select('id,kind,environment,amount,currency').eq('environment','live').gte('event_at',bounds.start).lt('event_at',bounds.end).limit(1001);
- if([appointments,calls,openCalls,review,notifications,rows].some(r=>r.error))throw new Error('Daily source data unavailable');
+ if([calls,openCalls,review,notifications,rows].some(r=>r.error))throw new Error('Daily source data unavailable');
  if((rows.data?.length??0)>1000)throw new Error('Daily report exceeds safe data cap');
- return {date,...dailyMoney(rows.data??[]),paidToursOnDay:appointments.count??0,newCallRequests:calls.count??0,openCallRequests:openCalls.count??0,pendingBookingReviews:review.count??0,unreadOperationalNotifications:notifications.count??0,taskScope:'Open call requests, pending booking reviews and unread operational notifications only; pending counts are current, not a historical end-of-day snapshot.'};
+ return {yesterday:{date,...dailyMoney(rows.data??[]),newCallRequests:calls.count??0},today,tomorrow,openCallRequests:openCalls.count??0,pendingBookingReviews:review.count??0,unreadOperationalNotifications:notifications.count??0,taskScope:'Open call requests, pending booking reviews and unread operational notifications only; pending counts are current.'};
 }
 async function digest(admin:Admin,job:Job,recipient:string) {
  const date=job.report_date; if(!date)throw new Error('Report date missing');
  let output=job.output as {reply?:string}|null;
- if(!output?.reply){const facts=await summaryFacts(admin,date); output=await generateAssistantAnswer([{role:'user',content:JSON.stringify(facts)}],'Write a short Portuguese owner report, at most 6 compact lines, using only the supplied aggregate numbers. Money is in minor units: divide by 100 and keep currencies separate. paidToursOnDay means paid tours SCHEDULED on that date, not verified completed tours. Never say they were performed. Empty netMinorUnits means no payment/refund records and zero net receipts, not missing data. Distinguish payments received from tours scheduled. Do not describe vouchers as cash sales. Clearly label pending counts as current. Do not invent generic tasks or claim missing calendars were checked. Return handoff=false.'); await patchJob(admin,job,{output:{...output,recipient,facts} as never});}
+ if(!output?.reply){const facts=await summaryFacts(admin,date); output=await generateAssistantAnswer([{role:'user',content:JSON.stringify(facts)}],'Write a short Portuguese owner report, at most 8 compact lines, using only the supplied numbers, in this order: first "Amanhã" (tomorrow: paid private tours scheduled and how many still have no guide assigned), then "Hoje" (today, same facts), then "Ontem" (yesterday: payments received and new call requests), then current pending tasks. Include the dates. Money is in minor units: divide by 100 and keep currencies separate. Scheduled tours are not completed tours; never say they were performed. Empty netMinorUnits means zero net receipts, not missing data. Do not describe vouchers as cash sales. Clearly label pending counts as current. Do not invent tasks, names or details. Return handoff=false.'); await patchJob(admin,job,{output:{...output,recipient,facts} as never});}
  await patchJob(admin,job,{state:'uncertain',error:'Email enqueue outcome pending verification'});
  const {sendTransactionalInternal}=await import('@/lib/email/send-internal.server');
  const r=await sendTransactionalInternal({templateName:'daily-owner-summary',recipientEmail:recipient,templateData:{date,summary:output.reply},idempotencyKey:job.dedupe_key});
