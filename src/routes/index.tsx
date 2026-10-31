@@ -732,35 +732,28 @@ function HomePage() {
                         </div>
                         {/* Bottom: title + meta — full factual titles remain readable rather than
                           being clipped to fit the photographic card. */}
-                        <div className="absolute inset-x-0 bottom-0 z-[3] p-5 md:p-6 text-white">
-                          <h3 className="serif text-[1.2rem] md:text-[1.35rem] leading-[1.2] text-white text-balance [text-shadow:0_2px_14px_rgba(0,0,0,0.55)]">
-                            <span className="sm:hidden">
-                              {MOBILE_TITLE_OVERRIDES[t.id] ?? t.title}
-                            </span>
-                            <span className="hidden sm:inline">
-                              {FEATURED_CARD_TITLES.has(t.id)
-                                ? MOBILE_TITLE_OVERRIDES[t.id]
-                                : t.title}
-                            </span>
-                          </h3>
-                          <div className="mt-3 flex items-center gap-2">
-                            <span className="inline-block text-[11px] uppercase tracking-[0.22em] text-white [text-shadow:0_1px_3px_rgba(0,0,0,0.55)]">
-                              {signatureDurationLabel(t.id, t.durationHours)}
-                            </span>
-                            <span
-                              className="inline-block w-px h-3 bg-white/60"
-                              aria-hidden="true"
-                            />
-                            <span className="inline-block text-[11px] uppercase tracking-[0.22em] text-white [text-shadow:0_1px_3px_rgba(0,0,0,0.55)]">
-                              Private
-                            </span>
-                          </div>
-                        </div>
                       </Link>
 
-                      {/* Body — concise factual highlights from the matching
-                        Signature source, followed by one conversion action. */}
+                      {/* Aman-style editorial body: the title reads on ivory
+                        below a clean photograph, never over it. */}
                       <div className="flex flex-col gap-4 p-5 md:p-6">
+                        <div className="flex items-center gap-2 text-[11px] uppercase tracking-[0.22em] text-[color:var(--charcoal-soft)]">
+                          <span>{signatureDurationLabel(t.id, t.durationHours)}</span>
+                          <span className="inline-block w-px h-3 bg-[color:var(--border)]" aria-hidden="true" />
+                          <span>Private</span>
+                        </div>
+                        <h3 className="serif text-[1.25rem] md:text-[1.3rem] leading-[1.28] text-[color:var(--charcoal)] font-medium text-pretty">
+                          <Link
+                            to="/tours/$tourId"
+                            params={{ tourId: t.id }}
+                            className="hover:text-[color:var(--teal)] transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--teal)]"
+                          >
+                            {FEATURED_CARD_TITLES.has(t.id)
+                              ? MOBILE_TITLE_OVERRIDES[t.id]
+                              : t.title}
+                          </Link>
+                        </h3>
+                        <span aria-hidden="true" className="block h-px w-10 bg-[color:var(--gold)]" />
                         {t.highlights.length > 0 ? (
                           <ul className="signature-card-highlights m-0 list-none space-y-2 p-0 text-[13px] leading-[1.45] text-[color:var(--charcoal)]">
                             {t.highlights.map((highlight) => (
