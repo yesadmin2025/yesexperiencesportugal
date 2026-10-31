@@ -675,7 +675,7 @@ function HomePage() {
                       <Link
                         to="/tours/$tourId"
                         params={{ tourId: t.id }}
-                        className="he-image-cinema he-image-rise relative block aspect-[3/2] overflow-hidden bg-[color:var(--sand)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--teal)] focus-visible:ring-offset-2"
+                        className="he-image-cinema he-image-rise relative block aspect-[4/3] overflow-hidden bg-[color:var(--sand)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--teal)] focus-visible:ring-offset-2"
                         aria-label={`Open ${t.title}`}
                       >
                         {(() => {
