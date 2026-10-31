@@ -1,5 +1,12 @@
 # Phase 1 optimization
 
+## WhatsApp assistant and daily summary — October 31
+- [ ] Connect existing WhatsApp Business number and verify incoming-message destination
+- [ ] Add lead assistance using authoritative prices, existing experience checkout and human handoff
+- [ ] Add call scheduling (blocked: calendar and call availability not supplied)
+- [ ] Send previous-day sales, appointments and open-task AI summary to owner at 09:00 Europe/Lisbon
+- [ ] Verify signed callback persistence, assistant replies, scheduling and daily email end to end
+
 ## Google Ads tag — October 26
 - [x] Verify conversion owner and absence of the requested destination in the published GTM container
 - [x] Reuse existing marketing choices, retain notice evidence and disclose Google advertising measurement
