@@ -799,7 +799,18 @@ function HomePage() {
               })}
             </ul>
 
-            <div className="mt-12 md:mt-14 text-center">
+            <p
+              data-testid="signature-trust-line"
+              className="mt-8 md:mt-10 text-center text-[11px] uppercase tracking-[0.2em] leading-[1.9] text-[color:var(--charcoal-soft)]"
+            >
+              Free cancellation up to 24h before
+              <span aria-hidden="true" className="mx-2 text-[color:var(--gold)]">·</span>
+              Instant confirmation
+              <span aria-hidden="true" className="mx-2 text-[color:var(--gold)]">·</span>
+              Secure payment
+            </p>
+
+            <div className="mt-8 md:mt-10 text-center">
               <CtaButton to="/experiences" variant="hairline">
                 {CTA_LABELS.signatureDiscovery}
               </CtaButton>
