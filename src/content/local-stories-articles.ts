@@ -1323,9 +1323,9 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
   },
   {
     slug: "best-wine-tours-from-lisbon",
-    title: "Best Wine Tours from Lisbon: Wineries Guide (2026) | YES",
+    title: "Best Wine Tours from Lisbon: Setúbal vs Alentejo | YES",
     metaDescription:
-      "Which wine tour from Lisbon is best? Our pick for a first day is Arrábida. Compare Azeitão and Alentejo by drive time, wineries, inclusions and price.",
+      "Compare private wine tours from Lisbon to the Setúbal Peninsula and Alentejo. Choose by drive time, wineries, coastal scenery, heritage and inclusions.",
     h1: "Best Wine Tours from Lisbon: Which Private Day to Choose",
     eyebrow: "Lisbon · Wine",
     standfirst:
