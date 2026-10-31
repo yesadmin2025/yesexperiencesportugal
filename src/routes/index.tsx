@@ -186,15 +186,27 @@ const FEATURED_TOUR_IDS = [
 // Viator names don't clip on the left edge. Desktop keeps the full title.
 // Évora (commercial estates) and Talha (Vidigueira) are separate days — never mix.
 const MOBILE_TITLE_OVERRIDES: Record<string, string> = {
-  "arrabida-wine-allinclusive": "Arrábida Private Wine Tour from Lisbon — All-Inclusive",
+  "arrabida-wine-allinclusive":
+    "Private Arrábida Wine Day: Local Market, Traditional Tiles, Ocean Views & Regional Wine and Food",
   "sintra-cascais": "Sintra & Cascais Private Day",
   "arrabida-boat": "Arrábida Boat & Wine Day",
-  "troia-comporta": "Tróia & Comporta Coastal Day",
-  "evora-alentejo": "Évora & Alentejo Wine Day",
+  "troia-comporta":
+    "Exclusive Comporta & Tróia: Chic Dune Coast, Estate Wine Tasting, Stilt Pier & Wild Atlantic Beaches",
+  "evora-alentejo":
+    "Historic Évora & Alentejo Wine: Roman Temple, Renowned Cellars & Cork Heritage",
   "roman-heritage-alentejo":
     "Secret Alentejo: Roman Heritage, Exclusive Talha Wine & Local Lunch Experience at a Family Winery",
-  "p23-artisan-pottery-cork": "Pottery & Cork Artisan Day",
+  "p23-artisan-pottery-cork":
+    "Off the Beaten Path Alentejo: Traditional Pottery & Cork Hands-On Workshops with Local Artisans",
 };
+// Approved homepage card titles shown on every viewport.
+const FEATURED_CARD_TITLES = new Set([
+  "arrabida-wine-allinclusive",
+  "troia-comporta",
+  "evora-alentejo",
+  "roman-heritage-alentejo",
+  "p23-artisan-pottery-cork",
+]);
 
 /* ──────────────────────────────────────────────────────────────────
  * HERO — cinematic 5-scene storytelling sequence (mobile-first).
@@ -663,7 +675,7 @@ function HomePage() {
                       <Link
                         to="/tours/$tourId"
                         params={{ tourId: t.id }}
-                        className="he-image-cinema he-image-rise relative block aspect-[3/2] overflow-hidden bg-[color:var(--sand)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--teal)] focus-visible:ring-offset-2"
+                        className="he-image-cinema he-image-rise relative block aspect-[4/3] overflow-hidden bg-[color:var(--sand)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--teal)] focus-visible:ring-offset-2"
                         aria-label={`Open ${t.title}`}
                       >
                         {(() => {
@@ -726,7 +738,7 @@ function HomePage() {
                               {MOBILE_TITLE_OVERRIDES[t.id] ?? t.title}
                             </span>
                             <span className="hidden sm:inline">
-                              {t.id === "roman-heritage-alentejo"
+                              {FEATURED_CARD_TITLES.has(t.id)
                                 ? MOBILE_TITLE_OVERRIDES[t.id]
                                 : t.title}
                             </span>
