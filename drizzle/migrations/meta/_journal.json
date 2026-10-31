@@ -22,6 +22,13 @@
       "when": 1792472321454,
       "tag": "0002_tailor_policies_admin_only",
       "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1793431071376,
+      "tag": "0003_lead_assistant_jobs",
+      "breakpoints": true
     }
   ]
 }

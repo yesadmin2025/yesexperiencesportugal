@@ -2495,6 +2495,153 @@ export type Database = {
         }
         Relationships: []
       }
+      lead_appointments: {
+        Row: {
+          conversation_id: string
+          created_at: string
+          ends_at: string | null
+          id: string
+          message_id: string
+          requested_time: string
+          starts_at: string | null
+          state: string
+        }
+        Insert: {
+          conversation_id: string
+          created_at?: string
+          ends_at?: string | null
+          id?: string
+          message_id: string
+          requested_time: string
+          starts_at?: string | null
+          state?: string
+        }
+        Update: {
+          conversation_id?: string
+          created_at?: string
+          ends_at?: string | null
+          id?: string
+          message_id?: string
+          requested_time?: string
+          starts_at?: string | null
+          state?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "lead_appointments_conversation_id_fkey"
+            columns: ["conversation_id"]
+            isOneToOne: false
+            referencedRelation: "whatsapp_conversations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "lead_appointments_message_id_fkey"
+            columns: ["message_id"]
+            isOneToOne: true
+            referencedRelation: "whatsapp_messages"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      lead_automation_control: {
+        Row: {
+          enabled: boolean
+          id: string
+          pause_reason: string | null
+          recipient_email: string | null
+          run_hour: number
+          updated_at: string
+        }
+        Insert: {
+          enabled?: boolean
+          id: string
+          pause_reason?: string | null
+          recipient_email?: string | null
+          run_hour?: number
+          updated_at?: string
+        }
+        Update: {
+          enabled?: boolean
+          id?: string
+          pause_reason?: string | null
+          recipient_email?: string | null
+          run_hour?: number
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      lead_automation_jobs: {
+        Row: {
+          attempts: number
+          available_at: string
+          completed_at: string | null
+          conversation_id: string | null
+          created_at: string
+          dedupe_key: string
+          error: string | null
+          id: string
+          kind: string
+          lease_token: string | null
+          lease_until: string | null
+          message_id: string | null
+          output: Json | null
+          provider_message_id: string | null
+          report_date: string | null
+          state: string
+        }
+        Insert: {
+          attempts?: number
+          available_at?: string
+          completed_at?: string | null
+          conversation_id?: string | null
+          created_at?: string
+          dedupe_key: string
+          error?: string | null
+          id?: string
+          kind: string
+          lease_token?: string | null
+          lease_until?: string | null
+          message_id?: string | null
+          output?: Json | null
+          provider_message_id?: string | null
+          report_date?: string | null
+          state?: string
+        }
+        Update: {
+          attempts?: number
+          available_at?: string
+          completed_at?: string | null
+          conversation_id?: string | null
+          created_at?: string
+          dedupe_key?: string
+          error?: string | null
+          id?: string
+          kind?: string
+          lease_token?: string | null
+          lease_until?: string | null
+          message_id?: string | null
+          output?: Json | null
+          provider_message_id?: string | null
+          report_date?: string | null
+          state?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "lead_automation_jobs_conversation_id_fkey"
+            columns: ["conversation_id"]
+            isOneToOne: false
+            referencedRelation: "whatsapp_conversations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "lead_automation_jobs_message_id_fkey"
+            columns: ["message_id"]
+            isOneToOne: false
+            referencedRelation: "whatsapp_messages"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       lead_captures: {
         Row: {
           consent: boolean
@@ -4029,6 +4176,8 @@ export type Database = {
       }
       whatsapp_conversations: {
         Row: {
+          assistant_handoff_at: string | null
+          assistant_handoff_reason: string | null
           created_at: string
           display_name: string | null
           first_message_at: string | null
@@ -4043,6 +4192,8 @@ export type Database = {
           updated_at: string
         }
         Insert: {
+          assistant_handoff_at?: string | null
+          assistant_handoff_reason?: string | null
           created_at?: string
           display_name?: string | null
           first_message_at?: string | null
@@ -4057,6 +4208,8 @@ export type Database = {
           updated_at?: string
         }
         Update: {
+          assistant_handoff_at?: string | null
+          assistant_handoff_reason?: string | null
           created_at?: string
           display_name?: string | null
           first_message_at?: string | null
@@ -4291,6 +4444,33 @@ export type Database = {
       booking_pick_single: {
         Args: { _vals: string[] }
         Returns: Record<string, unknown>
+      }
+      claim_lead_job: {
+        Args: { _id: string }
+        Returns: {
+          attempts: number
+          available_at: string
+          completed_at: string | null
+          conversation_id: string | null
+          created_at: string
+          dedupe_key: string
+          error: string | null
+          id: string
+          kind: string
+          lease_token: string | null
+          lease_until: string | null
+          message_id: string | null
+          output: Json | null
+          provider_message_id: string | null
+          report_date: string | null
+          state: string
+        }[]
+        SetofOptions: {
+          from: "*"
+          to: "lead_automation_jobs"
+          isOneToOne: false
+          isSetofReturn: true
+        }
       }
       cleanup_expired_builder_references: { Args: never; Returns: number }
       current_guide_id: { Args: never; Returns: string }
