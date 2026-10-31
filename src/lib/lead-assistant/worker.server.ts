@@ -42,15 +42,13 @@ async function reply(admin:Admin,job:Job) {
  return {accepted:true,handoff:answer.handoff};
 }
 export async function summaryFacts(admin:Admin,date:string) {
- const [payments,appointments,calls,review,notifications]=await Promise.all([
- admin.from('payment_records').select('id,kind,environment,amount,currency,event_at').eq('environment','live').gte('event_at',`${date}T00:00:00Z`).lt('event_at',`${date}T00:00:00Z`).limit(0),
+ const [appointments,calls,review,notifications]=await Promise.all([
  admin.from('bookings').select('id',{count:'exact',head:true}).eq('preferred_date',date).eq('status','paid').is('cancelled_at',null),
  admin.from('lead_appointments').select('id,state,created_at').order('created_at').limit(1001),
  admin.from('booking_ingestion_candidates').select('id',{count:'exact',head:true}).eq('status','pending'),
  admin.from('ops_notifications').select('id',{count:'exact',head:true}).is('read_at',null)
  ]);
  // Actual previous-Lisbon-day interval is queried below, including DST.
- void payments;
  const {lisbonDayBounds}=await import('./time'); const bounds=lisbonDayBounds(date);
  const rows=await admin.from('payment_records').select('id,kind,environment,amount,currency').eq('environment','live').gte('event_at',bounds.start).lt('event_at',bounds.end).limit(1001);
  if([appointments,calls,review,notifications,rows].some(r=>r.error))throw new Error('Daily source data unavailable');

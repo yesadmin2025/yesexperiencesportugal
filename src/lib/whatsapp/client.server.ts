@@ -19,6 +19,18 @@ export function whatsappConfigured(): boolean {
   return credentials() !== null;
 }
 
+/** Success means accepted by Meta; delivery is established only by callbacks. */
+export async function sendWhatsAppText(phone: string, body: string): Promise<{ id: string }> {
+  const to = phone.replace(/^\+/, '');
+  if (!/^\d{8,15}$/.test(to) || !body.trim() || body.length > 4096) throw new Error('Invalid WhatsApp reply');
+  const result = await gateway('/messages', { method: 'POST', body: {
+    messaging_product: 'whatsapp', to, type: 'text', text: { body },
+  } }) as { messages?: Array<{ id?: string }> };
+  const id = result.messages?.[0]?.id;
+  if (!id) throw new Error('WhatsApp did not return a message reference');
+  return { id };
+}
+
 async function gateway(
   path: string,
   init: { method?: "GET" | "POST"; body?: unknown } = {},
