@@ -171,24 +171,27 @@ function journalCardMeta(
 
 
 /* ──────────────────────────────────────────────────────────────────
- * Featured Signature tours — exactly 4 real tours, in display order.
+ * Featured Signature tours — exactly 5 real tours, in display order.
  * Each id MUST exist in `signatureTours` (validated below).
  * ────────────────────────────────────────────────────────────── */
 const FEATURED_TOUR_IDS = [
   "arrabida-wine-allinclusive",
   "troia-comporta",
   "evora-alentejo",
+  "roman-heritage-alentejo",
   "p23-artisan-pottery-cork",
 ] as const;
 
 // Concise SEO-friendly titles used on mobile signature cards so long
 // Viator names don't clip on the left edge. Desktop keeps the full title.
+// Évora (commercial estates) and Talha (Vidigueira) are separate days — never mix.
 const MOBILE_TITLE_OVERRIDES: Record<string, string> = {
   "arrabida-wine-allinclusive": "Arrábida Private Wine Tour from Lisbon — All-Inclusive",
   "sintra-cascais": "Sintra & Cascais Private Day",
   "arrabida-boat": "Arrábida Boat & Wine Day",
   "troia-comporta": "Tróia & Comporta Coastal Day",
-  "evora-alentejo": "Évora & Alentejo Talha Wine Day",
+  "evora-alentejo": "Évora & Alentejo Wine Day",
+  "roman-heritage-alentejo": "Vidigueira Talha Wine & Roman Day",
   "p23-artisan-pottery-cork": "Pottery & Cork Artisan Day",
 };
 
