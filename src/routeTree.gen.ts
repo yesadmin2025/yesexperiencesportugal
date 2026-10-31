@@ -221,6 +221,7 @@ import { Route as ApiPublicHooksEmailFlushRouteImport } from './routes/api/publi
 import { Route as ApiPublicHooksEnquiryFollowupRouteImport } from './routes/api/public/hooks/enquiry-followup'
 import { Route as ApiPublicHooksGmailBookingScanRouteImport } from './routes/api/public/hooks/gmail-booking-scan'
 import { Route as ApiPublicHooksImportTripadvisorReviewsRouteImport } from './routes/api/public/hooks/import-tripadvisor-reviews'
+import { Route as ApiPublicHooksLeadAutomationRouteImport } from './routes/api/public/hooks/lead-automation'
 import { Route as ApiPublicHooksStripeWebhookHealthRouteImport } from './routes/api/public/hooks/stripe-webhook-health'
 import { Route as ApiPublicHooksTourDayBeforeRouteImport } from './routes/api/public/hooks/tour-day-before'
 import { Route as ApiPublicHooksViatorDriftCheckRouteImport } from './routes/api/public/hooks/viator-drift-check'
@@ -1326,6 +1327,12 @@ const ApiPublicHooksImportTripadvisorReviewsRoute =
     path: '/api/public/hooks/import-tripadvisor-reviews',
     getParentRoute: () => rootRouteImport,
   } as any)
+const ApiPublicHooksLeadAutomationRoute =
+  ApiPublicHooksLeadAutomationRouteImport.update({
+    id: '/api/public/hooks/lead-automation',
+    path: '/api/public/hooks/lead-automation',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const ApiPublicHooksStripeWebhookHealthRoute =
   ApiPublicHooksStripeWebhookHealthRouteImport.update({
     id: '/api/public/hooks/stripe-webhook-health',
@@ -1592,6 +1599,7 @@ export interface FileRoutesByFullPath {
   '/api/public/hooks/enquiry-followup': typeof ApiPublicHooksEnquiryFollowupRoute
   '/api/public/hooks/gmail-booking-scan': typeof ApiPublicHooksGmailBookingScanRoute
   '/api/public/hooks/import-tripadvisor-reviews': typeof ApiPublicHooksImportTripadvisorReviewsRoute
+  '/api/public/hooks/lead-automation': typeof ApiPublicHooksLeadAutomationRoute
   '/api/public/hooks/stripe-webhook-health': typeof ApiPublicHooksStripeWebhookHealthRoute
   '/api/public/hooks/tour-day-before': typeof ApiPublicHooksTourDayBeforeRoute
   '/api/public/hooks/viator-drift-check': typeof ApiPublicHooksViatorDriftCheckRoute
@@ -1810,6 +1818,7 @@ export interface FileRoutesByTo {
   '/api/public/hooks/enquiry-followup': typeof ApiPublicHooksEnquiryFollowupRoute
   '/api/public/hooks/gmail-booking-scan': typeof ApiPublicHooksGmailBookingScanRoute
   '/api/public/hooks/import-tripadvisor-reviews': typeof ApiPublicHooksImportTripadvisorReviewsRoute
+  '/api/public/hooks/lead-automation': typeof ApiPublicHooksLeadAutomationRoute
   '/api/public/hooks/stripe-webhook-health': typeof ApiPublicHooksStripeWebhookHealthRoute
   '/api/public/hooks/tour-day-before': typeof ApiPublicHooksTourDayBeforeRoute
   '/api/public/hooks/viator-drift-check': typeof ApiPublicHooksViatorDriftCheckRoute
@@ -2034,6 +2043,7 @@ export interface FileRoutesById {
   '/api/public/hooks/enquiry-followup': typeof ApiPublicHooksEnquiryFollowupRoute
   '/api/public/hooks/gmail-booking-scan': typeof ApiPublicHooksGmailBookingScanRoute
   '/api/public/hooks/import-tripadvisor-reviews': typeof ApiPublicHooksImportTripadvisorReviewsRoute
+  '/api/public/hooks/lead-automation': typeof ApiPublicHooksLeadAutomationRoute
   '/api/public/hooks/stripe-webhook-health': typeof ApiPublicHooksStripeWebhookHealthRoute
   '/api/public/hooks/tour-day-before': typeof ApiPublicHooksTourDayBeforeRoute
   '/api/public/hooks/viator-drift-check': typeof ApiPublicHooksViatorDriftCheckRoute
@@ -2259,6 +2269,7 @@ export interface FileRouteTypes {
     | '/api/public/hooks/enquiry-followup'
     | '/api/public/hooks/gmail-booking-scan'
     | '/api/public/hooks/import-tripadvisor-reviews'
+    | '/api/public/hooks/lead-automation'
     | '/api/public/hooks/stripe-webhook-health'
     | '/api/public/hooks/tour-day-before'
     | '/api/public/hooks/viator-drift-check'
@@ -2477,6 +2488,7 @@ export interface FileRouteTypes {
     | '/api/public/hooks/enquiry-followup'
     | '/api/public/hooks/gmail-booking-scan'
     | '/api/public/hooks/import-tripadvisor-reviews'
+    | '/api/public/hooks/lead-automation'
     | '/api/public/hooks/stripe-webhook-health'
     | '/api/public/hooks/tour-day-before'
     | '/api/public/hooks/viator-drift-check'
@@ -2700,6 +2712,7 @@ export interface FileRouteTypes {
     | '/api/public/hooks/enquiry-followup'
     | '/api/public/hooks/gmail-booking-scan'
     | '/api/public/hooks/import-tripadvisor-reviews'
+    | '/api/public/hooks/lead-automation'
     | '/api/public/hooks/stripe-webhook-health'
     | '/api/public/hooks/tour-day-before'
     | '/api/public/hooks/viator-drift-check'
@@ -2841,6 +2854,7 @@ export interface RootRouteChildren {
   ApiPublicHooksEnquiryFollowupRoute: typeof ApiPublicHooksEnquiryFollowupRoute
   ApiPublicHooksGmailBookingScanRoute: typeof ApiPublicHooksGmailBookingScanRoute
   ApiPublicHooksImportTripadvisorReviewsRoute: typeof ApiPublicHooksImportTripadvisorReviewsRoute
+  ApiPublicHooksLeadAutomationRoute: typeof ApiPublicHooksLeadAutomationRoute
   ApiPublicHooksStripeWebhookHealthRoute: typeof ApiPublicHooksStripeWebhookHealthRoute
   ApiPublicHooksTourDayBeforeRoute: typeof ApiPublicHooksTourDayBeforeRoute
   ApiPublicHooksViatorDriftCheckRoute: typeof ApiPublicHooksViatorDriftCheckRoute
@@ -4338,6 +4352,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicHooksImportTripadvisorReviewsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/hooks/lead-automation': {
+      id: '/api/public/hooks/lead-automation'
+      path: '/api/public/hooks/lead-automation'
+      fullPath: '/api/public/hooks/lead-automation'
+      preLoaderRoute: typeof ApiPublicHooksLeadAutomationRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/public/hooks/stripe-webhook-health': {
       id: '/api/public/hooks/stripe-webhook-health'
       path: '/api/public/hooks/stripe-webhook-health'
@@ -4760,6 +4781,7 @@ const rootRouteChildren: RootRouteChildren = {
   ApiPublicHooksGmailBookingScanRoute: ApiPublicHooksGmailBookingScanRoute,
   ApiPublicHooksImportTripadvisorReviewsRoute:
     ApiPublicHooksImportTripadvisorReviewsRoute,
+  ApiPublicHooksLeadAutomationRoute: ApiPublicHooksLeadAutomationRoute,
   ApiPublicHooksStripeWebhookHealthRoute:
     ApiPublicHooksStripeWebhookHealthRoute,
   ApiPublicHooksTourDayBeforeRoute: ApiPublicHooksTourDayBeforeRoute,
