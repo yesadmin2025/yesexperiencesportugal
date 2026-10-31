@@ -176,9 +176,9 @@ function journalCardMeta(
  * ────────────────────────────────────────────────────────────── */
 const FEATURED_TOUR_IDS = [
   "arrabida-wine-allinclusive",
-  "sintra-cascais",
-  "arrabida-boat",
   "troia-comporta",
+  "evora-alentejo",
+  "p23-artisan-pottery-cork",
 ] as const;
 
 // Concise SEO-friendly titles used on mobile signature cards so long
@@ -188,6 +188,8 @@ const MOBILE_TITLE_OVERRIDES: Record<string, string> = {
   "sintra-cascais": "Sintra & Cascais Private Day",
   "arrabida-boat": "Arrábida Boat & Wine Day",
   "troia-comporta": "Tróia & Comporta Coastal Day",
+  "evora-alentejo": "Évora & Alentejo Talha Wine Day",
+  "p23-artisan-pottery-cork": "Pottery & Cork Artisan Day",
 };
 
 /* ──────────────────────────────────────────────────────────────────
@@ -590,89 +592,6 @@ function HomePage() {
           the paths: Signature, Studio, Travel Designer, Proposals and Corporate. */}
         <FiveWaysIn />
 
-        {/* 4 — EXPERIENCE STUDIO (promoted)
-          Promoted up the page so the Builder reads as the core
-          innovation, not just another tile. The five-path introduction
-          gives visitors the full service picture before this focused
-          Studio moment and its live preview.
-          Mobile order: paths primer → headline → live preview → CTA.
-          Desktop: text rail left, preview right. One CTA only
-          ("Open the Studio"). The "Ask a local" duplicate has been
-          removed; local guidance lives in the reassurance line, the
-          FAQ closer, and the Final CTA. */}
-        <section
-          id="builder"
-          className="he-section-rule section-enter pt-10 pb-12 md:pt-14 md:pb-16 bg-[color:var(--sand)] border-b border-[color:var(--border)] scroll-mt-24 md:scroll-mt-28"
-          aria-labelledby="studio-title"
-        >
-          <div className="container-x">
-            {/* Inner anchor target for /#studio — sits right before the
-              "Create it live." rail so deep-links land on the Studio
-              block, not the wider builder eyebrow. scroll-mt matches
-              the same offset used elsewhere on the page. */}
-            <div id="studio" aria-hidden="true" className="scroll-mt-24 md:scroll-mt-28" />
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14 items-center max-w-6xl mx-auto w-full min-w-0">
-              {/* On mobile: text rail (with the headline) renders FIRST so
-                the user reads "Create it live." before seeing the
-                device. On desktop the rail returns to the left so the
-                reading flow stays natural. */}
-              {/* Staged reading order: eyebrow → headline → copy → 01/02/03
-                  steps → CTA. `he-stagger` sequences the direct children with
-                  the homepage cadence; reduced motion shows everything at once. */}
-              <div className="he-stagger lg:col-span-5 lg:order-1 order-1">
-                <Eyebrow live className="reveal-stagger mb-5">
-                  Experience Studio
-                </Eyebrow>
-
-                <SectionTitle
-                  id="studio-title"
-                  className="reveal-stagger"
-                >
-                  Design your day.{" "}
-                  <SectionTitle.Em>
-                    Reserve in minutes.
-                  </SectionTitle.Em>
-                </SectionTitle>
-
-                <p className="reveal-stagger mt-4 text-[14.5px] md:text-[16px] text-[color:var(--charcoal-soft)] leading-[1.7] max-w-md">
-                  The Studio draws the day as you shape it: a{" "}
-                  <strong className="font-medium text-[color:var(--charcoal)]">real route</strong>,
-                  honest driving times and a live price. See the finished total before you reserve.
-                </p>
-
-                {/* Three differentiators — tied to the product, not a floating manifesto. */}
-                <ol
-                  className="he-stagger reveal-stagger mt-7 grid grid-cols-3 gap-1.5 max-w-md"
-                  aria-label="Why the Studio"
-                >
-                  {[
-                    { n: "01", label: "Real route" },
-                    { n: "02", label: "Instant confirmation" },
-                    { n: "03", label: "Local on WhatsApp" },
-                  ].map((d) => (
-                    <li key={d.n} className="reveal-stagger flex flex-col gap-1.5">
-                      <span aria-hidden="true" className="block h-[3px] bg-[color:var(--gold)]" />
-                      <span className="text-[11px] uppercase tracking-[0.16em] font-semibold text-[color:var(--charcoal)] tabular-nums">
-                        {d.n} · {d.label}
-                      </span>
-                    </li>
-                  ))}
-                </ol>
-
-                <div className="reveal-stagger mt-8 flex flex-wrap gap-x-5 gap-y-4">
-                  <CtaButton to="/studio" variant="primary">
-                    {CTA_LABELS.studioSection}
-                  </CtaButton>
-                </div>
-              </div>
-
-              <div className="reveal lg:col-span-7 lg:order-2 order-2">
-                <StudioLivePreview />
-              </div>
-            </div>
-          </div>
-        </section>
-
         {/* 5 — SIGNATURE EXPERIENCES PREVIEW
           Moved BEFORE the Travel Designer proof so the highest-intent
           shoppable inventory sits closest to the Studio — conversion
@@ -874,6 +793,90 @@ function HomePage() {
             </div>
           </div>
         </section>
+
+        {/* 4 — EXPERIENCE STUDIO (promoted)
+          Promoted up the page so the Builder reads as the core
+          innovation, not just another tile. The five-path introduction
+          gives visitors the full service picture before this focused
+          Studio moment and its live preview.
+          Mobile order: paths primer → headline → live preview → CTA.
+          Desktop: text rail left, preview right. One CTA only
+          ("Open the Studio"). The "Ask a local" duplicate has been
+          removed; local guidance lives in the reassurance line, the
+          FAQ closer, and the Final CTA. */}
+        <section
+          id="builder"
+          className="he-section-rule section-enter pt-10 pb-12 md:pt-14 md:pb-16 bg-[color:var(--sand)] border-b border-[color:var(--border)] scroll-mt-24 md:scroll-mt-28"
+          aria-labelledby="studio-title"
+        >
+          <div className="container-x">
+            {/* Inner anchor target for /#studio — sits right before the
+              "Create it live." rail so deep-links land on the Studio
+              block, not the wider builder eyebrow. scroll-mt matches
+              the same offset used elsewhere on the page. */}
+            <div id="studio" aria-hidden="true" className="scroll-mt-24 md:scroll-mt-28" />
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14 items-center max-w-6xl mx-auto w-full min-w-0">
+              {/* On mobile: text rail (with the headline) renders FIRST so
+                the user reads "Create it live." before seeing the
+                device. On desktop the rail returns to the left so the
+                reading flow stays natural. */}
+              {/* Staged reading order: eyebrow → headline → copy → 01/02/03
+                  steps → CTA. `he-stagger` sequences the direct children with
+                  the homepage cadence; reduced motion shows everything at once. */}
+              <div className="he-stagger lg:col-span-5 lg:order-1 order-1">
+                <Eyebrow live className="reveal-stagger mb-5">
+                  Experience Studio
+                </Eyebrow>
+
+                <SectionTitle
+                  id="studio-title"
+                  className="reveal-stagger"
+                >
+                  Design your day.{" "}
+                  <SectionTitle.Em>
+                    Reserve in minutes.
+                  </SectionTitle.Em>
+                </SectionTitle>
+
+                <p className="reveal-stagger mt-4 text-[14.5px] md:text-[16px] text-[color:var(--charcoal-soft)] leading-[1.7] max-w-md">
+                  The Studio draws the day as you shape it: a{" "}
+                  <strong className="font-medium text-[color:var(--charcoal)]">real route</strong>,
+                  honest driving times and a live price. See the finished total before you reserve.
+                </p>
+
+                {/* Three differentiators — tied to the product, not a floating manifesto. */}
+                <ol
+                  className="he-stagger reveal-stagger mt-7 grid grid-cols-3 gap-1.5 max-w-md"
+                  aria-label="Why the Studio"
+                >
+                  {[
+                    { n: "01", label: "Real route" },
+                    { n: "02", label: "Instant confirmation" },
+                    { n: "03", label: "Local on WhatsApp" },
+                  ].map((d) => (
+                    <li key={d.n} className="reveal-stagger flex flex-col gap-1.5">
+                      <span aria-hidden="true" className="block h-[3px] bg-[color:var(--gold)]" />
+                      <span className="text-[11px] uppercase tracking-[0.16em] font-semibold text-[color:var(--charcoal)] tabular-nums">
+                        {d.n} · {d.label}
+                      </span>
+                    </li>
+                  ))}
+                </ol>
+
+                <div className="reveal-stagger mt-8 flex flex-wrap gap-x-5 gap-y-4">
+                  <CtaButton to="/studio" variant="primary">
+                    {CTA_LABELS.studioSection}
+                  </CtaButton>
+                </div>
+              </div>
+
+              <div className="reveal lg:col-span-7 lg:order-2 order-2">
+                <StudioLivePreview />
+              </div>
+            </div>
+          </div>
+        </section>
+
 
         {/* 5a — AUTUMN & WINTER BAND
           Seasonal reassurance, facts only: every Signature day runs
