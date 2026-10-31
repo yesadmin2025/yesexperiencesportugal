@@ -191,7 +191,8 @@ const MOBILE_TITLE_OVERRIDES: Record<string, string> = {
   "arrabida-boat": "Arrábida Boat & Wine Day",
   "troia-comporta": "Tróia & Comporta Coastal Day",
   "evora-alentejo": "Évora & Alentejo Wine Day",
-  "roman-heritage-alentejo": "Vidigueira Talha Wine & Roman Day",
+  "roman-heritage-alentejo":
+    "Secret Alentejo: Roman Heritage, Exclusive Talha Wine & Local Lunch Experience at a Family Winery",
   "p23-artisan-pottery-cork": "Pottery & Cork Artisan Day",
 };
 
