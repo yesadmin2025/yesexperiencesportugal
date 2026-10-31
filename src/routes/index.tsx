@@ -696,7 +696,7 @@ function HomePage() {
                           bright skies and dark hero shots. Tuned to clear WCAG AA over Viator imagery. */}
                         <div
                           aria-hidden="true"
-                          className="absolute inset-0 z-[2] bg-[linear-gradient(to_bottom,rgba(0,0,0,0.42)_0%,rgba(0,0,0,0.08)_22%,rgba(0,0,0,0.08)_55%,rgba(0,0,0,0.72)_100%)]"
+                          className="absolute inset-0 z-[2] bg-[linear-gradient(to_bottom,rgba(0,0,0,0.42)_0%,rgba(0,0,0,0.08)_22%,rgba(0,0,0,0)_45%,rgba(0,0,0,0)_100%)]"
                         />
                         {/* Top row: region + rating + price — social proof and value signal above the fold */}
                         <div className="absolute inset-x-0 top-0 z-[3] p-4 md:p-5 flex items-start justify-between gap-2">
