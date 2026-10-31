@@ -191,7 +191,8 @@ const MOBILE_TITLE_OVERRIDES: Record<string, string> = {
   "arrabida-boat": "Arrábida Boat & Wine Day",
   "troia-comporta": "Tróia & Comporta Coastal Day",
   "evora-alentejo": "Évora & Alentejo Wine Day",
-  "roman-heritage-alentejo": "Vidigueira Talha Wine & Roman Day",
+  "roman-heritage-alentejo":
+    "Secret Alentejo: Roman Heritage, Exclusive Talha Wine & Local Lunch Experience at a Family Winery",
   "p23-artisan-pottery-cork": "Pottery & Cork Artisan Day",
 };
 
@@ -724,7 +725,11 @@ function HomePage() {
                             <span className="sm:hidden">
                               {MOBILE_TITLE_OVERRIDES[t.id] ?? t.title}
                             </span>
-                            <span className="hidden sm:inline">{t.title}</span>
+                            <span className="hidden sm:inline">
+                              {t.id === "roman-heritage-alentejo"
+                                ? MOBILE_TITLE_OVERRIDES[t.id]
+                                : t.title}
+                            </span>
                           </h3>
                           <div className="mt-3 flex items-center gap-2">
                             <span className="inline-block text-[11px] uppercase tracking-[0.22em] text-white [text-shadow:0_1px_3px_rgba(0,0,0,0.55)]">
