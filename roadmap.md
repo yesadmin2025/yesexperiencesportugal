@@ -3,7 +3,7 @@
 ## Mobile conversion verification — November 1
 - [x] Verify homepage and Signature guest-details-to-test-payment flow at 393px; €366 retained, no payment submitted
 - [x] Preload guest details on valid booking intent and show immediate opening feedback; prices and reservation rules unchanged
-- [ ] Verify focused regressions and final mobile rendering
+- [x] Verify 20 focused regressions, metadata on 76 routes and final mobile payment entry; preview build OK, no browser errors
 - [ ] Publish only on explicit request
 
 ## WhatsApp assistant and daily summary — October 31
