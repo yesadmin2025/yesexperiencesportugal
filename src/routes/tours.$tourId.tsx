@@ -368,7 +368,7 @@ function TourDetailPage() {
       />
 
       {/* ── H · REVIEWS — proof right after the decision ───────── */}
-      <section className="container-x py-6">
+      <section className="container-x py-6" data-floating-quiet>
         <TourReviews tourId={tour.id} initialFirstParty={firstPartyReviews} />
         <GuestReviewForm lockedTour={{ tour_id: tour.id, title: tour.title }} />
       </section>
@@ -911,6 +911,7 @@ function BookingBlock({ tour, meta }: { tour: SignatureTour; meta?: ViatorMeta }
   return (
     <section
       id="book"
+      data-floating-quiet
       className="py-16 md:py-24 bg-[color:var(--sand)]/50 scroll-mt-24 md:scroll-mt-28"
     >
       <div className="container-x max-w-3xl">

@@ -1,6 +1,7 @@
 import { Link } from "@tanstack/react-router";
 import { ArrowUp } from "lucide-react";
 import { usePastHero } from "@/hooks/use-past-hero";
+import { useFloatingQuietZones } from "@/hooks/use-floating-quiet-zones";
 import { CTA_LABELS } from "@/content/cta-vocabulary";
 
 /**
@@ -23,6 +24,7 @@ import { CTA_LABELS } from "@/content/cta-vocabulary";
  *     even legacy AT or a stray `inert` override can't reach them.
  */
 export function FloatingActions() {
+  useFloatingQuietZones();
   // Shared post-hero visibility gate (threshold, persistence, BFCache
   // handling). No mediaQuery here: FloatingActions owns both the mobile
   // scroll-to-top arrow and the lg+ floating CTA, so the wrapper stays
