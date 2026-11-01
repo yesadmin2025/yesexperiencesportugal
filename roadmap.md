@@ -1,5 +1,10 @@
 # Phase 1 optimization
 
+## SEO findings — November 1
+- [x] Verify the reported missing H1s on /experiences and /day-tours in the browser; each already renders one H1 with correct heading order, so leave current no-op finding awaiting scanner verification
+- [x] Improve the approved Lisbon wine guide title, description and opening using verified regions; retain the URL and booking links
+- [x] Run 38 relevant SEO tests, check 76-route metadata and mobile rendering with the guide-to-tour link; record only the completed guide correction, not the unconfirmed current H1 alert
+
 ## Mobile conversion verification — November 1
 - [x] Verify homepage and Signature guest-details-to-test-payment flow at 393px; €366 retained, no payment submitted
 - [x] Preload guest details on valid booking intent and show immediate opening feedback; prices and reservation rules unchanged
