@@ -157,6 +157,13 @@ export function SimpleBookingForm({ tour }: { tour: SignatureTour }) {
 
   const canReserve = compositionReady && dateValid;
 
+  // Load the next surface on booking intent, before the guest presses Reserve.
+  // A failed prefetch must not prevent the normal lazy import from retrying.
+  useEffect(() => {
+    if (!canReserve) return;
+    void import("@/components/checkout/FinalDetailsDialog").catch(() => undefined);
+  }, [canReserve]);
+
   // Fire funnel events at most once per field per mount.
   const firedDate = useRef(false);
   const firedTime = useRef(false);
@@ -759,8 +766,8 @@ export function SimpleBookingForm({ tour }: { tour: SignatureTour }) {
             setDetailsOpen(true);
           }}
           disabled={pending}
-          loading={pending}
-          loadingLabel="Opening checkout…"
+          loading={pending || detailsOpen}
+          loadingLabel={pending ? "Opening checkout…" : "Opening your details…"}
           iconLeading={<Sparkles size={15} aria-hidden="true" />}
           className="mt-4 w-full justify-center"
         >
@@ -779,7 +786,11 @@ export function SimpleBookingForm({ tour }: { tour: SignatureTour }) {
       </div>}
 
 
-      {detailsOpen ? <Suspense fallback={null}><FinalDetailsDialog
+      {detailsOpen ? <Suspense fallback={
+        <p role="status" className="mt-3 text-center text-[13px] text-[color:var(--charcoal)]">
+          Opening your details…
+        </p>
+      }><FinalDetailsDialog
         priceQuote={({ adults, minorAges }) => {
           // Same resolver + arguments as handleReserve → Stripe.
           const j = resolveJourneyPricing(tour, adults, minorAges, tierOverrides);
