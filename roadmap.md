@@ -1,7 +1,7 @@
 # Phase 1 optimization
 
 ## SEO findings — November 1
-- [ ] Investigate the persistent /experiences and /day-tours H1 alert against raw HTML and mobile rendering; resolve only with confirmed evidence, without changing approved content
+- [x] Investigate the persistent /experiences and /day-tours H1 alert: stale agent_content scan (bfffa675 vs 24ad041); live and local raw HTML each contain exactly one H1, and four 393px JavaScript-on/off checks pass with logical heading order, no overflow or page errors; resolve stale finding without changing approved content
 - [x] Verify the reported missing H1s on /experiences and /day-tours in the browser; each already renders one H1 with correct heading order, so leave current no-op finding awaiting scanner verification
 - [x] Improve the approved Lisbon wine guide title, description and opening using verified regions; retain the URL and booking links
 - [x] Run 38 relevant SEO tests, check 76-route metadata and mobile rendering with the guide-to-tour link; record only the completed guide correction, not the unconfirmed current H1 alert
