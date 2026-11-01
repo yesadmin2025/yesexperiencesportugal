@@ -29,7 +29,7 @@ export const SIGNATURE_SEO: Record<string, SignatureSeoEntry> = {
     h1: "Private Arrábida wine tour from Lisbon",
     opening: "Explore Arrábida and Azeitão on a private wine day from Lisbon, with two family wineries included, Setúbal Moscatel, Livramento Market and lunch.",
     description:
-      "Private Lisbon wine tour to Arrábida with 2 family wineries included, Setúbal Moscatel, Livramento Market, Azeitão lunch and hotel pickup. Instant confirmation.",
+      "Private Lisbon wine tour to Arrábida with 2 family cellars, Setúbal Moscatel, Livramento Market, Azeitão lunch and door-to-door pickup. Instant confirmation.",
     ogTitle: "Private Lisbon Wine Tour in Arrábida",
     ogDescription:
       "A private wine day from Lisbon with family cellars, Setúbal Moscatel, market, lunch and door-to-door pickup.",
@@ -61,11 +61,11 @@ export const SIGNATURE_SEO: Record<string, SignatureSeoEntry> = {
   "p23-artisan-pottery-cork": {
     primaryKeyword: "cork and pottery workshop alentejo",
     supportingKeywords: ["pottery workshop portugal", "private alentejo day trip from lisbon"],
-    title: "Alentejo Cork & Pottery Workshops from Lisbon | YES",
+    title: "Alentejo Cork & Pottery Workshops from Lisbon | Private Day",
     h1: "Private Alentejo cork and pottery workshops",
     opening: "Spend a private day from Lisbon with Alentejo makers: work with cork, enjoy the included lunch and shape clay in a three-hour pottery workshop.",
     description:
-      "Meet Alentejo makers on a private day of hands-on cork and pottery workshops. Ceramics session, local guide, lunch and transport included. From €203 per person.",
+      "Hands-on cork and clay workshops in rural Alentejo with local artisans. Lunch, private guide and Lisbon hotel pickup included. Reserve instantly.",
     ogTitle: "Private Alentejo Cork & Pottery Workshops",
     ogDescription:
       "A private, hands-on day with Alentejo cork and clay makers. Guide, lunch and transport included.",
@@ -109,11 +109,11 @@ export const SIGNATURE_SEO: Record<string, SignatureSeoEntry> = {
   "troia-comporta": {
     primaryKeyword: "comporta day trip from lisbon",
     supportingKeywords: ["private tours lisbon", "troia tour from lisbon"],
-    title: "Private Tróia & Comporta Day Trip from Lisbon",
+    title: "Exclusive Comporta Day Trip from Lisbon: Wine, Dunes & Coast",
     h1: "Private Tróia and Comporta day trip from Lisbon",
     opening: "Cross the Sado by ferry to Tróia's Roman ruins, the Carrasqueira stilt pier, Comporta's Atlantic beaches and a local winery tasting.",
     description:
-      "Private Comporta day trip from Lisbon by Sado ferry, with Tróia’s Roman ruins, Carrasqueira stilt pier, Atlantic beaches and wine tasting.",
+      "Private Comporta day trip from Lisbon: Sado ferry, Tróia Roman ruins, Carrasqueira stilt pier, wild Atlantic beaches and winery tasting. Hotel pickup.",
     ogTitle: "Private Tróia & Comporta Day Trip from Lisbon",
     ogDescription:
       "Cross the Sado by ferry for Roman ruins, the Carrasqueira stilt pier, Comporta beaches and a winery tasting.",
@@ -121,11 +121,11 @@ export const SIGNATURE_SEO: Record<string, SignatureSeoEntry> = {
   "evora-alentejo": {
     primaryKeyword: "evora day trip from lisbon",
     supportingKeywords: ["alentejo wine tour", "portugal wine tours"],
-    title: "Private Évora & Alentejo Wine Tour from Lisbon",
+    title: "Private Évora & Alentejo Wine Tour from Lisbon | UNESCO Day",
     h1: "Private Évora and Alentejo wine tour from Lisbon",
     opening: "Visit Évora's Roman Temple and Chapel of Bones, two selected Alentejo wineries and a traditional cork-production site on a private day from Lisbon.",
     description:
-      "Private Évora day trip from Lisbon with the Roman Temple, Chapel of Bones, two selected Alentejo wineries and a traditional cork visit.",
+      "UNESCO Évora private tour from Lisbon: Roman Temple, Chapel of Bones, two selected Alentejo wineries and cork heritage. Pickup and instant confirmation.",
     ogTitle: "Private Évora & Alentejo Wine Tour from Lisbon",
     ogDescription:
       "Walk UNESCO Évora, visit the Chapel of Bones and taste at two selected Alentejo wineries on a private day.",
@@ -157,11 +157,11 @@ export const SIGNATURE_SEO: Record<string, SignatureSeoEntry> = {
   "roman-heritage-alentejo": {
     primaryKeyword: "alentejo wine tour",
     supportingKeywords: ["portugal wine tours", "private tours portugal"],
-    title: "Alentejo Talha Wine & Roman Heritage Tour | YES",
+    title: "Private Talha Wine & Roman Alentejo Day from Lisbon | YES",
     h1: "Private Alentejo talha wine and Roman heritage tour",
     opening: "Explore São Cucufate's Roman ruins and Alentejo's clay-amphora wine tradition with a family cellar on a private inland day from Lisbon.",
     description:
-      "Private Alentejo wine tour from Lisbon with São Cucufate Roman ruins, clay-amphora talha wine, a family cellar and a quiet village.",
+      "Rural Alentejo from Lisbon: São Cucufate Roman ruins, clay-amphora talha wine, a family cellar tasting and local lunch. Private day with hotel pickup.",
     ogTitle: "Private Roman Heritage & Alentejo Wine Tour",
     ogDescription:
       "Follow 2,000 years of Alentejo wine through Roman ruins, clay talhas, a family cellar and a whitewashed village.",
