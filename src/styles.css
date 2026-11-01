@@ -8941,3 +8941,9 @@ html.reveal-ready .cinematic-editorial--single.is-playing img {
 }
 
 /* VISUAL_STORYTELLING_SYNC_20260921 */
+
+/* Signature cards: photos appear immediately so shoppers never see empty frames. */
+html.reveal-ready .home-energy #signatures .reveal-stagger .he-image-cinema {
+  clip-path: none;
+  transform: none;
+}

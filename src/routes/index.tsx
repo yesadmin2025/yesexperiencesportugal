@@ -656,7 +656,7 @@ function HomePage() {
               ].join(" ")}
               aria-label="Signature experiences"
             >
-              {signatures.map((t) => {
+              {signatures.map((t, cardIndex) => {
                 return (
                   <li
                     key={t.id}
@@ -686,7 +686,7 @@ function HomePage() {
                               srcSet={r.srcSet}
                               sizes={r.sizes}
                               alt={`${t.title} — private day tour in ${t.region}, Portugal`}
-                              loading="lazy"
+                              loading={cardIndex < 2 ? "eager" : "lazy"}
                               decoding="async"
                               className="relative z-[1] w-full h-full object-cover transition-transform duration-[700ms] ease-out group-hover:scale-[1.05]"
                             />
