@@ -1,8 +1,8 @@
 # Phase 1 optimization
 
 ## SEO findings — November 1
-- [ ] Verify the reported missing H1s on /experiences and /day-tours in the browser; avoid unnecessary layout changes
-- [ ] Improve the approved Lisbon wine guide title, description and opening using verified regions; retain the URL and booking links
+- [x] Verify the reported missing H1s on /experiences and /day-tours in the browser; each already renders one H1 with correct heading order, so leave current no-op finding awaiting scanner verification
+- [x] Improve the approved Lisbon wine guide title, description and opening using verified regions; retain the URL and booking links
 - [ ] Run relevant SEO tests, check mobile rendering and record only complete corrections
 
 ## Mobile conversion verification — November 1
