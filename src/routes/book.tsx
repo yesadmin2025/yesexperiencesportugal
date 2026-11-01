@@ -238,7 +238,7 @@ function BookPage() {
       {instantMode && instantTour ? (
         <section className="py-12 md:py-14 border-b border-[color:var(--border)]" id="pay">
           <div className="container-x max-w-3xl">
-            <div data-testid="instant-booking-block">
+            <div data-testid="instant-booking-block" data-floating-quiet>
               <Suspense
                 fallback={
                   <div
