@@ -1,5 +1,7 @@
 # Project architecture decisions
 
+- Signature guest details prefetch on valid booking intent and show opening feedback while the lazy surface loads; the existing reservation gate and payment authority remain unchanged.
+
 - Lead automation uses durable jobs and explicit human handoff; quotations reuse current tier pricing and experience checkout remains the only reservation authority, so chat never creates paid bookings.
 - The owner digest aggregates live payment records and separate call requests for the previous Lisbon calendar day; AI receives aggregates only, with persisted pause and lease state to prevent duplicate automated work.
 
