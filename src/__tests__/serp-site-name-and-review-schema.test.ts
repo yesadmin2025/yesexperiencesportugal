@@ -65,10 +65,10 @@ describe("brand-critical SERP snippets", () => {
   it("homepage title and description are locked", () => {
     const home = read("src/routes/index.tsx");
     expect(home).toContain(
-      '"Private Tours in Portugal & Lisbon — Tailored Days | YES"',
+      '"YES Experiences Portugal — Private Tours & Tailored Journeys"',
     );
     expect(home).toContain(
-      "Private days across Portugal — Arrábida wine, Sintra, Évora, the coast — or design your own in our Studio with live pricing. Multi-day journeys too.",
+      "Private days across Portugal — Arrábida wine, Évora, Comporta — or design your own in our Studio. Multi-day journeys, proposals and corporate groups.",
     );
   });
 
@@ -103,9 +103,9 @@ describe("brand-critical SERP snippets", () => {
       }>
     ).find((a) => a.slug === "best-wine-tours-from-lisbon");
     expect(article).toBeTruthy();
-    expect(article!.title).toBe("Best Wine Tours from Lisbon: Wineries Guide (2026) | YES");
+    expect(article!.title).toBe("Best Wine Tours from Lisbon: Arrábida & Alentejo | YES");
     expect(article!.metaDescription).toBe(
-      "Which wine tour from Lisbon is best? Our pick for a first day is Arrábida. Compare Azeitão and Alentejo by drive time, wineries, inclusions and price.",
+      "Compare private wine tours from Lisbon: Arrábida and Azeitão, Évora estates or Vidigueira talha wineries. Explore routes, inclusions and booking options.",
     );
     for (const text of [article!.title, article!.metaDescription, article!.standfirst]) {
       expect(text.toLowerCase()).not.toMatch(/small[- ]group/);

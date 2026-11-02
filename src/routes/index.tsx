@@ -61,10 +61,10 @@ const LIVE_REVIEW_FALLBACK_TOURS = [
  * dedicated landing pages own Lisbon and day-trip search intent.
  */
 const HOME_SEO_TITLE =
-  "Private Tours in Portugal & Lisbon — Tailored Days | YES";
+  "YES Experiences Portugal — Private Tours & Tailored Journeys";
 const HOME_SEO_SOCIAL_TITLE = HOME_SEO_TITLE;
 const HOME_SEO_DESCRIPTION =
-  "Private days across Portugal — Arrábida wine, Sintra, Évora, the coast — or design your own in our Studio with live pricing. Multi-day journeys too.";
+  "Private days across Portugal — Arrábida wine, Évora, Comporta — or design your own in our Studio. Multi-day journeys, proposals and corporate groups.";
 
 
 /** Homepage Journal row — three evergreen Local Stories guides.
