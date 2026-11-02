@@ -277,7 +277,7 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
     sections: [
       {
         heading: "The short answer, before the detail.",
-        body: "If you only read one paragraph: climb to Sesimbra Castle for the bay view, walk the old center down to the harbour, eat grilled fish from the morning's catch beside the water, and finish on a cove inside the Arrábida natural park.\n\nHalf a day covers the town. A full day is what you need if you also want the coast, a swim and an unhurried lunch. The drive from Lisbon is about 40 minutes; late spring and early autumn are the best windows.\n\nEverything below is how we plan it ourselves — we live here, and we run these days privately for guests.",
+        body: "If you only read one paragraph: climb to Sesimbra Castle for the bay view, walk the old center down to the harbour, eat grilled fish from the morning's catch beside the water, and finish on a cove inside the Arrábida natural park.\n\nHalf a day covers the town. A full day is what you need if you also want the coast, a swim and an unhurried lunch. The drive from Lisbon is about 40 minutes; late spring and early autumn are the best windows.\n\nEverything below is how we plan it ourselves — we live here, and we run these days privately for guests. To skip the planning, reserve the private [Wild Beaches & Picnic day](/tours/wild-beaches-picnic) or [design your own day](/studio) with live pricing.",
       },
       {
         heading: "The harbour, and the castle above it.",
