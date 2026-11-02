@@ -65,7 +65,7 @@ describe("brand-critical SERP snippets", () => {
   it("homepage title and description are locked", () => {
     const home = read("src/routes/index.tsx");
     expect(home).toContain(
-      '"Private Tours in Portugal & Lisbon — Tailored Days | YES"',
+      '"YES Experiences Portugal — Private Tours & Tailored Journeys"',
     );
     expect(home).toContain(
       "Private days across Portugal — Arrábida wine, Sintra, Évora, the coast — or design your own in our Studio with live pricing. Multi-day journeys too.",

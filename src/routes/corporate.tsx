@@ -35,7 +35,7 @@ import { getViatorMeta } from "@/data/signatureToursViator";
 import { CTA_LABELS } from "@/content/cta-vocabulary";
 import { whatsappUrl } from "@/config/business-nap";
 
-const TITLE = "Corporate Events & Team Building in Portugal | YES";
+const TITLE = "Corporate Retreats & Team Building in Portugal | YES";
 const DESCRIPTION =
   "Corporate retreats in Portugal, team building, incentive travel and private group experiences, designed and coordinated locally from brief to delivery.";
 const OG_TITLE = "Corporate Experiences Across Portugal | YES";
