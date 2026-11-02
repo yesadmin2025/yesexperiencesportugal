@@ -7,7 +7,7 @@ import { Sheet, SheetContent, SheetTitle, SheetDescription } from "@/components/
 import { Eyebrow } from "@/components/ui/Eyebrow";
 import { CtaButton } from "@/components/ui/CtaButton";
 
-import { CANCELLATION } from "@/config/business-nap";
+import { CANCELLATION, whatsappUrl } from "@/config/business-nap";
 import {
   summarizeJourneyLines as summarizeJourneyLinesShared,
   hasCompleteJourneyPricing,
@@ -343,6 +343,23 @@ function ExperienceSummaryCard({
             €{total.toLocaleString("en-GB")}
           </span>
         </div>
+      ) : null}
+
+      {total != null && total >= 1000 ? (
+        <p
+          className="mt-2 text-[12px] leading-snug text-[color:var(--charcoal-soft)]"
+          data-testid="checkout-drawer-designer-bridge"
+        >
+          Questions before you confirm?{" "}
+          <a
+            href={whatsappUrl("Hello, I have a question before confirming my booking.")}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex min-h-[44px] items-center font-medium text-[color:var(--teal)] underline underline-offset-2"
+          >
+            Talk to a local on WhatsApp
+          </a>
+        </p>
       ) : null}
 
       {hasDetails ? (

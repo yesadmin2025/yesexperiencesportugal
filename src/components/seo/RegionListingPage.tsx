@@ -140,9 +140,9 @@ export function RegionListingPage({ region }: { region: LisbonRegion }) {
                         experience_type: "signature",
                       })
                     }
-                    className="inline-flex min-h-[44px] items-center gap-2 font-sans text-[12px] uppercase tracking-[0.18em] font-semibold text-[color:var(--teal)] no-underline hover:text-[color:var(--charcoal)]"
+                    className="inline-flex min-h-[48px] w-full sm:w-auto items-center justify-center gap-2 rounded-[2px] bg-[color:var(--teal)] px-6 font-sans text-[12px] uppercase tracking-[0.18em] font-semibold text-[color:var(--ivory)] no-underline transition-colors duration-200 hover:bg-[color:var(--charcoal)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[color:var(--gold)]"
                   >
-                    Reserve this day · from €{tour.priceFrom}
+                    See dates &amp; reserve · from €{tour.priceFrom}
                     <span aria-hidden className="text-[color:var(--gold)]">
                       →
                     </span>
