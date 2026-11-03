@@ -4,7 +4,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { SiteLayout } from "@/components/SiteLayout";
 import { SiteBreadcrumbs } from "@/components/SiteBreadcrumbs";
 import { Eyebrow } from "@/components/ui/Eyebrow";
-import { SectionTitle } from "@/components/ui/SectionTitle";
+import { SectionTitle, sectionTitleClassName } from "@/components/ui/SectionTitle";
 import { CtaButton } from "@/components/ui/CtaButton";
 import { useMarketingMotion } from "@/hooks/use-marketing-motion";
 import {
@@ -55,9 +55,9 @@ function FaqPage() {
       <section className="page-hero public-page-header reveal bg-[color:var(--sand)] text-center">
         <div className="container-x max-w-3xl header-seq">
           <Eyebrow flank>Before you book</Eyebrow>
-          <SectionTitle as="h1" size="anchor" spacing="loose">
-            Everything worth asking, <SectionTitle.Em>answered honestly.</SectionTitle.Em>
-          </SectionTitle>
+          <h1 className={sectionTitleClassName("anchor", "loose")}>
+            Private tour questions, <SectionTitle.Em>answered honestly.</SectionTitle.Em>
+          </h1>
           <p className="page-header-support mt-6 text-[15.5px] md:text-[17px] text-[color:var(--charcoal-soft)]">
             Design, prices, changes and booking. Anything else, a local answers personally.
           </p>

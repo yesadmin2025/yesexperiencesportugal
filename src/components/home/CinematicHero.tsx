@@ -213,16 +213,15 @@ export function CinematicHero() {
       <div className="hero-cinematic-layout absolute inset-0 z-10 grid px-5 sm:px-10 md:px-16">
       <div className="hero-stanza-zone flex min-w-0 items-center justify-center">
         <div className="w-full text-center">
-           {/* Descriptive H1 for Google + screen readers; visually hidden so
-               the approved Hero composition stays pixel-identical. */}
-           <h1 className="sr-only">
-             Private Tours &amp; Travel Design in Portugal — YES Experiences
-           </h1>
-           <div
+           {/* The visible two-line statement is the page's single H1; a
+               visually hidden lead gives search engines the descriptive topic
+               without changing the approved Hero composition. */}
+           <h1
             data-hero-stanza="true"
             data-mixed-emphasis="exempt"
             className="hero-h1 m-0 text-center font-serif"
           >
+            <span className="sr-only">Private tours &amp; travel design in Portugal: </span>
             <span className="hero-title-mask block px-[0.08em] pb-[0.12em]">
               <span
                 className="hero-title-line block font-serif italic font-normal m-0 text-[color:var(--gold-soft)]"
@@ -241,7 +240,7 @@ export function CinematicHero() {
                 {HERO_PHRASES[1]}
               </span>
             </span>
-          </div>
+          </h1>
              <p data-hero-field="subheadline" style={{ fontFamily: "var(--font-sans)" }} className="hero-support mx-auto mt-5 max-w-[32ch] font-sans font-normal text-[14px] leading-[1.5] sm:max-w-[48ch] sm:text-[16px]">{HERO_COPY.subheadline}</p>
         </div>
       </div>
