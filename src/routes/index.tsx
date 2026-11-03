@@ -64,7 +64,7 @@ const HOME_SEO_TITLE =
   "YES Experiences Portugal — Private Tours & Tailored Journeys";
 const HOME_SEO_SOCIAL_TITLE = HOME_SEO_TITLE;
 const HOME_SEO_DESCRIPTION =
-  "Private days across Portugal — Arrábida wine, Évora, Comporta — or design your own in our Studio. Multi-day journeys, proposals and corporate groups.";
+  "Private Portugal days, wine journeys and off-the-beaten-path escapes. Explore Signature days or design your own in our real-time Studio. Reserve online.";
 
 
 /** Homepage Journal row — three evergreen Local Stories guides.
