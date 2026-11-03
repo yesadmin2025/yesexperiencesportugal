@@ -1,7 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { SiteLayout } from "@/components/SiteLayout";
 import { Eyebrow } from "@/components/ui/Eyebrow";
-import { SectionTitle } from "@/components/ui/SectionTitle";
+import { SectionTitle, sectionTitleClassName } from "@/components/ui/SectionTitle";
 import { CtaButton } from "@/components/ui/CtaButton";
 import { CTA_LABELS } from "@/content/cta-vocabulary";
 import { jsonLdScript, breadcrumbLd } from "@/lib/jsonld";
@@ -125,10 +125,10 @@ function Page() {
         <header className="page-hero public-page-header reveal">
           <div className="container-x max-w-3xl text-center">
             <Eyebrow flank>Portugal · Private Tours</Eyebrow>
-            <SectionTitle as="h1" size="anchor" spacing="loose">
+            <h1 className={sectionTitleClassName("anchor", "loose")}>
               Portugal tours,{" "}
               <SectionTitle.Em>shown the way a local shows a friend.</SectionTitle.Em>
-            </SectionTitle>
+            </h1>
             <p className="page-header-support mt-6 max-w-2xl mx-auto font-serif italic text-[1.1rem] md:text-[1.25rem] leading-[1.55] text-[color:var(--charcoal-soft)]">
               Private, paced, and designed by the operator on the ground — not a reseller in another
               country.

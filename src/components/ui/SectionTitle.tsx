@@ -43,6 +43,20 @@ const spacingClasses = {
   loose: "mt-6",
 } as const;
 
+/**
+ * Same classes as <SectionTitle>, for pages that write their <h1> literally
+ * in the route file so source-reading audits can see the page's main heading.
+ */
+export function sectionTitleClassName(
+  size: SectionTitleSize = "default",
+  spacing: keyof typeof spacingClasses = "normal",
+  className?: string,
+) {
+  return cn(baseClasses, sizeClasses[size], spacingClasses[spacing], className);
+}
+
+export const SectionTitleEm = Em;
+
 function SectionTitleRoot({
   as: Tag = "h2",
   size = "default",

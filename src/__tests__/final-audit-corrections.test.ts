@@ -50,7 +50,7 @@ describe("final audit corrections", () => {
     const reserveTracking = src.match(/placement: `region:\$\{region\.path\}:reserve-panel`[\s\S]{0,200}/)?.[0] ?? "";
     expect(heroTracking).not.toContain("experience_id");
     expect(reserveTracking).not.toContain("experience_id");
-    expect(src).toContain("Reserve this day · from €{tour.priceFrom}");
+    expect(src).toContain("See dates &amp; reserve · from €{tour.priceFrom}");
   });
 
   it("keeps day-trips generic reserve panel away from generic request mode", () => {

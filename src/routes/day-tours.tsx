@@ -9,7 +9,7 @@ import { signatureTours, publicSignatureTours } from "@/data/signatureTours";
 import { getViatorMeta } from "@/data/signatureToursViator";
 import { useImportedTourImages } from "@/hooks/use-imported-tour-images";
 import { Eyebrow } from "@/components/ui/Eyebrow";
-import { SectionTitle } from "@/components/ui/SectionTitle";
+import { SectionTitle, sectionTitleClassName } from "@/components/ui/SectionTitle";
 import { CtaButton } from "@/components/ui/CtaButton";
 import { TourImage } from "@/components/tours/TourImage";
 import { useMarketingMotion } from "@/hooks/use-marketing-motion";
@@ -93,9 +93,9 @@ function DayToursPage() {
           />
           <div>
             <Eyebrow flank>Half &amp; Full Day</Eyebrow>
-            <SectionTitle as="h1" size="anchor" spacing="loose">
-              Day <SectionTitle.Em>Tours</SectionTitle.Em>
-            </SectionTitle>
+            <h1 className={sectionTitleClassName("anchor", "loose")}>
+              Private day tours <SectionTitle.Em>in Portugal.</SectionTitle.Em>
+            </h1>
             <p className="page-header-support mt-5 max-w-xl mx-auto text-[color:var(--charcoal-soft)]">
               Choose your day by how much time you have. Each card shows the duration, the region
               and the price from, so you can compare a half day with a full one at a glance. These are

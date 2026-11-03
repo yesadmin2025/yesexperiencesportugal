@@ -16,7 +16,7 @@ import {
   Building2,
 } from "lucide-react";
 import { Eyebrow } from "@/components/ui/Eyebrow";
-import { SectionTitle } from "@/components/ui/SectionTitle";
+import { SectionTitle, sectionTitleClassName } from "@/components/ui/SectionTitle";
 import { CtaButton } from "@/components/ui/CtaButton";
 import { CinematicEditorialImage } from "@/components/ui/ResponsiveEditorialImage";
 import {
@@ -201,10 +201,10 @@ function CorporatePage() {
       <section className="page-hero public-page-header reveal">
         <div className="container-x max-w-3xl text-center header-seq">
           <Eyebrow flank>Corporate &amp; incentives</Eyebrow>
-           <SectionTitle as="h1" size="anchor" spacing="loose" className="text-[40px] leading-[1.08] md:text-[60px] md:leading-[1.02]">
+          <h1 className={sectionTitleClassName("anchor", "loose", "text-[40px] leading-[1.08] md:text-[60px] md:leading-[1.02]")}>
             Corporate experiences in Portugal,{" "}
             <SectionTitle.Em>designed by locals.</SectionTitle.Em>
-          </SectionTitle>
+          </h1>
           <p className="page-header-support mt-6 mx-auto max-w-[46ch] md:max-w-[62ch] text-[1rem] md:text-[1.1rem] text-[color:var(--charcoal-soft)]">
             Private team days, incentives and company celebrations{" "}
             <strong className="font-medium text-[color:var(--charcoal)]">across Portugal</strong> —

@@ -4,7 +4,7 @@ import { breadcrumbLd, jsonLdScript, personFounderLd } from "@/lib/jsonld";
 import { SiteLayout } from "@/components/SiteLayout";
 import { MaskReveal } from "@/components/motion/MaskReveal";
 import { Eyebrow } from "@/components/ui/Eyebrow";
-import { SectionTitle } from "@/components/ui/SectionTitle";
+import { SectionTitle, sectionTitleClassName } from "@/components/ui/SectionTitle";
 import { CtaButton } from "@/components/ui/CtaButton";
 import { SITE_RATING_LABEL } from "@/config/trust-certificate";
 import { CTA_LABELS } from "@/content/cta-vocabulary";
@@ -96,9 +96,9 @@ function AboutPage() {
           <div>
             <div className="scene-atmosphere"><Eyebrow>About YES Experiences Portugal</Eyebrow></div>
             <div className="scene-title">
-              <SectionTitle as="h1" size="anchor" spacing="loose">
-                Portugal is the stage. <SectionTitle.Em>You write the story.</SectionTitle.Em>
-              </SectionTitle>
+              <h1 className={sectionTitleClassName("anchor", "loose")}>
+                Private days in Portugal, <SectionTitle.Em>designed around you.</SectionTitle.Em>
+              </h1>
             </div>
             <div className="page-header-support scene-body mt-6 max-w-[66ch] space-y-4 text-[color:var(--charcoal-soft)] leading-[1.75]">
               <p>YES Experiences Portugal was born from a very simple belief: travel should feel personal.</p>
