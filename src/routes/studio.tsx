@@ -20,7 +20,7 @@ const CANONICAL_URL = "https://yesexperiencesportugal.com/studio";
 export const Route = createFileRoute("/studio")({
   head: () => ({
     meta: [
-      { title: "Design Your Portugal Experience — Live Pricing | YES Studio" },
+      { title: "Design Your Portugal Experience | YES Experiences Portugal" },
       {
         name: "description",
         content:

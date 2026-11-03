@@ -18,7 +18,7 @@ import imgAlentejo from "@/assets/tours/evora-alentejo.jpg";
 import imgTiles from "@/assets/tours/tiles-workshop.jpg";
 
 const CANONICAL = "https://yesexperiencesportugal.com/portugal-travel-designer";
-const TITLE = "Portugal Travel Designer — Private Multi-Day Journeys | YES";
+const TITLE = "Portugal Travel Designer | YES Experiences Portugal";
 const DESC =
   "A local designer shapes your multi-day route across Portugal — stays, private days and transfers — shaped with you and priced before you commit.";
 const OG_IMAGE = `https://yesexperiencesportugal.com${ogImg}`;

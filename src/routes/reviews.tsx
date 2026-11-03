@@ -40,7 +40,7 @@ export const Route = createFileRoute("/reviews")({
     const tours = loaderData?.tours ?? [];
     const meta = [
       {
-        title: "Guest Reviews — Private Portugal Tours by YES",
+        title: "Guest Reviews & Ratings | YES Experiences Portugal",
       },
       {
         name: "description",
@@ -48,7 +48,7 @@ export const Route = createFileRoute("/reviews")({
           "Verified guest reviews across Viator, Tripadvisor, GetYourGuide and first-party submissions for our private tours from Lisbon.",
       },
       { name: "robots", content: "index, follow" },
-      { property: "og:title", content: "Guest Reviews — Private Portugal Tours by YES" },
+      { property: "og:title", content: "Guest Reviews & Ratings | YES Experiences Portugal" },
       {
         property: "og:description",
         content:
