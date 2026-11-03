@@ -20,7 +20,7 @@ import imgTiles from "@/assets/tours/tiles-workshop.jpg";
 const CANONICAL = "https://yesexperiencesportugal.com/portugal-travel-designer";
 const TITLE = "Portugal Travel Designer | YES Experiences Portugal";
 const DESC =
-  "A local designer shapes your multi-day route across Portugal — stays, private days and transfers — shaped with you and priced before you commit.";
+  "Full custom Portugal journeys shaped by local experts. Stays, private days and off-the-beaten-path routes, designed with you and priced before you commit.";
 const OG_IMAGE = `https://yesexperiencesportugal.com${ogImg}`;
 
 export const Route = createFileRoute("/portugal-travel-designer")({

@@ -68,7 +68,7 @@ describe("brand-critical SERP snippets", () => {
       '"YES Experiences Portugal — Private Tours & Tailored Journeys"',
     );
     expect(home).toContain(
-      "Private days across Portugal — Arrábida wine, Évora, Comporta — or design your own in our Studio. Multi-day journeys, proposals and corporate groups.",
+      "Private Portugal days, wine journeys and off-the-beaten-path escapes. Explore Signature days or design your own in our real-time Studio. Reserve online.",
     );
   });
 
