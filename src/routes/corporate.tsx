@@ -35,10 +35,10 @@ import { getViatorMeta } from "@/data/signatureToursViator";
 import { CTA_LABELS } from "@/content/cta-vocabulary";
 import { whatsappUrl } from "@/config/business-nap";
 
-const TITLE = "Corporate Retreats & Team Building in Portugal | YES";
+const TITLE = "Corporate Retreats in Portugal | YES Experiences Portugal";
 const DESCRIPTION =
   "Corporate retreats in Portugal, team building, incentive travel and private group experiences, designed and coordinated locally from brief to delivery.";
-const OG_TITLE = "Corporate Experiences Across Portugal | YES";
+const OG_TITLE = "Corporate Experiences in Portugal | YES Experiences Portugal";
 const OG_DESCRIPTION =
   "Team building, incentives, retreats, executive off-sites and private corporate groups across Portugal, coordinated from brief to delivery.";
 const CANONICAL = "https://yesexperiencesportugal.com/corporate";
