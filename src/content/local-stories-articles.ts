@@ -1326,10 +1326,10 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
     title: "Best Wine Tours from Lisbon: Setúbal Peninsula vs Alentejo",
     metaDescription:
       "Compare private wine days from Lisbon: Setúbal Peninsula (Arrábida, Azeitão) vs Alentejo (Évora estates, Vidigueira talha). Duration, inclusions, pickup.",
-    h1: "Best Wine Tours from Lisbon: Which Private Day to Choose",
+    h1: "Best Wine Tours from Lisbon: Setúbal Peninsula or Alentejo?",
     eyebrow: "Lisbon · Wine",
     standfirst:
-      "Four private wine days from Lisbon: Arrábida wine and coast, Azeitão cheese and wine, Évora heritage and estates, or Vidigueira's family talha winery.",
+      "Two wine regions, one decision: the Setúbal Peninsula (Arrábida and Azeitão) for wine, local food and coast, or the Alentejo (Évora estates and Vidigueira's family talha winery) for a longer inland day.",
     directAnswer: "For wine, local food and coastal views, compare Arrábida and Azeitão on the Setúbal Peninsula. For a longer inland day, choose Évora for historic sights and estate tastings, or Vidigueira and Vila de Frades for traditional Vinho de Talha at a family winery. These are separate Alentejo routes, not one combined tour. Compare each day's duration, inclusions and pickup area before checking dates and prices.",
     sections: [
       {

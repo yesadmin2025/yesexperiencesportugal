@@ -11,7 +11,7 @@ describe("surgical final-pass truth locks", () => {
       (article) => article.slug === "best-wine-tours-from-lisbon",
     );
     expect(guide?.title).toBe("Best Wine Tours from Lisbon: Setúbal Peninsula vs Alentejo");
-    expect(guide?.h1).toBe("Best Wine Tours from Lisbon: Which Private Day to Choose");
+    expect(guide?.h1).toBe("Best Wine Tours from Lisbon: Setúbal Peninsula or Alentejo?");
     const body = guide?.sections.map((section) => section.body).join("\n") ?? "";
     expect(body).toContain("does not include lunch");
     expect(body).not.toContain("Choose Azeitão if tasting time matters more than scenery");
