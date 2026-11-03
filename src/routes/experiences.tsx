@@ -10,7 +10,7 @@ import { signatureTours, publicSignatureTours, type SignatureTour } from "@/data
 import { getTourContent, signatureDurationLabel } from "@/lib/tourContent";
 import { useImportedTourImages } from "@/hooks/use-imported-tour-images";
 import { TourImage } from "@/components/tours/TourImage";
-import ogImg from "@/assets/hero-coast.jpg";
+import ogImg from "@/assets/og-experiences.jpg";
 import { Eyebrow } from "@/components/ui/Eyebrow";
 import { SectionTitle } from "@/components/ui/SectionTitle";
 import { CtaButton } from "@/components/ui/CtaButton";
@@ -47,17 +47,17 @@ function matchesExperienceFilter(tour: SignatureTour, filter: ExperienceFilter) 
 export const Route = createFileRoute("/experiences")({
   head: () => ({
     meta: [
-      { title: "Private Day Trips from Lisbon & Across Portugal | YES" },
+      { title: "Private Tours in Portugal — Reserve Your Day Instantly | YES" },
       {
         name: "description",
         content:
-          "Arrábida wine country, Sintra palaces, Évora and wild coasts as private days with hotel pickup. Reserve instantly or tailor the stops with live pricing.",
+          "Private Portugal days designed by locals: wine, coast and heritage with hotel pickup. See real prices, choose your date and reserve in minutes.",
       },
-      { property: "og:title", content: "Private Day Trips from Lisbon & Across Portugal | YES" },
+      { property: "og:title", content: "Private Tours in Portugal — Reserve Your Day Instantly | YES" },
       {
         property: "og:description",
         content:
-          "Arrábida wine country, Sintra palaces, Évora and wild coasts as private days with hotel pickup. Reserve instantly or tailor the stops with live pricing.",
+          "Private Portugal days designed by locals: wine, coast and heritage with hotel pickup. See real prices, choose your date and reserve in minutes.",
       },
       { property: "og:url", content: "https://yesexperiencesportugal.com/experiences" },
       { property: "og:type", content: "website" },
