@@ -1460,7 +1460,7 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
       { path: "/portugal-travel-designer", label: "Design your own Portugal journey" },
     ],
     datePublished: "2026-07-24",
-    dateModified: "2026-11-01",
+    dateModified: "2026-11-04",
   },
   {
     slug: "portugal-coastal-drives-from-lisbon",
