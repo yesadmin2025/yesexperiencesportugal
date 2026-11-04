@@ -1323,9 +1323,9 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
   },
   {
     slug: "best-wine-tours-from-lisbon",
-    title: "Best Wine Tours from Lisbon: Setúbal Peninsula vs Alentejo",
+    title: "Best Wine Tours from Lisbon (2026): Private Days Compared",
     metaDescription:
-      "Compare private wine days from Lisbon: Setúbal Peninsula (Arrábida, Azeitão) vs Alentejo (Évora estates, Vidigueira talha). Duration, inclusions, pickup.",
+      "Compare private wine tours from Lisbon: Setúbal Peninsula (Arrábida, Azeitão) vs Alentejo (Évora, Vidigueira talha). Duration, inclusions, pickup.",
     h1: "Best Wine Tours from Lisbon: Setúbal Peninsula or Alentejo?",
     eyebrow: "Lisbon · Wine",
     standfirst:
