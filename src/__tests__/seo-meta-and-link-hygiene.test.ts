@@ -54,7 +54,7 @@ describe("Wine intent split contract", () => {
     const guide = article("best-wine-tours-from-lisbon");
     expect(guide.h1).toBe("Best Wine Tours from Lisbon: Setúbal Peninsula or Alentejo?");
     expect(guide.datePublished).toBe("2026-07-24");
-    expect(guide.dateModified).toBe("2026-11-01");
+    expect(guide.dateModified).toBe("2026-11-04");
     expect(guide.sections[0]).toMatchObject({
       heading: "The short answer: which wine tour from Lisbon is best?",
     });
