@@ -129,3 +129,16 @@ describe("Tailor inclusion truth", () => {
     expect(out.notIncluded).toContain("Lunch (removed from this day)");
   });
 });
+
+import { applyTailorInclusionAdjustments as adjust } from "../inclusions";
+describe("tailor removed stops", () => {
+  it("moves removed Arrábida market and tile factory to not included", () => {
+    const r = adjust(
+      { included: ["Lunch", "Livramento Market", "Azeitão tile factory", "Arrábida Natural Park", "Private transportation"], notIncluded: [] },
+      { tourId: "arrabida-wine-allinclusive", skippedStopIds: ["livramento", "azeitao-tiles"] },
+    );
+    expect(r.included).toEqual(["Lunch", "Arrábida Natural Park", "Private transportation"]);
+    expect(r.notIncluded).toContain("Livramento Market (removed from this day)");
+    expect(r.notIncluded).toContain("Azeitão tile factory (removed from this day)");
+  });
+});

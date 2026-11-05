@@ -1080,6 +1080,8 @@ function TailorPage() {
       {
         lunchRemoved: lunchMomentRemoved,
         wineryCount: hasWineryMoments ? wineriesSelected : undefined,
+        tourId: tour.id,
+        skippedStopIds: blueprint ? blueprint.core.filter((s) => skippedCore.has(s.id)).map((s) => s.id) : [],
       },
     );
     setCheckoutSummary({
@@ -1901,6 +1903,8 @@ function TailorPage() {
               ...applyTailorInclusionAdjustments(resolveCheckoutInclusions(meta, tour), {
                 lunchRemoved: lunchMomentRemoved,
                 wineryCount: hasWineryMoments ? wineriesSelected : undefined,
+        tourId: tour.id,
+        skippedStopIds: blueprint ? blueprint.core.filter((s) => skippedCore.has(s.id)).map((s) => s.id) : [],
               }),
             }}
             initial={{
@@ -1949,6 +1953,8 @@ function TailorPage() {
                 ...applyTailorInclusionAdjustments(resolveCheckoutInclusions(meta, tour), {
                   lunchRemoved: lunchMomentRemoved,
                   wineryCount: hasWineryMoments ? wineriesSelected : undefined,
+        tourId: tour.id,
+        skippedStopIds: blueprint ? blueprint.core.filter((s) => skippedCore.has(s.id)).map((s) => s.id) : [],
                 }),
                 guests,
                 adults: composition.adults,
