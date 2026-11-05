@@ -345,7 +345,7 @@ function ExperienceSummaryCard({
         </div>
       ) : null}
 
-      {total != null && total >= 1000 ? (
+      {total != null ? (
         <p
           className="mt-2 text-[12px] leading-snug text-[color:var(--charcoal-soft)]"
           data-testid="checkout-drawer-designer-bridge"
