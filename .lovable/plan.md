@@ -70,6 +70,33 @@ Cliques Google (GSC), 05–18/10 contra 19/10–01/11: Arrábida 1→3, Studio 0
   
   Objetivo: encontrar que página de entrada deixou de receber visitas e porquê. Não se muda design nem SEO antes disso.
 
+## Prioridade 1 — AUTORIZADA pela proprietária (sandbox + Safari)
+Âmbito estrito: só a pré-visualização com Stripe sandbox. Sem cobranças reais, sem alterações de código e sem mexer em métodos de pagamento.
+
+1. **Signature (Arrábida Wine), mobile 393px:** data a mais de 24h, 2 adultos, dados de teste e cartão de teste `4242 4242 4242 4242`, até à página de confirmação. Verificar:
+   - a confirmação mostra "paid";
+   - a reserva fica registada como sandbox;
+   - os dados aparecem abreviados;
+   - o email de teste é recebido.
+2. **Tailor (Arrábida):** remover uma paragem e pagar com cartão de teste. Verificar o total, as inclusões ajustadas e a confirmação.
+3. **Multibanco sandbox:** abrir o checkout e escolher Multibanco. Registar o que o cliente vê (referência, instruções, estado). Não há alteração de configuração.
+4. **Recusa:** cartão de teste `4000 0000 0000 0002`. A mensagem de erro deve ser clara e deve ser possível tentar de novo.
+5. **Guião Safari em iPhone real (feito por ti, na pré-visualização):**
+   1. Abrir /experiences.
+   2. Tocar em "See dates & reserve" na Arrábida.
+   3. Escolher a data no date picker nativo.
+   4. Mudar os adultos.
+   5. Tocar em "Reserve this day".
+   6. Preencher os dados.
+   7. Tocar em "Continue to payment" e confirmar que o cartão de teste aparece.
+   8. Pagar com `4242…` e ver a confirmação.
+   
+   Anotar em que passo algo falha.
+
+**Evidência a entregar:** capturas por passo, estado final de cada sessão sandbox (agregado) e tabela PASSOU/FALHOU.
+
+**Limpeza:** os registos sandbox ficam marcados como teste. Não se apaga nada sem pedido teu.
+
 ## Prioridade 3 — Quick wins (máximo 2, só com autorização)
 1. **Medição (código pequeno, invisível para o cliente):** passar a contar como clique de reserva os links dos cartões que levam a `/tours/<id>`.
    - Aceitação: um clique num cartão da homepage gera 1 evento de clique.
