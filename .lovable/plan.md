@@ -31,17 +31,27 @@
 
 Outros erros: imagens com fallback 91 desde 19/10 contra 88 antes (62 na homepage); terceiros bloqueados 410 contra 318. Ambos sem impacto funcional observado.
 
-## Conclusão
-Nos percursos testados não foi encontrada nenhuma falha que impeça a reserva ou o contacto no mobile: catálogo, Signature até aos dados, Studio até ao botão final, e os três formulários.
+## Conclusão (limitada ao que está provado)
+1. **Funcional:** nos percursos testados no mobile não foi encontrada nenhuma falha que impeça a reserva ou o contacto. Foram testados o catálogo, a Signature até ao passo de dados, o Studio até ao botão final e os três formulários. O teste não cobre: o pagamento em si, o Multibanco, o Safari num iPhone real nem utilizadores com bloqueadores.
+2. **Visitas:** a tabela própria do site mostra uma queda nas visitas. Comparando 15–25/10 com 26/10–05/11: identificadores anónimos/dia de 100,8 para 79,0, páginas de tour de 34,8 para 21,2 e Studio de 5,0 para 2,2. O peso dos bots ainda não está confirmado.
+3. **Stripe:** a conta live está atualmente ativa, sem requisitos pendentes. Há 6 PaymentIntents Multibanco com recusa genérica. Não há pagamentos Stripe live registados depois de 20/10.
+4. **Causa:** não está provada.
 
-A queda dos checkouts iniciados (26 para 5) não se explica por uma avaria reproduzível. É coerente com a queda das visitas comerciais. O teste não abrange: cancelamento a meio do pagamento, Multibanco, navegadores iOS Safari reais e utilizadores com bloqueadores.
+Ressalvas:
+- As 8 sessões pagas com `booking_type` vazio são sessões sem fluxo identificado. São compatíveis com Payment Links, faturação ou metadados em falta, mas não estão confirmadas como pagamentos fora do site.
+- Não há dados de PayPal, Wise nem outros canais. Por isso, não se conclui que os pagamentos fora do site desapareceram.
+- Os números 26 e 5 contam sessões Stripe com evento final dentro de cada intervalo. Não são todos os checkouts iniciados, e os períodos não têm a mesma duração (20 contra 16 dias).
+- Sem denominadores da mesma população e do momento de criação da sessão, não se afirma que a taxa de entrada no checkout se manteve nem que piorou.
 
 ## Correções propostas (máximo 3, só com autorização)
 1. **P0 — verificar e, se confirmado, corrigir o rótulo de região na revelação do Studio (3c).** Primeiro reproduzir com as mesmas escolhas e ver de onde vem o título. Só se houver incoerência real: corrigir o rótulo. Não se mexe na composição, nos preços nem nas paragens.
 2. **P1 — confirmar a mensagem de sucesso do Travel Designer (4c).** Uma captura visual, sem alterar código. Só há correção se não aparecer.
 3. **P2 — tratar o "Failed to fetch" do pedido de estatísticas.** Apanhar o erro em silêncio. Limpa os registos, sem efeito para o cliente.
 
-Nenhuma destas explica a queda das reservas. O próximo trabalho com impacto comercial é perceber a origem da quebra das visitas às páginas de tour e ao Studio (aquisição), e a quebra dos pagamentos fora do site.
+Nenhuma destas está provada como causa da queda das reservas. Os próximos passos com impacto comercial (só leitura) são três:
+1. Perceber a origem da queda de visitas às páginas de tour e ao Studio.
+2. Contar os checkouts pela data em que foram criados e cruzar com as visitas do mesmo período.
+3. Juntar os dados de outros canais de pagamento (PayPal, Wise, faturas).
 
 ## O que falta para fechar
 - iPhone real em Safari: date picker nativo e abertura do Stripe.
