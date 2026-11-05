@@ -42,7 +42,27 @@ Fonte: tabela própria do site. A = 01–20/10 (20 dias), B = 21/10–05/11 (16 
   - o date picker do iPhone funciona.
 - **Custo:** só testes, sem código.
 
-## Prioridade 2 — Rotas com queda e primeiro passo
+## Prioridade 2 — RESULTADO (executado pela proprietária, só SELECT e GSC)
+Entradas por página, em IDs anónimos/dia, A (20 dias) contra B (16 dias):
+
+| Página de entrada | A | B | Variação |
+|---|---|---|---|
+| Arrábida Wine All Inclusive | 3,25 | 1,25 | -62% |
+| Studio | 2,25 | 0,81 | -64% |
+| Tiles Workshop | 1,70 | 0,63 | -63% |
+| Arrábida Wine, Tailor | 1,45 | 0,31 | -78% |
+| Southwest Vicentine Coast | 1,05 | 0,19 | -82% |
+| Tróia & Comporta, Tailor | 0,80 | 0 | -100% |
+
+Entradas sem referrer: Arrábida 60→17, Studio 35→13, Arrábida Tailor 31→5.
+
+Cliques Google (GSC), 05–18/10 contra 19/10–01/11: Arrábida 1→3, Studio 0→0, Tiles 2→1, /experiences 1→0, Southwest 0→0.
+
+**Observado:** a queda de entradas diretas nestas páginas não se explica por menos cliques do Google nessas páginas.
+
+**Por investigar, sem assumir a origem:** ligações diretas, campanhas, entradas sem referrer, medição e bots.
+
+## Prioridade 2 — plano original (já executado)
 - **Observado:** as maiores quedas estão nas entradas diretas em Tailor, Studio e tours (tabela acima).
 - **Primeiro passo (só leitura):** listar, para cada tipo de rota, as páginas exatas de entrada em A contra B (top 10 por IDs/dia). Cruzar com:
   - datas de mudanças em links externos (Google Business, Viator, GetYourGuide, WhatsApp, emails de reserva);
