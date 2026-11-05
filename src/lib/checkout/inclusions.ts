@@ -65,7 +65,43 @@ export interface TailorInclusionAdjustments {
   lunchRemoved?: boolean;
   /** Winery visits actually in the tailored day, when the tour lets guests change the count. */
   wineryCount?: number;
+  /** Tour id + blueprint core stop ids the guest removed. */
+  tourId?: string;
+  skippedStopIds?: readonly string[];
 }
+
+/**
+ * Verified inclusion lines that exist only because of one removable stop.
+ * Exact strings from the tour's own verified list — shared lines
+ * (transport, guide, combined entrance fees) are never mapped.
+ */
+export const TAILOR_STOP_INCLUSIONS: Record<string, Record<string, readonly string[]>> = {
+  "arrabida-wine-allinclusive": {
+    livramento: ["Livramento Market"],
+    "arrabida-park": ["Arrábida Natural Park"],
+    "azeitao-tiles": ["Azeitão tile factory"],
+  },
+  "troia-comporta": {
+    "sado-ferry": ["Sado ferry for vehicle and passengers"],
+    "troia-ruins": ["Roman Ruins of Tróia admission"],
+    "herdade-comporta": ["Herdade da Comporta wine experience and tasting"],
+  },
+  "roman-heritage-alentejo": {
+    "sao-cucufate": ["São Cucufate visit"],
+    "vinho-talha": ["Talha Wine Interpretation Center visit"],
+  },
+  "azeitao-cheese": {
+    "quinta-velha": ["Private Azeitão cheese workshop"],
+  },
+  "arrabida-boat": {
+    "boat-arrabida": ["Sesimbra Coastal Boat Tour"],
+  },
+  "wild-beaches-picnic": {
+    "hidden-cove": [
+      "Private picnic with local cheeses, bread, smoked meats, pastries, fruit, wine, juice and water",
+    ],
+  },
+};
 
 /** Tailor flow: the verified lists, adjusted to match what the guest actually kept. */
 export function applyTailorInclusionAdjustments(
@@ -74,6 +110,17 @@ export function applyTailorInclusionAdjustments(
 ): CheckoutInclusions {
   let included = [...base.included];
   const notIncluded = [...base.notIncluded];
+  const stopMap = adj.tourId ? TAILOR_STOP_INCLUSIONS[adj.tourId] : undefined;
+  if (stopMap && adj.skippedStopIds?.length) {
+    for (const id of adj.skippedStopIds) {
+      for (const line of stopMap[id] ?? []) {
+        if (!included.includes(line)) continue;
+        included = included.filter((s) => s !== line);
+        const note = `${line} (removed from this day)`;
+        if (!notIncluded.includes(note)) notIncluded.unshift(note);
+      }
+    }
+  }
   if (adj.lunchRemoved) {
     const removed = included.filter((s) => /\blunch\b/i.test(s));
     included = included.filter((s) => !/\blunch\b/i.test(s));
