@@ -1,3 +1,4 @@
+import { revealSuccess } from "@/lib/reveal-success";
 import { isWithin48Hours } from "@/lib/booking/urgent-date";
 import { localeAlternateLinks } from "@/i18n/seo";
 import { trackEvent } from "@/lib/analytics-events";
@@ -201,7 +202,7 @@ function Page() {
         <div className="container-x grid lg:grid-cols-3 gap-12">
           <div className="lg:col-span-2">
             {sent ? (
-              <div className="border-l-4 border-[color:var(--gold)] bg-[color:var(--sand)] p-10">
+              <div role="status" ref={revealSuccess} tabIndex={-1} className="border-l-4 border-[color:var(--gold)] bg-[color:var(--sand)] p-10">
                 <h3 className="font-serif text-[24px] leading-[1.2] text-[color:var(--teal)] md:text-[26px]">Thank you.</h3>
                 <p className="mt-3 text-[color:var(--charcoal-soft)]">
                   Your message has reached our experience designers. We'll be in touch shortly.

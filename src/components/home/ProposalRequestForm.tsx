@@ -1,3 +1,4 @@
+import { revealSuccess } from "@/lib/reveal-success";
 /**
  * ProposalRequestForm — dedicated request form for proposals, celebrations
  * and private family/friends moments.
@@ -92,6 +93,8 @@ export function ProposalRequestForm({ id = "proposal-request" }: { id?: string }
         id={id}
         className="mx-auto max-w-2xl rounded-[6px] border border-[color:var(--gold)]/45 bg-[color:var(--card)] p-7 text-center md:p-9"
         role="status"
+        ref={revealSuccess}
+        tabIndex={-1}
       >
         <span className="inline-flex h-11 w-11 items-center justify-center rounded-full bg-[color:var(--teal)]/10 text-[color:var(--teal)]">
           <Check size={20} aria-hidden />

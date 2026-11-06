@@ -1,3 +1,4 @@
+import { revealSuccess } from "@/lib/reveal-success";
 import { useRef, useState, type FormEvent } from "react";
 import { CtaButton } from "@/components/ui/CtaButton";
 import { leadAttribution } from "@/lib/utm";
@@ -58,7 +59,7 @@ export function JourneyEnquiryForm() {
   }
 
   if (status === "sent") return (
-    <div role="status" className="border-l-2 border-[color:var(--gold)] pl-6">
+    <div role="status" ref={revealSuccess} tabIndex={-1} className="border-l-2 border-[color:var(--gold)] pl-6">
       <p className="font-medium text-[color:var(--charcoal)]">Your journey request has reached our team.</p>
       <p className="mt-3 text-[color:var(--charcoal-soft)]">A local designer will reply personally within 24 hours.</p>
     </div>
