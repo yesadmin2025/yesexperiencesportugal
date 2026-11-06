@@ -109,7 +109,7 @@ export const SIGNATURE_SEO: Record<string, SignatureSeoEntry> = {
   "troia-comporta": {
     primaryKeyword: "comporta day trip from lisbon",
     supportingKeywords: ["private tours lisbon", "troia tour from lisbon"],
-    title: "Exclusive Comporta Day Trip from Lisbon: Wine, Dunes & Coast",
+    title: "Private Tróia & Comporta Day Trip from Lisbon",
     h1: "Private Tróia and Comporta day trip from Lisbon",
     opening: "Cross the Sado by ferry to Tróia's Roman ruins, the Carrasqueira stilt pier, Comporta's Atlantic beaches and a local winery tasting.",
     description:
