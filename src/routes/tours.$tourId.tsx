@@ -450,7 +450,7 @@ function TourHero({
 
           <div className="mt-5 flex flex-col sm:mt-8 sm:block lg:mt-0">
             <Eyebrow>Private Signature Experience</Eyebrow>
-            <h1 className="serif mt-3 max-w-3xl text-[40px] font-medium leading-[1.08] tracking-normal text-[color:var(--charcoal)] md:text-[60px] md:leading-[1.02]">
+            <h1 className="serif mt-3 max-w-3xl text-[32px] font-medium leading-[1.08] tracking-normal text-[color:var(--charcoal)] md:text-[60px] md:leading-[1.02]">
               {getSignatureSeo(tour.id)?.h1 ?? tour.title}
             </h1>
             <p className="serif font-normal not-italic mt-4 text-[16px] sm:text-lg md:text-xl text-[color:var(--teal)] max-w-2xl leading-snug">

@@ -138,7 +138,7 @@ function PickupAndWineries() {
           <Eyebrow flank icon={<MapPin aria-hidden />}>
             Pickup · Timings · Cellars
           </Eyebrow>
-          <h1 className="mt-5 font-serif text-[40px] font-medium leading-[1.08] tracking-normal text-[color:var(--charcoal)] md:text-[60px] md:leading-[1.02]">
+          <h1 className="mt-5 font-serif text-[32px] font-medium leading-[1.08] tracking-normal text-[color:var(--charcoal)] md:text-[60px] md:leading-[1.02]">
             Wine tour from Lisbon:{" "}
             <span className="italic font-normal text-[color:var(--teal)]">
               where we collect you, and whose cellar you sit in.

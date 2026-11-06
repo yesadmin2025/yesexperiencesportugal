@@ -333,7 +333,7 @@ function StaticArticleView({ article }: { article: LocalStoryArticle }) {
             <span className="block font-sans text-[12px] uppercase tracking-[0.28em] text-[color:var(--gold-ink)] mb-5">
               {article.eyebrow}
             </span>
-            <h1 className="font-serif font-medium text-[40px] leading-[1.08] tracking-normal text-[color:var(--charcoal)] md:text-[60px] md:leading-[1.02]">
+            <h1 className="font-serif font-medium text-[32px] leading-[1.08] tracking-normal text-[color:var(--charcoal)] md:text-[60px] md:leading-[1.02]">
               {article.h1}
             </h1>
             {article.standfirst && (
@@ -646,7 +646,7 @@ function DbPostView({ post }: { post: NonNullable<LoaderData["dbPost"]> }) {
                 {post.region}
               </span>
             )}
-            <h1 className="font-serif text-[40px] font-medium leading-[1.08] tracking-normal text-[color:var(--charcoal)] md:text-[60px] md:leading-[1.02]">
+            <h1 className="font-serif text-[32px] font-medium leading-[1.08] tracking-normal text-[color:var(--charcoal)] md:text-[60px] md:leading-[1.02]">
               {post.title}
             </h1>
             {post.authorName && (

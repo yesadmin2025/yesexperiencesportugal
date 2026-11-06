@@ -113,7 +113,7 @@ export function ProposalInPortugalPage() {
       <section className="page-hero public-page-header reveal">
         <div className="container-x max-w-3xl text-center header-seq">
           <Eyebrow>Proposal in Portugal</Eyebrow>
-           <SectionTitle as="h1" size="anchor" spacing="loose" className="text-[40px] leading-[1.08] md:text-[60px] md:leading-[1.02]">
+           <SectionTitle as="h1" size="anchor" spacing="loose" className="text-[32px] leading-[1.08] md:text-[60px] md:leading-[1.02]">
             A proposal in Portugal, <SectionTitle.Em>planned discreetly.</SectionTitle.Em>
           </SectionTitle>
           <p className="page-header-support mt-6 text-[1rem] md:text-[1.1rem] text-[color:var(--charcoal-soft)]">
