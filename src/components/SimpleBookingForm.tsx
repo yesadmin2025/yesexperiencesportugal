@@ -1,3 +1,4 @@
+import { trackBookingStart } from "@/lib/site-visit-beacon";
 import {
   readSignatureSelection,
   writeSignatureSelection,
@@ -175,6 +176,7 @@ export function SimpleBookingForm({ tour }: { tour: SignatureTour }) {
   useEffect(() => {
     if (!detailsOpen) return;
     detailsOpenedAt.current = Date.now();
+    trackBookingStart("signature", window.location.pathname);
     trackEvent("guest_details_opened", {
       experience_id: tour.id,
       experience_type: "signature",

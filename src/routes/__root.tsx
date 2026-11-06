@@ -331,9 +331,6 @@ function RootComponent() {
   const isGuideApp = pathname === "/guide" || pathname.startsWith("/guide/");
   useEffect(() => {
     trackVisit(pathname);
-    if (pathname.startsWith("/checkout") || pathname.includes("/reserve")) {
-      trackVisit(pathname, "booking_start");
-    }
   }, [pathname]);
   const { locale } = parseLocaleFromPath(pathname);
   useEffect(() => {

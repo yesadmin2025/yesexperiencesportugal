@@ -1,3 +1,4 @@
+import { trackBookingStart } from "@/lib/site-visit-beacon";
 import { trackEvent } from "@/lib/analytics-events";
 import { createFileRoute, Link, notFound, redirect, useNavigate } from "@tanstack/react-router";
 import { lazy, Suspense, useMemo, useRef, useState } from "react";
@@ -1835,6 +1836,7 @@ function TailorPage() {
                       return;
                     }
                     gaCheckoutDrawerOpened({ tourId: tour.id, surface: "tailor" });
+                    trackBookingStart("tailor", window.location.pathname);
                     setDetailsOpen(true);
                   }}
                   disabled={checkoutPending || summaryStops.length === 0 || !compositionReady}
