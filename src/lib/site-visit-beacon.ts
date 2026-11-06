@@ -78,7 +78,9 @@ export function trackVisit(path: string, event: "view" | "booking_start" = "view
 /** Classifies a clicked link/button into one of the three primary CTAs. */
 export function classifyCta(text: string, href: string): Cta | null {
   const t = text.toLowerCase();
-  const h = href.toLowerCase();
+  const h = href.toLowerCase().replace(/^https?:\/\/[^/]+/, "").split(/[?#]/)[0];
+  if (/^\/tours\/[^/]+\/tailor\/?$/.test(h)) return "tailor";
+  if (/^\/tours\/[^/]+\/?$/.test(h)) return "signature";
   if (t.includes("tailor this day") || t.includes("refine this day") || h.includes("tailor")) return "tailor";
   if (t.includes("design your day") || t.includes("love this day") || h.startsWith("/studio")) return "studio";
   if (
