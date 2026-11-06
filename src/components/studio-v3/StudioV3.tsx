@@ -1,3 +1,4 @@
+import { trackBookingStart } from "@/lib/site-visit-beacon";
 import { studioFromPriceEur } from "./regionFromPrice";
 import { composedDayInclusions } from "./composedDayInclusions";
 import { StudioDayWhatsApp } from "./StudioDayWhatsApp";
@@ -1046,6 +1047,9 @@ export function deriveLiveTimingConflict(state: StudioV3State): TimingConflict |
 
 export function StudioV3() {
   const [state, setState] = useState<StudioV3State>(INITIAL_STATE);
+  useEffect(() => {
+    if (state.phase === "guestDetails") trackBookingStart("studio", window.location.pathname);
+  }, [state.phase]);
   const isMobile = useIsMobile();
   const { data: tourPriceTiers } = useTourPriceTiers();
   // Owner-priced composable moments. Loading this publishes the catalog to
