@@ -201,7 +201,7 @@ function CorporatePage() {
       <section className="page-hero public-page-header reveal">
         <div className="container-x max-w-3xl text-center header-seq">
           <Eyebrow flank>Corporate &amp; incentives</Eyebrow>
-          <h1 className={sectionTitleClassName("anchor", "loose", "text-[40px] leading-[1.08] md:text-[60px] md:leading-[1.02]")}>
+          <h1 className={sectionTitleClassName("anchor", "loose", "text-[32px] leading-[1.08] md:text-[60px] md:leading-[1.02]")}>
             Corporate experiences in Portugal,{" "}
             <SectionTitle.Em>designed by locals.</SectionTitle.Em>
           </h1>

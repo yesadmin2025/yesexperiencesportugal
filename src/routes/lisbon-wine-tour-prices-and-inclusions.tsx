@@ -112,7 +112,7 @@ function PricesAndInclusions() {
           <Eyebrow flank icon={<Receipt aria-hidden />}>
             Prices · Inclusions · Cancellation
           </Eyebrow>
-          <h1 className="mt-5 font-serif text-[40px] font-medium leading-[1.08] tracking-normal text-[color:var(--charcoal)] md:text-[60px] md:leading-[1.02]">
+          <h1 className="mt-5 font-serif text-[32px] font-medium leading-[1.08] tracking-normal text-[color:var(--charcoal)] md:text-[60px] md:leading-[1.02]">
             Lisbon wine tour prices,{" "}
             <span className="italic font-normal text-[color:var(--teal)]">
               and exactly what the price covers.

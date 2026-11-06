@@ -182,7 +182,7 @@ function DayTripsFromLisbon() {
       <section className="public-page-header bg-[color:var(--sand)] py-16 md:py-24">
         <div className="container-x max-w-3xl">
           <Eyebrow flank>Lisbon · Setúbal · Alentejo</Eyebrow>
-          <h1 className="mt-4 font-serif text-[40px] font-medium leading-[1.08] tracking-normal text-[color:var(--charcoal)] md:text-[60px] md:leading-[1.02]">
+          <h1 className="mt-4 font-serif text-[32px] font-medium leading-[1.08] tracking-normal text-[color:var(--charcoal)] md:text-[60px] md:leading-[1.02]">
             Day trips from Lisbon,{" "}
             <span className="italic font-normal text-[color:var(--teal)]">
               designed by people who live here.

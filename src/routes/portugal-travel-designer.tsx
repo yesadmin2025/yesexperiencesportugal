@@ -110,7 +110,7 @@ function PortugalTravelDesignerPage() {
       <section className="page-hero public-page-header reveal">
         <div className="container-x max-w-3xl text-center header-seq">
           <Eyebrow flank>Portugal Travel Designer</Eyebrow>
-           <SectionTitle as="h1" size="anchor" spacing="loose" className="text-[40px] leading-[1.12] md:text-[60px] md:leading-[1.02]">
+           <SectionTitle as="h1" size="anchor" spacing="loose" className="text-[32px] leading-[1.12] md:text-[60px] md:leading-[1.02]">
             Your <SectionTitle.Em>Portugal Travel Designer</SectionTitle.Em>
           </SectionTitle>
           <p className="page-header-support mt-6 mx-auto max-w-2xl text-[16px] md:text-[17px] text-[color:var(--charcoal-soft)]">
