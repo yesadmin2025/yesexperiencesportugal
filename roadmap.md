@@ -1,9 +1,10 @@
 # Phase 1 optimization
 
 ## Minimal measurement correction — November 6 (no publication)
-- [ ] Correct visit and card CTA route classification without changing storage, consent or booking logic
-- [ ] Derive historical view categories in memory and retain the existing report shape
-- [ ] Run focused measurement and non-charging checkout regressions; report exact changes and rollback
+- [x] Correct visit and card CTA route classification without changing storage, consent or booking logic
+- [x] Derive historical view categories in memory and retain the existing report shape
+- [x] Run 56 focused measurement/checkout regressions and mobile guest-details opening (€366, no overflow); all browser writes blocked, no payment or lead submitted
+- Existing admin label “Studio / Tailor” retained because copy/UI edits are outside this package; distinct tailor row uses the current fallback label.
 - Publication is explicitly not authorized for this package.
 
 ## SEO findings — November 1
