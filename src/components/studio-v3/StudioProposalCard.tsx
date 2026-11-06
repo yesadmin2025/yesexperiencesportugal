@@ -1,4 +1,5 @@
 import * as React from "react";
+import { whatsappHref } from "@/components/WhatsAppFab";
 import type { StudioProposal } from "@/lib/studio-v3/studioProposal";
 
 function eur(n: number): string {
@@ -15,7 +16,7 @@ const valueStyle = { color: "var(--charcoal)" } as const;
 
 export function StudioProposalCard({
   proposal,
-  tourTitle: _tourTitle,
+  tourTitle,
 }: {
   proposal: StudioProposal;
   tourTitle: string;
@@ -79,6 +80,16 @@ export function StudioProposalCard({
           </div>
         ) : null}
       </dl>
+      <a
+        href={whatsappHref(`Hello YES, I'd like to talk to a local about this day: ${tourTitle}`)}
+        target="_blank"
+        rel="noopener noreferrer"
+        data-testid="studio-v3-proposal-talk-local"
+        className="mt-4 inline-flex min-h-[44px] items-center text-[12px] uppercase tracking-[0.18em] underline underline-offset-4 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--teal)] focus-visible:ring-offset-2"
+        style={{ color: "var(--teal)" }}
+      >
+        Talk to a local
+      </a>
     </section>
   );
 }
