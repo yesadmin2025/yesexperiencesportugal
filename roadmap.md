@@ -1,5 +1,11 @@
 # Phase 1 optimization
 
+## Minimal measurement correction — November 6 (no publication)
+- [ ] Correct visit and card CTA route classification without changing storage, consent or booking logic
+- [ ] Derive historical view categories in memory and retain the existing report shape
+- [ ] Run focused measurement and non-charging checkout regressions; report exact changes and rollback
+- Publication is explicitly not authorized for this package.
+
 ## SEO findings — November 1
 - [x] Investigate the persistent /experiences and /day-tours H1 alert: stale agent_content scan (bfffa675 vs 24ad041); live and local raw HTML each contain exactly one H1, and four 393px JavaScript-on/off checks pass with logical heading order, no overflow or page errors; resolve stale finding without changing approved content
 - [x] Verify the reported missing H1s on /experiences and /day-tours in the browser; each already renders one H1 with correct heading order, so leave current no-op finding awaiting scanner verification
