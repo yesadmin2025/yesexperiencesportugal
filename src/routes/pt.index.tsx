@@ -122,7 +122,7 @@ function PtHomePage() {
               eyebrow: "Studio",
               title: "Desenhe o seu dia",
               body: "Um estúdio interativo onde compõe a sua experiência em tempo real — ritmo, paragens, mesa, guia — com ajuda editorial ao seu lado.",
-              href: "/",
+              href: "/studio",
               cta: "Abrir o Studio · em inglês",
               external: true,
             },
