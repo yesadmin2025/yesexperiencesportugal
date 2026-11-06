@@ -24,7 +24,8 @@ export const Route = createFileRoute("/admin/conversions")({
 
 const PATH_LABEL: Record<string, string> = {
   signature: "Signature",
-  studio: "Studio / Tailor",
+  studio: "Studio",
+  tailor: "Tailor",
   travel_designer: "Travel Designer",
   moments: "Moments",
   corporate: "Corporate",
