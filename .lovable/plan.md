@@ -97,6 +97,22 @@ Cliques Google (GSC), 05–18/10 contra 19/10–01/11: Arrábida 1→3, Studio 0
 
 **Limpeza:** os registos sandbox ficam marcados como teste. Não se apaga nada sem pedido teu.
 
+## Prioridade 1 — RESULTADOS (pré-visualização local, Stripe sandbox, 393×852)
+Antes de qualquer cartão confirmou-se sempre que a sessão de pagamento era de teste (`cs_test_`). O checkout mostrava a etiqueta "TEST MODE".
+
+| Cenário | Resultado | Evidência |
+|---|---|---|
+| A. Signature Arrábida, 2 adultos, cartão 4242 | **PASSOU** | Sessão de teste; total €366; chegou a `/booking-confirmed` com "CONFIRMED", "PAID" e "Payment received · €366.00"; email aparece abreviado. O sistema registou 1 pagamento concluído como **sandbox** |
+| B. Tailor Arrábida, sem o Mercado do Livramento | **PASSOU** | Preço passou de €183 para €174/adulto; no passo de dados, o mercado sai de "Incluído" e aparece "(removed from this day)"; total €348 também no Stripe; confirmação "PAID · €348.00" |
+| C. Multibanco | **NÃO TESTÁVEL** | O checkout de teste não mostrou Multibanco. Mostrou cartão, Bancontact, Klarna, Amazon Pay, MB WAY e EPS, com o país pré-preenchido como Bélgica (pela localização do servidor de teste). Não houve alterações de configuração |
+| D. Cartão 4000…0002 (recusa) | **PASSOU** | "Your credit card was declined. Try paying with a debit card instead." O cliente fica no checkout e pode tentar de novo; não houve confirmação |
+| E. Safari em iPhone físico | **NÃO TESTÁVEL por mim** | Guião de 8 passos na secção anterior, para a proprietária |
+| Email de confirmação | **NÃO TESTÁVEL** | O endereço de teste não recebe emails |
+
+Observações (sem correção proposta, a confirmar no modo live):
+- O Stripe de teste mostra o nome do negócio como "Área restrita de YesExperiencesPortugal.com", nos termos e no "Pay securely at…". Se aparecer igual no modo live, pode reduzir a confiança. Hipótese a verificar no painel do Stripe.
+- No passo de pagamento é obrigatório marcar a caixa dos termos do Stripe. Sem ela, "Book" mostra um erro vermelho. Funciona, mas é um passo a mais.
+
 ## Prioridade 3 — Quick wins (máximo 2, só com autorização)
 1. **Medição (código pequeno, invisível para o cliente):** passar a contar como clique de reserva os links dos cartões que levam a `/tours/<id>`.
    - Aceitação: um clique num cartão da homepage gera 1 evento de clique.
