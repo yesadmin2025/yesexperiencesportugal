@@ -1,5 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { z } from "zod";
+import { visitProductPath } from "@/lib/visit-product-path";
 
 const LIVE_HOSTS = ["yesexperiencesportugal.com", "www.yesexperiencesportugal.com"];
 
@@ -10,15 +11,6 @@ const schema = z.object({
   event: z.enum(["view", "booking_start", "landing", "cta_click"]).default("view"),
   cta: z.enum(["tailor", "studio", "signature"]).optional(),
 });
-
-function productPath(path: string): string | null {
-  if (path.startsWith("/studio") || path.includes("tailor")) return "studio";
-  if (path.startsWith("/experiences") || path.startsWith("/signature")) return "signature";
-  if (path.startsWith("/portugal-travel-designer")) return "travel_designer";
-  if (path.startsWith("/proposal") || path.startsWith("/moments")) return "moments";
-  if (path.startsWith("/corporate")) return "corporate";
-  return null;
-}
 
 export const Route = createFileRoute("/api/public/visit")({
   server: {
@@ -45,7 +37,7 @@ export const Route = createFileRoute("/api/public/visit")({
           visitor_id: d.visitorId,
           path: d.path.split("?")[0],
           referrer: d.referrer ? d.referrer.slice(0, 300) : null,
-          product_path: d.event === "cta_click" ? (d.cta ?? null) : productPath(d.path),
+          product_path: d.event === "cta_click" ? (d.cta ?? null) : visitProductPath(d.path),
           event: d.event,
         });
         return new Response(null, { status: 204 });

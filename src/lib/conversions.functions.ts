@@ -1,6 +1,7 @@
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
+import { visitProductPath } from "@/lib/visit-product-path";
 
 export type ConversionReport = {
   days: number;
@@ -36,7 +37,8 @@ const LEAD_TABLES = [
 ] as const;
 
 function pathOf(type: string | null): string {
-  if (type === "builder" || type === "tailored") return "studio";
+  if (type === "tailored") return "tailor";
+  if (type === "builder") return "studio";
   if (type === "signature") return "signature";
   if (type === "multi-day") return "travel_designer";
   return "other";
@@ -101,7 +103,8 @@ export const getConversionReport = createServerFn({ method: "POST" })
     const pathVisitors = new Map<string, Set<string>>();
     const pageVisitors = new Map<string, Set<string>>();
     for (const v of views) {
-      const p = v.product_path ?? "other";
+      // Reclassify views in memory only; CTA categories describe the destination, not v.path.
+      const p = visitProductPath(v.path) ?? v.product_path ?? "other";
       if (!pathVisitors.has(p)) pathVisitors.set(p, new Set());
       pathVisitors.get(p)!.add(v.visitor_id);
       if (!pageVisitors.has(v.path)) pageVisitors.set(v.path, new Set());
@@ -188,7 +191,7 @@ export const getConversionReport = createServerFn({ method: "POST" })
       }
     }
 
-    const paths = ["signature", "studio", "travel_designer", "moments", "corporate"];
+    const paths = ["signature", "tailor", "studio", "travel_designer", "moments", "corporate"];
     return {
       days: data.days,
       visitors: visitorSet.size,
