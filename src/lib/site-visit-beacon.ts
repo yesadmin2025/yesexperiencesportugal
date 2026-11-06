@@ -42,6 +42,8 @@ function send(path: string, event: VisitEvent, cta?: Cta) {
       body,
       keepalive: true,
       headers: { "Content-Type": "application/json" },
+    }).catch(() => {
+      /* analytics beacon only: blocked/offline must not surface as an unhandled rejection */
     });
   } catch {
     /* ignore */
@@ -93,6 +95,14 @@ export function classifyCta(text: string, href: string): Cta | null {
   return null;
 }
 
+/** Page-aware CTA: a href-less Signature reserve button on a Tailor page is a Tailor CTA. */
+export function resolveClickCta(text: string, href: string, pathname: string): Cta | null {
+  const h = href.replace(/^https?:\/\/[^/]+/, "");
+  const cta = classifyCta(text, h);
+  if (cta === "signature" && !h && /^\/tours\/[^/]+\/tailor\/?$/.test(pathname)) return "tailor";
+  return cta;
+}
+
 let installed = false;
 export function installCtaTracking() {
   if (installed || !isLive()) return;
@@ -102,8 +112,11 @@ export function installCtaTracking() {
     (e) => {
       const el = (e.target as HTMLElement | null)?.closest("a,button");
       if (!el) return;
-      const href = el.getAttribute("href") ?? "";
-      const cta = classifyCta(el.textContent ?? "", href.replace(/^https?:\/\/[^/]+/, ""));
+      const cta = resolveClickCta(
+        el.textContent ?? "",
+        el.getAttribute("href") ?? "",
+        window.location.pathname,
+      );
       if (cta) send(window.location.pathname, "cta_click", cta);
     },
     { capture: true, passive: true },
