@@ -109,3 +109,19 @@ export function installCtaTracking() {
     { capture: true, passive: true },
   );
 }
+
+/**
+ * Records one booking_start when a guest really opens the guest-details step
+ * (embedded Signature/Tailor/Studio checkouts). Idempotent per browser
+ * session, flow and path; no PII, no cookies.
+ */
+export function trackBookingStart(flow: "signature" | "tailor" | "studio", path: string) {
+  const key = `yes_bs:${flow}:${path}`;
+  try {
+    if (sessionStorage.getItem(key)) return;
+    sessionStorage.setItem(key, "1");
+  } catch {
+    /* storage blocked: still send once per call */
+  }
+  trackVisit(path, "booking_start");
+}
