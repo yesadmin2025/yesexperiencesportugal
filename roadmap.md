@@ -1,5 +1,11 @@
 # Phase 1 optimization
 
+## Evidence-led image priority — November 7 (no publication)
+- [x] Confirm authorized HEAD f7f07ffc7803a32320369810acec702f3d4fbdd2; measure nine routes at 320/393/1366 without submissions
+- [x] Reproduce lazy first-screen LCP photos in Local Stories and Regions; change only their loading/fetch priority, preserving assets, geometry and metadata
+- [ ] Compare repeated local measurements, validate 320/375/393/768/1366 with/without cookies, WebKit if available, focused regressions and automatic build
+- Real visitor samples are insufficient for page ranking; no CrUX data or production speed improvement claim. Protected systems and publication remain out of scope.
+
 ## Corporate narrow-button correction — November 7 (no publication)
 - [x] Reduce proven four-line primary CTA wrapping at 320px in both Corporate placements; retain copy, destination, typography, materials and floating-control clearance
 - [x] Corporate validated at 320/393/768/1366px: four lines reduced to three at 320px, 208×75px touch targets, contact destination intact and wider layouts unchanged. Eight pages checked at 320/393px: no horizontal overflow, failed loaded images, clipped CTA labels or page errors. 253 focused regressions passed; build OK. No publication or physical Safari check.

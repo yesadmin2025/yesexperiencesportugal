@@ -174,7 +174,8 @@ function Page() {
               <img
                 src={comportaImg}
                 alt="Private day in Tróia and Comporta with YES Experiences Portugal"
-                loading="lazy"
+                loading="eager"
+                fetchPriority="high"
                 decoding="async"
                 className="aspect-[3/2] w-full object-cover md:aspect-[18/7]"
               />
