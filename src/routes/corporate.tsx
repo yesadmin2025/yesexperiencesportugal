@@ -211,10 +211,8 @@ function CorporatePage() {
             coordinated from brief to delivery.
           </p>
           <DirectAnswer>
-            YES Experiences Portugal designs private corporate days, team incentives and company
-            celebrations across Portugal, coordinated end to end by a local team. There are no
-            fixed packages — each day is built around the group, and every brief is answered
-            personally.
+            Your local team handles the event end to end, with no fixed packages: each programme
+            follows your group's needs, and every brief receives a personal reply.
           </DirectAnswer>
           <div className="mt-9 flex flex-col sm:flex-row gap-3 justify-center max-sm:pr-[72px]">
             <CtaButton

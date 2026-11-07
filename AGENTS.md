@@ -1,5 +1,8 @@
 # Project architecture decisions
 
+- PT catalogue titles use a display-only ID overlay with exact-key English fallback; canonical tour data and SEO never inherit catalogue localization.
+- Narrow-screen cookie clearance reuses the existing dataset and measured floating-control lift, keeping consent state and hero controllers unchanged.
+
 - Signature guest details prefetch on valid booking intent and show opening feedback while the lazy surface loads; the existing reservation gate and payment authority remain unchanged.
 
 - Lead automation uses durable jobs and explicit human handoff; quotations reuse current tier pricing and experience checkout remains the only reservation authority, so chat never creates paid bookings.

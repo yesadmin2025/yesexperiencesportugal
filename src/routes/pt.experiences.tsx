@@ -1,4 +1,4 @@
-import { ptTheme } from "@/lib/ptTheme";
+import { ptTheme, ptSignatureCardTitle } from "@/lib/ptTheme";
 import { localeAlternateLinks } from "@/i18n/seo";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { breadcrumbLd, itemListLd, jsonLdScript } from "@/lib/jsonld";
@@ -109,15 +109,16 @@ function ExperiencesPage() {
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-8">
             {publicSignatureTours.map((tour) => {
               const meta = VIATOR_META[tour.id];
+              const cardTitle = ptSignatureCardTitle(tour.id, tour.title);
                const topHighlights = getSignatureCardHighlights(tour.id, "pt");
 
               return (
-                <article key={tour.id} className="group flex flex-col text-left" aria-label={tour.title}>
+                <article key={tour.id} className="group flex min-w-0 flex-col text-left" aria-label={cardTitle}>
                   <Link
                     to="/tours/$tourId"
                     params={{ tourId: tour.id }}
                     className="lift-layer-sm relative block mb-5 shadow-[0_10px_30px_-20px_rgba(46,46,46,0.25)] group-hover:shadow-[0_28px_55px_-22px_rgba(41,91,97,0.3)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--teal)] focus-visible:ring-offset-2"
-                    aria-label={`Abrir ${tour.title}`}
+                    aria-label={`Abrir ${cardTitle}`}
                   >
                     <TourImage
                       {...resolveImg(tour, "lg")}
@@ -137,14 +138,14 @@ function ExperiencesPage() {
                     params={{ tourId: tour.id }}
                     className="serif text-2xl text-[color:var(--charcoal)] hover:text-[color:var(--teal)] transition-colors focus-visible:outline-none focus-visible:underline"
                   >
-                    {tour.title}
+                    {cardTitle}
                   </Link>
-                  <p className="mt-3 text-[14px] text-[color:var(--charcoal-soft)] leading-relaxed">
+                  <p className="order-last mt-3 text-[14px] text-[color:var(--charcoal-soft)] leading-relaxed">
                      {getSignatureCardPromise(tour.id, "pt")}
                   </p>
 
                   {topHighlights.length > 0 && (
-                    <ul className="mt-4 flex flex-col gap-1.5 text-[13px] leading-[1.55] text-[color:var(--charcoal)]">
+                    <ul className="order-last mt-4 flex flex-col gap-1.5 text-[13px] leading-[1.55] text-[color:var(--charcoal)]">
                       {topHighlights.map((highlight: string) => (
                         <li key={highlight} className="flex items-start gap-2">
                           <span
@@ -157,6 +158,11 @@ function ExperiencesPage() {
                     </ul>
                   )}
 
+                  {meta && meta.reviewCount > 0 ? (
+                    <p className="mt-3 text-[12px] text-[color:var(--charcoal-soft)]">
+                      {meta.rating.toFixed(1)} de 5 · {meta.reviewCount} avaliações
+                    </p>
+                  ) : null}
                   <div className="mt-4 flex flex-wrap items-center gap-x-3 gap-y-1.5 text-[12px] uppercase tracking-[0.16em] text-[color:var(--charcoal-soft)]">
                     <span className="flex items-center gap-1.5">
                       <MapPin size={11} /> {tour.region}
@@ -165,13 +171,13 @@ function ExperiencesPage() {
                     <span className="flex items-center gap-1.5">
                       <Clock size={11} /> {signatureDurationLabel(tour.id, tour.durationHours)}
                     </span>
-                    <span aria-hidden="true" className="h-px w-2 bg-[color:var(--gold)]/55" />
-                    <span className="text-[color:var(--charcoal)]">
-                      A partir de <PriceEur amountEur={tour.priceFrom} role="from" />
-                    </span>
-                    {meta && meta.reviewCount > 0 ? (
-                      <span className="sr-only">{meta.rating.toFixed(1)} de 5, {meta.reviewCount} avaliações</span>
-                    ) : null}
+                  </div>
+
+                  <div className="mt-4">
+                    <p className="font-semibold text-[color:var(--charcoal)]">
+                      A partir de <PriceEur amountEur={tour.priceFrom} role="from" /> por pessoa
+                    </p>
+                    <p className="mt-1 text-[12px] text-[color:var(--charcoal-soft)]">O valor por pessoa varia consoante o grupo.</p>
                   </div>
 
                   <div className="mt-5 flex flex-col gap-2.5">
@@ -180,7 +186,7 @@ function ExperiencesPage() {
                       params={{ tourId: tour.id }}
                       variant="primary"
                       size="sm"
-                      aria-label={`Reservar ${tour.title}`}
+                      aria-label={`Reservar ${cardTitle}`}
                     >
                       Ver disponibilidade e reservar
                     </CtaButton>
@@ -190,7 +196,7 @@ function ExperiencesPage() {
                         params={{ tourId: tour.id }}
                         variant="hairline"
                         size="sm"
-                        aria-label={`Adaptar ${tour.title} ao seu dia`}
+                        aria-label={`Adaptar ${cardTitle} ao seu dia`}
                       >
                         Adaptar este dia
                       </CtaButton>

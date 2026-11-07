@@ -13,9 +13,9 @@ export const FX_BASE = "EUR" as const;
 
 export const FX_RATES = {
   EUR: 1,
-  USD: 1.08,
+  USD: 1.1165,
 } as const;
 
 export type Currency = keyof typeof FX_RATES;
 
-export const FX_UPDATED_AT = "2026-07-23";
+export const FX_UPDATED_AT = "2026-11-06";
