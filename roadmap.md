@@ -1,5 +1,14 @@
 # Phase 1 optimization
 
+## Owner-authorized editorial corrections — November 7 (no publication)
+- [ ] A: compact cookie actions at narrow widths and reserve scroll clearance only while open
+- [ ] B: localize PT catalogue names and move existing commercial information before teaser/highlights
+- [ ] C: update indicative USD rate/date only; preserve EUR payment
+- [ ] D: tighten About mobile chapters and add one early editorial discovery link
+- [ ] E–F: shorten opening support copy and align isolated contact CTA labels
+- [ ] Verify focused regressions, protected SEO, browser geometry and images at 320/393/768/1366
+- [ ] G: performance optimization blocked on real per-page mobile Web Vitals and sample; no speculative changes
+
 ## Minimal measurement correction — November 6 (no publication)
 - [x] Correct visit and card CTA route classification without changing storage, consent or booking logic
 - [x] Derive historical view categories in memory and retain the existing report shape

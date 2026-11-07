@@ -559,7 +559,7 @@ function StaticArticleView({ article }: { article: LocalStoryArticle }) {
                     {...guideRefDataAttrs(article.slug, "article_cta")}
                     onClick={trackGuideLink("article_cta", "contact", "/contact")}
                   >
-                     Design my experience
+                     Contact a local designer
                   </CtaButton>
                   <p className="mt-6 text-[13px] text-[color:var(--charcoal-soft)] leading-[1.7]">
                     A local designer reads every request and replies personally, usually within a few hours.

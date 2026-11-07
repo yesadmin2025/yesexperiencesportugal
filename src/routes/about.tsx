@@ -106,6 +106,9 @@ function AboutPage() {
               <p>We believe the experience should adapt to you.</p>
               <p>But that idea didn't begin in a meeting room or with a business plan. It began much earlier.</p>
             </div>
+            <Link to="/experiences" className="mt-5 inline-flex min-h-11 items-center text-sm text-[color:var(--teal)] underline underline-offset-4 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--teal)]">
+              Explore Signature Experiences
+            </Link>
           </div>
         </div>
       </section>

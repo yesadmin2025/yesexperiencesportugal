@@ -114,14 +114,12 @@ function PortugalTravelDesignerPage() {
             Your <SectionTitle.Em>Portugal Travel Designer</SectionTitle.Em>
           </SectionTitle>
           <p className="page-header-support mt-6 mx-auto max-w-2xl text-[16px] md:text-[17px] text-[color:var(--charcoal-soft)]">
-            Work with a travel designer in Portugal to connect the route, rhythm and private
-            experiences into a multi-day journey that feels entirely your own.
+            Shape a multi-day journey around your interests and pace, with a local designer
+            connecting the route, transport, stays and private experiences.
           </p>
           <DirectAnswer>
-            The YES Travel Designer service creates bespoke multi-day journeys across Portugal — of
-            any length, starting anywhere in the country, not only Lisbon. A local designer shapes
-            the route, stays and private experiences with you, and prices the whole journey
-            transparently before you commit to anything.
+            Begin anywhere in Portugal and travel for as long as you wish, with local support
+            and transparent journey pricing before you commit.
           </DirectAnswer>
           <div className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
             <CtaButton href="#journey-enquiry" variant="primary" onClick={() => void import("@/lib/analytics-events").then((a) => a.trackEvent("travel_designer_start", { placement: "travel_designer_page" }))}>

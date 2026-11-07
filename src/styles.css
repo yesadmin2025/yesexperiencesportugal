@@ -6578,6 +6578,30 @@ html {
   animation: cookieConsentEnter 480ms var(--ease-scene) both;
 }
 
+/* Keep all three consent choices on one row without reducing tap targets. */
+@media (width < 400px) {
+  .cookie-consent-card [data-cookie-card] > div:has(> button:first-child:nth-last-child(3)) {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr) minmax(0, 1fr);
+    gap: 4px;
+  }
+  .cookie-consent-card [data-cookie-card] > div:has(> button:first-child:nth-last-child(3)) > button {
+    min-width: 0;
+    padding-inline: 4px;
+    letter-spacing: 0;
+  }
+  /* Reuse the existing measured banner height; no consent or hero controller changes. */
+  html[data-cookie-consent-open="true"] {
+    scroll-padding-bottom: var(--cookie-banner-lift, 0px);
+  }
+  html[data-cookie-consent-open="true"] :is(.public-page-header, .hero-cinematic) {
+    margin-bottom: var(--cookie-banner-lift, 0px);
+  }
+  html[data-cookie-consent-open="true"] :is(.public-page-header, .hero-cinematic) a {
+    scroll-margin-bottom: var(--cookie-banner-lift, 0px);
+  }
+}
+
 /* Consent is the only action that should occupy the bottom edge while open.
    Temporarily remove competing fixed controls rather than stacking them behind
    the dialog or obscuring conversion details. */
@@ -8715,6 +8739,12 @@ html.reveal-ready .about-story.is-visible .about-copy-sequence p:nth-child(4) { 
 .public-page-header + .section-y,
 .public-page-header + .section-y-major {
   padding-top: calc(var(--section-y-major) + 0.5rem);
+}
+
+@media (width < 768px) {
+  .about-story.section-y-major.chapter-flow {
+    padding-block: var(--section-y);
+  }
 }
 
 /* 3. INTRO SEQUENCING — eyebrow → title → support → CTA, 90–130ms apart.

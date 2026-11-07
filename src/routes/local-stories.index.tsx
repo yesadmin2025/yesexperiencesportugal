@@ -226,7 +226,7 @@ function Page() {
               Let a place become your own story.
             </p>
             <CtaButton to="/contact" variant="primary">
-              Design my experience
+              Contact a local designer
             </CtaButton>
           </div>
         </div>
