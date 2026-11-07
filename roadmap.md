@@ -1,5 +1,14 @@
 # Phase 1 optimization
 
+## Evidence-led image priority — November 7 (no publication)
+- [x] Confirm authorized HEAD f7f07ffc7803a32320369810acec702f3d4fbdd2; measure nine routes at 320/393/1366 without submissions
+- [x] Reproduce lazy first-screen LCP photos in Local Stories and Regions; change only their loading/fetch priority, preserving assets, geometry and metadata
+- [x] Three-run local LCP medians: Local Stories 612→576ms; Regions 492→560ms (no consistent speed gain established). Image bytes and geometry unchanged.
+- [x] 63 page checks: Chromium 320/375/393/768/1366 and WebKit 320/393, with/without cookies; zero overflow, broken completed images or page errors. Deferred offscreen sample thumbnails retained. Keyboard/input focus checked; all browser writes intercepted.
+- [x] 104 focused regressions + one lazy-image decode test passed; automatic build OK. Initial broader run passed 90 assertions but reported existing jsdom scrollIntoView absence in enquiry success test; production code not changed for that test limitation.
+- Remaining variable local CLS (Regions 320px 0.147→0.131) involves text reflow/floating controls rather than collapsed image frames; no font/motion/consent changes authorized or made. No physical Safari test, real leads, checkout session or production interaction.
+- Real visitor samples are insufficient for page ranking; no CrUX data or production speed improvement claim. Protected systems and publication remain out of scope.
+
 ## Corporate narrow-button correction — November 7 (no publication)
 - [x] Reduce proven four-line primary CTA wrapping at 320px in both Corporate placements; retain copy, destination, typography, materials and floating-control clearance
 - [x] Corporate validated at 320/393/768/1366px: four lines reduced to three at 320px, 208×75px touch targets, contact destination intact and wider layouts unchanged. Eight pages checked at 320/393px: no horizontal overflow, failed loaded images, clipped CTA labels or page errors. 253 focused regressions passed; build OK. No publication or physical Safari check.
