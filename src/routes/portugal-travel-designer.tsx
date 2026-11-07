@@ -169,6 +169,15 @@ function PortugalTravelDesignerPage() {
         </p>
       </Section>
 
+      <section id="journey-enquiry" className="reveal section-y chapter-flow scroll-mt-24 bg-[color:var(--ivory)]">
+        <div className="container-x max-w-2xl">
+          <Eyebrow>Your Portugal journey</Eyebrow>
+          <SectionTitle as="h2" size="default" spacing="tight">Design my journey</SectionTitle>
+          <div className="mt-8"><JourneyEnquiryForm /></div>
+          <p className="mt-8 text-sm text-[color:var(--charcoal-soft)]">Still choosing? <Link to="/local-stories/$slug" params={{ slug: "best-travel-designer-in-portugal" }} className="underline underline-offset-4">Read how to choose a travel designer in Portugal.</Link></p>
+        </div>
+      </section>
+
       <Section
         tone="sand"
         eyebrow="Three ways to shape your Portugal"
@@ -325,14 +334,6 @@ function PortugalTravelDesignerPage() {
         ]}
       />
 
-      <section id="journey-enquiry" className="reveal section-y chapter-flow scroll-mt-24 bg-[color:var(--ivory)]">
-        <div className="container-x max-w-2xl">
-          <Eyebrow>Your Portugal journey</Eyebrow>
-          <SectionTitle as="h2" size="default" spacing="tight">Design my journey</SectionTitle>
-          <div className="mt-8"><JourneyEnquiryForm /></div>
-          <p className="mt-8 text-sm text-[color:var(--charcoal-soft)]">Still choosing? <Link to="/local-stories/$slug" params={{ slug: "best-travel-designer-in-portugal" }} className="underline underline-offset-4">Read how to choose a travel designer in Portugal.</Link></p>
-        </div>
-      </section>
     </SiteLayout>
   );
 }
