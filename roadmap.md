@@ -3,7 +3,10 @@
 ## Evidence-led image priority — November 7 (no publication)
 - [x] Confirm authorized HEAD f7f07ffc7803a32320369810acec702f3d4fbdd2; measure nine routes at 320/393/1366 without submissions
 - [x] Reproduce lazy first-screen LCP photos in Local Stories and Regions; change only their loading/fetch priority, preserving assets, geometry and metadata
-- [ ] Compare repeated local measurements, validate 320/375/393/768/1366 with/without cookies, WebKit if available, focused regressions and automatic build
+- [x] Three-run local LCP medians: Local Stories 612→576ms; Regions 492→560ms (no consistent speed gain established). Image bytes and geometry unchanged.
+- [x] 63 page checks: Chromium 320/375/393/768/1366 and WebKit 320/393, with/without cookies; zero overflow, broken completed images or page errors. Deferred offscreen sample thumbnails retained. Keyboard/input focus checked; all browser writes intercepted.
+- [x] 104 focused regressions + one lazy-image decode test passed; automatic build OK. Initial broader run passed 90 assertions but reported existing jsdom scrollIntoView absence in enquiry success test; production code not changed for that test limitation.
+- Remaining variable local CLS (Regions 320px 0.147→0.131) involves text reflow/floating controls rather than collapsed image frames; no font/motion/consent changes authorized or made. No physical Safari test, real leads, checkout session or production interaction.
 - Real visitor samples are insufficient for page ranking; no CrUX data or production speed improvement claim. Protected systems and publication remain out of scope.
 
 ## Corporate narrow-button correction — November 7 (no publication)
