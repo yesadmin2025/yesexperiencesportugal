@@ -1,5 +1,9 @@
 # Phase 1 optimization
 
+## Corporate narrow-button correction — November 7 (no publication)
+- [x] Reduce proven four-line primary CTA wrapping at 320px in both Corporate placements; retain copy, destination, typography, materials and floating-control clearance
+- [ ] Validate 320/393px mobile and unchanged desktop, touch targets, images and related edited-page layouts; run focused regressions
+
 ## Owner-authorized editorial corrections — November 7 (no publication)
 - [x] A: compact cookie actions at narrow widths and reserve scroll clearance only while open
 - [x] B: localize PT catalogue names and move existing commercial information before teaser/highlights
