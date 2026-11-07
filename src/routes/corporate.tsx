@@ -219,6 +219,7 @@ function CorporatePage() {
               to="/contact"
               search={{ type: "corporate" }}
               variant="primary"
+              className="max-[360px]:gap-2 max-[360px]:px-3 max-[360px]:[&>.cta-label]:min-w-0"
               onClick={() =>
                 trackEvent("corporate_hero_proposal_click", {
                   experience_type: "corporate",
@@ -480,6 +481,7 @@ function CorporatePage() {
                 to="/contact"
                 search={{ type: "corporate" }}
                 variant="primary"
+                className="max-[360px]:gap-2 max-[360px]:px-3 max-[360px]:[&>.cta-label]:min-w-0"
                 onClick={() =>
                   trackEvent("corporate_form_started", {
                     experience_type: "corporate",
