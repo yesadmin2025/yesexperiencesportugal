@@ -1,4 +1,4 @@
-import { afterEach, describe, expect, it, vi } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { cleanup, fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { readFileSync } from "node:fs";
 import { TourImage } from "@/components/tours/TourImage";
@@ -8,7 +8,11 @@ import { getLocalStoryArticle } from "@/content/local-stories-articles";
 vi.mock("@/components/ui/CtaButton", () => ({ CtaButton: ({ children, loading: _loading, loadingLabel: _label, ...props }: React.ButtonHTMLAttributes<HTMLButtonElement> & { loading?: boolean; loadingLabel?: string }) => <button {...props}>{children}</button> }));
 vi.mock("@/lib/analytics-ga4", () => ({ gaGenerateLead: vi.fn() }));
 vi.mock("@/lib/analytics-events", () => ({ trackEvent: vi.fn() }));
-afterEach(() => { cleanup(); vi.unstubAllGlobals(); vi.restoreAllMocks(); });
+beforeEach(() => {
+  sessionStorage.removeItem("yes_journey_from_sample");
+  vi.spyOn(HTMLElement.prototype, "scrollIntoView").mockImplementation(() => {});
+});
+afterEach(() => { cleanup(); sessionStorage.removeItem("yes_journey_from_sample"); vi.unstubAllGlobals(); vi.restoreAllMocks(); });
 
 describe("Travel Designer enquiry and safe media loading", () => {
   it("persists the multi-day type and page attribution, blocking duplicate submits", async () => {
@@ -35,6 +39,25 @@ describe("Travel Designer enquiry and safe media loading", () => {
     fireEvent.submit(screen.getByRole("form"));
     await waitFor(() => expect(screen.getByRole("alert")).toHaveTextContent("couldn't confirm delivery"));
     expect(screen.queryByRole("status")).toBeNull();
+  });
+
+  it("reads sample attribution at submit even when the form was mounted before visiting the sample", async () => {
+    const fetch = vi.fn().mockResolvedValue({ ok: true });
+    vi.stubGlobal("fetch", fetch);
+    render(<JourneyEnquiryForm />);
+    sessionStorage.setItem("yes_journey_from_sample", "1");
+    fireEvent.change(screen.getByLabelText("Name"), { target: { value: "QA Journey" } });
+    fireEvent.change(screen.getByLabelText("Email"), { target: { value: "journey@example.com" } });
+    fireEvent.change(screen.getByLabelText(/Your journey —/), { target: { value: "Synthetic preview request" } });
+    fireEvent.submit(screen.getByRole("form"));
+    await waitFor(() => expect(screen.getByRole("status")).toBeInTheDocument());
+    expect(fetch).toHaveBeenCalledTimes(1);
+    const payload = JSON.parse(String(fetch.mock.calls[0]?.[1]?.body ?? "{}"));
+    expect(payload).toMatchObject({
+      requestType: "multi_day",
+      source: "travel-designer-sample-file",
+      message: "Inspired by the sample travel file.\nSynthetic preview request",
+    });
   });
 
   it("does not force a below-fold lazy photo to fetch through decode()", () => {
