@@ -1,5 +1,12 @@
 # Phase 1 optimization
 
+## Travel Designer enquiry relocation — November 7 (no publication)
+- [x] Confirm authorized base e0d0672c1cc61827627fe0ec033b8917eebd6c3b; move only the intact enquiry section after the first introductory chapter
+- [x] Preserve a single form, anchor links, submit-time sample attribution and all SEO/content/assets; test requests intercepted, no real leads
+- [x] Chromium 320/375/393/768/1366 with cookies open/closed: one form/H1, no overflow, submit target 279×50px unobstructed; all three anchor links work. Two mocked sample-attributed submissions confirmed visible/focused success; zero page errors.
+- [x] Local 393px section/form start 7155/7339→1485/1669px; 1366px 7853/8076→1281/1504px. Intro/form retain existing ivory styling; no palette/spacing changes.
+- [x] SSR metadata/canonical/hreflang/JSON-LD/H1 and content/link/image/control multisets unchanged (excluding development source-line annotations); 39 focused tests passed, automatic build OK. Existing React act warning only; no physical Safari or full-suite check. Await owner diff review; no publication or promised conversion gain.
+
 ## Evidence-led image priority — November 7 (no publication)
 - [x] Confirm authorized HEAD f7f07ffc7803a32320369810acec702f3d4fbdd2; measure nine routes at 320/393/1366 without submissions
 - [x] Reproduce lazy first-screen LCP photos in Local Stories and Regions; change only their loading/fetch priority, preserving assets, geometry and metadata
