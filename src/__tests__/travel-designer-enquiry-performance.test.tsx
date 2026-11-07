@@ -8,11 +8,16 @@ import { getLocalStoryArticle } from "@/content/local-stories-articles";
 vi.mock("@/components/ui/CtaButton", () => ({ CtaButton: ({ children, loading: _loading, loadingLabel: _label, ...props }: React.ButtonHTMLAttributes<HTMLButtonElement> & { loading?: boolean; loadingLabel?: string }) => <button {...props}>{children}</button> }));
 vi.mock("@/lib/analytics-ga4", () => ({ gaGenerateLead: vi.fn() }));
 vi.mock("@/lib/analytics-events", () => ({ trackEvent: vi.fn() }));
+const scrollIntoViewDescriptor = Object.getOwnPropertyDescriptor(HTMLElement.prototype, "scrollIntoView");
 beforeEach(() => {
   sessionStorage.removeItem("yes_journey_from_sample");
-  vi.spyOn(HTMLElement.prototype, "scrollIntoView").mockImplementation(() => {});
+  Object.defineProperty(HTMLElement.prototype, "scrollIntoView", { configurable: true, value: vi.fn() });
 });
-afterEach(() => { cleanup(); sessionStorage.removeItem("yes_journey_from_sample"); vi.unstubAllGlobals(); vi.restoreAllMocks(); });
+afterEach(() => {
+  cleanup(); sessionStorage.removeItem("yes_journey_from_sample"); vi.unstubAllGlobals(); vi.restoreAllMocks();
+  if (scrollIntoViewDescriptor) Object.defineProperty(HTMLElement.prototype, "scrollIntoView", scrollIntoViewDescriptor);
+  else Reflect.deleteProperty(HTMLElement.prototype, "scrollIntoView");
+});
 
 describe("Travel Designer enquiry and safe media loading", () => {
   it("persists the multi-day type and page attribution, blocking duplicate submits", async () => {
