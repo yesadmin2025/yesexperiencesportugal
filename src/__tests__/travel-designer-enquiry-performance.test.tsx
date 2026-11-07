@@ -12,6 +12,7 @@ const scrollIntoViewDescriptor = Object.getOwnPropertyDescriptor(HTMLElement.pro
 beforeEach(() => {
   sessionStorage.removeItem("yes_journey_from_sample");
   Object.defineProperty(HTMLElement.prototype, "scrollIntoView", { configurable: true, value: vi.fn() });
+  vi.stubGlobal("requestAnimationFrame", (callback: FrameRequestCallback) => { callback(0); return 0; });
 });
 afterEach(() => {
   cleanup(); sessionStorage.removeItem("yes_journey_from_sample"); vi.unstubAllGlobals(); vi.restoreAllMocks();

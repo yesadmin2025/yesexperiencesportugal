@@ -1,5 +1,10 @@
 # Phase 1 optimization
 
+## Travel Designer enquiry relocation — November 7 (no publication)
+- [x] Confirm authorized base e0d0672c1cc61827627fe0ec033b8917eebd6c3b; move only the intact enquiry section after the first introductory chapter
+- [x] Preserve a single form, anchor links, submit-time sample attribution and all SEO/content/assets; test requests intercepted, no real leads
+- [ ] Complete five-width cookie-open/closed browser evidence and focused regressions; await owner diff review, do not publish
+
 ## Evidence-led image priority — November 7 (no publication)
 - [x] Confirm authorized HEAD f7f07ffc7803a32320369810acec702f3d4fbdd2; measure nine routes at 320/393/1366 without submissions
 - [x] Reproduce lazy first-screen LCP photos in Local Stories and Regions; change only their loading/fetch priority, preserving assets, geometry and metadata
