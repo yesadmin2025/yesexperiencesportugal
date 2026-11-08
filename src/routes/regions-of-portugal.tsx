@@ -3,14 +3,14 @@ import { breadcrumbLd, jsonLdScript } from "@/lib/jsonld";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { SiteLayout } from "@/components/SiteLayout";
 import { Eyebrow } from "@/components/ui/Eyebrow";
-import { SectionTitle } from "@/components/ui/SectionTitle";
+import { SectionTitle, sectionTitleClassName } from "@/components/ui/SectionTitle";
 import { CtaButton } from "@/components/ui/CtaButton";
 import { PORTUGAL_REGION_GUIDES } from "@/content/portugal-region-guides";
 import douroImage from "@/assets/drift/dawn-douro.jpg";
 import { DirectAnswer } from "@/components/DirectAnswer";
 
 const title = "Best Places to Visit in Portugal, Region by Region";
-const description = "The best places to visit in Portugal, region by region: Porto and the Douro, Lisbon and Sintra, Évora, the Algarve, Madeira and the Azores — with local guides.";
+const description = "Explore Portugal region by region: Porto, Douro, Lisbon, Sintra, Évora, Algarve, Madeira and the Azores. Find local guides and advice for planning your trip.";
 const url = "https://yesexperiencesportugal.com/regions-of-portugal";
 
 export const Route = createFileRoute("/regions-of-portugal")({
@@ -55,7 +55,7 @@ function RegionsPage() {
         <header className="bg-[color:var(--ivory)] pb-12 pt-28 md:pb-20 md:pt-36">
           <div className="container-x max-w-4xl">
             <Eyebrow>Portugal · Place by place</Eyebrow>
-            <SectionTitle as="h1" size="anchor" spacing="loose">Regions of <SectionTitle.Em>Portugal</SectionTitle.Em></SectionTitle>
+            <h1 className={sectionTitleClassName("anchor", "loose")}>Best places to visit in <SectionTitle.Em>Portugal</SectionTitle.Em>, region by region</h1>
             <p className="mt-5 max-w-2xl text-base leading-relaxed text-[color:var(--charcoal-soft)]">From the Douro terraces to the Atlantic islands, each region asks for a different pace. Choose a place, then follow the local stories that bring it into focus.</p>
             <DirectAnswer>
               The best places to visit in Portugal are Lisbon and Sintra, Porto and the Douro Valley, Évora and the Alentejo, the Algarve coast, and the islands of Madeira and the Azores. A first trip usually pairs Lisbon with Porto; a longer one adds the Alentejo and the Algarve.

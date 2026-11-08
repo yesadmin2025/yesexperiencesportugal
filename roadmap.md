@@ -1,5 +1,9 @@
 # Phase 1 optimization
 
+## Regions SEO findings — November 8 (no publication)
+- [x] List the two current content findings; clarify the Regions H1 using the existing heading style and shorten the search/share description to factual scope and trip-planning value. Retain the already descriptive search title.
+- [ ] Verify SSR metadata, one H1, region content, links and mobile/desktop rendering; run focused SEO regressions and record completed corrections without publishing.
+
 ## Travel Designer enquiry relocation — November 7 (no publication)
 - [x] Confirm authorized base e0d0672c1cc61827627fe0ec033b8917eebd6c3b; move only the intact enquiry section after the first introductory chapter
 - [x] Preserve a single form, anchor links, submit-time sample attribution and all SEO/content/assets; test requests intercepted, no real leads
