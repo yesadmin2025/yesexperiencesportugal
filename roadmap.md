@@ -2,7 +2,7 @@
 
 ## Regions SEO findings — November 8 (no publication)
 - [x] List the two current content findings; clarify the Regions H1 using the existing heading style and shorten the search/share description to factual scope and trip-planning value. Retain the already descriptive search title.
-- [ ] Verify SSR metadata, one H1, region content, links and mobile/desktop rendering; run focused SEO regressions and record completed corrections without publishing.
+- [x] SSR 200 and one descriptive H1; canonical, robots, hreflang, JSON-LD, seven region chapters, body copy, links and images unchanged. Chromium 320/393/1366 has no horizontal overflow; heading screenshots checked. All 41 focused SEO tests passed; automatic build OK. Record both corrections awaiting scanner verification; no publication.
 
 ## Travel Designer enquiry relocation — November 7 (no publication)
 - [x] Confirm authorized base e0d0672c1cc61827627fe0ec033b8917eebd6c3b; move only the intact enquiry section after the first introductory chapter
