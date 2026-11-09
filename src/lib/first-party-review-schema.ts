@@ -55,7 +55,12 @@ export function withFirstPartyReviews<T extends Reviewable>(
     };
   }
 
-  const reviews = (data.reviews ?? []).filter((r) => r.body?.trim() && validAverage(r.rating));
+  // Individual Review nodes only for reviews with a real human name, a
+  // visible body and a valid rating. Anonymous approved reviews still count
+  // in aggregateRating above, but never receive an invented author.
+  const reviews = (data.reviews ?? []).filter(
+    (r) => r.body?.trim() && validAverage(r.rating) && r.reviewer_name?.trim(),
+  );
   if (reviews.length > 0) {
     // NOTE: no `itemReviewed` here — these Review nodes are nested inside the
     // Product they review, and Google flags a nested itemReviewed as a
@@ -69,7 +74,7 @@ export function withFirstPartyReviews<T extends Reviewable>(
         bestRating: 5,
         worstRating: 1,
       },
-      author: { "@type": "Person", name: r.reviewer_name?.trim() || "Verified guest" },
+      author: { "@type": "Person", name: (r.reviewer_name ?? "").trim() },
       ...(r.published_at ? { datePublished: r.published_at.slice(0, 10) } : {}),
       ...(r.title ? { name: r.title } : {}),
       reviewBody: r.body,

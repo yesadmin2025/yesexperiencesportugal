@@ -1,17 +1,19 @@
 /**
  * Visibility filter for on-site review widgets.
  *
- * Hides reviews below MIN_VISIBLE_RATING from the visible list only.
- * The emitted AggregateRating in JSON-LD stays UNFILTERED — Google
- * penalises rich-result eligibility when the schema aggregate value
- * does not match the reviews visible on-page, so the aggregate must
- * reflect all reviews we hold, not just the ones we display.
+ * Transparency rule: every PUBLISHED review is visible, whatever its star
+ * rating. The JSON-LD AggregateRating counts all published first-party
+ * ratings, so the visible list must not selectively suppress low ratings.
+ * Only rows with an invalid rating (outside 1–5) are dropped.
  *
- * Filter applied in one place so it's easy to remove later.
+ * Kept as one helper so callers stay unchanged.
  */
 
-export const MIN_VISIBLE_RATING = 4;
+export const MIN_VISIBLE_RATING = 1;
 
 export function filterVisibleReviews<T extends { rating: number }>(rows: T[]): T[] {
-  return rows.filter((r) => Number(r.rating) >= MIN_VISIBLE_RATING);
+  return rows.filter((r) => {
+    const n = Number(r.rating);
+    return Number.isFinite(n) && n >= 1 && n <= 5;
+  });
 }

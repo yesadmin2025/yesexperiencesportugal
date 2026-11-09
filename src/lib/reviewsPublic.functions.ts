@@ -73,9 +73,20 @@ export const submitPublicReview = createServerFn({ method: "POST" })
     if (data.website && data.website.trim().length > 0) return { ok: true, moderated: true };
 
     if (!data.tourId || data.tourId.length < 2) throw new Error("Please choose an experience");
-    if (!Number.isFinite(data.rating) || data.rating < 1 || data.rating > 5) {
+    if (
+      typeof data.rating !== "number" ||
+      !Number.isInteger(data.rating) ||
+      data.rating < 1 ||
+      data.rating > 5
+    ) {
       throw new Error("Rating must be 1–5");
     }
+    const reviewerName = String(data.reviewer_name ?? "")
+      .replace(/\s+/g, " ")
+      .trim()
+      .slice(0, 120);
+    if (!reviewerName) throw new Error("Please add your name");
+    data = { ...data, reviewer_name: reviewerName };
     const body = (data.body ?? "").trim();
     if (body.length < 10) throw new Error("Please write at least one sentence");
     if (body.length > 4000) throw new Error("Please keep your review under 4000 characters");
