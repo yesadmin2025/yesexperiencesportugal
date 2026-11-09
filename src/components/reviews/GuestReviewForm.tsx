@@ -22,6 +22,8 @@ const COPY = {
     experience: "Which experience?",
     choose: "Choose an experience",
     rating: "Your rating",
+    chooseRating: "Choose your rating",
+    nameRequired: "Please add your name",
     reviewTitle: "Title",
     optional: "(optional)",
     review: "Your review",
@@ -44,6 +46,8 @@ const COPY = {
     experience: "Que experiência?",
     choose: "Escolha uma experiência",
     rating: "A sua classificação",
+    chooseRating: "Escolha a sua classificação",
+    nameRequired: "Indique o seu nome",
     reviewTitle: "Título",
     optional: "(opcional)",
     review: "A sua avaliação",
@@ -74,7 +78,7 @@ export function GuestReviewForm({
   const submit = useServerFn(submitPublicReview);
   const options = lockedTour ? [lockedTour] : (tours ?? []);
   const [tourId, setTourId] = useState(lockedTour?.tour_id ?? options[0]?.tour_id ?? "");
-  const [rating, setRating] = useState(5);
+  const [rating, setRating] = useState(0);
   const [hover, setHover] = useState(0);
   const [title, setTitle] = useState("");
   const [body, setBody] = useState("");
@@ -88,6 +92,14 @@ export function GuestReviewForm({
   async function onSubmit(e: React.FormEvent) {
     e.preventDefault();
     if (submitting) return;
+    if (rating < 1 || rating > 5) {
+      setError(t.chooseRating);
+      return;
+    }
+    if (!name.trim()) {
+      setError(t.nameRequired);
+      return;
+    }
     setSubmitting(true);
     setError(null);
     try {
@@ -97,7 +109,7 @@ export function GuestReviewForm({
           rating,
           title: title.trim() || null,
           body: body.trim(),
-          reviewer_name: name.trim() || null,
+          reviewer_name: name.trim(),
           reviewer_country: country.trim() || null,
           language: locale,
           website,
@@ -178,8 +190,17 @@ export function GuestReviewForm({
               )}
 
               <div>
-                <span className={label}>{t.rating}</span>
+                <span className={label} id="gr-rating-label">
+                  {t.rating}
+                </span>
+                <p id="gr-rating-help" className="mt-1 text-[12px] text-[color:var(--charcoal-soft)]">
+                  {t.chooseRating}
+                </p>
                 <div
+                  role="group"
+                  aria-labelledby="gr-rating-label"
+                  aria-describedby="gr-rating-help"
+                  aria-required="true"
                   className="mt-2 inline-flex items-center gap-1"
                   onMouseLeave={() => setHover(0)}
                 >
@@ -241,6 +262,9 @@ export function GuestReviewForm({
                   </label>
                   <input
                     id="gr-name"
+                    required
+                    aria-required="true"
+                    autoComplete="given-name"
                     value={name}
                     onChange={(e) => setName(e.target.value)}
                     maxLength={120}
@@ -284,7 +308,7 @@ export function GuestReviewForm({
 
               <button
                 type="submit"
-                disabled={submitting || !tourId}
+                disabled={submitting || !tourId || rating < 1 || !name.trim()}
                 className="w-full min-h-[48px] rounded-[2px] bg-[color:var(--teal)] text-[color:var(--ivory)] px-4 py-3 font-sans text-[14px] font-medium disabled:opacity-60"
               >
                 {submitting ? t.submitting : t.submit}
