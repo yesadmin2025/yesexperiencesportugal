@@ -231,8 +231,15 @@ export const getFirstPartyReviewBundle = createServerFn({ method: "GET" })
           .eq("is_published", true)
           .eq("is_first_party", true)
           .order("published_at", { ascending: false })
-          .limit(5),
+          .limit(20),
       ]);
+
+      // Named reviews with text first (those feed Review schema, max 5);
+      // anonymous approved reviews follow and stay visible, never authored.
+      const isNamed = (r: { reviewer_name: string | null; body: string }) =>
+        Boolean(r.reviewer_name?.trim() && r.body?.trim());
+      const allRows = rows.data ?? [];
+      const ordered = [...allRows.filter(isNamed).slice(0, 5), ...allRows.filter((r) => !isNamed(r))].slice(0, 6);
 
       const count = Number(stats.data?.first_party_count ?? 0);
       const average =
@@ -241,7 +248,7 @@ export const getFirstPartyReviewBundle = createServerFn({ method: "GET" })
       return {
         count,
         average,
-        reviews: (rows.data ?? []).map((r) => ({
+        reviews: ordered.map((r) => ({
           id: r.id,
           rating: Number(r.rating),
           title: r.title,

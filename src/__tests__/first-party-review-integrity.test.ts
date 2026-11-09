@@ -74,3 +74,15 @@ describe("public review form and handler require rating and name", () => {
     expect(handler).toContain("body.length < 10");
   });
 });
+
+describe("no unverified 'Verified guest' claims", () => {
+  it("TourReviews labels first-party reviews as direct guest reviews", () => {
+    const src = readFileSync("src/components/TourReviews.tsx", "utf8");
+    expect(src).not.toContain("Verified guest");
+    expect(src).toContain("Direct guest review");
+  });
+  it("tour schema loader prefers named reviews and keeps anonymous visible", () => {
+    const src = readFileSync("src/lib/reviews.functions.ts", "utf8");
+    expect(src).toContain("allRows.filter(isNamed).slice(0, 5)");
+  });
+});

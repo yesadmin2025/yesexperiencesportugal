@@ -24,7 +24,7 @@ const SOURCE_LABEL: Record<string, string> = {
   tripadvisor: "Tripadvisor",
   getyourguide: "GetYourGuide",
   google: "Google",
-  first_party: "Verified guest",
+  first_party: "Direct guest review",
 };
 
 function Stars({ rating }: { rating: number }) {
@@ -315,7 +315,7 @@ export function TourReviews({
                 <Stars rating={r.rating} />
                 <span className="text-[11px] uppercase tracking-[0.16em] text-[color:var(--text-muted)]">
                   {r.is_first_party
-                    ? "Verified guest"
+                    ? "Direct guest review"
                     : `via ${SOURCE_LABEL[r.source] ?? r.source}`}
                 </span>
               </div>
