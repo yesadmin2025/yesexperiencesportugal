@@ -39,7 +39,7 @@ const SOURCE_LABEL: Record<string, string> = {
   tripadvisor: "Tripadvisor",
   getyourguide: "GetYourGuide",
   google: "Google",
-  first_party: "Verified guest",
+  first_party: "Direct guest review",
 };
 
 function trim(text: string, max = 220) {
@@ -54,8 +54,8 @@ function fromDb(rows: PublicReview[]): Testimonial[] {
       key: r.id,
       title: r.title,
       body: trim(r.body),
-      author: r.reviewer_name?.trim() || "Verified guest",
-      source: SOURCE_LABEL[r.source] ?? "Verified guest",
+      author: r.reviewer_name?.trim() || "Guest",
+      source: SOURCE_LABEL[r.source] ?? "Guest review",
       rating: Number(r.rating),
     }));
 }
@@ -72,7 +72,7 @@ function fromTourPages(tourIds: readonly string[], limit: number): Testimonial[]
         key: `${id}-${out.length}`,
         title: r.title ?? null,
         body: trim(r.text),
-        author: r.author?.trim() || "Verified guest",
+        author: r.author?.trim() && r.author.trim() !== "Verified guest" ? r.author.trim() : "Guest",
         source: r.source ?? "Viator",
         rating: meta.rating,
       });
@@ -161,7 +161,7 @@ export function LiveReviews({
               <Star size={13} className="text-[color:var(--gold)]" aria-hidden />
               {REVIEW_CERTIFICATE.ratingValue} / {REVIEW_CERTIFICATE.bestRating} average
             </span>
-            <span>Verified guests across major booking platforms</span>
+            <span>Guest reviews from booking platforms and direct guests</span>
           </p>
           {standfirst ? (
             <p className="mt-4 text-[15px] leading-[1.75] text-[color:var(--charcoal-soft)]">
