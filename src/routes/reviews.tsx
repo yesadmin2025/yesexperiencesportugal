@@ -28,7 +28,7 @@ const SOURCE_LABEL: Record<string, string> = {
   tripadvisor: "Tripadvisor",
   getyourguide: "GetYourGuide",
   google: "Google",
-  first_party: "Verified guest",
+  first_party: "Direct guest review",
 };
 
 export const Route = createFileRoute("/reviews")({
@@ -215,7 +215,7 @@ function ReviewsPage() {
                               <Stars rating={r.rating} />
                               <span className="font-sans text-[11px] uppercase tracking-[0.22em] text-[color:var(--charcoal-soft)]">
                                 {r.is_first_party
-                                  ? "Verified guest"
+                                  ? "Direct guest review"
                                   : `via ${SOURCE_LABEL[r.source]}`}
                               </span>
                             </div>
