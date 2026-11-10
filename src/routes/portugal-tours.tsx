@@ -155,10 +155,10 @@ function Page() {
                 — run by us, priced with everything included, and confirmed in minutes.
               </p>
               <p className="editorial-body mt-6">
-                A single private day, or a journey of any length — we design for whatever time you
-                have, starting wherever in Portugal you arrive: Lisbon, Porto, the Algarve, or a
-                small town nobody else writes about. One day or three weeks, the principle is the
-                same: your party only, your pace, a local on the ground.
+                There are three ways to book a private tour with us: reserve a Signature day as
+                designed, design your own day in the Studio and confirm it online, or ask a Travel
+                Designer to shape a multi-day journey. Each one is for your party only, at your
+                pace, with a local on the ground.
               </p>
 
               {REGIONS.map((r, i) => (
