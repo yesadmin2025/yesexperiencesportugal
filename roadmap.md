@@ -3,7 +3,7 @@
 ## Approved search snippets and contextual links — November 11 (no publication)
 - [x] Apply the owner-approved Regions title/description only, retaining H1, canonical, schema and page content.
 - [x] Add one contextual wine-guide link in Coastal Drives and one contextual service link in the proposal-planning guide; retain existing booking actions and other article metadata.
-- [ ] Verify focused SEO/link tests and rendered local metadata/link navigation; no publication or ranking-gain claim.
+- [x] All 24 focused SEO/link tests passed; automatic build OK. Chromium 393px confirmed approved title/description, one unchanged H1, self-canonical and both new links reaching their intended pages. No publication or ranking-gain claim.
 
 ## Regions SEO findings — November 8 (no publication)
 - [x] List the two current content findings; clarify the Regions H1 using the existing heading style and shorten the search/share description to factual scope and trip-planning value. Retain the already descriptive search title.
