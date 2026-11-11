@@ -9,8 +9,8 @@ import { PORTUGAL_REGION_GUIDES } from "@/content/portugal-region-guides";
 import douroImage from "@/assets/drift/dawn-douro.jpg";
 import { DirectAnswer } from "@/components/DirectAnswer";
 
-const title = "Best Places to Visit in Portugal, Region by Region";
-const description = "Explore Portugal region by region: Porto, Douro, Lisbon, Sintra, Évora, Algarve, Madeira and the Azores. Find local guides and advice for planning your trip.";
+const title = "Regions of Portugal: Where to Go & How to Choose";
+const description = "Compare Portugal’s regions, from Lisbon and the Douro to Alentejo, Algarve and the islands. Find local guides to help choose your route.";
 const url = "https://yesexperiencesportugal.com/regions-of-portugal";
 
 export const Route = createFileRoute("/regions-of-portugal")({

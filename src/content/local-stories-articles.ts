@@ -1474,7 +1474,7 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
     sections: [
       {
         heading: "The Arrábida ridge road — the shortest drama in Portugal.",
-        body: "Twenty minutes south of the 25 de Abril Bridge the road climbs into the Arrábida Natural Park and then runs along a limestone ridge with the Atlantic directly below. Turquoise water, white cliffs, no billboards. Pull-offs let you stop for the view, and the coves below — Portinho da Arrábida, Galapinhos — are a short descent away. It pairs naturally with wine and a long lunch on the same [Arrábida day](/tours/arrabida-wine-allinclusive).",
+        body: "Twenty minutes south of the 25 de Abril Bridge the road climbs into the Arrábida Natural Park and then runs along a limestone ridge with the Atlantic directly below. Turquoise water, white cliffs, no billboards. Pull-offs let you stop for the view, and the coves below — Portinho da Arrábida, Galapinhos — are a short descent away. It pairs naturally with wine and a long lunch on the same [Arrábida day](/tours/arrabida-wine-allinclusive). If wine is your main interest, [compare the wine days from Lisbon](/local-stories/best-wine-tours-from-lisbon) before choosing your route.",
       },
       {
         heading: "Cabo da Roca to Cascais — the westernmost edge of Europe.",
@@ -2505,7 +2505,7 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
       },
       {
         heading: "Start with a conversation, not a form.",
-        body: "Every proposal we help with begins as a private conversation — what they love, what you have in mind, what must stay secret. From there we shape the day or the moment, anywhere in Portugal, and keep it invisible until the question is asked.",
+        body: "Every proposal we help with begins as a private conversation — what they love, what you have in mind, what must stay secret. From there we shape the day or the moment, anywhere in Portugal, and keep it invisible until the question is asked. When you are ready, [plan a special moment](/proposal-in-portugal) with our local team.",
       },
     ],
     ctaLead:

@@ -1,5 +1,10 @@
 # Phase 1 optimization
 
+## Approved search snippets and contextual links — November 11 (no publication)
+- [x] Apply the owner-approved Regions title/description only, retaining H1, canonical, schema and page content.
+- [x] Add one contextual wine-guide link in Coastal Drives and one contextual service link in the proposal-planning guide; retain existing booking actions and other article metadata.
+- [ ] Verify focused SEO/link tests and rendered local metadata/link navigation; no publication or ranking-gain claim.
+
 ## Regions SEO findings — November 8 (no publication)
 - [x] List the two current content findings; clarify the Regions H1 using the existing heading style and shorten the search/share description to factual scope and trip-planning value. Retain the already descriptive search title.
 - [x] SSR 200 and one descriptive H1; canonical, robots, hreflang, JSON-LD, seven region chapters, body copy, links and images unchanged. Chromium 320/393/1366 has no horizontal overflow; heading screenshots checked. All 41 focused SEO tests passed; automatic build OK. Record both corrections awaiting scanner verification; no publication.
