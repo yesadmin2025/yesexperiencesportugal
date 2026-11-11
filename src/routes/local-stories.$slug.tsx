@@ -556,7 +556,7 @@ function StaticArticleView({ article }: { article: LocalStoryArticle }) {
                     to="/portugal-travel-designer"
                     variant="primary"
                     {...guideRefDataAttrs(article.slug, "article_cta")}
-                    onClick={trackGuideLink("article_cta", "travel_designer", "/portugal-travel-designer")}
+                    onClick={trackGuideLink("article_cta", "other", "/portugal-travel-designer")}
                   >
                     Design my journey
                   </CtaButton>
