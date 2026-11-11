@@ -550,6 +550,20 @@ function StaticArticleView({ article }: { article: LocalStoryArticle }) {
                     .
                   </p>
                 </>
+              ) : article.ctaLabel === "Design my journey" ? (
+                <>
+                  <CtaButton
+                    to="/portugal-travel-designer"
+                    variant="primary"
+                    {...guideRefDataAttrs(article.slug, "article_cta")}
+                    onClick={trackGuideLink("article_cta", "travel_designer", "/portugal-travel-designer")}
+                  >
+                    Design my journey
+                  </CtaButton>
+                  <p className="mt-6 text-[13px] text-[color:var(--charcoal-soft)] leading-[1.7]">
+                    Share your dates and pace; a local designer replies personally.
+                  </p>
+                </>
               ) : (
                 <>
                   <CtaButton
