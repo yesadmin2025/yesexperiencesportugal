@@ -28,7 +28,7 @@ describe("nationwide journeys and Local Stories", () => {
   it("keeps single-day Studio language separate from flexible editorial enquiries", () => {
     const index = source("src/routes/local-stories.index.tsx");
     const detail = source("src/routes/local-stories.$slug.tsx");
-    expect(index).toContain("Design my experience");
+    expect(index).toContain("Contact a local designer");
     expect(index).not.toContain('to="/studio"');
     expect(detail).toContain('search={{ type: "other", place: article.h1 }}');
     expect(detail).toContain("!GUIDE_INLINE_BOOKING[article.slug] && article.relatedSignatures");
