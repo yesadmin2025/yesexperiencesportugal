@@ -155,10 +155,13 @@ function Page() {
                 — run by us, priced with everything included, and confirmed in minutes.
               </p>
               <p className="editorial-body mt-6">
-                There are three ways to book a private tour with us: reserve a Signature day as
-                designed, design your own day in the Studio and confirm it online, or ask a Travel
-                Designer to shape a multi-day journey. Each one is for your party only, at your
-                pace, with a local on the ground.
+                Choose a private Portugal day: {" "}
+                <Link to="/experiences" className="text-[color:var(--teal)] underline underline-offset-4 decoration-[color:var(--gold)]/60 hover:decoration-[color:var(--gold)]">explore Signature Experiences</Link>{" "}
+                and reserve a day as designed, or {" "}
+                <Link to="/studio" className="text-[color:var(--teal)] underline underline-offset-4 decoration-[color:var(--gold)]/60 hover:decoration-[color:var(--gold)]">design your day in the Studio</Link>{" "}
+                and confirm it online. For a multi-day journey, {" "}
+                <Link to="/portugal-travel-designer" className="text-[color:var(--teal)] underline underline-offset-4 decoration-[color:var(--gold)]/60 hover:decoration-[color:var(--gold)]">work with a Portugal Travel Designer</Link>.
+                Each experience is for your party only, at your pace, with a local on the ground.
               </p>
 
               {REGIONS.map((r, i) => (

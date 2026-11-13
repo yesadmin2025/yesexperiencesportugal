@@ -206,7 +206,7 @@ function CorporatePage() {
             <SectionTitle.Em>designed by locals.</SectionTitle.Em>
           </h1>
           <p className="page-header-support mt-6 mx-auto max-w-[46ch] md:max-w-[62ch] text-[1rem] md:text-[1.1rem] text-[color:var(--charcoal-soft)]">
-            Private team days, incentives and company celebrations{" "}
+            Private team days, corporate retreats, incentives and company celebrations{" "}
             <strong className="font-medium text-[color:var(--charcoal)]">across Portugal</strong> —
             coordinated from brief to delivery.
           </p>

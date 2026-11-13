@@ -139,9 +139,8 @@ function PortugalTravelDesignerPage() {
           list of famous places.
         </p>
         <p>
-          As a Portugal travel designer, YES Experiences Portugal creates private days and longer
-          journeys around the people traveling: what they are curious about, how quickly they like
-          to move and what they want to remember when the trip is over.
+          Looking for a Portugal travel planner? Our local Travel Designer shapes a multi-day
+          journey around your interests, pace and the experiences you want to share.
         </p>
         <p>
           Some guests begin with one of our curated{" "}
