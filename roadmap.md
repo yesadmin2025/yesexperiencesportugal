@@ -1,5 +1,10 @@
 # Phase 1 optimization
 
+## SEO findings — November 13 (no publication)
+- [x] Verify all 105 sitemap pages: HTTP 200 and exactly one non-empty H1; Local Story article, database, not-found and error views are mutually exclusive, not duplicate headings. No heading changes warranted; current finding remains unresolved pending scanner correction.
+- [x] Clarify only the approved wine-guide search title and description around Setúbal Peninsula versus Alentejo; existing opening already distinguishes the regions and separates Évora from Vidigueira, so preserve it, H1, links and all tour facts.
+- [ ] Validate focused tests and rendered wine-guide metadata; record the completed snippet correction without publication.
+
 ## Approved Proposal snippet and remaining SEO proposals — November 13 (no publication)
 - [x] Apply only the exact approved Proposal title/description through existing search/share constants; preserve visible content, canonical, schema and enquiry flow.
 - [x] Verify focused service-search tests and rendered Proposal metadata: 21 tests passed, exact title/description and OG, self-canonical and single H1 confirmed; automatic build OK.

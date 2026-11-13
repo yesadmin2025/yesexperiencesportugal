@@ -103,9 +103,9 @@ describe("brand-critical SERP snippets", () => {
       }>
     ).find((a) => a.slug === "best-wine-tours-from-lisbon");
     expect(article).toBeTruthy();
-    expect(article!.title).toBe("Best Wine Tours Lisbon: Which Private Day to Choose");
+    expect(article!.title).toBe("Best Wine Tours from Lisbon: Setúbal or Alentejo?");
     expect(article!.metaDescription).toBe(
-      "Which wine tour from Lisbon is best? Our pick for a first day is Arrábida. Compare Azeitão and Alentejo by drive time, wineries, inclusions and price.",
+      "Compare private wine tours from Lisbon: Setúbal Peninsula for wine, food and coast; Alentejo for heritage and wineries. Check each day's dates and prices.",
     );
     for (const text of [article!.title, article!.metaDescription, article!.standfirst]) {
       expect(text.toLowerCase()).not.toMatch(/small[- ]group/);
