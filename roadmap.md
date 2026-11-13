@@ -1,5 +1,10 @@
 # Phase 1 optimization
 
+## Approved Proposal snippet and remaining SEO proposals — November 13 (no publication)
+- [x] Apply only the exact approved Proposal title/description through existing search/share constants; preserve visible content, canonical, schema and enquiry flow.
+- [ ] Verify focused service-search tests and rendered Proposal metadata.
+- [ ] Prepare exact, localized proposals for wine, private tours, Travel Designer and Corporate; implementation awaits owner approval.
+
 ## Approved search snippets and contextual links — November 11 (no publication)
 - [x] Apply the owner-approved Regions title/description only, retaining H1, canonical, schema and page content.
 - [x] Add one contextual wine-guide link in Coastal Drives and one contextual service link in the proposal-planning guide; retain existing booking actions and other article metadata.
