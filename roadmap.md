@@ -5,7 +5,7 @@
 - [x] Verify focused service-search tests and rendered Proposal metadata: 21 tests passed, exact title/description and OG, self-canonical and single H1 confirmed; automatic build OK.
 - [x] Prepare exact, localized proposals for wine, private tours, Travel Designer and Corporate; implementation awaits owner approval.
 - [x] Owner approved the plan: apply only the three proposed paragraphs and contextual links; wine content remains unchanged.
-- [ ] Validate scoped changes, protected metadata, links and 320/393/1366px layouts without real submissions; no publication.
+- [x] Validate scoped changes: only the three approved paragraphs changed; 14 focused tests passed, identical rendered head/H1/form counts, nine Chromium layouts at 320/393/1366px without overflow and all three links reached their pages. Corporate contact preselection retained; automatic build OK; no submissions or publication. Wine measurement awaits separately authorized publication and 28 days of observations.
 
 ## Approved search snippets and contextual links — November 11 (no publication)
 - [x] Apply the owner-approved Regions title/description only, retaining H1, canonical, schema and page content.
