@@ -149,7 +149,8 @@ describe("Pass 2B · winery supplier names stay generic", () => {
   });
 
   it("the storyboard genericises moment labels, swap pool and delta feedback", () => {
-    expect(STUDIO_SRC).toContain("const swapPoolPublic = swapPool.map(");
+    expect(STUDIO_SRC).toContain("const swapPoolPublic = dedupePublicSwapPool(");
+    expect(STUDIO_SRC).toContain("swapPool.map((c) => ({");
     expect(STUDIO_SRC).toContain("label: authorLabel(c.label)");
     expect(STUDIO_SRC).toContain("story: authorText(c.story ?? \"\")");
     expect(STUDIO_SRC).toContain("{authorText(intentFeedback)}");
