@@ -1,128 +1,53 @@
-# Próximo plano de execução comercial (3 prioridades) — sem construir
+# Próximas melhorias de pesquisa e percurso comercial
 
-## Dados normalizados por dia
-Fonte: tabela própria do site. A = 01–20/10 (20 dias), B = 21/10–05/11 (16 dias). Números por dia; "IDs" são identificadores anónimos distintos, não pessoas.
+## Já aplicado — Propostas, sem publicação
+- Título: **Marriage Proposal in Portugal | Local Planning by YES**
+- Descrição: **Plan your marriage proposal in Portugal with a local team. Discreet settings, timing and surprise coordination, with every detail confirmed with you.**
+- Só foram alteradas estas duas constantes, também utilizadas na partilha. Conteúdo visível, título principal, endereço canónico e formulário preservados.
+- 21 testes passaram; HTML inicial validado; verificação automática sem erros. O site público só recebe este texto na próxima publicação autorizada.
 
-| Entrada no site (landing, IDs/dia) | A | B | Variação |
-|---|---|---|---|
-| Homepage | 13,7 | 12,1 | -12% |
-| Outras páginas (guias, etc.) | 57,7 | 50,3 | -13% |
-| /pt | 3,1 | 3,4 | +12% |
-| /experiences | 1,9 | 1,4 | -26% |
-| Páginas de tour | 13,1 | 7,6 | **-42%** |
-| Tailor | 4,4 | 1,4 | **-68%** |
-| Studio | 2,3 | 0,8 | **-64%** |
+## Propostas seguintes — ainda não aplicadas
 
-| Outros sinais (por dia) | A | B |
-|---|---|---|
-| Studio: sessões com entrada | 2,75 | 1,13 (-59%) |
-| Studio: revelação vista | 0,30 | 0,19 |
-| Cliques em botões principais (eventos) | 6,35 | 2,75 |
+### 1. Vinho: manter e medir, sem nova reescrita
+A página `/lisbon-wine-tours` já tem experiências, ligação direta à escolha de datas e informação de reserva. O guia já contém as ligações recentemente aprovadas.
 
-**Observado**
-- No site em geral, as entradas caíram cerca de 12–13%.
-- As entradas diretas em páginas de tour, Tailor e Studio caíram entre 42% e 68%.
-- A perda concentra-se em quem chegava diretamente a páginas de reserva.
+**Ação:** não acrescentar outra faixa ou botão. Após publicação autorizada, comparar 28 dias de consultas comerciais no Search Console e as passagens do guia para a página comercial e experiências, usando os registos existentes. Separar cliques de pesquisa, visitas e início de reserva; não calcular uma conversão entre populações incompatíveis.
 
-**Hipótese**
-- Desapareceu ou enfraqueceu uma fonte que mandava visitantes diretamente para tours, Tailor e Studio: links partilhados, perfis externos, campanhas ou mensagens.
-- O referrer está quase sempre vazio, por isso esta hipótese não se prova com esta tabela.
+**Aceitação:** nenhuma alteração de texto, preços ou medição; apresentar apenas métricas disponíveis, com períodos e limitações.
 
-**Observado no código, com impacto na medição**
-- O contador de cliques só reconhece links com textos ou destinos específicos: "Tailor", "Design your day", "See dates", `/studio`, `/experiences/...`.
-- Os cartões da homepage levam a `/tours/<id>` e por isso não são contados.
-- A descida dos cliques na homepage (de 5,1% para 2,6% dos IDs de entrada) pode ser em parte um efeito de medição da mudança dos cartões. Hipótese, não confirmada.
+### 2. Tours privados: tornar acionável o parágrafo existente
+Em `/portugal-tours`, substituir apenas o segundo parágrafo da primeira secção pelo texto abaixo, com ligações nas expressões indicadas:
 
-## Prioridade 1 — Teste controlado Safari iPhone + checkout sandbox completo
-- **O quê:** um percurso Signature e um Tailor até ao pagamento confirmado, com um cartão de teste e um Multibanco de teste, só na pré-visualização (Stripe sandbox). Mais um percurso em Safari num iPhone real, feito por ti, a seguir um guião de 8 passos que eu escrevo. Não é criada nenhuma cobrança real.
-- **Aceitação:**
-  - a página de confirmação aparece;
-  - a reserva fica registada como sandbox;
-  - o email de teste é recebido;
-  - o date picker do iPhone funciona.
-- **Custo:** só testes, sem código.
+> Choose a private Portugal day: [explore Signature Experiences](/experiences) and reserve a day as designed, or [design your day in the Studio](/studio) and confirm it online. For a multi-day journey, [work with a Portugal Travel Designer](/portugal-travel-designer). Each experience is for your party only, at your pace, with a local on the ground.
 
-## Prioridade 2 — RESULTADO (executado pela proprietária, só SELECT e GSC)
-Entradas por página, em IDs anónimos/dia, A (20 dias) contra B (16 dias):
+**Aceitação:** três ligações nos destinos indicados; nenhuma secção ou botão novo; títulos, descrição de pesquisa e restantes parágrafos intactos. Não introduzir “luxury Portugal tours” sem confirmar a intenção dos resultados de pesquisa.
 
-| Página de entrada | A | B | Variação |
-|---|---|---|---|
-| Arrábida Wine All Inclusive | 3,25 | 1,25 | -62% |
-| Studio | 2,25 | 0,81 | -64% |
-| Tiles Workshop | 1,70 | 0,63 | -63% |
-| Arrábida Wine, Tailor | 1,45 | 0,31 | -78% |
-| Southwest Vicentine Coast | 1,05 | 0,19 | -82% |
-| Tróia & Comporta, Tailor | 0,80 | 0 | -100% |
+### 3. Travel Designer: incluir linguagem de planeamento naturalmente
+Em `/portugal-travel-designer`, substituir apenas o segundo parágrafo de “How a Portugal travel designer shapes your journey.”:
 
-Entradas sem referrer: Arrábida 60→17, Studio 35→13, Arrábida Tailor 31→5.
+> Looking for a Portugal travel planner? Our local Travel Designer shapes a multi-day journey around your interests, pace and the experiences you want to share.
 
-Cliques Google (GSC), 05–18/10 contra 19/10–01/11: Arrábida 1→3, Studio 0→0, Tiles 2→1, /experiences 1→0, Southwest 0→0.
+**Aceitação:** preservar o nome Travel Designer, o formulário e a sua posição, a amostra Travel File, todos os botões e metadados. Não prometer confirmação instantânea de uma viagem por pedido.
 
-**Observado:** a queda de entradas diretas nestas páginas não se explica por menos cliques do Google nessas páginas.
+### 4. Corporate: esclarecer a intenção no texto de apoio inicial
+Em `/corporate`, substituir apenas o parágrafo de apoio abaixo do título principal:
 
-**Por investigar, sem assumir a origem:** ligações diretas, campanhas, entradas sem referrer, medição e bots.
+> Private team days, corporate retreats, incentives and company celebrations across Portugal — coordinated from brief to delivery.
 
-## Prioridade 2 — plano original (já executado)
-- **Observado:** as maiores quedas estão nas entradas diretas em Tailor, Studio e tours (tabela acima).
-- **Primeiro passo (só leitura):** listar, para cada tipo de rota, as páginas exatas de entrada em A contra B (top 10 por IDs/dia). Cruzar com:
-  - datas de mudanças em links externos (Google Business, Viator, GetYourGuide, WhatsApp, emails de reserva);
-  - os anúncios ativos em A e em B.
-  
-  Objetivo: encontrar que página de entrada deixou de receber visitas e porquê. Não se muda design nem SEO antes disso.
+Manter a ênfase atual em “across Portugal”.
 
-## Prioridade 1 — AUTORIZADA pela proprietária (sandbox + Safari)
-Âmbito estrito: só a pré-visualização com Stripe sandbox. Sem cobranças reais, sem alterações de código e sem mexer em métodos de pagamento.
+**Aceitação:** sem novas promessas, formatos, casos de clientes ou preços. Botão principal mantém contacto pré-selecionado para corporate; WhatsApp e resposta pessoal preservados. Metadados intactos.
 
-1. **Signature (Arrábida Wine), mobile 393px:** data a mais de 24h, 2 adultos, dados de teste e cartão de teste `4242 4242 4242 4242`, até à página de confirmação. Verificar:
-   - a confirmação mostra "paid";
-   - a reserva fica registada como sandbox;
-   - os dados aparecem abreviados;
-   - o email de teste é recebido.
-2. **Tailor (Arrábida):** remover uma paragem e pagar com cartão de teste. Verificar o total, as inclusões ajustadas e a confirmação.
-3. **Multibanco sandbox:** abrir o checkout e escolher Multibanco. Registar o que o cliente vê (referência, instruções, estado). Não há alteração de configuração.
-4. **Recusa:** cartão de teste `4000 0000 0000 0002`. A mensagem de erro deve ser clara e deve ser possível tentar de novo.
-5. **Guião Safari em iPhone real (feito por ti, na pré-visualização):**
-   1. Abrir /experiences.
-   2. Tocar em "See dates & reserve" na Arrábida.
-   3. Escolher a data no date picker nativo.
-   4. Mudar os adultos.
-   5. Tocar em "Reserve this day".
-   6. Preencher os dados.
-   7. Tocar em "Continue to payment" e confirmar que o cartão de teste aparece.
-   8. Pagar com `4242…` e ver a confirmação.
-   
-   Anotar em que passo algo falha.
+## Validação e reversão
+- Verificar ligações e ausência de cortes/overflow em 320px, 393px e 1366px.
+- Executar testes relevantes e conferir a verificação automática do projeto.
+- Confirmar que apenas os três parágrafos aprovados mudam, sem alterações a SEO técnico, pagamentos, consentimento, formulários ou dados.
+- Não enviar pedidos reais nem criar pagamentos durante a validação.
+- Reversão: repor os três parágrafos originais.
+- Não publicar. A aprovação deste plano autoriza apenas as alterações propostas; publicação continua separada.
 
-**Evidência a entregar:** capturas por passo, estado final de cada sessão sandbox (agregado) e tabela PASSOU/FALHOU.
+## Base da prioridade
+Semrush, EUA: “lisbon wine tours” ≈170 pesquisas/mês; “private tours portugal” ≈210; “portugal travel planner” ≈20; “corporate retreats portugal” ≈10. São estimativas de procura, não previsões de reservas. Não foi feita nova consulta ao Search Console neste pacote.
 
-**Limpeza:** os registos sandbox ficam marcados como teste. Não se apaga nada sem pedido teu.
-
-## Prioridade 1 — RESULTADOS (pré-visualização local, Stripe sandbox, 393×852)
-Antes de qualquer cartão confirmou-se sempre que a sessão de pagamento era de teste (`cs_test_`). O checkout mostrava a etiqueta "TEST MODE".
-
-| Cenário | Resultado | Evidência |
-|---|---|---|
-| A. Signature Arrábida, 2 adultos, cartão 4242 | **PASSOU** | Sessão de teste; total €366; chegou a `/booking-confirmed` com "CONFIRMED", "PAID" e "Payment received · €366.00"; email aparece abreviado. O sistema registou 1 pagamento concluído como **sandbox** |
-| B. Tailor Arrábida, sem o Mercado do Livramento | **PASSOU** | Preço passou de €183 para €174/adulto; no passo de dados, o mercado sai de "Incluído" e aparece "(removed from this day)"; total €348 também no Stripe; confirmação "PAID · €348.00" |
-| C. Multibanco | **NÃO TESTÁVEL** | O checkout de teste não mostrou Multibanco. Mostrou cartão, Bancontact, Klarna, Amazon Pay, MB WAY e EPS, com o país pré-preenchido como Bélgica (pela localização do servidor de teste). Não houve alterações de configuração |
-| D. Cartão 4000…0002 (recusa) | **PASSOU** | "Your credit card was declined. Try paying with a debit card instead." O cliente fica no checkout e pode tentar de novo; não houve confirmação |
-| E. Safari em iPhone físico | **NÃO TESTÁVEL por mim** | Guião de 8 passos na secção anterior, para a proprietária |
-| Email de confirmação | **NÃO TESTÁVEL** | O endereço de teste não recebe emails |
-
-Observações (sem correção proposta, a confirmar no modo live):
-- O Stripe de teste mostra o nome do negócio como "Área restrita de YesExperiencesPortugal.com", nos termos e no "Pay securely at…". Se aparecer igual no modo live, pode reduzir a confiança. Hipótese a verificar no painel do Stripe.
-- No passo de pagamento é obrigatório marcar a caixa dos termos do Stripe. Sem ela, "Book" mostra um erro vermelho. Funciona, mas é um passo a mais.
-
-## Prioridade 3 — Quick wins (máximo 2, só com autorização)
-1. **Medição (código pequeno, invisível para o cliente):** passar a contar como clique de reserva os links dos cartões que levam a `/tours/<id>`.
-   - Aceitação: um clique num cartão da homepage gera 1 evento de clique.
-   - Rollback: reverter uma linha.
-   - Porquê: sem isto, não se consegue avaliar a homepage depois das mudanças de outubro.
-2. **Multibanco (decisão tua, sem código para já):** com base no teste sandbox da Prioridade 1, decidir se o Multibanco se mantém visível a clientes estrangeiros.
-   - Observado: 6 recusas genéricas.
-   - Hipótese: pode estar a confundir clientes não portugueses.
-   - Aceitação: decisão documentada e, se houver mudança, configuração revertível.
-
-Fora deste plano: os retoques do Studio (rótulo de região) e da mensagem do Travel Designer ficam para confirmar visualmente, porque não explicam a queda.
-
-Aguardo autorização expressa antes de qualquer construção, teste sandbox ou edição. O registo no `roadmap.md` fica para quando autorizares, porque o modo plano não permite escrever nesse ficheiro.
+## Detalhes técnicos
+Reutilizar os parágrafos, classes e componentes de ligação existentes. Não criar módulos, tabelas ou eventos. Os títulos e descrições de Propostas já usam o mecanismo de metadados existente.

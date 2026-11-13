@@ -2,8 +2,8 @@
 
 ## Approved Proposal snippet and remaining SEO proposals — November 13 (no publication)
 - [x] Apply only the exact approved Proposal title/description through existing search/share constants; preserve visible content, canonical, schema and enquiry flow.
-- [ ] Verify focused service-search tests and rendered Proposal metadata.
-- [ ] Prepare exact, localized proposals for wine, private tours, Travel Designer and Corporate; implementation awaits owner approval.
+- [x] Verify focused service-search tests and rendered Proposal metadata: 21 tests passed, exact title/description and OG, self-canonical and single H1 confirmed; automatic build OK.
+- [x] Prepare exact, localized proposals for wine, private tours, Travel Designer and Corporate; implementation awaits owner approval.
 
 ## Approved search snippets and contextual links — November 11 (no publication)
 - [x] Apply the owner-approved Regions title/description only, retaining H1, canonical, schema and page content.
