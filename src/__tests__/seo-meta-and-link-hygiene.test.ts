@@ -53,8 +53,8 @@ describe("Wine intent split contract", () => {
 
   it("keeps the guide owning best-wine comparison intent without changing protected signals", () => {
     const guide = article("best-wine-tours-from-lisbon");
-    expect(guide.title).toBe("Best Wine Tours Lisbon: Which Private Day to Choose");
-    expect(guide.metaDescription).toBe("Which wine tour from Lisbon is best? Our pick for a first day is Arrábida. Compare Azeitão and Alentejo by drive time, wineries, inclusions and price.");
+    expect(guide.title).toBe("Best Wine Tours from Lisbon: Setúbal or Alentejo?");
+    expect(guide.metaDescription).toBe("Compare private wine tours from Lisbon: Setúbal Peninsula for wine, food and coast; Alentejo for heritage and wineries. Check each day's dates and prices.");
     expect(guide.h1).toBe("Best Wine Tours from Lisbon: Which Private Day to Choose");
     expect(guide.datePublished).toBe("2026-07-24");
     expect(guide.dateModified).toBe("2026-11-04");
