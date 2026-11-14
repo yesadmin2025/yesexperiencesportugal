@@ -113,10 +113,12 @@ export function Navbar() {
         </div>
       </div>
 
-      {open && (
-        <div
-          id="mobile-nav"
-          className="flex flex-col overflow-hidden border-t border-[color:var(--charcoal)]/[0.06] lg:hidden"
+      <nav
+        id="mobile-nav"
+        aria-label="Mobile navigation"
+        aria-hidden={!open}
+        inert={!open}
+        className={open ? "flex flex-col overflow-hidden border-t border-[color:var(--charcoal)]/[0.06] lg:hidden" : "hidden"}
           style={{
             height: "calc(100dvh - 64px)",
             background: "rgba(247, 243, 236, 0.92)",
@@ -187,8 +189,7 @@ export function Navbar() {
               {t("nav.design_your_day")}
             </CtaButton>
           </div>
-        </div>
-      )}
+      </nav>
     </header>
   );
 }
