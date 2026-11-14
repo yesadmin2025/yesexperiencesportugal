@@ -72,6 +72,19 @@ describe("WebSite / site-name signals", () => {
   });
 });
 
+describe("commercial SEO crawl paths", () => {
+  it("links from the homepage to both indexed, booking-focused Lisbon hubs", () => {
+    const home = read("src/routes/index.tsx");
+    const wine = read("src/routes/lisbon-wine-tours.tsx");
+    const tours = read("src/routes/lisbon-private-tours.tsx");
+    expect(home).toContain('to="/lisbon-wine-tours"');
+    expect(home).toContain('to="/lisbon-private-tours"');
+    expect(home).toContain('aria-label="Private tours from Lisbon"');
+    expect(wine).toContain('const TITLE = "Private Wine Tours from Lisbon');
+    expect(tours).toContain('const TITLE = "Private Day Tours From Lisbon');
+  });
+});
+
 describe("brand-critical SERP snippets", () => {
   it("homepage title and description are locked", () => {
     const home = read("src/routes/index.tsx");
