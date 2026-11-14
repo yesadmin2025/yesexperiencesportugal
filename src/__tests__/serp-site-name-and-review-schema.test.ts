@@ -59,6 +59,17 @@ describe("WebSite / site-name signals", () => {
     }
     expect(read("src/components/Logo.tsx")).toContain('alt = "YES Experiences Portugal"');
   });
+
+  it("renders crawlable mobile navigation links before any menu interaction", () => {
+    const navbar = read("src/components/Navbar.tsx");
+    expect(navbar).not.toContain("{open && (");
+    expect(navbar).toContain('id="mobile-nav"');
+    expect(navbar).toContain('aria-hidden={!open}');
+    expect(navbar).toContain('inert={!open}');
+    for (const route of ["/experiences", "/portugal-travel-designer", "/studio", "/corporate"]) {
+      expect(navbar).toContain(`"${route}"`);
+    }
+  });
 });
 
 describe("brand-critical SERP snippets", () => {
