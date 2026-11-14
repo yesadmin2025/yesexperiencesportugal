@@ -909,6 +909,23 @@ function HomePage() {
               <CtaButton to="/experiences" variant="hairline">
                 {CTA_LABELS.signatureDiscovery}
               </CtaButton>
+              <nav
+                aria-label="Private tours from Lisbon"
+                className="mt-5 flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-[12px] leading-relaxed text-[color:var(--charcoal-soft)]"
+              >
+                <Link
+                  to="/lisbon-wine-tours"
+                  className="underline decoration-[color:var(--gold)]/60 underline-offset-4 transition-colors hover:text-[color:var(--teal)]"
+                >
+                  Private wine tours from Lisbon
+                </Link>
+                <Link
+                  to="/lisbon-private-tours"
+                  className="underline decoration-[color:var(--gold)]/60 underline-offset-4 transition-colors hover:text-[color:var(--teal)]"
+                >
+                  Private day tours from Lisbon
+                </Link>
+              </nav>
             </div>
           </div>
         </section>
