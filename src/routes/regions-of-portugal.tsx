@@ -9,8 +9,8 @@ import { PORTUGAL_REGION_GUIDES } from "@/content/portugal-region-guides";
 import douroImage from "@/assets/drift/dawn-douro.jpg";
 import { DirectAnswer } from "@/components/DirectAnswer";
 
-const title = "Regions of Portugal: Where to Go & How to Choose";
-const description = "Compare Portugal’s regions, from Lisbon and the Douro to Alentejo, Algarve and the islands. Find local guides to help choose your route.";
+const title = "Regions of Portugal: 7 Regions & Where to Go";
+const description = "The 7 regions of Portugal compared: North, Centro, Lisbon, Alentejo, Algarve, Madeira and the Azores, with local guides to help you choose your route.";
 const url = "https://yesexperiencesportugal.com/regions-of-portugal";
 
 export const Route = createFileRoute("/regions-of-portugal")({
