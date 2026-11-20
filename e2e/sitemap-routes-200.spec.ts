@@ -13,7 +13,6 @@ import { SITEMAP_STATIC_ROUTES } from "../src/generated/sitemap-routes";
  */
 
 const CANONICAL_ORIGIN = "https://yesexperiencesportugal.com";
-const CANONICAL_HOST = "yesexperiencesportugal.com";
 
 function canonicalFromHtml(html: string): string | null {
   const tags = html.match(/<link\b[^>]*>/gi) ?? [];
@@ -26,7 +25,7 @@ function canonicalFromHtml(html: string): string | null {
 }
 
 async function fetchSitemapPaths(baseURL: string): Promise<string[]> {
-  const api = await request.newContext({ baseURL, extraHTTPHeaders: { Host: CANONICAL_HOST } });
+  const api = await request.newContext({ baseURL });
   const res = await api.get("/sitemap.xml");
   expect(res.status(), "sitemap.xml must be served").toBe(200);
   const xml = await res.text();
@@ -50,7 +49,6 @@ test.describe("sitemap route coverage", () => {
     const api = await request.newContext({
       baseURL,
       timeout: 60_000,
-      extraHTTPHeaders: { Host: CANONICAL_HOST },
     });
     const bad: string[] = [];
 
