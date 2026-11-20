@@ -43,6 +43,13 @@
       "when": 1795138026070,
       "tag": "0005_migration",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1795149383803,
+      "tag": "0006_restrict_booking_window_and_removed_assignments",
+      "breakpoints": true
     }
   ]
 }

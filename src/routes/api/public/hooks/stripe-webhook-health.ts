@@ -42,7 +42,7 @@ export const Route = createFileRoute("/api/public/hooks/stripe-webhook-health")(
         const result = await runHealthCheck(env);
 
         // Persist result.
-        await supabaseAdmin.from("stripe_webhook_health_checks").insert({
+        const { data: inserted } = await supabaseAdmin.from("stripe_webhook_health_checks").insert({
           status: result.ok ? "ok" : "fail",
           reason: `[${env}] ${result.reason}`,
           valid_status: result.validStatus,
@@ -51,7 +51,7 @@ export const Route = createFileRoute("/api/public/hooks/stripe-webhook-health")(
           secret_prefix_ok: result.secretPrefixOk,
           endpoint: result.endpoint,
           alerted: false,
-        });
+        }).select("id").single();
 
         let alerted = false;
         if (!result.ok) {
@@ -87,13 +87,13 @@ export const Route = createFileRoute("/api/public/hooks/stripe-webhook-health")(
               },
             });
             alerted = send.ok;
-            if (alerted) {
+            // Only flag the row this request just created — never a
+            // caller-reachable older record.
+            if (alerted && inserted?.id) {
               await supabaseAdmin
                 .from("stripe_webhook_health_checks")
                 .update({ alerted: true })
-                .eq("status", "fail")
-                .order("checked_at", { ascending: false })
-                .limit(1);
+                .eq("id", inserted.id);
             }
           }
         }
