@@ -36,6 +36,13 @@
       "when": 1793431426815,
       "tag": "0004_lead_conversation_single_flight",
       "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1795138026070,
+      "tag": "0005_migration",
+      "breakpoints": true
     }
   ]
 }

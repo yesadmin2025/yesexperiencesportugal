@@ -410,8 +410,25 @@ export async function ingestParsedBooking(
     bookingId: inserted?.id ?? null, confidence: booking.confidence, dedupeKey,
     channel: booking.sourceChannel, payload: { keys },
   });
-  if (inserted?.id) await alertTeamOfImport(booking, inserted.id);
+  if (inserted?.id) {
+    await alertTeamOfImport(booking, inserted.id);
+    await autoAssignAndNotifyGuide(supabaseAdmin, inserted.id);
+  }
   return { ...base, action: "created", bookingId: inserted?.id ?? null, candidateId: null, reason: null };
+}
+
+/** Same rule as Admin-created bookings: least busy free guide, then one email per assignment. */
+async function autoAssignAndNotifyGuide(supabaseAdmin: Admin, bookingId: string) {
+  try {
+    const { data: gid, error } = await supabaseAdmin.rpc("ops_auto_assign_guide", { _booking_id: bookingId });
+    if (error) { console.error("[ingest] auto-assign failed", error.message); return; }
+    if (gid) {
+      const { dispatchGuideAssignmentEmails } = await import("@/lib/guide-notify.server");
+      await dispatchGuideAssignmentEmails(bookingId);
+    }
+  } catch (e) {
+    console.error("[ingest] guide notify failed", e instanceof Error ? e.message : e);
+  }
 }
 
 /** Private admin alert for every newly imported partner booking. Never emails the guest. */

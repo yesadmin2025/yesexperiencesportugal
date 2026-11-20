@@ -204,5 +204,5 @@ export function dedupeInternalNotifications<T extends { block: InternalNotificat
 /** Gmail search that finds our own recent booking notifications. */
 export function internalNotificationQuery(days: number): string {
   const window = `newer_than:${Math.max(1, Math.min(365, days))}d`;
-  return `${window} subject:"New booking" (from:notify.yesexperiences.pt OR from:yesexperiences.pt OR from:resend.dev OR from:yesexperiencesportugal.com OR to:yesexperiences@gmail.com OR to:info@yesexperiencesportugal.com)`;
+  return `${window} subject:"New booking" -subject:(Fwd OR Fw OR Enc OR Tr) -"BR-" -from:viator.com (from:notify.yesexperiences.pt OR from:yesexperiences.pt OR from:resend.dev OR from:yesexperiencesportugal.com OR to:yesexperiences@gmail.com OR to:info@yesexperiencesportugal.com)`;
 }

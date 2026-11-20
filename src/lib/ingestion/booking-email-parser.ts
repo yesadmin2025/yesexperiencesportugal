@@ -569,7 +569,7 @@ export function parseOta(input: EmailInput, channel: SourceChannel, forceReview 
   const bookedTitle =
     body.match(/(?:offer|activity|tour) has been (?:booked|cancell?ed)[^\n]*\n\s*([^\n]{6,200})/i)?.[1] ?? null;
   draft.tourTitle =
-    clean(firstLabelled(body, ["Tour", "Activity", "Product", "Option"])) ?? clean(bookedTitle);
+    clean(firstLabelled(body, ["Tour Name", "Tour", "Activity", "Product", "Option"])) ?? clean(bookedTitle);
   draft.selectedRate = clean(firstLabelled(body, ["Option", "Tour option"]));
   // GYG flattens "Name email: phone Language: …" onto one line.
   const customerLine = firstLabelled(body, ["Main customer", "Lead Traveler Name", "Lead traveller name", "Lead traveler", "Customer", "Name"]);
@@ -578,21 +578,23 @@ export function parseOta(input: EmailInput, channel: SourceChannel, forceReview 
   const email = firstLabelled(body, ["Email", "E-mail", "Customer email"]) ?? customerLine;
   draft.customerEmail = email?.match(/[^\s<>:]+@[^\s<>:]+/)?.[0]?.toLowerCase() ?? null;
   draft.customerPhone =
-    clean(firstLabelled(body, ["Phone", "Phone number", "Mobile"])) ??
+    clean(firstLabelled(body, ["Phone", "Phone number", "Mobile"])?.match(/\+?\d[\d\s()-]{7,}\d/)?.[0] ?? null) ??
     customerLine?.match(/\+?\d[\d\s()-]{7,}\d/)?.[0]?.trim() ??
     null;
   const dateLine = firstLabelled(body, ["Travel Date", "Date", "Activity date", "Tour date"]) ?? subject;
   const d = parseDateToken(dateLine);
   draft.date = d.date;
-  draft.startTime = d.time ?? clean(firstLabelled(body, ["Time", "Start time"]));
+  draft.startTime = d.time ?? clean(firstLabelled(body, ["Time", "Start time"])) ??
+    (firstLabelled(body, ["Tour Grade"])?.match(/\b([01]?\d|2[0-3]):[0-5]\d\b/)?.[0] ?? null);
+  draft.productCode = clean(firstLabelled(body, ["Product Code"]));
   const pax = parsePax(firstLabelled(body, ["Number of participants", "Participants", "Travelers", "Travellers"]));
   draft.pax = pax.total;
   draft.paxBreakdown = pax.breakdown;
   draft.pickup = clean(
-    firstLabelled(body, ["Pickup", "Pick-up", "Pickup location", "Meeting point"])?.replace(/\s*Open in Google Maps\s*$/i, "") ?? null,
+    firstLabelled(body, ["Hotel Pickup", "Pickup", "Pick-up", "Pickup location", "Meeting point"])?.replace(/\s*Open in Google Maps\s*$/i, "") ?? null,
   );
-  draft.language = clean(firstLabelled(body, ["Language", "Tour language"]));
-  const money = parseMoney(firstLabelled(body, ["Price", "Total price", "Net price", "Amount"]));
+  draft.language = clean(firstLabelled(body, ["Tour Language", "Language", "Tour language"])?.replace(/\s*-\s*Guide$/i, "") ?? null);
+  const money = parseMoney(firstLabelled(body, ["Price", "Total price", "Net Rate", "Net price", "Amount"]));
   draft.amountPaid = money.amount;
   draft.currency = money.currency;
   // The channel collects payment from the guest.
@@ -669,6 +671,7 @@ function parseBookingEmailInner(input: EmailInput): ParseResult {
 
   // Viator/Tripadvisor emails relayed through Bókun or forwarded by the team
   // keep their own channel.
+  // Forwarded copies keep the original sender in the forwarded header.
   const fromViator = /viator\.com|tripadvisor\./i.test(input.from ?? "");
   const fromBokun = !fromViator && BOKUN_SENDERS.some((re) => re.test(input.from ?? ""));
   if (fromBokun) return parseBokun(input);
