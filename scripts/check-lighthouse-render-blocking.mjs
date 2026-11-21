@@ -9,7 +9,7 @@ import { readFileSync, readdirSync } from "node:fs";
 import { join } from "node:path";
 
 const dir = ".lighthouseci";
-const files = readdirSync(dir).filter((name) => name.endsWith(".report.json"));
+// LHCI collect writes lhr-<timestamp>.json; also support filesystem upload reports.\nconst files = readdirSync(dir).filter(\n  (name) => /^lhr-.*\\.json$/.test(name) || name.endsWith(".report.json"),\n);
 if (files.length === 0) {
   console.error("No Lighthouse JSON reports found; failing closed.");
   process.exit(1);
