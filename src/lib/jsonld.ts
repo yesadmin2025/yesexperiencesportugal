@@ -70,9 +70,9 @@ export function organizationLd() {
     slogan:
       "Portugal, around you — private, personalized journeys with local hidden gems, designed in real time.",
     keywords:
-      "private tours Portugal, personalized Portugal tours, local Portugal tours, hidden gems Portugal, Portugal around you, real-time tour builder, interactive private tour design, Arrábida wine tour, Costa Vicentina private tour, Vinho de Talha Alentejo, Tróia Comporta private day, Travel Designer Portugal",
+      "Portugal travel designer, bespoke Portugal itineraries, Experience Studio, design your own private day Portugal, private tours Portugal, personalized Portugal experiences, curated Signature days, hidden gems Portugal, Arrábida wine tour, Costa Vicentina private day, Vinho de Talha Alentejo, Tróia Comporta private day",
     disambiguatingDescription:
-      "Official website and current contact identity for YES Experiences Portugal, licensed Portuguese tour operator RNAAT nº 31/2023, based in Sesimbra.",
+      "YES Experiences Portugal is a private experience and travel design brand offering the interactive Experience Studio, curated Signature days and local Travel Designer journeys across Portugal. Licensed operator RNAAT nº 31/2023, based in Sesimbra.",
     knowsAbout: [
       "Private personalized tours in Portugal",
       "Local Portugal tours with hidden gems",
