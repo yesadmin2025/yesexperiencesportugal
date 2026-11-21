@@ -8,7 +8,8 @@ import { SITEMAP_STATIC_ROUTES } from "../src/generated/sitemap-routes";
  *    is present in the served sitemap.xml — so a newly published page can
  *    never be silently missing from it.
  * 2. Every <loc> in sitemap.xml resolves to a direct HTTP 200 on the running
- *    app — no redirects, no 404s, no noindex pages.
+ *    app — no redirects or 404s. Production-indexability is checked only
+ *    on the production origin; the local preview intentionally sends noindex.
  * 3. Every HTML <loc> is self-canonical on the production origin.
  */
 
@@ -45,6 +46,12 @@ test.describe("sitemap route coverage", () => {
   test("every sitemap URL returns a direct 200", async ({ baseURL }) => {
     const paths = await fetchSitemapPaths(baseURL!);
     expect(paths.length).toBeGreaterThan(20);
+    // CI serves localhost with X-Robots-Tag: noindex to prevent indexing of
+    // previews. That is intentional; only the public production host must
+    // be indexable. Keep checking real production headers whenever the test
+    // points to the production origin.
+    const checkPublicIndexability =
+      new URL(baseURL!).hostname === new URL(CANONICAL_ORIGIN).hostname;
 
     const api = await request.newContext({
       baseURL,
@@ -63,7 +70,9 @@ test.describe("sitemap route coverage", () => {
 
           if (status === 200) {
             const xRobots = (res.headers()["x-robots-tag"] ?? "").toLowerCase();
-            if (xRobots.includes("noindex")) bad.push(`${p} → X-Robots-Tag noindex`);
+            if (checkPublicIndexability && xRobots.includes("noindex")) {
+              bad.push(`${p} → X-Robots-Tag noindex`);
+            }
 
             const contentType = res.headers()["content-type"] ?? "";
             if (contentType.includes("text/html")) {
@@ -72,7 +81,7 @@ test.describe("sitemap route coverage", () => {
                 html.match(/<meta\b[^>]*name=["']robots["'][^>]*content=["']([^"']+)["'][^>]*>/i)?.[1] ??
                 html.match(/<meta\b[^>]*content=["']([^"']+)["'][^>]*name=["']robots["'][^>]*>/i)?.[1] ??
                 "";
-              if (metaRobots.toLowerCase().includes("noindex")) {
+              if (checkPublicIndexability && metaRobots.toLowerCase().includes("noindex")) {
                 bad.push(`${p} → meta robots noindex`);
               }
 
