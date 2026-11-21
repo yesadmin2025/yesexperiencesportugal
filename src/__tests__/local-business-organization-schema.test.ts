@@ -62,6 +62,8 @@ describe("Organization / LocalBusiness structured data", () => {
     expect(org.email).toBe(EMAIL);
     expect(org.contactPoint.email).toBe(EMAIL);
     expect(org.url).toBe(`${WEBSITE_URL}/`);
+    expect(org.identifier.propertyID).toBe("RNAAT");
+    expect(org.identifier.name).toBe("Registo Nacional dos Agentes de Animação Turística");
     expect(org.disambiguatingDescription).toBe(
       "YES Experiences Portugal is a private experience and travel design brand offering the interactive Experience Studio, curated Signature days and local Travel Designer journeys across Portugal. Licensed operator RNAAT nº 31/2023, based in Sesimbra.",
     );
