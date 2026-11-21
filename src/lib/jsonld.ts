@@ -245,7 +245,7 @@ export function organizationLd() {
       "@type": "PropertyValue",
       propertyID: "RNAAT",
       value: "nº 31/2023",
-      name: "Registo Nacional dos Agentes de Viagens e Turismo",
+      name: "Registo Nacional dos Agentes de Animação Turística",
       description: "Licensed Portuguese tour operator — RNAAT nº 31/2023.",
     },
     address: STRUCTURED_ADDRESS,
