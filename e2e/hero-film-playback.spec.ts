@@ -106,6 +106,14 @@ async function probePlayback(page: Page): Promise<PlaybackProbe> {
       if (!v.paused && v.currentTime > beforeT + 0.05) break;
     }
 
+    // Measure the steady-state film, not the first moments of page hydration,
+    // image/poster transitions and decoder warm-up. This keeps the original
+    // strict dropped-frame budget (3% desktop, 5% mobile) intact.
+    // An actual persistent playback performance problem will still fail.
+    if (!v.paused && v.currentTime > 0) {
+      await new Promise<void>((resolve) => setTimeout(resolve, 1800));
+    }
+
     const startTime = v.currentTime;
     const startQuality =
       typeof v.getVideoPlaybackQuality === "function" ? v.getVideoPlaybackQuality() : null;
