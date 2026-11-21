@@ -85,7 +85,7 @@ async function enterLogisticsReview(page: Page) {
   // Hydration canonicalizes the legacy Logistics phase to the unified
   // Your Day screen. Open the operational editor through the real UI.
   await expect(root).toHaveAttribute("data-phase", "storyboard");
-  await page.getByRole("button", { name: "Build my bookable day" }).click();
+  await page.getByTestId("studio-v3-edit-operational").click();
   await expect(root).toHaveAttribute("data-phase", "logistics", { timeout: 15_000 });
 
   // P7 deliberately occupies the Logistics slot with a one-tap Director's
