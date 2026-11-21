@@ -89,10 +89,10 @@ describe("brand-critical SERP snippets", () => {
   it("homepage title and description are locked", () => {
     const home = read("src/routes/index.tsx");
     expect(home).toContain(
-      '"YES Experiences Portugal — Private Tours & Tailored Journeys"',
+      '"YES Experiences Portugal | Travel Designer & Studio"',
     );
     expect(home).toContain(
-      "Private Portugal days, wine journeys and off-the-beaten-path escapes. Explore Signature days or design your own in our real-time Studio. Reserve online.",
+      "Design private Portugal days in the YES Experience Studio, plan bespoke multi-day journeys with a local Travel Designer, or reserve Signature experiences.",
     );
   });
 
@@ -134,6 +134,28 @@ describe("brand-critical SERP snippets", () => {
     for (const text of [article!.title, article!.metaDescription, article!.standfirst]) {
       expect(text.toLowerCase()).not.toMatch(/small[- ]group/);
     }
+  });
+});
+
+describe("brand identity and structured homepage FAQ parity", () => {
+  it("keeps the brand's Experience Studio and Travel Designer visible in metadata", () => {
+    const home = read("src/routes/index.tsx");
+    const about = read("src/routes/about.tsx");
+    expect(home).toContain("YES Experiences Portugal | Travel Designer & Studio");
+    expect(home).toContain("YES Experience Studio");
+    expect(home).toContain("bespoke multi-day journeys with a local Travel Designer");
+    expect(about).toContain("About YES Experiences Portugal | Travel Design & Studio");
+    expect(about).toContain("founder-led travel design brand");
+  });
+
+  it("homepage FAQ structured questions match those presented to visitors", async () => {
+    const { HOMEPAGE_FAQ } = await import("@/content/faq-data");
+    const visible = read("src/components/FAQ.tsx");
+    const visibleQuestions = [...visible.matchAll(/q:\s*"([^"]+)"/g)].map((match) => match[1]);
+    expect(HOMEPAGE_FAQ.map((faq) => faq.q)).toEqual(visibleQuestions);
+    expect(HOMEPAGE_FAQ.map((faq) => faq.q)).not.toContain("What is YES Experiences Portugal best known for?");
+    expect(visible).toContain("Travel Designer");
+    expect(visible).toContain("Studio");
   });
 });
 
