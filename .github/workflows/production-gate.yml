@@ -48,7 +48,16 @@ jobs:
       # This protected gate tests actual navigation + checkout paths rather
       # than timing out after running hundreds of unrelated E2E assertions.
       - name: Smoke — mobile, Studio, checkout (test mode), confirmation
+        # A dedicated CI Supabase test project is required for server-only
+        # price policies; NEVER use a production service-role key on PR code.
+        env:
+          SUPABASE_URL: ${{ secrets.CI_SUPABASE_URL }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.CI_SUPABASE_SERVICE_ROLE_KEY }}
         run: |
+          if [[ -z "$SUPABASE_URL" || -z "$SUPABASE_SERVICE_ROLE_KEY" ]]; then
+            echo '::error::Configure CI_SUPABASE_URL and CI_SUPABASE_SERVICE_ROLE_KEY for a test-only Supabase project. No production credentials or price fallbacks are permitted.'
+            exit 1
+          fi
           bunx playwright test \
             e2e/homepage-smart-start.spec.ts \
             e2e/studio-canonical-routing.spec.ts \

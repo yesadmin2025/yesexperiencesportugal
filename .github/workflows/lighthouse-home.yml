@@ -97,7 +97,7 @@ jobs:
           echo "Node SSR homepage returned HTTP 200"
 
       - name: Install Lighthouse CI
-        run: npm install -g @lhci/cli@0.14.x
+        run: npm install -g @lhci/cli@0.16.1
 
       - name: Run Lighthouse CI (${{ matrix.preset }})
         run: lhci autorun --config=${{ matrix.config }}
