@@ -112,12 +112,6 @@
             "maxNumericValue": 6000
           }
         ],
-        "render-blocking-resources": [
-          "error",
-          {
-            "maxNumericValue": 300
-          }
-        ],
         "performance-budget": [
           "error",
           {}

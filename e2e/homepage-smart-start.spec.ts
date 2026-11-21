@@ -48,6 +48,9 @@ test.describe("homepage conversion paths", () => {
     // Wait for the homepage load event before the interaction, then assert
     // that the *real click* navigates; never replace it with page.goto().
     await page.waitForLoadState("load");
+    // Full load can precede hydration in the SSR dev server. The public
+    // app explicitly signals when links are interactive; never click early.
+    await page.waitForFunction(() => (window as Window & { __APP_READY__?: boolean }).__APP_READY__ === true, undefined, { timeout: 30_000 });
     await expect(studio).toHaveAttribute("href", "/studio");
     await studio.scrollIntoViewIfNeeded();
     await studio.click();

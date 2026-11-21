@@ -104,6 +104,12 @@ jobs:
         env:
           LHCI_BUILD_CONTEXT__CURRENT_HASH: ${{ github.sha }}
 
+      # Lighthouse reports N/A for render-blocking when there are zero candidates.
+      # An LHCI numeric assertion interprets N/A as NaN and fails. Check the
+      # same 300ms limit explicitly, treating only genuine N/A as zero.
+      - name: Render-blocking resources budget (300ms)
+        run: node scripts/check-lighthouse-render-blocking.mjs
+
       - name: Upload Lighthouse report
         if: always()
         uses: actions/upload-artifact@v4

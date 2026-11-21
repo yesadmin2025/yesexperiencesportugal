@@ -82,23 +82,27 @@ async function scrollThroughPage(page: Page) {
   const origin = new URL(page.url()).pathname;
   const { step, height } = await page.evaluate(() => ({
     step: Math.max(1, Math.round(window.innerHeight * 0.8)),
-    height: document.body.scrollHeight,
+    height: document.documentElement.scrollHeight,
   }));
   for (let y = 0; y < height; y += step) {
     await page.evaluate((offset) => window.scrollTo(0, offset), y);
     await page.waitForTimeout(150);
     expect(new URL(page.url()).pathname, "route changed during lazy-image audit").toBe(origin);
   }
-  await page.evaluate(() => window.scrollTo(0, document.body.scrollHeight));
+  await page.evaluate(() => window.scrollTo(0, document.documentElement.scrollHeight));
   await page.waitForTimeout(400);
   await page.evaluate(() => window.scrollTo(0, 0));
   await page.waitForTimeout(700);
 }
 for (const route of ROUTES) {
   test(`layout stability + image sizing — ${route.name}`, async ({ page }) => {
+    // Long editorial pages require multiple deliberate scroll steps; the
+    // CLS threshold remains exactly 0.1, independent of this test timeout.
+    test.setTimeout(90_000);
     await page.setViewportSize({ width: 393, height: 852 });
     await startCls(page);
     await page.goto(route.path, { waitUntil: "domcontentloaded" });
+    await page.waitForFunction(() => (window as Window & { __APP_READY__?: boolean }).__APP_READY__ === true, undefined, { timeout: 30_000 });
     await page.waitForLoadState("networkidle", { timeout: 10_000 }).catch(() => undefined);
 
     await scrollThroughPage(page);

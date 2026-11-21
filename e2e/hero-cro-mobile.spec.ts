@@ -8,6 +8,8 @@ test("mobile hero CTAs are tappable and Travel Designer remains reachable", asyn
   // Test the normal public homepage, not the retired forced-last-frame query.
   // Wait for load so this click tests a hydrated, usable navigation surface.
   await page.goto("/", { waitUntil: "load" });
+  // The SSR document can finish loading before client-side route handlers hydrate.
+  await page.waitForFunction(() => (window as Window & { __APP_READY__?: boolean }).__APP_READY__ === true, undefined, { timeout: 30_000 });
   const hero = page.locator('[data-section="hero"]');
   const descriptor = hero.locator('[data-hero-field="subheadline"]');
   await expect(descriptor).toBeVisible();
@@ -21,7 +23,7 @@ test("mobile hero CTAs are tappable and Travel Designer remains reachable", asyn
     { selector: '[data-hero-field="secondaryCta"]', href: "/experiences" },
   ]) {
     const link = hero.locator(selector);
-    await expect(link).toBeVisible();
+    await expect(link).toBeVisible({ timeout: 15_000 });
     await expect(link).toHaveAttribute("href", href);
     const box = await link.boundingBox();
     expect(box, `${href} CTA must have a rendered box`).not.toBeNull();
