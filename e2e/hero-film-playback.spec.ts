@@ -33,16 +33,25 @@ type PlaybackProbe = {
 
 async function waitForVideoMetadata(page: Page) {
   await page.locator(VIDEO_SELECTOR).waitFor({ state: "attached" });
-  await page.evaluate(
-    (sel) =>
-      new Promise<void>((resolve) => {
-        const v = document.querySelector(sel) as HTMLVideoElement | null;
-        if (!v) return resolve();
-        if (v.readyState >= 1) return resolve();
-        v.addEventListener("loadedmetadata", () => resolve(), { once: true });
-      }),
+  // Film is attached after load/idle by design; do not wait indefinitely
+  // for loadedmetadata in a browser without the deployed video codec.
+  await page.waitForFunction(
+    (sel) => {
+      const video = document.querySelector(sel) as HTMLVideoElement | null;
+      return Boolean(video?.readyState && video.readyState >= 1);
+    },
     VIDEO_SELECTOR,
-  );
+    { timeout: 15_000 },
+  ).catch(async (error) => {
+    const diagnosis = await page.locator(VIDEO_SELECTOR).evaluate((video: HTMLVideoElement) => ({
+      src: video.getAttribute("src"),
+      currentSrc: video.currentSrc,
+      networkState: video.networkState,
+      readyState: video.readyState,
+      mediaError: video.error?.message ?? null,
+    }));
+    throw new Error(`Hero video metadata unavailable: ${JSON.stringify(diagnosis)}. ${String(error)}`);
+  });
 }
 
 /**
