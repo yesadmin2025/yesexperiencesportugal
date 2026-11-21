@@ -1520,6 +1520,19 @@ export function SignaturePriceCard({
             </a>
           )}
 
+          {/* The operational facts remain editable after the itinerary is
+              composed. Preserve the existing Studio pricing/availability
+              preflight when the traveller corrects them before payment. */}
+          <button
+            type="button"
+            onClick={onRefine}
+            data-testid="studio-v3-edit-booking-details"
+            className="inline-flex min-h-[44px] items-center justify-center px-3 py-2 text-[11px] uppercase tracking-[0.14em] font-semibold underline underline-offset-4 focus:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)]"
+            style={{ color: "var(--charcoal)" }}
+          >
+            Edit date, pickup &amp; guests
+          </button>
+
           {hasPrice && !dateExact ? (
             <p
               className="text-[11px] italic"
