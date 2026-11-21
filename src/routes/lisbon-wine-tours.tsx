@@ -30,7 +30,7 @@ import arrabidaWineImage from "@/assets/tours/arrabida-wine-allinclusive/hero.jp
 
 const PATH = "/lisbon-wine-tours";
 const PAGE_URL = `${WEBSITE_URL}${PATH}`;
-const TITLE = "Private Wine Tours from Lisbon — Family Cellars & Lunch | YES";
+const TITLE = "Lisbon Wine Tours | Private Arrábida & Alentejo Days | YES";
 
 const crumbs = [
   { name: "Home", path: "/" },
@@ -42,16 +42,14 @@ const WINE_IDS = [
   "azeitao-cheese",
   "evora-alentejo",
   "roman-heritage-alentejo",
-  "tiles-workshop",
-  "sintra-cascais",
 ] as const;
 
 const WINE_DAYS = WINE_IDS.map((id) => signatureTours.find((t) => t.id === id)).filter(
   (t): t is (typeof signatureTours)[number] => Boolean(t),
 );
 
-const WINE_FROM = Math.min(...WINE_DAYS.map((t) => t.priceFrom));
-const DESCRIPTION = `Private wine days from Lisbon to Arrábida, Azeitão or the Alentejo: family cellars, cheese, lunch and hotel pickup, from €${WINE_FROM} per person.`;
+const DESCRIPTION =
+  "Private wine tours from Lisbon to Arrábida, Azeitão and Alentejo. Compare winery visits, hotel pickup and inclusions; check dates and prices before booking.";
 
 const BOOKABLE_IDS = [
   "arrabida-wine-allinclusive",
@@ -69,8 +67,8 @@ const REGIONS = [
     body: "Ninety minutes inland: cork oaks, marble villages and wine still fermented in clay amphorae — talha, a practice inherited from the Romans and kept alive by a handful of families.",
   },
   {
-    name: "Colares & the Sintra coast",
-    body: "The Atlantic side, where vines grow in sand behind the dunes. We fold a tasting into a Sintra and Cascais day rather than pretending it fills one on its own.",
+    name: "Vidigueira & Vinho de Talha",
+    body: "A deeper Alentejo wine journey through Vila de Frades and Vidigueira, where clay-amphora winemaking remains a living family tradition. Explore it on our separate Roman Heritage Signature.",
   },
 ] as const;
 
@@ -154,15 +152,15 @@ function LisbonWineTours() {
             Azeitão · Arrábida · Alentejo
           </Eyebrow>
           <SectionTitle as="h1" size="anchor" spacing="loose">
-            Lisbon wine tours,{" "}
+            Private wine tours from Lisbon,{" "}
             <SectionTitle.Em>
-              at the tables of the families who make it.
+              with local wineries and your own guide.
             </SectionTitle.Em>
           </SectionTitle>
           <p className="page-header-support mt-6 text-[16px] md:text-[17px] leading-[1.8] text-[color:var(--charcoal-soft)]">
-            In short: private wine days from Lisbon, 7 to 11 hours door to door, with hotel pickup,
-            your own host and vehicle, and instant online confirmation. Pick a day below and choose
-            your date.
+            Choose between four private wine experiences in Arrábida, Azeitão and Alentejo, with
+            winery visits, tastings, hotel pickup and your own local guide. Lunch is included only
+            where stated on the individual tour. Compare the routes, check prices and choose a date.
           </p>
           <div className="mt-8 flex flex-col gap-3 sm:flex-row">
             <CtaButton href="#reserve">Reserve a wine day</CtaButton>
@@ -184,10 +182,11 @@ function LisbonWineTours() {
         <div className="container-x">
           <Eyebrow>The wine days</Eyebrow>
           <SectionTitle as="h2" spacing="tight">
-            Wine days you can <SectionTitle.Em>reserve today</SectionTitle.Em>.
+            Four private wine days, <SectionTitle.Em>with dates and prices</SectionTitle.Em>.
           </SectionTitle>
           <p className="mt-5 max-w-2xl text-[15.5px] leading-[1.8] text-[color:var(--charcoal-soft)]">
-            Still deciding between Arrábida, Azeitão and the Alentejo? Our guide to the{" "}
+            Compare our actual bookable wine-focused tours below. Still deciding between Arrábida,
+            Azeitão and the Alentejo? Our guide to the{" "}
             <Link
               to="/local-stories/$slug"
               params={{ slug: "best-wine-tours-from-lisbon" }}
@@ -232,7 +231,7 @@ function LisbonWineTours() {
         <div className="container-x max-w-4xl">
           <Eyebrow>Three wine countries</Eyebrow>
           <SectionTitle as="h2" spacing="tight">
-            What is <SectionTitle.Em>within reach of Lisbon</SectionTitle.Em>.
+            Three wine routes <SectionTitle.Em>within reach of Lisbon</SectionTitle.Em>.
           </SectionTitle>
           <div className="mt-8 grid gap-5 sm:grid-cols-3">
             {REGIONS.map((r) => (
