@@ -50,7 +50,33 @@ async function waitForVideoMetadata(page: Page) {
       readyState: video.readyState,
       mediaError: video.error?.message ?? null,
     }));
-    throw new Error(`Hero video metadata unavailable: ${JSON.stringify(diagnosis)}. ${String(error)}`);
+    // Preserve the exact HTTP evidence when a media decoder rejects the file.
+    // An HTML fallback at /video/... can otherwise look like a codec failure.
+    let delivery: Record<string, unknown> = {};
+    try {
+      const response = await page.request.get(diagnosis.currentSrc || diagnosis.src || "/", {
+        timeout: 10_000,
+        headers: { Range: "bytes=0-63" },
+      });
+      const body = await response.body();
+      delivery = {
+        status: response.status(),
+        contentType: response.headers()["content-type"] ?? null,
+        contentRange: response.headers()["content-range"] ?? null,
+        contentLength: body.byteLength,
+        magicHex: Buffer.from(body.subarray(0, 24)).toString("hex"),
+      };
+    } catch (requestError) {
+      delivery = { requestError: String(requestError) };
+    }
+    const browser = page.context().browser();
+    throw new Error(
+      `Hero video metadata unavailable: ${JSON.stringify({
+        ...diagnosis,
+        delivery,
+        browserVersion: browser?.version() ?? null,
+      })}. ${String(error)}`,
+    );
   });
 }
 
