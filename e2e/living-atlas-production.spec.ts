@@ -88,13 +88,21 @@ async function expectNoInternalCopy(page: Page) {
 }
 
 async function restoreStudioState(page: Page, state: Record<string, unknown>) {
-  await page.goto("/studio");
-  await waitForStudioHydration(page);
-  await page.evaluate(
-    ({ key, value }) => window.sessionStorage.setItem(key, JSON.stringify(value)),
+  // Restore a tab-scoped, non-sensitive draft BEFORE React/TanStack hydration,
+  // as happens for a returning customer. Post-hydration writes can race with
+  // the app's own state persistence and are flaky on slower CI viewports.
+  // The one-time marker ensures a later reload genuinely tests persistence:
+  // the test cannot secretly re-seed a lost draft after the first navigation.
+  await page.addInitScript(
+    ({ key, value }) => {
+      const seeded = "__yes_studio_p0_seed_once";
+      if (window.sessionStorage.getItem(seeded) === "1") return;
+      window.sessionStorage.setItem(key, JSON.stringify(value));
+      window.sessionStorage.setItem(seeded, "1");
+    },
     { key: STORAGE_KEY, value: state },
   );
-  await page.reload();
+  await page.goto("/studio", { waitUntil: "domcontentloaded" });
   await waitForStudioHydration(page);
 }
 
