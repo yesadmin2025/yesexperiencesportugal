@@ -56,8 +56,8 @@ jobs:
       - name: Install Google Chrome for H.264 film playback tests
         run: bunx playwright install --with-deps chrome
 
-      - name: Run hero cross-fade + timeline specs (Chromium)
-        run: bunx playwright test e2e/hero-chapter-crossfade.spec.ts e2e/hero-chapter-crossfade-mobile.spec.ts e2e/hero-chapter-timeline.spec.ts --project=mobile-chromium --project=desktop-chromium
+      - name: Run current hero reveal and CTA specs (Chromium)
+        run: bunx playwright test e2e/hero-v4-reveal.spec.ts e2e/hero-cro-mobile.spec.ts --project=mobile-chromium --project=desktop-chromium
         env:
           CI: "true"
 
