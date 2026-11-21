@@ -20,7 +20,8 @@ export default defineConfig({
       use: {
         ...devices["Pixel 5"],
         channel: "chrome",
-        launchOptions: undefined,
+        // Explicitly override any inherited executablePath to force installed Google Chrome.
+        launchOptions: {},
       },
     },
     {
@@ -29,7 +30,8 @@ export default defineConfig({
         ...devices["Desktop Chrome"],
         viewport: { width: 1280, height: 720 },
         channel: "chrome",
-        launchOptions: undefined,
+        // Explicitly override any inherited executablePath to force installed Google Chrome.
+        launchOptions: {},
       },
     },
   ],
