@@ -45,6 +45,7 @@ export default defineConfig({
             "lucide-react",
             "sonner",
             "react-hook-form",
+            "prop-types",
             "react-day-picker",
             "leaflet",
             "leaflet.markercluster",
