@@ -64,6 +64,14 @@ jobs:
           NITRO_PRESET: node_server
         run: bun run build
 
+      # Nitro was built with node_server for the CI audit. The Vite preview
+      # served HTTP 500 even with this adapter and could not be audited.
+      # Require a valid entrypoint before Lighthouse starts the real SSR app.
+      - name: Verify built Node SSR entrypoint
+        run: |
+          test -f .output/server/index.mjs
+          node --check .output/server/index.mjs
+
       - name: Install Lighthouse CI
         run: npm install -g @lhci/cli@0.14.x
 
