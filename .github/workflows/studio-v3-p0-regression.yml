@@ -13,7 +13,7 @@ concurrency:
 jobs:
   studio-v3-p0:
     name: Living Atlas P0 regression (${{ matrix.project }})
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 20
     strategy:
       fail-fast: false
