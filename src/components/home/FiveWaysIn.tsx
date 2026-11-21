@@ -167,6 +167,11 @@ export function FiveWaysIn() {
           <SectionTitle id="choose-path-title" className="five-ways-heading scene-title">
             Five ways to <SectionTitle.Em>shape your Portugal.</SectionTitle.Em>
           </SectionTitle>
+          <p className="mx-auto mt-5 max-w-2xl text-[15px] leading-[1.7] text-[color:var(--charcoal-soft)]">
+            YES Experiences Portugal is a local travel design brand. Create a private day in our
+            Experience Studio, choose a curated Signature experience, or plan a bespoke multi-day
+            journey with a local Travel Designer.
+          </p>
         </Scene>
 
         <Scene
