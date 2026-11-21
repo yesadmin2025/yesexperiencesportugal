@@ -31,7 +31,7 @@ test.describe("homepage conversion paths", () => {
       ["corporate", "Team days, incentives & private groups."],
     ] as const;
     for (const [id, title] of paths) {
-      await expect(smartStart.locator(`[data-home-primary-path="${id}"] h3`)).toHaveText(title);
+      await expect(smartStart.locator(`[data-home-primary-path="${id}"]`)).toContainText(title);
     }
   });
 

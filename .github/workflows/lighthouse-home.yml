@@ -59,6 +59,9 @@ jobs:
         # Increase memory for the build only; do not weaken Lighthouse budgets.
         env:
           NODE_OPTIONS: --max-old-space-size=4096
+          # Only the CI audit uses a standalone Node preview. The deployed
+          # Lovable/Cloudflare production adapter is left untouched.
+          NITRO_PRESET: node_server
         run: bun run build
 
       - name: Install Lighthouse CI

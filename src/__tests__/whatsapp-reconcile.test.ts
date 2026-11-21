@@ -52,7 +52,7 @@ function makeDb(seed: Record<string, Row[]> = {}) {
 
   function query(table: string) {
     const preds: Array<(row: Row) => boolean> = [];
-    let rows = () => tables[table]!.filter((row) => preds.every((pred) => pred(row)));
+    const rows = () => tables[table]!.filter((row) => preds.every((pred) => pred(row)));
     let selected: Row[] | null = null;
     let mode: "select" | "insert" | "update" | "upsert" = "select";
     let payload: Row | Row[] | null = null;

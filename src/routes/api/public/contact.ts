@@ -79,6 +79,8 @@ export const Route = createFileRoute("/api/public/contact")({
         // original text intact and add bounded, non-sensitive provenance only
         // to the internal record/notification, never the guest receipt.
         const attributionLines = attributionKeys.flatMap((key) => {
+          // Control chars are intentionally removed from untrusted attribution.
+          // eslint-disable-next-line no-control-regex
           const value = data.attribution?.[key]?.replace(/[\r\n\x00-\x1f]/g, " ").trim();
           return value ? [`${key}: ${value}`] : [];
         });

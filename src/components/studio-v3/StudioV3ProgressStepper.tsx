@@ -59,7 +59,6 @@ export function beatIndexForPhase(phase: StudioV3Phase): number | null {
     case "who":
     case "interests":
     case "rhythm":
-    // Legacy/hydration-only context questions.
     case "destination":
     case "occasion":
     case "considerations":
@@ -72,7 +71,6 @@ export function beatIndexForPhase(phase: StudioV3Phase): number | null {
     case "guests":
     case "refinement":
     case "storyboard":
-    // Legacy ids that canonicalize onto the unified "Your Day" surface.
     case "map":
     case "confirmation":
     case "investment":
