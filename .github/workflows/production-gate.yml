@@ -22,10 +22,10 @@ jobs:
       # Vite embeds VITE_* at BUILD time. Override the tracked production .env
       # with the isolated CI Supabase project for both SSR and browser code.
       VITE_PAYMENTS_ENVIRONMENT: sandbox
-      VITE_SUPABASE_URL: ${{ secrets.CI_SUPABASE_URL }}
+      VITE_SUPABASE_URL: "https://mpokhxuouzbvfjmacvhh.supabase.co"
       VITE_SUPABASE_PUBLISHABLE_KEY: "sb_publishable_ts419iEoUjoQV4ipN4cobQ_NGwIcIym"
       VITE_SUPABASE_PROJECT_ID: "mpokhxuouzbvfjmacvhh"
-      SUPABASE_URL: ${{ secrets.CI_SUPABASE_URL }}
+      SUPABASE_URL: "https://mpokhxuouzbvfjmacvhh.supabase.co"
       SUPABASE_PUBLISHABLE_KEY: "sb_publishable_ts419iEoUjoQV4ipN4cobQ_NGwIcIym"
     steps:
       - uses: actions/checkout@v4
@@ -58,11 +58,11 @@ jobs:
         # A dedicated CI Supabase test project is required for server-only
         # price policies; NEVER use a production service-role key on PR code.
         env:
-          SUPABASE_URL: ${{ secrets.CI_SUPABASE_URL }}
+          SUPABASE_URL: "https://mpokhxuouzbvfjmacvhh.supabase.co"
           SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.CI_SUPABASE_SERVICE_ROLE_KEY }}
         run: |
-          if [[ -z "$SUPABASE_URL" || -z "$SUPABASE_SERVICE_ROLE_KEY" ]]; then
-            echo '::error::Configure CI_SUPABASE_URL and CI_SUPABASE_SERVICE_ROLE_KEY for a test-only Supabase project. No production credentials or price fallbacks are permitted.'
+          if [[ -z "$SUPABASE_SERVICE_ROLE_KEY" ]]; then
+            echo '::error::Configure CI_SUPABASE_SERVICE_ROLE_KEY for the isolated Yes test Supabase project. Never use production credentials.'
             exit 1
           fi
           if [[ "$SUPABASE_URL" != "https://mpokhxuouzbvfjmacvhh.supabase.co" || "$VITE_SUPABASE_URL" != "$SUPABASE_URL" ]]; then
