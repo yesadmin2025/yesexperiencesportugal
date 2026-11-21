@@ -199,42 +199,30 @@ test("a restored composition reaches Guest Details and checkout exactly once", a
   await expect(page).toHaveURL(/\/studio(?:\?|$)/);
 });
 
-test("adaptive refinement appears only when it can change a supported direction", async ({
-  page,
-}) => {
+test("adaptive refinement appears only for a genuine supported direction", async ({ page }) => {
+  // Arrábida offers both honest coastal directions: water and wild beaches.
+  // The current public journey collects Logistics before the optional
+  // Director; test the Director directly rather than assuming the old order.
   const relevant = {
     ...COMPOSED_STATE,
-    phase: "rhythm",
-    rhythm: null,
+    phase: "refinement",
+    rhythm: "balanced",
     feeling: "coastal",
-    interests: ["coast"],
+    interests: ["coast", "gastronomy"],
     refinement: null,
     destinationIntent: "arrabida-setubal-azeitao",
+    questionHistory: [],
   };
   await restoreStudioState(page, relevant);
   const root = page.locator('[data-testid="studio-v3-root"]').first();
-  await page.locator('[data-option-id="balanced"]').click();
-  await dismissReaction(page);
-  await expect(page.getByTestId("studio-v3-refinement")).toBeVisible({ timeout: 10_000 });
   await expect(root).toHaveAttribute("data-phase", "refinement");
+  await expect(page.getByTestId("studio-v3-refinement")).toBeVisible({ timeout: 10_000 });
 
-  const fixedDestination = {
-    ...relevant,
-    destinationIntent: "alentejo-evora-wine",
-  };
-  await page.evaluate(
-    ({ key, value }) => window.sessionStorage.setItem(key, JSON.stringify(value)),
-    { key: STORAGE_KEY, value: fixedDestination },
-  );
-  await page.reload();
-  await waitForStudioHydration(page);
-  await page.locator('[data-option-id="balanced"]').click();
-  await dismissReaction(page);
-  await expect
-    .poll(async () => root.getAttribute("data-phase"), { timeout: 10_000 })
-    .not.toBe("rhythm");
-  await expect(root).not.toHaveAttribute("data-phase", "refinement");
-  await expect(page.getByTestId("studio-v3-refinement")).toHaveCount(0);
+  // A destination bound to a single real Signature must never fabricate the
+  // same optional choice. Validate the canonical phase decision itself.
+  const { isPhaseRelevant } = await import("../src/components/studio-v3/curation");
+  const fixedDestination = { ...relevant, destinationIntent: "alentejo-evora-wine" };
+  expect(isPhaseRelevant("refinement", fixedDestination as Parameters<typeof isPhaseRelevant>[1])).toBe(false);
 });
 
 test("the retired preview URL resolves to the canonical public Studio", async ({ page }) => {

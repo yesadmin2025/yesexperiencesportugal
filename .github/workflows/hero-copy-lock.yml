@@ -134,7 +134,7 @@ jobs:
           retention-days: 14
 
   qa-report:
-    name: hero-copy-qa — preview/prod drift JSON report
+    name: hero-copy-qa — published-domain drift report
     runs-on: ubuntu-24.04
     timeout-minutes: 10
     # Independent of unit/e2e: the source-level lock can pass while a
@@ -237,7 +237,11 @@ jobs:
         run: |
           mkdir -p qa-reports qa-logs
           set +e
+          # The Lovable preview returns 401 to unauthenticated CI. The
+          # separate Playwright DOM lock tests this PR; this check tests the
+          # actual published-domain copy without claiming preview success.
           node scripts/hero-copy-qa.mjs \
+            --target=production \
             --report-json=qa-reports/hero-copy-qa.json \
             --report-json-strict \
             > >(tee qa-logs/stdout.log) \
