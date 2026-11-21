@@ -21,17 +21,18 @@ test.describe("homepage conversion paths", () => {
     await expect(primary.nth(3)).toHaveAttribute("href", "/proposal-in-portugal");
     await expect(primary.nth(4)).toHaveAttribute("href", "/corporate");
 
-    await expect(smartStart.getByText("Private days, already designed by YES.", { exact: true })).toBeVisible();
-    await expect(smartStart.getByText("Your day, designed by you.", { exact: true })).toBeVisible();
-    await expect(
-      smartStart.getByText("Full Portugal journeys, designed for you.", { exact: true }),
-    ).toBeVisible();
-    await expect(
-      smartStart.getByText("Proposals & celebrations, held with care.", { exact: true }),
-    ).toBeVisible();
-    await expect(
-      smartStart.getByText("Team days, incentives & private groups.", { exact: true }),
-    ).toBeVisible();
+    // Premium headings can split their text across <em> descendants.
+    // Compare the full rendered heading, not individual text nodes.
+    const paths = [
+      ["signature", "Private days, already designed by YES."],
+      ["studio", "Your day, designed by you."],
+      ["designer", "Full Portugal journeys, designed for you."],
+      ["proposals", "Proposals & celebrations, held with care."],
+      ["corporate", "Team days, incentives & private groups."],
+    ] as const;
+    for (const [id, title] of paths) {
+      await expect(smartStart.locator(`[data-home-primary-path="${id}"] h3`)).toHaveText(title);
+    }
   });
 
   test("does not pretend a generic visitor has a Studio draft", async ({ page }) => {
