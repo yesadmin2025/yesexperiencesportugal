@@ -89,6 +89,22 @@ describe("Wine intent split contract", () => {
     expect(routeSource).toContain("links: [{ rel: \"canonical\", href: PAGE_URL }]");
   });
 
+  it("keeps the Lisbon wine booking hub focused on bookable wine-led experiences", () => {
+    const source = readFileSync("src/routes/lisbon-wine-tours.tsx", "utf8");
+    const ids = source.match(/const WINE_IDS = \[([\s\S]*?)\] as const;/)?.[1] ?? "";
+    for (const tour of [
+      "arrabida-wine-allinclusive",
+      "azeitao-cheese",
+      "evora-alentejo",
+      "roman-heritage-alentejo",
+    ]) {
+      expect(ids).toContain(`"${tour}"`);
+    }
+    expect(ids).not.toMatch(/tiles-workshop|sintra-cascais/);
+    expect(source).toContain("Lunch is included only");
+    expect(source).toContain("Private wine tours from Lisbon to Arrábida, Azeitão and Alentejo");
+  });
+
   it("keeps the requested wine-source pages to one contextual guide link each", () => {
     const guide = article("best-wine-tours-from-lisbon");
     expect(guide.sections.map((section) => section.body).join("\n")).toContain(
