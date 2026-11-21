@@ -148,6 +148,14 @@ function PtHomePage() {
               >
                 {card.cta} →
               </Link>
+              {card.eyebrow === "Roteiros à Medida" && (
+                <Link
+                  to="/portugal-travel-designer"
+                  className="mt-3 self-start text-[11px] text-[color:var(--teal)] underline underline-offset-4"
+                >
+                  Conhecer o Travel Designer (página em inglês)
+                </Link>
+              )}
             </article>
           ))}
         </div>
