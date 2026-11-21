@@ -1,19 +1,17 @@
 /**
- * Lighthouse render-blocking budget.
- * LHCI's numeric assertion misreads a notApplicable audit as NaN and fails.
- * Treat N/A as zero render-blocking time; for all applicable measurements
- * enforce the original hard limit of 300ms. Unexpected/missing values fail.
- * No Lighthouse performance budgets or severities are reduced.
+ * Validate the original <=300 ms render-blocking budget across every LHCI LHR.
+ * Lighthouse 13 migrated "render-blocking-resources" to "render-blocking-insight".
+ * The legacy audit may exist with scoreDisplayMode="error" and no number.
+ * Fail closed if neither audit supplies a valid measurement or N/A result.
  */
 import { readFileSync, readdirSync } from "node:fs";
 import { join } from "node:path";
 
 const dir = ".lighthouseci";
-// LHCI collect writes lhr-<timestamp>.json; also support filesystem upload reports.
 const files = readdirSync(dir).filter(
   (name) => /^lhr-.*\.json$/.test(name) || name.endsWith(".report.json"),
 );
-if (files.length === 0) {
+if (!files.length) {
   console.error("No Lighthouse JSON reports found; failing closed.");
   process.exit(1);
 }
@@ -21,25 +19,52 @@ if (files.length === 0) {
 let failures = 0;
 for (const file of files) {
   const report = JSON.parse(readFileSync(join(dir, file), "utf8"));
-  const audit = report.audits?.["render-blocking-resources"];
-  if (!audit) {
-    console.error(file, "missing render-blocking-resources audit");
-    failures++;
+  const legacy = report.audits?.["render-blocking-resources"];
+  const insight = report.audits?.["render-blocking-insight"];
+  let measuredMs;
+  let source;
+  let exempt = false;
+
+  if (legacy?.scoreDisplayMode === "notApplicable") {
+    exempt = true;
+    source = "render-blocking-resources N/A";
+  } else if (Number.isFinite(legacy?.numericValue)) {
+    measuredMs = legacy.numericValue;
+    source = "render-blocking-resources";
+  } else if (insight?.scoreDisplayMode === "notApplicable") {
+    exempt = true;
+    source = "render-blocking-insight N/A";
+  } else {
+    const savings = insight?.metricSavings;
+    // Both metrics can be affected by blocking stylesheets. Enforce the
+    // original 300ms limit against the largest measured potential saving.
+    const measured = [savings?.FCP, savings?.LCP].filter(Number.isFinite);
+    if (measured.length) {
+      measuredMs = Math.max(...measured);
+      source = "render-blocking-insight metricSavings";
+    }
+  }
+
+  if (exempt) {
+    console.log(file, source, "(no render-blocking candidates)");
     continue;
   }
-  if (audit.scoreDisplayMode === "notApplicable") {
-    console.log(file, "render-blocking: N/A (zero candidates)");
-    continue;
-  }
-  const ms = audit.numericValue;
-  if (typeof ms !== "number" || !Number.isFinite(ms)) {
-    console.error(file, "render-blocking audit has no finite numeric value:", audit.scoreDisplayMode);
+  if (!Number.isFinite(measuredMs)) {
+    console.error(file, "no valid render-blocking measurement; failing closed", {
+      version: report.lighthouseVersion,
+      legacyMode: legacy?.scoreDisplayMode,
+      legacyError: legacy?.errorMessage,
+      insightMode: insight?.scoreDisplayMode,
+      insightError: insight?.errorMessage,
+      insightMetricSavings: insight?.metricSavings,
+      auditIds: Object.keys(report.audits || {}).filter((id) => id.includes("render-blocking")),
+    });
     failures++;
-  } else if (ms > 300) {
-    console.error(file, "render-blocking", ms, "ms exceeds original 300ms budget");
+  } else if (measuredMs > 300) {
+    console.error(file, source, measuredMs, "ms exceeds unchanged 300ms budget");
     failures++;
   } else {
-    console.log(file, "render-blocking", ms, "ms within 300ms budget");
+    console.log(file, source, measuredMs, "ms within unchanged 300ms budget");
   }
 }
 if (failures) process.exit(1);
