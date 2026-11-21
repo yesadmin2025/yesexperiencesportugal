@@ -4,7 +4,10 @@ import { HERO_COPY } from "../src/content/hero-copy";
 test.use({ viewport: { width: 393, height: 852 } });
 
 test("mobile hero CTAs are tappable and Travel Designer remains reachable", async ({ page }) => {
-  await page.goto("/?hero=last", { waitUntil: "domcontentloaded" });
+  test.setTimeout(60_000);
+  // Test the normal public homepage, not the retired forced-last-frame query.
+  // Wait for load so this click tests a hydrated, usable navigation surface.
+  await page.goto("/", { waitUntil: "load" });
   const hero = page.locator('[data-section="hero"]');
   const descriptor = hero.locator('[data-hero-field="subheadline"]');
   await expect(descriptor).toBeVisible();
@@ -30,6 +33,7 @@ test("mobile hero CTAs are tappable and Travel Designer remains reachable", asyn
   }
 
   const designer = page.locator('[data-home-primary-path="designer"]');
+  await expect(designer).toBeVisible({ timeout: 15_000 });
   await expect(designer).toHaveAttribute("href", "/portugal-travel-designer");
   await designer.scrollIntoViewIfNeeded();
   await expect(designer).toBeInViewport();
