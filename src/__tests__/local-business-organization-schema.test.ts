@@ -63,7 +63,7 @@ describe("Organization / LocalBusiness structured data", () => {
     expect(org.contactPoint.email).toBe(EMAIL);
     expect(org.url).toBe(`${WEBSITE_URL}/`);
     expect(org.disambiguatingDescription).toBe(
-      "Official website and current contact identity for YES Experiences Portugal, licensed Portuguese tour operator RNAAT nº 31/2023, based in Sesimbra.",
+      "YES Experiences Portugal is a private experience and travel design brand offering the interactive Experience Studio, curated Signature days and local Travel Designer journeys across Portugal. Licensed operator RNAAT nº 31/2023, based in Sesimbra.",
     );
     expect(org.sameAs).not.toContain("");
     expect(org.openingHoursSpecification).toHaveLength(1);
