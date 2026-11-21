@@ -64,7 +64,7 @@ const HOME_SEO_TITLE =
   "YES Experiences Portugal | Travel Designer & Studio";
 const HOME_SEO_SOCIAL_TITLE = HOME_SEO_TITLE;
 const HOME_SEO_DESCRIPTION =
-  "YES Experiences Portugal: Signature Experiences, Experience Studio, bespoke Travel Designer journeys, Proposals & Celebrations and Corporate & Groups.";
+  "YES Experiences Portugal: Signature Experiences, YES Experience Studio, bespoke Travel Designer journeys, Proposals & Celebrations and Corporate & Groups.";
 
 
 /** Homepage Journal row — three evergreen Local Stories guides.

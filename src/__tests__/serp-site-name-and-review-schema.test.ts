@@ -92,7 +92,7 @@ describe("brand-critical SERP snippets", () => {
       '"YES Experiences Portugal | Travel Designer & Studio"',
     );
     expect(home).toContain(
-      "YES Experiences Portugal: Signature Experiences, Experience Studio, bespoke Travel Designer journeys, Proposals & Celebrations and Corporate & Groups.",
+      "YES Experiences Portugal: Signature Experiences, YES Experience Studio, bespoke Travel Designer journeys, Proposals & Celebrations and Corporate & Groups.",
     );
   });
 
