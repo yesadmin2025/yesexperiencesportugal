@@ -19,9 +19,9 @@ import {
   whatsappUrl,
 } from "@/config/business-nap";
 
-const TITLE = "Sobre a YES Experiences Portugal | Viagens por quem cá vive";
+const TITLE = "Sobre a YES Experiences Portugal | Studio e Travel Designer";
 const DESCRIPTION =
-  "Operador turístico privado, fundado em Sesimbra em 2022. Licenciado RNAAT nº 31/2023, a desenhar viagens privadas por Portugal.";
+  "A YES desenha experiências privadas: dias no Experience Studio, viagens à medida com um Travel Designer e experiências Signature. Fundada em 2022.";
 const founderSrcSet = [480, 720, 900, 1200]
   .map((width) => `${founderAsset.url}?w=${width}&q=78 ${width}w`)
   .join(", ");
@@ -76,9 +76,9 @@ function Page() {
               Desenhamos <SectionTitle.Em>Portugal com sentido</SectionTitle.Em>.
             </SectionTitle>
             <p className="page-header-support mt-6 max-w-2xl mx-auto text-[color:var(--charcoal-soft)] leading-relaxed">
-              A YES Experiences Portugal é um operador turístico privado e licenciado, fundado em
-              2022 em torno de uma ideia simples: Portugal deve ser pessoal, local e genuinamente
-              seu.
+              A YES Experiences Portugal é uma marca portuguesa de design de experiências e viagens
+              privadas, fundada em 2022. Com o Experience Studio, o Travel Designer e as experiências
+              Signature, criamos Portugal à medida de cada pessoa.
             </p>
             <p className="page-header-secondary mt-4 max-w-2xl mx-auto text-sm text-[color:var(--charcoal-soft)]/85 leading-relaxed">
               Dias privados, experiências desenhadas ao vivo e jornadas completas — criadas a partir
