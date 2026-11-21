@@ -3,8 +3,9 @@ name: Repair YES hero film codec (one-time)
 # One-time maintenance workflow. Only the internal PR #69 branch may write.
 # Triggered by introducing this workflow, not by later media changes.
 on:
-  pull_request:
-    types: [opened, synchronize, reopened]
+  push:
+    branches:
+      - fix/quality-gates-studio-hero-lighthouse-20261121
     paths:
       - .github/workflows/repair-hero-film-codec.yml
 
@@ -13,14 +14,14 @@ permissions:
 
 jobs:
   normalize-film:
-    if: ${{ github.event.pull_request.head.repo.full_name == github.repository && github.event.pull_request.head.ref == 'fix/quality-gates-studio-hero-lighthouse-20261121' }}
+    if: ${{ github.repository == 'yesadmin2025/yesexperiencesportugal' && github.ref == 'refs/heads/fix/quality-gates-studio-hero-lighthouse-20261121' }}
     runs-on: ubuntu-24.04
     timeout-minutes: 20
     steps:
       - name: Check out authorized PR branch
         uses: actions/checkout@v4
         with:
-          ref: ${{ github.event.pull_request.head.ref }}
+          ref: ${{ github.ref_name }}
           persist-credentials: true
       - name: Inspect and normalize hero masters to broadly supported H.264
         shell: bash
@@ -53,7 +54,7 @@ jobs:
       - name: Commit validated media back to PR branch
         shell: bash
         env:
-          BRANCH: ${{ github.event.pull_request.head.ref }}
+          BRANCH: ${{ github.ref_name }}
         run: |
           set -euo pipefail
           git config user.name "github-actions[bot]"
