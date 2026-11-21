@@ -80,7 +80,7 @@ describe("commercial SEO crawl paths", () => {
     expect(home).toContain('to="/lisbon-wine-tours"');
     expect(home).toContain('to="/lisbon-private-tours"');
     expect(home).toContain('aria-label="Private tours from Lisbon"');
-    expect(wine).toContain('const TITLE = "Private Wine Tours from Lisbon');
+    expect(wine).toContain('const TITLE = "Lisbon Wine Tours | Private Arrábida & Alentejo Days | YES"');
     expect(tours).toContain('const TITLE = "Private Day Tours From Lisbon');
   });
 });
