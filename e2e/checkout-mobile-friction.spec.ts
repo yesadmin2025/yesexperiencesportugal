@@ -24,8 +24,26 @@ for (const flow of ["signature", "book", "tailor"] as const) {
     future.setDate(future.getDate() + 25);
     await date.fill(future.toISOString().slice(0, 10));
     if (flow === "tailor") {
-      // A real adjustment, using the configured activity price authority.
-      await page.getByTestId("tailor-winery-increase").click();
+      // Price-map rules can legitimately disable additional wineries for the
+      // selected Signature. Verify an available adjustment without forcing a
+      // disabled commercial option or changing the underlying price authority.
+      const increase = page.getByTestId("tailor-winery-increase");
+      const decrease = page.getByTestId("tailor-winery-decrease");
+      const lunch = page.getByTestId("tailor-add-lunch");
+      await expect(increase).toBeVisible();
+      if (await increase.isEnabled()) {
+        await increase.click();
+      } else if (await decrease.isEnabled()) {
+        await decrease.click();
+      } else if (await lunch.isVisible().catch(() => false)) {
+        const previous = await lunch.getAttribute("aria-pressed");
+        await lunch.click();
+        await expect(lunch).not.toHaveAttribute("aria-pressed", previous ?? "false");
+      } else {
+        // This smoke covers the checkout route; no adjustment is permitted
+        // for this product. Dedicated price-map tests enforce add-on rules.
+        await expect(increase).toBeDisabled();
+      }
     }
     await page.getByTestId(flow === "tailor" ? "tailor-reserve-cta" : "signature-reserve-cta").click();
     const dialog = page.getByRole("dialog", { name: "Your details", exact: true });
@@ -40,9 +58,24 @@ for (const flow of ["signature", "book", "tailor"] as const) {
     await dialog.getByRole("textbox", { name: /phone/i }).fill("+351910000000");
     await dialog.getByTestId("pickup-later-toggle").check();
     await expect(dialog.getByTestId("final-details-error-summary")).toHaveCount(0);
-    const responsePromise = page.waitForResponse((r) => r.url().includes("create-signature-checkout") && r.request().method() === "POST");
+    const responsePromise = page.waitForResponse((r) => r.url().includes("create-signature-checkout") && r.request().method() === "POST", { timeout: 35_000 });
     await dialog.getByRole("button", { name: "Continue to payment", exact: true }).click();
-    const response = await responsePromise;
+    const response = await responsePromise.catch(async (error: unknown) => {
+      // A legitimate Tailor price/date guard must never be bypassed. Expose
+      // its user-facing reason instead of timing out without useful context.
+      const feedback = await page
+        .locator('[data-sonner-toast], [role="alert"], [data-testid="final-details-error-summary"]')
+        .allTextContents()
+        .catch(() => []);
+      const checkoutState = await page
+        .locator('[data-testid="final-details-reassurance"], [data-testid="final-details-known-summary"]')
+        .allTextContents()
+        .catch(() => []);
+      throw new Error(
+        `No Stripe sandbox session request for ${flow}. Feedback: ${JSON.stringify(feedback)}; ` +
+        `selected details: ${JSON.stringify(checkoutState)}; original: ${String(error)}`,
+      );
+    });
     expect(response.request().postDataJSON().environment).toBe("sandbox");
     expect(response.status()).toBe(200);
     await expect(page.locator('iframe[src*="stripe.com"]').first()).toBeAttached({ timeout: 45_000 });

@@ -88,13 +88,21 @@ async function expectNoInternalCopy(page: Page) {
 }
 
 async function restoreStudioState(page: Page, state: Record<string, unknown>) {
-  await page.goto("/studio");
-  await waitForStudioHydration(page);
-  await page.evaluate(
-    ({ key, value }) => window.sessionStorage.setItem(key, JSON.stringify(value)),
+  // Restore a tab-scoped, non-sensitive draft BEFORE React/TanStack hydration,
+  // as happens for a returning customer. Post-hydration writes can race with
+  // the app's own state persistence and are flaky on slower CI viewports.
+  // The one-time marker ensures a later reload genuinely tests persistence:
+  // the test cannot secretly re-seed a lost draft after the first navigation.
+  await page.addInitScript(
+    ({ key, value }) => {
+      const seeded = "__yes_studio_p0_seed_once";
+      if (window.sessionStorage.getItem(seeded) === "1") return;
+      window.sessionStorage.setItem(key, JSON.stringify(value));
+      window.sessionStorage.setItem(seeded, "1");
+    },
     { key: STORAGE_KEY, value: state },
   );
-  await page.reload();
+  await page.goto("/studio", { waitUntil: "domcontentloaded" });
   await waitForStudioHydration(page);
 }
 
@@ -130,11 +138,27 @@ test("a restored composition reaches Guest Details and checkout exactly once", a
   await expect(root).toHaveAttribute("data-phase", "storyboard");
   await expectNoInternalCopy(page);
 
-  // Prove the restored composition survives another real refresh and remains
-  // anchored at Your Day rather than jumping back into confirmation/checkout.
+  // Prove the browser really committed the resumed draft to the session
+  // before reloading. The persistence effect runs after the visible phase
+  // render; without this barrier a fast desktop runner can reload too early.
+  await expect
+    .poll(
+      async () =>
+        page.evaluate((key) => {
+          const raw = window.sessionStorage.getItem(key);
+          if (!raw) return null;
+          try {
+            return (JSON.parse(raw) as { phase?: string }).phase ?? null;
+          } catch {
+            return null;
+          }
+        }, STORAGE_KEY),
+      { timeout: 15_000 },
+    )
+    .toBe("storyboard");
   await page.reload();
   await waitForStudioHydration(page);
-  await expect(root).toHaveAttribute("data-phase", "storyboard");
+  await expect(root).toHaveAttribute("data-phase", "storyboard", { timeout: 15_000 });
 
   // P8 retired the standalone reveal CTA inside the main funnel. The unified
   // Your Day surface owns the canonical handoff into Guest Details.

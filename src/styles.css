@@ -8986,3 +8986,89 @@ html[data-floating-quiet] [data-testid="floating-actions"] {
   visibility: hidden;
   transition: opacity 200ms ease, visibility 0s linear 200ms;
 }
+
+/* Bundle the scoped Studio accessibility controls with the existing global
+ * CSS so /studio does not require a second render-blocking stylesheet. */
+/* Studio V3 mobile interaction hardening.
+ *
+ * Scoped to the unified Your Day editor so legacy 32px icon controls expose
+ * a real 44x44 CSS box, not merely an invisible pseudo-element hit area.
+ */
+
+[data-testid="studio-v3-stops-editor"] {
+  scroll-margin-top: 6rem;
+}
+
+[data-testid="studio-v3-stops-editor"] button {
+  min-height: 44px;
+}
+
+[data-testid="studio-v3-stops-editor"] button[aria-label^="Move "],
+[data-testid="studio-v3-stops-editor"] button[aria-label^="Swap "],
+[data-testid="studio-v3-stops-editor"] button[aria-label^="Remove "] {
+  width: 44px !important;
+  height: 44px !important;
+  min-width: 44px !important;
+  min-height: 44px !important;
+}
+
+/* The old inline buttons enlarged their hit box with ::after. Once the
+ * physical control itself is 44px, that extension would overlap neighbours. */
+[data-testid="studio-v3-stops-editor"] button[aria-label^="Move "]::after,
+[data-testid="studio-v3-stops-editor"] button[aria-label^="Swap "]::after,
+[data-testid="studio-v3-stops-editor"] button[aria-label^="Remove "]::after {
+  inset: 0 !important;
+}
+
+/* In timeline fallback mode the ordered timeline is already the route
+ * overview. Hide the sibling mini-legend so the same stop names are not
+ * repeated immediately underneath. The legend stays visible with a real map. */
+[data-testid="studio-v3-signature-card"]:has([data-route-mode="timeline"])
+  [aria-label="Route stops in order"] {
+  display: none;
+}
+
+/* Price handoff on the public Refine surface: one party total at a time.
+ *
+ * Before additions, the price anchor at the top is enough, so the lower
+ * resolved-total block stays out of the visual flow. Once the traveler adds
+ * something, the base /adult anchor remains while the top party total yields
+ * to the itemised final total below. Pricing values and DOM truth are untouched;
+ * this only removes the repeated visual echo.
+ */
+[data-testid="studio-v3-signature-card"]:not(:has([data-testid="studio-v3-add-on-lines-refine"]))
+  [data-testid="studio-v3-final-total"] {
+  display: none;
+}
+
+[data-testid="studio-v3-signature-card"]:has([data-testid="studio-v3-add-on-lines-refine"])
+  [data-testid="studio-v3-party-total"] {
+  display: none;
+}
+
+/* The resolved block already states the canonical final total immediately
+ * above the ledger. Keep the ledger's useful Journey + Enhancements rows, but
+ * hide its repeated total row so sighted and assistive-tech users hear the
+ * same final amount once on this surface. The ledger data attributes remain
+ * intact for parity checks and pricing diagnostics. */
+[data-testid="studio-v3-final-total"]
+  [data-testid="studio-v3-investment-ledger"]
+  > div:has([data-testid="studio-v3-ledger-total"]) {
+  display: none;
+}
+
+/* The running per-adult add-on output still announces changes through its
+ * aria-live region, but it no longer adds a third visible price between the
+ * selected additions and the canonical final total. */
+[data-testid="studio-v3-signature-card"] [data-testid="studio-v3-add-ons-total"] {
+  position: absolute !important;
+  width: 1px !important;
+  height: 1px !important;
+  padding: 0 !important;
+  margin: -1px !important;
+  overflow: hidden !important;
+  clip: rect(0, 0, 0, 0) !important;
+  white-space: nowrap !important;
+  border: 0 !important;
+}
+

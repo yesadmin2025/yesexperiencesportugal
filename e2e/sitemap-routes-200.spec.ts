@@ -44,6 +44,10 @@ test.describe("sitemap route coverage", () => {
   });
 
   test("every sitemap URL returns a direct 200", async ({ baseURL }) => {
+    // All sitemap routes are checked serially against a cold CI SSR server.
+    // The default 30s Playwright test timeout ended the entire scan early;
+    // individual route HTTP 200 and canonical assertions remain unchanged.
+    test.setTimeout(180_000);
     const paths = await fetchSitemapPaths(baseURL!);
     expect(paths.length).toBeGreaterThan(20);
     // CI serves localhost with X-Robots-Tag: noindex to prevent indexing of

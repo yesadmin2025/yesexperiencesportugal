@@ -271,6 +271,26 @@ async function refineVisible(page: Page): Promise<boolean> {
 }
 
 /**
+ * The live Director may ask several distinct questions while state.phase
+ * remains "refinement". Track the actual rendered question as a progress
+ * contract, instead of treating the second question as a stalled funnel.
+ */
+async function refinementQuestionSignature(page: Page): Promise<string | null> {
+  // document.querySelector is intentionally non-waiting: the Director unmounts
+  // the old question between choices. Locator.evaluate would auto-wait up to
+  // 30 seconds for a disappearing element and exhaust visual-test budgets.
+  return page.evaluate(() => {
+    const root = document.querySelector('[data-testid="studio-v3-refinement"]');
+    if (!root) return null;
+    const options = Array.from(root.querySelectorAll("[data-option-id]"))
+      .map((choice) => choice.getAttribute("data-option-id") ?? "")
+      .filter(Boolean);
+    const question = root.parentElement?.querySelector("h1")?.textContent?.trim() ?? "";
+    return options.length ? `${question}|${options.join("|")}` : null;
+  }).catch(() => null);
+}
+
+/**
  * Explicit expected-next-phase contract. After acting on `from`, poll until
  * the Studio reports a later phase (or the Refine screen mounts, which is
  * the walk's terminal state). Returns the phase we landed on, or null when
@@ -280,6 +300,7 @@ async function waitForPhaseAfter(
   page: Page,
   from: string | null,
   timeout = 6_000,
+  previousQuestion: string | null = null,
 ): Promise<string | null> {
   const fromIdx = phaseIndex(from);
   const deadline = Date.now() + timeout;
@@ -287,6 +308,10 @@ async function waitForPhaseAfter(
     if (await refineVisible(page)) return "storyboard";
     const now = await currentPhase(page);
     if (phaseIndex(now) > fromIdx) return now;
+    if (from === "refinement" && now === "refinement" && previousQuestion) {
+      const nextQuestion = await refinementQuestionSignature(page);
+      if (nextQuestion && nextQuestion !== previousQuestion) return now;
+    }
     await page.waitForTimeout(150);
   }
   return null;
@@ -509,6 +534,9 @@ export async function walkToReveal(page: Page, options: WalkOptions = {}): Promi
     // Answer phases need up to two taps (select an option, then Continue);
     // the moments reel commits in one. Anything beyond that is a stall.
     const maxActions = phase === "map" || phase === "storyboard" ? 2 : 3;
+    const previousQuestion = phase === "refinement"
+      ? await refinementQuestionSignature(page)
+      : null;
 
     let landed: string | null = null;
     let idleActions = 0;
@@ -525,7 +553,9 @@ export async function walkToReveal(page: Page, options: WalkOptions = {}): Promi
       // Short poll: a tap that only records an answer leaves the phase in
       // place, so fall through to the next action rather than burning the
       // full contract budget on it.
-      landed = await waitForPhaseAfter(page, phase, attempt === maxActions - 1 ? 8_000 : 1_800);
+      landed = await waitForPhaseAfter(
+        page, phase, attempt === maxActions - 1 ? 8_000 : 1_800, previousQuestion,
+      );
     }
 
     if (process.env["STUDIO_WALK_DEBUG"]) {

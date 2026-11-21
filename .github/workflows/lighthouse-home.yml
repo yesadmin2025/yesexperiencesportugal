@@ -46,10 +46,11 @@ jobs:
         with:
           bun-version: latest
 
+      # Supabase Realtime SSR requires native WebSocket, provided by Node 22+.
       - name: Setup Node (for Lighthouse CI)
         uses: actions/setup-node@v4
         with:
-          node-version: "20"
+          node-version: "22"
 
       - name: Install dependencies
         run: bun install --frozen-lockfile
@@ -64,13 +65,50 @@ jobs:
           NITRO_PRESET: node_server
         run: bun run build
 
+      # Nitro was built with node_server for the CI audit. The Vite preview
+      # served HTTP 500 even with this adapter and could not be audited.
+      # Require a valid entrypoint before Lighthouse starts the real SSR app.
+      - name: Verify built Node SSR entrypoint
+        run: |
+          test -f .output/server/index.mjs
+          node --check .output/server/index.mjs
+
+      - name: Verify local SSR responds with HTTP 200
+        shell: bash
+        run: |
+          set -euo pipefail
+          PORT=4180 HOST=127.0.0.1 node .output/server/index.mjs > "$RUNNER_TEMP/yes-nitro.log" 2>&1 &
+          server_pid=$!
+          trap 'kill "$server_pid" 2>/dev/null || true' EXIT
+          status="000"
+          for attempt in {1..20}; do
+            status="$(curl --max-time 2 -sS -o "$RUNNER_TEMP/yes-nitro-response.html" -w '%{http_code}' http://127.0.0.1:4180/ || true)"
+            if [[ "$status" == "200" ]]; then break; fi
+            sleep 1
+          done
+          if [[ "$status" != "200" ]]; then
+            echo "::error::Built Nitro SSR homepage returned HTTP ${status}; not a Lighthouse performance verdict."
+            echo "--- Node SSR server log ---"
+            tail -n 40 "$RUNNER_TEMP/yes-nitro.log" || true
+            echo "--- First 400 bytes of public homepage response ---"
+            head -c 400 "$RUNNER_TEMP/yes-nitro-response.html" || true
+            exit 1
+          fi
+          echo "Node SSR homepage returned HTTP 200"
+
       - name: Install Lighthouse CI
-        run: npm install -g @lhci/cli@0.14.x
+        run: npm install -g @lhci/cli@0.16.1
 
       - name: Run Lighthouse CI (${{ matrix.preset }})
         run: lhci autorun --config=${{ matrix.config }}
         env:
           LHCI_BUILD_CONTEXT__CURRENT_HASH: ${{ github.sha }}
+
+      # Lighthouse reports N/A for render-blocking when there are zero candidates.
+      # An LHCI numeric assertion interprets N/A as NaN and fails. Check the
+      # same 300ms limit explicitly, treating only genuine N/A as zero.
+      - name: Render-blocking resources budget (300ms)
+        run: node scripts/check-lighthouse-render-blocking.mjs
 
       - name: Upload Lighthouse report
         if: always()
@@ -79,3 +117,4 @@ jobs:
           name: lighthouse-report-${{ matrix.preset }}
           path: .lighthouseci/
           retention-days: 14
+          include-hidden-files: true
