@@ -2,12 +2,12 @@
   "ci": {
     "collect": {
       "startServerCommand": "PORT=4174 HOST=127.0.0.1 node .output/server/index.mjs",
-      "startServerReadyPattern": "localhost",
+      "startServerReadyPattern": "Listening on:",
       "url": [
-        "http://localhost:4174/",
-        "http://localhost:4174/hero-verify",
-        "http://localhost:4174/builder",
-        "http://localhost:4174/experiences"
+        "http://127.0.0.1:4174/",
+        "http://127.0.0.1:4174/hero-verify",
+        "http://127.0.0.1:4174/builder",
+        "http://127.0.0.1:4174/experiences"
       ],
       "numberOfRuns": 1,
       "settings": {

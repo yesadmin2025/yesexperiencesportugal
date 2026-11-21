@@ -72,6 +72,29 @@ jobs:
           test -f .output/server/index.mjs
           node --check .output/server/index.mjs
 
+      - name: Verify local SSR responds with HTTP 200
+        shell: bash
+        run: |
+          set -euo pipefail
+          PORT=4180 HOST=127.0.0.1 node .output/server/index.mjs > "$RUNNER_TEMP/yes-nitro.log" 2>&1 &
+          server_pid=$!
+          trap 'kill "$server_pid" 2>/dev/null || true' EXIT
+          status="000"
+          for attempt in {1..20}; do
+            status="$(curl --max-time 2 -sS -o "$RUNNER_TEMP/yes-nitro-response.html" -w '%{http_code}' http://127.0.0.1:4180/ || true)"
+            if [[ "$status" == "200" ]]; then break; fi
+            sleep 1
+          done
+          if [[ "$status" != "200" ]]; then
+            echo "::error::Built Nitro SSR homepage returned HTTP ${status}; not a Lighthouse performance verdict."
+            echo "--- Node SSR server log ---"
+            tail -n 40 "$RUNNER_TEMP/yes-nitro.log" || true
+            echo "--- First 400 bytes of public homepage response ---"
+            head -c 400 "$RUNNER_TEMP/yes-nitro-response.html" || true
+            exit 1
+          fi
+          echo "Node SSR homepage returned HTTP 200"
+
       - name: Install Lighthouse CI
         run: npm install -g @lhci/cli@0.14.x
 
