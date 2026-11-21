@@ -213,9 +213,18 @@ export const Route = createRootRoute({
       // a preconnect here would open a socket nobody uses during LCP.
       { rel: "dns-prefetch", href: "https://www.googletagmanager.com" },
 
-      // Fraunces is the approved editorial voice; Inter remains body/UI.
+      // Fetch the approved fonts early without making a third-party CSS
+      // response block first paint (the global app CSS remains load-bearing).
+      // The inline loader switches media once the stylesheet finishes loading.
+      {
+        rel: "preload",
+        as: "style",
+        href: "https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400..600;1,9..144,400&family=Inter:wght@300..700&display=swap",
+      },
       {
         rel: "stylesheet",
+        media: "print",
+        "data-yes-font-css": "1",
         href: "https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400..600;1,9..144,400&family=Inter:wght@300..700&display=swap",
       },
       {
@@ -224,6 +233,12 @@ export const Route = createRootRoute({
       },
     ],
     scripts: [
+      {
+        // Non-blocking Google Fonts link: load as print, activate when ready.
+        // Attach before hydration, so fonts still load if React JS is slow.
+        children:
+          "(function(){var e=document.querySelector('link[data-yes-font-css]');if(!e)return;var f=function(){e.media='all'};if(e.sheet)f();else e.addEventListener('load',f,{once:true});})();",
+      },
       {
         // Guide attribution safety net: persists data-guide-slug clicks that
         // land before hydration (see src/lib/guide-attribution-inline.ts).
