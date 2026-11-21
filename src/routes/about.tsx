@@ -23,9 +23,9 @@ import {
   whatsappUrl,
 } from "@/config/business-nap";
 
-const TITLE = "About YES Experiences Portugal · Private Tours by a Local";
+const TITLE = "About YES Experiences Portugal | Travel Design & Studio";
 const DESCRIPTION =
-  "Nídia Almeida began with one car and a few tours a week. Today YES Experiences Portugal designs private days, journeys and proposals around each traveller.";
+  "Meet YES Experiences Portugal, a founder-led travel design brand offering the Experience Studio, Signature days and bespoke multi-day journeys across Portugal.";
 const founderSrcSet = [480, 720, 900, 1200]
   .map((width) => `${founderAsset.url}?w=${width}&q=78 ${width}w`)
   .join(", ");
