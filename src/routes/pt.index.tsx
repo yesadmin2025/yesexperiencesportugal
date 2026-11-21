@@ -24,7 +24,7 @@ import ogSocialImg from "@/assets/hero-coast.jpg";
  */
 const PT_TITLE = "YES Experiences Portugal | Studio e Travel Designer";
 const PT_DESCRIPTION =
-  "Crie dias privados no Experience Studio, planeie viagens à medida com um Travel Designer local ou reserve experiências Signature em Portugal.";
+  "YES Experiences Portugal: experiências Signature, Experience Studio, viagens com Travel Designer, pedidos de casamento, celebrações e eventos para empresas.";
 
 export const Route = createFileRoute("/pt/")({
   head: () => ({
@@ -61,9 +61,9 @@ export const Route = createFileRoute("/pt/")({
       jsonLdScript(
         studioServiceLd({
           path: "/pt",
-          name: "YES Experiences Portugal — dias privados e jornadas locais por Portugal",
+          name: "YES Experiences Portugal — experiências e viagens privadas em Portugal",
           description:
-            "Experiências privadas e personalizadas em Portugal com guias locais — dias Signature, um Studio para desenhar o seu dia em tempo real e um Travel Designer humano para jornadas de vários dias por Lisboa, Sintra, Arrábida, Sesimbra, Alentejo e Costa Vicentina.",
+            "Experiências Signature, Experience Studio para dias privados, viagens com Travel Designer, pedidos de casamento, celebrações e experiências para empresas e grupos, em Portugal.",
         }),
       ),
     ],
@@ -92,9 +92,10 @@ function PtHomePage() {
             <SectionTitle.Em>mostrado como um local mostra a um amigo.</SectionTitle.Em>
           </SectionTitle>
           <p className="page-header-support mt-7 mx-auto max-w-xl text-[15px] md:text-[17px] leading-relaxed text-[color:var(--charcoal-soft)]">
-            A YES Experiences Portugal desenha dias e viagens privadas à sua medida: crie o seu
-            dia no Experience Studio, planeie jornadas completas com um Travel Designer local ou
-            escolha uma experiência Signature. Com anfitriões locais, sem grupos partilhados.
+            A YES Experiences Portugal cria experiências privadas à sua medida: dias Signature,
+            um dia desenhado no Experience Studio, viagens completas com Travel Designer,
+            pedidos de casamento, celebrações e experiências para empresas e grupos.
+            Sempre com anfitriões locais, sem grupos partilhados.
           </p>
           <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-3">
             <CtaButton to="/pt/experiences" variant="primary">
@@ -104,6 +105,16 @@ function PtHomePage() {
               Experiências de um dia
             </CtaButton>
           </div>
+          <p className="mt-5 text-[13px] leading-relaxed text-[color:var(--charcoal-soft)]">
+            Conheça também os{" "}
+            <Link to="/proposal-in-portugal" className="underline underline-offset-4">
+              pedidos de casamento e celebrações
+            </Link>{" "}
+            (página em inglês) e as{" "}
+            <Link to="/pt/corporate" className="underline underline-offset-4">
+              experiências corporate e de grupo
+            </Link>.
+          </p>
         </div>
       </section>
 

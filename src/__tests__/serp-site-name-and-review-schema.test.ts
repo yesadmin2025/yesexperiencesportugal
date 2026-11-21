@@ -92,7 +92,7 @@ describe("brand-critical SERP snippets", () => {
       '"YES Experiences Portugal | Travel Designer & Studio"',
     );
     expect(home).toContain(
-      "Design private Portugal days in the YES Experience Studio, plan bespoke multi-day journeys with a local Travel Designer, or reserve Signature experiences.",
+      "YES Experiences Portugal: Signature Experiences, Experience Studio, bespoke Travel Designer journeys, Proposals & Celebrations and Corporate & Groups.",
     );
   });
 
@@ -143,7 +143,17 @@ describe("brand identity and structured homepage FAQ parity", () => {
     const about = read("src/routes/about.tsx");
     expect(home).toContain("YES Experiences Portugal | Travel Designer & Studio");
     expect(home).toContain("YES Experience Studio");
-    expect(home).toContain("bespoke multi-day journeys with a local Travel Designer");
+    for (const service of ["Signature Experiences", "Experience Studio", "Travel Designer", "Proposals & Celebrations", "Corporate & Groups"]) {
+      expect(home).toContain(service);
+    }
+    const visiblePaths = read("src/components/home/FiveWaysIn.tsx");
+    for (const service of ["Studio", "Signature", "Travel Designer", "Proposals &", "Corporate &"]) {
+      expect(visiblePaths).toContain(service);
+    }
+    const ptHomeDescription = read("src/routes/pt.index.tsx");
+    for (const service of ["Signature", "Experience Studio", "Travel Designer", "pedidos de casamento", "celebrações", "empresas"]) {
+      expect(ptHomeDescription).toContain(service);
+    }
     expect(about).toContain("About YES Experiences Portugal | Travel Design & Studio");
     expect(about).toContain("founder-led travel design brand");
     const ptHome = read("src/routes/pt.index.tsx");

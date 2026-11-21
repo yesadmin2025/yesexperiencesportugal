@@ -25,7 +25,7 @@ import {
 
 const TITLE = "About YES Experiences Portugal | Travel Design & Studio";
 const DESCRIPTION =
-  "Meet YES Experiences Portugal, a founder-led travel design brand offering the Experience Studio, Signature days and bespoke multi-day journeys across Portugal.";
+  "Meet YES Experiences Portugal, a founder-led travel design brand for Signature experiences, Studio days, bespoke journeys, proposals, celebrations and corporate groups.";
 const founderSrcSet = [480, 720, 900, 1200]
   .map((width) => `${founderAsset.url}?w=${width}&q=78 ${width}w`)
   .join(", ");
