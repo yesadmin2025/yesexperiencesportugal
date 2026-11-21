@@ -276,16 +276,18 @@ async function refineVisible(page: Page): Promise<boolean> {
  * contract, instead of treating the second question as a stalled funnel.
  */
 async function refinementQuestionSignature(page: Page): Promise<string | null> {
-  return page
-    .locator('[data-testid="studio-v3-refinement"]')
-    .evaluate((root) => {
-      const options = Array.from(root.querySelectorAll("[data-option-id]"))
-        .map((choice) => choice.getAttribute("data-option-id") ?? "")
-        .filter(Boolean);
-      const question = root.parentElement?.querySelector("h1")?.textContent?.trim() ?? "";
-      return options.length ? `${question}|${options.join("|")}` : null;
-    })
-    .catch(() => null);
+  // document.querySelector is intentionally non-waiting: the Director unmounts
+  // the old question between choices. Locator.evaluate would auto-wait up to
+  // 30 seconds for a disappearing element and exhaust visual-test budgets.
+  return page.evaluate(() => {
+    const root = document.querySelector('[data-testid="studio-v3-refinement"]');
+    if (!root) return null;
+    const options = Array.from(root.querySelectorAll("[data-option-id]"))
+      .map((choice) => choice.getAttribute("data-option-id") ?? "")
+      .filter(Boolean);
+    const question = root.parentElement?.querySelector("h1")?.textContent?.trim() ?? "";
+    return options.length ? `${question}|${options.join("|")}` : null;
+  }).catch(() => null);
 }
 
 /**
