@@ -14,6 +14,21 @@ test.describe.configure({ timeout: 180_000 });
 const STORAGE_KEY = "yes.studio-v3.session.v1";
 const GUIDE_NOTE = "Prefer Quinta do Piloto and a vegetarian lunch.";
 
+// A fixed date eventually becomes invalid and makes the booking smoke fail for
+// a calendar reason unrelated to the Studio. Keep it comfortably beyond the
+// three-day Lisbon-time lead without weakening production date validation.
+function futureLisbonBookingDate(daysAhead = 21): string {
+  const future = new Date(Date.now() + daysAhead * 86_400_000);
+  const parts = new Intl.DateTimeFormat("en-GB", {
+    timeZone: "Europe/Lisbon",
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+  }).formatToParts(future);
+  const fields = Object.fromEntries(parts.map((part) => [part.type, part.value]));
+  return `${fields.year}-${fields.month}-${fields.day}`;
+}
+
 const INTERNAL_COPY = [
   "Living Atlas",
   "Stripe sandbox",
@@ -31,7 +46,7 @@ const COMPOSED_STATE = {
   companions: "couple",
   occasion: "none",
   dateMode: "exact",
-  dateExact: "2026-10-09",
+  dateExact: futureLisbonBookingDate(),
   pickup: "lisbon",
   guests: 2,
   adults: 2,
@@ -141,6 +156,8 @@ test("a restored composition reaches Guest Details and checkout exactly once", a
   if (await pickup.isVisible().catch(() => false)) {
     await pickup.fill("Hotel Avenida Palace, Lisbon");
   }
+  // Guest preferences are deliberately collapsed by default in the public UI.
+  await page.getByTestId("studio-v3-guest-details-optional-toggle").click();
   const notes = page.getByPlaceholder(/winery preferences|anything not shown/i).first();
   await expect(notes).toBeVisible();
   await notes.fill(GUIDE_NOTE);
