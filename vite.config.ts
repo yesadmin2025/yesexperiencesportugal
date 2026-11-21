@@ -23,6 +23,35 @@ export default defineConfig({
     // showed a second GET / without a click mid-test. Disable HMR only for
     // automated CI; local Lovable previews and production are untouched.
     server: { hmr: process.env.CI === "true" ? false : undefined },
+    // Playwright's cold CI Vite server served React optimizations with
+    // three different ?v= hashes within one page load. This splits the
+    // React dispatcher and causes "Invalid hook call" in TooltipProvider.
+    // In CI only, use a single deterministic optimizer pass for the
+    // CommonJS React entries and the providers loaded on the root shell.
+    // All real application and production builds keep the default behavior.
+    optimizeDeps: process.env.CI === "true"
+      ? {
+          noDiscovery: true,
+          include: [
+            "react",
+            "react/jsx-runtime",
+            "react/jsx-dev-runtime",
+            "react-dom",
+            "react-dom/client",
+            "@radix-ui/react-tooltip",
+            "@radix-ui/react-slot",
+            "@tanstack/react-query",
+            "@tanstack/react-router",
+            "lucide-react",
+            "sonner",
+            "react-hook-form",
+            "react-day-picker",
+            "leaflet",
+            "leaflet.markercluster",
+            "browser-image-compression",
+          ],
+        }
+      : undefined,
     // `imagetools` only acts on imports carrying an explicit `?w=`/`?format=`
     // query (see src/content/tour-card-images.ts). Plain image imports are
     // untouched, so existing asset pipelines keep working.
