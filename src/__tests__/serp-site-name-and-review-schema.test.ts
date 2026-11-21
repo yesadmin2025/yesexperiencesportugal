@@ -146,6 +146,12 @@ describe("brand identity and structured homepage FAQ parity", () => {
     expect(home).toContain("bespoke multi-day journeys with a local Travel Designer");
     expect(about).toContain("About YES Experiences Portugal | Travel Design & Studio");
     expect(about).toContain("founder-led travel design brand");
+    const ptHome = read("src/routes/pt.index.tsx");
+    const ptAbout = read("src/routes/pt.about.tsx");
+    expect(ptHome).toContain("YES Experiences Portugal | Studio e Travel Designer");
+    expect(ptHome).not.toContain("Reservar Tour Privado");
+    expect(ptAbout).toContain("Sobre a YES Experiences Portugal | Studio e Travel Designer");
+    expect(ptAbout).toContain("marca portuguesa de design de experiências e viagens");
   });
 
   it("homepage FAQ structured questions match those presented to visitors", async () => {
