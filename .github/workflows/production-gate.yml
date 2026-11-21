@@ -18,8 +18,15 @@ jobs:
     runs-on: ubuntu-24.04
     timeout-minutes: 30
     env:
-      # Automated runs must never touch Stripe live mode.
+      # Automated runs must never touch Stripe live mode or the website database.
+      # Vite embeds VITE_* at BUILD time. Override the tracked production .env
+      # with the isolated CI Supabase project for both SSR and browser code.
       VITE_PAYMENTS_ENVIRONMENT: sandbox
+      VITE_SUPABASE_URL: ${{ secrets.CI_SUPABASE_URL }}
+      VITE_SUPABASE_PUBLISHABLE_KEY: "sb_publishable_ts419iEoUjoQV4ipN4cobQ_NGwIcIym"
+      VITE_SUPABASE_PROJECT_ID: "mpokhxuouzbvfjmacvhh"
+      SUPABASE_URL: ${{ secrets.CI_SUPABASE_URL }}
+      SUPABASE_PUBLISHABLE_KEY: "sb_publishable_ts419iEoUjoQV4ipN4cobQ_NGwIcIym"
     steps:
       - uses: actions/checkout@v4
       - uses: oven-sh/setup-bun@v2
@@ -56,6 +63,10 @@ jobs:
         run: |
           if [[ -z "$SUPABASE_URL" || -z "$SUPABASE_SERVICE_ROLE_KEY" ]]; then
             echo '::error::Configure CI_SUPABASE_URL and CI_SUPABASE_SERVICE_ROLE_KEY for a test-only Supabase project. No production credentials or price fallbacks are permitted.'
+            exit 1
+          fi
+          if [[ "$SUPABASE_URL" != "https://mpokhxuouzbvfjmacvhh.supabase.co" || "$VITE_SUPABASE_URL" != "$SUPABASE_URL" ]]; then
+            echo '::error::The CI frontend and server must both target the isolated Yes test Supabase project. Refusing checkout E2E against production.'
             exit 1
           fi
           bunx playwright test \
