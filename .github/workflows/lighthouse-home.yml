@@ -26,7 +26,7 @@ concurrency:
 jobs:
   lighthouse:
     name: Lighthouse (${{ matrix.preset }})
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 18
     strategy:
       fail-fast: false
