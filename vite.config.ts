@@ -18,6 +18,11 @@ Object.assign(process.env, serverEnv);
 
 export default defineConfig({
   vite: {
+    // In GitHub Actions, the Vite dev HMR socket can trigger a document
+    // reload while Playwright is asserting SSR content. A recorded trace
+    // showed a second GET / without a click mid-test. Disable HMR only for
+    // automated CI; local Lovable previews and production are untouched.
+    server: { hmr: process.env.CI === "true" ? false : undefined },
     // `imagetools` only acts on imports carrying an explicit `?w=`/`?format=`
     // query (see src/content/tour-card-images.ts). Plain image imports are
     // untouched, so existing asset pipelines keep working.
