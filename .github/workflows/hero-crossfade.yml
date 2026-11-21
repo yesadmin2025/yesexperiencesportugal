@@ -19,63 +19,6 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  repair-hero-codec:
-    # Trusted in-repository PR #69 only; never execute PR-controlled code with write token.
-    if: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository && github.head_ref == 'fix/quality-gates-studio-hero-lighthouse-20261121' }}
-    permissions:
-      contents: write
-    runs-on: ubuntu-24.04
-    timeout-minutes: 20
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          ref: ${{ github.head_ref }}
-          persist-credentials: true
-      - name: Install ffmpeg and ffprobe in minimal runner
-        run: |
-          sudo apt-get update -qq
-          sudo apt-get install -y -qq ffmpeg
-      - name: Repair the two original film assets once, preserving the full 27s edit
-        shell: bash
-        env:
-          TARGET_BRANCH: ${{ github.head_ref }}
-        run: |
-          set -euo pipefail
-          declare -A originals=(
-            [720]="3c1915712e18bb4b3c3d3ad4b919b5bcd9ad26b7"
-            [1080]="d6ef4f411a3c232cdd9d33f9b5fc9c0f13017eba"
-          )
-          updated=0
-          for variant in 720 1080; do
-            source="public/video/hero-sunset-road-27s-${variant}.mp4"
-            current="$(git hash-object "${source}")"
-            echo "${source}: current blob ${current}"
-            ffprobe -v error -select_streams v:0 -show_entries stream=codec_name,profile,pix_fmt,r_frame_rate -of default=noprint_wrappers=1 "${source}"
-            if [[ "${current}" != "${originals[$variant]}" ]]; then
-              echo "This media is no longer the original master; not rewriting it."
-              continue
-            fi
-            out="public/video/.normalized-hero-${variant}.mp4"
-            ffmpeg -hide_banner -loglevel error -nostdin -y -i "${source}" \
-              -map 0:v:0 -an -c:v libx264 -preset medium -crf 20 \
-              -pix_fmt yuv420p -r 30 -movflags +faststart "${out}"
-            codec="$(ffprobe -v error -select_streams v:0 -show_entries stream=codec_name -of default=nw=1:nk=1 "${out}")"
-            pix="$(ffprobe -v error -select_streams v:0 -show_entries stream=pix_fmt -of default=nw=1:nk=1 "${out}")"
-            fps="$(ffprobe -v error -select_streams v:0 -show_entries stream=r_frame_rate -of default=nw=1:nk=1 "${out}")"
-            if [[ "${codec}" != "h264" || "${pix}" != "yuv420p" || "${fps}" != "30/1" ]]; then
-              echo "::error::H264 validation failed for ${source} (${codec}/${pix}/${fps})"
-              exit 1
-            fi
-            mv "${out}" "${source}"
-            updated=1
-          done
-          if [[ "${updated}" == "1" ]]; then
-            git config user.name "github-actions[bot]"
-            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-            git add public/video/hero-sunset-road-27s-{720,1080}.mp4
-            git commit -m "fix(media): normalize continuous YES hero film to H264 for browser playback"
-            git push origin "HEAD:${TARGET_BRANCH}"
-          fi
   crossfade:
     name: Hero cross-fade (Chromium)
     runs-on: ubuntu-24.04
