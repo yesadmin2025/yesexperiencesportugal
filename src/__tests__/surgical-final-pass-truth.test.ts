@@ -10,7 +10,7 @@ describe("surgical final-pass truth locks", () => {
     const guide = LOCAL_STORIES_ARTICLES.find(
       (article) => article.slug === "best-wine-tours-from-lisbon",
     );
-    expect(guide?.title).toBe("Private Lisbon Wine Tours: Arrábida & Alentejo Day Trips");
+    expect(guide?.title).toBe("Best Wine Tours from Lisbon: Arrábida or Alentejo? | YES");
     expect(guide?.h1).toBe("Best Wine Tours from Lisbon: Which Private Day to Choose");
     const body = guide?.sections.map((section) => section.body).join("\n") ?? "";
     expect(body).toContain("does not include lunch");

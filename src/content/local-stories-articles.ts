@@ -1323,9 +1323,9 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
   },
   {
     slug: "best-wine-tours-from-lisbon",
-    title: "Private Lisbon Wine Tours: Arrábida & Alentejo Day Trips",
+    title: "Best Wine Tours from Lisbon: Arrábida or Alentejo? | YES",
     metaDescription:
-      "Private wine tours from Lisbon to Arrábida and Alentejo: family cellars, local lunch and hotel pickup. Compare each day's route, dates and live prices.",
+      "Compare Arrábida, Azeitão and Alentejo wine tours from Lisbon: driving time, wineries, food, hotel pickup and links to live tour dates and prices.",
     h1: "Best Wine Tours from Lisbon: Which Private Day to Choose",
     eyebrow: "Lisbon · Wine",
     standfirst:
@@ -1334,7 +1334,7 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
     sections: [
       {
         heading: "The short answer: which wine tour from Lisbon is best?",
-        body: "Choose [Arrábida](/tours/arrabida-wine-allinclusive) for wineries, Setúbal's Livramento market, Portuguese lunch and Atlantic views. Choose [Azeitão](/tours/azeitao-cheese) for a hands-on cheese workshop, a winery tasting and time in Sesimbra. Both explore the Setúbal Peninsula south of Lisbon.\n\nFor Alentejo, compare two distinct private days: [Évora](/tours/evora-alentejo) combines historic sights with selected estate tastings; [Vidigueira and Vila de Frades](/tours/roman-heritage-alentejo) focus on Roman heritage and traditional talha wine at a family winery. Talha wine is not part of the Évora route. The right choice depends on driving time and whether wine, local food, coast or heritage matters most to you; each tour page shows current dates, prices and inclusions.\n\nReady to choose? Each private day below shows live dates, the current price for your group and instant confirmation: [Arrábida Wine](/tours/arrabida-wine-allinclusive) · [Azeitão Cheese & Wine](/tours/azeitao-cheese) · [Évora & Alentejo](/tours/evora-alentejo) · [Roman Heritage & Talha Wine](/tours/roman-heritage-alentejo).",
+        body: "Choose [Arrábida](/tours/arrabida-wine-allinclusive) for wineries, Setúbal's Livramento market, Portuguese lunch and Atlantic views. Choose [Azeitão](/tours/azeitao-cheese) for a hands-on cheese workshop, a winery tasting and time in Sesimbra. Both explore the Setúbal Peninsula south of Lisbon.\n\nFor Alentejo, compare two distinct private days: [Évora](/tours/evora-alentejo) combines historic sights with selected estate tastings; [Vidigueira and Vila de Frades](/tours/roman-heritage-alentejo) focus on Roman heritage and traditional talha wine at a family winery. Talha wine is not part of the Évora route. The right choice depends on driving time and whether wine, local food, coast or heritage matters most to you; each tour page shows current dates, prices and inclusions.\n\nCompare tour formats, hotel pickup and current availability on our [private wine tours from Lisbon](/lisbon-wine-tours) booking page.\n\nReady to choose? Each private day below shows live dates, the current price for your group and instant confirmation: [Arrábida Wine](/tours/arrabida-wine-allinclusive) · [Azeitão Cheese & Wine](/tours/azeitao-cheese) · [Évora & Alentejo](/tours/evora-alentejo) · [Roman Heritage & Talha Wine](/tours/roman-heritage-alentejo).",
       },
       {
         heading: "Lisbon is closer to serious wine country than travelers expect.",
@@ -1460,7 +1460,7 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
       { path: "/portugal-travel-designer", label: "Design your own Portugal journey" },
     ],
     datePublished: "2026-07-24",
-    dateModified: "2026-11-04",
+    dateModified: "2026-11-21",
   },
   {
     slug: "portugal-coastal-drives-from-lisbon",

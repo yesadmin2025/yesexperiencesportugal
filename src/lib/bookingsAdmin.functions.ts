@@ -197,7 +197,7 @@ export const cancelAndRefundBooking = createServerFn({ method: "POST" })
       throw new Error("The payment could not be verified with Stripe. No booking details were changed. Try again shortly.");
     }
     let paymentIntent = (await paymentIntentResponse.json()) as StripePaymentIntent;
-    let refund: StripeRefund;
+
     let alreadyRefunded = isFullyRefunded(paymentIntent);
 
     const refundBody = new URLSearchParams({ payment_intent: booking.stripe_payment_intent_id });
@@ -243,7 +243,7 @@ export const cancelAndRefundBooking = createServerFn({ method: "POST" })
         throw new Error(`Stripe could not submit the refund${stripeError.code ? ` (${stripeError.code})` : ""}. The booking remains paid.`);
       }
     }
-    refund = alreadyRefunded
+    const refund: StripeRefund = alreadyRefunded
       ? { id: booking.stripe_payment_intent_id, status: "succeeded" }
       : (await (refundResponse as Response).json()) as StripeRefund;
     const previousMetadata =

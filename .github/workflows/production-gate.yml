@@ -15,7 +15,7 @@ concurrency:
 
 jobs:
   gate:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 30
     env:
       # Automated runs must never touch Stripe live mode.
@@ -44,5 +44,18 @@ jobs:
       - name: Install Playwright browser
         run: bunx playwright install --with-deps chromium
 
+      # The complete browser matrix is retained in its dedicated CI workflows.
+      # This protected gate tests actual navigation + checkout paths rather
+      # than timing out after running hundreds of unrelated E2E assertions.
       - name: Smoke — mobile, Studio, checkout (test mode), confirmation
-        run: bun run test:e2e
+        run: |
+          bunx playwright test \
+            e2e/homepage-smart-start.spec.ts \
+            e2e/studio-canonical-routing.spec.ts \
+            e2e/living-atlas-production.spec.ts \
+            e2e/checkout-mobile-friction.spec.ts \
+            --project=mobile-chromium
+          bunx playwright test \
+            e2e/studio-canonical-routing.spec.ts \
+            e2e/living-atlas-production.spec.ts \
+            --project=desktop-chromium

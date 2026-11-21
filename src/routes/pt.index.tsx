@@ -22,9 +22,9 @@ import ogSocialImg from "@/assets/hero-coast.jpg";
  * the completed PT surface: Signature → Studio (EN) → Multi-day paths,
  * featured day experiences, corporate & reviews strips, contact.
  */
-const PT_TITLE = "Experiência Privada Portugal · Reservar Tour Privado | YES";
+const PT_TITLE = "YES Experiences Portugal | Studio e Travel Designer";
 const PT_DESCRIPTION =
-  "Experiências privadas em Portugal com anfitriões locais. Sintra, Arrábida, Évora e Douro, com itinerário, preço real e confirmação online.";
+  "Crie dias privados no Experience Studio, planeie viagens à medida com um Travel Designer local ou reserve experiências Signature em Portugal.";
 
 export const Route = createFileRoute("/pt/")({
   head: () => ({
@@ -92,9 +92,9 @@ function PtHomePage() {
             <SectionTitle.Em>mostrado como um local mostra a um amigo.</SectionTitle.Em>
           </SectionTitle>
           <p className="page-header-support mt-7 mx-auto max-w-xl text-[15px] md:text-[17px] leading-relaxed text-[color:var(--charcoal-soft)]">
-            Desenhamos viagens privadas por Portugal — do vinho da Arrábida às planícies do Alentejo,
-            de Sintra à costa vicentina — com guias locais, mesas verdadeiras e tempo para respirar.
-            Sem grupos, sem guiões prontos, sem pressa.
+            A YES Experiences Portugal desenha dias e viagens privadas à sua medida: crie o seu
+            dia no Experience Studio, planeie jornadas completas com um Travel Designer local ou
+            escolha uma experiência Signature. Com anfitriões locais, sem grupos partilhados.
           </p>
           <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-3">
             <CtaButton to="/pt/experiences" variant="primary">
@@ -148,6 +148,14 @@ function PtHomePage() {
               >
                 {card.cta} →
               </Link>
+              {card.eyebrow === "Roteiros à Medida" && (
+                <Link
+                  to="/portugal-travel-designer"
+                  className="mt-3 self-start text-[11px] text-[color:var(--teal)] underline underline-offset-4"
+                >
+                  Conhecer o Travel Designer (página em inglês)
+                </Link>
+              )}
             </article>
           ))}
         </div>
