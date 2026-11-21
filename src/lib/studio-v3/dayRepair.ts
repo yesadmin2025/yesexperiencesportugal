@@ -94,7 +94,7 @@ function repairOnce<P>(input: DayRepairInput<P>, allowSubstitute: boolean): DayR
   }
 
   // 1) Operationally blocked moments — substitute, else remove.
-  let working: P[] = [];
+  const working: P[] = [];
   for (const point of original) {
     if (!isBlocked(point)) {
       working.push(point);

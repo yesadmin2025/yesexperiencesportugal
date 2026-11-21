@@ -82,7 +82,11 @@ async function logisticsMoment(page: Page) {
 
 async function enterLogisticsReview(page: Page) {
   const root = page.locator('[data-testid="studio-v3-root"]').first();
-  await expect(root).toHaveAttribute("data-phase", "logistics");
+  // Hydration canonicalizes the legacy Logistics phase to the unified
+  // Your Day screen. Open the operational editor through the real UI.
+  await expect(root).toHaveAttribute("data-phase", "storyboard");
+  await page.getByTestId("studio-v3-edit-operational").click();
+  await expect(root).toHaveAttribute("data-phase", "logistics", { timeout: 15_000 });
 
   // P7 deliberately occupies the Logistics slot with a one-tap Director's
   // Read before the practical moments mount. A restored valid state should

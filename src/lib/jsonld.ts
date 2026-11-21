@@ -70,9 +70,9 @@ export function organizationLd() {
     slogan:
       "Portugal, around you — private, personalized journeys with local hidden gems, designed in real time.",
     keywords:
-      "private tours Portugal, personalized Portugal tours, local Portugal tours, hidden gems Portugal, Portugal around you, real-time tour builder, interactive private tour design, Arrábida wine tour, Costa Vicentina private tour, Vinho de Talha Alentejo, Tróia Comporta private day, Travel Designer Portugal",
+      "Portugal travel designer, bespoke Portugal itineraries, Experience Studio, Signature Experiences, proposals and celebrations Portugal, marriage proposal planning Portugal, corporate incentives Portugal, executive retreats Portugal, private group experiences, design your own private day Portugal, private tours Portugal, personalized Portugal experiences, curated Signature days, hidden gems Portugal, Arrábida wine tour, Costa Vicentina private day, Vinho de Talha Alentejo, Tróia Comporta private day",
     disambiguatingDescription:
-      "Official website and current contact identity for YES Experiences Portugal, licensed Portuguese tour operator RNAAT nº 31/2023, based in Sesimbra.",
+      "YES Experiences Portugal is a private experience design brand offering Signature Experiences, an interactive Experience Studio, bespoke Travel Designer journeys, Proposals & Celebrations and Corporate & Groups across Portugal. Licensed operator RNAAT nº 31/2023, based in Sesimbra.",
     knowsAbout: [
       "Private personalized tours in Portugal",
       "Local Portugal tours with hidden gems",
@@ -80,6 +80,8 @@ export function organizationLd() {
       "Real-time private tour design in Portugal",
       "Interactive private day design (YES Experience Studio)",
       "Travel Designer service for full Portugal journeys",
+      "Private proposals, anniversaries and celebrations in Portugal",
+      "Corporate incentives, executive retreats and private group experiences in Portugal",
       "Arrábida private wine tour from Lisbon (best-seller)",
       "Southwest Vicentine Coast private day tour from Lisbon",
       "Vinho de Talha private wine tour in the Alentejo",
@@ -245,7 +247,7 @@ export function organizationLd() {
       "@type": "PropertyValue",
       propertyID: "RNAAT",
       value: "nº 31/2023",
-      name: "Registo Nacional dos Agentes de Viagens e Turismo",
+      name: "Registo Nacional dos Agentes de Animação Turística",
       description: "Licensed Portuguese tour operator — RNAAT nº 31/2023.",
     },
     address: STRUCTURED_ADDRESS,

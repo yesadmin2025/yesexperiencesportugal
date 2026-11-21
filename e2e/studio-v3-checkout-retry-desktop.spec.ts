@@ -12,13 +12,23 @@ import { expect, test, type Page } from "@playwright/test";
 
 const STORAGE_KEY = "yes.studio-v3.session.v1";
 
+// Avoid a calendar regression caused solely by an expired fixture date.
+function futureLisbonDate(daysAhead = 28): string {
+  const target = new Date(Date.now() + daysAhead * 86_400_000);
+  const parts = new Intl.DateTimeFormat("en-GB", {
+    timeZone: "Europe/Lisbon", year: "numeric", month: "2-digit", day: "2-digit",
+  }).formatToParts(target);
+  const date = Object.fromEntries(parts.map(({ type, value }) => [type, value]));
+  return `${date.year}-${date.month}-${date.day}`;
+}
+
 const COMPOSED_STATE = {
   phase: "confirmation",
   feeling: "wine-food",
   companions: "couple",
   occasion: "none",
   dateMode: "exact",
-  dateExact: "2026-10-09",
+  dateExact: futureLisbonDate(),
   pickup: "lisbon",
   guests: 2,
   adults: 2,

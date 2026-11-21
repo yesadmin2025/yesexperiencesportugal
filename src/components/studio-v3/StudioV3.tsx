@@ -6115,6 +6115,20 @@ export function StoryboardHandoff({
       ) : null}
 
       <BackLink onClick={onBack} />
+      {/* A real exit to the operational preflight, not just the previous
+          editorial beat. This lets guests correct date, party and pickup
+          after the unified Your Day reveal, before any payment. */}
+      <div className="mt-3 flex justify-end">
+        <button
+          type="button"
+          onClick={onRefine}
+          data-testid="studio-v3-edit-operational"
+          className="min-h-[44px] px-2 text-[12px] font-semibold underline underline-offset-4 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--teal)]"
+          style={{ color: "var(--teal)" }}
+        >
+          Edit date, guests &amp; pickup
+        </button>
+      </div>
 
       {/* ---------- 1. Header — same `Your Day` framing as the map beat ----------
         Refine is not a new wizard step; it is the same surface, now editable.

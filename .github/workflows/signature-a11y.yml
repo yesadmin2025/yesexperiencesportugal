@@ -20,7 +20,7 @@ concurrency:
 jobs:
   signature-a11y:
     name: Playwright — signature a11y (alt + landmarks)
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 20
 
     steps:

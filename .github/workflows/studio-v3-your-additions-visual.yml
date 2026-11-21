@@ -27,7 +27,7 @@ concurrency:
 jobs:
   visual-regression:
     name: Your additions visual (Chromium · mobile)
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 15
 
     steps:

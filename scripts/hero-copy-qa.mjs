@@ -13,7 +13,7 @@
  *
  * Optional env overrides:
  *   PREVIEW_URL=https://...    (defaults to id-preview--<id>.lovable.app)
- *   PRODUCTION_URL=https://... (defaults to dreamscape-builder-co.lovable.app)
+ *   PRODUCTION_URL=https://... (defaults to yesexperiencesportugal.com)
  *
  * Exit codes:
  *   0 — every required string found in every target
@@ -32,7 +32,7 @@ const ALL_TARGETS = [
   },
   {
     name: "Production",
-    url: process.env.PRODUCTION_URL || "https://dreamscape-builder-co.lovable.app/",
+    url: process.env.PRODUCTION_URL || "https://yesexperiencesportugal.com/",
   },
 ];
 

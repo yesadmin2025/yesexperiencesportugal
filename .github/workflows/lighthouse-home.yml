@@ -26,7 +26,7 @@ concurrency:
 jobs:
   lighthouse:
     name: Lighthouse (${{ matrix.preset }})
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 18
     strategy:
       fail-fast: false
@@ -55,6 +55,13 @@ jobs:
         run: bun install --frozen-lockfile
 
       - name: Build production bundle
+        # Vite + TanStack SSR needs more than Node's default ~2 GiB heap in CI.
+        # Increase memory for the build only; do not weaken Lighthouse budgets.
+        env:
+          NODE_OPTIONS: --max-old-space-size=4096
+          # Only the CI audit uses a standalone Node preview. The deployed
+          # Lovable/Cloudflare production adapter is left untouched.
+          NITRO_PRESET: node_server
         run: bun run build
 
       - name: Install Lighthouse CI

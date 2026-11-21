@@ -80,7 +80,7 @@ describe("commercial SEO crawl paths", () => {
     expect(home).toContain('to="/lisbon-wine-tours"');
     expect(home).toContain('to="/lisbon-private-tours"');
     expect(home).toContain('aria-label="Private tours from Lisbon"');
-    expect(wine).toContain('const TITLE = "Private Wine Tours from Lisbon');
+    expect(wine).toContain('const TITLE = "Lisbon Wine Tours | Private Arrábida & Alentejo Days | YES"');
     expect(tours).toContain('const TITLE = "Private Day Tours From Lisbon');
   });
 });
@@ -89,10 +89,10 @@ describe("brand-critical SERP snippets", () => {
   it("homepage title and description are locked", () => {
     const home = read("src/routes/index.tsx");
     expect(home).toContain(
-      '"YES Experiences Portugal — Private Tours & Tailored Journeys"',
+      '"YES Experiences Portugal | Travel Designer & Studio"',
     );
     expect(home).toContain(
-      "Private Portugal days, wine journeys and off-the-beaten-path escapes. Explore Signature days or design your own in our real-time Studio. Reserve online.",
+      "YES Experiences Portugal: Signature Experiences, YES Experience Studio, bespoke Travel Designer journeys, Proposals & Celebrations and Corporate & Groups.",
     );
   });
 
@@ -127,13 +127,51 @@ describe("brand-critical SERP snippets", () => {
       }>
     ).find((a) => a.slug === "best-wine-tours-from-lisbon");
     expect(article).toBeTruthy();
-    expect(article!.title).toBe("Private Lisbon Wine Tours: Arrábida & Alentejo Day Trips");
+    expect(article!.title).toBe("Best Wine Tours from Lisbon: Arrábida or Alentejo? | YES");
     expect(article!.metaDescription).toBe(
-      "Private wine tours from Lisbon to Arrábida and Alentejo: family cellars, local lunch and hotel pickup. Compare each day's route, dates and live prices.",
+      "Compare Arrábida, Azeitão and Alentejo wine tours from Lisbon: driving time, wineries, food, hotel pickup and links to live tour dates and prices.",
     );
     for (const text of [article!.title, article!.metaDescription, article!.standfirst]) {
       expect(text.toLowerCase()).not.toMatch(/small[- ]group/);
     }
+  });
+});
+
+describe("brand identity and structured homepage FAQ parity", () => {
+  it("keeps the brand's Experience Studio and Travel Designer visible in metadata", () => {
+    const home = read("src/routes/index.tsx");
+    const about = read("src/routes/about.tsx");
+    expect(home).toContain("YES Experiences Portugal | Travel Designer & Studio");
+    expect(home).toContain("YES Experience Studio");
+    for (const service of ["Signature Experiences", "Experience Studio", "Travel Designer", "Proposals & Celebrations", "Corporate & Groups"]) {
+      expect(home).toContain(service);
+    }
+    const visiblePaths = read("src/components/home/FiveWaysIn.tsx");
+    for (const service of ["Studio", "Signature", "Travel Designer", "Proposals &", "Corporate &"]) {
+      expect(visiblePaths).toContain(service);
+    }
+    const ptHomeDescription = read("src/routes/pt.index.tsx");
+    for (const service of ["Signature", "Experience Studio", "Travel Designer", "pedidos de casamento", "celebrações", "empresas"]) {
+      expect(ptHomeDescription).toContain(service);
+    }
+    expect(about).toContain("About YES Experiences Portugal | Travel Design & Studio");
+    expect(about).toContain("founder-led travel design brand");
+    const ptHome = read("src/routes/pt.index.tsx");
+    const ptAbout = read("src/routes/pt.about.tsx");
+    expect(ptHome).toContain("YES Experiences Portugal | Studio e Travel Designer");
+    expect(ptHome).not.toContain("Reservar Tour Privado");
+    expect(ptAbout).toContain("Sobre a YES Experiences Portugal | Studio e Travel Designer");
+    expect(ptAbout).toContain("marca portuguesa de design de experiências e viagens");
+  });
+
+  it("homepage FAQ structured questions match those presented to visitors", async () => {
+    const { HOMEPAGE_FAQ } = await import("@/content/faq-data");
+    const visible = read("src/components/FAQ.tsx");
+    const visibleQuestions = [...visible.matchAll(/q:\s*"([^"]+)"/g)].map((match) => match[1]);
+    expect(HOMEPAGE_FAQ.map((faq) => faq.q)).toEqual(visibleQuestions);
+    expect(HOMEPAGE_FAQ.map((faq) => faq.q)).not.toContain("What is YES Experiences Portugal best known for?");
+    expect(visible).toContain("Travel Designer");
+    expect(visible).toContain("Studio");
   });
 });
 
