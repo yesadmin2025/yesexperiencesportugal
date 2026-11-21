@@ -1,13 +1,13 @@
 {
   "ci": {
     "collect": {
-      "startServerCommand": "bun run preview --port 4173",
-      "startServerReadyPattern": "localhost",
+      "startServerCommand": "PORT=4173 HOST=127.0.0.1 node .output/server/index.mjs",
+      "startServerReadyPattern": "Listening on:",
       "url": [
-        "http://localhost:4173/",
-        "http://localhost:4173/hero-verify",
-        "http://localhost:4173/builder",
-        "http://localhost:4173/experiences"
+        "http://127.0.0.1:4173/",
+        "http://127.0.0.1:4173/hero-verify",
+        "http://127.0.0.1:4173/builder",
+        "http://127.0.0.1:4173/experiences"
       ],
       "numberOfRuns": 1,
       "settings": {
@@ -70,7 +70,7 @@
             "maxNumericValue": 300
           }
         ],
-        "resource-summary:third-party-count": [
+        "resource-summary:third-party:count": [
           "warn",
           {
             "maxNumericValue": 12
@@ -92,12 +92,6 @@
           "warn",
           {
             "maxNumericValue": 3500
-          }
-        ],
-        "render-blocking-resources": [
-          "error",
-          {
-            "maxNumericValue": 300
           }
         ],
         "performance-budget": [

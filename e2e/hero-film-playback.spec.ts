@@ -33,16 +33,51 @@ type PlaybackProbe = {
 
 async function waitForVideoMetadata(page: Page) {
   await page.locator(VIDEO_SELECTOR).waitFor({ state: "attached" });
-  await page.evaluate(
-    (sel) =>
-      new Promise<void>((resolve) => {
-        const v = document.querySelector(sel) as HTMLVideoElement | null;
-        if (!v) return resolve();
-        if (v.readyState >= 1) return resolve();
-        v.addEventListener("loadedmetadata", () => resolve(), { once: true });
-      }),
+  // Film is attached after load/idle by design; do not wait indefinitely
+  // for loadedmetadata in a browser without the deployed video codec.
+  await page.waitForFunction(
+    (sel) => {
+      const video = document.querySelector(sel) as HTMLVideoElement | null;
+      return Boolean(video?.readyState && video.readyState >= 1);
+    },
     VIDEO_SELECTOR,
-  );
+    { timeout: 15_000 },
+  ).catch(async (error) => {
+    const diagnosis = await page.locator(VIDEO_SELECTOR).evaluate((video: HTMLVideoElement) => ({
+      src: video.getAttribute("src"),
+      currentSrc: video.currentSrc,
+      networkState: video.networkState,
+      readyState: video.readyState,
+      mediaError: video.error?.message ?? null,
+    }));
+    // Preserve the exact HTTP evidence when a media decoder rejects the file.
+    // An HTML fallback at /video/... can otherwise look like a codec failure.
+    let delivery: Record<string, unknown> = {};
+    try {
+      const response = await page.request.get(diagnosis.currentSrc || diagnosis.src || "/", {
+        timeout: 10_000,
+        headers: { Range: "bytes=0-63" },
+      });
+      const body = await response.body();
+      delivery = {
+        status: response.status(),
+        contentType: response.headers()["content-type"] ?? null,
+        contentRange: response.headers()["content-range"] ?? null,
+        contentLength: body.byteLength,
+        magicHex: Buffer.from(body.subarray(0, 24)).toString("hex"),
+      };
+    } catch (requestError) {
+      delivery = { requestError: String(requestError) };
+    }
+    const browser = page.context().browser();
+    throw new Error(
+      `Hero video metadata unavailable: ${JSON.stringify({
+        ...diagnosis,
+        delivery,
+        browserVersion: browser?.version() ?? null,
+      })}. ${String(error)}`,
+    );
+  });
 }
 
 /**
@@ -69,6 +104,14 @@ async function probePlayback(page: Page): Promise<PlaybackProbe> {
     while (performance.now() - startedAt < 2000) {
       await new Promise((r) => requestAnimationFrame(() => r(null)));
       if (!v.paused && v.currentTime > beforeT + 0.05) break;
+    }
+
+    // Measure the steady-state film, not the first moments of page hydration,
+    // image/poster transitions and decoder warm-up. This keeps the original
+    // strict dropped-frame budget (3% desktop, 5% mobile) intact.
+    // An actual persistent playback performance problem will still fail.
+    if (!v.paused && v.currentTime > 0) {
+      await new Promise<void>((resolve) => setTimeout(resolve, 1800));
     }
 
     const startTime = v.currentTime;

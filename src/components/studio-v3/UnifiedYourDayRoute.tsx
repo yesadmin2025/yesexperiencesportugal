@@ -19,7 +19,7 @@
 
 import { YourDayTimeline } from "./YourDayTimeline";
 import { resolveYourDayMapTruth } from "./yourDayMapTruth";
-import "./studioMobileA11y.css";
+/* Studio mobile accessibility styles live in the global CSS bundle. */
 
 export interface UnifiedYourDayMoment {
   readonly label: string;

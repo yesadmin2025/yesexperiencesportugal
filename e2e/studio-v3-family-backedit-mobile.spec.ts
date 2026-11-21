@@ -127,7 +127,7 @@ test("mixed-age family survives edit → review with exact composition", async (
   await page.getByRole("button", { name: "Edit guests" }).click();
   await expect.poll(() => logisticsMoment(page)).toBe("who");
 
-  const minors = page.getByRole("list", { name: "Minor travellers" });
+  const minors = page.getByRole("list", { name: "Minor travelers" });
   await expect(minors.getByRole("listitem")).toHaveCount(2);
   await expect(page.getByRole("group", { name: "Age of child 1" })).toContainText("13");
   await expect(page.getByRole("group", { name: "Age of child 2" })).toContainText("8");

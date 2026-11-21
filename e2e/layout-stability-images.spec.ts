@@ -36,15 +36,36 @@ type ImageReport = {
 
 async function startCls(page: Page) {
   await page.addInitScript(() => {
-    (window as unknown as { __cls: number }).__cls = 0;
+    // The Web Vitals CLS metric is the largest 5s session window with
+    // no gap over 1s, NOT the sum of every shift over a long scroll.
+    // Keep the exact 0.1 budget and record the raw total for diagnosis.
+    const metrics = window as unknown as { __cls: number; __clsRaw: number };
+    metrics.__cls = 0;
+    metrics.__clsRaw = 0;
+    let sessionValue = 0;
+    let sessionStart = -1;
+    let lastShift = -1;
     try {
       new PerformanceObserver((list) => {
         for (const entry of list.getEntries() as Array<
           PerformanceEntry & { hadRecentInput?: boolean; value?: number }
         >) {
-          if (!entry.hadRecentInput) {
-            (window as unknown as { __cls: number }).__cls += entry.value ?? 0;
+          if (entry.hadRecentInput) continue;
+          const shift = entry.value ?? 0;
+          if (shift === 0) continue;
+          metrics.__clsRaw += shift;
+          if (
+            lastShift < 0 ||
+            entry.startTime - lastShift > 1000 ||
+            entry.startTime - sessionStart > 5000
+          ) {
+            sessionStart = entry.startTime;
+            sessionValue = shift;
+          } else {
+            sessionValue += shift;
           }
+          lastShift = entry.startTime;
+          metrics.__cls = Math.max(metrics.__cls, sessionValue);
         }
       }).observe({ type: "layout-shift", buffered: true });
     } catch {
@@ -55,33 +76,43 @@ async function startCls(page: Page) {
 
 /** Scroll the full page so every lazy image is requested and decoded. */
 async function scrollThroughPage(page: Page) {
-  await page.evaluate(async () => {
-    const step = Math.round(window.innerHeight * 0.8);
-    const wait = (ms: number) => new Promise((r) => setTimeout(r, ms));
-    for (let y = 0; y < document.body.scrollHeight; y += step) {
-      window.scrollTo(0, y);
-      await wait(150);
-    }
-    window.scrollTo(0, document.body.scrollHeight);
-    await wait(400);
-    window.scrollTo(0, 0);
-    await wait(200);
-  });
-  await page.waitForTimeout(500);
+  // Keep each scroll in its own browser task. A single long page.evaluate
+  // can lose its execution context on route hydration/navigation and hide
+  // the actual page that caused the problem.
+  const origin = new URL(page.url()).pathname;
+  const { step, height } = await page.evaluate(() => ({
+    step: Math.max(1, Math.round(window.innerHeight * 0.8)),
+    height: document.documentElement.scrollHeight,
+  }));
+  for (let y = 0; y < height; y += step) {
+    await page.evaluate((offset) => window.scrollTo(0, offset), y);
+    await page.waitForTimeout(150);
+    expect(new URL(page.url()).pathname, "route changed during lazy-image audit").toBe(origin);
+  }
+  await page.evaluate(() => window.scrollTo(0, document.documentElement.scrollHeight));
+  await page.waitForTimeout(400);
+  await page.evaluate(() => window.scrollTo(0, 0));
+  await page.waitForTimeout(700);
 }
-
 for (const route of ROUTES) {
   test(`layout stability + image sizing — ${route.name}`, async ({ page }) => {
+    // Long editorial pages require multiple deliberate scroll steps; the
+    // CLS threshold remains exactly 0.1, independent of this test timeout.
+    test.setTimeout(90_000);
     await page.setViewportSize({ width: 393, height: 852 });
     await startCls(page);
     await page.goto(route.path, { waitUntil: "domcontentloaded" });
+    await page.waitForFunction(() => (window as Window & { __APP_READY__?: boolean }).__APP_READY__ === true, undefined, { timeout: 30_000 });
     await page.waitForLoadState("networkidle", { timeout: 10_000 }).catch(() => undefined);
 
     await scrollThroughPage(page);
 
     // ── 1. Cumulative layout shift budget ───────────────────────────────
     const cls = await page.evaluate(() => (window as unknown as { __cls: number }).__cls ?? 0);
-    expect(cls, `${route.name} CLS after full-page scroll`).toBeLessThan(CLS_BUDGET);
+    expect(
+      cls,
+      `${route.name} max-session CLS after scroll (raw total: ${await page.evaluate(() => (window as unknown as { __clsRaw: number }).__clsRaw ?? 0)})`,
+    ).toBeLessThan(CLS_BUDGET);
 
     // ── 2. Every lazy image reserves space before it decodes ────────────
     const unreserved: ImageReport[] = await page.evaluate(() => {
