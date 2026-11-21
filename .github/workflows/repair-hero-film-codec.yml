@@ -1,0 +1,67 @@
+name: Repair YES hero film codec (one-time)
+
+# One-time maintenance workflow. Only the internal PR #69 branch may write.
+# Triggered by introducing this workflow, not by later media changes.
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+    paths:
+      - .github/workflows/repair-hero-film-codec.yml
+
+permissions:
+  contents: write
+
+jobs:
+  normalize-film:
+    if: ${{ github.event.pull_request.head.repo.full_name == github.repository && github.event.pull_request.head.ref == 'fix/quality-gates-studio-hero-lighthouse-20261121' }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - name: Check out authorized PR branch
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.ref }}
+          persist-credentials: true
+      - name: Inspect and normalize hero masters to broadly supported H.264
+        shell: bash
+        run: |
+          set -euo pipefail
+          ffmpeg -version | head -n 1
+          for variant in 720 1080; do
+            source="public/video/hero-sunset-road-27s-${variant}.mp4"
+            output="public/video/hero-sunset-road-27s-${variant}.normalized.mp4"
+            echo "::group::Inspect ${source}"
+            ffprobe -v error -show_entries stream=codec_name,profile,pix_fmt,width,height,r_frame_rate -of default=noprint_wrappers=1 "${source}"
+            ffprobe -v error -show_entries format=duration -of default=noprint_wrappers=1 "${source}"
+            echo "::endgroup::"
+            # Re-encode from the original footage rather than modifying copy or
+            # bypassing film tests. The faststart atom improves first-frame time.
+            ffmpeg -hide_banner -loglevel error -nostdin -y -i "${source}" \
+              -map 0:v:0 -an -c:v libx264 -preset medium -crf 20 \
+              -pix_fmt yuv420p -r 30 -movflags +faststart \
+              "${output}"
+            codec="$(ffprobe -v error -select_streams v:0 -show_entries stream=codec_name -of default=nw=1:nk=1 "${output}")"
+            pix="$(ffprobe -v error -select_streams v:0 -show_entries stream=pix_fmt -of default=nw=1:nk=1 "${output}")"
+            fps="$(ffprobe -v error -select_streams v:0 -show_entries stream=r_frame_rate -of default=nw=1:nk=1 "${output}")"
+            [[ "${codec}" == "h264" && "${pix}" == "yuv420p" && "${fps}" == "30/1" ]] || {
+              echo "::error::Normalization failed verification for ${source}: codec=${codec} pix=${pix} fps=${fps}"
+              exit 1
+            }
+            mv "${output}" "${source}"
+            echo "${source}: ${codec}/${pix}/${fps} (verified)"
+          done
+      - name: Commit validated media back to PR branch
+        shell: bash
+        env:
+          BRANCH: ${{ github.event.pull_request.head.ref }}
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add public/video/hero-sunset-road-27s-720.mp4 public/video/hero-sunset-road-27s-1080.mp4
+          if git diff --cached --quiet; then
+            echo "No media changes"
+            exit 0
+          fi
+          git commit -m "fix(media): normalize 27s YES hero MP4 to H.264 yuv420p faststart"
+          git push origin "HEAD:${BRANCH}"
