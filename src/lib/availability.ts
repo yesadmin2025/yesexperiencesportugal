@@ -28,12 +28,8 @@ const cache = new Map<string, Promise<OperatingRule>>();
 /** Dates where every active guide is already busy or off (dates only, no details). */
 async function fetchFullyBookedDates(): Promise<string[]> {
   try {
-    const from = new Date().toISOString().slice(0, 10);
-    const to = new Date(Date.now() + 400 * 86_400_000).toISOString().slice(0, 10);
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const { data, error } = await (supabase as any).rpc("public_fully_booked_dates", { _from: from, _to: to });
-    if (error || !Array.isArray(data)) return [];
-    return (data as unknown[]).map((d) => String(d).slice(0, 10));
+    const { getFullyBookedDates } = await import("@/lib/fullyBookedDates.functions");
+    return await getFullyBookedDates();
   } catch {
     return [];
   }

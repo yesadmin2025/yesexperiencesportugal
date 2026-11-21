@@ -50,6 +50,13 @@
       "when": 1795149383803,
       "tag": "0006_restrict_booking_window_and_removed_assignments",
       "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "7",
+      "when": 1795223957583,
+      "tag": "0007_revoke_public_fully_booked_dates",
+      "breakpoints": true
     }
   ]
 }

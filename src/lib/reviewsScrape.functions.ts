@@ -122,8 +122,24 @@ export const scrapeTourReviews = createServerFn({ method: "POST" })
   .handler(async ({ context, data }) => {
     await assertAdmin(context);
 
-    if (!/^https?:\/\//.test(data.source_url)) {
+    const ALLOWED_HOSTS: Record<ReviewSource, string[]> = {
+      viator: ["viator.com"],
+      tripadvisor: ["tripadvisor.com", "tripadvisor.pt", "tripadvisor.co.uk"],
+      getyourguide: ["getyourguide.com"],
+    };
+    let parsed: URL;
+    try {
+      parsed = new URL(data.source_url);
+    } catch {
       throw new Error("Provide an absolute https URL for the platform listing.");
+    }
+    const allowed = ALLOWED_HOSTS[data.source] ?? [];
+    const host = parsed.hostname.toLowerCase();
+    if (
+      parsed.protocol !== "https:" ||
+      !allowed.some((h) => host === h || host.endsWith(`.${h}`))
+    ) {
+      throw new Error("URL must be an https listing on the selected review platform.");
     }
 
     const audit = {
