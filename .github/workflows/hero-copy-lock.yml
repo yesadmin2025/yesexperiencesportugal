@@ -47,7 +47,7 @@ concurrency:
 jobs:
   unit:
     name: Vitest — source-level byte-exact lock
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 5
     steps:
       - name: Checkout
@@ -73,7 +73,7 @@ jobs:
 
   e2e:
     name: Playwright — hero copy byte-exact DOM lock
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 15
     needs: unit
     # Run the DOM lock even if unit tests passed; if unit tests fail we
@@ -135,7 +135,7 @@ jobs:
 
   qa-report:
     name: hero-copy-qa — preview/prod drift JSON report
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 10
     # Independent of unit/e2e: the source-level lock can pass while a
     # deployed environment still drifts (cached HTML, stale build, CDN
