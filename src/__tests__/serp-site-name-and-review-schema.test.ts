@@ -127,9 +127,9 @@ describe("brand-critical SERP snippets", () => {
       }>
     ).find((a) => a.slug === "best-wine-tours-from-lisbon");
     expect(article).toBeTruthy();
-    expect(article!.title).toBe("Private Lisbon Wine Tours: Arrábida & Alentejo Day Trips");
+    expect(article!.title).toBe("Best Wine Tours from Lisbon: Arrábida or Alentejo? | YES");
     expect(article!.metaDescription).toBe(
-      "Private wine tours from Lisbon to Arrábida and Alentejo: family cellars, local lunch and hotel pickup. Compare each day's route, dates and live prices.",
+      "Compare Arrábida, Azeitão and Alentejo wine tours from Lisbon: driving time, wineries, food, hotel pickup and links to live tour dates and prices.",
     );
     for (const text of [article!.title, article!.metaDescription, article!.standfirst]) {
       expect(text.toLowerCase()).not.toMatch(/small[- ]group/);
