@@ -53,7 +53,7 @@ const FAQS: { q: string; a: ReactNode }[] = [
     ),
   },
   {
-    q: "How far in advance should I book?",
+    q: "How far in advance should I reserve?",
     a: (
       <>
         Studio days need at least 3 days’ notice, and the Signature booking calendar shows the
@@ -63,7 +63,7 @@ const FAQS: { q: string; a: ReactNode }[] = [
     ),
   },
   {
-    q: "What happens after I submit a request?",
+    q: "What happens after I reserve or send a request?",
     a: (
       <>
         Instant reservations are confirmed right away. For requests, a local replies personally
