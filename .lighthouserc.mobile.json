@@ -88,7 +88,7 @@
             "maxNumericValue": 500
           }
         ],
-        "resource-summary:third-party-count": [
+        "resource-summary:third-party:count": [
           "warn",
           {
             "maxNumericValue": 12

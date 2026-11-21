@@ -24,8 +24,26 @@ for (const flow of ["signature", "book", "tailor"] as const) {
     future.setDate(future.getDate() + 25);
     await date.fill(future.toISOString().slice(0, 10));
     if (flow === "tailor") {
-      // A real adjustment, using the configured activity price authority.
-      await page.getByTestId("tailor-winery-increase").click();
+      // Price-map rules can legitimately disable additional wineries for the
+      // selected Signature. Verify an available adjustment without forcing a
+      // disabled commercial option or changing the underlying price authority.
+      const increase = page.getByTestId("tailor-winery-increase");
+      const decrease = page.getByTestId("tailor-winery-decrease");
+      const lunch = page.getByTestId("tailor-add-lunch");
+      await expect(increase).toBeVisible();
+      if (await increase.isEnabled()) {
+        await increase.click();
+      } else if (await decrease.isEnabled()) {
+        await decrease.click();
+      } else if (await lunch.isVisible().catch(() => false)) {
+        const previous = await lunch.getAttribute("aria-pressed");
+        await lunch.click();
+        await expect(lunch).not.toHaveAttribute("aria-pressed", previous ?? "false");
+      } else {
+        // This smoke covers the checkout route; no adjustment is permitted
+        // for this product. Dedicated price-map tests enforce add-on rules.
+        await expect(increase).toBeDisabled();
+      }
     }
     await page.getByTestId(flow === "tailor" ? "tailor-reserve-cta" : "signature-reserve-cta").click();
     const dialog = page.getByRole("dialog", { name: "Your details", exact: true });

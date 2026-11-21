@@ -130,11 +130,27 @@ test("a restored composition reaches Guest Details and checkout exactly once", a
   await expect(root).toHaveAttribute("data-phase", "storyboard");
   await expectNoInternalCopy(page);
 
-  // Prove the restored composition survives another real refresh and remains
-  // anchored at Your Day rather than jumping back into confirmation/checkout.
+  // Prove the browser really committed the resumed draft to the session
+  // before reloading. The persistence effect runs after the visible phase
+  // render; without this barrier a fast desktop runner can reload too early.
+  await expect
+    .poll(
+      async () =>
+        page.evaluate((key) => {
+          const raw = window.sessionStorage.getItem(key);
+          if (!raw) return null;
+          try {
+            return (JSON.parse(raw) as { phase?: string }).phase ?? null;
+          } catch {
+            return null;
+          }
+        }, STORAGE_KEY),
+      { timeout: 15_000 },
+    )
+    .toBe("storyboard");
   await page.reload();
   await waitForStudioHydration(page);
-  await expect(root).toHaveAttribute("data-phase", "storyboard");
+  await expect(root).toHaveAttribute("data-phase", "storyboard", { timeout: 15_000 });
 
   // P8 retired the standalone reveal CTA inside the main funnel. The unified
   // Your Day surface owns the canonical handoff into Guest Details.
