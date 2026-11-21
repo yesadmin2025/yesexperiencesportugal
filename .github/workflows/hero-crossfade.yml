@@ -65,8 +65,6 @@ jobs:
         run: bunx playwright test e2e/hero-film-playback.spec.ts --config=playwright.hero-film.config.ts
         env:
           CI: "true"
-        env:
-          CI: "true"
 
       - name: Upload Playwright report (diffs + traces)
         if: always()
