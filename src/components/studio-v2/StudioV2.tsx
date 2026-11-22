@@ -2163,7 +2163,6 @@ function RevealStory({
           <LivingItinerary
             stops={editedStops}
             alternates={real.alternates}
-            caps={real.caps}
             onChange={setEditedStops}
             intent={(profile.intent as IntentAtmosphere | undefined) ?? undefined}
             regionKey={livePreview.region}

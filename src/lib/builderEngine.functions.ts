@@ -294,15 +294,8 @@ export const computeAddStopEligibility = createServerFn({ method: "POST" })
       stops,
       rules,
     );
-    return {
-      eligibility,
-      rules: {
-        max_km_between_stops: rules.max_km_between_stops,
-        max_total_km_per_day: rules.max_total_km_per_day,
-        max_experience_hours: rules.max_experience_hours,
-        max_driving_hours: rules.max_driving_hours,
-      },
-    };
+    // Internal routing limits stay server-side; guests only see per-stop results.
+    return { eligibility, rules: null };
   });
 
 /** Build a feasible BuilderRoute from the user-chosen ordered stop keys. */

@@ -30,6 +30,24 @@ export const analyzeBuilderReferences = createServerFn({ method: "POST" })
     if (!(await verifyBuilderSessionPass(data.sessionId, data.pass))) {
       return { error: "Couldn't read tone from these references." };
     }
+    // Nothing to read → never spend AI. Only real uploads from this session count.
+    if (data.fileIds.length === 0) {
+      return { error: "Add a reference image first." };
+    }
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const { count } = await supabaseAdmin
+      .from("builder_reference_uploads")
+      .select("id", { count: "exact", head: true })
+      .eq("session_id", data.sessionId)
+      .in("id", data.fileIds);
+    if (!count) {
+      return { error: "Couldn't read tone from these references." };
+    }
+    // Site-wide daily AI budget shared with other guest AI surfaces.
+    const { aiCallAllowed } = await import("./aiGate.server");
+    if (!(await aiCallAllowed("analyze_refs"))) {
+      return { error: "Too many tone reads right now — please try again in a moment." };
+    }
     const guard = await guardAiCaller({
       bucket: "analyze_refs",
       limit: 10,

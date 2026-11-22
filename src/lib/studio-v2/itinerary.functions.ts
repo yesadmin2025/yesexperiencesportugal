@@ -171,13 +171,13 @@ export const composeRealItinerary = createServerFn({ method: "POST" })
     if (realTotalKm > caps.maxTotalKmPerDay) {
       realFeasible = false;
       realWarnings.push(
-        `Total ${Math.round(realTotalKm)} km exceeds daily cap (${caps.maxTotalKmPerDay} km).`,
+        `Total ${Math.round(realTotalKm)} km makes this a long day on the road.`,
       );
     }
     if (realDriveMin / 60 > caps.maxDrivingHours) {
       realFeasible = false;
       realWarnings.push(
-        `Driving time ${Math.round(realDriveMin / 60)} h exceeds cap (${caps.maxDrivingHours} h).`,
+        `Driving time of about ${Math.round(realDriveMin / 60)} h makes this a long day.`,
       );
     }
 
@@ -224,7 +224,7 @@ export const composeRealItinerary = createServerFn({ method: "POST" })
       totalExperienceMin: itinerary.totalExperienceMin,
       feasible: realFeasible,
       warnings: realWarnings.length > 0 ? realWarnings : itinerary.warnings,
-      caps,
+      // Internal routing caps stay server-side (admin-only configuration).
       routingProvider: legs[0]?.provider ?? "haversine",
       /** True when the day was composed from a Signature-anchored subset
        *  of the pool (Tailored rule applied). False when we fell back to
