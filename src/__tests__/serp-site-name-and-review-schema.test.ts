@@ -89,10 +89,10 @@ describe("brand-critical SERP snippets", () => {
   it("homepage title and description are locked", () => {
     const home = read("src/routes/index.tsx");
     expect(home).toContain(
-      '"YES Experiences Portugal | Travel Designer & Studio"',
+      '"YES Experiences Portugal | Private Tours & Journeys"',
     );
     expect(home).toContain(
-      "YES Experiences Portugal: Signature Experiences, YES Experience Studio, bespoke Travel Designer journeys, Proposals & Celebrations and Corporate & Groups.",
+      "Private days, journeys and special moments across Portugal, guided by local knowledge. Reserve a Signature day, design your own in YES Experience Studio, or plan a trip with our Travel Designer.",
     );
   });
 
@@ -141,9 +141,10 @@ describe("brand identity and structured homepage FAQ parity", () => {
   it("keeps the brand's Experience Studio and Travel Designer visible in metadata", () => {
     const home = read("src/routes/index.tsx");
     const about = read("src/routes/about.tsx");
-    expect(home).toContain("YES Experiences Portugal | Travel Designer & Studio");
+    expect(home).toContain("YES Experiences Portugal | Private Tours & Journeys");
     expect(home).toContain("YES Experience Studio");
-    for (const service of ["Signature Experiences", "Experience Studio", "Travel Designer", "Proposals & Celebrations", "Corporate & Groups"]) {
+    // Homepage metadata names the three primary ways to buy; secondary paths stay on-page.
+    for (const service of ["Signature", "Experience Studio", "Travel Designer"]) {
       expect(home).toContain(service);
     }
     const visiblePaths = read("src/components/home/FiveWaysIn.tsx");
