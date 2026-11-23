@@ -8,8 +8,8 @@
  *      duplicate landmarks, or content outside landmarks
  *      (axe `landmark-one-main`, `landmark-no-duplicate-main`,
  *      `landmark-unique`, `region`).
- *   3. The route map is missing its accessible name
- *      (`[role="img"][aria-label^="Route map"]` must exist).
+ *   3. The current RouteGlance SVG is missing its accessible orientation
+ *      (`[data-testid="route-glance"] svg[role="img"]` must exist).
  *
  * Complements `signature-map-and-images.spec.ts` (which checks
  * that the map renders and images resolve) with an a11y contract.
@@ -52,8 +52,10 @@ test.describe("Signature tour pages — a11y (alt text + landmarks)", () => {
         window.scrollTo(0, 0);
       });
 
-      // Wait for the map so its accessible name is present in the scan.
-      const map = page.locator('[role="img"][aria-label^="Route map"]').first();
+      // Check the current inline RouteGlance map, not the retired RouteMap name.
+      const glance = page.getByTestId("route-glance");
+      await expect(glance, `route glance missing on /tours/${tourId}`).toBeVisible({ timeout: 25_000 });
+      const map = glance.locator('svg[role="img"][aria-label^="Where this day sits in Portugal"]');
       await expect(map, `map landmark missing on /tours/${tourId}`).toBeVisible({
         timeout: 25_000,
       });
