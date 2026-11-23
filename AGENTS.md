@@ -33,7 +33,8 @@
 - P23 is reserve-as-designed; its Tailor link redirects to its tour page until venues are verified, to avoid unconfirmed changes.
 - SEO title/description/H1 proposals live in admin-only drafts; published Signature search copy lives in the Signature SEO map, facts in verified tour content.
 - WhatsApp reservation messages come only from a verified paid session on the confirmation page.
-- Guest AI calls on Studio/Builder go through `allowAiCall`/`aiCallAllowed` (hashed-IP + daily caps) to bound cost.
+- Guest AI calls on Studio/Builder go through `allowAiCall`/`aiCallAllowed` (hashed-IP + daily caps); Drift enforces this inside its story generator so caller-chosen sessions or alternate callers cannot bypass the spending allowance.
+- Permission migrations are tested with isolated PGlite fixtures and the actual migration SQL so revocation behavior can be verified without changing real staff records.
 - Per-stop photos come only from `tour_gallery_photos.stop_label` set in `/admin/photos`; curated stop images aren't proof of place.
 - Route glance uses OSRM leg minutes (`useRouteLegMinutes`), never a summed driving total; stop order is narrative.
 - Signature day recap before guest details reuses the tour page's verified itinerary/inclusions.

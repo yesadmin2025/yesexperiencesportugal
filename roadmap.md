@@ -1,5 +1,10 @@
 # Phase 1 optimization
 
+## Selected security fixes — November 23 (no publication)
+- [x] Applied and read back the guide own-profile policy requiring active=true; administrator policy unchanged.
+- [x] Drift story generator now enforces the existing server-owned network/daily AI allowance, preserving public composition and deterministic fallback without a new sign-in step.
+- [x] All 51 tests passed in seven suites, including actual migration SQL against isolated PostgreSQL permission fixtures; automatic build and 76-route metadata check passed. Only the two selected findings addressed; no publication or real staff-record changes.
+
 ## Approved SEO findings — November 23 (no publication)
 - [x] Current homepage already has H1 → H2 → H3 hierarchy and visibly named Madeira/Azores controls; both selections verified at 393/1366px, so no homepage changes were needed for the stale finding.
 - [x] Clarify the existing Regions introduction, direct answer and search/share description using its seven existing chapters; title, H1, canonical, regional facts, links and booking paths preserved.

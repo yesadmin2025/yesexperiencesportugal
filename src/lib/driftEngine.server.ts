@@ -7,6 +7,7 @@ import {
   type ConfidenceMap,
 } from "@/lib/drift/composer";
 import { signatureTours } from "@/data/signatureTours";
+import { aiCallAllowed } from "@/lib/aiGate.server";
 
 /**
  * Drift engine — Phase 1 server helpers.
@@ -234,6 +235,9 @@ export async function generateRevealStory(input: StoryInput): Promise<RevealStor
     .join(", ");
 
   try {
+    // Every entry to story generation shares server-owned network/daily caps.
+    // A caller-selected session cannot replenish this metered allowance.
+    if (!(await aiCallAllowed("drift_reveal"))) return fallbackStory(input);
     const res = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
       method: "POST",
       headers: {

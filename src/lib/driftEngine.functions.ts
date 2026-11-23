@@ -10,9 +10,9 @@ import { rateLimit } from "@/lib/rateLimit.server";
  *   - revealJourney: compose final day + AI story + DNA, now powered by the
  *     adaptive confidence map (not just explicit profile fields).
  *
- * Anonymous endpoint protected by a per-session rate limit (5 calls / 60s)
- * to prevent AI credit exhaustion. The handler always returns a deterministic
- * composition; AI tone is layered on top inside assembleReveal.
+ * Anonymous composition keeps its per-session limit (5 calls / 60s).
+ * The story generator also enforces server-owned network and daily AI caps,
+ * independent of caller-selected sessions; denied calls use existing copy.
  */
 
 const profileSchema = z

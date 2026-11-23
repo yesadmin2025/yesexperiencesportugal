@@ -57,6 +57,13 @@
       "when": 1795223957583,
       "tag": "0007_revoke_public_fully_booked_dates",
       "breakpoints": true
+    },
+    {
+      "idx": 8,
+      "version": "7",
+      "when": 1795415693203,
+      "tag": "0008_restrict_inactive_guide_profile_reads",
+      "breakpoints": true
     }
   ]
 }
