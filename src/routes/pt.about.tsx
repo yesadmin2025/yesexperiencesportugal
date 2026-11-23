@@ -21,7 +21,7 @@ import {
 
 const TITLE = "Sobre a YES Experiences Portugal | Studio e Travel Designer";
 const DESCRIPTION =
-  "Conheça a YES, marca portuguesa de design de experiências e viagens: Signature, Experience Studio, Travel Designer, pedidos de casamento, celebrações e eventos empresariais.";
+  "Conheça a YES Experiences Portugal: experiências Signature, Experience Studio, Travel Designer, pedidos de casamento, celebrações e eventos empresariais.";
 const founderSrcSet = [480, 720, 900, 1200]
   .map((width) => `${founderAsset.url}?w=${width}&q=78 ${width}w`)
   .join(", ");
