@@ -176,6 +176,8 @@ export function FiveWaysIn() {
         </Scene>
 
         <Scene
+          as="nav"
+          aria-label="Explore YES Experiences Portugal five services"
           data-testid="home-smart-start"
           className="five-ways-story mx-auto mt-8 max-w-6xl md:mt-10"
         >

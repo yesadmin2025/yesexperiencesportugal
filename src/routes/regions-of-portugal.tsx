@@ -63,6 +63,10 @@ function RegionsPage() {
             <p className="mt-5 text-sm text-[color:var(--charcoal-soft)]">
               Short on time? See the <Link to="/day-trips-from-lisbon" className="text-[color:var(--teal)] underline underline-offset-4">best day trips from Lisbon</Link> or our <Link to="/how-many-days-in-portugal" className="text-[color:var(--teal)] underline underline-offset-4">guide to how many days you need</Link>.
             </p>
+            <div className="mt-7 flex flex-wrap gap-3" aria-label="Plan and reserve private Portugal experiences">
+              <CtaButton to="/experiences">Explore bookable private days</CtaButton>
+              <CtaButton to="/portugal-travel-designer" variant="ghost">Plan a multi-day journey</CtaButton>
+            </div>
           </div>
         </header>
         <figure className="container-x max-w-6xl">
@@ -85,7 +89,13 @@ function RegionsPage() {
                       <span>{guide.h1}</span><span aria-hidden="true">↗</span>
                     </Link>
                   ))}
-                  {chapter.name === "Lisbon & the coast" && <Link to="/private-tours-sintra-cascais" className="flex min-h-16 items-center justify-between gap-5 py-3 text-sm text-[color:var(--teal)] hover:text-[color:var(--charcoal)]">Sintra & Cascais <span aria-hidden="true">↗</span></Link>}
+                  {chapter.name === "Lisbon & the coast" && (
+                    <>
+                      <Link to="/private-tours-sintra-cascais" className="flex min-h-16 items-center justify-between gap-5 py-3 text-sm text-[color:var(--teal)] hover:text-[color:var(--charcoal)]">Sintra & Cascais <span aria-hidden="true">↗</span></Link>
+                      <Link to="/lisbon-wine-tours" className="flex min-h-16 items-center justify-between gap-5 py-3 text-sm text-[color:var(--teal)] hover:text-[color:var(--charcoal)]">Private Lisbon wine tours · compare dates &amp; prices <span aria-hidden="true">↗</span></Link>
+                      <Link to="/experiences" className="flex min-h-16 items-center justify-between gap-5 py-3 text-sm text-[color:var(--teal)] hover:text-[color:var(--charcoal)]">Private days from Lisbon · explore experiences <span aria-hidden="true">↗</span></Link>
+                    </>
+                  )}
                   {chapter.name === "Alentejo" && (
                     <>
                       <Link to="/local-stories/$slug" params={{ slug: "troia-comporta-guide" }} className="flex min-h-16 items-center justify-between gap-5 py-3 text-sm text-[color:var(--teal)] hover:text-[color:var(--charcoal)]">
@@ -93,6 +103,9 @@ function RegionsPage() {
                       </Link>
                       <Link to="/private-tours-alentejo-evora" className="flex min-h-16 items-center justify-between gap-5 py-3 text-sm text-[color:var(--teal)] hover:text-[color:var(--charcoal)]">
                         Évora & Alentejo <span aria-hidden="true">↗</span>
+                      </Link>
+                      <Link to="/tours/$tourId" params={{ tourId: "evora-alentejo" }} className="flex min-h-16 items-center justify-between gap-5 py-3 text-sm text-[color:var(--teal)] hover:text-[color:var(--charcoal)]">
+                        Évora private Signature · check availability <span aria-hidden="true">↗</span>
                       </Link>
                     </>
                   )}
