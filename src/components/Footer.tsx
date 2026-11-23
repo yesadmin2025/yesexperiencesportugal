@@ -69,20 +69,21 @@ const NAV_COLUMNS: { title: string; links: FooterLink[] }[] = [
       { to: "/experiences", label: "Signature Experiences" },
       { to: "/studio", label: "Experience Studio" },
       { to: "/day-tours", label: "Day Experiences" },
-      { to: "/portugal-travel-designer", label: "Travel Designer" },
+      { to: "/portugal-travel-designer", label: "Portugal Travel Designer" },
+      { to: "/lisbon-wine-tours", label: "Lisbon Wine Tours" },
     ],
   },
   {
     title: "Occasions",
     links: [
-      { to: "/proposal-in-portugal", label: "Moments" },
-      { to: "/corporate", label: "Corporate" },
+      { to: "/proposal-in-portugal", label: "Proposals & Celebrations" },
+      { to: "/corporate", label: "Corporate & Groups" },
     ],
   },
   {
     title: "Company",
     links: [
-      { to: "/about", label: "About YES" },
+      { to: "/about", label: "About YES Experiences Portugal" },
       { to: "/local-stories", label: "Local Stories" },
       { to: "/regions-of-portugal", label: "Regions of Portugal" },
       { to: "/reviews", label: "Guest reviews" },
@@ -245,7 +246,7 @@ export function Footer() {
         </div>
 
         {/* ── ZONE B — NAVIGATE ──────────────────────────────────────── */}
-        <div className="mt-8 pt-8 border-t border-[color:var(--gold-warm)]/15 md:mt-10 md:pt-10">
+        <nav aria-label="Explore YES Experiences Portugal services and company" className="mt-8 pt-8 border-t border-[color:var(--gold-warm)]/15 md:mt-10 md:pt-10">
           <div className="grid grid-cols-2 gap-x-6 gap-y-9 md:grid-cols-4">
             {NAV_COLUMNS.map((col) => (
               <FooterCol key={col.title} title={col.title} links={col.links} />
@@ -257,7 +258,7 @@ export function Footer() {
             <FooterLinkGroup title="Signature Experiences" links={SIGNATURE_TOURS} />
             <FooterLinkGroup title="Popular searches" links={POPULAR_SEARCHES} />
           </div>
-        </div>
+        </nav>
 
         {/* ── ZONE C — TRUST & LEGAL ───────────────────────────────────
             PaymentMethodsRow opens the zone with its own hairline, so the
