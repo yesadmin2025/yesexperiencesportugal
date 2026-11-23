@@ -70,6 +70,7 @@ const NAV_COLUMNS: { title: string; links: FooterLink[] }[] = [
       { to: "/studio", label: "YES Experience Studio" },
       { to: "/day-tours", label: "Private Day Tours" },
       { to: "/portugal-travel-designer", label: "Portugal Travel Designer" },
+      { to: "/lisbon-wine-tours", label: "Lisbon Wine Tours" },
     ],
   },
   {
@@ -245,7 +246,7 @@ export function Footer() {
         </div>
 
         {/* ── ZONE B — NAVIGATE ──────────────────────────────────────── */}
-        <div className="mt-8 pt-8 border-t border-[color:var(--gold-warm)]/15 md:mt-10 md:pt-10">
+        <nav aria-label="Explore YES Experiences Portugal services and company" className="mt-8 pt-8 border-t border-[color:var(--gold-warm)]/15 md:mt-10 md:pt-10">
           <div className="grid grid-cols-2 gap-x-6 gap-y-9 md:grid-cols-4">
             {NAV_COLUMNS.map((col) => (
               <FooterCol key={col.title} title={col.title} links={col.links} />
@@ -257,7 +258,7 @@ export function Footer() {
             <FooterLinkGroup title="Signature Experiences" links={SIGNATURE_TOURS} />
             <FooterLinkGroup title="Popular searches" links={POPULAR_SEARCHES} />
           </div>
-        </div>
+        </nav>
 
         {/* ── ZONE C — TRUST & LEGAL ───────────────────────────────────
             PaymentMethodsRow opens the zone with its own hairline, so the
