@@ -67,22 +67,22 @@ const NAV_COLUMNS: { title: string; links: FooterLink[] }[] = [
     title: "Experiences",
     links: [
       { to: "/experiences", label: "Signature Experiences" },
-      { to: "/studio", label: "Experience Studio" },
-      { to: "/day-tours", label: "Day Experiences" },
-      { to: "/portugal-travel-designer", label: "Travel Designer" },
+      { to: "/studio", label: "YES Experience Studio" },
+      { to: "/day-tours", label: "Private Day Tours" },
+      { to: "/portugal-travel-designer", label: "Portugal Travel Designer" },
     ],
   },
   {
     title: "Occasions",
     links: [
-      { to: "/proposal-in-portugal", label: "Moments" },
-      { to: "/corporate", label: "Corporate" },
+      { to: "/proposal-in-portugal", label: "Proposals & Celebrations" },
+      { to: "/corporate", label: "Corporate & Groups" },
     ],
   },
   {
     title: "Company",
     links: [
-      { to: "/about", label: "About YES" },
+      { to: "/about", label: "About YES Experiences Portugal" },
       { to: "/local-stories", label: "Local Stories" },
       { to: "/regions-of-portugal", label: "Regions of Portugal" },
       { to: "/reviews", label: "Guest reviews" },
