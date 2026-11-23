@@ -4,10 +4,9 @@
  * For every Signature tour, this spec verifies two invariants that a
  * regression could silently break:
  *
- *  1. The route map renders — a `[role="img"][aria-label^="Route map"]`
- *     tile with non-zero pixel size is present after scroll + hydration.
- *     Covers both the real Leaflet `SignatureRouteMap` (lazy-loaded) and
- *     the fallback SVG `RouteMap` in `tours.$tourId.tsx`.
+ *  1. The current `RouteGlance` contains a visible and accessibly named SVG
+ *     orientation of Portugal. Its compact drawing is intentionally narrower
+ *     than the surrounding route rail, and does not use Leaflet.
  *
  *  2. Every `<img>` on the page loads successfully — no broken assets:
  *     `complete === true` and `naturalWidth > 0`. Also fails on any
@@ -48,19 +47,22 @@ test.describe("Signature tour pages — map + image integrity", () => {
         window.scrollTo(0, 0);
       });
 
-      // 1) Map is present and has non-zero rendered size.
-      const map = page.locator('[role="img"][aria-label^="Route map"]').first();
+      // 1) The real RouteGlance orientation is present and rendered.
+      const glance = page.getByTestId("route-glance");
+      await expect(glance, `route glance missing on /tours/${tourId}`).toBeVisible({ timeout: 25_000 });
+      const map = glance.locator('svg[role="img"][aria-label^="Where this day sits in Portugal"]');
       await expect(map, `map missing on /tours/${tourId}`).toBeVisible({
         timeout: 25_000,
       });
-      // Polled: the lazy map can remount (reveal animation / Leaflet init)
-      // right after becoming visible, briefly detaching the node.
+      // Poll the compact inline SVG in case hydration briefly remounts it.
       await expect
         .poll(async () => (await map.boundingBox().catch(() => null))?.width ?? 0, {
           message: `map has no bounding box on /tours/${tourId}`,
           timeout: 20_000,
         })
-        .toBeGreaterThan(200);
+        .toBeGreaterThan(40);
+      const glanceBox = await glance.boundingBox();
+      expect(glanceBox!.width).toBeGreaterThan(200);
       const box = await map.boundingBox();
       expect(box!.height).toBeGreaterThan(120);
 
