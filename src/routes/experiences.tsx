@@ -47,13 +47,13 @@ function matchesExperienceFilter(tour: SignatureTour, filter: ExperienceFilter) 
 export const Route = createFileRoute("/experiences")({
   head: () => ({
     meta: [
-      { title: "Private Day Trips from Lisbon | YES Experiences Portugal" },
+      { title: "Signature Experiences in Portugal | YES Experiences Portugal" },
       {
         name: "description",
         content:
           "Private Portugal days designed by locals: wine, coast and heritage with hotel pickup. See real prices, choose your date and reserve in minutes.",
       },
-      { property: "og:title", content: "Private Day Trips from Lisbon | YES Experiences Portugal" },
+      { property: "og:title", content: "Signature Experiences in Portugal | YES Experiences Portugal" },
       {
         property: "og:description",
         content:
