@@ -22,6 +22,9 @@ jobs:
       # Vite embeds VITE_* at BUILD time. Override the tracked production .env
       # with the isolated CI Supabase project for both SSR and browser code.
       VITE_PAYMENTS_ENVIRONMENT: sandbox
+      # Public key from the SAME isolated Stripe sandbox as the Supabase
+      # STRIPE_SANDBOX_API_KEY secret. Never reuse the production pk_live key.
+      VITE_PAYMENTS_CLIENT_TOKEN: ${{ vars.CI_STRIPE_PUBLISHABLE_KEY }}
       VITE_SUPABASE_URL: "https://mpokhxuouzbvfjmacvhh.supabase.co"
       VITE_SUPABASE_PUBLISHABLE_KEY: "sb_publishable_ts419iEoUjoQV4ipN4cobQ_NGwIcIym"
       VITE_SUPABASE_PROJECT_ID: "mpokhxuouzbvfjmacvhh"
@@ -44,6 +47,13 @@ jobs:
 
       - name: Critical unit tests
         run: bunx vitest run
+
+      - name: Validate Stripe sandbox public key before building
+        run: |
+          if [[ "$VITE_PAYMENTS_CLIENT_TOKEN" != pk_test_* ]]; then
+            echo '::error::Set repository variable CI_STRIPE_PUBLISHABLE_KEY to the pk_test key of the isolated Stripe sandbox. Refusing to embed a live or missing key in CI.'
+            exit 1
+          fi
 
       - name: Production build
         run: bun run build
