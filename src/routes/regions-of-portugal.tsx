@@ -10,7 +10,7 @@ import douroImage from "@/assets/drift/dawn-douro.jpg";
 import { DirectAnswer } from "@/components/DirectAnswer";
 
 const title = "Regions of Portugal: 7 Regions & Where to Go";
-const description = "The 7 regions of Portugal compared: North, Centro, Lisbon, Alentejo, Algarve, Madeira and the Azores, with local guides to help you choose your route.";
+const description = "Compare Portugal's seven travel regions, from Porto and Lisbon to Madeira and the Azores. Find places to visit and local guides to plan your route.";
 const url = "https://yesexperiencesportugal.com/regions-of-portugal";
 
 export const Route = createFileRoute("/regions-of-portugal")({
@@ -56,9 +56,9 @@ function RegionsPage() {
           <div className="container-x max-w-4xl">
             <Eyebrow>Portugal · Place by place</Eyebrow>
             <h1 className={sectionTitleClassName("anchor", "loose")}>Best places to visit in <SectionTitle.Em>Portugal</SectionTitle.Em>, region by region</h1>
-            <p className="mt-5 max-w-2xl text-base leading-relaxed text-[color:var(--charcoal-soft)]">From the Douro terraces to the Atlantic islands, each region asks for a different pace. Choose a place, then follow the local stories that bring it into focus.</p>
+            <p className="mt-5 max-w-2xl text-base leading-relaxed text-[color:var(--charcoal-soft)]">Compare seven travel regions: the North, Centro, Lisbon and the coast, Alentejo, Algarve, Madeira and the Azores. See the places covered in each, then follow the local guides to choose where your Portugal journey should take you.</p>
             <DirectAnswer>
-              The best places to visit in Portugal are Lisbon and Sintra, Porto and the Douro Valley, Évora and the Alentejo, the Algarve coast, and the islands of Madeira and the Azores. A first trip usually pairs Lisbon with Porto; a longer one adds the Alentejo and the Algarve.
+              For Porto, the Douro and Minho, start with the North; for Coimbra, the central coast and mountain landscapes, explore Centro. Choose Lisbon and the coast for Sintra and the Atlantic, Alentejo for Évora and cork country, or the Algarve for cliffs and the Ria Formosa lagoon. Madeira and the Azores offer Atlantic island landscapes.
             </DirectAnswer>
             <p className="mt-5 text-sm text-[color:var(--charcoal-soft)]">
               Short on time? See the <Link to="/day-trips-from-lisbon" className="text-[color:var(--teal)] underline underline-offset-4">best day trips from Lisbon</Link> or our <Link to="/how-many-days-in-portugal" className="text-[color:var(--teal)] underline underline-offset-4">guide to how many days you need</Link>.

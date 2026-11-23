@@ -1,5 +1,10 @@
 # Phase 1 optimization
 
+## Approved SEO findings — November 23 (no publication)
+- [x] Current homepage already has H1 → H2 → H3 hierarchy and visibly named Madeira/Azores controls; both selections verified at 393/1366px, so no homepage changes were needed for the stale finding.
+- [x] Clarify the existing Regions introduction, direct answer and search/share description using its seven existing chapters; title, H1, canonical, regional facts, links and booking paths preserved.
+- [x] All 41 focused tests passed; metadata check passed for 76 routes, automatic build OK, mobile/desktop screenshots and planning link checked with no page errors or Regions overflow; both findings recorded as fixed awaiting rescan, no publication.
+
 ## SEO findings — November 13 (no publication)
 - [x] Verify all 105 sitemap pages: HTTP 200 and exactly one non-empty H1; Local Story article, database, not-found and error views are mutually exclusive, not duplicate headings. No heading changes warranted; current finding remains unresolved pending scanner correction.
 - [x] Clarify only the approved wine-guide search title and description around Setúbal Peninsula versus Alentejo; existing opening already distinguishes the regions and separates Évora from Vidigueira, so preserve it, H1, links and all tour facts.
