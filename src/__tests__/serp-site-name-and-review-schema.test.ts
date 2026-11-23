@@ -110,6 +110,16 @@ describe("brand-critical SERP snippets", () => {
     );
   });
 
+  it("Signature Experiences is distinct from the Lisbon day-trip search landing", () => {
+    const signature = read("src/routes/experiences.tsx");
+    const dayTrips = read("src/routes/day-trips-from-lisbon.tsx");
+    expect(signature).toContain(
+      "Signature Experiences in Portugal | YES Experiences Portugal",
+    );
+    expect(signature).not.toContain("Private Day Trips from Lisbon | YES Experiences Portugal");
+    expect(dayTrips).toContain('const TITLE = "Private Day Tours From Lisbon');
+  });
+
   it("contact title and description are locked", () => {
     const contact = read("src/routes/contact.tsx");
     expect(contact).toContain("Contact YES Experiences Portugal | Tours & Travel Design");
