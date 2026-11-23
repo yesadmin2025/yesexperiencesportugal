@@ -77,10 +77,10 @@ describe("final audit corrections", () => {
     expect(headerBlock).not.toContain("gold-divider");
   });
 
-  it("removes the duplicate Private Groups corporate footer link", () => {
+  it("removes the duplicate Private Groups link while preserving branded occasion links", () => {
     const src = read("src/components/Footer.tsx");
     expect(src).not.toContain("Private Groups");
-    expect(src).toContain('{ to: "/proposal-in-portugal", label: "Moments" }');
-    expect(src).toContain('{ to: "/corporate", label: "Corporate" }');
+    expect(src).toContain('{ to: "/proposal-in-portugal", label: "Proposals & Celebrations" }');
+    expect(src).toContain('{ to: "/corporate", label: "Corporate & Groups" }');
   });
 });
