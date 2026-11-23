@@ -30,7 +30,7 @@ import type { SelectedAddOnSummary } from "./SignaturePriceCard";
 import type { GuestDetails } from "@/components/checkout/FinalDetailsDialog";
 import { cn } from "@/lib/utils";
 import { trackEvent } from "@/lib/analytics-events";
-import { CANCELLATION } from "@/config/business-nap";
+import { CANCELLATION, whatsappUrl } from "@/config/business-nap";
 import { PriceBreakdownRows } from "@/components/checkout/PriceBreakdownRows";
 import { PerPersonBands } from "@/components/checkout/PerPersonBands";
 import { ComposableLineItems } from "./ComposableLineItems";
@@ -614,14 +614,27 @@ export function CheckoutSummary({
         >
           <div className="max-w-[560px] mx-auto">
             {checkoutError || checkoutBlock ? (
-              <p
-                role="alert"
-                data-testid="studio-v3-checkout-summary-error"
-                className="mb-2 text-center text-[12px] leading-[1.45]"
-                style={{ color: "var(--charcoal)" }}
-              >
-                {checkoutBlock ?? "Secure checkout couldn't open. Your details and total are still here."}
-              </p>
+              <div className="mb-2 text-center">
+                <p
+                  role="alert"
+                  data-testid="studio-v3-checkout-summary-error"
+                  className="text-[12px] leading-[1.45]"
+                  style={{ color: "var(--charcoal)" }}
+                >
+                  {checkoutBlock ?? "Secure checkout couldn't open. Your details and total are still here."}
+                </p>
+                <a
+                  href={whatsappUrl("Hello YES Experiences Portugal, I need help completing a private Studio booking. The secure checkout did not open.")}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  data-testid="studio-v3-checkout-support-link"
+                  data-analytics="whatsapp_click"
+                  data-analytics-placement="studio-checkout-recovery"
+                  className="mt-1 inline-flex min-h-[44px] items-center justify-center text-[12.5px] font-semibold text-[color:var(--teal)] underline underline-offset-4"
+                >
+                  Ask our team to help with this reservation
+                </a>
+              </div>
             ) : null}
             {submitting ? (
               <BookingCtaSkeleton className="w-full" label="Opening secure checkout…" />
