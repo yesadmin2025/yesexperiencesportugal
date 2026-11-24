@@ -32,9 +32,9 @@ async function prepareHero(page: Page) {
   await page.goto("/?hero=last", { waitUntil: "domcontentloaded" });
 
   await page.locator('[data-hero-cinematic="true"]').waitFor({ state: "visible" });
-  // The semantic <h1> now lives in an sr-only probe; the visible stanza
-  // renders as <p> lines inside [data-hero-stanza].
-  await page.locator('[data-hero-stanza="true"] p').first().waitFor({ state: "visible" });
+  // The visible H1 contains two marked headline spans; the hidden SEO lead is not a visual line.
+  await expect(page.locator('[data-hero-stanza="true"] [data-hero-field="headlineLine1"]')).toBeVisible();
+  await expect(page.locator('[data-hero-stanza="true"] [data-hero-field="headlineLine2"]')).toBeVisible();
 
   await page.addStyleTag({
     content: `
@@ -42,8 +42,7 @@ async function prepareHero(page: Page) {
         animation: none !important;
         transition: none !important;
       }
-      [data-hero-stanza="true"] h1,
-      [data-hero-stanza="true"] p {
+      [data-hero-stanza="true"] [data-hero-field] {
         opacity: 1 !important;
         transform: none !important;
         filter: none !important;
@@ -62,7 +61,7 @@ async function prepareHero(page: Page) {
     type FontFaceSetLike = { ready?: Promise<unknown> };
     const fonts = (document as unknown as { fonts?: FontFaceSetLike }).fonts;
     if (fonts?.ready) await fonts.ready;
-    const video = document.querySelector('[data-hero-film="true"]') as HTMLVideoElement | null;
+    const video = document.querySelector('[data-hero-film]') as HTMLVideoElement | null;
     if (video) {
       try {
         video.pause();
@@ -85,7 +84,7 @@ test.describe("Hero — visual regression", () => {
 
     // Layout contract: the two stanza lines share the same centre axis.
     const centres = await stanza.evaluate((el) => {
-      const nodes = Array.from(el.querySelectorAll<HTMLElement>("h1, p"));
+      const nodes = Array.from(el.querySelectorAll<HTMLElement>('[data-hero-field="headlineLine1"], [data-hero-field="headlineLine2"]'));
       return nodes.map((n) => {
         const r = n.getBoundingClientRect();
         return Math.round(r.left + r.width / 2);

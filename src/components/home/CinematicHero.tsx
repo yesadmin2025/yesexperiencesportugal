@@ -256,16 +256,16 @@ export function CinematicHero() {
           pointerEvents: "auto",
         }}
       >
-        <div className="flex flex-col items-center gap-3 sm:flex-row sm:justify-center sm:gap-4">
+        <div className="hero-cta-pair grid w-full max-w-[232px] grid-cols-1 gap-3 sm:max-w-[480px] sm:grid-cols-2 sm:gap-4">
         <Link
           to="/studio"
           data-hero-field="primaryCta"
           data-analytics="hero_open_studio"
           data-analytics-placement="hero"
-        className="hero-cta hero-cta--primary group inline-flex min-h-[44px] min-w-[196px] items-center justify-center whitespace-nowrap px-7 text-[11px] uppercase tracking-[0.18em] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)] focus-visible:ring-offset-4 focus-visible:ring-offset-transparent sm:min-w-[206px] sm:text-[11px]"
+        className="hero-cta hero-cta--primary group inline-flex min-h-[44px] min-w-0 items-center justify-center px-4 text-[11px] uppercase tracking-[0.18em] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)] focus-visible:ring-offset-4 focus-visible:ring-offset-transparent sm:text-[11px]"
         >
           <span className="hero-cta__sheen" aria-hidden="true" />
-          <span className="relative z-10 inline-flex items-center gap-2.5">
+          <span className="relative z-10 inline-flex min-w-0 items-center justify-center gap-2.5 text-center">
             {HERO_COPY.primaryCta}
             {ARROW}
           </span>
@@ -275,10 +275,10 @@ export function CinematicHero() {
           data-hero-field="secondaryCta"
           data-analytics="hero_choose_experience"
           data-analytics-placement="hero"
-          className="hero-cta hero-cta--ghost group inline-flex min-h-[44px] min-w-[196px] items-center justify-center whitespace-nowrap px-7 text-[11px] uppercase tracking-[0.18em] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)] focus-visible:ring-offset-4 focus-visible:ring-offset-transparent sm:min-w-[206px] sm:text-[11px]"
+          className="hero-cta hero-cta--ghost group inline-flex min-h-[44px] min-w-0 items-center justify-center px-4 text-[11px] uppercase tracking-[0.18em] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)] focus-visible:ring-offset-4 focus-visible:ring-offset-transparent sm:text-[11px]"
         >
           <span className="hero-cta__sheen" aria-hidden="true" />
-          <span className="relative z-10">{HERO_COPY.secondaryCta}</span>
+          <span className="relative z-10 inline-flex min-w-0 items-center justify-center gap-2.5 text-center">{HERO_COPY.secondaryCta}{ARROW}</span>
         </Link>
         </div>
       </div>

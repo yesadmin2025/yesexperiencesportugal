@@ -9072,3 +9072,14 @@ html[data-floating-quiet] [data-testid="floating-actions"] {
   border: 0 !important;
 }
 
+
+/* Equal-width hero action tracks, including tablet. Permit wrapping rather
+   than clipping longer approved labels inside the sheen boundary. */
+.hero-cinematic .hero-cta-pair > .hero-cta {
+  width: 100%;
+  min-width: 0;
+  white-space: normal;
+  padding-block: 0.5rem;
+  box-sizing: border-box;
+}
+.hero-cinematic .hero-cta-pair .hero-cta__arrow { flex-shrink: 0; }
