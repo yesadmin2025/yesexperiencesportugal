@@ -43,13 +43,16 @@ test.describe("sitemap route coverage", () => {
     expect(missing, `routes missing from sitemap.xml: ${missing.join(", ")}`).toEqual([]);
   });
 
-  test("every sitemap URL returns a direct 200", async ({ baseURL }) => {
-    // All sitemap routes are checked serially against a cold CI SSR server.
-    // The default 30s Playwright test timeout ended the entire scan early;
-    // individual route HTTP 200 and canonical assertions remain unchanged.
+  // Partition the full scan into bounded serial batches, retaining every URL
+  // and every assertion on every browser project. No concurrent SSR flood.
+  const batchCount = 8;
+  for (let batch = 0; batch < batchCount; batch += 1) {
+  test(`every sitemap URL returns a direct 200 (batch ${batch + 1}/${batchCount})`, async ({ baseURL }) => {
     test.setTimeout(180_000);
-    const paths = await fetchSitemapPaths(baseURL!);
-    expect(paths.length).toBeGreaterThan(20);
+    const allPaths = await fetchSitemapPaths(baseURL!);
+    expect(allPaths.length).toBeGreaterThan(20);
+    const paths = allPaths.filter((_, index) => index % batchCount === batch);
+    expect(paths.length).toBeGreaterThan(0);
     // CI serves localhost with X-Robots-Tag: noindex to prevent indexing of
     // previews. That is intentional; only the public production host must
     // be indexable. Keep checking real production headers whenever the test
@@ -99,6 +102,7 @@ test.describe("sitemap route coverage", () => {
               }
             }
           }
+          await res.dispose();
           break;
         } catch (err) {
           if (attempt === 1) {
@@ -112,4 +116,5 @@ test.describe("sitemap route coverage", () => {
     await api.dispose();
     expect(bad, `sitemap URLs that are not a direct 200:\n${bad.join("\n")}`).toEqual([]);
   });
+  }
 });
