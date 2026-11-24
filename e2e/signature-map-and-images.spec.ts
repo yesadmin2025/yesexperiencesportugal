@@ -12,15 +12,25 @@
  *     `complete === true` and `naturalWidth > 0`. Also fails on any
  *     network response for image types with status ≥ 400.
  *
- * Runs against all 11 Signature tour IDs so a broken map or missing
+ * Runs against every publicly released Signature tour ID so a broken map or missing
  * gallery photo on a single tour fails CI, not just the one we clicked.
  */
 import { test, expect, type Request, type Response } from "@playwright/test";
-import { signatureTours } from "../src/data/signatureTours";
+import { publicSignatureTours } from "../src/data/signatureTours";
+import { PENDING_VENUE_SIGNATURE_IDS } from "../src/data/pendingSignatures";
 
-const TOUR_IDS = signatureTours.map((t) => t.id);
+const TOUR_IDS = publicSignatureTours.map((t) => t.id);
 
 test.describe("Signature tour pages — map + image integrity", () => {
+  // Pending venues intentionally redirect, rather than expose an unbookable tour.
+  for (const tourId of PENDING_VENUE_SIGNATURE_IDS) {
+    test(`/${tourId} remains unpublished until venues are verified`, async ({ page }) => {
+      await page.goto(`/tours/${tourId}`, { waitUntil: "domcontentloaded" });
+      await expect(page).toHaveURL(/\/experiences\/?$/);
+      await expect(page.getByTestId("route-glance")).toHaveCount(0);
+    });
+  }
+
   for (const tourId of TOUR_IDS) {
     test(`/${tourId} renders map and loads all images`, async ({ page }) => {
       const imageFailures: string[] = [];

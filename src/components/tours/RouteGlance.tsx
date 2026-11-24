@@ -59,36 +59,7 @@ export function RouteGlance({
 
   const dots = useMemo(() => safePoints.map((p) => place(p.lat, p.lng)), [safePoints]);
 
-  // P23's verified itinerary names activities but not workshop venues.
-  // Show a regional orientation, never fabricated pins or driving times.
-  if (safePoints.length < 2) {
-    if (tourId !== "p23-artisan-pottery-cork" || region !== "Alentejo") return null;
-    return (
-      <div
-        data-testid="route-glance"
-        data-route-mode="regional"
-        className="mb-10 border border-[color:var(--border)] bg-[color:var(--ivory)] px-4 py-5 md:px-6 md:py-6"
-      >
-        <span className="text-[11px] uppercase tracking-[0.22em] text-[color:var(--charcoal-soft)]">
-          Where the day happens · Alentejo
-        </span>
-        <div className="mt-4 flex items-start gap-5">
-          <svg viewBox="0 0 100 220" className="h-44 w-auto shrink-0 md:h-52"
-            role="img" aria-label="Where this day sits in Portugal: Alentejo region, workshop locations not specified">
-            <path d={PT_PATH} fill="color-mix(in oklab, var(--sand) 90%, transparent)"
-              stroke="color-mix(in oklab, var(--charcoal) 26%, transparent)" strokeWidth={0.8} />
-          </svg>
-          <div className="min-w-0 flex-1">
-            <p className="text-sm font-medium text-[color:var(--charcoal)]">Alentejo, Portugal</p>
-            <p className="mt-2 text-sm leading-relaxed text-[color:var(--charcoal-soft)]">
-              A day of cork craftsmanship, lunch and a hands-on pottery workshop.
-              Exact workshop locations are not published; no route or driving times are shown.
-            </p>
-          </div>
-        </div>
-      </div>
-    );
-  }
+  if (safePoints.length < 2) return null;
 
   const hasAnyLeg = (legMinutes ?? []).some(
     (m) => typeof m === "number" && Number.isFinite(m) && m > 0,

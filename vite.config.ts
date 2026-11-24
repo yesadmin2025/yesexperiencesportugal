@@ -22,7 +22,26 @@ export default defineConfig({
     // reload while Playwright is asserting SSR content. A recorded trace
     // showed a second GET / without a click mid-test. Disable HMR only for
     // automated CI; local Lovable previews and production are untouched.
-    server: { hmr: process.env.CI === "true" ? false : undefined },
+    server: {
+      hmr: process.env.CI === "true" ? false : undefined,
+      // The Lovable edge serves these immutable public assets, not Vite.
+      // CI must fetch the original bytes, not an HTML fallback or a mock.
+      ...(process.env.CI === "true" ? {
+        proxy: {
+          "^/__l5e/assets-v1/": {
+            target: "https://yesexperiencesportugal.com",
+            changeOrigin: true,
+            secure: true,
+            configure(proxy) {
+              proxy.on("proxyReq", (request) => {
+                request.removeHeader("cookie");
+                request.removeHeader("authorization");
+              });
+            },
+          },
+        },
+      } : {}),
+    },
     // Playwright's cold CI Vite server served React optimizations with
     // three different ?v= hashes within one page load. This splits the
     // React dispatcher and causes "Invalid hook call" in TooltipProvider.
