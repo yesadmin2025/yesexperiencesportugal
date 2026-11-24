@@ -18,7 +18,7 @@ describe("WebSite / site-name signals", () => {
     const ld = websiteLd() as unknown as Record<string, unknown>;
     expect(ld["@type"]).toBe("WebSite");
     expect(ld.name).toBe("YES Experiences Portugal");
-    expect(ld.alternateName).toEqual(["YES Experiences", "Yes Experiences", "YESExperiences", "YesExperiences", "YESExperiences Portugal", "YesExperiences Portugal", "YesExperiencesPortugal", "Yes Experiences Portugal", "YES Portugal", "YES Tours", "Yes Tours", "YES Tours Portugal", "YES Experiences Tours", "Yes Experiences Tours", "YES Experiences Tours Portugal", "ES Experiences", "ESExperiences", "ES Experiences Portugal"]);
+    expect(ld.alternateName).toEqual(["YES Experiences", "YESExperiences", "YESExperiences Portugal", "Yes Experiences Portugal"]);
     expect(ld.url).toBe("https://yesexperiencesportugal.com/");
     expect(ld.publisher).toEqual({ "@id": "https://yesexperiencesportugal.com/#organization" });
   });
@@ -26,7 +26,7 @@ describe("WebSite / site-name signals", () => {
   it("Organization keeps the exact brand name and brand-consistent alternates", () => {
     const ld = organizationLd() as unknown as Record<string, unknown>;
     expect(ld.name).toBe("YES Experiences Portugal");
-    expect(ld.alternateName).toEqual(["YES Experiences", "Yes Experiences", "YESExperiences", "YesExperiences", "YESExperiences Portugal", "YesExperiences Portugal", "YesExperiencesPortugal", "Yes Experiences Portugal", "YES Portugal", "YES Tours", "Yes Tours", "YES Tours Portugal", "YES Experiences Tours", "Yes Experiences Tours", "YES Experiences Tours Portugal", "ES Experiences", "ESExperiences", "ES Experiences Portugal"]);
+    expect(ld.alternateName).toEqual(["YES Experiences", "YESExperiences", "YESExperiences Portugal", "Yes Experiences Portugal"]);
     expect(ld.logo).toMatchObject({
       "@type": "ImageObject",
       url: "https://yesexperiencesportugal.com/icon-192.png",
@@ -60,6 +60,20 @@ describe("WebSite / site-name signals", () => {
     expect(read("src/components/Logo.tsx")).toContain('alt = "YES Experiences Portugal"');
   });
 
+  it("uses the canonical five-service names in sitewide footer navigation", () => {
+    const footer = read("src/components/Footer.tsx");
+    for (const label of [
+      "Signature Experiences",
+      "YES Experience Studio",
+      "Portugal Travel Designer",
+      "Proposals & Celebrations",
+      "Corporate & Groups",
+      "About YES Experiences Portugal",
+    ]) {
+      expect(footer).toContain(`label: "${label}"`);
+    }
+  });
+
   it("renders crawlable mobile navigation links before any menu interaction", () => {
     const navbar = read("src/components/Navbar.tsx");
     expect(navbar).not.toContain("{open && (");
@@ -89,11 +103,22 @@ describe("brand-critical SERP snippets", () => {
   it("homepage title and description are locked", () => {
     const home = read("src/routes/index.tsx");
     expect(home).toContain(
-      '"YES Experiences Portugal | Private Tours & Journeys"',
+      '"YES Experiences Portugal | Travel Designer & Studio"',
     );
     expect(home).toContain(
-      "Private days, journeys and special moments across Portugal, guided by local knowledge. Reserve a Signature day, design your own in YES Experience Studio, or plan a trip with our Travel Designer.",
+      "Discover private Signature Experiences, YES Experience Studio, Travel Designer journeys, Proposals & Celebrations, and Corporate & Groups across Portugal.",
     );
+  });
+
+  it("Signature Experiences is distinct from the Lisbon day-trip search landing", () => {
+    const signature = read("src/routes/experiences.tsx");
+    const dayTrips = read("src/routes/day-trips-from-lisbon.tsx");
+    expect(signature).toContain(
+      "Signature Experiences in Portugal | YES Experiences Portugal",
+    );
+    expect(signature).not.toContain("Private Day Trips from Lisbon | YES Experiences Portugal");
+    expect(dayTrips).toContain('const TITLE = "Best Day Trips from Lisbon (2026) — Compared by Locals"');
+    expect(dayTrips).not.toContain('const TITLE = "Private Day Tours From Lisbon');
   });
 
   it("contact title and description are locked", () => {
@@ -141,7 +166,7 @@ describe("brand identity and structured homepage FAQ parity", () => {
   it("keeps the brand's Experience Studio and Travel Designer visible in metadata", () => {
     const home = read("src/routes/index.tsx");
     const about = read("src/routes/about.tsx");
-    expect(home).toContain("YES Experiences Portugal | Private Tours & Journeys");
+    expect(home).toContain("YES Experiences Portugal | Travel Designer & Studio");
     expect(home).toContain("YES Experience Studio");
     // Homepage metadata names the three primary ways to buy; secondary paths stay on-page.
     for (const service of ["Signature", "Experience Studio", "Travel Designer"]) {

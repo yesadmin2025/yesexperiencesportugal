@@ -8,17 +8,18 @@
  *      duplicate landmarks, or content outside landmarks
  *      (axe `landmark-one-main`, `landmark-no-duplicate-main`,
  *      `landmark-unique`, `region`).
- *   3. The route map is missing its accessible name
- *      (`[role="img"][aria-label^="Route map"]` must exist).
+ *   3. The current RouteGlance SVG is missing its accessible orientation
+ *      (`[data-testid="route-glance"] svg[role="img"]` must exist).
  *
  * Complements `signature-map-and-images.spec.ts` (which checks
  * that the map renders and images resolve) with an a11y contract.
  */
 import { test, expect } from "@playwright/test";
 import AxeBuilder from "@axe-core/playwright";
-import { signatureTours } from "../src/data/signatureTours";
+import { publicSignatureTours } from "../src/data/signatureTours";
+import { PENDING_VENUE_SIGNATURE_IDS } from "../src/data/pendingSignatures";
 
-const TOUR_IDS = signatureTours.map((t) => t.id);
+const TOUR_IDS = publicSignatureTours.map((t) => t.id);
 
 const A11Y_RULES = [
   "image-alt",
@@ -34,6 +35,15 @@ const A11Y_RULES = [
 ];
 
 test.describe("Signature tour pages — a11y (alt text + landmarks)", () => {
+  // Pending venues intentionally redirect, rather than expose an unbookable tour.
+  for (const tourId of PENDING_VENUE_SIGNATURE_IDS) {
+    test(`/${tourId} remains unpublished until venues are verified`, async ({ page }) => {
+      await page.goto(`/tours/${tourId}`, { waitUntil: "domcontentloaded" });
+      await expect(page).toHaveURL(/\/experiences\/?$/);
+      await expect(page.getByTestId("route-glance")).toHaveCount(0);
+    });
+  }
+
   for (const tourId of TOUR_IDS) {
     test(`/${tourId} has alt text on every image and valid landmark structure`, async ({
       page,
@@ -52,8 +62,10 @@ test.describe("Signature tour pages — a11y (alt text + landmarks)", () => {
         window.scrollTo(0, 0);
       });
 
-      // Wait for the map so its accessible name is present in the scan.
-      const map = page.locator('[role="img"][aria-label^="Route map"]').first();
+      // Check the current inline RouteGlance map, not the retired RouteMap name.
+      const glance = page.getByTestId("route-glance");
+      await expect(glance, `route glance missing on /tours/${tourId}`).toBeVisible({ timeout: 25_000 });
+      const map = glance.locator('svg[role="img"][aria-label^="Where this day sits in Portugal"]');
       await expect(map, `map landmark missing on /tours/${tourId}`).toBeVisible({
         timeout: 25_000,
       });

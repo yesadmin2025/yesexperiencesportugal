@@ -8255,6 +8255,11 @@ html.reveal-ready .about-story--quiet :is(li, a) { transition-delay: 0ms; }
 .five-ways-card:is(:hover, :focus-visible) {
   border-color: color-mix(in oklab, var(--gold) 58%, var(--border));
 }
+/* Keep the keyboard focus ring visible above the primary card elevation. */
+.five-ways-card[data-path-priority="primary"]:focus-visible {
+  box-shadow: 0 0 0 2px var(--ivory), 0 0 0 4px var(--teal),
+    0 14px 32px -28px color-mix(in oklab, var(--charcoal) 32%, transparent);
+}
 
 @media (min-width: 520px) and (max-width: 1023.98px) {
   .five-ways-story { grid-template-columns: repeat(2, minmax(0, 1fr)); }
@@ -9072,3 +9077,14 @@ html[data-floating-quiet] [data-testid="floating-actions"] {
   border: 0 !important;
 }
 
+
+/* Equal-width hero action tracks, including tablet. Permit wrapping rather
+   than clipping longer approved labels inside the sheen boundary. */
+.hero-cinematic .hero-cta-pair > .hero-cta {
+  width: 100%;
+  min-width: 0;
+  white-space: normal;
+  padding-block: 0.5rem;
+  box-sizing: border-box;
+}
+.hero-cinematic .hero-cta-pair .hero-cta__arrow { flex-shrink: 0; }

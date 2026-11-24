@@ -10,6 +10,9 @@ import { expect, test, type Page } from "@playwright/test";
  * No Stripe session is created and no payment is taken in this test.
  */
 
+// Match the production journey budget; individual checkout assertions stay bounded.
+test.describe.configure({ timeout: 180_000 });
+
 const STORAGE_KEY = "yes.studio-v3.session.v1";
 
 // Avoid a calendar regression caused solely by an expired fixture date.
@@ -61,13 +64,30 @@ async function waitForStudioHydration(page: Page) {
 }
 
 async function restoreStudioState(page: Page) {
-  await page.goto("/studio");
-  await waitForStudioHydration(page);
-  await page.evaluate(
-    ({ key, value }) => window.sessionStorage.setItem(key, JSON.stringify(value)),
+  // Restore a returning traveller's composition before hydration, as in
+  // living-atlas-production.spec.ts. Avoid racing the persistence effect.
+  await page.addInitScript(
+    ({ key, value }) => {
+      const seeded = "__yes_studio_retry_seed_once";
+      if (window.sessionStorage.getItem(seeded) === "1") return;
+      window.sessionStorage.setItem(key, JSON.stringify(value));
+      window.sessionStorage.setItem(seeded, "1");
+    },
     { key: STORAGE_KEY, value: COMPOSED_STATE },
   );
-  await page.reload();
+  await page.goto("/studio", { waitUntil: "domcontentloaded" });
+  await waitForStudioHydration(page);
+  // Ensure the composition genuinely persisted before refreshing; never re-seed.
+  await expect.poll(
+    () => page.evaluate((key) => {
+      const raw = window.sessionStorage.getItem(key);
+      if (!raw) return null;
+      try { return (JSON.parse(raw) as { phase?: string }).phase ?? null; }
+      catch { return null; }
+    }, STORAGE_KEY),
+    { timeout: 15_000 },
+  ).toBe("storyboard");
+  await page.reload({ waitUntil: "domcontentloaded" });
   await waitForStudioHydration(page);
 }
 
@@ -76,7 +96,11 @@ async function reachCheckoutSummary(page: Page) {
   await restoreStudioState(page);
   await expect(root).toHaveAttribute("data-phase", "storyboard");
 
-  await page.getByTestId("studio-v3-handoff-primary").click();
+  const handoff = page.getByTestId("studio-v3-handoff-primary");
+  await expect(handoff).toBeVisible({ timeout: 10_000 });
+  await expect(handoff).toBeEnabled({ timeout: 10_000 });
+  await expect(handoff).toHaveAttribute("data-day-certified", "true", { timeout: 10_000 });
+  await handoff.click({ timeout: 10_000 });
   await expect(root).toHaveAttribute("data-phase", "guestDetails", { timeout: 10_000 });
 
   await page

@@ -36,7 +36,7 @@ export function organizationLd() {
     "@type": ["TravelAgency", "LocalBusiness"],
     "@id": `${SITE_URL}/#organization`,
     name: "YES Experiences Portugal",
-    alternateName: ["YES Experiences", "Yes Experiences", "YESExperiences", "YesExperiences", "YESExperiences Portugal", "YesExperiences Portugal", "YesExperiencesPortugal", "Yes Experiences Portugal", "YES Portugal", "YES Tours", "Yes Tours", "YES Tours Portugal", "YES Experiences Tours", "Yes Experiences Tours", "YES Experiences Tours Portugal", "ES Experiences", "ESExperiences", "ES Experiences Portugal"],
+    alternateName: ["YES Experiences", "YESExperiences", "YESExperiences Portugal", "Yes Experiences Portugal"],
     legalName: "YES Experiences Portugal",
     url: `${SITE_URL}/`,
     logo: {
@@ -320,7 +320,7 @@ export function websiteLd() {
     "@id": `${SITE_URL}/#website`,
     url: `${SITE_URL}/`,
     name: "YES Experiences Portugal",
-    alternateName: ["YES Experiences", "Yes Experiences", "YESExperiences", "YesExperiences", "YESExperiences Portugal", "YesExperiences Portugal", "YesExperiencesPortugal", "Yes Experiences Portugal", "YES Portugal", "YES Tours", "Yes Tours", "YES Tours Portugal", "YES Experiences Tours", "Yes Experiences Tours", "YES Experiences Tours Portugal", "ES Experiences", "ESExperiences", "ES Experiences Portugal"],
+    alternateName: ["YES Experiences", "YESExperiences", "YESExperiences Portugal", "Yes Experiences Portugal"],
     publisher: { "@id": `${SITE_URL}/#organization` },
     inLanguage: "en",
     potentialAction: {
