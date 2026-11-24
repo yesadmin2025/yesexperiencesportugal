@@ -1,0 +1,42 @@
+name: Import reviewed hero snapshot blobs (one-time)
+on:
+  pull_request:
+    branches: [main]
+    types: [synchronize]
+permissions:
+  actions: read
+  contents: write
+jobs:
+  import-reviewed-blobs:
+    if: github.event.pull_request.number == 77 && github.event.pull_request.head.repo.full_name == github.repository && github.head_ref == 'release/brand-booking-ci-safety-20261123'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    env:
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - name: Download the exact reviewed visual artifact
+        run: gh run download 45320790567 --repo "$GITHUB_REPOSITORY" --name snapshot-diffs --dir /tmp/reviewed-hero
+      - name: Verify each reviewed image and create immutable Git blobs only
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          import base64, hashlib, json, os, pathlib, subprocess
+          expected = {
+              "hero-stanza-desktop-1440-chromium-actual.png": "79f4c8d2a4556e4adfd345df1367a627c3d76954b97ca8db5c3e9b6001eba736",
+              "hero-stanza-desktop-chromium-actual.png": "5a9818d6941e66d1a726e79cf1d5d28dcfbdc7d1287ef4c4834386e3be156c09",
+              "hero-stanza-mobile-chromium-actual.png": "660884b86ed3135cccfc7edf0e326539215d985e5eac5208a15dcadf6323ecca",
+              "hero-stanza-tablet-chromium-actual.png": "d84f4b9b389b0328dacf81cf09ae08d61c526a80711e9f7f9dc6d19fc11b7656",
+              "hero-cta-group-desktop-1440-chromium-actual.png": "496163dd4cb8dc0cfefe90358c692db78c1963e6eef7e530d0afdde2c3c8061c",
+              "hero-cta-group-desktop-chromium-actual.png": "af4567763d40816893aaf4e3bc4e77275fc4917f6ee6985f4a9863d5c096803e",
+              "hero-cta-group-mobile-chromium-actual.png": "0c966f7f7e39d8a6dfa8e28186bb328e5579bfe2caef2e87a5ecdb87d71d572c",
+              "hero-cta-group-tablet-chromium-actual.png": "c501cd64da56939919d95994d4b0aa9ce183fd801d63c0eca4a38ea572a0ac27",
+          }
+          root = pathlib.Path('/tmp/reviewed-hero')
+          for filename, digest in expected.items():
+              files = list(root.rglob(filename))
+              assert len(files) == 1, filename
+              data = files[0].read_bytes()
+              assert hashlib.sha256(data).hexdigest() == digest, filename
+              result = subprocess.check_output(['gh','api','--method','POST','repos/'+os.environ['GITHUB_REPOSITORY']+'/git/blobs','--input','-'],input=json.dumps({'content':base64.b64encode(data).decode(),'encoding':'base64'}).encode())
+              print('REVIEWED_HERO_BLOB',filename,json.loads(result)['sha'],flush=True)
+          PY
