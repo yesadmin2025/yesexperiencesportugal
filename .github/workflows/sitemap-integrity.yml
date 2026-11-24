@@ -16,7 +16,9 @@ jobs:
   sitemap:
     name: Generated routes in sync + all sitemap URLs return 200
     runs-on: ubuntu-24.04
-    timeout-minutes: 20
+    # Covers dependency/browser setup plus all 48 sitemap checks and report upload.
+    # The previous run completed every assertion but hit the 20-minute job cap.
+    timeout-minutes: 35
     steps:
       - uses: actions/checkout@v4
 
