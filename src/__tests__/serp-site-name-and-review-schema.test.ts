@@ -117,7 +117,8 @@ describe("brand-critical SERP snippets", () => {
       "Signature Experiences in Portugal | YES Experiences Portugal",
     );
     expect(signature).not.toContain("Private Day Trips from Lisbon | YES Experiences Portugal");
-    expect(dayTrips).toContain('const TITLE = "Private Day Tours From Lisbon');
+    expect(dayTrips).toContain('const TITLE = "Best Day Trips from Lisbon (2026) — Compared by Locals"');
+    expect(dayTrips).not.toContain('const TITLE = "Private Day Tours From Lisbon');
   });
 
   it("contact title and description are locked", () => {
