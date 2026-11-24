@@ -7,7 +7,7 @@
 import { defineConfig } from "@lovable.dev/vite-tanstack-config";
 import { mcpPlugin } from "@lovable.dev/mcp-js/stacks/tanstack/vite";
 import { imagetools } from "vite-imagetools";
-import { loadEnv } from "vite";
+import { loadEnv, type ProxyOptions } from "vite";
 import path from "node:path";
 
 // Load non-VITE_ env vars (e.g. SUPABASE_SERVICE_ROLE_KEY, LOVABLE_API_KEY) into
@@ -32,12 +32,12 @@ export default defineConfig({
             target: "https://yesexperiencesportugal.com",
             changeOrigin: true,
             secure: true,
-            configure(proxy) {
+            configure: ((proxy) => {
               proxy.on("proxyReq", (request) => {
                 request.removeHeader("cookie");
                 request.removeHeader("authorization");
               });
-            },
+            }) satisfies NonNullable<ProxyOptions["configure"]>,
           },
         },
       } : {}),
