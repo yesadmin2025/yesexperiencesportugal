@@ -1,5 +1,5 @@
 /**
- * Approved homepage structure spec (v10 — 11-chapter editorial conversion layout).
+ * Approved homepage structure spec (v13 — 11-chapter conversion-first layout).
  *
  * Single source of truth for what the marketing homepage MUST contain
  * at mobile widths. Consumed by:
@@ -90,7 +90,7 @@ export const APPROVED_HOMEPAGE_SECTIONS: readonly ApprovedSection[] = [
     name: "Where to begin — five ways in",
     componentTag: "FiveWaysIn",
     inComponent: true,
-    requiredSpacing: { kind: "py", minScale: 16 },
+    requiredSpacing: { kind: "py", minScale: 8 },
   },
   {
     order: 3,
@@ -114,7 +114,7 @@ export const APPROVED_HOMEPAGE_SECTIONS: readonly ApprovedSection[] = [
   {
     order: 6,
     name: "Guest proof — full reviews carousel",
-    marker: "TRUST STRIP",
+    marker: "GUEST PROOF",
     requiredSpacing: { kind: "py", minScale: 7 },
   },
   {
