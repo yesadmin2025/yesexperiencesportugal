@@ -38,7 +38,7 @@ describe("latest direct visual feedback", () => {
     expect(home).toContain("section-enter py-12 md:py-16");
     expect(home).toContain("pt-10 pb-12 md:pt-14 md:pb-16");
     // The approved compact trust strip replaces the duplicate card grid.
-    expect(ways).toContain("py-2 md:py-3");
+    expect(ways).toContain("py-3 md:py-4");
     expect(ways).toContain("home-quick-trust");
     expect(ways).not.toContain("data-home-primary-path");
     expect(journey).toContain("section-enter py-12 md:py-16");

@@ -126,14 +126,14 @@ function PtHomePage() {
             {
               eyebrow: "Signature",
               title: "Dias assinados",
-              body: "Dias privados prontos a partir, desenhados pela nossa equipa em torno de uma região e de um tema — vinho, mar, gastronomia, paisagem.",
+              body: "Experiências privadas desenhadas pela nossa equipa local, inspiradas na gastronomia, paisagem e tradições de Portugal. Escolha o itinerário original ou personalize alguns detalhes.",
               href: "/pt/experiences",
               cta: "Ver a coleção",
             },
             {
               eyebrow: "Studio",
               title: "Desenhe o seu dia",
-              body: "Um estúdio interativo onde compõe a sua experiência em tempo real — ritmo, paragens, mesa, guia — com ajuda editorial ao seu lado.",
+              body: "Crie o seu próprio dia privado, escolhendo interesses, companhia e ritmo. Veja o percurso real, o preço em tempo real e reserve diretamente.",
               href: "/studio",
               cta: "Abrir o Studio · em inglês",
               external: true,
@@ -141,7 +141,7 @@ function PtHomePage() {
             {
               eyebrow: "Roteiros à Medida",
               title: "Jornadas de vários dias",
-              body: "Roteiros privados com a duração que quiser, desenhados por um Travel Designer, com hotéis escolhidos e transições sem esforço.",
+              body: "Viagens privadas desenhadas por um Travel Designer, com alojamentos selecionados, experiências locais, transfers e aviação privada mediante pedido.",
               href: "/pt/contact",
               cta: "Falar connosco",
             },

@@ -9128,3 +9128,14 @@ html[data-floating-quiet] [data-testid="floating-actions"] {
 }
 /* All commercial Signature highlights remain visible on mobile. */
 .home-signature-highlights li { opacity: 1; transition: none; }
+/* First commercial chapter: breathing room without another introductory block. */
+.signature-chapter-intro .scene-atmosphere + .motion-split,
+.signature-chapter-intro .scene-atmosphere + .scene-title { margin-top: 16px; }
+.signature-chapter-intro .motion-split-line + .motion-split-line { margin-top: 4px; }
+@media (prefers-reduced-motion: no-preference) {
+  .signature-chapter-intro .motion-split-line { transition-duration: 540ms; transition-delay: calc(60ms + var(--split-index, 0) * 80ms); }
+  [data-motion-ready="1"] .signature-chapter-intro .motion-split-line { transform: translate3d(0, 12px, 0); }
+  [data-motion-ready="1"] .signature-chapter-intro .motion-split.is-visible .motion-split-line { transform: translate3d(0, 0, 0); }
+  [data-scene-ready="1"].signature-chapter-intro .scene-body { transition-duration: 420ms; }
+  [data-scene="in"].signature-chapter-intro .scene-body { transition-delay: 120ms; }
+}
