@@ -42,7 +42,7 @@ import { LOCAL_STORIES_ARTICLES } from "@/content/local-stories-articles";
 import { PortugalPlannerMap } from "@/components/home/PortugalPlannerMap";
 import { RouteThread } from "@/components/motion/RouteThread";
 import { CTA_LABELS } from "@/content/cta-vocabulary";
-import { getSignatureCardHighlights } from "@/lib/signatureCardHighlights";
+import { getSignatureCardHighlights, getSignatureCardPromise } from "@/lib/signatureCardHighlights";
 import { Scene } from "@/components/motion/Scene";
 
 /**
@@ -184,15 +184,9 @@ const FEATURED_TOUR_IDS = [
 // Short commercial names; canonical detail titles remain intact.
 const FEATURED_CARD_NAMES: Record<string, string> = {
   "arrabida-wine-allinclusive": "Arrábida Wine & Food",
-  "troia-comporta": "Tróia & Comporta",
+  "troia-comporta": "Comporta & Tróia: Coastal Luxury",
   "evora-alentejo": "Évora & Alentejo Wine",
-  "roman-heritage-alentejo": "Roman Talha Wine Experience",
-};
-const FEATURED_CARD_COPY: Record<string, string> = {
-  "arrabida-wine-allinclusive": "Discover the Setúbal wine region through two wineries, traditional food and the Atlantic landscapes of Arrábida.",
-  "troia-comporta": "Cross the Sado by ferry for a private coastal day of wine, Roman heritage and the beaches of Comporta.",
-  "evora-alentejo": "Combine Évora’s UNESCO heritage with two Alentejo wineries and a closer look at Portuguese cork.",
-  "roman-heritage-alentejo": "Discover Portugal’s ancient clay-vessel wines at a family winery, with local food and Roman heritage in Vidigueira.",
+  "roman-heritage-alentejo": "Roman Talha Wine: Living Heritage",
 };
 
 /* ──────────────────────────────────────────────────────────────────
@@ -702,7 +696,7 @@ function HomePage() {
                             {FEATURED_CARD_NAMES[t.id] ?? t.title}
                           </Link>
                         </h3>
-                        <p className="text-[13.5px] leading-[1.5] text-[color:var(--charcoal-soft)]">{FEATURED_CARD_COPY[t.id] ?? t.line}</p>
+                        <p className="text-[13.5px] leading-[1.5] text-[color:var(--charcoal-soft)]">{getSignatureCardPromise(t.id) ?? t.line}</p>
                         {t.pickup && <p data-testid="signature-pickup" className="flex items-start gap-1.5 text-[13px] leading-[1.45] text-[color:var(--charcoal)]"><MapPin size={15} className="mt-0.5 shrink-0 text-[color:var(--teal)]" aria-hidden="true" />{t.pickup.includes("Lisbon, Setúbal, Sesimbra or Almada") ? "Pickup: Lisbon, Setúbal, Sesimbra or Almada" : t.pickup.includes("small-group meeting point") ? "Private hotel pickup & drop-off (service areas apply)" : "Private pickup & drop-off"}</p>}
                         <span aria-hidden="true" className="block h-px w-full bg-[color:var(--border)]" />
                         {t.highlights.length > 0 ? (
