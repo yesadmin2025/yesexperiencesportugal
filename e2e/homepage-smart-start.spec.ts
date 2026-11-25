@@ -88,7 +88,9 @@ test.describe("homepage conversion paths", () => {
         for (const offset of offsets) expect(offset, id).toBeLessThanOrEqual(3);
       }
       if (width !== 320) {
-        for (const id of [...sections, "faq"]) await page.locator("#" + id).scrollIntoViewIfNeeded();
+        for (const id of sections) await page.locator("#" + id).scrollIntoViewIfNeeded();
+        // Scroll the actual FAQ landmark, not its outer homepage anchor wrapper.
+        await page.locator('section[aria-labelledby="faq-title"]').scrollIntoViewIfNeeded();
         await page.locator("footer").scrollIntoViewIfNeeded();
         await page.evaluate(() => window.scrollTo(0, 0));
         await testInfo.attach("homepage-editorial-" + width, { body: await page.screenshot({ fullPage: true, animations: "disabled" }), contentType: "image/png" });
