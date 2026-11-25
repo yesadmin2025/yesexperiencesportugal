@@ -13,6 +13,7 @@ import { Eyebrow } from "@/components/ui/Eyebrow";
 import { SectionTitle } from "@/components/ui/SectionTitle";
 import { CtaMotionArrow } from "@/components/ui/CtaButton";
 import { Scene } from "@/components/motion/Scene";
+import { SITE_RATING_LABEL } from "@/config/trust-certificate";
 
 type Path = {
   id: "signature" | "studio" | "designer" | "proposals" | "corporate";
@@ -35,7 +36,7 @@ const PATHS: ReadonlyArray<Path> = [
     title: "Private days, already designed by YES.",
     titleLead: "Private days,",
     titleEmphasis: "already designed by YES.",
-    body: "Choose a private day already designed across Portugal. See what's included, reserve your date or tailor the details.",
+    body: "Choose a ready-to-reserve private experience. See prices, dates and inclusions.",
     cta: "Explore Signature Experiences",
     href: "/experiences",
     analyticsEvent: "home_path_signature_click",
@@ -47,7 +48,7 @@ const PATHS: ReadonlyArray<Path> = [
     title: "Your day, designed by you.",
     titleLead: "Your day,",
     titleEmphasis: "designed by you.",
-    body: "Design your own private day and confirm it instantly. See the route and price take shape as you choose.",
+    body: "You choose the interests, companions and pace. See your route and live price as you design.",
     cta: "Design your day",
     href: "/studio",
     analyticsEvent: "home_path_studio_click",
@@ -59,7 +60,7 @@ const PATHS: ReadonlyArray<Path> = [
     title: "Full Portugal journeys, designed for you.",
     titleLead: "Full Portugal journeys,",
     titleEmphasis: "designed for you.",
-    body: "Plan a multi-day journey across Portugal with a local designer, shaped around your time and interests.",
+    body: "Let a local travel designer plan your bespoke multi-day Portugal journey.",
     cta: "Design my journey",
     href: "/portugal-travel-designer",
     analyticsEvent: "home_path_designer_click",
@@ -159,19 +160,23 @@ export function FiveWaysIn() {
     <section
       id="five-paths"
       aria-labelledby="choose-path-title"
-      className="five-ways-section section-enter pt-16 pb-10 md:pt-20 md:pb-14 bg-[color:var(--sand)] border-b border-[color:var(--border)] scroll-mt-24 md:scroll-mt-28"
+      className="five-ways-section home-conversion-paths section-enter pt-8 pb-8 md:pt-16 md:pb-12 bg-[color:var(--sand)] border-b border-[color:var(--border)] scroll-mt-24 md:scroll-mt-28"
     >
       <div className="container-x">
+        <div className="home-quick-trust mx-auto mb-6 flex max-w-2xl flex-wrap items-center justify-center gap-x-2 gap-y-1 text-center text-[13px] leading-relaxed text-[color:var(--charcoal)]">
+          <a href="#reviews" className="inline-flex min-h-[44px] items-center gap-2 font-medium underline decoration-[color:var(--gold)]/60 underline-offset-4">
+            <span aria-hidden="true" className="text-[color:var(--gold)]">★★★★★</span>
+            {SITE_RATING_LABEL}
+          </a>
+          <span aria-hidden="true">·</span><span>Private experiences · Local experts</span>
+        </div>
         <Scene className="home-major-intro home-story-intro mx-auto max-w-2xl text-center">
           <div className="scene-atmosphere"><Eyebrow flank className="mb-5">Where to begin</Eyebrow></div>
           <SectionTitle id="choose-path-title" className="five-ways-heading scene-title">
-            Five ways to <SectionTitle.Em>shape your Portugal.</SectionTitle.Em>
+            How would you like to <SectionTitle.Em>experience Portugal?</SectionTitle.Em>
           </SectionTitle>
           <p className="mx-auto mt-5 max-w-2xl text-[15px] leading-[1.7] text-[color:var(--charcoal-soft)]">
-            YES Experiences Portugal is a local experience design brand. Choose a Signature
-            experience, create your own day in the Experience Studio, or plan a bespoke multi-day
-            journey with a Travel Designer. We also design Proposals &amp; Celebrations and
-            Corporate &amp; Groups experiences across Portugal.
+            Choose a ready-made private day, design your own day or let our local team plan your full journey.
           </p>
         </Scene>
 
@@ -179,7 +184,7 @@ export function FiveWaysIn() {
           as="nav"
           aria-label="Explore YES Experiences Portugal five services"
           data-testid="home-smart-start"
-          className="five-ways-story mx-auto mt-8 max-w-6xl md:mt-10"
+          className="five-ways-story mx-auto mt-5 max-w-6xl md:mt-8"
         >
           {PATHS.map((path, index) => (
             <PathCard

@@ -72,29 +72,10 @@ export interface ApprovedSection {
 }
 
 /**
- * The approved 12-chapter structure (v12 — seasonal + special-occasions bands).
- *
- * v12 change: two owner-requested bands were registered rather than left
- * outside the lock — the Autumn & winter reassurance band that follows the
- * Signature preview, and the Special occasions band (Moments & Corporate)
- * that follows the Travel Designer proof.
- * v11 change: the second, duplicate reviews block was removed and the
- * remaining guest proof lives inside the compact trust strip (#2), which
- * is intentionally a compact reassurance band, not a full chapter.
- *
- * Order:
- *   1.  Hero
- *   2.  Trust strip (compact guest proof + private guide line)
- *   3.  Five ways in (Signature / Studio / Designer / Occasions …)
- *   4.  Experience Studio (promoted)
- *   5.  Signature experiences preview
- *   6.  Autumn & winter (seasonal reassurance + real tour links)
- *   7.  Travel Designer (multi-day, bespoke)
- *   8.  Special occasions (Moments & Corporate)
- *   9.  Explore Portugal map
- *   10. Local Stories
- *   11. FAQ
- *   12. Final decision
+ * Owner-approved conversion-first order (v13).
+ * Keep all eleven existing sections; put the three purchase paths before
+ * the full review carousel and the supporting editorial chapters.
+ * The compact rating inside FiveWaysIn is not an extra section.
  */
 export const APPROVED_HOMEPAGE_SECTIONS: readonly ApprovedSection[] = [
   {
@@ -106,52 +87,50 @@ export const APPROVED_HOMEPAGE_SECTIONS: readonly ApprovedSection[] = [
   },
   {
     order: 2,
-    name: "Trust strip — reviews + private guide line",
-    marker: "TRUST STRIP",
-    // Compact reassurance band (py-7 mobile / py-9 desktop), deliberately
-    // subordinate to the commercial chapters.
-    requiredSpacing: { kind: "py", minScale: 7 },
-  },
-  {
-    order: 3,
     name: "Where to begin — five ways in",
     componentTag: "FiveWaysIn",
     inComponent: true,
     requiredSpacing: { kind: "py", minScale: 16 },
   },
   {
-    order: 4,
-    name: "Experience Studio (promoted)",
-    ariaLabelledBy: "studio-title",
-    requiredSpacing: { kind: "pb", minScale: 12 },
-  },
-  {
-    order: 5,
+    order: 3,
     name: "Signature experiences preview",
     ariaLabelledBy: "signatures-title",
     requiredSpacing: { kind: "py", minScale: 12 },
   },
   {
-    order: 6,
-    name: "Autumn & winter — year-round private days",
-    ariaLabelledBy: "winter-days-title",
-    // Facts-only seasonal reassurance (owner-confirmed year-round operation)
-    // with text links to the real winter-suitable Signature days.
-    requiredSpacing: { kind: "py", minScale: 12 },
+    order: 4,
+    name: "Experience Studio — designed by the guest",
+    ariaLabelledBy: "studio-title",
+    requiredSpacing: { kind: "pb", minScale: 12 },
   },
   {
-    order: 7,
+    order: 5,
     name: "Travel Designer — multi-day, written around you",
     componentTag: "RecentJourney",
     inComponent: true,
     requiredSpacing: { kind: "py", minScale: 14 },
   },
   {
-    order: 8,
+    order: 6,
+    name: "Guest proof — full reviews carousel",
+    marker: "TRUST STRIP",
+    requiredSpacing: { kind: "py", minScale: 7 },
+  },
+  {
+    order: 7,
     name: "Special occasions — Moments & Corporate",
     ariaLabelledBy: "special-occasions-title",
     // Owner-requested band: the two specialist services sit on the homepage
     // with their own photography and locked CTA vocabulary.
+    requiredSpacing: { kind: "py", minScale: 12 },
+  },
+  {
+    order: 8,
+    name: "Autumn & winter — year-round private days",
+    ariaLabelledBy: "winter-days-title",
+    // Facts-only seasonal reassurance (owner-confirmed year-round operation)
+    // with text links to the real winter-suitable Signature days.
     requiredSpacing: { kind: "py", minScale: 12 },
   },
   {
@@ -173,7 +152,6 @@ export const APPROVED_HOMEPAGE_SECTIONS: readonly ApprovedSection[] = [
     inComponent: true,
     requiredSpacing: { kind: "py", minScale: 16 },
   },
-
 ] as const;
 
 

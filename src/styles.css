@@ -9088,3 +9088,26 @@ html[data-floating-quiet] [data-testid="floating-actions"] {
   box-sizing: border-box;
 }
 .hero-cinematic .hero-cta-pair .hero-cta__arrow { flex-shrink: 0; }
+
+/* Homepage CRO v13: compact decision cards, same five real links and DOM order.
+   Scoped to the English homepage; no changes to the cinematic hero. */
+.home-conversion-paths .five-ways-card[data-path-priority="secondary"] .five-ways-copy { min-height: 0; }
+.home-conversion-paths .five-ways-card[data-path-priority="secondary"] .five-ways-kicker { display: none; }
+.home-conversion-paths .five-ways-card[data-path-priority="secondary"] .five-ways-eyebrow { margin-top: 0; }
+.home-conversion-paths .five-ways-card[data-path-priority="secondary"] .five-ways-title { margin-top: .4rem; font-size: 1.15rem; }
+.home-conversion-paths .five-ways-card[data-path-priority="secondary"] .five-ways-body { margin-top: .35rem; }
+.home-conversion-paths .five-ways-card[data-path-priority="secondary"] .five-ways-action { padding-top: .25rem; }
+@media (max-width: 519.98px) {
+  .home-conversion-paths .five-ways-story { gap: .625rem; }
+  .home-conversion-paths .five-ways-card .five-ways-copy { padding: .875rem 1rem .5rem; }
+  .home-conversion-paths .five-ways-card[data-path-priority="primary"] .five-ways-copy { display: grid; grid-template-columns: 2.25rem minmax(0, 1fr); column-gap: .75rem; }
+  .home-conversion-paths .five-ways-card[data-path-priority="primary"] .five-ways-kicker { grid-column: 1; grid-row: 1 / span 3; }
+  .home-conversion-paths .five-ways-card .five-ways-icon { width: 2.25rem; height: 2.25rem; }
+  .home-conversion-paths .five-ways-number { display: none; }
+  .home-conversion-paths .five-ways-card[data-path-priority="primary"] :is(.five-ways-eyebrow, .five-ways-title, .five-ways-body, .five-ways-action) { grid-column: 2; }
+  .home-conversion-paths .five-ways-eyebrow { margin-top: 0; letter-spacing: .12em; }
+  .home-conversion-paths .five-ways-title { margin-top: .25rem; max-width: none; font-size: 1.3rem; line-height: 1.2; }
+  .home-conversion-paths .five-ways-body { margin-top: .35rem; font-size: .875rem; line-height: 1.45; }
+  .home-conversion-paths .five-ways-action { margin-top: 0; padding-top: .125rem; min-height: 44px; }
+  .home-conversion-paths .five-ways-action > span { font-size: .75rem; letter-spacing: .07em; }
+}

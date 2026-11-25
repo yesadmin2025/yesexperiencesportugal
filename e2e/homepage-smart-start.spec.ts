@@ -35,6 +35,25 @@ test.describe("homepage conversion paths", () => {
     }
   });
 
+  test("puts bookable products before the full reviews on mobile", async ({ page }) => {
+    await page.setViewportSize({ width: 393, height: 852 });
+    await openHome(page);
+    const order = await page.evaluate(() => [
+      "five-paths", "signatures", "builder", "reviews", "special-occasions", "plan-map", "journal",
+    ].map((id) => document.getElementById(id)?.getBoundingClientRect().top ?? -1));
+    expect(order.every((top) => top >= 0)).toBe(true);
+    expect(order).toEqual([...order].sort((a, b) => a - b));
+    const primary = page.locator(`${SMART_START} [data-path-priority="primary"]`);
+    await expect(primary).toHaveCount(3);
+    for (const card of await primary.all()) {
+      const box = await card.boundingBox();
+      expect(box?.height ?? 0).toBeGreaterThanOrEqual(44);
+      expect(box?.width ?? 0).toBeLessThanOrEqual(393);
+    }
+    await expect(page.locator(".home-quick-trust a")).toHaveAttribute("href", "#reviews");
+    await expect(page.locator("#signatures").getByRole("link", { name: /See dates and reserve/ }).first()).toHaveAttribute("href", "/tours/arrabida-wine-allinclusive");
+  });
+
   test("does not pretend a generic visitor has a Studio draft", async ({ page }) => {
     await openHome(page);
     await expect(page.locator('[data-testid="home-smart-start-resume"]')).toHaveCount(0);
