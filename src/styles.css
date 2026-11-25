@@ -9198,3 +9198,23 @@ html[data-floating-quiet] [data-testid="floating-actions"] {
 .home-energy #multi-day .home-major-intro > p > .story-beat + .story-beat {
   margin-top: 8px;
 }
+
+/* Optical alignment: animated lines must share the same center as the
+   eyebrow and supporting copy, even when the ink mask is active. */
+.home-energy .home-major-intro .motion-split {
+  text-align: center;
+}
+.home-energy .home-major-intro .motion-split-line {
+  width: fit-content;
+  max-width: 100%;
+  margin-inline: auto;
+  text-align: center;
+}
+.home-energy #builder .home-editorial-intro > ol {
+  column-gap: 12px;
+}
+.home-energy #builder .home-editorial-intro > ol li > span:last-child {
+  line-height: 1.5;
+  letter-spacing: .09em;
+  overflow-wrap: normal;
+}

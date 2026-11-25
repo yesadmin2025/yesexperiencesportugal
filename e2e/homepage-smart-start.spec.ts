@@ -57,6 +57,8 @@ test.describe("homepage conversion paths", () => {
   test("keeps peer editorial chapters on one measured typographic rhythm", async ({ page }, testInfo) => {
     await page.emulateMedia({ reducedMotion: "reduce" });
     await openHome(page);
+    const consent = page.getByRole("button", { name: "Essential only", exact: true });
+    if (await consent.isVisible()) await consent.click();
     const sections = ["signatures", "builder", "multi-day", "reviews", "special-occasions", "why-yes", "plan-map", "journal"];
     for (const width of [320, 393, 1440]) {
       await page.setViewportSize({ width, height: 900 });
@@ -74,8 +76,19 @@ test.describe("homepage conversion paths", () => {
         expect(item.top, item.id).toBe(measured[0].top);
         expect(item.bottom, item.id).toBe(measured[0].bottom);
       }
+      for (const id of ["signatures", "multi-day"]) {
+        const offsets = await page.locator("#" + id + " .home-major-intro").evaluate((intro) => {
+          const center = intro.getBoundingClientRect().left + intro.getBoundingClientRect().width / 2;
+          return Array.from(intro.querySelectorAll(".motion-split-line")).map((line) => {
+            const rect = line.getBoundingClientRect();
+            return Math.abs(rect.left + rect.width / 2 - center);
+          });
+        });
+        expect(offsets.length).toBeGreaterThan(0);
+        for (const offset of offsets) expect(offset, id).toBeLessThanOrEqual(3);
+      }
       if (width !== 320) {
-        for (const id of sections) await page.locator("#" + id).scrollIntoViewIfNeeded();
+        for (const id of [...sections, "faq"]) await page.locator("#" + id).scrollIntoViewIfNeeded();
         await page.locator("footer").scrollIntoViewIfNeeded();
         await page.evaluate(() => window.scrollTo(0, 0));
         await testInfo.attach("homepage-editorial-" + width, { body: await page.screenshot({ fullPage: true, animations: "disabled" }), contentType: "image/png" });
