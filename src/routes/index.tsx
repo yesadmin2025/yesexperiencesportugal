@@ -743,7 +743,7 @@ function HomePage() {
                         </h3>
                         <span aria-hidden="true" className="block h-px w-10 bg-[color:var(--gold)]" />
                         {t.highlights.length > 0 ? (
-                          <ul className="signature-card-highlights hidden sm:block m-0 list-none space-y-2 p-0 text-[13px] leading-[1.45] text-[color:var(--charcoal)]">
+                          <ul className="signature-card-highlights home-signature-highlights m-0 list-none space-y-2 p-0 text-[13px] leading-[1.45] text-[color:var(--charcoal)]">
                             {t.highlights.map((highlight) => (
                               <li key={highlight} className="grid grid-cols-[auto_minmax(0,1fr)] gap-2.5">
                                 <span aria-hidden="true" className="mt-[0.58em] h-1 w-1 rounded-full bg-[color:var(--gold)]" />
@@ -918,6 +918,13 @@ function HomePage() {
           className="section-enter py-12 md:py-16 bg-[color:var(--ivory)] border-b border-[color:var(--border)] scroll-mt-24 md:scroll-mt-28"
         >
           <div className="container-x">
+            <div className="mx-auto mb-8 max-w-3xl text-center">
+              <Eyebrow className="mb-3">Why YES</Eyebrow>
+              <SectionTitle>Private by design. <SectionTitle.Em>Local by nature.</SectionTitle.Em></SectionTitle>
+              <p className="mx-auto mt-3 max-w-[56ch] text-[15px] leading-[1.6] text-[color:var(--charcoal-soft)]">
+                Private days for your group, the freedom to design your own experience, and a local team when you need a human travel designer.
+              </p>
+            </div>
             <GuestQuotes />
           </div>
         </section>
@@ -1155,6 +1162,15 @@ function HomePage() {
           className="he-section-rule section-enter section-y scroll-mt-24 md:scroll-mt-28 relative"
         >
           <FAQ />
+          <div className="container-x mt-10 text-center">
+            <SectionTitle>Ready to <SectionTitle.Em>experience Portugal?</SectionTitle.Em></SectionTitle>
+            <p className="mx-auto mt-3 max-w-[42ch] text-[15px] leading-relaxed text-[color:var(--charcoal-soft)]">Choose a private day, design your own, or speak to a local travel designer.</p>
+            <div className="mx-auto mt-5 flex max-w-xl flex-col gap-3 sm:flex-row sm:flex-wrap sm:justify-center">
+              <CtaButton to="/experiences" variant="primary">{CTA_LABELS.signatureDiscovery}</CtaButton>
+              <CtaButton to="/studio" variant="ghost">{CTA_LABELS.studio}</CtaButton>
+              <Link to="/portugal-travel-designer" className="inline-flex min-h-[44px] items-center justify-center gap-2 text-[14px] font-medium text-[color:var(--teal)] underline underline-offset-4">{CTA_LABELS.travelDesigner} <CtaMotionArrow /></Link>
+            </div>
+          </div>
         </div>
 
         {/* Popular searches + "Only on YES" block removed in the declutter

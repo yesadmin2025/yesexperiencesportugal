@@ -37,7 +37,9 @@ describe("latest direct visual feedback", () => {
     const journey = read("src/components/home/RecentJourney.tsx");
     expect(home).toContain("section-enter py-12 md:py-16");
     expect(home).toContain("pt-10 pb-12 md:pt-14 md:pb-16");
-    expect(ways).toContain("pt-16 pb-10 md:pt-20 md:pb-14");
+    // The approved mobile-first decision block is deliberately more compact.
+    expect(ways).toContain("pt-8 pb-8 md:pt-16 md:pb-12");
+    expect(ways).toContain("home-conversion-paths");
     expect(journey).toContain("section-enter py-12 md:py-16");
     expect(home).toContain('className="home-major-intro');
     expect(ways).toContain('className="home-major-intro');

@@ -51,6 +51,10 @@ test.describe("homepage conversion paths", () => {
       expect(box?.width ?? 0).toBeLessThanOrEqual(393);
     }
     await expect(page.locator(".home-quick-trust a")).toHaveAttribute("href", "#reviews");
+    await expect(page.locator('[data-hero-field="primaryCta"]')).toHaveAttribute("href", "/experiences");
+    await expect(page.locator('[data-hero-field="secondaryCta"]')).toHaveAttribute("href", "/studio");
+    await expect(page.locator("#signatures .home-signature-highlights").first().locator("li").first()).toBeVisible();
+    await expect(page.locator("#faq").getByRole("link", { name: "Explore Signature Experiences" })).toHaveAttribute("href", "/experiences");
     await expect(page.locator("#signatures").getByRole("link", { name: /See dates and reserve/ }).first()).toHaveAttribute("href", "/tours/arrabida-wine-allinclusive");
   });
 

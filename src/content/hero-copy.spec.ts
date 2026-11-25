@@ -12,8 +12,8 @@ export const HERO_COPY_SPEC = {
   headlineLine2: "You write the story.",
   subheadline:
     "Private & customized day experiences and full journeys across Portugal.",
-  primaryCta: "DESIGN YOUR DAY",
-  secondaryCta: "EXPLORE EXPERIENCES",
+  primaryCta: "EXPLORE EXPERIENCES",
+  secondaryCta: "DESIGN YOUR DAY",
   microcopy: "4.9/5 · 1,000 guest reviews · Private · Local support · Secure checkout",
 } as const;
 

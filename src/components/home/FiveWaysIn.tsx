@@ -48,7 +48,7 @@ const PATHS: ReadonlyArray<Path> = [
     title: "Your day, designed by you.",
     titleLead: "Your day,",
     titleEmphasis: "designed by you.",
-    body: "You choose the interests, companions and pace. See your route and live price as you design.",
+    body: "Design your own day in the Experience Studio. Choose your interests and pace, see your route and live price.",
     cta: "Design your day",
     href: "/studio",
     analyticsEvent: "home_path_studio_click",
@@ -56,11 +56,11 @@ const PATHS: ReadonlyArray<Path> = [
   {
     id: "designer",
     Icon: Compass,
-    eyebrow: "Portugal travel designer",
+    eyebrow: "Portugal Travel Designer",
     title: "Full Portugal journeys, designed for you.",
     titleLead: "Full Portugal journeys,",
     titleEmphasis: "designed for you.",
-    body: "Let a local travel designer plan your bespoke multi-day Portugal journey.",
+    body: "Let a local Travel Designer plan your bespoke multi-day Portugal journey.",
     cta: "Design my journey",
     href: "/portugal-travel-designer",
     analyticsEvent: "home_path_designer_click",
@@ -176,7 +176,7 @@ export function FiveWaysIn() {
             How would you like to <SectionTitle.Em>experience Portugal?</SectionTitle.Em>
           </SectionTitle>
           <p className="mx-auto mt-5 max-w-2xl text-[15px] leading-[1.7] text-[color:var(--charcoal-soft)]">
-            Choose a ready-made private day, design your own day or let our local team plan your full journey.
+            Book a ready-made private day, design your own day or let our local team plan your full journey.
           </p>
         </Scene>
 

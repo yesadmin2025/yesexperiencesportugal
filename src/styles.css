@@ -9111,3 +9111,21 @@ html[data-floating-quiet] [data-testid="floating-actions"] {
   .home-conversion-paths .five-ways-action { margin-top: 0; padding-top: .125rem; min-height: 44px; }
   .home-conversion-paths .five-ways-action > span { font-size: .75rem; letter-spacing: .07em; }
 }
+
+/* CRO: keep commercial links readable and available immediately; retain a
+   restrained entry motion on the decision cards, scoped to this chapter. */
+@media (prefers-reduced-motion: no-preference) {
+  .home-conversion-paths [data-scene-ready="1"].five-ways-story .five-ways-card {
+    opacity: 1;
+    transform: translate3d(0, 8px, 0);
+    transition: transform 300ms var(--motion-ease-editorial), border-color 180ms ease, box-shadow 180ms ease;
+  }
+  .home-conversion-paths [data-scene="in"].five-ways-story .five-ways-card { transform: translate3d(0, 0, 0); transition-delay: 0ms; }
+  .home-conversion-paths [data-scene="in"].five-ways-story .five-ways-card:nth-child(2) { transition-delay: 65ms; }
+  .home-conversion-paths [data-scene="in"].five-ways-story .five-ways-card:nth-child(3) { transition-delay: 130ms; }
+  .home-conversion-paths [data-scene-ready="1"] .five-ways-card :is(.five-ways-kicker, .five-ways-title, .five-ways-body, .five-ways-action) { opacity: 1; transition: none; }
+  .home-conversion-paths .five-ways-card:focus-visible { transform: none !important; }
+}
+@media (max-width: 639.98px) {
+  .home-signature-highlights > li:nth-child(n + 2) { display: none; }
+}
