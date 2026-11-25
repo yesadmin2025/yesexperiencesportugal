@@ -170,8 +170,8 @@ function PortugalTravelDesignerPage() {
 
       <div className="container-x max-w-4xl pb-12">
         <div className="grid gap-6 border-y border-[color:var(--border)] py-8 md:grid-cols-2 md:gap-10">
-          <div><h2 className="font-serif text-xl text-[color:var(--teal)]">Private Aviation &amp; Jet Charters</h2><p className="mt-3 text-[15px] leading-relaxed text-[color:var(--charcoal-soft)]">Your journey begins before you land. We arrange private jet charters through specialist aviation partners, coordinated with transfers and your itinerary. Individually quoted on request.</p></div>
-          <div><h2 className="font-serif text-xl text-[color:var(--teal)]">Handpicked Stays &amp; Experiences</h2><p className="mt-3 text-[15px] leading-relaxed text-[color:var(--charcoal-soft)]">Boutique hotels, private villas, chauffeur services and memorable local encounters, selected to suit your interests and preferences. All arrangements are subject to availability.</p></div>
+          <div><h2 className="font-serif text-xl text-[color:var(--teal)]">Private Aviation <span className="italic font-normal text-[color:var(--teal)]">&amp; Jet Charters</span></h2><p className="mt-3 text-[15px] leading-relaxed text-[color:var(--charcoal-soft)]">Your journey begins before you land. We arrange private jet charters through specialist aviation partners, coordinated with transfers and your itinerary. Individually quoted on request.</p></div>
+          <div><h2 className="font-serif text-xl text-[color:var(--teal)]">Handpicked Stays <span className="italic font-normal text-[color:var(--teal)]">&amp; Experiences</span></h2><p className="mt-3 text-[15px] leading-relaxed text-[color:var(--charcoal-soft)]">Boutique hotels, private villas, chauffeur services and memorable local encounters, selected to suit your interests and preferences. All arrangements are subject to availability.</p></div>
         </div>
       </div>
       <section id="journey-enquiry" className="reveal section-y chapter-flow scroll-mt-24 bg-[color:var(--ivory)]">

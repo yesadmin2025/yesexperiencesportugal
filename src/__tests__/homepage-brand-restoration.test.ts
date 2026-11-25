@@ -39,7 +39,7 @@ describe("homepage approved brand restoration", () => {
 
   it("keeps the restored section within the YES surfaces", () => {
     expect(fiveWays).toContain("bg-[color:var(--sand)]");
-    expect(fiveWays).toContain("py-2 md:py-3");
+    expect(fiveWays).toContain("py-3 md:py-4");
     expect(styles).not.toMatch(/\.five-ways-card[^}]*animation:[^}]*(bounce|pulse)/i);
   });
 });
