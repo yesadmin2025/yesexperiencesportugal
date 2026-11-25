@@ -82,11 +82,11 @@ describe("homepage story motion", () => {
 
   it("Travel Designer title reveals as two lines and support copy in two beats", () => {
     expect(journey).toMatch(/home-story-intro/);
-    expect(journey).toMatch(/"A Portugal"/);
+    expect(journey).toMatch(/"Portugal, "/);
     expect(journey).toMatch(/written around you\./);
     expect(journey.match(/story-beat/g)?.length ?? 0).toBe(2);
-    expect(journey).toMatch(/Private journeys across Portugal, designed around you by a dedicated local travel designer/);
-    expect(journey).toMatch(/We coordinate handpicked stays, transfers and experiences/);
+    expect(journey).toMatch(/Private journeys across Portugal, thoughtfully designed around your interests/);
+    expect(journey).toMatch(/From handpicked stays and private aviation to remarkable local encounters/);
   });
 
   it("the travel file arrives after the copy and pillars stagger", () => {

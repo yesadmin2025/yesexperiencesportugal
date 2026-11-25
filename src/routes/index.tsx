@@ -578,8 +578,8 @@ function HomePage() {
           aria-labelledby="signatures-title"
         >
           <div className="container-x">
-            <Scene className="home-major-intro home-story-intro text-center max-w-2xl mx-auto mb-5 md:mb-10">
-              <div className="scene-atmosphere"><Eyebrow className="mb-3">Signature Experiences</Eyebrow></div>
+            <Scene className="home-major-intro home-story-intro signature-chapter-intro text-center max-w-2xl mx-auto mb-8 md:mb-12">
+              <div className="scene-atmosphere"><Eyebrow>Signature Experiences</Eyebrow></div>
               <SplitLines
                 as="h2"
                 id="signatures-title"
@@ -590,11 +590,12 @@ function HomePage() {
                   <SectionTitle.Em key="loved">Made personal by you.</SectionTitle.Em>,
                 ]}
               />
-              <p className="scene-body mt-5 text-[15px] md:text-[16px] leading-[1.65] text-[color:var(--charcoal-soft)]">
-                Discover our collection of private experiences, thoughtfully designed by our local team around the places, people and traditions we know best. Choose the original itinerary or tailor selected details to make it yours.
+              <p className="scene-body mx-auto mt-5 max-w-[44ch] text-[15px] md:text-[16px] leading-[1.7] text-[color:var(--charcoal-soft)]">
+                Private experiences shaped by our local team, inspired by the Portugal we know best. Choose the original itinerary or tailor selected details to make it yours.
               </p>
             </Scene>
 
+            <p className="mb-3 flex items-center justify-end gap-2 text-[12px] text-[color:var(--charcoal-soft)] sm:hidden" aria-hidden="true">Swipe to explore <span className="text-[color:var(--teal)]">→</span></p>
             {/* Mobile: full-bleed editorial cover carousel. Uses
               snap-proximity (NOT mandatory) so the horizontal strip
               never grabs vertical page scroll near snap points — that
@@ -719,6 +720,7 @@ function HomePage() {
                           <CtaButton
                             to="/tours/$tourId"
                             params={{ tourId: t.id }}
+                            hash="book"
                             variant="primary"
                             size="sm"
                             className="w-full"
@@ -816,17 +818,16 @@ function HomePage() {
                   id="studio-title"
                   className="reveal-stagger"
                 >
-                  Design your day.{" "}
+                  Your imagination.{" "}
                   <SectionTitle.Em>
-                    Reserve in minutes.
+                    Your Portugal.
                   </SectionTitle.Em>
                 </SectionTitle>
 
                 <p className="reveal-stagger mt-4 text-[14.5px] md:text-[16px] text-[color:var(--charcoal-soft)] leading-[1.7] max-w-md">
-                  You design your own private day: choose your interests, companions and pace.
-                  See a{" "}
+                  Design your own private day around the places, flavors and moments that inspire you. Watch a{" "}
                   <strong className="font-medium text-[color:var(--charcoal)]">real route</strong>,
-                  driving times and a live price take shape as you choose. See the finished total before you reserve.
+                  driving times and live pricing take shape as you choose. See the total and reserve instantly.
                 </p>
 
                 {/* Three differentiators — tied to the product, not a floating manifesto. */}
@@ -878,9 +879,9 @@ function HomePage() {
           <div className="container-x">
             <div className="mx-auto mb-8 max-w-3xl text-center">
               <Eyebrow className="mb-3">Guest reviews</Eyebrow>
-              <SectionTitle>Real experiences. <SectionTitle.Em>Real guest stories.</SectionTitle.Em></SectionTitle>
+              <SectionTitle>Portugal, through <SectionTitle.Em>our guests’ eyes.</SectionTitle.Em></SectionTitle>
               <p className="mx-auto mt-3 max-w-[56ch] text-[15px] leading-[1.6] text-[color:var(--charcoal-soft)]">
-                Hear from travelers who have explored Portugal with our local team.
+                Real stories from travelers who chose to discover Portugal with us.
               </p>
             </div>
             <GuestQuotes />
@@ -912,11 +913,11 @@ function HomePage() {
                 accent="var(--gold)"
                 title={
                   <>
-                    The proposal, the anniversary —{" "}
-                    <span className="italic font-normal text-[color:var(--teal)]">held with care.</span>
+                    Some moments{" "}
+                    <span className="italic font-normal text-[color:var(--teal)]">deserve more.</span>
                   </>
                 }
-                body="A proposal, an anniversary or a milestone, planned personally with our team — the place, the timing and every detail composed around the two of you."
+                body="From intimate proposals and anniversaries to milestone birthdays and private celebrations, we create meaningful occasions in extraordinary Portuguese settings."
                 detail="Planned personally with our team"
                 cta={{ label: "Plan a special moment", to: "/proposal-in-portugal" }}
                 image={{ src: imgMoments, alt: "Romantic private moment by the Portuguese coast", to: "/proposal-in-portugal" }}
@@ -929,11 +930,11 @@ function HomePage() {
                 accent="var(--teal)"
                 title={
                   <>
-                    Team days & incentives,{" "}
-                    <span className="italic font-normal text-[color:var(--teal)]">handled end to end.</span>
+                    Exceptional experiences.{" "}
+                    <span className="italic font-normal text-[color:var(--teal)]">Seamless execution.</span>
                   </>
                 }
-                body="Transport, venues and timing arranged by one local point of contact — from intimate boards to full incentive groups."
+                body="Bespoke incentives, executive retreats, team experiences and private group programs, designed around your objectives and coordinated by one dedicated local team."
                 detail="One local point of contact"
                 cta={{ label: "Plan a private group experience", to: "/corporate" }}
                 image={{ src: imgCorporate, alt: "Private group experience day in Portugal", to: "/corporate" }}
@@ -947,7 +948,7 @@ function HomePage() {
             <div className="mx-auto max-w-2xl text-center mb-8">
               <Eyebrow className="mb-3">The YES difference</Eyebrow>
               <SectionTitle id="why-yes-title">Why choose <SectionTitle.Em>YES Experiences Portugal?</SectionTitle.Em></SectionTitle>
-              <p className="mt-4 text-[15px] leading-relaxed text-[color:var(--charcoal-soft)]">One local team, three ways to explore Portugal: reserve a Signature, design your own day, or have us create your entire journey.</p>
+              <p className="mt-4 text-[15px] leading-relaxed text-[color:var(--charcoal-soft)]">Local knowledge, genuine encounters and the freedom to experience Portugal your way, with one team bringing it all together.</p>
             </div>
             <ul className="grid grid-cols-2 md:grid-cols-3 gap-x-5 gap-y-7 md:gap-9 list-none p-0">
               {[

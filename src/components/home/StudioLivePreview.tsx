@@ -125,7 +125,7 @@ export function StudioLivePreview() {
             to="/experiences"
             className="inline-flex min-h-[44px] items-center text-[12px] uppercase tracking-[0.14em] font-semibold text-[color:var(--teal)] underline decoration-[color:var(--gold)]/60 underline-offset-4"
           >
-            Prefer a ready-made day?
+            Explore our curated Signature Experiences
           </Link>
         </div>
       </div>

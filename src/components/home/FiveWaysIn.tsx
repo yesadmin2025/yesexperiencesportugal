@@ -73,14 +73,14 @@ export function FiveWaysIn() {
   }, []);
 
   return (
-    <section id="five-paths" aria-label="Guest confidence" className="home-quick-trust bg-[color:var(--sand)] border-b border-[color:var(--border)] py-2 md:py-3">
+    <section id="five-paths" aria-label="Guest confidence" className="home-quick-trust bg-[color:var(--sand)] border-b border-[color:var(--border)] py-3 md:py-4">
       <div className="container-x">
-        <div className="mx-auto flex max-w-3xl flex-wrap items-center justify-center gap-x-3 gap-y-0 text-center text-[13px] leading-relaxed text-[color:var(--charcoal)]">
+        <div className="mx-auto flex max-w-3xl flex-col items-center justify-center gap-y-1 text-center text-[13px] leading-[1.5] sm:flex-row sm:gap-x-5 text-[color:var(--charcoal)]">
           <a href="#reviews" className="inline-flex min-h-[44px] items-center gap-2 font-medium underline decoration-[color:var(--gold)]/60 underline-offset-4 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--teal)]">
             <span aria-hidden="true" className="text-[color:var(--gold)]">★★★★★</span>
             {SITE_RATING_LABEL}
           </a>
-          <span>Private experiences · Local experts</span>
+          <span className="text-[12px] tracking-[0.02em] text-[color:var(--charcoal-soft)]">Private experiences · Local experts</span>
         </div>
         {hasDraft && (
           <div className="reveal mx-auto mt-5 max-w-6xl border border-[color:var(--border)] bg-[color:var(--sand)] px-5 py-4 sm:flex sm:items-center sm:justify-between sm:gap-6">

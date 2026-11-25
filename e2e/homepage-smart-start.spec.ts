@@ -39,12 +39,19 @@ test.describe("homepage conversion paths", () => {
       for (const item of await firstCard.locator(".home-signature-highlights li").all()) await expect(item).toBeVisible();
       await expect(firstCard.getByTestId("signature-pickup")).toBeVisible();
       await expect(firstCard.getByTestId("signature-card-price")).toBeVisible();
+      const intro = page.locator(".signature-chapter-intro");
+      const title = intro.locator("h2");
+      const copy = intro.locator("p.scene-body");
+      const gap = await page.evaluate(() => { const a = document.querySelector(".signature-chapter-intro h2")!, b = document.querySelector(".signature-chapter-intro p.scene-body")!; return b.getBoundingClientRect().top - a.getBoundingClientRect().bottom; });
+      expect(gap).toBeGreaterThanOrEqual(12);
+      await expect(title).toBeVisible();
+      await expect(copy).toBeVisible();
     }
     await expect(firstCard.locator(".home-signature-highlights li").first()).toContainText("Two wineries");
     await expect(page.locator("#signatures").getByText(/tailor selected details/i)).toBeVisible();
     await expect(page.locator("#why-yes li")).toHaveCount(6);
     await expect(page.locator("#faq").getByRole("link", { name: "Explore Signature Experiences" })).toHaveAttribute("href", "/experiences");
-    await expect(page.locator("#signatures").getByRole("link", { name: /See dates and reserve/ }).first()).toHaveAttribute("href", "/tours/arrabida-wine-allinclusive");
+    await expect(page.locator("#signatures").getByRole("link", { name: /See dates and reserve/ }).first()).toHaveAttribute("href", "/tours/arrabida-wine-allinclusive#book");
   });
 
   test("keeps commercial footer links visible and secondary navigation accessible", async ({ page }) => {

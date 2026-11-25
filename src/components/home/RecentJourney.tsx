@@ -42,8 +42,8 @@ const PAGES = Array.from({ length: TOTAL_PAGES }, (_, i) => {
 
 const PILLARS = [
   {
-    label: "Portugal-wide journeys",
-    body: "Portugal-wide routes, paced for the way you travel — from a few days to a full trip.",
+    label: "Journeys across Portugal",
+    body: "From a few days to a full journey, discover Portugal at your own pace.",
   },
   {
     label: "Stays & logistics",
@@ -565,7 +565,7 @@ export function RecentJourney() {
             className="serif text-[2rem] sm:text-[2.4rem] lg:text-[3.4rem] leading-[1.1] lg:leading-[1.02] tracking-normal text-[color:var(--charcoal)] font-medium mx-auto"
             lineClassName="mx-auto"
             lines={[
-              "A Portugal",
+              "Portugal, ",
               <span key="written" className="italic font-normal text-[color:var(--teal)]">
                 written around you.
               </span>,
@@ -574,10 +574,10 @@ export function RecentJourney() {
           {/* One semantic sentence, revealed in two visual beats. */}
           <p className="mt-4 font-[family-name:var(--font-sans)] text-[14.5px] md:text-[16px] text-[color:var(--charcoal-soft)] leading-[1.65] max-w-md mx-auto">
             <span className="scene-body story-beat block">
-              Private journeys across Portugal, designed around you by a dedicated local travel designer.
+              Private journeys across Portugal, thoughtfully designed around your interests, your rhythm and the way you want to travel.
             </span>{" "}
             <span className="scene-body story-beat block">
-              We coordinate handpicked stays, transfers and experiences, from private aviation to your personal YES Travel Book.
+              From handpicked stays and private aviation to remarkable local encounters, your dedicated Travel Designer brings every detail together.
             </span>
           </p>
         </Scene>
@@ -597,7 +597,7 @@ export function RecentJourney() {
             keeps italics reserved for emphasis inside major titles; hairline gold rule
             separates the block from the book above. */}
         <Scene className="home-pillars mt-9 md:mt-10 max-w-2xl mx-auto text-center border-t border-[color:var(--border)] pt-7 md:pt-8">
-          <ul className="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-10 list-none p-0">
+          <ul className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-10 list-none p-0">
             {PILLARS.map((p) => (
               <li key={p.label} className="scene-item he-card-lift px-2">
                 <h3 className="font-[family-name:var(--font-editorial)] font-normal text-[color:var(--charcoal)] text-[18px] md:text-[19px] leading-[1.25] tracking-normal">
@@ -620,11 +620,11 @@ export function RecentJourney() {
           <div className="mt-5 grid gap-5 sm:grid-cols-2">
             <div className="min-w-0">
               <h4 className="font-semibold text-[color:var(--teal)]">Private Aviation &amp; Jet Charters</h4>
-              <p className="mt-2 text-sm leading-relaxed text-[color:var(--charcoal-soft)]">Private jet charter arrangements through specialist aviation partners, coordinated with your journey on the ground. Individually quoted on request.</p>
+              <p className="mt-2 text-sm leading-relaxed text-[color:var(--charcoal-soft)]">Your journey begins before you land. Private jet charters arranged through specialist aviation partners and seamlessly connected to your journey on the ground. Quoted on request.</p>
             </div>
             <div className="min-w-0">
-              <h4 className="font-semibold text-[color:var(--teal)]">Handpicked Stays &amp; Local Partners</h4>
-              <p className="mt-2 text-sm leading-relaxed text-[color:var(--charcoal-soft)]">Boutique hotels, private villas, chauffeur services and distinctive local experiences, selected around your preferences and arranged subject to availability.</p>
+              <h4 className="font-semibold text-[color:var(--teal)]">Handpicked Stays &amp; Experiences</h4>
+              <p className="mt-2 text-sm leading-relaxed text-[color:var(--charcoal-soft)]">Boutique hotels, private villas, chauffeur services and distinctive local encounters, selected around the way you love to travel. Subject to availability.</p>
             </div>
           </div>
         </div>

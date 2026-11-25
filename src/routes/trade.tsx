@@ -115,7 +115,7 @@ const BENEFITS = [
 const WHAT_WE_DESIGN = [
   {
     label: "Signature Experiences",
-    body: "Ready-to-book private days across Portugal, combining strong regional storytelling, carefully chosen local encounters and seamless private operation.",
+    body: "Private days curated by our local team, combining strong regional storytelling and carefully chosen encounters. Choose the original itinerary or tailor selected details to your clients.",
     to: "/experiences",
   },
   {
@@ -125,7 +125,7 @@ const WHAT_WE_DESIGN = [
   },
   {
     label: "Travel Designer",
-    body: "Tailor-made multi-day journeys across Portugal, balancing the places clients expect with the people, traditions and landscapes that make the country feel real.",
+    body: "Tailor-made multi-day journeys, with handpicked stays, private aviation arrangements, chauffeur services and local experiences coordinated around each client.",
     to: "/portugal-travel-designer",
   },
   {
