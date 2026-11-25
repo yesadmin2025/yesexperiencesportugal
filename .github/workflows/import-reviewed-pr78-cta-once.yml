@@ -1,0 +1,42 @@
+name: Import reviewed PR78 CTA snapshots once
+on:
+  pull_request:
+    branches: [main]
+    types: [synchronize]
+permissions:
+  actions: read
+  contents: write
+jobs:
+  reviewed-blobs:
+    if: github.event.pull_request.number == 78 && github.event.pull_request.head.repo.full_name == github.repository
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - name: Import exact previously reviewed PNG blobs only
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
+        run: |
+          python - <<'PY'
+          import os, subprocess, zipfile, hashlib, base64, json
+          repo = os.environ['REPO']
+          expected = {
+            'hero-cta-group-desktop-1440-chromium-actual.png': '02f521756234f5e77b9284ffdf400cbb5ce923c3bdf8eff2e9d169fcfdf2f8a6',
+            'hero-cta-group-desktop-chromium-actual.png': '57f23074c2ad1192e4a828cbf33add996ecfed10901d56bedd4c57ec5cbac755',
+            'hero-cta-group-mobile-chromium-actual.png': '6e166e24e60b0985c8406ce68ca53f014b32f3f5f6cb48f870abd70f1b04e037',
+            'hero-cta-group-tablet-chromium-actual.png': '4eb44a30271712c647695cb5765ef238b87ad356453128dff794d0a4cd5d81a1',
+          }
+          subprocess.run(['gh','api',f'repos/{repo}/actions/artifacts/14983326708/zip'],stdout=open('/tmp/reviewed.zip','wb'),check=True)
+          with zipfile.ZipFile('/tmp/reviewed.zip') as z:
+            names = [n for n in z.namelist() if n.endswith('-actual.png')]
+            assert len(names) == len(expected) and {n.rsplit('/',1)[-1] for n in names} == set(expected)
+            files = {n.rsplit('/',1)[-1]:z.read(n) for n in names}
+            for n,b in files.items():
+              assert hashlib.sha256(b).hexdigest() == expected[n], n
+            for n,b in sorted(files.items()):
+              payload = json.dumps({'content':base64.b64encode(b).decode(),'encoding':'base64'})
+              result = subprocess.check_output(['gh','api','--method','POST',f'repos/{repo}/git/blobs','--input','-'],input=payload.encode())
+              sha = json.loads(result)['sha']
+              assert sha == hashlib.sha1(f'blob {len(b)}\0'.encode()+b).hexdigest()
+              print('REVIEWED_HERO_BLOB',n,sha)
+          PY
