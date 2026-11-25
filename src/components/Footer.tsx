@@ -1,5 +1,6 @@
 import { Link } from "@tanstack/react-router";
-import { useT } from "@/i18n/locale-context";
+import { useLocale, useT } from "@/i18n/locale-context";
+import { localizedNavigationPath } from "@/i18n/pt-ready";
 import { useState } from "react";
 import { ChevronDown } from "lucide-react";
 import { Logo } from "@/components/Logo";
@@ -172,8 +173,55 @@ const LEGAL_LINKS: FooterLink[] = [
   { to: "/press", label: "Press & brand" },
 ];
 
+const PT_FOOTER_LABELS: Record<string, string> = {
+  "Experiences": "Experiências",
+  "Occasions": "Ocasiões",
+  "Company": "Empresa",
+  "Legal": "Informação legal",
+  "Signature Experiences": "Experiências Signature",
+  "Discover Portugal": "Descobrir Portugal",
+  "Private Day Tours": "Passeios privados de um dia",
+  "Portugal Travel Designer": "Travel Designer em Portugal",
+  "Lisbon Wine Tours": "Experiências de vinho a partir de Lisboa",
+  "Proposals & Celebrations": "Pedidos de casamento e celebrações",
+  "Corporate & Groups": "Empresas e grupos",
+  "About YES Experiences Portugal": "Sobre a YES Experiences Portugal",
+  "Local Stories": "Histórias locais",
+  "Regions of Portugal": "Regiões de Portugal",
+  "Guest reviews": "Avaliações de clientes",
+  "FAQ": "Perguntas frequentes",
+  "Contact": "Contacto",
+  "Terms & Conditions": "Termos e condições",
+  "Privacy Policy": "Política de privacidade",
+  "Cookie Policy": "Política de cookies",
+  "Press & brand": "Imprensa e marca",
+  "Arrábida Wine Tour": "Experiência de vinhos na Arrábida",
+  "Wild Beaches & Picnic": "Praias selvagens e piquenique",
+  "Arrábida Boat": "Passeio de barco na Arrábida",
+  "Tiles Workshop": "Workshop de azulejos",
+  "Azeitão Cheese & Wine": "Queijo e vinho de Azeitão",
+  "Roman Heritage Alentejo": "Património romano no Alentejo",
+  "Southwest Vicentine Coast": "Costa Vicentina",
+  "Portugal tours": "Passeios em Portugal",
+  "Luxury Portugal tours": "Experiências premium em Portugal",
+  "Private tours from Lisbon": "Passeios privados a partir de Lisboa",
+  "Best wine tours from Lisbon": "Experiências de vinho a partir de Lisboa",
+  "Sintra day tour from Lisbon": "Visita a Sintra a partir de Lisboa",
+  "Private Arrábida wine tour": "Experiência privada de vinho na Arrábida",
+  "Arrábida day trip from Lisbon": "Visita à Arrábida a partir de Lisboa",
+  "Day trips from Lisbon": "Passeios de um dia a partir de Lisboa",
+  "Alentejo wine tour from Lisbon": "Experiência de vinho no Alentejo",
+  "10-day private Portugal tour": "Viagem privada de 10 dias em Portugal",
+  "Portugal travel designer": "Travel Designer em Portugal",
+  "Proposal in Portugal": "Pedido de casamento em Portugal"
+};
+function footerLabel(label: string, locale: "en" | "pt") {
+  return locale === "pt" ? PT_FOOTER_LABELS[label] ?? label : label;
+}
+
 export function Footer() {
   const t = useT();
+  const locale = useLocale();
   return (
     <footer className="relative bg-[color:var(--charcoal)] text-[color:var(--ivory)]">
       {/* Champagne hairline — handoff from the ivory section above. */}
@@ -191,7 +239,7 @@ export function Footer() {
         <div className="grid gap-8 md:grid-cols-[minmax(0,1fr)_auto] md:items-end">
           <div className="min-w-0 max-w-md">
             <Link
-              to="/"
+              to={localizedNavigationPath("/", locale)}
                className="inline-block rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)] focus-visible:ring-offset-2 focus-visible:ring-offset-[color:var(--charcoal)]"
               aria-label="YES Experiences Portugal — Home"
             >
@@ -207,7 +255,7 @@ export function Footer() {
             >
               {t("footer.tagline_full")}
             </p>
-            <Link to="/reviews" className={`${LINK_CLASS} mt-2 gap-2 text-[13px]`}>
+            <Link to={localizedNavigationPath("/reviews", locale)} className={`${LINK_CLASS} mt-2 gap-2 text-[13px]`}>
               <span aria-hidden="true" className="text-[color:var(--gold-warm)]">★★★★★</span>
               {SITE_RATING_LABEL}
             </Link>
@@ -256,10 +304,10 @@ export function Footer() {
         <nav aria-label="Explore YES Experiences Portugal services and company" className="mt-6 pt-6 border-t border-[color:var(--gold-warm)]/25 md:mt-9 md:pt-8">
           <div className="mb-6 flex flex-col gap-3 border-b border-[color:var(--gold-warm)]/25 pb-6 md:flex-row md:items-center md:justify-between md:gap-8">
             <div className="min-w-0 max-w-xl">
-              <h2 className={EYEBROW_CLASS}>Travel trade partnerships</h2>
-              <p className="mt-2 text-[14px] leading-relaxed text-[color:var(--ivory)]/85">Your local Portugal partner for private experiences, tailor-made journeys and groups.</p>
+              <h2 className={EYEBROW_CLASS}>{locale === "pt" ? "Parcerias com profissionais de turismo" : "Travel trade partnerships"}</h2>
+              <p className="mt-2 text-[14px] leading-relaxed text-[color:var(--ivory)]/85">{locale === "pt" ? "O seu parceiro local em Portugal para experiências privadas, viagens à medida e grupos." : "Your local Portugal partner for private experiences, tailor-made journeys and groups."}</p>
             </div>
-            <Link to="/trade" className="inline-flex min-h-11 items-center justify-center gap-2 self-start rounded-sm border border-[color:var(--gold-warm)] px-4 py-2 text-[13px] font-semibold text-[color:var(--gold-soft)] hover:bg-[color:var(--gold-warm)]/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)] md:shrink-0">For Travel Advisors &amp; Agencies <span aria-hidden="true">↗</span></Link>
+            <Link to="/trade" className="inline-flex min-h-11 items-center justify-center gap-2 self-start rounded-sm border border-[color:var(--gold-warm)] px-4 py-2 text-[13px] font-semibold text-[color:var(--gold-soft)] hover:bg-[color:var(--gold-warm)]/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)] md:shrink-0">{locale === "pt" ? "Para consultores de viagens e agências" : "For Travel Advisors & Agencies"} <span aria-hidden="true">↗</span></Link>
           </div>
           <div className="grid grid-cols-1 gap-y-5 md:grid-cols-4 md:gap-x-8 md:gap-y-7">
             {NAV_COLUMNS.map((col) => col.title === "Company" ? (
@@ -307,7 +355,7 @@ export function Footer() {
           <div className="mt-8 pt-8 border-t border-[color:var(--gold-warm)]/15">
             <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
               <h2 className={`${EYEBROW_CLASS} shrink-0`} style={{ fontWeight: 600 }}>
-                Also listed on
+                {locale === "pt" ? "Também presentes em" : "Also listed on"}
               </h2>
               <ul className="flex items-center gap-2.5" aria-label="Distribution partners">
                 {[
@@ -350,11 +398,11 @@ export function Footer() {
                 {NIF_LABEL} · {LICENSE_LABEL}
               </span>
               <Link
-                to="/terms"
+                to={localizedNavigationPath("/terms", locale)}
                 hash="dispute-resolution"
                 className={`${LINK_CLASS} text-[12px] text-[color:var(--ivory)]/75`}
               >
-                Dispute resolution (RAL)
+                {locale === "pt" ? "Resolução alternativa de litígios (RAL)" : "Dispute resolution (RAL)"}
               </Link>
             </div>
             <div className="mt-4 flex flex-wrap items-center gap-x-4 gap-y-2">
@@ -367,7 +415,7 @@ export function Footer() {
                 onClick={openCookieConsent}
                 className={`${LINK_CLASS} text-[12px] text-[color:var(--ivory)]/75`}
               >
-                Cookie preferences
+                {locale === "pt" ? "Preferências de cookies" : "Cookie preferences"}
               </button>
             </div>
           </div>
@@ -378,19 +426,20 @@ export function Footer() {
 }
 
 function FooterCol({ title, links }: { title: string; links: FooterLink[] }) {
+  const locale = useLocale();
   return (
     <div className="min-w-0">
       <h2 className={`${EYEBROW_CLASS} mb-4`} style={{ fontWeight: 600 }}>
-        {title}
+        {footerLabel(title, locale)}
       </h2>
       <ul
         className="space-y-2 font-[family-name:var(--font-sans)] text-[14px]"
         style={{ fontWeight: 400 }}
       >
         {links.map((l) => (
-          <li key={`${l.to}:${l.label}`}>
-            <Link to={l.to} params={l.params} search={l.search} className={LINK_CLASS}>
-              {l.label}
+          <li key={`${l.to}:${footerLabel(l.label, locale)}`}>
+            <Link to={localizedNavigationPath(l.to, locale)} params={l.params} search={l.search} className={LINK_CLASS}>
+              {footerLabel(l.label, locale)}
             </Link>
           </li>
         ))}
@@ -404,13 +453,14 @@ function FooterCol({ title, links }: { title: string; links: FooterLink[] }) {
  * md up. Links stay in the DOM at every width, so crawlers see the full index.
  */
 function FooterLinkGroup({ title, links, compact = false }: { title: string; links: FooterLink[]; compact?: boolean }) {
+  const locale = useLocale();
   const [open, setOpen] = useState(false);
   const id = `footer-group-${title.replace(/\s+/g, "-").toLowerCase()}`;
 
   return (
     <div className="min-w-0">
       <h2 className={EYEBROW_CLASS} style={{ fontWeight: 600 }}>
-        <span className="hidden md:inline">{title}</span>
+        <span className="hidden md:inline">{footerLabel(title, locale)}</span>
         <button
           type="button"
           onClick={() => setOpen((v) => !v)}
@@ -418,7 +468,7 @@ function FooterLinkGroup({ title, links, compact = false }: { title: string; lin
           aria-controls={id}
           className="flex min-h-11 w-full items-center justify-between gap-3 rounded-sm border-b border-[color:var(--gold-warm)]/15 py-2 text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)] md:hidden"
         >
-          {title}
+          {footerLabel(title, locale)}
           <ChevronDown
             size={16}
             aria-hidden="true"
@@ -434,14 +484,14 @@ function FooterLinkGroup({ title, links, compact = false }: { title: string; lin
         style={{ fontWeight: 400 }}
       >
         {links.map((l) => (
-          <li key={`${l.to}:${l.label}`}>
+          <li key={`${l.to}:${footerLabel(l.label, locale)}`}>
             <Link
-              to={l.to}
+              to={localizedNavigationPath(l.to, locale)}
               params={l.params}
               search={l.search}
               className={`${LINK_CLASS} text-[color:var(--ivory)]/75`}
             >
-              {l.label}
+              {footerLabel(l.label, locale)}
             </Link>
           </li>
         ))}

@@ -205,7 +205,12 @@
   --section-gap-mobile: 64px;
   --section-gap-desktop: 96px;
   --editorial-label-gap: var(--space-5);
+  --editorial-title-copy-gap: 20px;
   --editorial-copy-gap: var(--space-6);
+  --editorial-chapter-space: var(--section-gap-mobile);
+  --editorial-heading-size: 1.875rem;
+  --editorial-heading-leading: 1.18;
+  --editorial-body-size: 1rem;
 
   /* Editorial shadows — softer, warmer than the legacy teal-tinted set. */
   --shadow-soft: 0 8px 24px rgba(20, 21, 24, 0.08);
@@ -361,6 +366,10 @@
 
 @media (min-width: 768px) {
   :root {
+    --editorial-chapter-space: var(--section-gap-desktop);
+    --editorial-heading-size: 2.5rem;
+    --editorial-heading-leading: 1.12;
+    --editorial-body-size: 1.0625rem;
     --section-y: 6rem;
     --section-y-lg: 7rem;
     --section-y-sm: 4rem;
@@ -9128,10 +9137,7 @@ html[data-floating-quiet] [data-testid="floating-actions"] {
 }
 /* All commercial Signature highlights remain visible on mobile. */
 .home-signature-highlights li { opacity: 1; transition: none; }
-/* First commercial chapter: breathing room without another introductory block. */
-.signature-chapter-intro .scene-atmosphere + .motion-split,
-.signature-chapter-intro .scene-atmosphere + .scene-title { margin-top: 16px; }
-.signature-chapter-intro .motion-split-line + .motion-split-line { margin-top: 4px; }
+/* Signature reveal timing is separate from editorial layout. */
 @media (prefers-reduced-motion: no-preference) {
   .signature-chapter-intro .motion-split-line { transition-duration: 540ms; transition-delay: calc(60ms + var(--split-index, 0) * 80ms); }
   [data-motion-ready="1"] .signature-chapter-intro .motion-split-line { transform: translate3d(0, 12px, 0); }
@@ -9141,27 +9147,14 @@ html[data-floating-quiet] [data-testid="floating-actions"] {
 }
 
 
-/* Homepage editorial rhythm: one scale for peer chapters, not the hero,
-   cards, booking interface or any other route. */
+/* YES editorial system: public editorial chapters share root tokens.
+   Cinematic hero, functional workspace and booking controls retain their
+   established independent scale. */
 .home-energy {
-  --home-chapter-padding: 48px;
-  --home-intro-gap: 16px;
-  --home-intro-after: 32px;
-  --home-heading-size: 1.8125rem;
-  --home-heading-leading: 1.18;
-  --home-body-size: 1rem;
-}
-@media (min-width: 768px) {
-  .home-energy {
-    --home-chapter-padding: 72px;
-    --home-intro-after: 40px;
-    --home-heading-size: 2.25rem;
-    --home-heading-leading: 1.12;
-    --home-body-size: 1.0625rem;
-  }
+  --home-intro-after: var(--editorial-copy-gap);
 }
 .home-energy > :is(#signatures, #builder, #multi-day, #reviews, #special-occasions, #why-yes, #plan-map, #journal, [aria-labelledby="winter-days-title"]) {
-  padding-block: var(--home-chapter-padding);
+  padding-block: var(--editorial-chapter-space);
 }
 .home-energy :is(.home-major-intro, .home-editorial-intro) {
   margin-bottom: var(--home-intro-after);
@@ -9176,9 +9169,9 @@ html[data-floating-quiet] [data-testid="floating-actions"] {
   margin-block: 0;
 }
 .home-energy :is(.home-major-intro, .home-editorial-intro) > :is(h2, .motion-split, .scene-title) {
-  margin-block: var(--home-intro-gap) 0;
-  font-size: var(--home-heading-size);
-  line-height: var(--home-heading-leading);
+  margin-block: var(--editorial-label-gap) 0;
+  font-size: var(--editorial-heading-size);
+  line-height: var(--editorial-heading-leading);
   font-weight: 500;
   letter-spacing: normal;
   text-wrap: balance;
@@ -9187,9 +9180,9 @@ html[data-floating-quiet] [data-testid="floating-actions"] {
   margin-top: 0;
 }
 .home-energy :is(.home-major-intro, .home-editorial-intro) > p {
-  margin-block: var(--home-intro-gap) 0;
+  margin-block: var(--editorial-title-copy-gap) 0;
   max-width: 48ch;
-  font-size: var(--home-body-size);
+  font-size: var(--editorial-body-size);
   line-height: 1.65;
 }
 .home-energy :is(.home-major-intro, .home-editorial-intro:not(.home-editorial-intro--rail)) > p {
@@ -9217,4 +9210,52 @@ html[data-floating-quiet] [data-testid="floating-actions"] {
   line-height: 1.5;
   letter-spacing: .09em;
   overflow-wrap: normal;
+}
+
+/* Public chapter openings use one label/title/copy contract. Restrict
+   changes to editorial siblings, never card content or reservation controls.
+   A label is a real block for spacing, with its inline visual alignment
+   retained through the parent text alignment. */
+main[data-editorial-page] :is(.he-eyebrow-bar, .scene-atmosphere, [data-eyebrow]):has(+ :is(h1, h2, .motion-split, .scene-title)):not(:where(.hero-cinematic *, article *, form *, #book *, #reserve *)) {
+  margin-block: 0;
+}
+main[data-editorial-page] :is(.he-eyebrow-bar, .scene-atmosphere, [data-eyebrow]) + :is(h1, h2, .motion-split, .scene-title):not(:where(.hero-cinematic *, article *, form *, #book *, #reserve *)) {
+  margin-top: var(--editorial-label-gap);
+}
+main[data-editorial-page] :is(.he-eyebrow-bar, .scene-atmosphere, [data-eyebrow]) + h2:not(:where(.hero-cinematic *, article *, form *, #book *, #reserve *)),
+main[data-editorial-page] .chapter-flow h2.motion-split:not(:where(article *, form *, #book *, #reserve *)) {
+  font-size: var(--editorial-heading-size);
+  line-height: var(--editorial-heading-leading);
+  font-weight: 500;
+  letter-spacing: normal;
+  text-wrap: balance;
+}
+main[data-editorial-page] :is(.he-eyebrow-bar, .scene-atmosphere, [data-eyebrow]) + :is(h1, h2) + p:not(:where(.hero-cinematic *, article *, form *, #book *, #reserve *)) {
+  margin-top: var(--editorial-title-copy-gap);
+  font-size: var(--editorial-body-size);
+  line-height: 1.65;
+}
+main[data-editorial-page] .section-y-major:not(:where(article *, form *, #book *, #reserve *)) {
+  padding-block: var(--editorial-chapter-space);
+}
+/* Homepage's centered introductions own their entire vertical stack.
+   This avoids inline baseline space and collapsed margins. */
+main[data-editorial-page] .home-major-intro {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+main[data-editorial-page] .home-major-intro > :is(.scene-atmosphere, h2, p) {
+  flex-shrink: 0;
+  max-width: 100%;
+}
+main[data-editorial-page] .home-major-intro > p {
+  max-width: 48ch;
+}
+main[data-editorial-page] .home-major-intro > .scene-atmosphere {
+  display: flex;
+  justify-content: center;
+}
+main[data-editorial-page] .home-major-intro > .scene-atmosphere > .he-eyebrow-bar {
+  margin-block: 0;
 }

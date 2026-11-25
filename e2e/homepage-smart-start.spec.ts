@@ -77,6 +77,16 @@ test.describe("homepage conversion paths", () => {
         expect(item.bottom, item.id).toBe(measured[0].bottom);
       }
       for (const id of ["signatures", "multi-day"]) {
+        const gaps = await page.locator("#" + id + " .home-major-intro").evaluate((intro) => {
+          const label = intro.querySelector(".scene-atmosphere")!.getBoundingClientRect();
+          const title = intro.querySelector("h2")!.getBoundingClientRect();
+          const copy = intro.querySelector("p")!.getBoundingClientRect();
+          return { label: title.top - label.bottom, copy: copy.top - title.bottom };
+        });
+        expect(gaps.label, id + " label/title").toBeGreaterThanOrEqual(22);
+        expect(gaps.label, id + " label/title").toBeLessThanOrEqual(26);
+        expect(gaps.copy, id + " title/copy").toBeGreaterThanOrEqual(18);
+        expect(gaps.copy, id + " title/copy").toBeLessThanOrEqual(22);
         const offsets = await page.locator("#" + id + " .home-major-intro").evaluate((intro) => {
           const center = intro.getBoundingClientRect().left + intro.getBoundingClientRect().width / 2;
           return Array.from(intro.querySelectorAll(".motion-split-line")).map((line) => {
@@ -96,6 +106,7 @@ test.describe("homepage conversion paths", () => {
         await testInfo.attach("homepage-editorial-" + width, { body: await page.screenshot({ fullPage: true, animations: "disabled" }), contentType: "image/png" });
       }
     }
+    await expect(page.locator("#faq")).toHaveCount(1);
     await expect(page.locator("footer").getByText(/shown the way a local shows a friend/i)).toBeVisible();
   });
 

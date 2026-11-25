@@ -79,3 +79,11 @@ export function isPtPaired(path: string): boolean {
 }
 
 export const PT_PAIRED_PATHS: readonly string[] = Array.from(PAIRED);
+
+/** Keep shared navigation in the current locale only where an actual
+ * paired page exists; never invent /pt URLs or route through a stub. */
+export function localizedNavigationPath(path: string, locale: "en" | "pt"): string {
+  return locale === "pt" && isPtPaired(path)
+    ? path === "/" ? "/pt" : "/pt" + path
+    : path;
+}

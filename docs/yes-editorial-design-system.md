@@ -1,0 +1,6 @@
+# YES editorial design system
+The public editorial language uses Fraunces and Inter and the existing brand palette. The central tokens in styles.css are the source of truth for chapter introductions: label-to-title 24px, title-to-copy 20px, copy-to-content 32px, main chapter padding 64/96px, peer headings 30/40px, body 16/17px. Functional booking controls, app workspaces and the cinematic hero have their own established hierarchy. Do not apply generic typography overrides to these surfaces.
+
+Shared navigation uses the existing paired-locale registry rather than inventing translated routes. Unpaired English pages are unchanged. The English homepage and its Portuguese counterpart are deliberately not being replaced by a machine translation; a future reviewed translation can bring complete content parity. Footer labels are localized, while all original destinations and canonical commercial terms remain available.
+
+The editorial Playwright suite records measurements and screenshots at 393 and 1440px across all principal page families. Existing quality gates, prices, reservations, payment settings, SEO metadata, imagery and supplier confidentiality must remain intact. Human review of screenshot artifacts is required before publication.
