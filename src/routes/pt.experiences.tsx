@@ -91,8 +91,7 @@ function ExperiencesPage() {
             Experiências <SectionTitle.Em>Signature</SectionTitle.Em>
           </SectionTitle>
           <p className="page-header-support mt-5 max-w-xl mx-auto text-[color:var(--charcoal-soft)]">
-            Dias privados por todo o Portugal. Veja o que está incluído, escolha a experiência
-            certa para si e reserve a sua data — ou adapte o dia ao seu grupo.
+            Descubra experiências privadas desenhadas pela nossa equipa local, em torno dos lugares, pessoas e tradições que melhor conhecemos. Escolha o itinerário original ou personalize alguns detalhes ao seu gosto.
           </p>
           <p className="page-header-secondary mt-4 mx-auto max-w-xl text-[12px] uppercase tracking-[0.16em] text-[color:var(--charcoal-soft)]">
             Os detalhes e a reserva de cada experiência estão disponíveis em inglês.

@@ -150,10 +150,10 @@ function ExperiencesPage() {
           />
           <Eyebrow flank>Signature Collection</Eyebrow>
           <SectionTitle as="h1" size="anchor" spacing="loose">
-            Private days, <SectionTitle.Em>ready when you are.</SectionTitle.Em>
+            Designed by us. <SectionTitle.Em>Made personal by you.</SectionTitle.Em>
           </SectionTitle>
           <p className="mt-3 max-w-[52ch] mx-auto text-[15px] md:text-[16px] leading-[1.65] text-[color:var(--charcoal-soft)]">
-            Reserve your date, or tailor the day around your group.
+            Discover private experiences designed by our local team around the places, people and traditions we know best. Choose the original itinerary or tailor selected details to make it yours.
           </p>
           <div className="mt-4 flex justify-center">
             <PriceCurrencyChip />

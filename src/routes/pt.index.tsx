@@ -178,10 +178,10 @@ function PtHomePage() {
         <div className="max-w-2xl">
           <Eyebrow>Coleção Signature</Eyebrow>
           <SectionTitle spacing="loose">
-            Alguns dos nossos <SectionTitle.Em>dias mais pedidos.</SectionTitle.Em>
+            Desenhadas por nós. <SectionTitle.Em>Personalizadas por si.</SectionTitle.Em>
           </SectionTitle>
           <p className="mt-4 text-[15px] leading-relaxed text-[color:var(--charcoal-soft)]">
-            Escolha uma experiência privada com itinerário já desenhado. Reserve online ou personalize alguns detalhes conforme os seus interesses e ritmo. Consulte as condições de recolha e inclusões de cada experiência. As páginas detalhadas estão, para já, em inglês.
+            Descubra experiências privadas desenhadas pela nossa equipa local, em torno dos lugares, pessoas e tradições que melhor conhecemos. Escolha o itinerário original ou personalize alguns detalhes ao seu gosto. As páginas detalhadas estão, para já, em inglês.
           </p>
         </div>
 

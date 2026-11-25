@@ -586,12 +586,12 @@ function HomePage() {
                 className="editorial-title-safe font-serif text-[color:var(--charcoal)] font-medium tracking-normal text-[1.8125rem] md:text-[2.25rem] leading-[1.18] md:leading-[1.1] mx-auto"
                 lineClassName="mx-auto"
                 lines={[
-                  "Private experiences,",
-                  <SectionTitle.Em key="loved">ready to make yours.</SectionTitle.Em>,
+                  "Designed by us.",
+                  <SectionTitle.Em key="loved">Made personal by you.</SectionTitle.Em>,
                 ]}
               />
               <p className="scene-body mt-5 text-[15px] md:text-[16px] leading-[1.65] text-[color:var(--charcoal-soft)]">
-                Explore our collection of expertly designed private day experiences. Reserve the original itinerary online or tailor selected details to your interests, preferences and pace.
+                Discover our collection of private experiences, thoughtfully designed by our local team around the places, people and traditions we know best. Choose the original itinerary or tailor selected details to make it yours.
               </p>
             </Scene>
 

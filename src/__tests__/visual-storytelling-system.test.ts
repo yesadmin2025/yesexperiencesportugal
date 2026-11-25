@@ -76,8 +76,8 @@ describe("homepage story motion", () => {
   it("Signature title reveals as two intentional lines", () => {
     expect(home).toMatch(/home-story-intro/);
     const block = home.slice(home.indexOf('id="signatures-title"'));
-    expect(block).toMatch(/"Private experiences,"/);
-    expect(block).toMatch(/ready to make yours\./);
+    expect(block).toMatch(/"Designed by us\."/);
+    expect(block).toMatch(/Made personal by you\./);
   });
 
   it("Travel Designer title reveals as two lines and support copy in two beats", () => {

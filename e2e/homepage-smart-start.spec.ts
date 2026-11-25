@@ -53,9 +53,10 @@ test.describe("homepage conversion paths", () => {
     await page.waitForFunction(() => (window as Window & { __APP_READY__?: boolean }).__APP_READY__ === true, undefined, { timeout: 30_000 });
     const footer = page.locator("footer").first();
     const nav = footer.getByRole("navigation", { name: "Explore YES Experiences Portugal services and company" });
-    for (const href of ["/experiences", "/studio", "/portugal-travel-designer", "/proposal-in-portugal", "/corporate"]) {
+    for (const href of ["/experiences", "/studio", "/portugal-travel-designer", "/proposal-in-portugal", "/corporate", "/trade"]) {
       await expect(nav.locator(`a[href="${href}"]`).first()).toBeVisible();
     }
+    await expect(nav.getByRole("link", { name: "For Travel Advisors & Agencies" })).toHaveAttribute("href", "/trade");
     const consent = page.getByRole("button", { name: "Essential only", exact: true });
     if (await consent.isVisible()) await consent.click();
     for (const [name, id] of [["Company", "company"], ["Legal", "legal"], ["Discover Portugal", "discover-portugal"]]) {
@@ -77,6 +78,7 @@ test.describe("homepage conversion paths", () => {
     await expect(nav.locator("#footer-group-company")).toBeVisible();
     await expect(nav.locator("#footer-group-legal")).toBeVisible();
     await expect(nav.locator("#footer-group-discover-portugal")).toBeVisible();
+    await expect(nav.getByRole("link", { name: "For Travel Advisors & Agencies" })).toBeVisible();
   });
 
   test("does not pretend a generic visitor has a Studio draft", async ({ page }) => {

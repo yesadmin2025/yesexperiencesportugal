@@ -89,7 +89,6 @@ const NAV_COLUMNS: { title: string; links: FooterLink[] }[] = [
       { to: "/regions-of-portugal", label: "Regions of Portugal" },
       { to: "/reviews", label: "Guest reviews" },
       { to: "/faq", label: "FAQ" },
-      { to: "/trade", label: "For Travel Advisors & Agencies" },
       { to: "/contact", label: "Contact" },
     ],
   },
@@ -255,6 +254,13 @@ export function Footer() {
 
         {/* ── ZONE B — NAVIGATE ──────────────────────────────────────── */}
         <nav aria-label="Explore YES Experiences Portugal services and company" className="mt-6 pt-6 border-t border-[color:var(--gold-warm)]/25 md:mt-9 md:pt-8">
+          <div className="mb-6 flex flex-col gap-3 border-b border-[color:var(--gold-warm)]/25 pb-6 md:flex-row md:items-center md:justify-between md:gap-8">
+            <div className="min-w-0 max-w-xl">
+              <h2 className={EYEBROW_CLASS}>Travel trade partnerships</h2>
+              <p className="mt-2 text-[14px] leading-relaxed text-[color:var(--ivory)]/85">Your local Portugal partner for private experiences, tailor-made journeys and groups.</p>
+            </div>
+            <Link to="/trade" className="inline-flex min-h-11 items-center justify-center gap-2 self-start rounded-sm border border-[color:var(--gold-warm)] px-4 py-2 text-[13px] font-semibold text-[color:var(--gold-soft)] hover:bg-[color:var(--gold-warm)]/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)] md:shrink-0">For Travel Advisors &amp; Agencies <span aria-hidden="true">↗</span></Link>
+          </div>
           <div className="grid grid-cols-1 gap-y-5 md:grid-cols-4 md:gap-x-8 md:gap-y-7">
             {NAV_COLUMNS.map((col) => col.title === "Company" ? (
               <div key={col.title} className="min-w-0">
