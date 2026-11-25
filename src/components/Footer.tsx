@@ -3,6 +3,7 @@ import { useT } from "@/i18n/locale-context";
 import { useState } from "react";
 import { ChevronDown } from "lucide-react";
 import { Logo } from "@/components/Logo";
+import { SITE_RATING_LABEL } from "@/config/trust-certificate";
 import { PaymentMethodsRow } from "@/components/trust/PaymentMethodsRow";
 import { LivroReclamacoesBadge } from "@/components/trust/LivroReclamacoesBadge";
 import { TrustindexBadge } from "@/components/trust/TrustindexBadge";
@@ -186,7 +187,7 @@ export function Footer() {
         }}
       />
 
-      <div className="container-x py-12 md:py-14">
+      <div className="container-x py-9 md:py-14">
         {/* ── ZONE A — BRAND ─────────────────────────────────────────── */}
         <div className="grid gap-8 md:grid-cols-[minmax(0,1fr)_auto] md:items-end">
           <div className="min-w-0 max-w-md">
@@ -207,6 +208,10 @@ export function Footer() {
             >
               {t("footer.tagline_full")}
             </p>
+            <Link to="/reviews" className={`${LINK_CLASS} mt-2 gap-2 text-[13px]`}>
+              <span aria-hidden="true" className="text-[color:var(--gold-warm)]">★★★★★</span>
+              {SITE_RATING_LABEL}
+            </Link>
             {/* Canonical NAP — one quiet line, single source of truth. */}
             <address className="mt-4 not-italic font-[family-name:var(--font-sans)] text-[13px] leading-[1.7] text-[color:var(--ivory)]/70">
               <span className="block">{ADDRESS_LINE}</span>
@@ -221,6 +226,9 @@ export function Footer() {
                   {PHONE_DISPLAY}
                 </a>
               </span>
+              <a href={whatsappUrl()} className={`${LINK_CLASS} gap-2`} target="_blank" rel="noopener noreferrer">
+                <WhatsAppIcon size={16} /> WhatsApp
+              </a>
             </address>
           </div>
 
@@ -247,16 +255,22 @@ export function Footer() {
 
         {/* ── ZONE B — NAVIGATE ──────────────────────────────────────── */}
         <nav aria-label="Explore YES Experiences Portugal services and company" className="mt-8 pt-8 border-t border-[color:var(--gold-warm)]/15 md:mt-10 md:pt-10">
-          <div className="grid grid-cols-2 gap-x-6 gap-y-9 md:grid-cols-4">
-            {NAV_COLUMNS.map((col) => (
+          <div className="grid grid-cols-2 gap-x-4 gap-y-6 md:grid-cols-4 md:gap-x-6 md:gap-y-9">
+            {NAV_COLUMNS.map((col) => col.title === "Company" ? (
+              <div key={col.title} className="col-span-2 md:col-span-1">
+                <FooterLinkGroup title={col.title} links={col.links} compact />
+              </div>
+            ) : (
               <FooterCol key={col.title} title={col.title} links={col.links} />
             ))}
-            <FooterCol title="Legal" links={LEGAL_LINKS} />
+            <div className="col-span-2 md:col-span-1">
+              <FooterLinkGroup title="Legal" links={LEGAL_LINKS} compact />
+            </div>
           </div>
 
           <div className="mt-6 grid gap-6 md:grid-cols-2 md:gap-10">
             <FooterLinkGroup title="Signature Experiences" links={SIGNATURE_TOURS} />
-            <FooterLinkGroup title="Popular searches" links={POPULAR_SEARCHES} />
+            <FooterLinkGroup title="Discover Portugal" links={POPULAR_SEARCHES} />
           </div>
         </nav>
 
@@ -383,33 +397,32 @@ function FooterCol({ title, links }: { title: string; links: FooterLink[] }) {
  * SEO link group. Collapsed behind a toggle on mobile, always expanded from
  * md up. Links stay in the DOM at every width, so crawlers see the full index.
  */
-function FooterLinkGroup({ title, links }: { title: string; links: FooterLink[] }) {
+function FooterLinkGroup({ title, links, compact = false }: { title: string; links: FooterLink[]; compact?: boolean }) {
   const [open, setOpen] = useState(false);
   const id = `footer-group-${title.replace(/\s+/g, "-").toLowerCase()}`;
 
   return (
     <div className="min-w-0">
-      <button
-        type="button"
-        onClick={() => setOpen((v) => !v)}
-        aria-expanded={open}
-        aria-controls={id}
-        className="flex min-h-11 w-full items-center justify-between gap-3 py-2 text-left md:min-h-0 md:pointer-events-none md:py-0"
-      >
-        <h2 className={EYEBROW_CLASS} style={{ fontWeight: 600 }}>
+      <h2 className={EYEBROW_CLASS} style={{ fontWeight: 600 }}>
+        <span className="hidden md:inline">{title}</span>
+        <button
+          type="button"
+          onClick={() => setOpen((v) => !v)}
+          aria-expanded={open}
+          aria-controls={id}
+          className="flex min-h-11 w-full items-center justify-between gap-3 rounded-sm border-b border-[color:var(--gold-warm)]/15 py-2 text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)] md:hidden"
+        >
           {title}
-        </h2>
-        <ChevronDown
-          size={16}
-          aria-hidden="true"
-          className={`shrink-0 text-[color:var(--gold-warm)] transition-transform duration-[var(--dur-quick)] md:hidden ${
-            open ? "rotate-180" : ""
-          }`}
-        />
-      </button>
+          <ChevronDown
+            size={16}
+            aria-hidden="true"
+            className={`shrink-0 text-[color:var(--gold-warm)] transition-transform duration-[var(--dur-quick)] motion-reduce:transition-none ${open ? "rotate-180" : ""}`}
+          />
+        </button>
+      </h2>
       <ul
         id={id}
-        className={`mt-4 grid-cols-1 gap-x-6 gap-y-2 font-[family-name:var(--font-sans)] text-[13px] sm:grid-cols-2 md:grid ${
+        className={`mt-4 grid-cols-1 gap-x-6 gap-y-2 font-[family-name:var(--font-sans)] ${compact ? "text-[14px]" : "text-[13px] sm:grid-cols-2"} md:grid ${
           open ? "grid" : "hidden"
         }`}
         style={{ fontWeight: 400 }}

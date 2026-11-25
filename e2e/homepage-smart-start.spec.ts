@@ -58,6 +58,38 @@ test.describe("homepage conversion paths", () => {
     await expect(page.locator("#signatures").getByRole("link", { name: /See dates and reserve/ }).first()).toHaveAttribute("href", "/tours/arrabida-wine-allinclusive");
   });
 
+  test("keeps commercial footer links visible and secondary navigation accessible", async ({ page }) => {
+    await page.setViewportSize({ width: 393, height: 852 });
+    await openHome(page);
+    await page.waitForFunction(() => (window as Window & { __APP_READY__?: boolean }).__APP_READY__ === true, undefined, { timeout: 30_000 });
+    const footer = page.locator("footer").first();
+    const nav = footer.getByRole("navigation", { name: "Explore YES Experiences Portugal services and company" });
+    for (const href of ["/experiences", "/studio", "/portugal-travel-designer", "/proposal-in-portugal", "/corporate"]) {
+      await expect(nav.locator(`a[href="${href}"]`).first()).toBeVisible();
+    }
+    const consent = page.getByRole("button", { name: "Essential only", exact: true });
+    if (await consent.isVisible()) await consent.click();
+    for (const [name, id] of [["Company", "company"], ["Legal", "legal"], ["Discover Portugal", "discover-portugal"]]) {
+      const toggle = nav.getByRole("button", { name, exact: true });
+      const group = nav.locator(`#footer-group-${id}`);
+      await expect(toggle).toHaveAttribute("aria-expanded", "false");
+      await expect(group).toBeHidden();
+      expect(await group.locator("a").count()).toBeGreaterThan(0);
+      await toggle.click();
+      await expect(toggle).toHaveAttribute("aria-expanded", "true");
+      await expect(group).toBeVisible();
+      await toggle.click();
+      await expect(group).toBeHidden();
+    }
+    await expect(footer.getByRole("link", { name: "WhatsApp", exact: true }).first()).toBeVisible();
+    await expect(footer.getByRole("link", { name: /guest reviews/i }).first()).toBeVisible();
+    await page.setViewportSize({ width: 1440, height: 900 });
+    await expect(nav.getByRole("button", { name: "Company", exact: true })).toBeHidden();
+    await expect(nav.locator("#footer-group-company")).toBeVisible();
+    await expect(nav.locator("#footer-group-legal")).toBeVisible();
+    await expect(nav.locator("#footer-group-discover-portugal")).toBeVisible();
+  });
+
   test("does not pretend a generic visitor has a Studio draft", async ({ page }) => {
     await openHome(page);
     await expect(page.locator('[data-testid="home-smart-start-resume"]')).toHaveCount(0);
