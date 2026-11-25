@@ -50,8 +50,8 @@ const PILLARS = [
     body: "Hand-picked properties and transfers — every overnight confirmed before you leave.",
   },
   {
-    label: "Delivered as a book",
-    body: "A travel file with days, stays and local contacts — not a generic booking.",
+    label: "Your personal Travel Book",
+    body: "Your itinerary, confirmed arrangements and local contacts in one personal travel file.",
   },
 ] as const;
 
@@ -574,10 +574,10 @@ export function RecentJourney() {
           {/* One semantic sentence, revealed in two visual beats. */}
           <p className="mt-4 font-[family-name:var(--font-sans)] text-[14.5px] md:text-[16px] text-[color:var(--charcoal-soft)] leading-[1.65] max-w-md mx-auto">
             <span className="scene-body story-beat block">
-              Multi-day Portugal, composed by your local travel designer —
+              Private journeys across Portugal, designed around you by a dedicated local travel designer.
             </span>{" "}
             <span className="scene-body story-beat block">
-              delivered as a book, not a booking.
+              We coordinate handpicked stays, transfers and experiences, from private aviation to your personal YES Travel Book.
             </span>
           </p>
         </Scene>
@@ -614,6 +614,20 @@ export function RecentJourney() {
             ))}
           </ul>
         </Scene>
+
+        <div className="mx-auto mt-8 max-w-3xl border-t border-[color:var(--gold)]/40 pt-6">
+          <h3 className="text-center font-serif text-xl text-[color:var(--charcoal)]">One journey. One designer.</h3>
+          <div className="mt-5 grid gap-5 sm:grid-cols-2">
+            <div className="min-w-0">
+              <h4 className="font-semibold text-[color:var(--teal)]">Private Aviation &amp; Jet Charters</h4>
+              <p className="mt-2 text-sm leading-relaxed text-[color:var(--charcoal-soft)]">Private jet charter arrangements through specialist aviation partners, coordinated with your journey on the ground. Individually quoted on request.</p>
+            </div>
+            <div className="min-w-0">
+              <h4 className="font-semibold text-[color:var(--teal)]">Handpicked Stays &amp; Local Partners</h4>
+              <p className="mt-2 text-sm leading-relaxed text-[color:var(--charcoal-soft)]">Boutique hotels, private villas, chauffeur services and distinctive local experiences, selected around your preferences and arranged subject to availability.</p>
+            </div>
+          </div>
+        </div>
 
         {/* Signature CTA ramp — matches homepage canonical voice:
             Inter 11px 0.25em uppercase with a gold hairline that

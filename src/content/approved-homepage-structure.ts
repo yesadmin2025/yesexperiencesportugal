@@ -1,5 +1,5 @@
 /**
- * Approved homepage structure spec (v14 — products-first layout).
+ * Approved homepage structure spec (v15 — products-first layout with Why YES).
  *
  * Single source of truth for what the marketing homepage MUST contain
  * at mobile widths. Consumed by:
@@ -73,8 +73,8 @@ export interface ApprovedSection {
 }
 
 /**
- * Owner-approved products-first order (v14).
- * Keep all eleven existing sections; put the three purchase paths before
+ * Owner-approved products-first order (v15).
+ * Keep the eleven existing sections and add the requested independent Why YES section; put the three purchase paths before
  * the full review carousel and the supporting editorial chapters.
  * The former five-card explainer is replaced by a compact confidence strip.
  */
@@ -128,6 +128,12 @@ export const APPROVED_HOMEPAGE_SECTIONS: readonly ApprovedSection[] = [
   },
   {
     order: 8,
+    name: "Why choose YES — independent differentiation",
+    ariaLabelledBy: "why-yes-title",
+    requiredSpacing: { kind: "py", minScale: 12 },
+  },
+  {
+    order: 9,
     name: "Autumn & winter — year-round private days",
     ariaLabelledBy: "winter-days-title",
     // Facts-only seasonal reassurance (owner-confirmed year-round operation)
@@ -135,19 +141,19 @@ export const APPROVED_HOMEPAGE_SECTIONS: readonly ApprovedSection[] = [
     requiredSpacing: { kind: "py", minScale: 12 },
   },
   {
-    order: 9,
+    order: 10,
     name: "Explore Portugal — interactive region map",
     ariaLabelledBy: "plan-map-title",
     requiredSpacing: { kind: "pb", minScale: 10 },
   },
   {
-    order: 10,
+    order: 11,
     name: "Local Stories — selected guides",
     ariaLabelledBy: "journal-title",
     requiredSpacing: { kind: "pb", minScale: 16 },
   },
   {
-    order: 11,
+    order: 12,
     name: "FAQ — visible helpful answers",
     componentTag: "FAQ",
     inComponent: true,

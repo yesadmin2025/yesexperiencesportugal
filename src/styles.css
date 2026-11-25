@@ -9126,6 +9126,5 @@ html[data-floating-quiet] [data-testid="floating-actions"] {
   .home-conversion-paths [data-scene-ready="1"] .five-ways-card :is(.five-ways-kicker, .five-ways-title, .five-ways-body, .five-ways-action) { opacity: 1; transition: none; }
   .home-conversion-paths .five-ways-card:focus-visible { transform: none !important; }
 }
-@media (max-width: 639.98px) {
-  .home-signature-highlights > li:nth-child(n + 2) { display: none; }
-}
+/* All commercial Signature highlights remain visible on mobile. */
+.home-signature-highlights li { opacity: 1; transition: none; }

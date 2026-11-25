@@ -76,8 +76,8 @@ describe("homepage story motion", () => {
   it("Signature title reveals as two intentional lines", () => {
     expect(home).toMatch(/home-story-intro/);
     const block = home.slice(home.indexOf('id="signatures-title"'));
-    expect(block).toMatch(/"Signature days,"/);
-    expect(block).toMatch(/already loved\./);
+    expect(block).toMatch(/"Designed by us\."/);
+    expect(block).toMatch(/Made personal by you\./);
   });
 
   it("Travel Designer title reveals as two lines and support copy in two beats", () => {
@@ -85,8 +85,8 @@ describe("homepage story motion", () => {
     expect(journey).toMatch(/"A Portugal"/);
     expect(journey).toMatch(/written around you\./);
     expect(journey.match(/story-beat/g)?.length ?? 0).toBe(2);
-    expect(journey).toMatch(/Multi-day Portugal, composed by your local travel designer —/);
-    expect(journey).toMatch(/delivered as a book, not a booking\./);
+    expect(journey).toMatch(/Private journeys across Portugal, designed around you by a dedicated local travel designer/);
+    expect(journey).toMatch(/We coordinate handpicked stays, transfers and experiences/);
   });
 
   it("the travel file arrives after the copy and pillars stagger", () => {

@@ -32,7 +32,17 @@ test.describe("homepage conversion paths", () => {
     await expect(page.locator(".home-quick-trust a")).toHaveAttribute("href", "#reviews");
     await expect(page.locator('[data-hero-field="primaryCta"]')).toHaveAttribute("href", "/experiences");
     await expect(page.locator('[data-hero-field="secondaryCta"]')).toHaveAttribute("href", "/studio");
-    await expect(page.locator("#signatures .home-signature-highlights").first().locator("li").first()).toBeVisible();
+    const firstCard = page.locator("#signatures article").first();
+    for (const width of [320, 375, 390, 393, 414]) {
+      await page.setViewportSize({ width, height: 852 });
+      await expect(firstCard.locator(".home-signature-highlights li")).toHaveCount(3);
+      for (const item of await firstCard.locator(".home-signature-highlights li").all()) await expect(item).toBeVisible();
+      await expect(firstCard.getByTestId("signature-pickup")).toBeVisible();
+      await expect(firstCard.getByTestId("signature-card-price")).toBeVisible();
+    }
+    await expect(firstCard.locator(".home-signature-highlights li").first()).toContainText("Two wineries");
+    await expect(page.locator("#signatures").getByText(/tailor selected details/i)).toBeVisible();
+    await expect(page.locator("#why-yes li")).toHaveCount(6);
     await expect(page.locator("#faq").getByRole("link", { name: "Explore Signature Experiences" })).toHaveAttribute("href", "/experiences");
     await expect(page.locator("#signatures").getByRole("link", { name: /See dates and reserve/ }).first()).toHaveAttribute("href", "/tours/arrabida-wine-allinclusive");
   });
@@ -43,9 +53,10 @@ test.describe("homepage conversion paths", () => {
     await page.waitForFunction(() => (window as Window & { __APP_READY__?: boolean }).__APP_READY__ === true, undefined, { timeout: 30_000 });
     const footer = page.locator("footer").first();
     const nav = footer.getByRole("navigation", { name: "Explore YES Experiences Portugal services and company" });
-    for (const href of ["/experiences", "/studio", "/portugal-travel-designer", "/proposal-in-portugal", "/corporate"]) {
+    for (const href of ["/experiences", "/studio", "/portugal-travel-designer", "/proposal-in-portugal", "/corporate", "/trade"]) {
       await expect(nav.locator(`a[href="${href}"]`).first()).toBeVisible();
     }
+    await expect(nav.getByRole("link", { name: "For Travel Advisors & Agencies" })).toHaveAttribute("href", "/trade");
     const consent = page.getByRole("button", { name: "Essential only", exact: true });
     if (await consent.isVisible()) await consent.click();
     for (const [name, id] of [["Company", "company"], ["Legal", "legal"], ["Discover Portugal", "discover-portugal"]]) {
@@ -67,6 +78,7 @@ test.describe("homepage conversion paths", () => {
     await expect(nav.locator("#footer-group-company")).toBeVisible();
     await expect(nav.locator("#footer-group-legal")).toBeVisible();
     await expect(nav.locator("#footer-group-discover-portugal")).toBeVisible();
+    await expect(nav.getByRole("link", { name: "For Travel Advisors & Agencies" })).toBeVisible();
   });
 
   test("does not pretend a generic visitor has a Studio draft", async ({ page }) => {

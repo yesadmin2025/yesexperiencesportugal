@@ -15,6 +15,7 @@ import { itemListLd, jsonLdScript, studioServiceLd } from "@/lib/jsonld";
 
 import { useMarketingMotion } from "@/hooks/use-marketing-motion";
 import { signatureDurationLabel } from "@/lib/tourContent";
+import { getSignatureCardHighlights } from "@/lib/signatureCardHighlights";
 import ogSocialImg from "@/assets/hero-coast.jpg";
 
 /**
@@ -177,11 +178,10 @@ function PtHomePage() {
         <div className="max-w-2xl">
           <Eyebrow>Coleção Signature</Eyebrow>
           <SectionTitle spacing="loose">
-            Alguns dos nossos <SectionTitle.Em>dias mais pedidos.</SectionTitle.Em>
+            Desenhadas por nós. <SectionTitle.Em>Personalizadas por si.</SectionTitle.Em>
           </SectionTitle>
           <p className="mt-4 text-[15px] leading-relaxed text-[color:var(--charcoal-soft)]">
-            Cada experiência é privada, feita ao seu ritmo, com recolha incluída a partir de Lisboa
-            e da região. As páginas detalhadas de cada tour estão, para já, em inglês.
+            Descubra experiências privadas desenhadas pela nossa equipa local, em torno dos lugares, pessoas e tradições que melhor conhecemos. Escolha o itinerário original ou personalize alguns detalhes ao seu gosto. As páginas detalhadas estão, para já, em inglês.
           </p>
         </div>
 
@@ -227,6 +227,8 @@ function PtHomePage() {
                   A partir de <PriceEur amountEur={t.priceFrom} role="from" />
                 </span>
               </div>
+              <ul className="mt-4 space-y-1.5 list-disc pl-5 text-[14px] leading-relaxed text-[color:var(--charcoal-soft)]">{getSignatureCardHighlights(t.id, "pt").map((highlight) => <li key={highlight}>{highlight}</li>)}</ul>
+              <div className="mt-auto flex flex-col gap-2 pt-4"><CtaButton to="/tours/$tourId" params={{ tourId: t.id }} variant="primary">Ver datas e reservar</CtaButton><Link to="/tours/$tourId/tailor" params={{ tourId: t.id }} className="min-h-11 inline-flex items-center justify-center underline text-[color:var(--teal)]">Personalizar este dia</Link></div>
             </article>
           ))}
         </div>

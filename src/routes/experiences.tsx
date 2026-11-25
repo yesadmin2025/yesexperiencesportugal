@@ -149,11 +149,11 @@ function ExperiencesPage() {
             ]}
           />
           <Eyebrow flank>Signature Collection</Eyebrow>
-          <SectionTitle as="h1" size="anchor" spacing="loose">
-            Private days, <SectionTitle.Em>ready when you are.</SectionTitle.Em>
+          <SectionTitle as="h1" size="anchor" spacing="loose" className="signature-collection-heading text-[clamp(1.5rem,7vw,2rem)] sm:text-[2rem] md:text-[3.75rem] [&>span]:block">
+            Designed by us. <SectionTitle.Em>Made personal by you.</SectionTitle.Em>
           </SectionTitle>
-          <p className="mt-3 max-w-[52ch] mx-auto text-[15px] md:text-[16px] leading-[1.65] text-[color:var(--charcoal-soft)]">
-            Reserve your date, or tailor the day around your group.
+          <p className="mt-3 max-w-[52ch] mx-auto min-h-[calc(4*1.65em)] sm:min-h-[calc(3*1.65em)] text-[15px] md:text-[16px] leading-[1.65] text-[color:var(--charcoal-soft)]">
+            Private experiences designed by our local team. Choose the original itinerary or tailor selected details to make it yours.
           </p>
           <div className="mt-4 flex justify-center">
             <PriceCurrencyChip />
@@ -161,7 +161,7 @@ function ExperiencesPage() {
           <p className="mt-3 text-[12px] leading-relaxed text-[color:var(--charcoal-soft)]">
             Clear inclusions · Hotel pickup on listed routes · Secure checkout
           </p>
-          <div className="mt-4 flex flex-wrap items-center justify-center gap-2" aria-label="Filter Signature Experiences">
+          <div className="mx-auto mt-4 grid max-w-md grid-cols-2 gap-2 sm:grid-cols-4" aria-label="Filter Signature Experiences">
             {EXPERIENCE_FILTERS.map((filter) => {
               const active = activeFilter === filter.id;
               return (
@@ -171,7 +171,7 @@ function ExperiencesPage() {
                   aria-pressed={active}
                   onClick={() => setActiveFilter(filter.id)}
                   variant="outline"
-                  className={`min-h-[44px] rounded-sm border px-4 py-2 font-sans text-[12px] font-medium tracking-normal transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--teal)] ${
+                  className={`min-h-[44px] rounded-sm border px-2 py-2 font-sans text-[12px] font-medium tracking-normal transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--teal)] ${
                     active
                       ? "border-primary bg-primary text-primary-foreground hover:bg-primary hover:text-primary-foreground"
                       : "border-[color:var(--border)] bg-[color:var(--ivory)] text-[color:var(--charcoal)] hover:border-[color:var(--gold)]"

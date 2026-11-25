@@ -47,7 +47,7 @@ describe("targeted production fixes", () => {
     expect(sintra?.priceFrom).toBeGreaterThan(0);
 
     const homepage = read("src/routes/index.tsx");
-    expect(homepage).toContain("SHORT_CARD_TITLES[t.id] ?? t.title");
+    expect(homepage).toContain("FEATURED_CARD_NAMES[t.id] ?? t.title");
     expect(homepage).toContain("t.rating.toFixed(1)");
     expect(homepage).toContain("signatureDurationLabel(t.id, t.durationHours)");
     expect(homepage).toContain("€{t.priceFrom}");

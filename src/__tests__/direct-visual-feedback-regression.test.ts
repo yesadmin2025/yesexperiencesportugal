@@ -8,9 +8,9 @@ const read = (path: string) => readFileSync(resolve(process.cwd(), path), "utf8"
 describe("latest direct visual feedback", () => {
   it("selects the requested canonical decision highlights", () => {
     expect(getSignatureCardHighlights("arrabida-wine-allinclusive")).toEqual([
-      "Working Azeitão azulejo factory visit",
-      "Two selected wineries included, up to four in Tailor",
+      "Two wineries & regional wine tastings",
       "Traditional Azeitão lunch included",
+      "Arrábida Natural Park & Atlantic views",
     ]);
     expect(getSignatureCardHighlights("sintra-cascais")).toEqual([
       "One palace plus wine tasting, or two palace tickets",
