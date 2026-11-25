@@ -153,8 +153,10 @@ jobs:
       logs_retention_days:   ${{ steps.retention.outputs.logs }}
       meta_retention_days:   ${{ steps.retention.outputs.meta }}
     steps:
-      - name: Checkout
+      - name: Checkout published baseline for PR; current revision for main/manual
         uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event_name == 'pull_request' && github.event.pull_request.base.sha || github.sha }}
 
       - name: Validate retention-days inputs (cap at GitHub 90-day max)
         # Fail fast — BEFORE running the QA script, installing deps, or
@@ -239,7 +241,9 @@ jobs:
           set +e
           # The Lovable preview returns 401 to unauthenticated CI. The
           # separate Playwright DOM lock tests this PR; this check tests the
-          # actual published-domain copy without claiming preview success.
+          # actual published-domain copy against the released base on PRs,
+          # and the current revision on main/manual runs. Candidate copy
+          # remains strictly checked by the source and Playwright locks.
           node scripts/hero-copy-qa.mjs \
             --target=production \
             --report-json=qa-reports/hero-copy-qa.json \
@@ -285,6 +289,7 @@ jobs:
             --arg ref         "${{ github.ref }}" \
             --arg refName     "${{ github.ref_name }}" \
             --arg sha         "${{ github.sha }}" \
+            --arg testedSha   "$(git rev-parse HEAD)" \
             --arg actor       "${{ github.actor }}" \
             --arg repository  "${{ github.repository }}" \
             --arg runnerOS    "${{ runner.os }}" \

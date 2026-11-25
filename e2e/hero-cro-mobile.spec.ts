@@ -19,8 +19,8 @@ test("mobile hero CTAs are tappable and Travel Designer remains reachable", asyn
   // belongs in the separately crawlable Five Ways section, not an invented
   // third overlay CTA. Keep tap-target and viewport assertions for both.
   for (const { selector, href } of [
-    { selector: '[data-hero-field="primaryCta"]', href: "/studio" },
-    { selector: '[data-hero-field="secondaryCta"]', href: "/experiences" },
+    { selector: '[data-hero-field="primaryCta"]', href: "/experiences" },
+    { selector: '[data-hero-field="secondaryCta"]', href: "/studio" },
   ]) {
     const link = hero.locator(selector);
     await expect(link).toBeVisible({ timeout: 15_000 });

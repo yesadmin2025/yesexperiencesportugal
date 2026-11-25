@@ -387,19 +387,9 @@ export const Route = createFileRoute("/")({
 });
 
 /* ════════════════════════════════════════════════════════════════
- * HOMEPAGE — calm, conversion-led sequence
- * 1. Hero
- * 2. Guest proof
- * 3. Five ways into YES
- * 4. Experience Studio
- * 5. Signature Experiences
- * 6. Travel Designer proof
- * 7. Explore Portugal map
- * 8. Local Stories
- * 9. FAQ
- * 10. Final decision
- * Moments and Corporate live in Five Ways and their dedicated routes rather
- * than repeating full sales sections on the homepage.
+ * HOMEPAGE — mobile-first commercial sequence
+ * Hero → five ways → Signatures → Studio → Travel Designer → guest proof →
+ * special occasions → seasonal guide → Portugal map → Local Stories → FAQ.
  * ════════════════════════════════════════════════════════════ */
 function HomePage() {
   const { contentOverrides } = Route.useLoaderData();
@@ -598,110 +588,13 @@ function HomePage() {
            See <CinematicHero/>; HERO_COPY locks live inside it. */}
         <CinematicHero />
 
-        {/* 2 — TRUST STRIP
-          A single, clean social proof surface: review count + platform marks.
-          No invented quotes, no repeated review blocks. */}
-        <section
-          id="reviews"
-          className="section-enter py-12 md:py-16 bg-[color:var(--ivory)] border-b border-[color:var(--border)] scroll-mt-24 md:scroll-mt-28"
-        >
-          <div className="container-x">
-            <GuestQuotes />
-          </div>
-        </section>
-
-        {/* 3 — FIVE WAYS INTO PORTUGAL
+        {/* 2 — FIVE WAYS INTO PORTUGAL
           Concise editorial explainer so visitors instantly understand
           the paths: Signature, Studio, Travel Designer, Proposals and Corporate. */}
         <FiveWaysIn />
 
-        {/* 4 — EXPERIENCE STUDIO (promoted)
-          Promoted up the page so the Builder reads as the core
-          innovation, not just another tile. The five-path introduction
-          gives visitors the full service picture before this focused
-          Studio moment and its live preview.
-          Mobile order: paths primer → headline → live preview → CTA.
-          Desktop: text rail left, preview right. One CTA only
-          ("Open the Studio"). The "Ask a local" duplicate has been
-          removed; local guidance lives in the reassurance line, the
-          FAQ closer, and the Final CTA. */}
-        <section
-          id="builder"
-          className="he-section-rule section-enter pt-10 pb-12 md:pt-14 md:pb-16 bg-[color:var(--sand)] border-b border-[color:var(--border)] scroll-mt-24 md:scroll-mt-28"
-          aria-labelledby="studio-title"
-        >
-          <div className="container-x">
-            {/* Inner anchor target for /#studio — sits right before the
-              "Create it live." rail so deep-links land on the Studio
-              block, not the wider builder eyebrow. scroll-mt matches
-              the same offset used elsewhere on the page. */}
-            <div id="studio" aria-hidden="true" className="scroll-mt-24 md:scroll-mt-28" />
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14 items-center max-w-6xl mx-auto w-full min-w-0">
-              {/* On mobile: text rail (with the headline) renders FIRST so
-                the user reads "Create it live." before seeing the
-                device. On desktop the rail returns to the left so the
-                reading flow stays natural. */}
-              {/* Staged reading order: eyebrow → headline → copy → 01/02/03
-                  steps → CTA. `he-stagger` sequences the direct children with
-                  the homepage cadence; reduced motion shows everything at once. */}
-              <div className="he-stagger lg:col-span-5 lg:order-1 order-1">
-                <Eyebrow live className="reveal-stagger mb-5">
-                  Experience Studio
-                </Eyebrow>
-
-                <SectionTitle
-                  id="studio-title"
-                  className="reveal-stagger"
-                >
-                  Design your day.{" "}
-                  <SectionTitle.Em>
-                    Reserve in minutes.
-                  </SectionTitle.Em>
-                </SectionTitle>
-
-                <p className="reveal-stagger mt-4 text-[14.5px] md:text-[16px] text-[color:var(--charcoal-soft)] leading-[1.7] max-w-md">
-                  The Studio draws the day as you shape it: a{" "}
-                  <strong className="font-medium text-[color:var(--charcoal)]">real route</strong>,
-                  honest driving times and a live price. See the finished total before you reserve.
-                </p>
-
-                {/* Three differentiators — tied to the product, not a floating manifesto. */}
-                <ol
-                  className="he-stagger reveal-stagger mt-7 grid grid-cols-3 gap-1.5 max-w-md"
-                  aria-label="Why the Studio"
-                >
-                  {[
-                    { n: "01", label: "Real route" },
-                    { n: "02", label: "Instant confirmation" },
-                    { n: "03", label: "Local on WhatsApp" },
-                  ].map((d) => (
-                    <li key={d.n} className="reveal-stagger flex flex-col gap-1.5">
-                      <span aria-hidden="true" className="block h-[3px] bg-[color:var(--gold)]" />
-                      <span className="text-[11px] uppercase tracking-[0.16em] font-semibold text-[color:var(--charcoal)] tabular-nums">
-                        {d.n} · {d.label}
-                      </span>
-                    </li>
-                  ))}
-                </ol>
-
-                <div className="reveal-stagger mt-8 flex flex-wrap gap-x-5 gap-y-4">
-                  <CtaButton to="/studio" variant="primary">
-                    {CTA_LABELS.studioSection}
-                  </CtaButton>
-                </div>
-              </div>
-
-              <div className="reveal lg:col-span-7 lg:order-2 order-2">
-                <StudioLivePreview />
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* 5 — SIGNATURE EXPERIENCES PREVIEW
-          Moved BEFORE the Travel Designer proof so the highest-intent
-          shoppable inventory sits closest to the Studio — conversion
-          before storytelling.
+        {/* 3 — SIGNATURE EXPERIENCES PREVIEW
+          The first product collection follows the compact decision block.
           Up to 4 real Signature tours. Each card uses the tour's real
           hero image (sourced from the matching Viator page), real title
           and real blurb from `signatureTours`. No vague taglines, no
@@ -725,7 +618,7 @@ function HomePage() {
                 ]}
               />
               <p className="scene-body mt-5 text-[15px] md:text-[16px] leading-[1.65] text-[color:var(--charcoal-soft)]">
-                A few of the private days guests choose most often.
+                Choose a private day, see dates and reserve. Pickup and inclusions are shown on each experience.
               </p>
             </Scene>
 
@@ -850,7 +743,7 @@ function HomePage() {
                         </h3>
                         <span aria-hidden="true" className="block h-px w-10 bg-[color:var(--gold)]" />
                         {t.highlights.length > 0 ? (
-                          <ul className="signature-card-highlights hidden sm:block m-0 list-none space-y-2 p-0 text-[13px] leading-[1.45] text-[color:var(--charcoal)]">
+                          <ul className="signature-card-highlights home-signature-highlights m-0 list-none space-y-2 p-0 text-[13px] leading-[1.45] text-[color:var(--charcoal)]">
                             {t.highlights.map((highlight) => (
                               <li key={highlight} className="grid grid-cols-[auto_minmax(0,1fr)] gap-2.5">
                                 <span aria-hidden="true" className="mt-[0.58em] h-1 w-1 rounded-full bg-[color:var(--gold)]" />
@@ -894,6 +787,9 @@ function HomePage() {
               })}
             </ul>
 
+            <p className="mt-4 text-center text-[13px] leading-relaxed text-[color:var(--charcoal-soft)]">
+              Starting prices are per person and vary with group size.
+            </p>
             <p
               data-testid="signature-trust-line"
               className="mt-8 md:mt-10 text-center text-[11px] uppercase tracking-[0.2em] leading-[1.9] text-[color:var(--charcoal-soft)]"
@@ -931,46 +827,109 @@ function HomePage() {
         </section>
 
 
-        {/* 5a — AUTUMN & WINTER BAND
-          Seasonal reassurance, facts only: every Signature day runs
-          year-round (owner-confirmed). Text links to real tours and the
-          November/December guide — no new imagery, no invented copy. */}
+        {/* 4 — EXPERIENCE STUDIO
+          The customer designs their own day; this existing live preview follows
+          the ready-to-reserve Signature collection. */}
         <section
-          aria-labelledby="winter-days-title"
-          className="section-enter py-12 md:py-16 bg-[color:var(--sand)] border-b border-[color:var(--border)]"
+          id="builder"
+          className="he-section-rule section-enter pt-10 pb-12 md:pt-14 md:pb-16 bg-[color:var(--sand)] border-b border-[color:var(--border)] scroll-mt-24 md:scroll-mt-28"
+          aria-labelledby="studio-title"
         >
-          <div className="container-x max-w-3xl mx-auto text-center">
-            <Eyebrow className="mb-5">Autumn &amp; winter</Eyebrow>
-            <h2
-              id="winter-days-title"
-              className="editorial-title-safe font-serif text-[color:var(--charcoal)] font-medium tracking-normal text-[1.8125rem] md:text-[2.25rem] leading-[1.18] md:leading-[1.1]"
-            >
-              Portugal in November <SectionTitle.Em>and December.</SectionTitle.Em>
-            </h2>
-            <p className="mt-5 text-[15px] md:text-[16px] leading-[1.65] text-[color:var(--charcoal-soft)]">
-              Cellars, workshops and historic towns are at their calmest now — and every private day we run operates all year, with free cancellation up to 24 hours before.
-            </p>
-            <ul className="mt-8 flex flex-wrap items-center justify-center gap-x-7 gap-y-3 list-none p-0">
-              <li><Link to="/tours/$tourId" params={{ tourId: "arrabida-wine-allinclusive" }} className="editorial-action inline-flex min-h-[44px] items-center font-sans text-[11px] font-semibold uppercase tracking-[0.18em] text-[color:var(--charcoal)] underline decoration-[color:var(--gold)]/60 underline-offset-4 transition-colors hover:text-[color:var(--teal)]">Arrábida wine</Link></li>
-              <li><Link to="/tours/$tourId" params={{ tourId: "azeitao-cheese" }} className="editorial-action inline-flex min-h-[44px] items-center font-sans text-[11px] font-semibold uppercase tracking-[0.18em] text-[color:var(--charcoal)] underline decoration-[color:var(--gold)]/60 underline-offset-4 transition-colors hover:text-[color:var(--teal)]">Cheese making</Link></li>
-              <li><Link to="/tours/$tourId" params={{ tourId: "tiles-workshop" }} className="editorial-action inline-flex min-h-[44px] items-center font-sans text-[11px] font-semibold uppercase tracking-[0.18em] text-[color:var(--charcoal)] underline decoration-[color:var(--gold)]/60 underline-offset-4 transition-colors hover:text-[color:var(--teal)]">Tile painting</Link></li>
-              <li><Link to="/tours/$tourId" params={{ tourId: "sintra-cascais" }} className="editorial-action inline-flex min-h-[44px] items-center font-sans text-[11px] font-semibold uppercase tracking-[0.18em] text-[color:var(--charcoal)] underline decoration-[color:var(--gold)]/60 underline-offset-4 transition-colors hover:text-[color:var(--teal)]">Sintra &amp; Cascais</Link></li>
-            </ul>
-            <p className="mt-8">
-              <Link to="/local-stories/$slug" params={{ slug: "portugal-in-november-december" }} className="editorial-action inline-flex min-h-[44px] items-center gap-2 font-sans text-[11px] font-semibold uppercase tracking-[0.18em] text-[color:var(--teal)] underline decoration-[color:var(--gold)]/60 underline-offset-4 transition-colors hover:text-[color:var(--charcoal)]">
-                Read the November &amp; December guide <CtaMotionArrow />
-              </Link>
-            </p>
+          <div className="container-x">
+            {/* Inner anchor target for /#studio — sits right before the
+              "Create it live." rail so deep-links land on the Studio
+              block, not the wider builder eyebrow. scroll-mt matches
+              the same offset used elsewhere on the page. */}
+            <div id="studio" aria-hidden="true" className="scroll-mt-24 md:scroll-mt-28" />
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14 items-center max-w-6xl mx-auto w-full min-w-0">
+              {/* On mobile: text rail (with the headline) renders FIRST so
+                the user reads "Create it live." before seeing the
+                device. On desktop the rail returns to the left so the
+                reading flow stays natural. */}
+              {/* Staged reading order: eyebrow → headline → copy → 01/02/03
+                  steps → CTA. `he-stagger` sequences the direct children with
+                  the homepage cadence; reduced motion shows everything at once. */}
+              <div className="he-stagger lg:col-span-5 lg:order-1 order-1">
+                <Eyebrow live className="reveal-stagger mb-5">
+                  Experience Studio
+                </Eyebrow>
+
+                <SectionTitle
+                  id="studio-title"
+                  className="reveal-stagger"
+                >
+                  Design your day.{" "}
+                  <SectionTitle.Em>
+                    Reserve in minutes.
+                  </SectionTitle.Em>
+                </SectionTitle>
+
+                <p className="reveal-stagger mt-4 text-[14.5px] md:text-[16px] text-[color:var(--charcoal-soft)] leading-[1.7] max-w-md">
+                  You design your own private day: choose your interests, companions and pace.
+                  See a{" "}
+                  <strong className="font-medium text-[color:var(--charcoal)]">real route</strong>,
+                  driving times and a live price take shape as you choose. See the finished total before you reserve.
+                </p>
+
+                {/* Three differentiators — tied to the product, not a floating manifesto. */}
+                <ol
+                  className="he-stagger reveal-stagger mt-7 grid grid-cols-3 gap-1.5 max-w-md"
+                  aria-label="Why the Studio"
+                >
+                  {[
+                    { n: "01", label: "Real route" },
+                    { n: "02", label: "Instant confirmation" },
+                    { n: "03", label: "Local on WhatsApp" },
+                  ].map((d) => (
+                    <li key={d.n} className="reveal-stagger flex flex-col gap-1.5">
+                      <span aria-hidden="true" className="block h-[3px] bg-[color:var(--gold)]" />
+                      <span className="text-[11px] uppercase tracking-[0.16em] font-semibold text-[color:var(--charcoal)] tabular-nums">
+                        {d.n} · {d.label}
+                      </span>
+                    </li>
+                  ))}
+                </ol>
+
+                <div className="reveal-stagger mt-8 flex flex-wrap gap-x-5 gap-y-4">
+                  <CtaButton to="/studio" variant="primary">
+                    {CTA_LABELS.studioSection}
+                  </CtaButton>
+                </div>
+              </div>
+
+              <div className="reveal lg:col-span-7 lg:order-2 order-2">
+                <StudioLivePreview />
+              </div>
+            </div>
           </div>
         </section>
 
-        {/* 5b — BESPOKE TRAVEL FILE (multi-day / Travel Designer proof)
+        {/* 5 — BESPOKE TRAVEL FILE (multi-day / Travel Designer proof)
           Sits AFTER Signatures so shoppable inventory converts first
           and the bespoke narrative deepens desire for higher-value
           Travel Designer journeys. */}
         <RecentJourney />
 
-        {/* 5c — SPECIAL OCCASIONS (Moments & Corporate)
+        {/* 6 — GUEST PROOF
+          Full guest review carousel follows the three commercial chapters.
+          The compact verified rating is linked from the decision block. */}
+        <section
+          id="reviews"
+          className="section-enter py-12 md:py-16 bg-[color:var(--ivory)] border-b border-[color:var(--border)] scroll-mt-24 md:scroll-mt-28"
+        >
+          <div className="container-x">
+            <div className="mx-auto mb-8 max-w-3xl text-center">
+              <Eyebrow className="mb-3">Why YES</Eyebrow>
+              <SectionTitle>Private by design. <SectionTitle.Em>Local by nature.</SectionTitle.Em></SectionTitle>
+              <p className="mx-auto mt-3 max-w-[56ch] text-[15px] leading-[1.6] text-[color:var(--charcoal-soft)]">
+                Private days for your group, the freedom to design your own experience, and a local team when you need a human travel designer.
+              </p>
+            </div>
+            <GuestQuotes />
+          </div>
+        </section>
+
+        {/* 7 — SPECIAL OCCASIONS (Moments & Corporate)
           Owner request: these specialist services must be visibly present
           on the homepage, not only inside Five Ways. One quiet editorial
           band, two cards, real photography from the dedicated routes,
@@ -1022,6 +981,39 @@ function HomePage() {
                 image={{ src: imgCorporate, alt: "Private group experience day in Portugal", to: "/corporate" }}
               />
             </div>
+          </div>
+        </section>
+
+        {/* 8 — AUTUMN & WINTER BAND
+          Seasonal reassurance, facts only: every Signature day runs
+          year-round (owner-confirmed). Text links to real tours and the
+          November/December guide — no new imagery, no invented copy. */}
+        <section
+          aria-labelledby="winter-days-title"
+          className="section-enter py-12 md:py-16 bg-[color:var(--sand)] border-b border-[color:var(--border)]"
+        >
+          <div className="container-x max-w-3xl mx-auto text-center">
+            <Eyebrow className="mb-5">Autumn &amp; winter</Eyebrow>
+            <h2
+              id="winter-days-title"
+              className="editorial-title-safe font-serif text-[color:var(--charcoal)] font-medium tracking-normal text-[1.8125rem] md:text-[2.25rem] leading-[1.18] md:leading-[1.1]"
+            >
+              Portugal in November <SectionTitle.Em>and December.</SectionTitle.Em>
+            </h2>
+            <p className="mt-5 text-[15px] md:text-[16px] leading-[1.65] text-[color:var(--charcoal-soft)]">
+              Cellars, workshops and historic towns are at their calmest now — and every private day we run operates all year, with free cancellation up to 24 hours before.
+            </p>
+            <ul className="mt-8 flex flex-wrap items-center justify-center gap-x-7 gap-y-3 list-none p-0">
+              <li><Link to="/tours/$tourId" params={{ tourId: "arrabida-wine-allinclusive" }} className="editorial-action inline-flex min-h-[44px] items-center font-sans text-[11px] font-semibold uppercase tracking-[0.18em] text-[color:var(--charcoal)] underline decoration-[color:var(--gold)]/60 underline-offset-4 transition-colors hover:text-[color:var(--teal)]">Arrábida wine</Link></li>
+              <li><Link to="/tours/$tourId" params={{ tourId: "azeitao-cheese" }} className="editorial-action inline-flex min-h-[44px] items-center font-sans text-[11px] font-semibold uppercase tracking-[0.18em] text-[color:var(--charcoal)] underline decoration-[color:var(--gold)]/60 underline-offset-4 transition-colors hover:text-[color:var(--teal)]">Cheese making</Link></li>
+              <li><Link to="/tours/$tourId" params={{ tourId: "tiles-workshop" }} className="editorial-action inline-flex min-h-[44px] items-center font-sans text-[11px] font-semibold uppercase tracking-[0.18em] text-[color:var(--charcoal)] underline decoration-[color:var(--gold)]/60 underline-offset-4 transition-colors hover:text-[color:var(--teal)]">Tile painting</Link></li>
+              <li><Link to="/tours/$tourId" params={{ tourId: "sintra-cascais" }} className="editorial-action inline-flex min-h-[44px] items-center font-sans text-[11px] font-semibold uppercase tracking-[0.18em] text-[color:var(--charcoal)] underline decoration-[color:var(--gold)]/60 underline-offset-4 transition-colors hover:text-[color:var(--teal)]">Sintra &amp; Cascais</Link></li>
+            </ul>
+            <p className="mt-8">
+              <Link to="/local-stories/$slug" params={{ slug: "portugal-in-november-december" }} className="editorial-action inline-flex min-h-[44px] items-center gap-2 font-sans text-[11px] font-semibold uppercase tracking-[0.18em] text-[color:var(--teal)] underline decoration-[color:var(--gold)]/60 underline-offset-4 transition-colors hover:text-[color:var(--charcoal)]">
+                Read the November &amp; December guide <CtaMotionArrow />
+              </Link>
+            </p>
           </div>
         </section>
 
@@ -1170,6 +1162,15 @@ function HomePage() {
           className="he-section-rule section-enter section-y scroll-mt-24 md:scroll-mt-28 relative"
         >
           <FAQ />
+          <div className="container-x mt-10 text-center">
+            <SectionTitle>Ready to <SectionTitle.Em>experience Portugal?</SectionTitle.Em></SectionTitle>
+            <p className="mx-auto mt-3 max-w-[42ch] text-[15px] leading-relaxed text-[color:var(--charcoal-soft)]">Choose a private day, design your own, or speak to a local travel designer.</p>
+            <div className="mx-auto mt-5 flex max-w-xl flex-col gap-3 sm:flex-row sm:flex-wrap sm:justify-center">
+              <CtaButton to="/experiences" variant="primary">{CTA_LABELS.signatureDiscovery}</CtaButton>
+              <CtaButton to="/studio" variant="ghost">{CTA_LABELS.studio}</CtaButton>
+              <Link to="/portugal-travel-designer" className="inline-flex min-h-[44px] items-center justify-center gap-2 text-[14px] font-medium text-[color:var(--teal)] underline underline-offset-4">{CTA_LABELS.travelDesigner} <CtaMotionArrow /></Link>
+            </div>
+          </div>
         </div>
 
         {/* Popular searches + "Only on YES" block removed in the declutter

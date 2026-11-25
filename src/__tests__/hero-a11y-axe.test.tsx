@@ -109,12 +109,12 @@ function HeroA11yHarness({ sceneIndex }: { sceneIndex: number }) {
         {isActionScene ? (
           <div
             role="group"
-            aria-label="Hero actions — start designing your day or browse signature experiences"
+            aria-label="Hero actions — browse signature experiences or design your own day"
           >
-            <a href="/builder" data-hero-field="primaryCta">
+            <a href="/experiences" data-hero-field="primaryCta">
               {HERO_COPY.primaryCta}
             </a>
-            <a href="/experiences" data-hero-field="secondaryCta">
+            <a href="/studio" data-hero-field="secondaryCta">
               {HERO_COPY.secondaryCta}
             </a>
           </div>
