@@ -459,8 +459,14 @@ async function advanceThroughLogistics(page: Page, options: WalkOptions = {}): P
     }
 
     if (!(await cta.isEnabled().catch(() => false))) return false;
+    // Review submits an asynchronous availability preflight. A successful
+    // click is not yet a successful transition. Do not swallow a failed
+    // click or submit a second review while the first request is pending.
+    if (moment === "review") {
+      await cta.click({ timeout: 4_000 });
+      return true;
+    }
     await cta.click({ timeout: 4_000 }).catch(() => undefined);
-    if (moment === "review") return true;
     const deadline = Date.now() + 4_000;
     while (Date.now() < deadline) {
       if ((await logisticsMoment(page)) !== moment) break;
@@ -553,9 +559,24 @@ export async function walkToReveal(page: Page, options: WalkOptions = {}): Promi
       // Short poll: a tap that only records an answer leaves the phase in
       // place, so fall through to the next action rather than burning the
       // full contract budget on it.
+      // Logistics review starts a real asynchronous availability check.
+      // The production trace showed the successful review click followed by
+      // 1.8s of unchanged phase and two idle attempts on the disabled CTA;
+      // the Director question appeared only after the walker had stopped.
+      // Wait for a genuine forward transition, within a bounded network
+      // budget. Never retry the already-submitted review or bypass a guard.
       landed = await waitForPhaseAfter(
-        page, phase, attempt === maxActions - 1 ? 8_000 : 1_800, previousQuestion,
+        page, phase,
+        phase === "logistics" ? 20_000 : attempt === maxActions - 1 ? 8_000 : 1_800,
+        previousQuestion,
       );
+      if (phase === "logistics" && landed === null) {
+        const feedback = await page
+          .locator('[data-testid="studio-v3-logistics"], [role="alert"]')
+          .allTextContents()
+          .catch(() => []);
+        throw new Error(`Studio availability review did not advance: ${JSON.stringify(feedback)}`);
+      }
     }
 
     if (process.env["STUDIO_WALK_DEBUG"]) {
