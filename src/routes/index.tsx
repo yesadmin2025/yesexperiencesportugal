@@ -12,7 +12,7 @@ import { buildResponsiveSrc } from "@/lib/responsive-image";
 
 import heroImg from "@/assets/hero-coast.jpg";
 
-import { Star } from "lucide-react";
+import { Star, Clock, MapPin, Users, SlidersHorizontal, Compass, ShieldCheck, HeartHandshake, Check, Wine } from "lucide-react";
 
 import { GuestQuotes } from "@/components/home/GuestQuotes";
 import { StudioLivePreview } from "@/components/home/StudioLivePreview";
@@ -37,7 +37,7 @@ import {
 } from "@/lib/jsonld";
 import { signatureTours, publicSignatureTours, isValidTourId, findTour } from "@/data/signatureTours";
 import { getViatorMeta } from "@/data/signatureToursViator";
-import { signatureDurationLabel } from "@/lib/tourContent";
+import { getTourContent, signatureDurationLabel } from "@/lib/tourContent";
 import { LOCAL_STORIES_ARTICLES } from "@/content/local-stories-articles";
 import { PortugalPlannerMap } from "@/components/home/PortugalPlannerMap";
 import { RouteThread } from "@/components/motion/RouteThread";
@@ -181,39 +181,19 @@ const FEATURED_TOUR_IDS = [
   "roman-heritage-alentejo",
 ] as const;
 
-// Concise SEO-friendly titles used on mobile signature cards so long
-// Viator names don't clip on the left edge. Desktop keeps the full title.
-// Évora (commercial estates) and Talha (Vidigueira) are separate days — never mix.
-const MOBILE_TITLE_OVERRIDES: Record<string, string> = {
-  "arrabida-wine-allinclusive":
-    "Private Arrábida Wine Day: Local Market, Traditional Tiles, Ocean Views & Regional Wine and Food",
-  "sintra-cascais": "Sintra & Cascais Private Day",
-  "arrabida-boat": "Arrábida Boat & Wine Day",
-  "troia-comporta":
-    "Exclusive Comporta & Tróia: Chic Dune Coast, Estate Wine Tasting, Stilt Pier & Wild Atlantic Beaches",
-  "evora-alentejo":
-    "Historic Évora & Alentejo Wine: Roman Temple, Renowned Cellars & Cork Heritage",
-  "roman-heritage-alentejo":
-    "Secret Alentejo: Roman Heritage, Exclusive Talha Wine & Local Lunch Experience at a Family Winery",
-  "p23-artisan-pottery-cork":
-    "Off the Beaten Path Alentejo: Traditional Pottery & Cork Hands-On Workshops with Local Artisans",
+// Short commercial names; canonical detail titles remain intact.
+const FEATURED_CARD_NAMES: Record<string, string> = {
+  "arrabida-wine-allinclusive": "Arrábida Wine & Food",
+  "troia-comporta": "Tróia & Comporta",
+  "evora-alentejo": "Évora & Alentejo Wine",
+  "roman-heritage-alentejo": "Roman Talha Wine Experience",
 };
-// Short two-line mobile titles (facts only, drawn from the approved long titles).
-const SHORT_CARD_TITLES: Record<string, string> = {
-  "arrabida-wine-allinclusive": "Private Arrábida Wine Day: Market, Tiles & Ocean Views",
-  "troia-comporta": "Exclusive Comporta & Tróia: Dunes, Wine & Beaches",
-  "evora-alentejo": "Historic Évora & Alentejo Wine",
-  "roman-heritage-alentejo": "Secret Alentejo: Talha Wine & Family Winery Lunch",
-  "p23-artisan-pottery-cork": "Off the Beaten Path Alentejo: Pottery & Cork Workshops",
+const FEATURED_CARD_COPY: Record<string, string> = {
+  "arrabida-wine-allinclusive": "Discover the Setúbal wine region through two wineries, traditional food and the Atlantic landscapes of Arrábida.",
+  "troia-comporta": "Cross the Sado by ferry for a private coastal day of wine, Roman heritage and the beaches of Comporta.",
+  "evora-alentejo": "Combine Évora’s UNESCO heritage with two Alentejo wineries and a closer look at Portuguese cork.",
+  "roman-heritage-alentejo": "Discover Portugal’s ancient clay-vessel wines at a family winery, with local food and Roman heritage in Vidigueira.",
 };
-// Approved homepage card titles (long form on tablet/desktop).
-const FEATURED_CARD_TITLES = new Set([
-  "arrabida-wine-allinclusive",
-  "troia-comporta",
-  "evora-alentejo",
-  "roman-heritage-alentejo",
-  "p23-artisan-pottery-cork",
-]);
 
 /* ──────────────────────────────────────────────────────────────────
  * HERO — cinematic 5-scene storytelling sequence (mobile-first).
@@ -275,6 +255,7 @@ const baseSignatures = FEATURED_TOUR_IDS.filter((id) => isValidTourId(id))
       title: t.title,
       img: t.img,
       line: t.blurb,
+      pickup: getTourContent(t.id).sot?.pickupZone ?? null,
       pace: t.pace,
       region: t.region,
       priceFrom: t.priceFrom,
@@ -611,12 +592,12 @@ function HomePage() {
                 className="editorial-title-safe font-serif text-[color:var(--charcoal)] font-medium tracking-normal text-[1.8125rem] md:text-[2.25rem] leading-[1.18] md:leading-[1.1] mx-auto"
                 lineClassName="mx-auto"
                 lines={[
-                  "Signature days,",
-                  <SectionTitle.Em key="loved">already loved.</SectionTitle.Em>,
+                  "Private experiences,",
+                  <SectionTitle.Em key="loved">ready to make yours.</SectionTitle.Em>,
                 ]}
               />
               <p className="scene-body mt-5 text-[15px] md:text-[16px] leading-[1.65] text-[color:var(--charcoal-soft)]">
-                Choose a private day, see dates and reserve. Pickup and inclusions are shown on each experience.
+                Explore our collection of expertly designed private day experiences. Reserve the original itinerary online or tailor selected details to your interests, preferences and pace.
               </p>
             </Scene>
 
@@ -701,14 +682,7 @@ function HomePage() {
                                 </span>
                               </span>
                             )}
-                            <span className="inline-flex items-baseline gap-1 rounded-full bg-white px-2.5 py-1 text-[color:var(--charcoal)] shadow-[0_2px_8px_rgba(0,0,0,0.22)]">
-                              <span className="text-[11px] uppercase tracking-[0.16em] font-semibold">
-                                From
-                              </span>
-                              <span className="font-sans text-[13.5px] leading-none">
-                                €{t.priceFrom}
-                              </span>
-                            </span>
+                            
                           </div>
                         </div>
                         {/* Bottom: title + meta — full factual titles remain readable rather than
@@ -717,34 +691,25 @@ function HomePage() {
 
                       {/* Aman-style editorial body: the title reads on ivory
                         below a clean photograph, never over it. */}
-                      <div className="flex flex-col gap-4 p-5 md:p-6">
-                        <div className="flex items-center gap-2 text-[11px] uppercase tracking-[0.22em] text-[color:var(--charcoal-soft)]">
-                          <span>{signatureDurationLabel(t.id, t.durationHours)}</span>
-                          <span className="inline-block w-px h-3 bg-[color:var(--border)]" aria-hidden="true" />
-                          <span>Private</span>
-                        </div>
+                      <div className="flex flex-1 flex-col gap-3 p-4 md:p-5">
+                        <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-[13px] text-[color:var(--charcoal-soft)]"><span className="inline-flex items-center gap-1"><Clock size={15} aria-hidden="true" />{signatureDurationLabel(t.id, t.durationHours)}</span><span className="inline-flex items-center gap-1"><Users size={15} aria-hidden="true" />Private</span></div>
                         <h3 className="serif text-[1.25rem] md:text-[1.3rem] leading-[1.28] text-[color:var(--charcoal)] font-medium text-pretty">
                           <Link
                             to="/tours/$tourId"
                             params={{ tourId: t.id }}
                             className="hover:text-[color:var(--teal)] transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--teal)]"
                           >
-                            {FEATURED_CARD_TITLES.has(t.id) ? (
-                              <>
-                                <span className="sm:hidden">{SHORT_CARD_TITLES[t.id] ?? t.title}</span>
-                                <span className="hidden sm:inline">{MOBILE_TITLE_OVERRIDES[t.id]}</span>
-                              </>
-                            ) : (
-                              t.title
-                            )}
+                            {FEATURED_CARD_NAMES[t.id] ?? t.title}
                           </Link>
                         </h3>
-                        <span aria-hidden="true" className="block h-px w-10 bg-[color:var(--gold)]" />
+                        <p className="text-[13.5px] leading-[1.5] text-[color:var(--charcoal-soft)]">{FEATURED_CARD_COPY[t.id] ?? t.line}</p>
+                        {t.pickup && <p data-testid="signature-pickup" className="flex items-start gap-1.5 text-[13px] leading-[1.45] text-[color:var(--charcoal)]"><MapPin size={15} className="mt-0.5 shrink-0 text-[color:var(--teal)]" aria-hidden="true" />{t.pickup.includes("Lisbon, Setúbal, Sesimbra or Almada") ? "Pickup: Lisbon, Setúbal, Sesimbra or Almada" : t.pickup.includes("small-group meeting point") ? "Private hotel pickup & drop-off (service areas apply)" : "Private pickup & drop-off"}</p>}
+                        <span aria-hidden="true" className="block h-px w-full bg-[color:var(--border)]" />
                         {t.highlights.length > 0 ? (
                           <ul className="signature-card-highlights home-signature-highlights m-0 list-none space-y-2 p-0 text-[13px] leading-[1.45] text-[color:var(--charcoal)]">
                             {t.highlights.map((highlight) => (
                               <li key={highlight} className="grid grid-cols-[auto_minmax(0,1fr)] gap-2.5">
-                                <span aria-hidden="true" className="mt-[0.58em] h-1 w-1 rounded-full bg-[color:var(--gold)]" />
+                                <Check size={14} aria-hidden="true" className="mt-0.5 text-[color:var(--teal)]" />
                                 <span>{highlight}</span>
                               </li>
                             ))}
@@ -755,7 +720,8 @@ function HomePage() {
                           </p>
                         )}
 
-                        <div className="mt-auto flex flex-col gap-2.5 pt-1">
+                        <div className="mt-auto flex flex-col gap-2.5 border-t border-[color:var(--border)] pt-3">
+                          <p data-testid="signature-card-price" className="text-[13px] text-[color:var(--charcoal-soft)]">From <strong className="text-[22px] font-semibold text-[color:var(--teal)]">€{t.priceFrom}</strong> / person</p>
                           <CtaButton
                             to="/tours/$tourId"
                             params={{ tourId: t.id }}
@@ -917,10 +883,10 @@ function HomePage() {
         >
           <div className="container-x">
             <div className="mx-auto mb-8 max-w-3xl text-center">
-              <Eyebrow className="mb-3">Why YES</Eyebrow>
-              <SectionTitle>Private by design. <SectionTitle.Em>Local by nature.</SectionTitle.Em></SectionTitle>
+              <Eyebrow className="mb-3">Guest reviews</Eyebrow>
+              <SectionTitle>Real experiences. <SectionTitle.Em>Real guest stories.</SectionTitle.Em></SectionTitle>
               <p className="mx-auto mt-3 max-w-[56ch] text-[15px] leading-[1.6] text-[color:var(--charcoal-soft)]">
-                Private days for your group, the freedom to design your own experience, and a local team when you need a human travel designer.
+                Hear from travelers who have explored Portugal with our local team.
               </p>
             </div>
             <GuestQuotes />
@@ -979,6 +945,33 @@ function HomePage() {
                 image={{ src: imgCorporate, alt: "Private group experience day in Portugal", to: "/corporate" }}
               />
             </div>
+          </div>
+        </section>
+
+        <section id="why-yes" aria-labelledby="why-yes-title" className="section-enter py-12 md:py-16 bg-[color:var(--sand)] border-b border-[color:var(--border)] scroll-mt-24">
+          <div className="container-x max-w-5xl">
+            <div className="mx-auto max-w-2xl text-center mb-8">
+              <Eyebrow className="mb-3">The YES difference</Eyebrow>
+              <SectionTitle id="why-yes-title">Why choose <SectionTitle.Em>YES Experiences Portugal?</SectionTitle.Em></SectionTitle>
+              <p className="mt-4 text-[15px] leading-relaxed text-[color:var(--charcoal-soft)]">One local team, three ways to explore Portugal: reserve a Signature, design your own day, or have us create your entire journey.</p>
+            </div>
+            <ul className="grid grid-cols-2 md:grid-cols-3 gap-x-5 gap-y-7 md:gap-9 list-none p-0">
+              {[
+                { Icon: Users, title: "Your own private group", body: "Travel with your chosen companions, with a local host and private transportation on Signature days." },
+                { Icon: SlidersHorizontal, title: "Flexible by design", body: "Keep the original itinerary or tailor selected details. Start from scratch in the Studio if you prefer." },
+                { Icon: Wine, title: "Authentic local encounters", body: "Discover selected wineries, artisans, regional food and Portugal’s cultural heritage." },
+                { Icon: Compass, title: "Portugal specialists", body: "From a private day out to a multi-day journey, work with a team that knows Portugal first-hand." },
+                { Icon: ShieldCheck, title: "Clear booking choices", body: "See inclusions, pricing and booking conditions before you reserve." },
+                { Icon: HeartHandshake, title: "Real human support", body: "Contact our local team for help choosing an experience, planning a journey or organizing a special occasion." },
+              ].map(({ Icon, title, body }) => (
+                <li key={title} className="min-w-0 border-t border-[color:var(--gold)]/40 pt-4">
+                  <Icon size={22} aria-hidden="true" className="mb-3 text-[color:var(--teal)]" />
+                  <h3 className="font-semibold text-[15px] leading-snug text-[color:var(--charcoal)]">{title}</h3>
+                  <p className="mt-2 text-[13.5px] leading-[1.55] text-[color:var(--charcoal-soft)]">{body}</p>
+                </li>
+              ))}
+            </ul>
+            <div className="mt-8 text-center"><CtaButton to="/about" variant="ghost">Meet the YES team</CtaButton></div>
           </div>
         </section>
 

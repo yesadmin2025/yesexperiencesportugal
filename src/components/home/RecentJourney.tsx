@@ -50,8 +50,8 @@ const PILLARS = [
     body: "Hand-picked properties and transfers — every overnight confirmed before you leave.",
   },
   {
-    label: "Delivered as a book",
-    body: "A travel file with days, stays and local contacts — not a generic booking.",
+    label: "Your personal Travel Book",
+    body: "Your itinerary, confirmed arrangements and local contacts in one personal travel file.",
   },
 ] as const;
 
@@ -574,10 +574,10 @@ export function RecentJourney() {
           {/* One semantic sentence, revealed in two visual beats. */}
           <p className="mt-4 font-[family-name:var(--font-sans)] text-[14.5px] md:text-[16px] text-[color:var(--charcoal-soft)] leading-[1.65] max-w-md mx-auto">
             <span className="scene-body story-beat block">
-              Multi-day Portugal, composed by your local travel designer —
+              Private journeys across Portugal, designed around you by a dedicated local travel designer.
             </span>{" "}
             <span className="scene-body story-beat block">
-              delivered as a book, not a booking.
+              We coordinate handpicked stays, transfers and experiences, brought together in your personal YES Travel Book.
             </span>
           </p>
         </Scene>

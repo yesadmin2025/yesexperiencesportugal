@@ -187,7 +187,7 @@ export function Footer() {
         }}
       />
 
-      <div className="container-x py-9 md:py-14">
+      <div className="container-x py-7 md:py-12">
         {/* ── ZONE A — BRAND ─────────────────────────────────────────── */}
         <div className="grid gap-8 md:grid-cols-[minmax(0,1fr)_auto] md:items-end">
           <div className="min-w-0 max-w-md">
@@ -254,21 +254,21 @@ export function Footer() {
         </div>
 
         {/* ── ZONE B — NAVIGATE ──────────────────────────────────────── */}
-        <nav aria-label="Explore YES Experiences Portugal services and company" className="mt-8 pt-8 border-t border-[color:var(--gold-warm)]/15 md:mt-10 md:pt-10">
-          <div className="grid grid-cols-2 gap-x-4 gap-y-6 md:grid-cols-4 md:gap-x-6 md:gap-y-9">
+        <nav aria-label="Explore YES Experiences Portugal services and company" className="mt-6 pt-6 border-t border-[color:var(--gold-warm)]/25 md:mt-9 md:pt-8">
+          <div className="grid grid-cols-1 gap-y-5 md:grid-cols-4 md:gap-x-8 md:gap-y-7">
             {NAV_COLUMNS.map((col) => col.title === "Company" ? (
-              <div key={col.title} className="col-span-2 md:col-span-1">
+              <div key={col.title} className="min-w-0">
                 <FooterLinkGroup title={col.title} links={col.links} compact />
               </div>
             ) : (
               <FooterCol key={col.title} title={col.title} links={col.links} />
             ))}
-            <div className="col-span-2 md:col-span-1">
+            <div className="min-w-0">
               <FooterLinkGroup title="Legal" links={LEGAL_LINKS} compact />
             </div>
           </div>
 
-          <div className="mt-6 grid gap-6 md:grid-cols-2 md:gap-10">
+          <div className="mt-5 grid gap-4 md:grid-cols-2 md:gap-10">
             <FooterLinkGroup title="Signature Experiences" links={SIGNATURE_TOURS} />
             <FooterLinkGroup title="Discover Portugal" links={POPULAR_SEARCHES} />
           </div>
@@ -284,7 +284,7 @@ export function Footer() {
           {/* Certificates — each seal gets its own space on phones; nothing
               competes with them. */}
           <div
-            className="mt-8 flex flex-col items-start gap-7 sm:flex-row sm:items-center sm:gap-12"
+            className="mt-5 flex flex-wrap items-center gap-x-6 gap-y-4 sm:gap-10"
             aria-label="Review certificate and official complaints book"
           >
             <TrustindexBadge />

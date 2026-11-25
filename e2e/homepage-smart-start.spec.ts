@@ -32,7 +32,17 @@ test.describe("homepage conversion paths", () => {
     await expect(page.locator(".home-quick-trust a")).toHaveAttribute("href", "#reviews");
     await expect(page.locator('[data-hero-field="primaryCta"]')).toHaveAttribute("href", "/experiences");
     await expect(page.locator('[data-hero-field="secondaryCta"]')).toHaveAttribute("href", "/studio");
-    await expect(page.locator("#signatures .home-signature-highlights").first().locator("li").first()).toBeVisible();
+    const firstCard = page.locator("#signatures article").first();
+    for (const width of [320, 375, 390, 393, 414]) {
+      await page.setViewportSize({ width, height: 852 });
+      await expect(firstCard.locator(".home-signature-highlights li")).toHaveCount(3);
+      for (const item of await firstCard.locator(".home-signature-highlights li").all()) await expect(item).toBeVisible();
+      await expect(firstCard.getByTestId("signature-pickup")).toBeVisible();
+      await expect(firstCard.getByTestId("signature-card-price")).toBeVisible();
+    }
+    await expect(firstCard.locator(".home-signature-highlights li").first()).toContainText("Two wineries");
+    await expect(page.locator("#signatures").getByText(/tailor selected details/i)).toBeVisible();
+    await expect(page.locator("#why-yes li")).toHaveCount(6);
     await expect(page.locator("#faq").getByRole("link", { name: "Explore Signature Experiences" })).toHaveAttribute("href", "/experiences");
     await expect(page.locator("#signatures").getByRole("link", { name: /See dates and reserve/ }).first()).toHaveAttribute("href", "/tours/arrabida-wine-allinclusive");
   });

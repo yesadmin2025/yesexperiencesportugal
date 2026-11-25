@@ -58,17 +58,17 @@ const CARD_PROMISES_PT: Record<string, string> = {
 
 const CARD_HIGHLIGHTS_PT: Record<string, readonly [string, string, string]> = {
   "p23-artisan-pottery-cork": ["Oficina de cortiça com artesãos locais", "Oficina de cerâmica de três horas", "Almoço incluído"],
-  "arrabida-wine-allinclusive": ["Visita a uma fábrica de azulejos em Azeitão", "Duas adegas incluídas; até quatro no Tailor", "Almoço tradicional em Azeitão incluído"],
+  "arrabida-wine-allinclusive": ["Duas adegas e provas de vinhos regionais", "Almoço tradicional em Azeitão incluído", "Parque Natural da Arrábida e vistas atlânticas"],
   "wild-beaches-picnic": ["Parque Natural da Arrábida e miradouros costeiros", "Praias de Galapinhos, Bicas e zona do Meco", "Piquenique privado com produtos regionais"],
   "arrabida-boat": ["Passeio de barco pela costa de Sesimbra", "Mercado do Livramento e Parque Natural da Arrábida", "Santuário no topo das falésias do Cabo Espichel"],
   "tiles-workshop": ["Oficina prática de pintura de azulejos", "Prova numa adega regional selecionada", "Mercado do Livramento e Sesimbra"],
   "azeitao-cheese": ["Oficina privada de queijo de Azeitão", "Visita e prova numa adega local", "Mercado do Livramento, Azeitão e Sesimbra"],
   "sintra-cascais": ["Um palácio e prova de vinho, ou bilhetes para dois palácios", "Azenhas do Mar, Cabo da Roca e Cascais", "Escolha flexível de palácios com guia"],
-  "troia-comporta": ["Visita guiada às ruínas romanas de Tróia, com entrada", "Prova de vinhos da região", "Aldeia da Comporta, cais palafítico da Carrasqueira e praias"],
-  "evora-alentejo": ["Centro histórico de Évora, Património Mundial da UNESCO", "Templo Romano e Capela dos Ossos", "Visitas e provas em duas adegas alentejanas selecionadas"],
+  "troia-comporta": ["Comporta, cais palafítico e praias atlânticas", "Experiência e prova de vinhos da região", "Visita guiada às ruínas romanas de Tróia, com entrada"],
+  "evora-alentejo": ["Duas adegas alentejanas e provas de vinhos", "Évora UNESCO, Templo Romano e Capela dos Ossos", "Visita a produtor tradicional de cortiça"],
   "tomar-coimbra": ["Convento de Cristo e herança templária", "Universidade de Coimbra", "Entrada com horário marcado na Biblioteca Joanina"],
   "fatima-nazare-obidos": ["Santuário de Fátima", "Miradouro, praia e vila piscatória da Nazaré", "Vila medieval muralhada e castelo de Óbidos"],
-  "roman-heritage-alentejo": ["Sítio arqueológico romano de São Cucufate", "Adega familiar com vinho feito em talhas de barro", "Prova de vinhos de talha e almoço tradicional na adega"],
+  "roman-heritage-alentejo": ["Provas de vinho de talha e almoço na adega", "Adega familiar e vinificação em talhas de barro", "Sítio arqueológico romano de São Cucufate"],
   "southwest-vicentine-coast": ["Porto Covo e Vila Nova de Milfontes", "Parque Natural do Sudoeste Alentejano e Costa Vicentina", "Paisagem da foz de Odeceixe"],
 };
 
@@ -79,14 +79,14 @@ const CARD_HIGHLIGHT_SELECTORS: Record<string, readonly HighlightSelector[]> = {
     { source: "includedLunch", label: "Lunch included" },
   ],
   "troia-comporta": [
-    { source: "highlight", value: "Guided Roman Ruins of Tróia visit with admission" },
-    { source: "highlight", value: "Herdade da Comporta wine experience and tasting", label: "Regional wine experience and tasting" },
-    { source: "highlight", value: "Comporta village, Carrasqueira stilt pier and Atlantic beaches" },
+    { source: "highlight", value: "Comporta village, Carrasqueira stilt pier and Atlantic beaches", label: "Comporta village, stilt pier & beaches" },
+    { source: "highlight", value: "Herdade da Comporta wine experience and tasting", label: "Regional winery experience & tasting" },
+    { source: "highlight", value: "Guided Roman Ruins of Tróia visit with admission", label: "Guided Tróia Roman ruins visit & entry" },
   ],
   "roman-heritage-alentejo": [
+    { source: "highlight", value: "Multiple talha wines and traditional winery lunch", label: "Talha wine tastings & winery lunch" },
+    { source: "highlight", value: "Family-run winery using Roman-style clay vessels", label: "Family winery & ancient clay-vessel winemaking" },
     { source: "highlight", value: "São Cucufate Roman archaeological site" },
-    { source: "highlight", value: "Family-run winery using Roman-style clay vessels" },
-    { source: "highlight", value: "Multiple talha wines and traditional winery lunch" },
   ],
   "southwest-vicentine-coast": [
     { source: "highlight", value: "Porto Covo and Vila Nova de Milfontes" },
@@ -114,9 +114,9 @@ const CARD_HIGHLIGHT_SELECTORS: Record<string, readonly HighlightSelector[]> = {
     { source: "highlight", value: "Joanina Library timed entry" },
   ],
   "evora-alentejo": [
-    { source: "highlight", value: "Évora UNESCO historic center" },
-    { source: "highlight", value: "Roman Temple and Chapel of Bones" },
-    { source: "highlight", value: "Two selected Alentejo winery visits and tastings" },
+    { source: "highlight", value: "Two selected Alentejo winery visits and tastings", label: "Two Alentejo wineries & tastings" },
+    { source: "highlight", value: "Roman Temple and Chapel of Bones", label: "UNESCO Évora, Roman Temple & Chapel of Bones" },
+    { source: "highlight", value: "Traditional cork production site", label: "Traditional cork production visit" },
   ],
   "fatima-nazare-obidos": [
     { source: "highlight", value: "Sanctuary of Fátima" },
@@ -129,9 +129,9 @@ const CARD_HIGHLIGHT_SELECTORS: Record<string, readonly HighlightSelector[]> = {
     { source: "highlight", value: "Livramento Market and Sesimbra" },
   ],
   "arrabida-wine-allinclusive": [
-    { source: "included", value: "Azeitão tile factory", label: "Working Azeitão azulejo factory visit" },
-    { source: "highlight", value: "Two selected wineries included, up to four in Tailor" },
+    { source: "highlight", value: "Two selected wineries included, up to four in Tailor", label: "Two wineries & regional wine tastings" },
     { source: "includedLunch", label: "Traditional Azeitão lunch included" },
+    { source: "highlight", value: "Arrábida Natural Park", label: "Arrábida Natural Park & Atlantic views" },
   ],
   "wild-beaches-picnic": [
     { source: "highlight", value: "Arrábida Natural Park and coastal viewpoints" },
