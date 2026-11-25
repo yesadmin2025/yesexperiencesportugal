@@ -1,50 +1,46 @@
 import { test, expect, type Locator } from "@playwright/test";
 
-/** The former final CTA was intentionally retired. Its replacement is the
- * five-service decision navigation. Verify every real conversion arrow,
- * preserving exact paint, SVG inheritance, keyboard focus and route checks.
- */
+/** Verify canonical arrows and keyboard focus on the actual service CTAs. */
 const paths = [
-  ["signature", "/experiences"],
-  ["studio", "/studio"],
-  ["designer", "/portugal-travel-designer"],
-  ["proposals", "/proposal-in-portugal"],
-  ["corporate", "/corporate"],
+  ["#signatures", "/experiences"],
+  ["#builder", "/studio"],
+  ["#multi-day", "/portugal-travel-designer"],
+  ["#special-occasions", "/proposal-in-portugal"],
+  ["#special-occasions", "/corporate"],
 ] as const;
 const GOLD = "rgb(201, 169, 106)";
 async function assertArrow(card: Locator) {
-  const svg = card.locator(".five-ways-action svg.cta-arrow-cue");
+  const svg = card.locator("svg.cta-arrow-cue").first();
   await expect(svg).toBeVisible();
   await expect(svg).toHaveCSS("color", GOLD);
   await expect(svg).toHaveAttribute("stroke", "currentColor");
-  const strokes = await svg.locator("path, line, polyline").evaluateAll(nodes =>
-    nodes.map(node => getComputedStyle(node).stroke));
+  const strokes = await svg.locator("path, line, polyline").evaluateAll(nodes => nodes.map(node => getComputedStyle(node).stroke));
   expect(strokes.length).toBeGreaterThan(0);
   expect(strokes.every(stroke => stroke === GOLD)).toBe(true);
 }
-
-test.describe("Homepage decision CTA arrow contract", () => {
+test.describe("Homepage real commercial CTA arrow contract", () => {
   test.beforeEach(async ({ page }) => {
     await page.goto("/", { waitUntil: "domcontentloaded" });
     await page.addStyleTag({ content: "*, *::before, *::after { transition: none !important; animation: none !important; }" });
-    await expect(page.locator("#five-paths")).toBeVisible();
-    await expect(page.locator("#five-paths [data-home-primary-path]")).toHaveCount(5);
-    await expect(page.locator("#final-cta")).toHaveCount(0);
+    await expect(page.locator("#signatures")).toBeVisible();
+    await expect(page.locator("[data-home-primary-path]")).toHaveCount(0);
   });
-  for (const [id, href] of paths) {
-    test(id + " preserves destination, gold arrow and visible keyboard focus", async ({ page }) => {
-      const card = page.locator('#five-paths [data-home-primary-path="' + id + '"]');
+  for (const [section, href] of paths) {
+    test(href + " preserves destination, gold arrow and visible keyboard focus", async ({ page }) => {
+      const card = page.locator(`${section} a[href="${href}"]`).filter({ has: page.locator("svg.cta-arrow-cue") }).first();
       await expect(card).toHaveAttribute("href", href);
       await card.scrollIntoViewIfNeeded();
       await page.mouse.move(0, 0);
       await assertArrow(card);
       await card.hover();
       await assertArrow(card);
-      await page.mouse.move(0, 0);
       await page.keyboard.press("Tab");
       await card.focus();
       await expect(card).toBeFocused();
-      await expect(card).toHaveCSS("box-shadow", /rgb\(\s*41\s*,\s*91\s*,\s*97\s*\)/);
+      await expect.poll(() => card.evaluate(el => {
+        const css = getComputedStyle(el);
+        return (css.outlineStyle !== "none" && parseFloat(css.outlineWidth) > 0) || css.boxShadow !== "none";
+      })).toBe(true);
       await assertArrow(card);
     });
   }

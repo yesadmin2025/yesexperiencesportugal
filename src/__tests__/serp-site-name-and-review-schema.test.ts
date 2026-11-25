@@ -172,7 +172,7 @@ describe("brand identity and structured homepage FAQ parity", () => {
     for (const service of ["Signature", "Experience Studio", "Travel Designer"]) {
       expect(home).toContain(service);
     }
-    const visiblePaths = read("src/components/home/FiveWaysIn.tsx");
+    const visiblePaths = home + read("src/components/home/RecentJourney.tsx") + read("src/components/Footer.tsx");
     for (const service of ["Studio", "Signature", "Travel Designer", "Proposals &", "Corporate &"]) {
       expect(visiblePaths).toContain(service);
     }

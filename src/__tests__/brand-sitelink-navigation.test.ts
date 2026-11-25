@@ -8,7 +8,7 @@ import { join } from "node:path";
 import { describe, expect, it } from "vitest";
 
 const footer = readFileSync(join(process.cwd(), "src/components/Footer.tsx"), "utf8");
-const services = readFileSync(join(process.cwd(), "src/components/home/FiveWaysIn.tsx"), "utf8");
+const services = ["src/routes/index.tsx", "src/components/home/RecentJourney.tsx"].map(path => readFileSync(join(process.cwd(), path), "utf8")).join("\n");
 
 const targets = [
   "/experiences",
@@ -22,13 +22,15 @@ describe("YES five-service site navigation", () => {
   it("provides the five real commercial routes as crawlable internal links", () => {
     for (const to of targets) {
       expect(footer).toContain(`to: "${to}"`);
-      expect(services).toContain(`href: "${to}"`);
+      expect(services).toMatch(new RegExp(`(?:to=|to: )"${to}"`));
     }
   });
 
-  it("marks the homepage's five choices as visible semantic navigation", () => {
-    expect(services).toContain('as="nav"');
-    expect(services).toContain('aria-label="Explore YES Experiences Portugal five services"');
+  it("retains the services in actual homepage sections and permanent footer navigation", () => {
+    expect(services).toContain('id="signatures"');
+    expect(services).toContain('id="builder"');
+    expect(services).toContain('id="special-occasions"');
+    expect(services).toContain('id="multi-day"');
   });
 
   it("gives the always-visible footer navigation a descriptive landmark", () => {

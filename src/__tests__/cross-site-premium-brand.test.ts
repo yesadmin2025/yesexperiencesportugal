@@ -22,7 +22,7 @@ describe("cross-site premium brand contract", () => {
     const experiences = read("src/routes/experiences.tsx");
     const designer = read("src/routes/portugal-travel-designer.tsx");
     const multiDay = read("src/routes/multi-day.tsx");
-    const ways = read("src/components/home/FiveWaysIn.tsx");
+    const ways = read("src/routes/index.tsx");
     const heroCopy = read("src/content/hero-copy.ts");
 
     expect(experiences).toContain("Private days, <SectionTitle.Em>ready when you are.</SectionTitle.Em>");

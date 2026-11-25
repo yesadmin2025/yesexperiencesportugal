@@ -1,37 +1,18 @@
 import { expect, test, type Page } from "@playwright/test";
 
-const SMART_START = '[data-testid="home-smart-start"]';
+const TRUST_STRIP = "#five-paths";
 
 async function openHome(page: Page) {
   await page.goto("/", { waitUntil: "domcontentloaded" });
-  const smartStart = page.locator(SMART_START);
-  await expect(smartStart).toBeVisible({ timeout: 20_000 });
-  return smartStart;
+  await expect(page.locator(TRUST_STRIP)).toBeVisible({ timeout: 20_000 });
 }
 
 test.describe("homepage conversion paths", () => {
-  test("shows exactly five first-class ways to begin", async ({ page }) => {
-    const smartStart = await openHome(page);
-    const primary = smartStart.locator("[data-home-primary-path]");
-    await expect(primary).toHaveCount(5);
-
-    await expect(primary.nth(0)).toHaveAttribute("href", "/experiences");
-    await expect(primary.nth(1)).toHaveAttribute("href", "/studio");
-    await expect(primary.nth(2)).toHaveAttribute("href", "/portugal-travel-designer");
-    await expect(primary.nth(3)).toHaveAttribute("href", "/proposal-in-portugal");
-    await expect(primary.nth(4)).toHaveAttribute("href", "/corporate");
-
-    // Premium headings can split their text across <em> descendants.
-    // Compare the full rendered heading, not individual text nodes.
-    const paths = [
-      ["signature", "Private days, already designed by YES."],
-      ["studio", "Your day, designed by you."],
-      ["designer", "Full Portugal journeys, designed for you."],
-      ["proposals", "Proposals & celebrations, held with care."],
-      ["corporate", "Team days, incentives & private groups."],
-    ] as const;
-    for (const [id, title] of paths) {
-      await expect(smartStart.locator(`[data-home-primary-path="${id}"]`)).toContainText(title);
+  test("exposes all five services in their real commercial sections, not duplicate cards", async ({ page }) => {
+    await openHome(page);
+    await expect(page.locator("[data-home-primary-path]")).toHaveCount(0);
+    for (const [section, href] of [["#signatures", "/experiences"], ["#builder", "/studio"], ["#multi-day", "/portugal-travel-designer"], ["#special-occasions", "/proposal-in-portugal"], ["#special-occasions", "/corporate"]]) {
+      await expect(page.locator(`${section} a[href="${href}"]`).first()).toBeVisible();
     }
   });
 
@@ -43,19 +24,49 @@ test.describe("homepage conversion paths", () => {
     ].map((id) => document.getElementById(id)?.getBoundingClientRect().top ?? -1));
     expect(order.every((top) => top >= 0)).toBe(true);
     expect(order).toEqual([...order].sort((a, b) => a - b));
-    const primary = page.locator(`${SMART_START} [data-path-priority="primary"]`);
-    await expect(primary).toHaveCount(3);
-    for (const card of await primary.all()) {
-      const box = await card.boundingBox();
-      expect(box?.height ?? 0).toBeGreaterThanOrEqual(44);
-      expect(box?.width ?? 0).toBeLessThanOrEqual(393);
-    }
+    const trustBox = await page.locator(TRUST_STRIP).boundingBox();
+    expect(trustBox).not.toBeNull();
+    expect(trustBox!.height).toBeLessThanOrEqual(108);
+    await expect(page.locator("#five-paths + #signatures")).toHaveCount(1);
+    await expect(page.locator("[data-home-primary-path]")).toHaveCount(0);
     await expect(page.locator(".home-quick-trust a")).toHaveAttribute("href", "#reviews");
     await expect(page.locator('[data-hero-field="primaryCta"]')).toHaveAttribute("href", "/experiences");
     await expect(page.locator('[data-hero-field="secondaryCta"]')).toHaveAttribute("href", "/studio");
     await expect(page.locator("#signatures .home-signature-highlights").first().locator("li").first()).toBeVisible();
     await expect(page.locator("#faq").getByRole("link", { name: "Explore Signature Experiences" })).toHaveAttribute("href", "/experiences");
     await expect(page.locator("#signatures").getByRole("link", { name: /See dates and reserve/ }).first()).toHaveAttribute("href", "/tours/arrabida-wine-allinclusive");
+  });
+
+  test("keeps commercial footer links visible and secondary navigation accessible", async ({ page }) => {
+    await page.setViewportSize({ width: 393, height: 852 });
+    await openHome(page);
+    await page.waitForFunction(() => (window as Window & { __APP_READY__?: boolean }).__APP_READY__ === true, undefined, { timeout: 30_000 });
+    const footer = page.locator("footer").first();
+    const nav = footer.getByRole("navigation", { name: "Explore YES Experiences Portugal services and company" });
+    for (const href of ["/experiences", "/studio", "/portugal-travel-designer", "/proposal-in-portugal", "/corporate"]) {
+      await expect(nav.locator(`a[href="${href}"]`).first()).toBeVisible();
+    }
+    const consent = page.getByRole("button", { name: "Essential only", exact: true });
+    if (await consent.isVisible()) await consent.click();
+    for (const [name, id] of [["Company", "company"], ["Legal", "legal"], ["Discover Portugal", "discover-portugal"]]) {
+      const toggle = nav.getByRole("button", { name, exact: true });
+      const group = nav.locator(`#footer-group-${id}`);
+      await expect(toggle).toHaveAttribute("aria-expanded", "false");
+      await expect(group).toBeHidden();
+      expect(await group.locator("a").count()).toBeGreaterThan(0);
+      await toggle.click();
+      await expect(toggle).toHaveAttribute("aria-expanded", "true");
+      await expect(group).toBeVisible();
+      await toggle.click();
+      await expect(group).toBeHidden();
+    }
+    await expect(footer.getByRole("link", { name: "WhatsApp", exact: true }).first()).toBeVisible();
+    await expect(footer.getByRole("link", { name: /guest reviews/i }).first()).toBeVisible();
+    await page.setViewportSize({ width: 1440, height: 900 });
+    await expect(nav.getByRole("button", { name: "Company", exact: true })).toBeHidden();
+    await expect(nav.locator("#footer-group-company")).toBeVisible();
+    await expect(nav.locator("#footer-group-legal")).toBeVisible();
+    await expect(nav.locator("#footer-group-discover-portugal")).toBeVisible();
   });
 
   test("does not pretend a generic visitor has a Studio draft", async ({ page }) => {
@@ -65,8 +76,8 @@ test.describe("homepage conversion paths", () => {
   });
 
   test("navigates directly to Studio from the custom-day path", async ({ page }) => {
-    const smartStart = await openHome(page);
-    const studio = smartStart.locator('[data-home-primary-path="studio"]');
+    await openHome(page);
+    const studio = page.locator("#builder a[href='/studio']").first();
     // The page is SSR-first and the Studio route is dynamically imported.
     // Wait for the homepage load event before the interaction, then assert
     // that the *real click* navigates; never replace it with page.goto().

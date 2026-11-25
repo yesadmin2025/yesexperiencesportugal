@@ -16,7 +16,7 @@ test("mobile hero CTAs are tappable and Travel Designer remains reachable", asyn
   await expect(descriptor).toHaveText(HERO_COPY.subheadline);
 
   // The current premium hero exposes TWO direct actions. Travel Designer
-  // belongs in the separately crawlable Five Ways section, not an invented
+  // belongs in its own commercial section, not an invented
   // third overlay CTA. Keep tap-target and viewport assertions for both.
   for (const { selector, href } of [
     { selector: '[data-hero-field="primaryCta"]', href: "/experiences" },
@@ -34,7 +34,7 @@ test("mobile hero CTAs are tappable and Travel Designer remains reachable", asyn
     expect(box.height).toBeGreaterThanOrEqual(44);
   }
 
-  const designer = page.locator('[data-home-primary-path="designer"]');
+  const designer = page.locator('#multi-day a[href="/portugal-travel-designer"]').filter({ has: page.locator("svg.cta-arrow-cue") }).first();
   await expect(designer).toBeVisible({ timeout: 15_000 });
   await expect(designer).toHaveAttribute("href", "/portugal-travel-designer");
   await designer.scrollIntoViewIfNeeded();

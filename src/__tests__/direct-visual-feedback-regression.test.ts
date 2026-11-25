@@ -37,12 +37,13 @@ describe("latest direct visual feedback", () => {
     const journey = read("src/components/home/RecentJourney.tsx");
     expect(home).toContain("section-enter py-12 md:py-16");
     expect(home).toContain("pt-10 pb-12 md:pt-14 md:pb-16");
-    // The approved mobile-first decision block is deliberately more compact.
-    expect(ways).toContain("pt-8 pb-8 md:pt-16 md:pb-12");
-    expect(ways).toContain("home-conversion-paths");
+    // The approved compact trust strip replaces the duplicate card grid.
+    expect(ways).toContain("py-2 md:py-3");
+    expect(ways).toContain("home-quick-trust");
+    expect(ways).not.toContain("data-home-primary-path");
     expect(journey).toContain("section-enter py-12 md:py-16");
     expect(home).toContain('className="home-major-intro');
-    expect(ways).toContain('className="home-major-intro');
+    expect(ways).toContain("SITE_RATING_LABEL");
     expect(journey).toContain('className="home-major-intro');
     expect(journey).toContain("scene-item he-card-lift");
   });
