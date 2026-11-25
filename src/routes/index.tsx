@@ -809,7 +809,7 @@ function HomePage() {
               {/* Staged reading order: eyebrow → headline → copy → 01/02/03
                   steps → CTA. `he-stagger` sequences the direct children with
                   the homepage cadence; reduced motion shows everything at once. */}
-              <div className="he-stagger lg:col-span-5 lg:order-1 order-1">
+              <div className="home-editorial-intro home-editorial-intro--rail he-stagger lg:col-span-5 lg:order-1 order-1">
                 <Eyebrow live className="reveal-stagger mb-5">
                   Experience Studio
                 </Eyebrow>
@@ -877,7 +877,7 @@ function HomePage() {
           className="section-enter py-12 md:py-16 bg-[color:var(--ivory)] border-b border-[color:var(--border)] scroll-mt-24 md:scroll-mt-28"
         >
           <div className="container-x">
-            <div className="mx-auto mb-8 max-w-3xl text-center">
+            <div className="home-editorial-intro mx-auto mb-8 max-w-3xl text-center">
               <Eyebrow className="mb-3">Guest reviews</Eyebrow>
               <SectionTitle>Portugal, through <SectionTitle.Em>our guests’ eyes.</SectionTitle.Em></SectionTitle>
               <p className="mx-auto mt-3 max-w-[56ch] text-[15px] leading-[1.6] text-[color:var(--charcoal-soft)]">
@@ -899,7 +899,7 @@ function HomePage() {
           aria-labelledby="special-occasions-title"
         >
           <div className="container-x">
-            <div className="reveal text-center max-w-2xl mx-auto mb-10 md:mb-14">
+            <div className="home-editorial-intro reveal text-center max-w-2xl mx-auto mb-10 md:mb-14">
               <Eyebrow className="mb-5">Special occasions</Eyebrow>
               <SectionTitle id="special-occasions-title">
                 A moment to mark,{" "}
@@ -945,7 +945,7 @@ function HomePage() {
 
         <section id="why-yes" aria-labelledby="why-yes-title" className="section-enter py-12 md:py-16 bg-[color:var(--sand)] border-b border-[color:var(--border)] scroll-mt-24">
           <div className="container-x max-w-5xl">
-            <div className="mx-auto max-w-2xl text-center mb-8">
+            <div className="home-editorial-intro mx-auto max-w-2xl text-center mb-8">
               <Eyebrow className="mb-3">The YES difference</Eyebrow>
               <SectionTitle id="why-yes-title">Why choose <SectionTitle.Em>YES Experiences Portugal?</SectionTitle.Em></SectionTitle>
               <p className="mt-4 text-[15px] leading-relaxed text-[color:var(--charcoal-soft)]">Local knowledge, genuine encounters and the freedom to experience Portugal your way, with one team bringing it all together.</p>
@@ -978,7 +978,7 @@ function HomePage() {
           aria-labelledby="winter-days-title"
           className="section-enter py-12 md:py-16 bg-[color:var(--sand)] border-b border-[color:var(--border)]"
         >
-          <div className="container-x max-w-3xl mx-auto text-center">
+          <div className="home-editorial-intro home-editorial-intro--standalone container-x max-w-3xl mx-auto text-center">
             <Eyebrow className="mb-5">Autumn &amp; winter</Eyebrow>
             <h2
               id="winter-days-title"
@@ -1013,7 +1013,7 @@ function HomePage() {
           aria-labelledby="plan-map-title"
         >
           <div className="container-x">
-            <div className="reveal text-center max-w-2xl mx-auto mb-8 md:mb-12">
+            <div className="home-editorial-intro reveal text-center max-w-2xl mx-auto mb-8 md:mb-12">
               <Eyebrow className="mb-5">Explore Portugal</Eyebrow>
                <SectionTitle
                 id="plan-map-title"
@@ -1048,7 +1048,7 @@ function HomePage() {
           aria-labelledby="journal-title"
         >
           <div className="container-x">
-            <div className="reveal text-center max-w-2xl mx-auto mb-7 md:mb-10">
+            <div className="home-editorial-intro reveal text-center max-w-2xl mx-auto mb-7 md:mb-10">
               <Eyebrow className="mb-5">Local stories</Eyebrow>
                <SectionTitle
                 id="journal-title"

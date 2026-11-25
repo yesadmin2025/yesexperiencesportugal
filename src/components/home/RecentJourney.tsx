@@ -562,7 +562,7 @@ export function RecentJourney() {
           <SplitLines
             as="h2"
             id="bespoke-designer-title"
-            className="serif text-[2rem] sm:text-[2.4rem] lg:text-[3.4rem] leading-[1.1] lg:leading-[1.02] tracking-normal text-[color:var(--charcoal)] font-medium mx-auto"
+            className="serif text-[1.8125rem] md:text-[2.25rem] leading-[1.18] md:leading-[1.1] tracking-normal text-[color:var(--charcoal)] font-medium mx-auto"
             lineClassName="mx-auto"
             lines={[
               "Portugal, ",

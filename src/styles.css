@@ -9139,3 +9139,62 @@ html[data-floating-quiet] [data-testid="floating-actions"] {
   [data-scene-ready="1"].signature-chapter-intro .scene-body { transition-duration: 420ms; }
   [data-scene="in"].signature-chapter-intro .scene-body { transition-delay: 120ms; }
 }
+
+
+/* Homepage editorial rhythm: one scale for peer chapters, not the hero,
+   cards, booking interface or any other route. */
+.home-energy {
+  --home-chapter-padding: 48px;
+  --home-intro-gap: 16px;
+  --home-intro-after: 32px;
+  --home-heading-size: 1.8125rem;
+  --home-heading-leading: 1.18;
+  --home-body-size: 1rem;
+}
+@media (min-width: 768px) {
+  .home-energy {
+    --home-chapter-padding: 72px;
+    --home-intro-after: 40px;
+    --home-heading-size: 2.25rem;
+    --home-heading-leading: 1.12;
+    --home-body-size: 1.0625rem;
+  }
+}
+.home-energy > :is(#signatures, #builder, #multi-day, #reviews, #special-occasions, #why-yes, #plan-map, #journal, [aria-labelledby="winter-days-title"]) {
+  padding-block: var(--home-chapter-padding);
+}
+.home-energy :is(.home-major-intro, .home-editorial-intro) {
+  margin-bottom: var(--home-intro-after);
+}
+.home-energy :is(.home-editorial-intro--rail, .home-editorial-intro--standalone) {
+  margin-bottom: 0;
+}
+.home-energy :is(.home-major-intro, .home-editorial-intro) > :is(.he-eyebrow-bar, .scene-atmosphere) {
+  margin-block: 0;
+}
+.home-energy :is(.home-major-intro, .home-editorial-intro) > .scene-atmosphere > .he-eyebrow-bar {
+  margin-block: 0;
+}
+.home-energy :is(.home-major-intro, .home-editorial-intro) > :is(h2, .motion-split, .scene-title) {
+  margin-block: var(--home-intro-gap) 0;
+  font-size: var(--home-heading-size);
+  line-height: var(--home-heading-leading);
+  font-weight: 500;
+  letter-spacing: normal;
+  text-wrap: balance;
+}
+.home-energy :is(.home-major-intro, .home-editorial-intro) > h2 .motion-split-line + .motion-split-line {
+  margin-top: 0;
+}
+.home-energy :is(.home-major-intro, .home-editorial-intro) > p {
+  margin-block: var(--home-intro-gap) 0;
+  max-width: 48ch;
+  font-size: var(--home-body-size);
+  line-height: 1.65;
+}
+.home-energy :is(.home-major-intro, .home-editorial-intro:not(.home-editorial-intro--rail)) > p {
+  margin-inline: auto;
+}
+.home-energy #multi-day .home-major-intro > p > .story-beat + .story-beat {
+  margin-top: 8px;
+}
