@@ -24,7 +24,7 @@
  *     · leading-[1.65]
  *     · px-5  md:px-6   pb-5  md:pb-6
  *
- *   #faq section wrapper — tightened
+ *   FAQ labelled section — tightened
  *     · py-12  md:py-14
  *
  * If you intentionally change FAQ typography, update this test in the
@@ -65,7 +65,7 @@ function expectAllTokens(actual: Set<string>, expected: string[], context: strin
 const FAQ_TITLE = classSet(/id="faq-title"\s+className="([^"]+)"/, "h2#faq-title");
 const TRIGGER = classSet(/<AccordionTrigger\s+className="([^"]+)"/, "<AccordionTrigger>");
 const CONTENT = classSet(/<AccordionContent\s+className="([^"]+)"/, "<AccordionContent>");
-const SECTION = classSet(/id="faq"\s+className="([^"]+)"/, "section#faq");
+const SECTION = classSet(/<section\s+className="([^"]+)"\s+aria-labelledby="faq-title"/, 'section[aria-labelledby="faq-title"]');
 
 describe("FAQ #faq-title — locked typography (order-independent)", () => {
   it("locks size, line-height, tracking and color tokens", () => {
@@ -131,9 +131,9 @@ describe("AccordionContent — locked typography (order-independent)", () => {
   });
 });
 
-describe("FAQ section#faq — locked rhythm (order-independent)", () => {
+describe("FAQ section[aria-labelledby=faq-title] — locked rhythm (order-independent)", () => {
   it("locks vertical padding tokens", () => {
-    expectAllTokens(SECTION, ["py-12", "md:py-14"], "section#faq");
+    expectAllTokens(SECTION, ["py-12", "md:py-14"], "section[aria-labelledby=faq-title]");
   });
 
   it("does NOT regress to the pre-Phase-3 oversized rhythm", () => {
