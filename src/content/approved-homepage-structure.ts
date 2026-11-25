@@ -1,5 +1,5 @@
 /**
- * Approved homepage structure spec (v13 — 11-chapter conversion-first layout).
+ * Approved homepage structure spec (v14 — products-first layout).
  *
  * Single source of truth for what the marketing homepage MUST contain
  * at mobile widths. Consumed by:
@@ -27,6 +27,7 @@ export const MOBILE_BREAKPOINTS = [
   { name: "iphone-se", width: 320, height: 568 },
   { name: "iphone-13-mini", width: 375, height: 812 },
   { name: "iphone-14", width: 390, height: 844 },
+  { name: "mobile-393", width: 393, height: 852 },
   { name: "iphone-14-pro-max", width: 414, height: 896 },
 ] as const;
 
@@ -72,10 +73,10 @@ export interface ApprovedSection {
 }
 
 /**
- * Owner-approved conversion-first order (v13).
+ * Owner-approved products-first order (v14).
  * Keep all eleven existing sections; put the three purchase paths before
  * the full review carousel and the supporting editorial chapters.
- * The compact rating inside FiveWaysIn is not an extra section.
+ * The former five-card explainer is replaced by a compact confidence strip.
  */
 export const APPROVED_HOMEPAGE_SECTIONS: readonly ApprovedSection[] = [
   {
@@ -87,10 +88,10 @@ export const APPROVED_HOMEPAGE_SECTIONS: readonly ApprovedSection[] = [
   },
   {
     order: 2,
-    name: "Where to begin — five ways in",
+    name: "Compact guest confidence strip",
     componentTag: "FiveWaysIn",
     inComponent: true,
-    requiredSpacing: { kind: "py", minScale: 8 },
+    requiredSpacing: { kind: "py", minScale: 2 },
   },
   {
     order: 3,

@@ -17,10 +17,9 @@ describe("homepage approved brand restoration", () => {
     expect(styles).toMatch(/\.hero-cinematic \.hero-h1\s*\{[\s\S]*?color:\s*var\(--gold-soft\)/);
   });
 
-  it("uses the approved historical display and editorial treatment in Five Ways", () => {
-    expect(fiveWays).toContain("five-ways-title editorial-title-safe");
-    expect(styles).toContain(".five-ways-title");
-    expect(fiveWays).toContain("font-normal text-[color:var(--teal)]");
+  it("uses the approved historical display and editorial treatment", () => {
+    expect(fiveWays).toContain("home-quick-trust");
+    expect(fiveWays).toContain("SITE_RATING_LABEL");
     expect(styles).toContain('--font-display: "Fraunces", serif');
     expect(styles).toContain('--font-serif: "Fraunces", serif');
     // The short service descriptor must be visibly present, not only in data.
@@ -31,19 +30,16 @@ describe("homepage approved brand restoration", () => {
     expect(hero).toContain("data-hero-subheadline={HERO_COPY.subheadline}");
   });
 
-  it("keeps all five paths, visible actions and the canonical arrow", () => {
-    for (const id of ["studio", "signature", "designer", "proposals", "corporate"]) {
-      expect(fiveWays).toContain(`id: "${id}"`);
-    }
-    expect(fiveWays).toContain("{path.cta}");
+  it("preserves draft recovery without duplicating the service cards", () => {
+    expect(fiveWays).not.toContain("data-home-primary-path");
+    expect(fiveWays).toContain('data-testid="home-smart-start-resume"');
     expect(fiveWays).toContain("<CtaMotionArrow />");
-    expect(fiveWays).not.toContain("ResponsiveEditorialImage");
-    expect(fiveWays).not.toContain("useHomePaths");
+    expect(fiveWays).toContain('href="#reviews"');
   });
 
   it("keeps the restored section within the YES surfaces", () => {
     expect(fiveWays).toContain("bg-[color:var(--sand)]");
-    expect(styles).toMatch(/\.five-ways-card\s*\{[\s\S]*?background:\s*var\(--ivory\)/);
+    expect(fiveWays).toContain("py-2 md:py-3");
     expect(styles).not.toMatch(/\.five-ways-card[^}]*animation:[^}]*(bounce|pulse)/i);
   });
 });

@@ -1,37 +1,18 @@
 import { expect, test, type Page } from "@playwright/test";
 
-const SMART_START = '[data-testid="home-smart-start"]';
+const TRUST_STRIP = "#five-paths";
 
 async function openHome(page: Page) {
   await page.goto("/", { waitUntil: "domcontentloaded" });
-  const smartStart = page.locator(SMART_START);
-  await expect(smartStart).toBeVisible({ timeout: 20_000 });
-  return smartStart;
+  await expect(page.locator(TRUST_STRIP)).toBeVisible({ timeout: 20_000 });
 }
 
 test.describe("homepage conversion paths", () => {
-  test("shows exactly five first-class ways to begin", async ({ page }) => {
-    const smartStart = await openHome(page);
-    const primary = smartStart.locator("[data-home-primary-path]");
-    await expect(primary).toHaveCount(5);
-
-    await expect(primary.nth(0)).toHaveAttribute("href", "/experiences");
-    await expect(primary.nth(1)).toHaveAttribute("href", "/studio");
-    await expect(primary.nth(2)).toHaveAttribute("href", "/portugal-travel-designer");
-    await expect(primary.nth(3)).toHaveAttribute("href", "/proposal-in-portugal");
-    await expect(primary.nth(4)).toHaveAttribute("href", "/corporate");
-
-    // Premium headings can split their text across <em> descendants.
-    // Compare the full rendered heading, not individual text nodes.
-    const paths = [
-      ["signature", "Private days, already designed by YES."],
-      ["studio", "Your day, designed by you."],
-      ["designer", "Full Portugal journeys, designed for you."],
-      ["proposals", "Proposals & celebrations, held with care."],
-      ["corporate", "Team days, incentives & private groups."],
-    ] as const;
-    for (const [id, title] of paths) {
-      await expect(smartStart.locator(`[data-home-primary-path="${id}"]`)).toContainText(title);
+  test("exposes all five services in their real commercial sections, not duplicate cards", async ({ page }) => {
+    await openHome(page);
+    await expect(page.locator("[data-home-primary-path]")).toHaveCount(0);
+    for (const [section, href] of [["#signatures", "/experiences"], ["#builder", "/studio"], ["#multi-day", "/portugal-travel-designer"], ["#special-occasions", "/proposal-in-portugal"], ["#special-occasions", "/corporate"]]) {
+      await expect(page.locator(`${section} a[href="${href}"]`).first()).toBeVisible();
     }
   });
 
@@ -43,13 +24,11 @@ test.describe("homepage conversion paths", () => {
     ].map((id) => document.getElementById(id)?.getBoundingClientRect().top ?? -1));
     expect(order.every((top) => top >= 0)).toBe(true);
     expect(order).toEqual([...order].sort((a, b) => a - b));
-    const primary = page.locator(`${SMART_START} [data-path-priority="primary"]`);
-    await expect(primary).toHaveCount(3);
-    for (const card of await primary.all()) {
-      const box = await card.boundingBox();
-      expect(box?.height ?? 0).toBeGreaterThanOrEqual(44);
-      expect(box?.width ?? 0).toBeLessThanOrEqual(393);
-    }
+    const trustBox = await page.locator(TRUST_STRIP).boundingBox();
+    expect(trustBox).not.toBeNull();
+    expect(trustBox!.height).toBeLessThanOrEqual(108);
+    await expect(page.locator("#five-paths + #signatures")).toHaveCount(1);
+    await expect(page.locator("[data-home-primary-path]")).toHaveCount(0);
     await expect(page.locator(".home-quick-trust a")).toHaveAttribute("href", "#reviews");
     await expect(page.locator('[data-hero-field="primaryCta"]')).toHaveAttribute("href", "/experiences");
     await expect(page.locator('[data-hero-field="secondaryCta"]')).toHaveAttribute("href", "/studio");
@@ -97,8 +76,8 @@ test.describe("homepage conversion paths", () => {
   });
 
   test("navigates directly to Studio from the custom-day path", async ({ page }) => {
-    const smartStart = await openHome(page);
-    const studio = smartStart.locator('[data-home-primary-path="studio"]');
+    await openHome(page);
+    const studio = page.locator("#builder a[href='/studio']").first();
     // The page is SSR-first and the Studio route is dynamically imported.
     // Wait for the homepage load event before the interaction, then assert
     // that the *real click* navigates; never replace it with page.goto().

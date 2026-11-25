@@ -388,7 +388,7 @@ export const Route = createFileRoute("/")({
 
 /* ════════════════════════════════════════════════════════════════
  * HOMEPAGE — mobile-first commercial sequence
- * Hero → five ways → Signatures → Studio → Travel Designer → guest proof →
+ * Hero → compact trust strip → Signatures → Studio → Travel Designer → guest proof →
  * special occasions → seasonal guide → Portugal map → Local Stories → FAQ.
  * ════════════════════════════════════════════════════════════ */
 function HomePage() {
@@ -443,16 +443,16 @@ function HomePage() {
     multiday: "multi-day",
     journey: "multi-day",
     journeys: "multi-day",
-    // Moments and Corporate are represented inside Five Ways on the homepage.
-    occasion: "five-paths",
-    occasions: "five-paths",
-    proposal: "five-paths",
-    proposals: "five-paths",
-    celebration: "five-paths",
-    celebrations: "five-paths",
-    groups: "five-paths",
-    group: "five-paths",
-    corporate: "five-paths",
+    // Moments and Corporate have their own editorial section.
+    occasion: "special-occasions",
+    occasions: "special-occasions",
+    proposal: "special-occasions",
+    proposals: "special-occasions",
+    celebration: "special-occasions",
+    celebrations: "special-occasions",
+    groups: "special-occasions",
+    group: "special-occasions",
+    corporate: "special-occasions",
     // Reviews / trust
     review: "reviews",
     reviews: "reviews",
@@ -588,13 +588,11 @@ function HomePage() {
            See <CinematicHero/>; HERO_COPY locks live inside it. */}
         <CinematicHero />
 
-        {/* 2 — FIVE WAYS INTO PORTUGAL
-          Concise editorial explainer so visitors instantly understand
-          the paths: Signature, Studio, Travel Designer, Proposals and Corporate. */}
+        {/* 2 — COMPACT TRUST STRIP. No introductory service cards. */}
         <FiveWaysIn />
 
         {/* 3 — SIGNATURE EXPERIENCES PREVIEW
-          The first product collection follows the compact decision block.
+          The first product collection follows the compact trust strip.
           Up to 4 real Signature tours. Each card uses the tour's real
           hero image (sourced from the matching Viator page), real title
           and real blurb from `signatureTours`. No vague taglines, no
@@ -605,8 +603,8 @@ function HomePage() {
           aria-labelledby="signatures-title"
         >
           <div className="container-x">
-            <Scene className="home-major-intro home-story-intro text-center max-w-2xl mx-auto mb-10 md:mb-14">
-              <div className="scene-atmosphere"><Eyebrow className="mb-5">Signature</Eyebrow></div>
+            <Scene className="home-major-intro home-story-intro text-center max-w-2xl mx-auto mb-5 md:mb-10">
+              <div className="scene-atmosphere"><Eyebrow className="mb-3">Signature Experiences</Eyebrow></div>
               <SplitLines
                 as="h2"
                 id="signatures-title"
@@ -912,7 +910,7 @@ function HomePage() {
 
         {/* 6 — GUEST PROOF
           Full guest review carousel follows the three commercial chapters.
-          The compact verified rating is linked from the decision block. */}
+          The compact verified rating is linked from the trust strip. */}
         <section
           id="reviews"
           className="section-enter py-12 md:py-16 bg-[color:var(--ivory)] border-b border-[color:var(--border)] scroll-mt-24 md:scroll-mt-28"
@@ -931,7 +929,7 @@ function HomePage() {
 
         {/* 7 — SPECIAL OCCASIONS (Moments & Corporate)
           Owner request: these specialist services must be visibly present
-          on the homepage, not only inside Five Ways. One quiet editorial
+          on the homepage. One quiet editorial
           band, two cards, real photography from the dedicated routes,
           locked CTA vocabulary. */}
         <section
