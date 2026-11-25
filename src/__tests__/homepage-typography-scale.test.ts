@@ -39,7 +39,7 @@ describe("Homepage H2 — shared historical hierarchy", () => {
 
 describe("Homepage eyebrow labels — canonical utility usage", () => {
   it("every major section intro uses .he-eyebrow-bar (via <Eyebrow> primitive or raw class)", () => {
-    const requiredEyebrows = ["Experience Studio", "Signature"];
+    const requiredEyebrows = ["Experience Studio", "Signature Experiences"];
     for (const label of requiredEyebrows) {
       const escaped = label.replace(/&/g, "&amp;");
       // Accept EITHER a raw `.he-eyebrow-bar` wrapper OR the canonical
