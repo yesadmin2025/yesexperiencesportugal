@@ -54,6 +54,51 @@ test.describe("homepage conversion paths", () => {
     await expect(page.locator("#signatures").getByRole("link", { name: /See dates and reserve/ }).first()).toHaveAttribute("href", "/tours/arrabida-wine-allinclusive#book");
   });
 
+  test("keeps peer editorial chapters on one measured typographic rhythm", async ({ page }, testInfo) => {
+    await page.emulateMedia({ reducedMotion: "reduce" });
+    await openHome(page);
+    const consent = page.getByRole("button", { name: "Essential only", exact: true });
+    if (await consent.isVisible()) await consent.click();
+    const sections = ["signatures", "builder", "multi-day", "reviews", "special-occasions", "why-yes", "plan-map", "journal"];
+    for (const width of [320, 393, 1440]) {
+      await page.setViewportSize({ width, height: 900 });
+      await page.evaluate(() => document.fonts.ready);
+      const measured = await page.evaluate((ids) => ids.map((id) => {
+        const section = document.getElementById(id)!;
+        const intro = section.querySelector(".home-major-intro, .home-editorial-intro")!;
+        const h = intro.querySelector("h2")!;
+        const cs = getComputedStyle(h);
+        return { id, size: cs.fontSize, leading: cs.lineHeight, top: getComputedStyle(section).paddingTop, bottom: getComputedStyle(section).paddingBottom };
+      }), sections);
+      for (const item of measured) {
+        expect(item.size, item.id).toBe(measured[0].size);
+        expect(item.leading, item.id).toBe(measured[0].leading);
+        expect(item.top, item.id).toBe(measured[0].top);
+        expect(item.bottom, item.id).toBe(measured[0].bottom);
+      }
+      for (const id of ["signatures", "multi-day"]) {
+        const offsets = await page.locator("#" + id + " .home-major-intro").evaluate((intro) => {
+          const center = intro.getBoundingClientRect().left + intro.getBoundingClientRect().width / 2;
+          return Array.from(intro.querySelectorAll(".motion-split-line")).map((line) => {
+            const rect = line.getBoundingClientRect();
+            return Math.abs(rect.left + rect.width / 2 - center);
+          });
+        });
+        expect(offsets.length).toBeGreaterThan(0);
+        for (const offset of offsets) expect(offset, id).toBeLessThanOrEqual(3);
+      }
+      if (width !== 320) {
+        for (const id of sections) await page.locator("#" + id).scrollIntoViewIfNeeded();
+        // Scroll the actual FAQ landmark, not its outer homepage anchor wrapper.
+        await page.locator('section[aria-labelledby="faq-title"]').scrollIntoViewIfNeeded();
+        await page.locator("footer").scrollIntoViewIfNeeded();
+        await page.evaluate(() => window.scrollTo(0, 0));
+        await testInfo.attach("homepage-editorial-" + width, { body: await page.screenshot({ fullPage: true, animations: "disabled" }), contentType: "image/png" });
+      }
+    }
+    await expect(page.locator("footer").getByText(/shown the way a local shows a friend/i)).toBeVisible();
+  });
+
   test("keeps commercial footer links visible and secondary navigation accessible", async ({ page }) => {
     await page.setViewportSize({ width: 393, height: 852 });
     await openHome(page);
