@@ -39,7 +39,8 @@ async function startCls(page: Page) {
     // The Web Vitals CLS metric is the largest 5s session window with
     // no gap over 1s, NOT the sum of every shift over a long scroll.
     // Keep the exact 0.1 budget and record the raw total for diagnosis.
-    const metrics = window as unknown as { __cls: number; __clsRaw: number };
+    const metrics = window as unknown as { __cls: number; __clsRaw: number; __clsSources: Array<{ value: number; nodes: string[] }> };
+    metrics.__clsSources = [];
     metrics.__cls = 0;
     metrics.__clsRaw = 0;
     let sessionValue = 0;
@@ -48,12 +49,13 @@ async function startCls(page: Page) {
     try {
       new PerformanceObserver((list) => {
         for (const entry of list.getEntries() as Array<
-          PerformanceEntry & { hadRecentInput?: boolean; value?: number }
+          PerformanceEntry & { hadRecentInput?: boolean; value?: number; sources?: Array<{ node?: Node }> }
         >) {
           if (entry.hadRecentInput) continue;
           const shift = entry.value ?? 0;
           if (shift === 0) continue;
           metrics.__clsRaw += shift;
+          if (shift >= 0.01) metrics.__clsSources.push({ value: shift, nodes: (entry.sources ?? []).map(({ node }) => node instanceof Element ? `${node.tagName}.${node.className}`.slice(0, 200) : node?.nodeName ?? "unknown") });
           if (
             lastShift < 0 ||
             entry.startTime - lastShift > 1000 ||
@@ -111,7 +113,7 @@ for (const route of ROUTES) {
     const cls = await page.evaluate(() => (window as unknown as { __cls: number }).__cls ?? 0);
     expect(
       cls,
-      `${route.name} max-session CLS after scroll (raw total: ${await page.evaluate(() => (window as unknown as { __clsRaw: number }).__clsRaw ?? 0)})`,
+      `${route.name} max-session CLS after scroll (raw total: ${await page.evaluate(() => (window as unknown as { __clsRaw: number }).__clsRaw ?? 0)}; sources: ${JSON.stringify(await page.evaluate(() => (window as unknown as { __clsSources: unknown[] }).__clsSources ?? []))})`,
     ).toBeLessThan(CLS_BUDGET);
 
     // ── 2. Every lazy image reserves space before it decodes ────────────

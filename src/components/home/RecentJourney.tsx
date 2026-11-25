@@ -620,7 +620,7 @@ export function RecentJourney() {
           <div className="mt-5 grid gap-5 sm:grid-cols-2">
             <div className="min-w-0">
               <h4 className="font-semibold text-[color:var(--teal)]">Private Aviation &amp; Jet Charters</h4>
-              <p className="mt-2 text-sm leading-relaxed text-[color:var(--charcoal-soft)]">Private jet and helicopter charter arrangements through specialist aviation partners, coordinated with your journey on the ground. Individually quoted on request.</p>
+              <p className="mt-2 text-sm leading-relaxed text-[color:var(--charcoal-soft)]">Private jet charter arrangements through specialist aviation partners, coordinated with your journey on the ground. Individually quoted on request.</p>
             </div>
             <div className="min-w-0">
               <h4 className="font-semibold text-[color:var(--teal)]">Handpicked Stays &amp; Local Partners</h4>
