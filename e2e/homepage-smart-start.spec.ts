@@ -70,7 +70,21 @@ test.describe("homepage conversion paths", () => {
       expect(Math.abs(initial.gap), "hero/trust seam").toBeLessThanOrEqual(2);
       expect(Math.abs(initial.nextGap), "trust/signature seam").toBeLessThanOrEqual(2);
       const consent = page.getByRole("button", { name: "Essential only", exact: true });
-      if (await consent.isVisible()) await consent.click();
+      // SSR is visible before hydration; wait for the real consent decision,
+      // not a race against the first visibility frame.
+      if (!(await page.evaluate(() => localStorage.getItem("yes.cookieConsent.v1")))) {
+        await expect(consent).toBeVisible({ timeout: 20_000 });
+        await expect.poll(() => page.evaluate(() => document.documentElement.dataset.cookieConsentOpen)).toBe("true");
+        await expect.poll(() => page.evaluate(() => {
+          const banner = document.querySelector("[data-cookie-card]");
+          const cta = document.querySelector('[data-hero-field="secondaryCta"]');
+          return banner && cta ? banner.getBoundingClientRect().top - cta.getBoundingClientRect().bottom : -1000;
+        })).toBeGreaterThanOrEqual(-1);
+        await testInfo.attach("cinematic-consent-open-" + width + "x" + height, { body: await page.screenshot({fullPage:false, animations:"disabled"}), contentType:"image/png" });
+        await consent.click();
+      }
+      await expect(page.locator("[data-cookie-consent-dialog]")).toHaveCount(0);
+      await expect.poll(() => page.evaluate(() => document.documentElement.dataset.cookieConsentOpen ?? "")).toBe("");
       await page.evaluate(() => window.scrollTo(0,0));
       await expect.poll(async () => (await measure()).height).toBeGreaterThanOrEqual(height - 2);
       const m = await measure();
