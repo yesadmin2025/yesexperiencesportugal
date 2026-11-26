@@ -106,7 +106,10 @@ test.describe("homepage conversion paths", () => {
     const sections = ["signatures", "builder", "multi-day", "reviews", "special-occasions", "why-yes", "plan-map", "journal"];
     for (const width of [320, 393, 1440]) {
       await page.setViewportSize({ width, height: 900 });
-      await page.evaluate(() => document.fonts.ready);
+      await page.evaluate(async () => { await document.fonts.ready; await new Promise<void>(resolve => requestAnimationFrame(() => requestAnimationFrame(() => resolve()))); });
+      // Force each offscreen chapter to lay out at the new viewport before taking measurements.
+      for (const id of sections) await page.locator("#" + id).scrollIntoViewIfNeeded();
+      await page.evaluate(async () => { await new Promise<void>(resolve => requestAnimationFrame(() => requestAnimationFrame(() => resolve()))); });
       const measured = await page.evaluate((ids) => ids.map((id) => {
         const section = document.getElementById(id)!;
         const intro = section.querySelector(".home-major-intro, .home-editorial-intro")!;
