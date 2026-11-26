@@ -65,7 +65,7 @@ function expectAllTokens(actual: Set<string>, expected: string[], context: strin
 const FAQ_TITLE = classSet(/id="faq-title"\s+className="([^"]+)"/, "h2#faq-title");
 const TRIGGER = classSet(/<AccordionTrigger\s+className="([^"]+)"/, "<AccordionTrigger>");
 const CONTENT = classSet(/<AccordionContent\s+className="([^"]+)"/, "<AccordionContent>");
-const SECTION = classSet(/<section\s+className="([^"]+)"\s+aria-labelledby="faq-title"/, 'section[aria-labelledby="faq-title"]');
+const SECTION = classSet(/<section\b(?=[^>]*\baria-labelledby="faq-title")[^>]*?\bclassName="([^"]+)"/, 'section[aria-labelledby="faq-title"]');
 
 describe("FAQ #faq-title — locked typography (order-independent)", () => {
   it("locks size, line-height, tracking and color tokens", () => {
