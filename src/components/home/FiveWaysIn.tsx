@@ -83,7 +83,7 @@ export function FiveWaysIn() {
           <span className="text-[12px] tracking-[0.02em] text-[color:var(--charcoal-soft)]">Private experiences · Local experts</span>
         </div>
         {hasDraft && (
-          <div className="reveal mx-auto mt-5 max-w-6xl border border-[color:var(--border)] bg-[color:var(--sand)] px-5 py-4 sm:flex sm:items-center sm:justify-between sm:gap-6">
+          <div className="mx-auto mt-2 flex max-w-3xl flex-wrap items-center justify-between gap-x-4 gap-y-1 border-t border-[color:var(--border)] px-1 py-2">
             <div>
               <p className="text-[12px] uppercase tracking-[0.2em] font-semibold text-[color:var(--teal)]">
                 Your Studio draft is waiting
@@ -98,7 +98,7 @@ export function FiveWaysIn() {
               to="/studio"
               data-testid="home-smart-start-resume"
               data-smart-start-recommended="true"
-              className="mt-4 inline-flex min-h-[44px] items-center gap-2 text-[12px] uppercase tracking-[0.16em] font-semibold text-[color:var(--teal)] underline decoration-[color:var(--gold)]/70 underline-offset-4 sm:mt-0"
+              className="inline-flex min-h-[44px] items-center gap-2 text-[12px] uppercase tracking-[0.16em] font-semibold text-[color:var(--teal)] underline decoration-[color:var(--gold)]/70 underline-offset-4"
             >
               Resume your draft <CtaMotionArrow />
             </Link>

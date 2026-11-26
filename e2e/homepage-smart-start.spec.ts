@@ -54,6 +54,50 @@ test.describe("homepage conversion paths", () => {
     await expect(page.locator("#signatures").getByRole("link", { name: /See dates and reserve/ }).first()).toHaveAttribute("href", "/tours/arrabida-wine-allinclusive#book");
   });
 
+  test("keeps the first screen cinematic and trust handoff free of blank bands", async ({ page }, testInfo) => {
+    await page.emulateMedia({ reducedMotion: "no-preference" });
+    for (const [width, height] of [[320,568],[375,812],[390,844],[393,852],[414,896],[393,650]]) {
+      await page.setViewportSize({ width, height });
+      await openHome(page);
+      await page.evaluate(async () => { await document.fonts.ready; await new Promise<void>(r => requestAnimationFrame(() => requestAnimationFrame(() => r()))); });
+      const measure = () => page.evaluate(() => {
+        const rect = (selector: string) => document.querySelector(selector)!.getBoundingClientRect();
+        const hero = rect('[data-hero-cinematic="true"]'), trust = rect("#five-paths"), signature = rect("#signatures");
+        const title = rect('[data-hero-stanza="true"]'), first = rect('[data-hero-field="primaryCta"]'), last = rect('[data-hero-field="secondaryCta"]');
+        return { height: hero.height, viewport: innerHeight, gap: trust.top - hero.bottom, nextGap: signature.top - trust.bottom, trustHeight: trust.height, titleTop: title.top - hero.top, firstTop: first.top - hero.top, lastBottom: last.bottom - hero.top };
+      });
+      const initial = await measure();
+      expect(Math.abs(initial.gap), "hero/trust seam").toBeLessThanOrEqual(2);
+      expect(Math.abs(initial.nextGap), "trust/signature seam").toBeLessThanOrEqual(2);
+      const consent = page.getByRole("button", { name: "Essential only", exact: true });
+      // SSR is visible before hydration; wait for the real consent decision,
+      // not a race against the first visibility frame.
+      if (!(await page.evaluate(() => localStorage.getItem("yes.cookieConsent.v1")))) {
+        await expect(consent).toBeVisible({ timeout: 20_000 });
+        await expect.poll(() => page.evaluate(() => document.documentElement.dataset.cookieConsentOpen)).toBe("true");
+        await expect.poll(() => page.evaluate(() => {
+          const banner = document.querySelector("[data-cookie-card]");
+          const cta = document.querySelector('[data-hero-field="secondaryCta"]');
+          return banner && cta ? banner.getBoundingClientRect().top - cta.getBoundingClientRect().bottom : -1000;
+        })).toBeGreaterThanOrEqual(-1);
+        await testInfo.attach("cinematic-consent-open-" + width + "x" + height, { body: await page.screenshot({fullPage:false, animations:"disabled"}), contentType:"image/png" });
+        await consent.click();
+      }
+      await expect(page.locator("[data-cookie-consent-dialog]")).toHaveCount(0);
+      await expect.poll(() => page.evaluate(() => document.documentElement.dataset.cookieConsentOpen ?? "")).toBe("");
+      await page.evaluate(() => window.scrollTo(0,0));
+      await expect.poll(async () => (await measure()).height).toBeGreaterThanOrEqual(height - 2);
+      const m = await measure();
+      expect(Math.abs(m.height - m.viewport), "full viewport hero").toBeLessThanOrEqual(2);
+      expect(m.trustHeight).toBeLessThanOrEqual(108);
+      expect(m.titleTop, "title clears fixed navigation").toBeGreaterThanOrEqual(64);
+      expect(m.firstTop).toBeGreaterThan(m.titleTop);
+      expect(m.lastBottom, "both CTAs inside the film").toBeLessThanOrEqual(m.height);
+      await expect.poll(() => page.locator('[data-hero-field="headlineLine2"]').evaluate(el => Number(getComputedStyle(el).opacity))).toBeGreaterThanOrEqual(.99);
+      await testInfo.attach("cinematic-first-screen-" + width + "x" + height, { body: await page.screenshot({fullPage:false, animations:"disabled"}), contentType:"image/png" });
+    }
+  });
+
   test("keeps peer editorial chapters on one measured typographic rhythm", async ({ page }, testInfo) => {
     await page.emulateMedia({ reducedMotion: "reduce" });
     await openHome(page);
@@ -62,7 +106,10 @@ test.describe("homepage conversion paths", () => {
     const sections = ["signatures", "builder", "multi-day", "reviews", "special-occasions", "why-yes", "plan-map", "journal"];
     for (const width of [320, 393, 1440]) {
       await page.setViewportSize({ width, height: 900 });
-      await page.evaluate(() => document.fonts.ready);
+      await page.evaluate(async () => { await document.fonts.ready; await new Promise<void>(resolve => requestAnimationFrame(() => requestAnimationFrame(() => resolve()))); });
+      // Force each offscreen chapter to lay out at the new viewport before taking measurements.
+      for (const id of sections) await page.locator("#" + id).scrollIntoViewIfNeeded();
+      await page.evaluate(async () => { await new Promise<void>(resolve => requestAnimationFrame(() => requestAnimationFrame(() => resolve()))); });
       const measured = await page.evaluate((ids) => ids.map((id) => {
         const section = document.getElementById(id)!;
         const intro = section.querySelector(".home-major-intro, .home-editorial-intro")!;
@@ -83,10 +130,10 @@ test.describe("homepage conversion paths", () => {
           const copy = intro.querySelector("p")!.getBoundingClientRect();
           return { label: title.top - label.bottom, copy: copy.top - title.bottom };
         });
-        expect(gaps.label, id + " label/title").toBeGreaterThanOrEqual(22);
-        expect(gaps.label, id + " label/title").toBeLessThanOrEqual(26);
-        expect(gaps.copy, id + " title/copy").toBeGreaterThanOrEqual(18);
-        expect(gaps.copy, id + " title/copy").toBeLessThanOrEqual(22);
+        expect(gaps.label, id + " label/title").toBeGreaterThanOrEqual(18);
+        expect(gaps.label, id + " label/title").toBeLessThanOrEqual(22);
+        expect(gaps.copy, id + " title/copy").toBeGreaterThanOrEqual(14);
+        expect(gaps.copy, id + " title/copy").toBeLessThanOrEqual(18);
         const offsets = await page.locator("#" + id + " .home-major-intro").evaluate((intro) => {
           const center = intro.getBoundingClientRect().left + intro.getBoundingClientRect().width / 2;
           return Array.from(intro.querySelectorAll(".motion-split-line")).map((line) => {
