@@ -125,10 +125,10 @@ const FAQS: { q: string; a: ReactNode }[] = [
 
 const DEFAULT_OPEN = "item-0";
 
-export function FAQ() {
+export function FAQ({ anchorId = "faq" }: { anchorId?: string } = {}) {
   return (
     <section
-      id="faq"
+      id={anchorId}
       className="he-section-rule py-12 md:py-14 bg-[color:var(--ivory)]"
       aria-labelledby="faq-title"
     >

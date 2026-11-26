@@ -1147,7 +1147,7 @@ function HomePage() {
           id="faq"
           className="he-section-rule section-enter section-y scroll-mt-24 md:scroll-mt-28 relative"
         >
-          <FAQ />
+          <FAQ anchorId="home-faq-content" />
           <div className="container-x mt-10 text-center">
             <SectionTitle>Ready to <SectionTitle.Em>experience Portugal?</SectionTitle.Em></SectionTitle>
             <p className="mx-auto mt-3 max-w-[42ch] text-[15px] leading-relaxed text-[color:var(--charcoal-soft)]">Choose a private day, design your own, or speak to a local travel designer.</p>

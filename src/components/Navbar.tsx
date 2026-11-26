@@ -5,27 +5,30 @@ import { Logo } from "@/components/Logo";
 import { CtaButton } from "@/components/ui/CtaButton";
 import { AccessibleIconLink } from "@/components/AccessibleIconLink";
 import { SOCIAL, whatsappUrl } from "@/config/business-nap";
-import { useT } from "@/i18n/locale-context";
+import { useLocale, useT } from "@/i18n/locale-context";
+import { localizedNavigationPath } from "@/i18n/pt-ready";
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 import { WhatsAppIcon, InstagramIcon, TripadvisorIcon } from "@/components/BrandIcon";
 
 function usePrimaryLinks() {
   const t = useT();
+  const locale = useLocale();
   return [
     { to: "/experiences", label: `Signature ${t("nav.experiences")}` },
     { to: "/portugal-travel-designer", label: t("nav.travel_designer") },
     { to: "/contact", label: t("nav.contact") },
-  ];
+  ].map((item) => ({ ...item, to: localizedNavigationPath(item.to, locale) }));
 }
 
 function useSecondaryLinks() {
   const t = useT();
+  const locale = useLocale();
   return [
     { to: "/proposal-in-portugal", label: t("nav.moments") },
     { to: "/corporate", label: t("nav.corporate") },
     { to: "/about", label: t("nav.about") },
     { to: "/local-stories", label: t("nav.local_stories") },
-  ];
+  ].map((item) => ({ ...item, to: localizedNavigationPath(item.to, locale) }));
 }
 
 const mobileSocialLinks = [
@@ -37,6 +40,7 @@ const mobileSocialLinks = [
 export function Navbar() {
   const [open, setOpen] = useState(false);
   const t = useT();
+  const locale = useLocale();
   const primaryLinks = usePrimaryLinks();
   const secondaryLinks = useSecondaryLinks();
 
@@ -54,7 +58,7 @@ export function Navbar() {
       <div className="container-x relative">
         <div className="flex h-[64px] items-center justify-between md:h-[84px] lg:h-[96px]">
           <Link
-            to="/"
+            to={localizedNavigationPath("/", locale)}
             aria-label="YES Experiences Portugal — Home"
             className="relative inline-flex h-full flex-shrink-0 items-center rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--teal)] focus-visible:ring-offset-2"
           >
@@ -129,7 +133,7 @@ export function Navbar() {
           <div className="flex-1 overflow-y-auto">
             <div className="container-x flex flex-col gap-3 py-7">
               <p className="mb-1 text-[11px] uppercase tracking-[0.22em] font-semibold text-[color:var(--teal)]">
-                Start here
+                {locale === "pt" ? "Comece aqui" : "Start here"}
               </p>
               {primaryLinks.map((item) => (
                 <Link

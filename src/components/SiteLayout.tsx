@@ -889,7 +889,11 @@ export function SiteLayout({ children }: { children: ReactNode }) {
             every navigation without needing router state. Opacity + 8px only —
             no layout shift; CSS neutralises it under reduced motion and
             outside marketing pages (checkout, Studio, admin stay still). */}
-        <main className="flex-1" data-route-fade>
+        <main
+          className="flex-1"
+          data-route-fade
+          data-editorial-page={/^\/(?:admin|guide|studio(?:[-/]|$)|checkout|booking(?:[-/]|$)|account|auth)(?:.*)$/.test(pathname) ? undefined : "true"}
+        >
           {children}
         </main>
         <Footer />
