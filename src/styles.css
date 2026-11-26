@@ -9259,3 +9259,70 @@ main[data-editorial-page] .home-major-intro > .scene-atmosphere {
 main[data-editorial-page] .home-major-intro > .scene-atmosphere > .he-eyebrow-bar {
   margin-block: 0;
 }
+
+/* Homepage mobile cinematic handoff — dedicated layout contract, not global
+   section styles. Do not reserve a second cookie-banner-height blank band.
+   Consent retains scroll padding, focus and all choices; it is not dismissed
+   or hidden by this rule. */
+html[data-cookie-consent-open="true"] .home-energy > .hero-cinematic {
+  margin-bottom: 0;
+}
+.home-energy {
+  --editorial-label-gap: 20px;
+  --editorial-title-copy-gap: 16px;
+  --home-intro-after: 24px;
+}
+.home-energy > #five-paths {
+  height: auto;
+  min-height: 0;
+  margin-block: 0;
+  padding-block: 12px;
+}
+.home-energy > :is(#signatures, #builder, #multi-day, #reviews, #special-occasions, #why-yes, #plan-map, #journal, [aria-labelledby="winter-days-title"]) {
+  padding-block: 56px 64px;
+}
+@media (min-width: 768px) {
+  .home-energy > :is(#signatures, #builder, #multi-day, #reviews, #special-occasions, #why-yes, #plan-map, #journal, [aria-labelledby="winter-days-title"]) {
+    padding-block: 80px;
+  }
+}
+@media (max-width: 767px) {
+  .home-energy > .hero-cinematic {
+    height: 100vh;
+    min-height: 100vh;
+    margin-block: 0;
+    border-radius: 0;
+  }
+  @supports (height: 100svh) {
+    .home-energy > .hero-cinematic {
+      height: 100svh;
+      min-height: 100svh;
+    }
+  }
+  @supports (height: 100dvh) {
+    .home-energy > .hero-cinematic {
+      height: 100dvh;
+      min-height: 100dvh;
+    }
+  }
+  .home-energy > .hero-cinematic .hero-cinematic-layout {
+    grid-template-rows: minmax(0, 1fr) auto minmax(12px, .42fr) auto;
+    padding-top: max(76px, calc(64px + env(safe-area-inset-top)));
+    padding-bottom: max(24px, calc(env(safe-area-inset-bottom) + 16px));
+  }
+  /* Keep the pre-existing consent clearance when the notice is open; unlike
+     a margin after the film this space stays inside the cinematic frame. */
+  html[data-cookie-consent-open="true"] .home-energy > .hero-cinematic .hero-cinematic-layout {
+    padding-bottom: max(8.5rem, calc(env(safe-area-inset-bottom) + 7.5rem));
+  }
+}
+@media (max-width: 767px) and (max-height: 680px) {
+  .home-energy > .hero-cinematic .hero-cinematic-layout {
+    grid-template-rows: minmax(0, 1fr) auto minmax(8px, .18fr) auto;
+    padding-top: max(72px, calc(64px + env(safe-area-inset-top)));
+    padding-bottom: max(16px, calc(env(safe-area-inset-bottom) + 8px));
+  }
+  html[data-cookie-consent-open="true"] .home-energy > .hero-cinematic .hero-cinematic-layout {
+    padding-bottom: max(16px, calc(env(safe-area-inset-bottom) + 8px));
+  }
+}
