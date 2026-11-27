@@ -152,7 +152,7 @@ function ExperiencesPage() {
           <SectionTitle as="h1" size="anchor" spacing="loose" className="signature-collection-heading text-[clamp(1.5rem,7vw,2rem)] sm:text-[2rem] md:text-[3.75rem] [&>span]:block">
             Designed by us. <SectionTitle.Em>Made personal by you.</SectionTitle.Em>
           </SectionTitle>
-          <p className="mt-3 max-w-[52ch] mx-auto min-h-[calc(4*1.65em)] sm:min-h-[calc(3*1.65em)] text-[15px] md:text-[16px] leading-[1.65] text-[color:var(--charcoal-soft)]">
+          <p className="mt-3 max-w-[52ch] mx-auto sm:min-h-[calc(3*1.65em)] text-[15px] md:text-[16px] leading-[1.65] text-[color:var(--charcoal-soft)]">
             Private experiences designed by our local team. Choose the original itinerary or tailor selected details to make it yours.
           </p>
           <div className="mt-4 flex justify-center">
@@ -257,7 +257,7 @@ function TourCard({
         />
       </Link>
 
-      <div className="experience-card-content flex flex-1 flex-col px-5 pb-5 pt-5 md:px-6 md:pb-6 md:pt-6">
+      <div className="experience-card-content flex flex-1 flex-col p-4 md:px-6 md:pb-6 md:pt-6">
         <h3
           className="experience-card-title t-h3 text-[color:var(--charcoal)] md:min-h-[3.1rem]"
         >
@@ -277,12 +277,12 @@ function TourCard({
           location={tour.region}
         />
 
-        <p className="experience-card-promise order-last mt-4 sm:order-none text-[14px] leading-[1.58] text-[color:var(--charcoal-soft)] md:min-h-[2.9rem] md:text-[14.5px] md:leading-[1.62]">
+        <p className="experience-card-promise order-last mt-4 sm:order-none text-[14px] leading-[1.6] text-[color:var(--charcoal-soft)] md:min-h-[2.9rem] md:text-[14.5px] md:leading-[1.62]">
           {teaser}
         </p>
 
         {highlights.length > 0 && (
-          <ul className="experience-card-highlights order-last mt-3 sm:order-none space-y-1.5 text-[13px] leading-[1.5] text-[color:var(--charcoal)]">
+          <ul className="experience-card-highlights order-last mt-3 sm:order-none space-y-2 text-[13px] leading-[1.5] text-[color:var(--charcoal)]">
             {highlights.map((highlight) => (
               <li key={highlight} className="flex gap-2">
                 <span
@@ -297,7 +297,7 @@ function TourCard({
 
         <div className="mt-4">
           <span className="font-sans text-[1.125rem] font-semibold text-[color:var(--charcoal)]">
-            From <PriceEur amountEur={tour.priceFrom} role="from" /> per person <PriceQualifier />
+            From <PriceEur amountEur={tour.priceFrom} role="from" /> <span className="text-[13px] font-normal">per person</span> <PriceQualifier concise />
           </span>
         </div>
 
@@ -349,7 +349,7 @@ function ExperienceCardMeta({
 }) {
   const hasReviews = Boolean(rating && reviewCount && reviewCount > 0);
   return (
-    <div className="mt-3 flex flex-wrap items-center gap-x-3 gap-y-1.5 border-b border-[color:var(--border)] pb-3 font-sans text-[12px] text-[color:var(--charcoal-soft)]">
+    <div className="experience-card-meta mt-3 flex flex-wrap items-center gap-x-3 gap-y-1.5 border-b border-[color:var(--border)] pb-3 font-sans text-[13px] text-[color:var(--charcoal-soft)]">
       {hasReviews ? (
         <span
           className="inline-flex items-center gap-1 text-[color:var(--charcoal)]"
