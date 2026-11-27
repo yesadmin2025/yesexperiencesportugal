@@ -234,9 +234,9 @@ export function Footer() {
         }}
       />
 
-      <div className="container-x py-7 md:py-12">
+      <div className="container-x py-8 md:py-12">
         {/* ── ZONE A — BRAND ─────────────────────────────────────────── */}
-        <div className="grid gap-8 md:grid-cols-[minmax(0,1fr)_auto] md:items-end">
+        <div className="grid gap-6 md:gap-8 md:grid-cols-[minmax(0,1fr)_auto] md:items-end">
           <div className="min-w-0 max-w-md">
             <Link
               to={localizedNavigationPath("/", locale)}
@@ -338,7 +338,7 @@ export function Footer() {
           {/* Certificates — each seal gets its own space on phones; nothing
               competes with them. */}
           <div
-            className="mt-5 flex flex-wrap items-center gap-x-6 gap-y-4 sm:gap-10"
+            className="mt-6 flex flex-wrap items-center gap-x-6 gap-y-4 sm:gap-10"
             aria-label="Review certificate and official complaints book"
           >
             <TrustindexBadge />
