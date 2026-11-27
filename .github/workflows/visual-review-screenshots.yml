@@ -1,0 +1,65 @@
+name: Visual review screenshots
+
+on:
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: visual-review-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  capture:
+    name: Full-page visual captures (mobile + desktop)
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+
+      - name: Install dependencies
+        run: bun install --frozen-lockfile
+
+      - name: Install Chromium
+        run: bunx playwright install --with-deps chromium
+
+      - name: Start local preview server
+        run: |
+          bun run dev -- --host 127.0.0.1 --port 8080 > /tmp/yes-visual-preview.log 2>&1 &
+          echo $! > /tmp/yes-visual-preview.pid
+          for i in $(seq 1 60); do
+            if curl --silent --fail http://127.0.0.1:8080/ >/dev/null; then
+              exit 0
+            fi
+            sleep 2
+          done
+          cat /tmp/yes-visual-preview.log
+          exit 1
+
+      - name: Capture full-page mobile and desktop pages
+        run: |
+          mkdir -p visual-review
+          routes=("home:/" "experiences:/experiences" "studio:/builder")
+          for item in "${routes[@]}"; do
+            name="${item%%:*}"
+            route="${item#*:}"
+            bunx playwright screenshot --browser chromium --viewport-size="393,852" --full-page --wait-for-timeout=5000 "http://127.0.0.1:8080$route" "visual-review/${name}-mobile.png"
+            bunx playwright screenshot --browser chromium --viewport-size="1440,1000" --full-page --wait-for-timeout=5000 "http://127.0.0.1:8080$route" "visual-review/${name}-desktop.png"
+          done
+
+      - name: Upload visual review captures
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: yes-full-page-visual-review
+          path: visual-review/
+          retention-days: 14
