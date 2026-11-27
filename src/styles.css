@@ -9183,6 +9183,9 @@ html[data-floating-quiet] [data-testid="floating-actions"] {
   letter-spacing: normal;
   text-wrap: balance;
 }
+.home-energy .home-editorial-intro > h2:first-child {
+  margin-top: 0;
+}
 .home-energy :is(.home-major-intro, .home-editorial-intro) > h2 .motion-split-line + .motion-split-line {
   margin-top: 0;
 }
@@ -9209,14 +9212,6 @@ html[data-floating-quiet] [data-testid="floating-actions"] {
   max-width: 100%;
   margin-inline: auto;
   text-align: center;
-}
-.home-energy #builder .home-editorial-intro > ol {
-  column-gap: 12px;
-}
-.home-energy #builder .home-editorial-intro > ol li > span:last-child {
-  line-height: 1.5;
-  letter-spacing: .09em;
-  overflow-wrap: normal;
 }
 
 /* Public chapter openings use one label/title/copy contract. Restrict
@@ -9434,9 +9429,6 @@ h1, h2, h3, .editorial-title-safe, .font-serif, .font-display {
     line-height: 1.333333;
   }
 
-  .home-energy #builder .home-editorial-intro > ol {
-    margin-top: 32px;
-  }
 
   .home-energy #faq .homepage-faq-trigger {
     font-size: 15.5px;
