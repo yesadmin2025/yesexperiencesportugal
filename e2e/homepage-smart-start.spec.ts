@@ -49,8 +49,10 @@ test.describe("homepage conversion paths", () => {
     }
     await expect(firstCard.locator(".home-signature-highlights li").first()).toContainText("Two wineries");
     await expect(page.locator("#signatures").getByText(/tailor selected details/i)).toBeVisible();
-    await expect(page.locator("#why-yes li")).toHaveCount(6);
-    await expect(page.locator("#faq").getByRole("link", { name: "Explore Signature Experiences" })).toHaveAttribute("href", "/experiences");
+    await expect(page.locator("#why-yes li")).toHaveCount(3);
+    await expect(firstCard.getByRole("link", { name: /Tailor this day/i })).toHaveAttribute("href", "/tours/arrabida-wine-allinclusive/tailor");
+    await expect(page.locator("#builder ol[aria-label='Why the Studio']")).toHaveCount(0);
+    await expect(page.locator("#home-final-cta").getByRole("link", { name: "Explore Signature Experiences" })).toHaveAttribute("href", "/experiences");
     await expect(page.locator("#signatures").getByRole("link", { name: /See dates and reserve/ }).first()).toHaveAttribute("href", "/tours/arrabida-wine-allinclusive#book");
   });
 
