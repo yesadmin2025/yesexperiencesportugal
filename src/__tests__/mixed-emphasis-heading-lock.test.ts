@@ -59,6 +59,7 @@ const TARGET_GLOBS = [
 const EMPHASIS_TOKENS = [
   "italic font-normal text-[color:var(--teal)]",
   "italic font-normal text-[color:var(--ivory)]",
+  "italic font-medium text-[color:var(--teal)]",
   "SectionTitle.Em",
 ];
 

@@ -31,9 +31,6 @@ export function StudioLivePreview() {
           </p>
           <p className="mt-1 text-[13px] text-[color:var(--ivory)]/90">One custom private day</p>
         </div>
-        <span className="rounded-full border border-[color:var(--gold)]/35 px-2.5 py-1 text-[12px] uppercase tracking-[0.12em] text-[color:var(--ivory)]/84">
-          Not your draft
-        </span>
       </div>
 
       <div className="flex flex-wrap gap-2 border-b border-[color:var(--gold)]/15 px-4 py-3 md:px-5">

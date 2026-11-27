@@ -72,12 +72,11 @@ describe("FAQ #faq-title — locked typography (order-independent)", () => {
     expectAllTokens(
       FAQ_TITLE,
       [
-        "text-[1.8rem]",
-        "sm:text-[2.1rem]",
-        "md:text-[2.6rem]",
-        "leading-[1.1]",
-        "md:leading-[1.02]",
-        "tracking-[-0.018em]",
+        "text-[1.8125rem]",
+        "md:text-[2.25rem]",
+        "leading-[1.18]",
+        "md:leading-[1.1]",
+        "tracking-normal",
         "text-[color:var(--charcoal)]",
         "font-medium",
       ],
@@ -93,7 +92,7 @@ describe("FAQ #faq-title — locked typography (order-independent)", () => {
   it("FAQ headline stays calm — no longer the homepage's closing anchor", () => {
     // FAQ was deliberately downsized; the Final CTA now closes the page.
     expect(FAQ_TITLE.has("md:text-[4rem]")).toBe(false);
-    expect(FAQ_TITLE.has("md:text-[2.6rem]")).toBe(true);
+    expect(FAQ_TITLE.has("md:text-[2.25rem]")).toBe(true);
   });
 });
 

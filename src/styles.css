@@ -9336,3 +9336,11 @@ html[data-cookie-consent-open="true"] .home-energy > .hero-cinematic {
     margin-top: 0;
   }
 }
+
+/* Lock Fraunces optical size on editorial headings so every title keeps the
+   same drawing on mobile and desktop (auto opsz made sizes look like
+   different typefaces). */
+h1, h2, h3, .editorial-title-safe, .font-serif, .font-display {
+  font-optical-sizing: none;
+  font-variation-settings: "opsz" 48;
+}

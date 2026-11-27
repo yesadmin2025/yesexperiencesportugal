@@ -914,7 +914,7 @@ function HomePage() {
                 title={
                   <>
                     Some moments{" "}
-                    <span className="italic font-normal text-[color:var(--teal)]">deserve more.</span>
+                    <span className="italic font-medium text-[color:var(--teal)]">deserve more.</span>
                   </>
                 }
                 body="From intimate proposals and anniversaries to milestone birthdays and private celebrations, we create meaningful occasions in extraordinary Portuguese settings."
@@ -931,7 +931,7 @@ function HomePage() {
                 title={
                   <>
                     Exceptional experiences.{" "}
-                    <span className="italic font-normal text-[color:var(--teal)]">Seamless execution.</span>
+                    <span className="italic font-medium text-[color:var(--teal)]">Seamless execution.</span>
                   </>
                 }
                 body="Bespoke incentives, executive retreats, team experiences and private group programs, designed around your objectives and coordinated by one dedicated local team."
@@ -982,9 +982,10 @@ function HomePage() {
             <Eyebrow className="mb-5">Autumn &amp; winter</Eyebrow>
             <h2
               id="winter-days-title"
+              data-mixed-emphasis="exempt"
               className="editorial-title-safe font-serif text-[color:var(--charcoal)] font-medium tracking-normal text-[1.8125rem] md:text-[2.25rem] leading-[1.18] md:leading-[1.1]"
             >
-              Portugal in November <SectionTitle.Em>and December.</SectionTitle.Em>
+              Portugal in November and December.
             </h2>
             <p className="mt-5 text-[15px] md:text-[16px] leading-[1.65] text-[color:var(--charcoal-soft)]">
               Cellars, workshops and historic towns are at their calmest now — and every private day we run operates all year, with free cancellation up to 24 hours before.

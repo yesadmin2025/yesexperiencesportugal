@@ -77,7 +77,7 @@ function SectionTitleRoot({
 
 function Em({ children, className, ...rest }: React.HTMLAttributes<HTMLSpanElement>) {
   return (
-    <span className={cn("italic font-normal text-[color:var(--teal)]", className)} {...rest}>
+    <span className={cn("italic font-medium text-[color:var(--teal)]", className)} {...rest}>
       {children}
     </span>
   );

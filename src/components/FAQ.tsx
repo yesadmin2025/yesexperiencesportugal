@@ -137,12 +137,10 @@ export function FAQ({ anchorId = "faq" }: { anchorId?: string } = {}) {
           <Eyebrow flank>Before you book</Eyebrow>
           <h2
             id="faq-title"
-            className="serif mt-4 text-[1.8rem] sm:text-[2.1rem] md:text-[2.6rem] leading-[1.1] md:leading-[1.02] tracking-[-0.018em] text-[color:var(--charcoal)] font-medium"
+            className="editorial-title-safe font-serif mt-5 text-[1.8125rem] md:text-[2.25rem] leading-[1.18] md:leading-[1.1] tracking-normal text-[color:var(--charcoal)] font-medium text-balance"
           >
-            A few things,{" "}
-            <span className="italic font-normal text-[color:var(--teal)]">before you decide.</span>
+            A few things before you decide.
           </h2>
-          <div className="gold-divider mt-6 mx-auto w-20" />
         </div>
 
         {/* ── Questions ─────────────────────────────────────── */}
