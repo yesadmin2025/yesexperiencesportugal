@@ -268,7 +268,6 @@ function AboutPage() {
 
       <section className="reveal about-story section-y-major chapter-flow">
         <div className="container-x max-w-5xl">
-          <Eyebrow>Travel with confidence</Eyebrow>
           <SectionTitle as="h2" size="default" spacing="tight">Licensed, insured and personally accountable.</SectionTitle>
           <div className="mt-10 grid gap-8 border-y border-[color:var(--border)] py-8 md:grid-cols-3">
             <div><p className="text-[11px] uppercase text-[color:var(--charcoal-soft)]">Registration</p><p className="mt-2 font-[family-name:var(--font-editorial)] text-xl">{LICENSE_LABEL}</p><p className="mt-2 text-sm leading-relaxed text-[color:var(--charcoal-soft)]">{LICENSE_LONG}.</p></div>
