@@ -95,7 +95,7 @@ function Section({
             className="mt-8 aspect-[3/2] w-full rounded-[4px] object-cover"
           />
         )}
-        <div className="mt-8 space-y-5 text-[16px] text-[color:var(--charcoal-soft)] leading-[1.7]">
+        <div className="mt-8 space-y-4 md:space-y-5 text-[15px] md:text-[16px] text-[color:var(--charcoal-soft)] leading-[1.65] md:leading-[1.7]">
           {children}
         </div>
       </div>
