@@ -9278,7 +9278,7 @@ html[data-cookie-consent-open="true"] .home-energy > .hero-cinematic {
   margin-block: 0;
   padding-block: 12px;
 }
-.home-energy > :is(#signatures, #builder, #multi-day, #reviews, #special-occasions, #why-yes, #plan-map, #journal, #faq, [aria-labelledby="winter-days-title"]) {
+.home-energy > :is(#signatures, #builder, #multi-day, #reviews, #special-occasions, #why-yes, #plan-map, #journal, [aria-labelledby="winter-days-title"]) {
   padding-block: 64px;
 }
 @media (min-width: 768px) {
@@ -9287,6 +9287,9 @@ html[data-cookie-consent-open="true"] .home-energy > .hero-cinematic {
   }
 }
 @media (max-width: 767px) {
+  .home-energy > #faq {
+    padding-block: 64px;
+  }
   .home-energy > .hero-cinematic {
     height: 100vh;
     min-height: 100vh;
