@@ -9294,9 +9294,6 @@ html[data-cookie-consent-open="true"] .home-energy > .hero-cinematic {
   }
 }
 @media (max-width: 767px) {
-  .home-energy > #faq {
-    padding-block: 64px;
-  }
   .home-energy > .hero-cinematic {
     height: 100vh;
     min-height: 100vh;
@@ -9459,7 +9456,7 @@ h1, h2, h3, .editorial-title-safe, .font-serif, .font-display {
    card rhythm, and natural wrapping. Desktop and the cinematic hero retain
    their existing layout. Interactive Studio and checkout are not targeted. */
 @media (max-width: 767px) {
-  .home-energy > :is(#signatures, #builder, #multi-day, #reviews, #special-occasions, #why-yes, #plan-map, #journal, #faq, [aria-labelledby="winter-days-title"]) {
+  .home-energy > :is(#signatures, #builder, #multi-day, #reviews, #special-occasions, #why-yes, #plan-map, #journal, [aria-labelledby="winter-days-title"]) {
     padding-block: 32px;
   }
 
@@ -9512,6 +9509,7 @@ h1, h2, h3, .editorial-title-safe, .font-serif, .font-display {
   }
   /* Only shared public-facing headers, never the Studio workspace. */
   main[data-editorial-page] .public-page-header .page-header-support {
+    margin-top: 16px;
     font-size: 15px;
     line-height: 1.65;
   }
@@ -9615,9 +9613,5 @@ h1, h2, h3, .editorial-title-safe, .font-serif, .font-display {
   }
   .home-energy #journal .group > .p-6 {
     padding: 16px;
-  }
-  /* Consistent supporting text for public page openings, not app screens. */
-  main[data-editorial-page] .public-page-header .page-header-support {
-    margin-top: 16px;
   }
 }
