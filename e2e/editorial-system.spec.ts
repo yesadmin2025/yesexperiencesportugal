@@ -42,7 +42,11 @@ for (const path of routes) {
         expect(readings.length).toBeGreaterThanOrEqual(6);
         await expect(page.locator("#faq")).toHaveCount(1);
         if (width < 768) {
-          await expect(page.locator("#faq")).toHaveCSS("padding-top", "64px");
+          await expect(page.locator("#faq")).toHaveCSS("padding-top", "32px");
+          await expect(page.locator("#signatures")).toHaveCSS("padding-bottom", "32px");
+          await expect(page.locator("#builder")).toHaveCSS("padding-top", "32px");
+          await expect(page.locator(".home-signature-content").first()).toHaveCSS("padding-left", "16px");
+          await expect(page.locator(".home-signature-promise").first()).toHaveCSS("font-size", "14px");
           await expect(page.locator("#home-faq-content")).toHaveCSS("padding-top", "0px");
           await expect(page.locator("#faq .homepage-faq-trigger").first()).toHaveCSS("font-size", "15.5px");
           await expect(page.locator("#why-yes h3").first()).toHaveCSS("font-size", "15px");
@@ -51,6 +55,9 @@ for (const path of routes) {
       }
       if (path === "/experiences" && width < 768) {
         await expect(page.locator(".experience-card-title").first()).toHaveCSS("font-size", "20px");
+        await expect(page.locator(".experience-card-meta").first()).toHaveCSS("font-size", "13px");
+        await expect(page.locator(".experience-card-content").first()).toHaveCSS("padding-left", "16px");
+        await expect(page.locator(".experience-card-promise").first()).toHaveCSS("font-size", "14px");
       }
       if (path.startsWith("/pt")) {
         const footer = page.locator("footer");
