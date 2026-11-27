@@ -9394,3 +9394,12 @@ h1, h2, h3, .editorial-title-safe, .font-serif, .font-display {
     min-height: 44px;
   }
 }
+
+
+/* Preserve the locked FAQ utility token while matching the approved 15.5px
+   mobile reading size without changing the shared accordion component. */
+@media (max-width: 767px) {
+  .home-energy #faq .homepage-faq-trigger {
+    font-size: 15.5px;
+  }
+}
