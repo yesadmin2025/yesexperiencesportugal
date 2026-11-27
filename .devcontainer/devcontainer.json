@@ -1,27 +1,25 @@
 {
   "name": "Yes Experiences Portugal",
-  "image": "mcr.microsoft.com/devcontainers/typescript-node:18",
+  "image": "mcr.microsoft.com/devcontainers/typescript-node:20",
   "features": {
-    "ghcr.io/devcontainers/features/node:1": {
-      "version": "20"
+    "ghcr.io/devcontainers/features/bun:1": {
+      "version": "latest"
     }
   },
   "forwardPorts": [3000],
-  "forwardPortsPrivate": true,
   "portsAttributes": {
     "3000": {
-      "label": "Application",
-      "onAutoForward": "notify"
+      "label": "YES Experiences preview",
+      "onAutoForward": "openBrowser",
+      "visibility": "private"
     }
   },
-  "postCreateCommand": "npm run setup",
+  "postCreateCommand": "bun install --frozen-lockfile",
   "customizations": {
     "vscode": {
       "extensions": [
         "dbaeumer.vscode-eslint",
         "esbenp.prettier-vscode",
-        "Vue.volar",
-        "mgmcdermott.vscode-language-babel",
         "ms-vscode.vscode-typescript-next"
       ],
       "settings": {
