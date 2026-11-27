@@ -686,7 +686,7 @@ function HomePage() {
 
                       {/* Aman-style editorial body: the title reads on ivory
                         below a clean photograph, never over it. */}
-                      <div className="flex flex-1 flex-col gap-3 p-4 md:p-5">
+                      <div className="home-signature-content flex flex-1 flex-col gap-3 p-4 md:p-5">
                         <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-[13px] text-[color:var(--charcoal-soft)]"><span className="inline-flex items-center gap-1"><Clock size={15} aria-hidden="true" />{signatureDurationLabel(t.id, t.durationHours)}</span><span className="inline-flex items-center gap-1"><Users size={15} aria-hidden="true" />Private</span></div>
                         <h3 className="serif text-[1.25rem] md:text-[1.3rem] leading-[1.28] text-[color:var(--charcoal)] font-medium text-pretty">
                           <Link
@@ -697,7 +697,7 @@ function HomePage() {
                             {FEATURED_CARD_NAMES[t.id] ?? t.title}
                           </Link>
                         </h3>
-                        <p className="text-[13.5px] leading-[1.5] text-[color:var(--charcoal-soft)]">{getSignatureCardPromise(t.id) ?? t.line}</p>
+                        <p className="home-signature-promise text-[14px] leading-[1.6] text-[color:var(--charcoal-soft)]">{getSignatureCardPromise(t.id) ?? t.line}</p>
                         {t.pickup && <p data-testid="signature-pickup" className="flex items-start gap-1.5 text-[13px] leading-[1.45] text-[color:var(--charcoal)]"><MapPin size={15} className="mt-0.5 shrink-0 text-[color:var(--teal)]" aria-hidden="true" />{t.pickup.includes("Lisbon, Setúbal, Sesimbra or Almada") ? "Pickup: Lisbon, Setúbal, Sesimbra or Almada" : t.pickup.includes("small-group meeting point") ? "Private hotel pickup & drop-off (service areas apply)" : "Private pickup & drop-off"}</p>}
                         <span aria-hidden="true" className="block h-px w-full bg-[color:var(--border)]" />
                         {t.highlights.length > 0 ? (
@@ -715,7 +715,7 @@ function HomePage() {
                           </p>
                         )}
 
-                        <div className="mt-auto flex flex-col gap-2.5 border-t border-[color:var(--border)] pt-3">
+                        <div className="home-signature-actions mt-auto flex flex-col gap-2.5 border-t border-[color:var(--border)] pt-3">
                           <p data-testid="signature-card-price" className="text-[13px] text-[color:var(--charcoal-soft)]">From <strong className="text-[22px] font-semibold text-[color:var(--teal)]">€{t.priceFrom}</strong> / person</p>
                           <CtaButton
                             to="/tours/$tourId"
@@ -801,7 +801,7 @@ function HomePage() {
               block, not the wider builder eyebrow. scroll-mt matches
               the same offset used elsewhere on the page. */}
             <div id="studio" aria-hidden="true" className="scroll-mt-24 md:scroll-mt-28" />
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14 items-center max-w-6xl mx-auto w-full min-w-0">
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-14 items-center max-w-6xl mx-auto w-full min-w-0">
               {/* On mobile: text rail (with the headline) renders FIRST so
                 the user reads "Create it live." before seeing the
                 device. On desktop the rail returns to the left so the
@@ -962,7 +962,7 @@ function HomePage() {
                 <li key={title} className="min-w-0 border-t border-[color:var(--gold)]/40 pt-4">
                   <Icon size={22} aria-hidden="true" className="mb-3 text-[color:var(--teal)]" />
                   <h3 className="font-sans font-semibold text-[15px] leading-snug text-[color:var(--charcoal)]">{title}</h3>
-                  <p className="mt-2 text-[13.5px] leading-[1.55] text-[color:var(--charcoal-soft)]">{body}</p>
+                  <p className="mt-2 text-[14px] leading-[1.6] text-[color:var(--charcoal-soft)]">{body}</p>
                 </li>
               ))}
             </ul>
@@ -1149,7 +1149,7 @@ function HomePage() {
           className="he-section-rule section-enter section-y scroll-mt-24 md:scroll-mt-28 relative"
         >
           <FAQ anchorId="home-faq-content" />
-          <div className="container-x mt-10 text-center">
+          <div className="container-x home-final-intro mt-0 md:mt-10 text-center">
             <SectionTitle>Ready to <SectionTitle.Em>experience Portugal?</SectionTitle.Em></SectionTitle>
             <p className="mx-auto mt-3 max-w-[42ch] text-[15px] leading-relaxed text-[color:var(--charcoal-soft)]">Choose a private day, design your own, or speak to a local travel designer.</p>
             <div className="mx-auto mt-5 flex max-w-xl flex-col gap-3 sm:flex-row sm:flex-wrap sm:justify-center">

@@ -6,7 +6,7 @@ Approved mobile direction (27 November 2026). Preserve the brand, storytelling, 
 - Fraunces: cinematic hero, editorial chapter titles and main product-card titles. Inter: body, navigation, labels, prices, FAQ and controls.
 - Editorial signature: preserve the contrast between upright Fraunces in charcoal and selective italic Fraunces in brand teal. Use `SectionTitle.Em` for the emotional or evocative half of an editorial heading; keep both parts in the same type scale and optical size, with natural wrapping and balanced line lengths. Do not flatten existing mixed-emphasis titles, italicize functional UI or mechanically add italics to factual titles. Preserve intentional exceptions and the cinematic hero copy.
 - Mobile public editorial chapter title: 30px; Signature product-card title: 20px; introductory supporting copy: 15px with 1.65 line-height; eyebrows: 11px.
-- Mobile chapter rhythm: 64px section padding; label to title 16px, title to supporting copy 16px, introduction to content 32px. Do not stack nested section padding. Long headings and paragraphs must wrap naturally, never clip to achieve a line-count target.
+- Mobile chapter rhythm: 64px between peer homepage chapters (32px trailing + 32px leading); other independent editorial sections keep their established rhythm; label to title 16px, title to supporting copy 16px, introduction to content 32px. Do not stack nested section padding. Long headings and paragraphs must wrap naturally, never clip to achieve a line-count target.
 - FAQ questions: Inter 15.5px medium; YES Difference pillar labels: Inter 15px semibold.
 - Mobile primary marketing actions: 48px minimum, 12px Inter, 0.18em tracking; permit natural expansion for text wrapping, localization and accessibility. Maintain visible focus and adequate touch targets. Secondary actions use restrained hairlines or chips.
 - Keep the existing desktop editorial scale and layout. Do not shrink text to fit a fixed height.
@@ -27,3 +27,5 @@ Approved mobile direction (27 November 2026). Preserve the brand, storytelling, 
 - Never merge or publish a visual change without checking its impact on the protected journeys.
 
 The automated checks enforce selected numeric rules; subjective quality, photographic consistency and optical alignment still require human/visual review.
+
+- Mobile commercial cards: 16px inner padding, 20px Fraunces title, 14px Inter promise, 13px metadata/highlights, 16px action separation. Preserve accessible wrapping, qualifiers, booking and Tailor destinations.

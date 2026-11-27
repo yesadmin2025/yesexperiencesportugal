@@ -8,10 +8,10 @@ import { cn } from "@/lib/utils";
  * so it stays subordinate even inside large bold price headlines;
  * case/tracking/color are inherited from the surrounding label.
  */
-export function PriceQualifier({ className }: { className?: string }) {
+export function PriceQualifier({ className, concise = false }: { className?: string; concise?: boolean }) {
   return (
     <span className={cn("text-[12px] font-normal leading-relaxed tracking-normal", className)}>
-      {PRICE_GROUP_QUALIFIER}
+      {concise ? "· varies with group size" : PRICE_GROUP_QUALIFIER}
     </span>
   );
 }
