@@ -102,11 +102,20 @@ test.describe("homepage conversion paths", () => {
     await page.setViewportSize({ width: 393, height: 852 });
     await page.emulateMedia({ reducedMotion: "no-preference" });
     await openHome(page);
+    // SSR content is visible before the reveal observers and consent UI mount.
+    // Start scrolling only after hydration and the consent scroll lock settle.
+    await page.waitForFunction(() => (window as Window & { __APP_READY__?: boolean }).__APP_READY__ === true, undefined, { timeout: 30_000 });
     const consent = page.getByRole("button", { name: "Essential only", exact: true });
-    if (await consent.isVisible()) await consent.click();
+    if (!(await page.evaluate(() => localStorage.getItem("yes.cookieConsent.v1")))) {
+      await expect(consent).toBeVisible({ timeout: 20_000 });
+      await consent.click();
+    }
+    await expect.poll(() => page.evaluate(() => document.documentElement.dataset.cookieConsentOpen ?? "")).toBe("");
     for (const id of ["signatures", "multi-day"]) {
       const intro = page.locator("#" + id + " .home-major-intro");
-      await intro.scrollIntoViewIfNeeded();
+      await expect.poll(() => intro.evaluate(el => el.hasAttribute("data-scene-ready") || el.getAttribute("data-scene") === "in")).toBe(true);
+      await intro.evaluate(el => el.scrollIntoView({ block: "center", behavior: "instant" }));
+      await expect(intro).toBeInViewport({ ratio: 0.3 });
       await expect(intro).toHaveAttribute("data-scene", "in", { timeout: 15000 });
       await expect.poll(async () => intro.evaluate(el => {
         const parts = [el.querySelector(".scene-atmosphere"), el.querySelector(".scene-body")];
