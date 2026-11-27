@@ -687,7 +687,6 @@ function HomePage() {
                       {/* Aman-style editorial body: the title reads on ivory
                         below a clean photograph, never over it. */}
                       <div className="home-signature-content flex flex-1 flex-col gap-3 p-4 md:p-5">
-                        <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-[13px] text-[color:var(--charcoal-soft)]"><span className="inline-flex items-center gap-1"><Clock size={15} aria-hidden="true" />{signatureDurationLabel(t.id, t.durationHours)}</span><span className="inline-flex items-center gap-1"><Users size={15} aria-hidden="true" />Private</span></div>
                         <h3 className="serif text-[1.25rem] md:text-[1.3rem] leading-[1.28] text-[color:var(--charcoal)] font-medium text-pretty">
                           <Link
                             to="/tours/$tourId"
@@ -697,6 +696,7 @@ function HomePage() {
                             {FEATURED_CARD_NAMES[t.id] ?? t.title}
                           </Link>
                         </h3>
+                        <div className="home-signature-meta flex flex-wrap items-center gap-x-3 gap-y-1 text-[13px] text-[color:var(--charcoal-soft)]"><span className="inline-flex items-center gap-1"><Clock size={15} aria-hidden="true" />{signatureDurationLabel(t.id, t.durationHours)}</span><span className="inline-flex items-center gap-1"><Users size={15} aria-hidden="true" />Private</span></div>
                         <p className="home-signature-promise text-[14px] leading-[1.6] text-[color:var(--charcoal-soft)]">{getSignatureCardPromise(t.id) ?? t.line}</p>
                         {t.pickup && <p data-testid="signature-pickup" className="flex items-start gap-1.5 text-[13px] leading-[1.45] text-[color:var(--charcoal)]"><MapPin size={15} className="mt-0.5 shrink-0 text-[color:var(--teal)]" aria-hidden="true" />{t.pickup.includes("Lisbon, Setúbal, Sesimbra or Almada") ? "Pickup: Lisbon, Setúbal, Sesimbra or Almada" : t.pickup.includes("small-group meeting point") ? "Private hotel pickup & drop-off (service areas apply)" : "Private pickup & drop-off"}</p>}
                         <span aria-hidden="true" className="block h-px w-full bg-[color:var(--border)]" />
@@ -925,7 +925,7 @@ function HomePage() {
 
               <EditorialCard
                 reverse
-                className="mt-14 md:mt-20"
+                className="mt-12 md:mt-20"
                 eyebrow="Corporate & groups"
                 accent="var(--teal)"
                 title={
@@ -950,7 +950,7 @@ function HomePage() {
               <SectionTitle id="why-yes-title">Why choose <SectionTitle.Em>YES Experiences Portugal?</SectionTitle.Em></SectionTitle>
               <p className="mt-4 text-[15px] leading-relaxed text-[color:var(--charcoal-soft)]">Local knowledge, genuine encounters and the freedom to experience Portugal your way, with one team bringing it all together.</p>
             </div>
-            <ul className="grid grid-cols-2 md:grid-cols-3 gap-x-5 gap-y-7 md:gap-9 list-none p-0">
+            <ul className="grid grid-cols-1 min-[375px]:grid-cols-2 md:grid-cols-3 gap-x-5 gap-y-6 md:gap-9 list-none p-0">
               {[
                 { Icon: Users, title: "Your own private group", body: "Travel with your chosen companions, with a local host and private transportation on Signature days." },
                 { Icon: SlidersHorizontal, title: "Flexible by design", body: "Keep the original itinerary or tailor selected details. Start from scratch in the Studio if you prefer." },
@@ -1149,16 +1149,21 @@ function HomePage() {
           className="he-section-rule section-enter section-y scroll-mt-24 md:scroll-mt-28 relative"
         >
           <FAQ anchorId="home-faq-content" />
-          <div className="container-x home-final-intro mt-0 md:mt-10 text-center">
-            <SectionTitle>Ready to <SectionTitle.Em>experience Portugal?</SectionTitle.Em></SectionTitle>
-            <p className="mx-auto mt-3 max-w-[42ch] text-[15px] leading-relaxed text-[color:var(--charcoal-soft)]">Choose a private day, design your own, or speak to a local travel designer.</p>
-            <div className="mx-auto mt-5 flex max-w-xl flex-col gap-3 sm:flex-row sm:flex-wrap sm:justify-center">
-              <CtaButton to="/experiences" variant="primary">{CTA_LABELS.signatureDiscovery}</CtaButton>
+        </div>
+
+        {/* A distinct commercial chapter, not part of the accordion. */}
+        <section id="home-final-cta" aria-labelledby="home-final-title" className="home-final-chapter bg-[color:var(--ivory)]">
+          <div className="container-x home-final-intro text-center">
+            <div aria-hidden="true" className="home-final-rule" />
+            <SectionTitle id="home-final-title">Ready to <SectionTitle.Em>experience Portugal?</SectionTitle.Em></SectionTitle>
+            <p className="mx-auto max-w-[42ch] text-[15px] leading-relaxed text-[color:var(--charcoal-soft)]">Choose a private day, design your own, or speak to a local travel designer.</p>
+            <div className="home-final-actions mx-auto max-w-xl">
+              <CtaButton to="/experiences" variant="primary" aria-label={CTA_LABELS.signatureDiscovery}>Explore Signatures</CtaButton>
               <CtaButton to="/studio" variant="ghost">{CTA_LABELS.studio}</CtaButton>
-              <Link to="/portugal-travel-designer" className="inline-flex min-h-[44px] items-center justify-center gap-2 text-[14px] font-medium text-[color:var(--teal)] underline underline-offset-4">{CTA_LABELS.travelDesigner} <CtaMotionArrow /></Link>
+              <CtaButton to="/portugal-travel-designer" variant="hairline">{CTA_LABELS.travelDesigner}</CtaButton>
             </div>
           </div>
-        </div>
+        </section>
 
         {/* Popular searches + "Only on YES" block removed in the declutter
           pass. High-intent internal links moved into the Footer so SEO
