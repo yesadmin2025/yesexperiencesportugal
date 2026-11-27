@@ -317,7 +317,7 @@ function TourCard({
             to="/tours/$tourId/tailor"
             params={{ tourId: tour.id }}
             variant="hairline"
-            className="mt-2 w-full justify-between"
+            className="mt-2 w-full justify-between normal-case text-[14px] tracking-normal font-medium"
             aria-label={`Tailor this day — ${tour.title}`}
           >
             {CTA_LABELS.tailor}
