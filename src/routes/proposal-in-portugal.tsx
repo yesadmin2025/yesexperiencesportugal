@@ -135,7 +135,7 @@ export function ProposalInPortugalPage() {
 
       {/* Service blocks */}
       <section className="section-y-major chapter-flow">
-        <div className="container-x alt-chapters space-y-16 md:space-y-24">
+        <div className="container-x alt-chapters space-y-12 md:space-y-24">
           {BLOCKS.map((b, i) => {
             const Icon = b.icon;
             const reverse = i % 2 === 1;
@@ -171,7 +171,7 @@ export function ProposalInPortugalPage() {
                   <p className="mt-4 font-serif italic text-[1.1rem] md:text-[1.2rem] text-[color:var(--teal)] leading-snug">
                     {b.emotional}
                   </p>
-                  <p className="mt-4 text-[color:var(--charcoal-soft)] leading-relaxed">
+                  <p className="mt-4 text-[15px] md:text-[16px] text-[color:var(--charcoal-soft)] leading-[1.65]">
                     {b.practical}
                   </p>
                   <div className="mt-5 pl-4 border-l-2 border-[color:var(--border)] text-sm text-[color:var(--charcoal-soft)] leading-relaxed">
