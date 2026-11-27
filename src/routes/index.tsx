@@ -12,7 +12,7 @@ import { buildResponsiveSrc } from "@/lib/responsive-image";
 
 import heroImg from "@/assets/hero-coast.jpg";
 
-import { Star, Clock, MapPin, Users, SlidersHorizontal, Compass, ShieldCheck, HeartHandshake, Check, Wine } from "lucide-react";
+import { Star, Clock, MapPin, Users, HeartHandshake, Check, Wine } from "lucide-react";
 
 import { GuestQuotes } from "@/components/home/GuestQuotes";
 import { StudioLivePreview } from "@/components/home/StudioLivePreview";
@@ -591,7 +591,7 @@ function HomePage() {
                 ]}
               />
               <p className="scene-body mx-auto mt-5 max-w-[44ch] text-[15px] md:text-[16px] leading-[1.7] text-[color:var(--charcoal-soft)]">
-                Private experiences shaped by our local team, inspired by the Portugal we know best. Choose the original itinerary or tailor selected details to make it yours.
+                Choose a private day from our collection, or tailor selected details of the original itinerary.
               </p>
             </Scene>
 
@@ -699,7 +699,6 @@ function HomePage() {
                         <div className="home-signature-meta flex flex-wrap items-center gap-x-3 gap-y-1 text-[13px] text-[color:var(--charcoal-soft)]"><span className="inline-flex items-center gap-1"><Clock size={15} aria-hidden="true" />{signatureDurationLabel(t.id, t.durationHours)}</span><span className="inline-flex items-center gap-1"><Users size={15} aria-hidden="true" />Private</span></div>
                         <p className="home-signature-promise text-[14px] leading-[1.6] text-[color:var(--charcoal-soft)]">{getSignatureCardPromise(t.id) ?? t.line}</p>
                         {t.pickup && <p data-testid="signature-pickup" className="flex items-start gap-1.5 text-[13px] leading-[1.45] text-[color:var(--charcoal)]"><MapPin size={15} className="mt-0.5 shrink-0 text-[color:var(--teal)]" aria-hidden="true" />{t.pickup.includes("Lisbon, Setúbal, Sesimbra or Almada") ? "Pickup: Lisbon, Setúbal, Sesimbra or Almada" : t.pickup.includes("small-group meeting point") ? "Private hotel pickup & drop-off (service areas apply)" : "Private pickup & drop-off"}</p>}
-                        <span aria-hidden="true" className="block h-px w-full bg-[color:var(--border)]" />
                         {t.highlights.length > 0 ? (
                           <ul className="signature-card-highlights home-signature-highlights m-0 list-none space-y-2 p-0 text-[13px] leading-[1.45] text-[color:var(--charcoal)]">
                             {t.highlights.map((highlight) => (
@@ -735,7 +734,7 @@ function HomePage() {
                             data-analytics-placement="home-card"
                             data-analytics-experience-id={t.id}
                             data-analytics-experience-type="signature"
-                            className="editorial-action inline-flex min-h-[44px] items-center justify-between gap-3 font-sans text-[11px] font-semibold uppercase tracking-[0.18em] text-[color:var(--charcoal)] underline decoration-[color:var(--gold)]/60 underline-offset-4 transition-colors hover:text-[color:var(--teal)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)]"
+                            className="editorial-action inline-flex min-h-[44px] items-center justify-between gap-3 font-sans text-[14px] font-medium text-[color:var(--teal)] underline decoration-[color:var(--gold)]/60 underline-offset-4 transition-colors hover:text-[color:var(--charcoal)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)]"
                           >
                             Tailor this day <CtaMotionArrow />
                           </Link>
@@ -752,7 +751,7 @@ function HomePage() {
             </p>
             <p
               data-testid="signature-trust-line"
-              className="mt-8 md:mt-10 text-center text-[11px] uppercase tracking-[0.2em] leading-[1.9] text-[color:var(--charcoal-soft)]"
+              className="mt-4 text-center text-[14px] leading-[1.65] text-[color:var(--charcoal-soft)]"
             >
               Free cancellation up to 24h before
               <span aria-hidden="true" className="mx-2 text-[color:var(--gold)]">·</span>
@@ -827,27 +826,8 @@ function HomePage() {
                 <p className="reveal-stagger mt-4 text-[14.5px] md:text-[16px] text-[color:var(--charcoal-soft)] leading-[1.7] max-w-md">
                   Design your own private day around the places, flavors and moments that inspire you. Watch a{" "}
                   <strong className="font-medium text-[color:var(--charcoal)]">real route</strong>,
-                  driving times and live pricing take shape as you choose. See the total and reserve instantly.
+                  driving times and live pricing take shape as you choose. Reserve instantly, with a local team available on WhatsApp.
                 </p>
-
-                {/* Three differentiators — tied to the product, not a floating manifesto. */}
-                <ol
-                  className="he-stagger reveal-stagger mt-7 grid grid-cols-3 gap-1.5 max-w-md"
-                  aria-label="Why the Studio"
-                >
-                  {[
-                    { n: "01", label: "Real route" },
-                    { n: "02", label: "Instant confirmation" },
-                    { n: "03", label: "Local on WhatsApp" },
-                  ].map((d) => (
-                    <li key={d.n} className="reveal-stagger flex flex-col gap-1.5">
-                      <span aria-hidden="true" className="block h-[3px] bg-[color:var(--gold)]" />
-                      <span className="text-[11px] uppercase tracking-[0.16em] font-semibold text-[color:var(--charcoal)] tabular-nums">
-                        {d.n} · {d.label}
-                      </span>
-                    </li>
-                  ))}
-                </ol>
 
                 <div className="reveal-stagger mt-8 flex flex-wrap gap-x-5 gap-y-4">
                   <CtaButton to="/studio" variant="primary">
@@ -878,11 +858,7 @@ function HomePage() {
         >
           <div className="container-x">
             <div className="home-editorial-intro mx-auto mb-8 max-w-3xl text-center">
-              <Eyebrow className="mb-3">Guest reviews</Eyebrow>
               <SectionTitle>Portugal, through <SectionTitle.Em>our guests’ eyes.</SectionTitle.Em></SectionTitle>
-              <p className="mx-auto mt-3 max-w-[56ch] text-[15px] leading-[1.6] text-[color:var(--charcoal-soft)]">
-                Real stories from travelers who chose to discover Portugal with us.
-              </p>
             </div>
             <GuestQuotes />
           </div>
@@ -900,7 +876,6 @@ function HomePage() {
         >
           <div className="container-x">
             <div className="home-editorial-intro reveal text-center max-w-2xl mx-auto mb-10 md:mb-14">
-              <Eyebrow className="mb-5">Special occasions</Eyebrow>
               <SectionTitle id="special-occasions-title">
                 A moment to mark,{" "}
                 <SectionTitle.Em>or a whole team to host.</SectionTitle.Em>
@@ -946,18 +921,13 @@ function HomePage() {
         <section id="why-yes" aria-labelledby="why-yes-title" className="section-enter py-12 md:py-16 bg-[color:var(--sand)] border-b border-[color:var(--border)] scroll-mt-24">
           <div className="container-x max-w-5xl">
             <div className="home-editorial-intro mx-auto max-w-2xl text-center mb-8">
-              <Eyebrow className="mb-3">The YES difference</Eyebrow>
               <SectionTitle id="why-yes-title">Why choose <SectionTitle.Em>YES Experiences Portugal?</SectionTitle.Em></SectionTitle>
-              <p className="mt-4 text-[15px] leading-relaxed text-[color:var(--charcoal-soft)]">Local knowledge, genuine encounters and the freedom to experience Portugal your way, with one team bringing it all together.</p>
             </div>
-            <ul className="grid grid-cols-1 min-[375px]:grid-cols-2 md:grid-cols-3 gap-x-5 gap-y-6 md:gap-9 list-none p-0">
+            <ul className="grid grid-cols-1 md:grid-cols-3 gap-y-5 md:gap-9 list-none p-0">
               {[
-                { Icon: Users, title: "Your own private group", body: "Travel with your chosen companions, with a local host and private transportation on Signature days." },
-                { Icon: SlidersHorizontal, title: "Flexible by design", body: "Keep the original itinerary or tailor selected details. Start from scratch in the Studio if you prefer." },
-                { Icon: Wine, title: "Authentic local encounters", body: "Discover selected wineries, artisans, regional food and Portugal’s cultural heritage." },
-                { Icon: Compass, title: "Portugal specialists", body: "From a private day out to a multi-day journey, work with a team that knows Portugal first-hand." },
-                { Icon: ShieldCheck, title: "Clear booking choices", body: "See inclusions, pricing and booking conditions before you reserve." },
-                { Icon: HeartHandshake, title: "Real human support", body: "Contact our local team for help choosing an experience, planning a journey or organizing a special occasion." },
+                { Icon: Users, title: "Private, by design", body: "Your own group, local host and private transportation on Signature days. Keep the itinerary or tailor selected details." },
+                { Icon: Wine, title: "Portugal, firsthand", body: "Explore selected wineries, artisans, regional food and heritage with a team that knows the country personally." },
+                { Icon: HeartHandshake, title: "One local team", body: "Clear prices, inclusions and booking conditions, with real human support from the first question to your journey." },
               ].map(({ Icon, title, body }) => (
                 <li key={title} className="min-w-0 border-t border-[color:var(--gold)]/40 pt-4">
                   <Icon size={22} aria-hidden="true" className="mb-3 text-[color:var(--teal)]" />
@@ -979,7 +949,6 @@ function HomePage() {
           className="section-enter py-12 md:py-16 bg-[color:var(--sand)] border-b border-[color:var(--border)]"
         >
           <div className="home-editorial-intro home-editorial-intro--standalone container-x max-w-3xl mx-auto text-center">
-            <Eyebrow className="mb-5">Autumn &amp; winter</Eyebrow>
             <h2
               id="winter-days-title"
               data-mixed-emphasis="exempt"
@@ -1015,14 +984,11 @@ function HomePage() {
         >
           <div className="container-x">
             <div className="home-editorial-intro reveal text-center max-w-2xl mx-auto mb-8 md:mb-12">
-              <Eyebrow className="mb-5">Explore Portugal</Eyebrow>
                <SectionTitle
                 id="plan-map-title"
               >
-                All of Portugal, mainland and islands —{" "}
-                 <SectionTitle.Em>
-                  start with a place you already have in mind.
-                 </SectionTitle.Em>
+                Explore Portugal,{" "}
+                 <SectionTitle.Em>mainland and islands.</SectionTitle.Em>
                </SectionTitle>
               <p className="mt-5 text-[15px] leading-relaxed text-[color:var(--charcoal-soft)]">
                 From Gerês and the Douro to the Algarve, Madeira and the Azores. Choose a place and
@@ -1050,14 +1016,11 @@ function HomePage() {
         >
           <div className="container-x">
             <div className="home-editorial-intro reveal text-center max-w-2xl mx-auto mb-7 md:mb-10">
-              <Eyebrow className="mb-5">Local stories</Eyebrow>
                <SectionTitle
                 id="journal-title"
               >
-                Portugal, written{" "}
-                 <SectionTitle.Em>
-                  by the people who drive it.
-                 </SectionTitle.Em>
+                Local stories,{" "}
+                 <SectionTitle.Em>from the people who drive it.</SectionTitle.Em>
                </SectionTitle>
             </div>
 
@@ -1152,7 +1115,7 @@ function HomePage() {
         </div>
 
         {/* A distinct commercial chapter, not part of the accordion. */}
-        <section id="home-final-cta" aria-labelledby="home-final-title" className="home-final-chapter bg-[color:var(--ivory)]">
+        <section id="home-final-cta" aria-labelledby="home-final-title" className="home-final-chapter py-8 bg-[color:var(--ivory)]">
           <div className="container-x home-final-intro text-center">
             <div aria-hidden="true" className="home-final-rule" />
             <SectionTitle id="home-final-title">Ready to <SectionTitle.Em>experience Portugal?</SectionTitle.Em></SectionTitle>
