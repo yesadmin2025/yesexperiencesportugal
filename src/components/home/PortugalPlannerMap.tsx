@@ -200,12 +200,12 @@ export function PortugalPlannerMap() {
                 <Link
                   to="/tours/$tourId"
                   params={{ tourId: tour.id }}
-                  className="group flex items-baseline gap-3 rounded-md border border-[color:var(--border)] bg-[color:var(--ivory)] px-4 py-3 transition-transform duration-200 hover:-translate-y-[2px] focus-visible:-translate-y-[2px]"
+                  className="planner-map-tour-link group flex min-h-[48px] items-center gap-3 rounded-md border border-[color:var(--border)] bg-[color:var(--ivory)] px-4 py-3 transition-colors duration-200 hover:border-[color:var(--gold)] focus-visible:border-[color:var(--gold)]"
                 >
                   <span className="text-[14.5px] leading-snug text-[color:var(--charcoal)]">
                     {tour.title}
                   </span>
-                  <span className="ml-auto shrink-0 text-[11px] uppercase tracking-[0.22em] text-[color:var(--teal)]">
+                  <span className="planner-map-tour-action ml-auto shrink-0 font-sans text-[11px] font-semibold uppercase tracking-[0.16em] text-[color:var(--teal)]">
                     View →
                   </span>
                 </Link>
@@ -221,7 +221,7 @@ export function PortugalPlannerMap() {
                 <Link
                   to="/local-stories/$slug"
                   params={{ slug: guide.slug }}
-                  className="inline-block rounded-full border border-[color:var(--border)] px-4 py-2 text-[13px] text-[color:var(--charcoal-soft)] transition-colors duration-200 hover:text-[color:var(--teal)]"
+                  className="planner-map-guide-chip inline-flex min-h-[44px] items-center rounded-full border border-[color:var(--border)] bg-[color:var(--ivory)]/70 px-4 py-2 text-[12px] leading-snug text-[color:var(--charcoal-soft)] transition-colors duration-200 hover:border-[color:var(--gold)] hover:text-[color:var(--teal)]"
                 >
                   {guide.h1}
                 </Link>
@@ -235,7 +235,7 @@ export function PortugalPlannerMap() {
             to="/studio"
             search={{ destination: STUDIO_DESTINATION_BY_PLACE[active.id] } as never}
             size="sm"
-            className="mt-5"
+            className="home-map-cta mt-5"
           >
             Design a day in {active.label}
           </CtaButton>
@@ -244,7 +244,7 @@ export function PortugalPlannerMap() {
             to="/contact"
             search={{ type: "multi_day", place: active.label }}
             size="sm"
-            className="mt-5"
+            className="home-map-cta mt-5"
           >
             Plan a journey including {active.label}
           </CtaButton>

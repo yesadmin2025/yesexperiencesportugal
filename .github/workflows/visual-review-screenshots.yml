@@ -1,0 +1,128 @@
+name: Visual review screenshots
+
+on:
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: visual-review-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  capture:
+    name: Full-page visual captures (mobile + desktop)
+    runs-on: ubuntu-24.04
+    timeout-minutes: 25
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+
+      - name: Install dependencies
+        run: bun install --frozen-lockfile
+
+      - name: Install Chromium
+        run: bunx playwright install --with-deps chromium
+
+      - name: Start local preview server
+        run: |
+          bun run dev -- --host 127.0.0.1 --port 8080 > /tmp/yes-visual-preview.log 2>&1 &
+          echo $! > /tmp/yes-visual-preview.pid
+          for i in $(seq 1 60); do
+            if curl --silent --fail http://127.0.0.1:8080/ >/dev/null; then
+              exit 0
+            fi
+            sleep 2
+          done
+          cat /tmp/yes-visual-preview.log
+          exit 1
+
+      - name: Capture pages after activating scroll-based content
+        run: |
+          mkdir -p visual-review
+          cat > capture-visual-review.mjs <<'EOF'
+          import { chromium } from "@playwright/test";
+
+          const browser = await chromium.launch({ headless: true });
+          const pages = [
+            ["home", "/"],
+            ["experiences", "/experiences"],
+            ["studio", "/builder"],
+          ];
+          const viewports = [
+            ["mobile", { width: 393, height: 852 }],
+            ["desktop", { width: 1440, height: 1000 }],
+          ];
+
+          for (const [name, route] of pages) {
+            for (const [device, viewport] of viewports) {
+              const context = await browser.newContext({ viewport, deviceScaleFactor: 1 });
+              const page = await context.newPage();
+              const response = await page.goto(`http://127.0.0.1:8080${route}`, {
+                waitUntil: "domcontentloaded",
+                timeout: 60000,
+              });
+              if (!response || !response.ok()) {
+                throw new Error(`${name}/${device} returned HTTP ${response?.status()}`);
+              }
+
+              await page.waitForLoadState("networkidle", { timeout: 20000 }).catch(() => {});
+              await page.evaluate(async () => {
+                if (document.fonts?.ready) await document.fonts.ready;
+                const images = Array.from(document.images);
+                await Promise.all(images.map((img) => {
+                  if (img.complete) return Promise.resolve();
+                  return new Promise((resolve) => {
+                    img.addEventListener("load", resolve, { once: true });
+                    img.addEventListener("error", resolve, { once: true });
+                    setTimeout(resolve, 8000);
+                  });
+                }));
+              });
+
+              // Activate IntersectionObserver reveals and native lazy-loaded media.
+              let previousHeight = 0;
+              for (let pass = 0; pass < 3; pass++) {
+                const height = await page.evaluate(() => document.documentElement.scrollHeight);
+                for (let y = 0; y < height; y += Math.max(400, Math.floor(viewport.height * 0.75))) {
+                  await page.evaluate((top) => window.scrollTo(0, top), y);
+                  await page.waitForTimeout(180);
+                }
+                await page.waitForTimeout(900);
+                const nextHeight = await page.evaluate(() => document.documentElement.scrollHeight);
+                if (nextHeight === previousHeight && pass > 0) break;
+                previousHeight = nextHeight;
+              }
+
+              await page.evaluate(() => window.scrollTo(0, 0));
+              await page.waitForTimeout(1400);
+              await page.screenshot({
+                path: `visual-review/${name}-${device}.png`,
+                fullPage: true,
+                animations: "disabled",
+                timeout: 60000,
+              });
+              console.log(`Captured ${name} / ${device}; height=${await page.evaluate(() => document.documentElement.scrollHeight)}px`);
+              await context.close();
+            }
+          }
+          await browser.close();
+          EOF
+          node capture-visual-review.mjs
+          rm -f capture-visual-review.mjs
+
+      - name: Upload visual review captures
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: yes-full-page-visual-review
+          path: visual-review/
+          retention-days: 14
