@@ -8944,6 +8944,13 @@ html.reveal-ready .cinematic-editorial--single.is-playing img {
   transform: translate3d(0, 18px, 0);
   transition-duration: 600ms;
 }
+/* The visible state must outrank the ready-state intro transform.
+   Otherwise the eyebrow and copy stay 18px lower at rest, making the
+   split title look too close to its label and too far from its copy. */
+[data-scene-ready="1"][data-scene="in"].home-major-intro :is(.scene-atmosphere, .scene-title, .scene-body),
+[data-scene-ready="1"][data-scene="in"].home-story-intro :is(.scene-atmosphere, .scene-body) {
+  transform: translate3d(0, 0, 0);
+}
 [data-scene="in"].home-story-intro .scene-atmosphere {
   transition-delay: 0ms;
 }

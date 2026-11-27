@@ -98,6 +98,44 @@ test.describe("homepage conversion paths", () => {
     }
   });
 
+  test("settles animated editorial introductions to their resting geometry", async ({ page }) => {
+    await page.setViewportSize({ width: 393, height: 852 });
+    await page.emulateMedia({ reducedMotion: "no-preference" });
+    await openHome(page);
+    // SSR content is visible before the reveal observers and consent UI mount.
+    // Start scrolling only after hydration and the consent scroll lock settle.
+    await page.waitForFunction(() => (window as Window & { __APP_READY__?: boolean }).__APP_READY__ === true, undefined, { timeout: 30_000 });
+    const consent = page.getByRole("button", { name: "Essential only", exact: true });
+    if (!(await page.evaluate(() => localStorage.getItem("yes.cookieConsent.v1")))) {
+      await expect(consent).toBeVisible({ timeout: 20_000 });
+      await consent.click();
+    }
+    await expect.poll(() => page.evaluate(() => document.documentElement.dataset.cookieConsentOpen ?? "")).toBe("");
+    for (const id of ["signatures", "multi-day"]) {
+      const intro = page.locator("#" + id + " .home-major-intro");
+      await expect.poll(() => intro.evaluate(el => el.hasAttribute("data-scene-ready") || el.getAttribute("data-scene") === "in")).toBe(true);
+      await intro.evaluate(el => el.scrollIntoView({ block: "center", behavior: "instant" }));
+      await expect(intro).toBeInViewport({ ratio: 0.3 });
+      await expect(intro).toHaveAttribute("data-scene", "in", { timeout: 15000 });
+      await expect.poll(async () => intro.evaluate(el => {
+        const parts = [el.querySelector(".scene-atmosphere"), el.querySelector(".scene-body")];
+        return parts.map(part => {
+          if (!part) return null;
+          const transform = getComputedStyle(part).transform;
+          return transform === "none" ? 0 : new DOMMatrixReadOnly(transform).m42;
+        });
+      }), { timeout: 10000 }).toEqual([0, 0]);
+      const gaps = await intro.evaluate(el => {
+        const label = el.querySelector(".scene-atmosphere")!.getBoundingClientRect();
+        const title = el.querySelector("h2")!.getBoundingClientRect();
+        const copy = el.querySelector("p")!.getBoundingClientRect();
+        return [title.top - label.bottom, copy.top - title.bottom];
+      });
+      expect(gaps[0], id + " settled label/title").toBeCloseTo(16, 0);
+      expect(gaps[1], id + " settled title/copy").toBeCloseTo(16, 0);
+    }
+  });
+
   test("keeps peer editorial chapters on one measured typographic rhythm", async ({ page }, testInfo) => {
     await page.emulateMedia({ reducedMotion: "reduce" });
     await openHome(page);
