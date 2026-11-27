@@ -200,7 +200,6 @@ function CorporatePage() {
       {/* ── Hero ─────────────────────────────────────────── */}
       <section className="page-hero public-page-header reveal">
         <div className="container-x max-w-3xl text-center header-seq">
-          <Eyebrow flank>Corporate &amp; incentives</Eyebrow>
           <h1 className={sectionTitleClassName("anchor", "loose", "text-[32px] leading-[1.08] md:text-[60px] md:leading-[1.02]")}>
             Corporate experiences in Portugal,{" "}
             <SectionTitle.Em>designed by locals.</SectionTitle.Em>
@@ -268,7 +267,6 @@ function CorporatePage() {
           </div>
 
           <div className="section-seq">
-            <Eyebrow>Designed for the purpose</Eyebrow>
             <SectionTitle size="compact" spacing="loose">
               Built around the team. <SectionTitle.Em>Scaled around the group.</SectionTitle.Em>
             </SectionTitle>
@@ -302,7 +300,6 @@ function CorporatePage() {
           </div>
 
           <div className="section-seq">
-            <Eyebrow>Beyond the meeting room</Eyebrow>
             <SectionTitle size="compact" spacing="loose">
               Local knowledge, <SectionTitle.Em>across the country.</SectionTitle.Em>
             </SectionTitle>
@@ -409,9 +406,8 @@ function CorporatePage() {
       {/* ── FAQ ──────────────────────────────────────────── */}
       <section className="section-y chapter-flow bg-[color:var(--ivory)] reveal">
         <div className="container-x max-w-3xl">
-          <Eyebrow>Corporate FAQ</Eyebrow>
           <SectionTitle as="h2" size="compact" spacing="loose">
-            Practical answers <SectionTitle.Em>before we plan.</SectionTitle.Em>
+            Corporate <SectionTitle.Em>FAQ.</SectionTitle.Em>
           </SectionTitle>
 
           <div className="mt-8 md:mt-12">
@@ -465,7 +461,6 @@ function CorporatePage() {
           </div>
 
           <div className="order-1 lg:order-2">
-            <Eyebrow>Start with the brief</Eyebrow>
             <SectionTitle size="compact" spacing="loose">
               Tell us about <SectionTitle.Em>your group.</SectionTitle.Em>
             </SectionTitle>
