@@ -9399,10 +9399,33 @@ h1, h2, h3, .editorial-title-safe, .font-serif, .font-display {
 }
 
 
-/* Preserve the locked FAQ utility token while matching the approved 15.5px
-   mobile reading size without changing the shared accordion component. */
+/* Approved mobile editorial cadence. Keep desktop, cinematic hero and
+   shared booking/workspace controls unchanged. */
 @media (max-width: 767px) {
+  .home-energy {
+    --editorial-label-gap: 16px;
+    --editorial-body-size: 15px;
+  }
+
+  .home-energy #builder .home-editorial-intro > ol {
+    margin-top: 32px;
+  }
+
+  /* The outer #faq already supplies the section's 64px vertical padding.
+     The nested shared FAQ must not add another 48px on this page. */
+  .home-energy #faq > #home-faq-content {
+    padding-block: 0;
+  }
+
   .home-energy #faq .homepage-faq-trigger {
     font-size: 15.5px;
+  }
+
+  /* Single-line primary actions settle at 48px. Allow taller buttons
+     when text wraps or the visitor increases their text size. */
+  .home-energy .premium-cta--primary:not(.hero-cinematic *) {
+    min-height: 48px;
+    padding-block: 10px;
+    line-height: 1.333333;
   }
 }
