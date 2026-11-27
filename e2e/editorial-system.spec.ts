@@ -39,7 +39,11 @@ for (const path of routes) {
         expect(reading.size, reading.title).toBe(width >= 768 ? 40 : 30);
       }
       if (path === "/") {
-        expect(readings.length).toBeGreaterThanOrEqual(6);
+        // Labels remain on the three core service chapters; secondary chapters lead with a title.
+        expect(readings.length).toBeGreaterThanOrEqual(3);
+        for (const id of ["reviews", "why-yes", "plan-map", "journal", "special-occasions"]) {
+          await expect(page.locator("#" + id + " .home-editorial-intro > .he-eyebrow-bar")).toHaveCount(0);
+        }
         await expect(page.locator("#faq")).toHaveCount(1);
         if (width < 768) {
           await expect(page.locator("#faq")).toHaveCSS("padding-top", "32px");
