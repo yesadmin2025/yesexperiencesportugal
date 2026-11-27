@@ -29,17 +29,28 @@ for (const path of routes) {
           const label = h.previousElementSibling!;
           const a = label.getBoundingClientRect(), b = h.getBoundingClientRect();
           const css = getComputedStyle(h);
-          return { label: label.textContent?.trim(), title: h.textContent?.trim(), gap: b.top - a.bottom, size: parseFloat(css.fontSize), leading: css.lineHeight };
+          return { label: label.textContent?.trim(), title: h.textContent?.trim(), gap: b.top - a.bottom, marginTop: parseFloat(css.marginTop), size: parseFloat(css.fontSize), leading: css.lineHeight };
         });
       });
       for (const reading of readings) {
-        expect(reading.gap, reading.title).toBeGreaterThanOrEqual(18);
+        expect(reading.gap, reading.title).toBeGreaterThanOrEqual(width >= 768 ? 18 : 15.5);
+        if (width < 768) expect(reading.marginTop, reading.title).toBe(16);
         expect(reading.gap, reading.title).toBeLessThanOrEqual(36);
         expect(reading.size, reading.title).toBe(width >= 768 ? 40 : 30);
       }
       if (path === "/") {
         expect(readings.length).toBeGreaterThanOrEqual(6);
         await expect(page.locator("#faq")).toHaveCount(1);
+        if (width < 768) {
+          await expect(page.locator("#faq")).toHaveCSS("padding-top", "64px");
+          await expect(page.locator("#home-faq-content")).toHaveCSS("padding-top", "0px");
+          await expect(page.locator("#faq .homepage-faq-trigger").first()).toHaveCSS("font-size", "15.5px");
+          await expect(page.locator("#why-yes h3").first()).toHaveCSS("font-size", "15px");
+          await expect(page.locator("#signatures .home-major-intro > p")).toHaveCSS("font-size", "15px");
+        }
+      }
+      if (path === "/experiences" && width < 768) {
+        await expect(page.locator(".experience-card-title").first()).toHaveCSS("font-size", "20px");
       }
       if (path.startsWith("/pt")) {
         const footer = page.locator("footer");
