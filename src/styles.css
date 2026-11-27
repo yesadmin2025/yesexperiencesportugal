@@ -9268,9 +9268,9 @@ html[data-cookie-consent-open="true"] .home-energy > .hero-cinematic {
   margin-bottom: 0;
 }
 .home-energy {
-  --editorial-label-gap: 20px;
+  --editorial-label-gap: 16px;
   --editorial-title-copy-gap: 16px;
-  --home-intro-after: 24px;
+  --home-intro-after: 32px;
 }
 .home-energy > #five-paths {
   height: auto;
@@ -9278,8 +9278,8 @@ html[data-cookie-consent-open="true"] .home-energy > .hero-cinematic {
   margin-block: 0;
   padding-block: 12px;
 }
-.home-energy > :is(#signatures, #builder, #multi-day, #reviews, #special-occasions, #why-yes, #plan-map, #journal, [aria-labelledby="winter-days-title"]) {
-  padding-block: 56px 64px;
+.home-energy > :is(#signatures, #builder, #multi-day, #reviews, #special-occasions, #why-yes, #plan-map, #journal, #faq, [aria-labelledby="winter-days-title"]) {
+  padding-block: 64px;
 }
 @media (min-width: 768px) {
   .home-energy > :is(#signatures, #builder, #multi-day, #reviews, #special-occasions, #why-yes, #plan-map, #journal, [aria-labelledby="winter-days-title"]) {
@@ -9343,4 +9343,54 @@ html[data-cookie-consent-open="true"] .home-energy > .hero-cinematic {
 h1, h2, h3, .editorial-title-safe, .font-serif, .font-display {
   font-optical-sizing: none;
   font-variation-settings: "opsz" 48;
+}
+
+
+/* Mobile refinement plan — scoped to the homepage; no booking, SEO,
+   hero-media or shared-site component behavior is changed. */
+@media (max-width: 767px) {
+  .home-energy .premium-cta {
+    min-height: 48px;
+    font-family: var(--font-sans, Inter, sans-serif);
+    font-size: 12px;
+    letter-spacing: 0.18em;
+  }
+
+  .home-energy .home-related-links {
+    column-gap: 1.125rem;
+    row-gap: 0.125rem;
+  }
+
+  .home-energy .home-related-link {
+    color: var(--charcoal-soft);
+    text-decoration: none;
+  }
+
+  .home-energy .home-related-link + .home-related-link::before {
+    content: "";
+    width: 3px;
+    height: 3px;
+    margin-right: 1.125rem;
+    border-radius: 50%;
+    background: color-mix(in oklab, var(--gold) 72%, transparent);
+  }
+
+  .home-energy .winter-experience-chip {
+    min-height: 44px;
+    padding-inline: 1rem;
+    background: color-mix(in oklab, var(--ivory) 78%, transparent);
+  }
+
+  .home-energy .planner-map-tour-link {
+    min-height: 48px;
+    padding-block: 0.75rem;
+  }
+
+  .home-energy .planner-map-tour-action {
+    letter-spacing: 0.16em;
+  }
+
+  .home-energy .planner-map-guide-chip {
+    min-height: 44px;
+  }
 }
