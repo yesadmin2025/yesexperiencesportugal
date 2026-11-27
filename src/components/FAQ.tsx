@@ -152,7 +152,7 @@ export function FAQ({ anchorId = "faq" }: { anchorId?: string } = {}) {
                 value={`item-${i}`}
                 className="reveal-stagger group relative border border-[color:var(--border)] hover:border-[color:var(--teal)]/40 bg-[color:var(--ivory)]/80 transition-colors duration-200 [&[data-state=open]]:border-[color:var(--teal)]/55 [&[data-state=open]]:shadow-[var(--shadow-card)] [&[data-state=open]]:before:content-[''] [&[data-state=open]]:before:absolute [&[data-state=open]]:before:left-0 [&[data-state=open]]:before:top-3 [&[data-state=open]]:before:bottom-3 [&[data-state=open]]:before:w-[2px] [&[data-state=open]]:before:bg-[color:var(--gold)]"
               >
-                <AccordionTrigger className="px-5 md:px-6 py-4 md:py-5 text-left font-sans text-[15.5px] font-medium md:text-[17px] text-[color:var(--charcoal)] hover:no-underline hover:text-[color:var(--teal)] transition-colors duration-200 [&[data-state=open]]:text-[color:var(--teal)]">
+                <AccordionTrigger className="homepage-faq-trigger px-5 md:px-6 py-4 md:py-5 text-left font-sans text-[15px] font-medium md:text-[17px] text-[color:var(--charcoal)] hover:no-underline hover:text-[color:var(--teal)] transition-colors duration-200 [&[data-state=open]]:text-[color:var(--teal)]">
                   {item.q}
                 </AccordionTrigger>
                 <AccordionContent className="px-5 md:px-6 pb-5 md:pb-6 pt-0 text-[14.5px] md:text-[15px] leading-[1.65] text-[color:var(--charcoal)]">
