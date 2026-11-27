@@ -48,7 +48,7 @@ jobs:
       - name: Capture pages after activating scroll-based content
         run: |
           mkdir -p visual-review
-          cat > /tmp/capture-visual-review.mjs <<'EOF'
+          cat > capture-visual-review.mjs <<'EOF'
           import { chromium } from "@playwright/test";
 
           const browser = await chromium.launch({ headless: true });
@@ -116,7 +116,8 @@ jobs:
           }
           await browser.close();
           EOF
-          node /tmp/capture-visual-review.mjs
+          node capture-visual-review.mjs
+          rm -f capture-visual-review.mjs
 
       - name: Upload visual review captures
         if: always()
