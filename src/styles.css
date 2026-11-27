@@ -9452,3 +9452,79 @@ h1, h2, h3, .editorial-title-safe, .font-serif, .font-display {
     line-height: 1.333333;
   }
 }
+
+
+/* Mobile composition: one 64px chapter boundary, shared commercial
+   card rhythm, and natural wrapping. Desktop and the cinematic hero retain
+   their existing layout. Interactive Studio and checkout are not targeted. */
+@media (max-width: 767px) {
+  .home-energy > :is(#signatures, #builder, #multi-day, #reviews, #special-occasions, #why-yes, #plan-map, #journal, #faq, [aria-labelledby="winter-days-title"]) {
+    padding-block: 32px;
+  }
+
+  .home-energy .home-signature-content,
+  main[data-editorial-page] .experience-card-content {
+    padding: 16px;
+  }
+  .home-energy .home-signature-content {
+    gap: 12px;
+  }
+  .home-energy .home-signature-content > h3,
+  main[data-editorial-page] .experience-card-title {
+    font-size: 20px;
+    line-height: 1.28;
+    font-weight: 500;
+  }
+  .home-energy .home-signature-promise,
+  main[data-editorial-page] .experience-card-promise {
+    font-size: 14px;
+    line-height: 1.6;
+  }
+  .home-energy .home-signature-highlights,
+  main[data-editorial-page] .experience-card-highlights {
+    font-size: 13px;
+    line-height: 1.5;
+  }
+  .home-energy .home-signature-actions {
+    padding-top: 16px;
+    gap: 8px;
+  }
+  main[data-editorial-page] .experience-card-meta {
+    margin-top: 12px;
+    padding-bottom: 12px;
+    font-size: 13px;
+    line-height: 1.5;
+  }
+  main[data-editorial-page] .experience-card-action {
+    padding-top: 16px;
+  }
+  :is(.home-signature-actions, .experience-card-action) .premium-cta--primary {
+    min-height: 48px;
+    padding-block: 10px;
+    font-size: 12px;
+    letter-spacing: .18em;
+    line-height: 1.333333;
+  }
+  .home-energy #journal h3 {
+    font-size: 20px;
+    line-height: 1.28;
+  }
+  .home-energy .home-final-intro > h2 {
+    margin-top: 0;
+    font-size: var(--editorial-heading-size);
+    line-height: var(--editorial-heading-leading);
+  }
+  .home-energy .home-final-intro > p {
+    margin-top: 16px;
+    font-size: 15px;
+    line-height: 1.65;
+  }
+  .home-energy .home-final-intro > p + div {
+    margin-top: 32px;
+  }
+  /* Only shared public-facing headers, never the Studio workspace. */
+  main[data-editorial-page] .public-page-header .page-header-support {
+    font-size: 15px;
+    line-height: 1.65;
+  }
+}
