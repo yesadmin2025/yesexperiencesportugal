@@ -130,8 +130,13 @@ test.describe("homepage conversion paths", () => {
           const copy = intro.querySelector("p")!.getBoundingClientRect();
           return { label: title.top - label.bottom, copy: copy.top - title.bottom };
         });
-        expect(gaps.label, id + " label/title").toBeGreaterThanOrEqual(18);
-        expect(gaps.label, id + " label/title").toBeLessThanOrEqual(22);
+        if (width < 768) {
+          // Approved mobile editorial contract: 16px, not the former 18–22px range.
+          expect(gaps.label, id + " label/title").toBeCloseTo(16, 0);
+        } else {
+          expect(gaps.label, id + " label/title").toBeGreaterThanOrEqual(18);
+          expect(gaps.label, id + " label/title").toBeLessThanOrEqual(22);
+        }
         expect(gaps.copy, id + " title/copy").toBeGreaterThanOrEqual(14);
         expect(gaps.copy, id + " title/copy").toBeLessThanOrEqual(18);
         const offsets = await page.locator("#" + id + " .home-major-intro").evaluate((intro) => {
