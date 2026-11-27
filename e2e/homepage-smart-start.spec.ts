@@ -200,6 +200,50 @@ test.describe("homepage conversion paths", () => {
     await expect(page.locator("footer").getByText(/shown the way a local shows a friend/i)).toBeVisible();
   });
 
+  test("keeps FAQ and closing commercial chapter visually distinct", async ({ page }, testInfo) => {
+    await page.emulateMedia({ reducedMotion: "reduce" });
+    await page.setViewportSize({ width: 393, height: 852 });
+    await openHome(page);
+    await page.waitForFunction(() => (window as Window & { __APP_READY__?: boolean }).__APP_READY__ === true, undefined, { timeout: 30_000 });
+    const consent = page.getByRole("button", { name: "Essential only", exact: true });
+    if (!(await page.evaluate(() => localStorage.getItem("yes.cookieConsent.v1")))) {
+      await expect(consent).toBeVisible({ timeout: 20_000 });
+      await consent.click();
+    }
+    await expect.poll(() => page.evaluate(() => document.documentElement.dataset.cookieConsentOpen ?? "")).toBe("");
+    await expect(page.locator("#faq + #home-final-cta")).toHaveCount(1);
+    for (const width of [320, 375, 390, 393, 430, 1440]) {
+      await page.setViewportSize({ width, height: 852 });
+      const final = page.locator("#home-final-cta");
+      await final.scrollIntoViewIfNeeded();
+      await page.evaluate(() => document.fonts.ready);
+      for (const state of ["closed", "open"]) {
+        const last = page.locator("#home-faq-content .homepage-faq-trigger").last();
+        if ((await last.getAttribute("data-state")) !== state) await last.click();
+        await expect(last).toHaveAttribute("data-state", state);
+        await expect.poll(async () => page.evaluate(() => {
+          const rect = (q: string) => document.querySelector(q)!.getBoundingClientRect();
+          const faq = rect("#home-faq-content"), rule = rect(".home-final-rule"), title = rect("#home-final-title"), copy = rect(".home-final-intro > p"), actions = rect(".home-final-actions");
+          return { seam: Math.round(rule.top - faq.bottom), headingGap: Math.round(title.top-rule.bottom), copyGap: Math.round(copy.top-title.bottom), actionGap: Math.round(actions.top-copy.bottom) };
+        })).toEqual({ seam: width < 768 ? 64 : 80, headingGap: 24, copyGap: 16, actionGap: 24 });
+        const buttons = final.locator(".home-final-actions > .premium-cta");
+        await expect(buttons).toHaveCount(2);
+        const sizes = await buttons.evaluateAll(nodes => nodes.map(node => {
+          const label = node.querySelector(".cta-label")!;
+          const rect = node.getBoundingClientRect();
+          return { width: rect.width, height: rect.height, textAlign: getComputedStyle(label).textAlign, overflows: node.scrollWidth > node.clientWidth + 1 };
+        }));
+        expect(Math.abs(sizes[0].width - sizes[1].width)).toBeLessThanOrEqual(1);
+        expect(Math.abs(sizes[0].height - sizes[1].height)).toBeLessThanOrEqual(1);
+        expect(sizes.every(item => item.height >= 48 && item.textAlign === "left" && !item.overflows)).toBe(true);
+      }
+      await expect(final.locator('a[href="/experiences"]')).toBeVisible();
+      await expect(final.locator('a[href="/studio"]')).toBeVisible();
+      await expect(final.locator('a[href="/portugal-travel-designer"]')).toBeVisible();
+      await testInfo.attach("closing-chapter-" + width, { body: await final.screenshot({ animations: "disabled" }), contentType: "image/png" });
+    }
+  });
+
   test("keeps commercial footer links visible and secondary navigation accessible", async ({ page }) => {
     await page.setViewportSize({ width: 393, height: 852 });
     await openHome(page);
