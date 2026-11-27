@@ -277,12 +277,12 @@ function TourCard({
           location={tour.region}
         />
 
-        <p className="experience-card-promise order-last mt-4 sm:order-none text-[14px] leading-[1.6] text-[color:var(--charcoal-soft)] md:min-h-[2.9rem] md:text-[14.5px] md:leading-[1.62]">
+        <p className="experience-card-promise mt-4 text-[14px] leading-[1.6] text-[color:var(--charcoal-soft)] md:min-h-[2.9rem] md:text-[14.5px] md:leading-[1.62]">
           {teaser}
         </p>
 
         {highlights.length > 0 && (
-          <ul className="experience-card-highlights order-last mt-3 sm:order-none space-y-2 text-[13px] leading-[1.5] text-[color:var(--charcoal)]">
+          <ul className="experience-card-highlights mt-3 space-y-2 text-[13px] leading-[1.5] text-[color:var(--charcoal)]">
             {highlights.map((highlight) => (
               <li key={highlight} className="flex gap-2">
                 <span
@@ -295,9 +295,9 @@ function TourCard({
           </ul>
         )}
 
-        <div className="mt-4">
-          <span className="font-sans text-[1.125rem] font-semibold text-[color:var(--charcoal)]">
-            From <PriceEur amountEur={tour.priceFrom} role="from" /> <span className="text-[13px] font-normal">per person</span> <PriceQualifier concise />
+        <div className="experience-card-price mt-4">
+          <span className="font-sans text-[13px] font-normal text-[color:var(--charcoal-soft)]">
+            From <strong className="text-[22px] font-semibold text-[color:var(--teal)]"><PriceEur amountEur={tour.priceFrom} role="from" /></strong> <span className="text-[13px] font-normal">per person</span> <PriceQualifier concise />
           </span>
         </div>
 
