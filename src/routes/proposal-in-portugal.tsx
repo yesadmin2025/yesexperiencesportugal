@@ -112,7 +112,6 @@ export function ProposalInPortugalPage() {
       {/* Hero */}
       <section className="page-hero public-page-header reveal">
         <div className="container-x max-w-3xl text-center header-seq">
-          <Eyebrow>Proposal in Portugal</Eyebrow>
            <SectionTitle as="h1" size="anchor" spacing="loose" className="text-[32px] leading-[1.08] md:text-[60px] md:leading-[1.02]">
             A proposal in Portugal, <SectionTitle.Em>planned discreetly.</SectionTitle.Em>
           </SectionTitle>
@@ -187,9 +186,8 @@ export function ProposalInPortugalPage() {
       {/* Where — national scope */}
        <section className="section-y chapter-flow bg-[color:var(--ivory)] reveal" aria-labelledby="proposal-where-title">
         <div className="container-x max-w-3xl">
-          <Eyebrow flank>Anywhere in Portugal</Eyebrow>
           <SectionTitle id="proposal-where-title" size="compact" spacing="loose">
-            The country is the <SectionTitle.Em>setting.</SectionTitle.Em>
+            Anywhere in <SectionTitle.Em>Portugal.</SectionTitle.Em>
           </SectionTitle>
           <p className="mt-5 text-[color:var(--charcoal-soft)] leading-relaxed">
             We are not limited to one region. Proposals and celebrations are designed wherever the
@@ -211,7 +209,6 @@ export function ProposalInPortugalPage() {
       >
         <div className="container-x max-w-3xl">
           <div className="text-center max-w-2xl mx-auto mb-8 md:mb-10">
-            <Eyebrow flank>Begin privately</Eyebrow>
             <SectionTitle id="proposal-request-title" size="compact" spacing="loose">
               Tell us about <SectionTitle.Em>the moment.</SectionTitle.Em>
             </SectionTitle>
@@ -226,9 +223,8 @@ export function ProposalInPortugalPage() {
       {/* FAQ */}
        <section className="section-y chapter-flow bg-[color:var(--ivory)] reveal">
         <div className="container-x max-w-2xl">
-          <Eyebrow className="mb-4">Questions couples ask</Eyebrow>
           <SectionTitle size="compact" spacing="normal" className="mb-8">
-            Before <SectionTitle.Em>the moment.</SectionTitle.Em>
+            Questions <SectionTitle.Em>couples ask.</SectionTitle.Em>
           </SectionTitle>
           <dl className="space-y-8">
             {PROPOSAL_FAQ.map((f) => (
