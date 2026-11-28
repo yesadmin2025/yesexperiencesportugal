@@ -30,8 +30,10 @@ describe("decorative gold ornament removed", () => {
     expect(block).not.toMatch(/--gold/);
   });
 
-  it("proposal hero eyebrow is not bracketed and local notes use a neutral border", () => {
-    expect(proposal).toMatch(/<Eyebrow>Proposal in Portugal<\/Eyebrow>/);
+  it("proposal hero avoids a redundant eyebrow and local notes use a neutral border", () => {
+    const hero = proposal.slice(proposal.indexOf('className="page-hero'), proposal.indexOf("{/* Service blocks */}"));
+    expect(hero).toMatch(/A proposal in Portugal,/);
+    expect(hero).not.toMatch(/<Eyebrow\b/);
     expect(proposal).not.toMatch(/border-l-2 border-\[color:var\(--gold\)\]/);
   });
 
