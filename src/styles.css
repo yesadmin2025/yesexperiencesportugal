@@ -9607,3 +9607,13 @@ h1, h2, h3, .editorial-title-safe, .font-serif, .font-display {
     padding: 16px;
   }
 }
+
+/* Compact seasonal editorial note, not another full marketing chapter. */
+.home-energy > .home-seasonal-note[aria-labelledby="winter-days-title"] {
+  padding-block: 20px;
+}
+@media (min-width: 768px) {
+  .home-energy > .home-seasonal-note[aria-labelledby="winter-days-title"] {
+    padding-block: 28px;
+  }
+}

@@ -146,8 +146,26 @@ export function FAQ({ anchorId = "faq" }: { anchorId?: string } = {}) {
         {/* ── Questions ─────────────────────────────────────── */}
         <div className="reveal mt-8 md:mt-10 max-w-3xl mx-auto">
           <Accordion type="single" collapsible defaultValue={DEFAULT_OPEN} className="space-y-3">
-            {FAQS.map((item, i) => (
-              <AccordionItem
+            {FAQS.slice(0, 5).map((item, i) => renderFaqItem(item, i))}
+
+          </Accordion>
+          <details data-testid="home-more-faqs" className="mt-4">
+            <summary className="flex min-h-11 w-fit mx-auto cursor-pointer items-center rounded-sm px-3 text-sm font-medium text-[color:var(--teal)] underline underline-offset-4 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)]">
+              More questions
+            </summary>
+            <Accordion type="single" collapsible className="mt-3 space-y-3">
+              {FAQS.slice(5).map((item, i) => renderFaqItem(item, i + 5))}
+            </Accordion>
+          </details>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function renderFaqItem(item: (typeof FAQS)[number], i: number) {
+  return (
+    <AccordionItem
                 key={i}
                 value={`item-${i}`}
                 className="reveal-stagger group relative border border-[color:var(--border)] hover:border-[color:var(--teal)]/40 bg-[color:var(--ivory)]/80 transition-colors duration-200 [&[data-state=open]]:border-[color:var(--teal)]/55 [&[data-state=open]]:shadow-[var(--shadow-card)] [&[data-state=open]]:before:content-[''] [&[data-state=open]]:before:absolute [&[data-state=open]]:before:left-0 [&[data-state=open]]:before:top-3 [&[data-state=open]]:before:bottom-3 [&[data-state=open]]:before:w-[2px] [&[data-state=open]]:before:bg-[color:var(--gold)]"
@@ -159,10 +177,5 @@ export function FAQ({ anchorId = "faq" }: { anchorId?: string } = {}) {
                   {item.a}
                 </AccordionContent>
               </AccordionItem>
-            ))}
-          </Accordion>
-        </div>
-      </div>
-    </section>
   );
 }

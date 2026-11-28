@@ -200,8 +200,8 @@ const MARKS: Mark[] = [
 
 export function PaymentMethodsRow() {
   return (
-    <div className="mt-8 pt-6 border-t border-[color:var(--gold-warm)]/15">
-      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+    <div className="mt-5 pt-4 border-t border-[color:var(--gold-warm)]/15">
+      <div className="flex flex-col items-center justify-center gap-2">
         <p
           className="font-[family-name:var(--font-sans)] text-[11px] uppercase tracking-[0.22em] text-[color:var(--ivory)]/65"
           style={{ fontWeight: 500 }}
@@ -209,13 +209,13 @@ export function PaymentMethodsRow() {
           Accepted payment methods
         </p>
         <ul
-          className="flex flex-wrap items-center gap-x-2 gap-y-2"
+          className="flex flex-wrap items-center justify-center gap-x-1.5 gap-y-1.5"
           aria-label="Accepted payment methods: Visa, Mastercard, American Express, PayPal, Klarna, Multibanco, Revolut Pay, Apple Pay, Google Pay"
         >
           {MARKS.map((m) => (
             <li
               key={m.id}
-              className="inline-flex items-center justify-center h-7 min-w-[3rem] px-2.5 rounded-[3px]"
+              className="inline-flex items-center justify-center h-6 min-w-[2.5rem] px-1.5 rounded-[3px]"
               style={{
                 background: "var(--ivory)",
                 boxShadow: "inset 0 0 0 1px color-mix(in oklab, var(--charcoal) 10%, transparent)",

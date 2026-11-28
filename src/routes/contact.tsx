@@ -396,11 +396,11 @@ function Page() {
           </aside>
         </div>
 
-        <div className="container-x mx-auto max-w-5xl mt-16 md:mt-24 pt-10 border-t border-[color:var(--sand)]">
-          <p className="text-[11px] uppercase tracking-[0.22em] text-[color:var(--charcoal-soft)]">
+        <details className="container-x mx-auto max-w-5xl mt-8 md:mt-12 pt-4 border-t border-[color:var(--sand)]">
+          <summary className="min-h-11 flex items-center w-fit cursor-pointer text-sm font-medium text-[color:var(--teal)] underline underline-offset-4 rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)]">
             Before you write
-          </p>
-          <ul className="mt-5 grid gap-x-10 gap-y-3 sm:grid-cols-2">
+          </summary>
+          <ul className="mt-3 grid gap-x-10 gap-y-3 sm:grid-cols-2">
             {[
               { to: "/portugal-travel-designer", label: "Travel Designer — multi-day journeys" },
               { to: "/proposal-in-portugal", label: "Proposals & special moments" },
@@ -417,7 +417,7 @@ function Page() {
               </li>
             ))}
           </ul>
-        </div>
+        </details>
       </section>
     </SiteLayout>
   );
