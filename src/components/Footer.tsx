@@ -34,22 +34,12 @@ import {
 } from "@/config/business-nap";
 
 
-/* ---------------------------------------------------------------------------
-   Footer — three zones, one rhythm.
-
-   A. BRAND    logo · tagline · social
-   B. NAVIGATE primary service columns + compact secondary navigation (expandable at every width)
-   C. TRUST    credentials · payments · partners · legal bar · official seal
-
-   Design rules enforced here:
-   - a single hairline weight, used only between zones (not between sub-blocks)
-   - one vertical rhythm: 40px between zones, 24px inside a zone
-   - identical eyebrow heading style everywhere
-   - left alignment on every breakpoint; only the closing seal is centered
---------------------------------------------------------------------------- */
+/* The footer is a compact brand close, not a second catalogue.
+   Keep six commercial links visible, exactly two secondary disclosures,
+   and a quiet contact, trust and legal band. Preserve all destinations. */
 
 const EYEBROW_CLASS =
-  "font-sans text-[11px] font-medium uppercase tracking-[0.32em] text-[color:var(--gold-warm)]";
+  "font-sans text-[11px] font-medium uppercase tracking-[0.16em] text-[color:var(--gold-warm)]";
 
 const LINK_CLASS =
   "link-hairline-gold tap inline-flex min-h-11 md:min-h-[28px] items-center text-[color:var(--ivory)]/85 hover:text-[color:var(--gold-soft)] transition-colors duration-[var(--dur-quick)] rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)] focus-visible:ring-offset-2 focus-visible:ring-offset-[color:var(--charcoal)]";
@@ -66,7 +56,7 @@ interface FooterLink {
 
 const NAV_COLUMNS: { title: string; links: FooterLink[] }[] = [
   {
-    title: "Experiences",
+    title: "Experience Portugal",
     links: [
       { to: "/experiences", label: "Signature Experiences" },
       { to: "/studio", label: "YES Experience Studio" },
@@ -74,10 +64,11 @@ const NAV_COLUMNS: { title: string; links: FooterLink[] }[] = [
     ],
   },
   {
-    title: "Occasions",
+    title: "Special occasions",
     links: [
       { to: "/proposal-in-portugal", label: "Proposals & Celebrations" },
       { to: "/corporate", label: "Corporate & Groups" },
+      { to: "/trade", label: "For Travel Advisors & Agencies" },
     ],
   },
   {
@@ -172,8 +163,11 @@ const LEGAL_LINKS: FooterLink[] = [
 ];
 
 const PT_FOOTER_LABELS: Record<string, string> = {
-  "Experiences": "Experiências",
-  "Occasions": "Ocasiões",
+  "Experience Portugal": "Experiências em Portugal",
+  "Special occasions": "Ocasiões especiais",
+  "Explore Portugal": "Explorar Portugal",
+  "About & Guest Information": "Empresa e informação ao cliente",
+  "For Travel Advisors & Agencies": "Para consultores de viagens e agências",
   "Company": "Empresa",
   "Legal": "Informação legal",
   "Signature Experiences": "Experiências Signature",
@@ -233,94 +227,65 @@ export function Footer() {
       />
 
       <div className="container-x py-8 md:py-12">
-        {/* ── ZONE A — BRAND ─────────────────────────────────────────── */}
-        <div className="grid gap-6 md:gap-8 md:grid-cols-[minmax(0,1fr)_auto] md:items-end">
-          <div className="min-w-0 max-w-md">
-            <Link
-              to={localizedNavigationPath("/", locale)}
-               className="inline-block rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)] focus-visible:ring-offset-2 focus-visible:ring-offset-[color:var(--charcoal)]"
-              aria-label="YES Experiences Portugal — Home"
-            >
-              <Logo
-                theme="gold-on-charcoal"
-                loading="lazy"
-                 className="block h-[46px] w-[115px] object-contain md:h-[52px] md:w-[130px] select-none"
-              />
-            </Link>
-            <p
-              className="mt-5 font-[family-name:var(--font-sans)] text-[14px] text-[color:var(--ivory)]/85 leading-[1.65]"
-              style={{ fontWeight: 400, letterSpacing: "0.005em" }}
-            >
-              {t("footer.tagline_full")}
-            </p>
+        {/* Brand — logo and original tagline, unchanged rating. */}
+        <div className="mx-auto max-w-xl text-center">
+          <Link
+            to={localizedNavigationPath("/", locale)}
+            className="inline-block rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)] focus-visible:ring-offset-2 focus-visible:ring-offset-[color:var(--charcoal)]"
+            aria-label="YES Experiences Portugal — Home"
+          >
+            <Logo
+              theme="gold-on-charcoal"
+              loading="lazy"
+              className="block h-[46px] w-[115px] object-contain md:h-[52px] md:w-[130px] select-none"
+            />
+          </Link>
+          <p className="mx-auto mt-3 max-w-[42ch] font-[family-name:var(--font-sans)] text-[14px] text-[color:var(--ivory)]/85 leading-[1.65]">
+            {t("footer.tagline_full")}
+          </p>
             <Link to={localizedNavigationPath("/reviews", locale)} className={`${LINK_CLASS} mt-2 gap-2 text-[13px]`}>
               <span aria-hidden="true" className="text-[color:var(--gold-warm)]">★★★★★</span>
               {SITE_RATING_LABEL}
             </Link>
-            {/* Canonical NAP — one quiet line, single source of truth. */}
-            <address className="mt-4 not-italic font-[family-name:var(--font-sans)] text-[13px] leading-[1.7] text-[color:var(--ivory)]/70">
-              <span className="block">{ADDRESS_LINE}</span>
-              <span className="mt-1 flex flex-wrap items-center">
-                <a href={EMAIL_HREF} className={LINK_CLASS}>
-                  {EMAIL}
-                </a>
-                <span aria-hidden="true" className="mx-2 text-[color:var(--ivory)]/35">
-                  ·
-                </span>
-                <a href={PHONE_HREF} className={LINK_CLASS}>
-                  {PHONE_DISPLAY}
-                </a>
-              </span>
-              <a href={whatsappUrl()} className={`${LINK_CLASS} gap-2`} target="_blank" rel="noopener noreferrer">
-                <WhatsAppIcon size={16} /> WhatsApp
-              </a>
-            </address>
-          </div>
+        </div>
 
-          <ul className="flex flex-wrap items-center gap-2.5" aria-label="Social channels">
+        {/* Six direct commercial paths; secondary links never compete with them. */}
+        <nav aria-label="Explore YES Experiences Portugal services and company" className="mx-auto mt-5 max-w-3xl border-t border-[color:var(--gold-warm)]/25 pt-5 md:mt-7 md:pt-6">
+          <div data-testid="footer-primary-navigation" className="grid grid-cols-2 gap-x-4 sm:gap-x-10 md:gap-x-16">
+            {NAV_COLUMNS.slice(0, 2).map((col) => (
+              <FooterCol key={col.title} title={col.title} links={col.links} />
+            ))}
+          </div>
+          <div className="mt-4 border-t border-[color:var(--gold-warm)]/20">
+            <FooterLinkGroup id="explore-portugal" title="Explore Portugal" links={[...SIGNATURE_TOURS, ...POPULAR_SEARCHES]} />
+            <FooterLinkGroup id="guest-information" title="About & Guest Information" links={[...NAV_COLUMNS[2].links, ...LEGAL_LINKS.filter((l) => l.to === "/press")]} compact />
+          </div>
+        </nav>
+
+        {/* Contact is one centered block, not a collection of separate calls to action. */}
+        <div className="mx-auto mt-5 max-w-xl text-center">
+          <p className="font-serif text-lg italic text-[color:var(--gold-soft)]">{locale === "pt" ? "Vamos falar de Portugal." : "Let's talk Portugal."}</p>
+          <address className="mt-1 not-italic text-[13px] leading-relaxed text-[color:var(--ivory)]/75">
+            <span className="block">{ADDRESS_LINE}</span>
+            <div className="flex flex-wrap items-center justify-center gap-x-4">
+              <a href={EMAIL_HREF} className={LINK_CLASS}>{EMAIL}</a>
+              <a href={PHONE_HREF} className={LINK_CLASS}>{PHONE_DISPLAY}</a>
+            </div>
+          </address>
+          <ul className="flex flex-wrap items-center justify-center gap-2.5" aria-label="Social channels">
             {[
               { href: SOCIAL.instagram, label: "Instagram", Icon: InstagramIcon },
               { href: SOCIAL.facebook, label: "Facebook", Icon: FacebookIcon },
+              { href: whatsappUrl(), label: "WhatsApp", Icon: WhatsAppIcon },
             ].map(({ href, label, Icon }) => (
               <li key={label}>
-                <AccessibleIconLink
-                  href={href}
-                  external
-                  label={label}
-                  tooltip={label}
-                  className={ICON_LINK_CLASS}
-                >
+                <AccessibleIconLink href={href} external label={label} tooltip={label} className={ICON_LINK_CLASS}>
                   <Icon size={16} />
                 </AccessibleIconLink>
               </li>
             ))}
           </ul>
         </div>
-
-        {/* ── ZONE B — NAVIGATE ──────────────────────────────────────── */}
-        <nav aria-label="Explore YES Experiences Portugal services and company" className="mt-6 pt-6 border-t border-[color:var(--gold-warm)]/25 md:mt-9 md:pt-8">
-          <div className="mb-6 flex flex-col gap-3 border-b border-[color:var(--gold-warm)]/25 pb-6 md:flex-row md:items-center md:justify-between md:gap-8">
-            <div className="min-w-0 max-w-xl">
-              <h2 className={EYEBROW_CLASS}>{locale === "pt" ? "Parcerias com profissionais de turismo" : "Travel trade partnerships"}</h2>
-              <p className="mt-2 text-[14px] leading-relaxed text-[color:var(--ivory)]/85">{locale === "pt" ? "O seu parceiro local em Portugal para experiências privadas, viagens à medida e grupos." : "Your local Portugal partner for private experiences, tailor-made journeys and groups."}</p>
-            </div>
-            <Link to="/trade" className="inline-flex min-h-11 items-center justify-center gap-2 self-start rounded-sm border border-[color:var(--gold-warm)] px-4 py-2 text-[13px] font-semibold text-[color:var(--gold-soft)] hover:bg-[color:var(--gold-warm)]/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)] md:shrink-0">{locale === "pt" ? "Para consultores de viagens e agências" : "For Travel Advisors & Agencies"} <span aria-hidden="true">↗</span></Link>
-          </div>
-          <div className="grid grid-cols-1 gap-y-5 sm:grid-cols-2 md:gap-x-8 md:gap-y-7">
-            {NAV_COLUMNS.filter((col) => col.title !== "Company").map((col) => (
-              <FooterCol key={col.title} title={col.title} links={col.links} />
-            ))}
-          </div>
-
-          <div className="mt-5 grid gap-x-8 gap-y-2 md:grid-cols-2">
-            {NAV_COLUMNS.filter((col) => col.title === "Company").map((col) => (
-              <FooterLinkGroup key={col.title} title={col.title} links={col.links} compact />
-            ))}
-            <FooterLinkGroup title="Legal" links={LEGAL_LINKS} compact />
-            <FooterLinkGroup title="Signature Experiences" links={SIGNATURE_TOURS} />
-            <FooterLinkGroup title="Discover Portugal" links={POPULAR_SEARCHES} />
-          </div>
-        </nav>
 
         {/* ── ZONE C — TRUST & LEGAL ───────────────────────────────────
             PaymentMethodsRow opens the zone with its own hairline, so the
@@ -332,7 +297,7 @@ export function Footer() {
           {/* Certificates — each seal gets its own space on phones; nothing
               competes with them. */}
           <div
-            className="mt-6 flex flex-wrap items-center gap-x-6 gap-y-4 sm:gap-10"
+            className="mt-4 flex flex-wrap items-center justify-center gap-x-5 gap-y-3"
             aria-label="Review certificate and official complaints book"
           >
             <TrustindexBadge />
@@ -346,8 +311,8 @@ export function Footer() {
           {/* Closing band — distribution partners, then the quiet legal
               identity. Address and contacts live once in the brand block
               above, so nothing repeats here. */}
-          <div className="mt-8 pt-8 border-t border-[color:var(--gold-warm)]/15">
-            <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+          <div className="mt-5 pt-4 border-t border-[color:var(--gold-warm)]/15">
+            <div className="flex flex-wrap items-center justify-center gap-x-4 gap-y-1">
               <h2 className={`${EYEBROW_CLASS} shrink-0`} style={{ fontWeight: 600 }}>
                 {locale === "pt" ? "Também presentes em" : "Also listed on"}
               </h2>
@@ -380,10 +345,16 @@ export function Footer() {
               </ul>
             </div>
 
-            {/* Legal identity — one quiet close (dot separators come from the
-                ::after marks from md up). */}
+            <nav aria-label={locale === "pt" ? "Informação legal" : "Legal information"} className="mt-3 flex flex-wrap justify-center gap-x-4">
+              {LEGAL_LINKS.filter((l) => l.to !== "/press").map((l) => (
+                <Link key={l.to} to={localizedNavigationPath(l.to, locale)} className={`${LINK_CLASS} text-[12px]`}>
+                  {footerLabel(l.label, locale)}
+                </Link>
+              ))}
+            </nav>
+            {/* Legal identity and mandatory disclosures remain visible. */}
             <div
-              className="mt-8 flex min-w-0 flex-col gap-1.5 font-[family-name:var(--font-sans)] text-[12px] font-normal leading-[1.6] text-[color:var(--ivory)]/75 md:flex-row md:flex-wrap md:items-center md:gap-y-0"
+              className="mt-1 flex min-w-0 flex-wrap justify-center items-center gap-x-2 gap-y-1 text-center font-[family-name:var(--font-sans)] text-[12px] font-normal leading-[1.6] text-[color:var(--ivory)]/75"
             >
               <span className="md:after:mx-2 md:after:content-['·']">
                 © {new Date().getFullYear()} Yes Experiences Portugal
@@ -399,7 +370,7 @@ export function Footer() {
                 {locale === "pt" ? "Resolução alternativa de litígios (RAL)" : "Dispute resolution (RAL)"}
               </Link>
             </div>
-            <div className="mt-4 flex flex-wrap items-center gap-x-4 gap-y-2">
+            <div className="mt-1 flex flex-wrap items-center justify-center gap-x-4 gap-y-1">
               <LanguageSwitcher variant="footer" className="text-[color:var(--ivory)]/75" />
               <span aria-hidden="true" className="text-[color:var(--text-on-dark-muted)]">
                 ·
@@ -423,16 +394,16 @@ function FooterCol({ title, links }: { title: string; links: FooterLink[] }) {
   const locale = useLocale();
   return (
     <div className="min-w-0">
-      <h2 className={`${EYEBROW_CLASS} mb-4`} style={{ fontWeight: 600 }}>
+      <h2 className={`${EYEBROW_CLASS} mb-2 leading-relaxed`} style={{ fontWeight: 600 }}>
         {footerLabel(title, locale)}
       </h2>
       <ul
-        className="space-y-2 font-[family-name:var(--font-sans)] text-[14px]"
+        className="space-y-0 font-[family-name:var(--font-sans)] text-[13px] sm:text-[14px]"
         style={{ fontWeight: 400 }}
       >
         {links.map((l) => (
           <li key={`${l.to}:${footerLabel(l.label, locale)}`}>
-            <Link to={localizedNavigationPath(l.to, locale)} params={l.params} search={l.search} className={LINK_CLASS}>
+            <Link to={localizedNavigationPath(l.to, locale)} params={l.params} search={l.search} className={`${LINK_CLASS} max-w-full break-words leading-snug py-1`}>
               {footerLabel(l.label, locale)}
             </Link>
           </li>
@@ -446,10 +417,10 @@ function FooterCol({ title, links }: { title: string; links: FooterLink[] }) {
  * Secondary navigation is collapsed at every viewport. All destinations
  * remain in the initial DOM and can be opened with an accessible button.
  */
-function FooterLinkGroup({ title, links, compact = false }: { title: string; links: FooterLink[]; compact?: boolean }) {
+function FooterLinkGroup({ id: groupId, title, links, compact = false }: { id: string; title: string; links: FooterLink[]; compact?: boolean }) {
   const locale = useLocale();
   const [open, setOpen] = useState(false);
-  const id = `footer-group-${title.replace(/\s+/g, "-").toLowerCase()}`;
+  const id = `footer-group-${groupId}`;
 
   return (
     <div className="min-w-0">
@@ -471,7 +442,7 @@ function FooterLinkGroup({ title, links, compact = false }: { title: string; lin
       </h2>
       <ul
         id={id}
-        className={`mt-4 grid-cols-1 gap-x-6 gap-y-2 font-[family-name:var(--font-sans)] ${compact ? "text-[14px]" : "text-[13px] sm:grid-cols-2"} ${
+        className={`my-3 grid-cols-1 gap-x-6 gap-y-1 font-[family-name:var(--font-sans)] ${compact ? "text-[14px] sm:grid-cols-2" : "text-[13px] sm:grid-cols-2 md:grid-cols-3"} ${
           open ? "grid" : "hidden"
         }`}
         style={{ fontWeight: 400 }}

@@ -124,9 +124,7 @@ function PortugalTravelDesignerPage() {
             <CtaButton href="#journey-enquiry" variant="primary" onClick={() => void import("@/lib/analytics-events").then((a) => a.trackEvent("travel_designer_start", { placement: "travel_designer_page" }))}>
               {CTA_LABELS.travelDesigner}
             </CtaButton>
-            <CtaButton to="/experiences" variant="ghost">
-              {CTA_LABELS.signatureDiscovery}
-            </CtaButton>
+            <Link to="/experiences" className="inline-flex min-h-11 items-center text-sm text-[color:var(--teal)] underline underline-offset-4">{CTA_LABELS.signatureDiscovery}</Link>
           </div>
         </div>
       </section>

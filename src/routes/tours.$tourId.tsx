@@ -378,11 +378,16 @@ function TourDetailPage() {
       {/* ── H · LONG-FORM CONTEXT + FAQ — quiet, below the decision ── */}
       <TourFaq tourId={tour.id} />
 
-      <TourEditorialNote tour={tour} />
-
-      <SecondaryContext tour={tour} />
-
-      <TourContextLinks tourId={tour.id} />
+      <details className="container-x my-6 max-w-5xl border-t border-[color:var(--border)] pt-3">
+        <summary className="flex min-h-11 cursor-pointer items-center text-sm font-medium text-[color:var(--teal)] underline underline-offset-4 rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)]">
+          More about this region and experience
+        </summary>
+        <div className="mt-3">
+          <TourEditorialNote tour={tour} />
+          <SecondaryContext tour={tour} />
+          <TourContextLinks tourId={tour.id} />
+        </div>
+      </details>
 
       <RelatedTours currentId={tour.id} />
     </SiteLayout>

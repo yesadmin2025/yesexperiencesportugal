@@ -289,13 +289,16 @@ function AboutPage() {
               <div className="mt-6"><CtaButton href={whatsappUrl()} target="_blank" rel="noopener noreferrer" variant="ghost">Talk to a local</CtaButton></div>
             </div>
           </div>
-          <nav aria-label="Explore YES" className="mt-12 flex flex-wrap gap-x-6 gap-y-3 border-t border-[color:var(--border)] pt-8 text-sm">
+          <details className="mt-6 border-t border-[color:var(--border)] pt-3">
+            <summary className="flex min-h-11 w-fit cursor-pointer text-sm font-medium text-[color:var(--teal)] underline underline-offset-4 rounded-sm items-center focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)]">Explore YES</summary>
+            <nav aria-label="Explore YES" className="mt-3 flex flex-wrap gap-x-6 gap-y-3 text-sm">
             <Link to="/experiences" className="underline underline-offset-4">Explore Signature Experiences</Link>
             <Link to="/studio" className="underline underline-offset-4">Design your day</Link>
             <Link to="/portugal-travel-designer" className="underline underline-offset-4">Travel Designer</Link>
             <Link to="/contact" className="underline underline-offset-4">Contact</Link>
-          </nav>
-          <p className="mt-12 font-[family-name:var(--font-editorial)] text-[1.5rem] text-[color:var(--teal)]">Private by design. Personal by nature. Portuguese at heart.</p>
+            </nav>
+          </details>
+          <p className="mt-6 font-[family-name:var(--font-editorial)] text-[1.5rem] text-[color:var(--teal)]">Private by design. Personal by nature. Portuguese at heart.</p>
         </div>
       </section>
     </SiteLayout>

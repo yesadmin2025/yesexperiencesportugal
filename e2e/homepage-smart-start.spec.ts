@@ -219,6 +219,8 @@ test.describe("homepage conversion paths", () => {
       const final = page.locator("#home-final-cta");
       await final.scrollIntoViewIfNeeded();
       await page.evaluate(() => document.fonts.ready);
+      const moreFaq = page.getByTestId("home-more-faqs");
+      if ((await moreFaq.getAttribute("open")) === null) await moreFaq.locator("summary").click();
       for (const state of ["closed", "open"]) {
         const last = page.locator("#home-faq-content .homepage-faq-trigger").last();
         if ((await last.getAttribute("data-state")) !== state) await last.click();
@@ -252,13 +254,16 @@ test.describe("homepage conversion paths", () => {
     await page.waitForFunction(() => (window as Window & { __APP_READY__?: boolean }).__APP_READY__ === true, undefined, { timeout: 30_000 });
     const footer = page.locator("footer").first();
     const nav = footer.getByRole("navigation", { name: "Explore YES Experiences Portugal services and company" });
+    await expect(nav.locator("[data-testid=footer-primary-navigation] a")).toHaveCount(6);
+    await expect(nav.getByRole("button")).toHaveCount(2);
+    await expect(footer.getByRole("navigation", { name: "Legal information" }).getByRole("link")).toHaveCount(3);
     for (const href of ["/experiences", "/studio", "/portugal-travel-designer", "/proposal-in-portugal", "/corporate", "/trade"]) {
       await expect(nav.locator(`a[href="${href}"]`).first()).toBeVisible();
     }
     await expect(nav.getByRole("link", { name: "For Travel Advisors & Agencies" })).toHaveAttribute("href", "/trade");
     const consent = page.getByRole("button", { name: "Essential only", exact: true });
     if (await consent.isVisible()) await consent.click();
-    for (const [name, id] of [["Company", "company"], ["Legal", "legal"], ["Signature Experiences", "signature-experiences"], ["Discover Portugal", "discover-portugal"]]) {
+    for (const [name, id] of [["Explore Portugal", "explore-portugal"], ["About & Guest Information", "guest-information"]]) {
       const toggle = nav.getByRole("button", { name, exact: true });
       const group = nav.locator(`#footer-group-${id}`);
       await expect(toggle).toHaveAttribute("aria-expanded", "false");
@@ -273,7 +278,7 @@ test.describe("homepage conversion paths", () => {
     await expect(footer.getByRole("link", { name: "WhatsApp", exact: true }).first()).toBeVisible();
     await expect(footer.getByRole("link", { name: /guest reviews/i }).first()).toBeVisible();
     await page.setViewportSize({ width: 1440, height: 900 });
-    for (const [name, id] of [["Company", "company"], ["Legal", "legal"], ["Signature Experiences", "signature-experiences"], ["Discover Portugal", "discover-portugal"]]) {
+    for (const [name, id] of [["Explore Portugal", "explore-portugal"], ["About & Guest Information", "guest-information"]]) {
       const toggle = nav.getByRole("button", { name, exact: true });
       const group = nav.locator(`#footer-group-${id}`);
       await expect(toggle).toBeVisible();
@@ -290,6 +295,17 @@ test.describe("homepage conversion paths", () => {
       await expect(nav.locator(`a[href="${href}"]`).first()).toBeVisible();
     }
     await expect(nav.getByRole("link", { name: "For Travel Advisors & Agencies" })).toBeVisible();
+  });
+
+  test("shows five essential homepage FAQs and retains all remaining questions on demand", async ({ page }) => {
+    await openHome(page);
+    const extra = page.getByTestId("home-more-faqs");
+    await expect(page.locator("#home-faq-content .homepage-faq-trigger")).toHaveCount(10);
+    await expect(extra.locator(".homepage-faq-trigger").first()).toBeHidden();
+    await extra.locator("summary").click();
+    await expect(extra.locator(".homepage-faq-trigger").first()).toBeVisible();
+    await extra.locator(".homepage-faq-trigger").first().click();
+    await expect(extra.locator(".homepage-faq-trigger").first()).toHaveAttribute("data-state", "open");
   });
 
   test("keeps one direct Studio action and contextual links accessible on demand", async ({ page }) => {
