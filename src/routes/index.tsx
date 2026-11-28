@@ -764,10 +764,14 @@ function HomePage() {
               <CtaButton to="/experiences" variant="hairline">
                 {CTA_LABELS.signatureDiscovery}
               </CtaButton>
-              <nav
-                aria-label="Private tours from Lisbon"
-                className="home-related-links mt-4 flex flex-wrap items-center justify-center gap-x-5 gap-y-1 text-[11px] leading-relaxed text-[color:var(--charcoal-soft)]"
-              >
+              <details className="mt-3 mx-auto max-w-lg">
+                <summary className="mx-auto flex min-h-11 w-fit cursor-pointer items-center rounded-sm px-2 text-[13px] text-[color:var(--charcoal-soft)] underline underline-offset-4 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)]">
+                  More private tours from Lisbon
+                </summary>
+                <nav
+                  aria-label="Private tours from Lisbon"
+                  className="home-related-links mt-2 flex flex-wrap items-center justify-center gap-x-5 gap-y-1 text-[11px] leading-relaxed text-[color:var(--charcoal-soft)]"
+                >
                 <Link
                   to="/lisbon-wine-tours"
                   className="home-related-link inline-flex min-h-[44px] items-center font-sans uppercase tracking-[0.12em] transition-colors hover:text-[color:var(--teal)]"
@@ -780,7 +784,8 @@ function HomePage() {
                 >
                   Private day tours from Lisbon
                 </Link>
-              </nav>
+                </nav>
+              </details>
             </div>
           </div>
         </section>
@@ -959,13 +964,18 @@ function HomePage() {
             <p className="mt-5 text-[15px] md:text-[16px] leading-[1.65] text-[color:var(--charcoal-soft)]">
               Cellars, workshops and historic towns are at their calmest now — and every private day we run operates all year, with free cancellation up to 24 hours before.
             </p>
-            <ul className="mt-8 flex flex-wrap items-center justify-center gap-x-7 gap-y-3 list-none p-0">
+            <details className="mt-4">
+              <summary className="mx-auto flex min-h-11 w-fit cursor-pointer items-center rounded-sm px-2 text-[13px] text-[color:var(--charcoal-soft)] underline underline-offset-4 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)]">
+                Explore winter experiences
+              </summary>
+              <ul className="mt-3 flex flex-wrap items-center justify-center gap-x-7 gap-y-3 list-none p-0">
               <li><Link to="/tours/$tourId" params={{ tourId: "arrabida-wine-allinclusive" }} className="winter-experience-chip editorial-action inline-flex min-h-[44px] items-center rounded-full border border-[color:var(--border)] bg-[color:var(--ivory)]/70 px-4 py-2 font-sans text-[11px] font-semibold uppercase tracking-[0.14em] text-[color:var(--charcoal)] transition-colors hover:border-[color:var(--gold)] hover:text-[color:var(--teal)]">Arrábida wine</Link></li>
               <li><Link to="/tours/$tourId" params={{ tourId: "azeitao-cheese" }} className="winter-experience-chip editorial-action inline-flex min-h-[44px] items-center rounded-full border border-[color:var(--border)] bg-[color:var(--ivory)]/70 px-4 py-2 font-sans text-[11px] font-semibold uppercase tracking-[0.14em] text-[color:var(--charcoal)] transition-colors hover:border-[color:var(--gold)] hover:text-[color:var(--teal)]">Cheese making</Link></li>
               <li><Link to="/tours/$tourId" params={{ tourId: "tiles-workshop" }} className="winter-experience-chip editorial-action inline-flex min-h-[44px] items-center rounded-full border border-[color:var(--border)] bg-[color:var(--ivory)]/70 px-4 py-2 font-sans text-[11px] font-semibold uppercase tracking-[0.14em] text-[color:var(--charcoal)] transition-colors hover:border-[color:var(--gold)] hover:text-[color:var(--teal)]">Tile painting</Link></li>
               <li><Link to="/tours/$tourId" params={{ tourId: "sintra-cascais" }} className="winter-experience-chip editorial-action inline-flex min-h-[44px] items-center rounded-full border border-[color:var(--border)] bg-[color:var(--ivory)]/70 px-4 py-2 font-sans text-[11px] font-semibold uppercase tracking-[0.14em] text-[color:var(--charcoal)] transition-colors hover:border-[color:var(--gold)] hover:text-[color:var(--teal)]">Sintra &amp; Cascais</Link></li>
-            </ul>
-            <p className="mt-8">
+              </ul>
+            </details>
+            <p className="mt-4">
               <Link to="/local-stories/$slug" params={{ slug: "portugal-in-november-december" }} className="editorial-action inline-flex min-h-[44px] items-center gap-2 font-sans text-[11px] font-semibold uppercase tracking-[0.18em] text-[color:var(--teal)] underline decoration-[color:var(--gold)]/60 underline-offset-4 transition-colors hover:text-[color:var(--charcoal)]">
                 Read the November &amp; December guide <CtaMotionArrow />
               </Link>

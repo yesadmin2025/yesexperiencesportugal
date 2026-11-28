@@ -1,7 +1,5 @@
 import type { ReactNode } from "react";
-import { Link } from "@tanstack/react-router";
-import { Wine, Users, Clock3, MapPin } from "lucide-react";
-import { CtaButton } from "@/components/ui/CtaButton";
+import { Wine, Users, Clock3 } from "lucide-react";
 
 const STOPS = [
   { x: 68, y: 58, label: "Lisbon", caption: "Pickup" },
@@ -95,36 +93,10 @@ export function StudioLivePreview() {
         </ul>
       </div>
 
-      <div className="border-t border-[color:var(--gold)]/15 bg-[color:var(--ivory)] px-4 py-4 md:px-5">
-        <div className="sm:flex sm:items-center sm:justify-between sm:gap-5">
-          <div>
-            <p className="text-[12px] uppercase tracking-[0.18em] font-semibold text-[color:var(--teal)]">
-              See your own route and live price
-            </p>
-            <p className="mt-1.5 max-w-md text-[15px] md:text-[16px] leading-[1.65] text-[color:var(--charcoal-soft)]">
-              Choose mood, group and rhythm in the Studio. This example is only here to show how the day comes together.
-            </p>
-          </div>
-          <CtaButton
-            to="/studio"
-            size="sm"
-            className="mt-4 shrink-0 sm:mt-0"
-          >
-            Design your day
-          </CtaButton>
-        </div>
-        <div className="mt-3 flex flex-wrap items-center justify-between gap-2 border-t border-[color:var(--border)] pt-3">
-          <p className="inline-flex items-center gap-1.5 text-[12px] text-[color:var(--charcoal-soft)]">
-            <MapPin size={12} aria-hidden="true" className="text-[color:var(--teal)]" />
-            Real routes · live price before payment
-          </p>
-          <Link
-            to="/experiences"
-            className="inline-flex min-h-[44px] items-center text-[12px] uppercase tracking-[0.14em] font-semibold text-[color:var(--teal)] underline decoration-[color:var(--gold)]/60 underline-offset-4"
-          >
-            Explore our curated Signature Experiences
-          </Link>
-        </div>
+      <div className="border-t border-[color:var(--gold)]/15 bg-[color:var(--ivory)] px-4 py-3 md:px-5">
+        <p className="text-[13px] leading-relaxed text-[color:var(--charcoal-soft)]">
+          An example of how a private day comes together. Your choices shape your own route and live price.
+        </p>
       </div>
     </div>
   );

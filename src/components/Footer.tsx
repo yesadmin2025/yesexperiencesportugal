@@ -38,7 +38,7 @@ import {
    Footer — three zones, one rhythm.
 
    A. BRAND    logo · tagline · social
-   B. NAVIGATE 4 nav columns + two SEO link groups (collapsible on mobile)
+   B. NAVIGATE primary service columns + compact secondary navigation (expandable at every width)
    C. TRUST    credentials · payments · partners · legal bar · official seal
 
    Design rules enforced here:
@@ -70,9 +70,7 @@ const NAV_COLUMNS: { title: string; links: FooterLink[] }[] = [
     links: [
       { to: "/experiences", label: "Signature Experiences" },
       { to: "/studio", label: "YES Experience Studio" },
-      { to: "/day-tours", label: "Private Day Tours" },
       { to: "/portugal-travel-designer", label: "Portugal Travel Designer" },
-      { to: "/lisbon-wine-tours", label: "Lisbon Wine Tours" },
     ],
   },
   {
@@ -131,6 +129,8 @@ const SIGNATURE_TOURS: FooterLink[] = [
 ];
 
 const POPULAR_SEARCHES: FooterLink[] = [
+  { to: "/day-tours", label: "Private Day Tours" },
+  { to: "/lisbon-wine-tours", label: "Lisbon Wine Tours" },
   { to: "/portugal-tours", label: "Portugal tours" },
   { to: "/luxury-tours-portugal", label: "Luxury Portugal tours" },
   { to: "/lisbon-private-tours", label: "Private tours from Lisbon" },
@@ -161,8 +161,6 @@ const POPULAR_SEARCHES: FooterLink[] = [
     label: "Alentejo wine tour from Lisbon",
   },
   { to: "/itineraries/10-day-private-portugal-tour", label: "10-day private Portugal tour" },
-  { to: "/portugal-travel-designer", label: "Portugal travel designer" },
-  { to: "/proposal-in-portugal", label: "Proposal in Portugal" },
 ];
 
 
@@ -283,7 +281,6 @@ export function Footer() {
             {[
               { href: SOCIAL.instagram, label: "Instagram", Icon: InstagramIcon },
               { href: SOCIAL.facebook, label: "Facebook", Icon: FacebookIcon },
-              { href: whatsappUrl(), label: "WhatsApp", Icon: WhatsAppIcon },
             ].map(({ href, label, Icon }) => (
               <li key={label}>
                 <AccessibleIconLink
@@ -309,20 +306,17 @@ export function Footer() {
             </div>
             <Link to="/trade" className="inline-flex min-h-11 items-center justify-center gap-2 self-start rounded-sm border border-[color:var(--gold-warm)] px-4 py-2 text-[13px] font-semibold text-[color:var(--gold-soft)] hover:bg-[color:var(--gold-warm)]/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)] md:shrink-0">{locale === "pt" ? "Para consultores de viagens e agências" : "For Travel Advisors & Agencies"} <span aria-hidden="true">↗</span></Link>
           </div>
-          <div className="grid grid-cols-1 gap-y-5 md:grid-cols-4 md:gap-x-8 md:gap-y-7">
-            {NAV_COLUMNS.map((col) => col.title === "Company" ? (
-              <div key={col.title} className="min-w-0">
-                <FooterLinkGroup title={col.title} links={col.links} compact />
-              </div>
-            ) : (
+          <div className="grid grid-cols-1 gap-y-5 sm:grid-cols-2 md:gap-x-8 md:gap-y-7">
+            {NAV_COLUMNS.filter((col) => col.title !== "Company").map((col) => (
               <FooterCol key={col.title} title={col.title} links={col.links} />
             ))}
-            <div className="min-w-0">
-              <FooterLinkGroup title="Legal" links={LEGAL_LINKS} compact />
-            </div>
           </div>
 
-          <div className="mt-5 grid gap-4 md:grid-cols-2 md:gap-10">
+          <div className="mt-5 grid gap-x-8 gap-y-2 md:grid-cols-2">
+            {NAV_COLUMNS.filter((col) => col.title === "Company").map((col) => (
+              <FooterLinkGroup key={col.title} title={col.title} links={col.links} compact />
+            ))}
+            <FooterLinkGroup title="Legal" links={LEGAL_LINKS} compact />
             <FooterLinkGroup title="Signature Experiences" links={SIGNATURE_TOURS} />
             <FooterLinkGroup title="Discover Portugal" links={POPULAR_SEARCHES} />
           </div>
@@ -449,8 +443,8 @@ function FooterCol({ title, links }: { title: string; links: FooterLink[] }) {
 }
 
 /**
- * SEO link group. Collapsed behind a toggle on mobile, always expanded from
- * md up. Links stay in the DOM at every width, so crawlers see the full index.
+ * Secondary navigation is collapsed at every viewport. All destinations
+ * remain in the initial DOM and can be opened with an accessible button.
  */
 function FooterLinkGroup({ title, links, compact = false }: { title: string; links: FooterLink[]; compact?: boolean }) {
   const locale = useLocale();
@@ -460,13 +454,12 @@ function FooterLinkGroup({ title, links, compact = false }: { title: string; lin
   return (
     <div className="min-w-0">
       <h2 className={EYEBROW_CLASS} style={{ fontWeight: 600 }}>
-        <span className="hidden md:inline">{footerLabel(title, locale)}</span>
         <button
           type="button"
           onClick={() => setOpen((v) => !v)}
           aria-expanded={open}
           aria-controls={id}
-          className="flex min-h-11 w-full items-center justify-between gap-3 rounded-sm border-b border-[color:var(--gold-warm)]/15 py-2 text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)] md:hidden"
+          className="flex min-h-11 w-full items-center justify-between gap-3 rounded-sm border-b border-[color:var(--gold-warm)]/15 py-2 text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)]"
         >
           {footerLabel(title, locale)}
           <ChevronDown
@@ -478,7 +471,7 @@ function FooterLinkGroup({ title, links, compact = false }: { title: string; lin
       </h2>
       <ul
         id={id}
-        className={`mt-4 grid-cols-1 gap-x-6 gap-y-2 font-[family-name:var(--font-sans)] ${compact ? "text-[14px]" : "text-[13px] sm:grid-cols-2"} md:grid ${
+        className={`mt-4 grid-cols-1 gap-x-6 gap-y-2 font-[family-name:var(--font-sans)] ${compact ? "text-[14px]" : "text-[13px] sm:grid-cols-2"} ${
           open ? "grid" : "hidden"
         }`}
         style={{ fontWeight: 400 }}
