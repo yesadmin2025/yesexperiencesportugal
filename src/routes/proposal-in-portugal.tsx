@@ -112,7 +112,6 @@ export function ProposalInPortugalPage() {
       {/* Hero */}
       <section className="page-hero public-page-header reveal">
         <div className="container-x max-w-3xl text-center header-seq">
-          <Eyebrow>Proposal in Portugal</Eyebrow>
            <SectionTitle as="h1" size="anchor" spacing="loose" className="text-[32px] leading-[1.08] md:text-[60px] md:leading-[1.02]">
             A proposal in Portugal, <SectionTitle.Em>planned discreetly.</SectionTitle.Em>
           </SectionTitle>
@@ -135,7 +134,7 @@ export function ProposalInPortugalPage() {
 
       {/* Service blocks */}
       <section className="section-y-major chapter-flow">
-        <div className="container-x alt-chapters space-y-16 md:space-y-24">
+        <div className="container-x alt-chapters space-y-12 md:space-y-24">
           {BLOCKS.map((b, i) => {
             const Icon = b.icon;
             const reverse = i % 2 === 1;
@@ -171,7 +170,7 @@ export function ProposalInPortugalPage() {
                   <p className="mt-4 font-serif italic text-[1.1rem] md:text-[1.2rem] text-[color:var(--teal)] leading-snug">
                     {b.emotional}
                   </p>
-                  <p className="mt-4 text-[color:var(--charcoal-soft)] leading-relaxed">
+                  <p className="mt-4 text-[15px] md:text-[16px] text-[color:var(--charcoal-soft)] leading-[1.65]">
                     {b.practical}
                   </p>
                   <div className="mt-5 pl-4 border-l-2 border-[color:var(--border)] text-sm text-[color:var(--charcoal-soft)] leading-relaxed">
@@ -187,9 +186,8 @@ export function ProposalInPortugalPage() {
       {/* Where — national scope */}
        <section className="section-y chapter-flow bg-[color:var(--ivory)] reveal" aria-labelledby="proposal-where-title">
         <div className="container-x max-w-3xl">
-          <Eyebrow flank>Anywhere in Portugal</Eyebrow>
           <SectionTitle id="proposal-where-title" size="compact" spacing="loose">
-            The country is the <SectionTitle.Em>setting.</SectionTitle.Em>
+            Anywhere in <SectionTitle.Em>Portugal.</SectionTitle.Em>
           </SectionTitle>
           <p className="mt-5 text-[color:var(--charcoal-soft)] leading-relaxed">
             We are not limited to one region. Proposals and celebrations are designed wherever the
@@ -211,7 +209,6 @@ export function ProposalInPortugalPage() {
       >
         <div className="container-x max-w-3xl">
           <div className="text-center max-w-2xl mx-auto mb-8 md:mb-10">
-            <Eyebrow flank>Begin privately</Eyebrow>
             <SectionTitle id="proposal-request-title" size="compact" spacing="loose">
               Tell us about <SectionTitle.Em>the moment.</SectionTitle.Em>
             </SectionTitle>
@@ -226,9 +223,8 @@ export function ProposalInPortugalPage() {
       {/* FAQ */}
        <section className="section-y chapter-flow bg-[color:var(--ivory)] reveal">
         <div className="container-x max-w-2xl">
-          <Eyebrow className="mb-4">Questions couples ask</Eyebrow>
           <SectionTitle size="compact" spacing="normal" className="mb-8">
-            Before <SectionTitle.Em>the moment.</SectionTitle.Em>
+            Questions <SectionTitle.Em>couples ask.</SectionTitle.Em>
           </SectionTitle>
           <dl className="space-y-8">
             {PROPOSAL_FAQ.map((f) => (

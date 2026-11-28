@@ -200,7 +200,6 @@ function CorporatePage() {
       {/* ── Hero ─────────────────────────────────────────── */}
       <section className="page-hero public-page-header reveal">
         <div className="container-x max-w-3xl text-center header-seq">
-          <Eyebrow flank>Corporate &amp; incentives</Eyebrow>
           <h1 className={sectionTitleClassName("anchor", "loose", "text-[32px] leading-[1.08] md:text-[60px] md:leading-[1.02]")}>
             Corporate experiences in Portugal,{" "}
             <SectionTitle.Em>designed by locals.</SectionTitle.Em>
@@ -257,7 +256,7 @@ function CorporatePage() {
 
       {/* ── Positioning: built around the team ───────────── */}
       <section className="section-y-major chapter-flow">
-        <div className="container-x grid lg:grid-cols-2 gap-10 md:gap-14 items-center reveal-stagger">
+        <div className="container-x grid lg:grid-cols-2 gap-8 md:gap-14 items-center reveal-stagger">
           <div className="group overflow-hidden bg-[color:var(--sand)] aspect-[5/4] sm:aspect-[4/3] lg:aspect-[5/6]">
             <CinematicEditorialImage
               image={positioningImage}
@@ -268,7 +267,6 @@ function CorporatePage() {
           </div>
 
           <div className="section-seq">
-            <Eyebrow>Designed for the purpose</Eyebrow>
             <SectionTitle size="compact" spacing="loose">
               Built around the team. <SectionTitle.Em>Scaled around the group.</SectionTitle.Em>
             </SectionTitle>
@@ -291,7 +289,7 @@ function CorporatePage() {
 
       {/* ── Nationwide reach ─────────────────────────────── */}
       <section className="section-y-major chapter-flow bg-[color:var(--ivory)]">
-        <div className="container-x grid lg:grid-cols-2 gap-10 md:gap-14 items-center reveal-stagger lg:[&>*:first-child]:order-2">
+        <div className="container-x grid lg:grid-cols-2 gap-8 md:gap-14 items-center reveal-stagger lg:[&>*:first-child]:order-2">
           <div className="group overflow-hidden bg-[color:var(--sand)] aspect-[5/4] sm:aspect-[4/3] lg:aspect-[5/6]">
             <CinematicEditorialImage
               image={reachImage}
@@ -302,7 +300,6 @@ function CorporatePage() {
           </div>
 
           <div className="section-seq">
-            <Eyebrow>Beyond the meeting room</Eyebrow>
             <SectionTitle size="compact" spacing="loose">
               Local knowledge, <SectionTitle.Em>across the country.</SectionTitle.Em>
             </SectionTitle>
@@ -409,9 +406,8 @@ function CorporatePage() {
       {/* ── FAQ ──────────────────────────────────────────── */}
       <section className="section-y chapter-flow bg-[color:var(--ivory)] reveal">
         <div className="container-x max-w-3xl">
-          <Eyebrow>Corporate FAQ</Eyebrow>
           <SectionTitle as="h2" size="compact" spacing="loose">
-            Practical answers <SectionTitle.Em>before we plan.</SectionTitle.Em>
+            Corporate <SectionTitle.Em>FAQ.</SectionTitle.Em>
           </SectionTitle>
 
           <div className="mt-8 md:mt-12">
@@ -429,7 +425,7 @@ function CorporatePage() {
                   value={`corporate-faq-${i}`}
                   className="reveal-stagger border border-[color:var(--border)] bg-[color:var(--ivory)]/80 transition-colors duration-200 hover:border-[color:var(--teal)]/40 [&[data-state=open]]:border-[color:var(--teal)]/55"
                 >
-                  <AccordionTrigger className="px-5 md:px-6 py-5 min-h-[56px] text-left serif text-[15.5px] md:text-[17px] leading-snug text-[color:var(--charcoal)] hover:no-underline hover:text-[color:var(--teal)] [&[data-state=open]]:text-[color:var(--teal)]">
+                  <AccordionTrigger className="px-5 md:px-6 py-5 min-h-[56px] text-left font-sans text-[15.5px] md:text-[17px] leading-snug text-[color:var(--charcoal)] hover:no-underline hover:text-[color:var(--teal)] [&[data-state=open]]:text-[color:var(--teal)]">
                     {f.q}
                   </AccordionTrigger>
                   <AccordionContent className="px-5 md:px-6 pt-1 pb-7 text-[15px] leading-[1.75] text-[color:var(--charcoal-soft)]">
@@ -454,7 +450,7 @@ function CorporatePage() {
 
       {/* ── Final conversion ─────────────────────────────── */}
       <section className="section-y chapter-flow bg-[color:var(--sand)] reveal">
-        <div className="container-x grid lg:grid-cols-2 gap-10 md:gap-14 items-center">
+        <div className="container-x grid lg:grid-cols-2 gap-8 md:gap-14 items-center">
           <div className="group overflow-hidden bg-[color:var(--ivory)] aspect-[5/4] sm:aspect-[4/3] lg:aspect-[5/6] order-2 lg:order-1">
             <CinematicEditorialImage
               image={closingImage}
@@ -465,7 +461,6 @@ function CorporatePage() {
           </div>
 
           <div className="order-1 lg:order-2">
-            <Eyebrow>Start with the brief</Eyebrow>
             <SectionTitle size="compact" spacing="loose">
               Tell us about <SectionTitle.Em>your group.</SectionTitle.Em>
             </SectionTitle>

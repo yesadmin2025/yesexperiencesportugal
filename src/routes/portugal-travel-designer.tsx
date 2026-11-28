@@ -95,7 +95,7 @@ function Section({
             className="mt-8 aspect-[3/2] w-full rounded-[4px] object-cover"
           />
         )}
-        <div className="mt-8 space-y-5 text-[16px] text-[color:var(--charcoal-soft)] leading-[1.7]">
+        <div className="mt-8 space-y-4 md:space-y-5 text-[15px] md:text-[16px] text-[color:var(--charcoal-soft)] leading-[1.65] md:leading-[1.7]">
           {children}
         </div>
       </div>
@@ -109,7 +109,6 @@ function PortugalTravelDesignerPage() {
     <SiteLayout>
       <section className="page-hero public-page-header reveal">
         <div className="container-x max-w-3xl text-center header-seq">
-          <Eyebrow flank>Portugal Travel Designer</Eyebrow>
            <SectionTitle as="h1" size="anchor" spacing="loose" className="text-[32px] leading-[1.12] md:text-[60px] md:leading-[1.02]">
             Your <SectionTitle.Em>Portugal Travel Designer</SectionTitle.Em>
           </SectionTitle>
@@ -132,7 +131,7 @@ function PortugalTravelDesignerPage() {
         </div>
       </section>
 
-      <Section tone="ivory" title={<>How a Portugal travel designer <SectionTitle.Em>shapes your journey.</SectionTitle.Em></>}>
+      <Section tone="ivory" title={<>Your itinerary, <SectionTitle.Em>personally designed.</SectionTitle.Em></>}>
         <p>
           Portugal is not one experience repeated from north to south. Each region has its own
           rhythm, food, landscapes and traditions, and the right journey depends on far more than a
@@ -176,7 +175,6 @@ function PortugalTravelDesignerPage() {
       </div>
       <section id="journey-enquiry" className="reveal section-y chapter-flow scroll-mt-24 bg-[color:var(--ivory)]">
         <div className="container-x max-w-2xl">
-          <Eyebrow>Your Portugal journey</Eyebrow>
           <SectionTitle as="h2" size="default" spacing="tight">Design my journey</SectionTitle>
           <div className="mt-8"><JourneyEnquiryForm /></div>
           <p className="mt-8 text-sm text-[color:var(--charcoal-soft)]">Still choosing? <Link to="/local-stories/$slug" params={{ slug: "best-travel-designer-in-portugal" }} className="underline underline-offset-4">Read how to choose a travel designer in Portugal.</Link></p>
@@ -252,7 +250,6 @@ function PortugalTravelDesignerPage() {
       <section id="sample-file" aria-label="Private travel file sample" className="reveal section-y chapter-flow scroll-mt-24 border-y border-[color:var(--border)] bg-[color:var(--ivory)]">
         <div className="container-x max-w-3xl">
           <div className="mx-auto max-w-2xl text-center">
-            <Eyebrow flank>The travel file</Eyebrow>
             <SectionTitle as="h2" size="compact" spacing="loose">
               Delivered as a <SectionTitle.Em>private travel file.</SectionTitle.Em>
             </SectionTitle>

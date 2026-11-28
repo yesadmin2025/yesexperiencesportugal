@@ -9183,6 +9183,9 @@ html[data-floating-quiet] [data-testid="floating-actions"] {
   letter-spacing: normal;
   text-wrap: balance;
 }
+.home-energy .home-editorial-intro > h2:first-child {
+  margin-top: 0;
+}
 .home-energy :is(.home-major-intro, .home-editorial-intro) > h2 .motion-split-line + .motion-split-line {
   margin-top: 0;
 }
@@ -9209,14 +9212,6 @@ html[data-floating-quiet] [data-testid="floating-actions"] {
   max-width: 100%;
   margin-inline: auto;
   text-align: center;
-}
-.home-energy #builder .home-editorial-intro > ol {
-  column-gap: 12px;
-}
-.home-energy #builder .home-editorial-intro > ol li > span:last-child {
-  line-height: 1.5;
-  letter-spacing: .09em;
-  overflow-wrap: normal;
 }
 
 /* Public chapter openings use one label/title/copy contract. Restrict
@@ -9294,9 +9289,6 @@ html[data-cookie-consent-open="true"] .home-energy > .hero-cinematic {
   }
 }
 @media (max-width: 767px) {
-  .home-energy > #faq {
-    padding-block: 64px;
-  }
   .home-energy > .hero-cinematic {
     height: 100vh;
     min-height: 100vh;
@@ -9437,15 +9429,6 @@ h1, h2, h3, .editorial-title-safe, .font-serif, .font-display {
     line-height: 1.333333;
   }
 
-  .home-energy #builder .home-editorial-intro > ol {
-    margin-top: 32px;
-  }
-
-  /* The outer #faq already supplies the section's 64px vertical padding.
-     The nested shared FAQ must not add another 48px on this page. */
-  .home-energy #faq > #home-faq-content {
-    padding-block: 0;
-  }
 
   .home-energy #faq .homepage-faq-trigger {
     font-size: 15.5px;
@@ -9465,7 +9448,7 @@ h1, h2, h3, .editorial-title-safe, .font-serif, .font-display {
    card rhythm, and natural wrapping. Desktop and the cinematic hero retain
    their existing layout. Interactive Studio and checkout are not targeted. */
 @media (max-width: 767px) {
-  .home-energy > :is(#signatures, #builder, #multi-day, #reviews, #special-occasions, #why-yes, #plan-map, #journal, #faq, [aria-labelledby="winter-days-title"]) {
+  .home-energy > :is(#signatures, #builder, #multi-day, #reviews, #special-occasions, #why-yes, #plan-map, #journal, [aria-labelledby="winter-days-title"]) {
     padding-block: 32px;
   }
 
@@ -9516,22 +9499,111 @@ h1, h2, h3, .editorial-title-safe, .font-serif, .font-display {
     font-size: 20px;
     line-height: 1.28;
   }
-  .home-energy .home-final-intro > h2 {
-    margin-top: 0;
-    font-size: var(--editorial-heading-size);
-    line-height: var(--editorial-heading-leading);
-  }
-  .home-energy .home-final-intro > p {
+  /* Only shared public-facing headers, never the Studio workspace. */
+  main[data-editorial-page] .public-page-header .page-header-support {
     margin-top: 16px;
     font-size: 15px;
     line-height: 1.65;
   }
-  .home-energy .home-final-intro > p + div {
-    margin-top: 32px;
+}
+
+
+/* Editorial composition contract: separate peer chapters, then use one
+   owner for each intro and action stack. The shared FAQ keeps its padding
+   on other routes. The homepage wrapper owns the FAQ's outside spacing. */
+.home-energy > #faq {
+  padding-block: 40px;
+}
+.home-energy > #faq > #home-faq-content {
+  padding-block: 0;
+}
+.home-energy > #home-final-cta {
+  padding-block: 40px 64px;
+}
+.home-final-intro {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.home-final-rule {
+  width: 56px;
+  height: 1px;
+  flex-shrink: 0;
+  background: var(--gold);
+}
+.home-energy .home-final-intro > h2 {
+  margin-block: 24px 0;
+  font-size: var(--editorial-heading-size);
+  line-height: var(--editorial-heading-leading);
+}
+.home-energy .home-final-intro > p {
+  margin-block: 16px 0;
+  font-size: var(--editorial-body-size);
+  line-height: 1.65;
+}
+.home-final-actions {
+  width: 100%;
+  margin-top: 24px;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+.home-final-actions > a:last-child {
+  grid-column: 1 / -1;
+  justify-self: center;
+}
+.home-final-actions > .premium-cta {
+  min-height: 48px;
+  padding: 10px 16px;
+  gap: 12px;
+  text-align: left;
+  line-height: 1.333333;
+  font-size: 12px;
+  letter-spacing: .12em;
+}
+.home-final-actions > .premium-cta .cta-label {
+  flex: 1 1 auto;
+  min-width: 0;
+  text-align: left;
+}
+.home-final-actions > a:last-child {
+  min-height: 44px;
+  color: var(--teal);
+  font-size: 12px;
+  letter-spacing: .12em;
+}
+
+@media (max-width: 767px) {
+  .home-energy > #faq {
+    padding-block: 32px;
   }
-  /* Only shared public-facing headers, never the Studio workspace. */
-  main[data-editorial-page] .public-page-header .page-header-support {
-    font-size: 15px;
-    line-height: 1.65;
+  .home-energy > #home-final-cta {
+    padding-block: 32px 48px;
+  }
+  .home-final-actions {
+    max-width: 28rem;
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .home-final-actions > a:last-child {
+    grid-column: auto;
+  }
+  /* Commercial actions only: do not change hero, forms, or checkout. */
+  :is(.home-signature-actions, .experience-card-action, #special-occasions, .home-final-actions) .premium-cta {
+    padding-inline: 16px;
+    gap: 12px;
+    letter-spacing: .12em;
+    line-height: 1.333333;
+    min-height: 48px;
+  }
+  :is(.home-signature-actions, .experience-card-action, #special-occasions, .home-final-actions) .premium-cta .cta-label {
+    min-width: 0;
+    text-align: left;
+  }
+  #special-occasions .premium-cta {
+    width: 100%;
+    justify-content: space-between;
+  }
+  .home-energy #journal .group > .p-6 {
+    padding: 16px;
   }
 }

@@ -29,3 +29,7 @@ Approved mobile direction (27 November 2026). Preserve the brand, storytelling, 
 The automated checks enforce selected numeric rules; subjective quality, photographic consistency and optical alignment still require human/visual review.
 
 - Mobile commercial cards: 16px inner padding, 20px Fraunces title, 14px Inter promise, 13px metadata/highlights, 16px action separation. Preserve accessible wrapping, qualifiers, booking and Tailor destinations.
+
+## Closing commercial chapter
+- FAQ and final CTA are distinct sibling chapters. FAQ wrapper owns its outer spacing; shared FAQ padding is zero only inside the homepage wrapper. Measured FAQ end to closing rule: 64px mobile / 80px desktop. Rule-to-title 24px; title-to-copy 16px; copy-to-actions 24px. Two equal-width primary and secondary actions, left-aligned labels, 48px minimum height. Tertiary journey link uses canonical hairline variant. Test open and closed FAQ states at 320, 375, 390, 393, 430 and 1440px.
+- Keep price qualification, accessible full CTA names, and functional destinations. Do not change cinematic hero, reservation forms or Studio workspace.

@@ -1,5 +1,5 @@
 /**
- * Approved homepage structure spec (v15 — products-first layout with Why YES).
+ * Approved homepage structure spec (v16 — independent closing commercial chapter).
  *
  * Single source of truth for what the marketing homepage MUST contain
  * at mobile widths. Consumed by:
@@ -158,6 +158,12 @@ export const APPROVED_HOMEPAGE_SECTIONS: readonly ApprovedSection[] = [
     componentTag: "FAQ",
     inComponent: true,
     requiredSpacing: { kind: "py", minScale: 16 },
+  },
+  {
+    order: 13,
+    name: "Closing commercial chapter",
+    ariaLabelledBy: "home-final-title",
+    requiredSpacing: { kind: "py", minScale: 8 },
   },
 ] as const;
 
