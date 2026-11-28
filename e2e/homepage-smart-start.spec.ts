@@ -258,7 +258,7 @@ test.describe("homepage conversion paths", () => {
     await expect(nav.getByRole("link", { name: "For Travel Advisors & Agencies" })).toHaveAttribute("href", "/trade");
     const consent = page.getByRole("button", { name: "Essential only", exact: true });
     if (await consent.isVisible()) await consent.click();
-    for (const [name, id] of [["Company", "company"], ["Legal", "legal"], ["Discover Portugal", "discover-portugal"]]) {
+    for (const [name, id] of [["Company", "company"], ["Legal", "legal"], ["Signature Experiences", "signature-experiences"], ["Discover Portugal", "discover-portugal"]]) {
       const toggle = nav.getByRole("button", { name, exact: true });
       const group = nav.locator(`#footer-group-${id}`);
       await expect(toggle).toHaveAttribute("aria-expanded", "false");
@@ -273,11 +273,42 @@ test.describe("homepage conversion paths", () => {
     await expect(footer.getByRole("link", { name: "WhatsApp", exact: true }).first()).toBeVisible();
     await expect(footer.getByRole("link", { name: /guest reviews/i }).first()).toBeVisible();
     await page.setViewportSize({ width: 1440, height: 900 });
-    await expect(nav.getByRole("button", { name: "Company", exact: true })).toBeHidden();
-    await expect(nav.locator("#footer-group-company")).toBeVisible();
-    await expect(nav.locator("#footer-group-legal")).toBeVisible();
-    await expect(nav.locator("#footer-group-discover-portugal")).toBeVisible();
+    for (const [name, id] of [["Company", "company"], ["Legal", "legal"], ["Signature Experiences", "signature-experiences"], ["Discover Portugal", "discover-portugal"]]) {
+      const toggle = nav.getByRole("button", { name, exact: true });
+      const group = nav.locator(`#footer-group-${id}`);
+      await expect(toggle).toBeVisible();
+      await expect(toggle).toHaveAttribute("aria-expanded", "false");
+      await expect(group).toBeHidden();
+      expect(await group.locator("a").count()).toBeGreaterThan(0);
+      await toggle.click();
+      await expect(group).toBeVisible();
+      await expect(toggle).toHaveAttribute("aria-expanded", "true");
+      await toggle.click();
+      await expect(group).toBeHidden();
+    }
+    for (const href of ["/experiences", "/studio", "/portugal-travel-designer", "/proposal-in-portugal", "/corporate", "/trade"]) {
+      await expect(nav.locator(`a[href="${href}"]`).first()).toBeVisible();
+    }
     await expect(nav.getByRole("link", { name: "For Travel Advisors & Agencies" })).toBeVisible();
+  });
+
+  test("keeps one direct Studio action and contextual links accessible on demand", async ({ page }) => {
+    await openHome(page);
+    const studio = page.locator("#builder");
+    await expect(studio.locator('a[href="/studio"]')).toHaveCount(1);
+    await expect(studio.locator('a[href="/studio"]')).toBeVisible();
+    const related = page.locator("#signatures details").filter({ hasText: "More private tours from Lisbon" });
+    await expect(related.locator("nav")).toBeHidden();
+    await related.locator("summary").click();
+    await expect(related.locator('a[href="/lisbon-wine-tours"]')).toBeVisible();
+    await expect(related.locator('a[href="/lisbon-private-tours"]')).toBeVisible();
+    await related.locator("summary").click();
+    await expect(related.locator("nav")).toBeHidden();
+    const winter = page.locator('section[aria-labelledby="winter-days-title"] details');
+    await expect(winter.locator("ul")).toBeHidden();
+    await winter.locator("summary").click();
+    await expect(winter.locator("ul a")).toHaveCount(4);
+    await expect(winter.locator("ul a").first()).toBeVisible();
   });
 
   test("does not pretend a generic visitor has a Studio draft", async ({ page }) => {

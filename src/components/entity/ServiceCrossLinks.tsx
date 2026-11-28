@@ -1,6 +1,5 @@
 import { Link } from "@tanstack/react-router";
-import { Eyebrow } from "@/components/ui/Eyebrow";
-import { SectionTitle } from "@/components/ui/SectionTitle";
+import { ChevronDown } from "lucide-react";
 
 export interface ServiceCrossLink {
   to: string;
@@ -29,16 +28,18 @@ export function ServiceCrossLinks({
 }) {
   return (
     <section
-      className={`reveal py-16 md:py-24 ${
+      className={`py-6 md:py-8 ${
         tone === "sand" ? "bg-[color:var(--sand)]" : "bg-[color:var(--ivory)]"
       }`}
     >
-      <div className="container-x max-w-3xl editorial-label-stack">
-        <Eyebrow>{eyebrow}</Eyebrow>
-        <SectionTitle size="compact" spacing="normal">
-          {title}
-        </SectionTitle>
-        <ul className="mt-8 space-y-6">
+      <div className="container-x max-w-3xl">
+        <details className="group border-t border-[color:var(--border)]">
+          <summary className="flex min-h-11 cursor-pointer items-center justify-between gap-4 rounded-sm py-3 text-sm font-medium text-[color:var(--charcoal)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)]">
+            {eyebrow}
+            <ChevronDown size={16} aria-hidden="true" className="shrink-0 text-[color:var(--teal)] group-open:rotate-180" />
+          </summary>
+          <p className="mt-3 font-display text-lg text-[color:var(--charcoal)]">{title}</p>
+          <ul className="mt-4 space-y-4">
           {links.map((l) => (
             <li key={l.to + l.label}>
               <Link
@@ -52,7 +53,8 @@ export function ServiceCrossLinks({
               </p>
             </li>
           ))}
-        </ul>
+          </ul>
+        </details>
       </div>
     </section>
   );
